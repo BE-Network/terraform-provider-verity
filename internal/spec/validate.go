@@ -205,7 +205,14 @@ func validateField(field FieldSpec, path string, parentRange VersionRange, paren
 		if err := validateCollection(*field.Collection, field.Fields, field.ElementKind, path); err != nil {
 			return err
 		}
-		if err := validateFields(field.Fields, path, field.Versions, field.Modes); err != nil {
+		// The API declares some objects with no properties, and the resources that
+		// expose them ship an empty block. Representing that faithfully needs a
+		// singleton object with no fields; every other object still requires them.
+		if len(field.Fields) == 0 {
+			if field.Collection.Strategy != CollectionSingleton {
+				return fmt.Errorf("%s: only a singleton object may have no fields", path)
+			}
+		} else if err := validateFields(field.Fields, path, field.Versions, field.Modes); err != nil {
 			return err
 		}
 	} else if field.Kind == FieldKindList {

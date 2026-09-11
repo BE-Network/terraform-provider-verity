@@ -1,0 +1,2802 @@
+{
+ "verity_aaa_profile": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "fail_through": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_acl_v4": {
+  "bidirectional": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "destination_ip": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "destination_port_1": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "destination_port_2": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "destination_port_operator": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "protocol": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "source_ip": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "source_port_1": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "source_port_2": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "source_port_operator": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_acl_v6": {
+  "bidirectional": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "destination_ip": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "destination_port_1": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "destination_port_2": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "destination_port_operator": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "protocol": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "source_ip": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "source_port_1": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "source_port_2": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "source_port_operator": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_as_path_access_list": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "permit_deny": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_authenticated_eth_port": {
+  "allow_mac_based_authentication": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "connection_mode": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "mac_authentication_holdoff_sec": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "reauthorization_period_sec": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "trusted_port": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  }
+ },
+ "verity_badge": {
+  "color": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "number": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  }
+ },
+ "verity_bundle": {
+  "cli_commands": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "protocol": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_community_list": {
+  "any_all": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "permit_deny": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "standard_expanded": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_device_settings": {
+  "cli_commands": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "commit_to_flash_interval": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "cut_through_switching": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "disable_tcp_udp_learned_packet_acceleration": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "external_battery_power_available": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "external_power_available": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "hold_timer": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "login_banner": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "mac_aging_timer_override": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "mode": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "ntp_vrf": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "rocev2": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "security_audit_interval": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "spanning_tree_priority": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "usage_threshold": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  }
+ },
+ "verity_device_voice_settings": {
+  "anon_cid_block_activate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "anon_cid_block_deactivate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "bit_rate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "call_agent_1": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "call_agent_2": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "call_agent_port_1": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "call_agent_port_2": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "call_forward_on_busy_activate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "call_forward_on_busy_deactivate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "call_forward_on_no_answer_activate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "call_forward_on_no_answer_deactivate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "call_forward_unconditional_activate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "call_forward_unconditional_deactivate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "call_hold": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "cancel_call_waiting": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "cas_events": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "cids_activate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "cids_deactivate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "do_not_disturb_activate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "do_not_disturb_deactivate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "do_not_disturb_pin_change": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "domain": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "dscp_mark": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "dtmf_method": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "emergency_service_number": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "event_payload_type": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "fax_t38": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "intercom_1": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "intercom_2": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "intercom_3": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "local_port_max": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "local_port_min": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "mgcp_dscp_mark": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "outbound_proxy": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "outbound_proxy_port": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "outbound_proxy_secondary": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "outbound_proxy_secondary_port": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "protocol": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "proxy_server": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "proxy_server_port": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "proxy_server_secondary": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "proxy_server_secondary_port": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "region": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "register_expires": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "registrar_server": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "registrar_server_port": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "registrar_server_secondary": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "registrar_server_secondary_port": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "registration_period": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "rtcp": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "sip_dscp_mark": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "termination_base": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "user_agent_domain": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "user_agent_port": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "user_agent_transport": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "voicemail_server": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "voicemail_server_expires": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "voicemail_server_port": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  }
+ },
+ "verity_diagnostics_port_profile": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "enable_sflow": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_diagnostics_profile": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "enable_sflow": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "erspan_destination_ip": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "erspan_dscp": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "erspan_gre_type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "erspan_queue": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "erspan_ttl": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "poll_interval": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "use_internal_collector": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "vrf_type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_eth_port_profile": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "tls": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "trusted_port": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  }
+ },
+ "verity_eth_port_settings": {
+  "action": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "aging_time": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "aging_type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "allocated_power": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "auto_negotiation": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "bpdu_filter": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "bpdu_guard": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "broadcast": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "bsp_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "cli_commands": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "detect_bridging_loops": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "duplex_mode": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "enable_ecn": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "enable_speed_control": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "enable_watchdog_tuning": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "enable_wred_tuning": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "fast_learning_mode": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "fec": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "guard_loop": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "lldp_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "lldp_med_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "lldp_mode": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "mac_limit": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "mac_security_mode": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "max_allowed_unit": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "max_allowed_value": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "max_bit_rate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "maximum_wred_threshold": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "minimum_wred_threshold": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "mtu": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "multicast": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "poe_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "priority": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "priority_flow_control_watchdog_action": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "priority_flow_control_watchdog_detect_time": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "priority_flow_control_watchdog_restore_time": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "security_violation_action": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "single_link": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "standalone_link_training": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "stp_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "unidirectional_link_detection": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "wred_drop_probability": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  }
+ },
+ "verity_extended_community_list": {
+  "any_all": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "permit_deny": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "standard_expanded": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_fabric": {
+  "aggressive_reporting": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "allow_all_underlay_connections": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "base_bgp_as_number": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "bgp_hold_down_timer": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "bgp_keepalive_timer": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "controller_gateway": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "controller_ip_base": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "domain_for_fabric": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "dscp_to_p_bit_map": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "duplicate_address_detection_max_number_of_moves": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "duplicate_address_detection_time": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "enable_dhcp_snooping": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "enable_dscp": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "evpn_mac_holdtime": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "evpn_multihoming_startup_delay": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "fabric_type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "force_spanning_tree_on_fabric_ports": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "gpu_architecture": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "hgx_password": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "hgx_password_encrypted": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "hgx_username": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "ip_source_guard": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "leaf_bgp_advertisement_interval": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "leaf_bgp_connect_timer": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "leaf_bgp_hold_down_timer": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "leaf_bgp_keep_alive_timer": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "link_state_timeout_value": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "mac_address_aging_time": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "max_pods": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "max_sus": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "max_switches": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "mlag_delay_restore_timer": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "multi_tenant": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "paired_ip_subnet": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "pause_validation_alarms": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "plane_count": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "port_admin_polling_interval": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "port_status_polling_interval": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "read_only_mode": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "region_name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "revision": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "route_aggregation": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "router_id_base_prefix": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "server_management": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "set_leaf_router_id_on_bgp": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "spanning_tree_type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "spine_as_number": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "spine_bgp_advertisement_interval": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "spine_bgp_connect_timer": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "starting_octet": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "su_size": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "su_support": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "switch_gateway": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "switch_ip_base": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "switch_password": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "switch_password_encrypted": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "switch_username": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "vtep_id_base_prefix": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_gateway": {
+  "advertisement_interval": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "allowas_in_origin": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "anycast_ip_mask": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "bfd_detect_multiplier": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "bfd_multihop": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "bfd_receive_interval": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "bfd_transmission_interval": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "bgp_instance_as_number": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "connect_timer": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "default_originate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "dynamic_bgp_limits": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "dynamic_bgp_subnet": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "ebgp_multihop": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "egress_vlan": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "enable_bfd": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "fabric_interconnect": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "gateway_mode": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "helper_hop_ip_address": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "hold_timer": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "keepalive_timer": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "local_as_no_prepend": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "local_as_number": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "max_local_as_occurrences": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "md5_password": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "md5_password_encrypted": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "neighbor_as_number": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "neighbor_ip_address": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "next_hop_self": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "remove_private_as": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "replace_as": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "source_ip_address": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "switch_encrypted_md5_password": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_gateway_profile": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_grouping_rule": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "operation": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_ipv4_list": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "ipv4_list": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_ipv4_prefix_list": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_ipv6_list": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "ipv6_list": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_ipv6_prefix_list": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_lag": {
+  "color": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "crc_failure_threshold": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "fallback": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "fast_rate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "is_peer_link": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "lacp": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "peer_link_vlan": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "uplink": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  }
+ },
+ "verity_ldap_profile": {
+  "base_dn": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "bind_dn": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "bind_password": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "bind_time_limit": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "default_port": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "encrypted_bind_password": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "idle_time_limit": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "ldap_version": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "nss_base_group": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "nss_base_netgroup": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "nss_base_passwd": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "nss_base_shadow": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "nss_base_sudoers": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "nss_initgroups_ignore_users": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "nss_skip_members": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "pam_filter": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "pam_group_dn": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "pam_login_attribute": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "pam_member_attribute": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "retransmit_attempts": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "search_scope": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "search_time_limit": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "ssl_tls_mode": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "sudoers_base": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "sudoers_search_filter": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_mac_filter": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_packet_broker": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_packet_queue": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_pair": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "is_whitebox_pair": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_pb_routing": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_pb_routing_acl": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "ip_version": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "next_hop_ips": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_plane": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "position": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  }
+ },
+ "verity_pod": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "expected_spine_count": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "position": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  }
+ },
+ "verity_port_acl": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_rack": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "position": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  }
+ },
+ "verity_route_map": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_route_map_clause": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "match_evpn_route_type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "match_evpn_route_type_default": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "match_interface_number": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "match_interface_vlan": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "match_local_preference": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "match_metric": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "match_origin": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "match_peer_interface": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "match_peer_ip_address": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "match_peer_vlan": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "match_source_protocol": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "match_tag": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "match_vni": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "permit_deny": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_service": {
+  "act_as_multicast_querier": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "allow_fast_leave": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "allow_local_switching": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "anycast_ipv4_mask": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "anycast_ipv6_mask": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "block_downstream_dhcp_server": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "block_unknown_unicast_flood": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "dhcp_server_ipv4": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "dhcp_server_ipv6": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "ip_attach_host_advertise": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "is_management_service": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "max_downstream_rate_mbps": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "max_upstream_rate_mbps": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "mst_instance": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "mtu": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "multicast_management_mode": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "packet_priority": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "tagged_packets": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "tenant": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "tls": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "use_dscp_to_p_bit_mapping_for_l3_packets_if_available": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "vlan": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  }
+ },
+ "verity_service_port_profile": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "ip_mask": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "port_type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "tls_limit_in": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "tls_service": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "tls_service_ref_type_": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "trusted_port": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  }
+ },
+ "verity_sflow_collector": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "ip": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "port": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  }
+ },
+ "verity_sfp_breakout": {
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_spine_plane": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_ssp_group": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "position": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  }
+ },
+ "verity_su": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "position": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  }
+ },
+ "verity_switchpoint": {
+  "authentication_protocol": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "bb_switch": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "cli_access_mode": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "comm_type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "communication_mode": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "device_managed_as": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "device_serial_number": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "enable_password": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "enable_password_encrypted": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "expected_breakout": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "expected_breakout_uplink_port": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "expected_fabric": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "expected_uplink_port": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "ip_source": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "is_fabric": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "is_top_of_island": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "located_by": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "locked": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "managed_on_native_vlan": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "out_of_band_management": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "passphrase": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "passphrase_encrypted": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "password": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "password_encrypted": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "port": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "position": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "power_state": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "private_password": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "private_password_encrypted": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "private_protocol": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "rack_info": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "rail_group": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "read_only_mode": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "sdlc": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "security_type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "snmp_community_string": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "snmpv3_username": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "ssh_key_or_password": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "uplink_port": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "upstream_is_lag": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "uses_tagged_packets": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "ztp_identification": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_tacacs_profile": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_tenant": {
+  "default_originate": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "dhcp_relay_source_ipv4s_subnet": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "dhcp_relay_source_ipv6s_subnet": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "route_aggregation": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "route_distinguisher": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "route_target_export": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "route_target_import": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "tenant_type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_threshold": {
+  "critical_escalation_value": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "error_escalation_value": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "escalation_metric": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "escalation_operation": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "for": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "keep_firing_for": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "notice_escalation_value": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "operation": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "severity": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "warning_escalation_value": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_threshold_group": {
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "type": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  }
+ },
+ "verity_voice_port_profile": {
+  "anonymous_call_block_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "audio_mwi_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "call_forward_on_busy_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "call_forward_on_no_answer_ring_count": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "call_forward_unconditional_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "call_hold_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "call_three_way_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "call_transfer_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "call_waiting_caller_id_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "call_waiting_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "caller_id_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "caller_id_name_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "cid_blocking_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "cid_name_presentation_status": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "cid_num_presentation_status": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "dial_tone_feature_delay": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "digit_map": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "do_not_disturb_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "echo_cancellation_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "hotline_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "intercom_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "intercom_transfer_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  },
+  "jitter_buffer_max": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "jitter_target": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "mwi_refresh_timer": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "name": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "protocol": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "receive_gain": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "release_timer": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "roh_timer": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "signaling_code": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "empty_string"
+  },
+  "transmit_gain": {
+   "create_null": "api_null",
+   "response_absence": "terraform_null",
+   "update_clear": "api_null"
+  },
+  "visual_mwi_enable": {
+   "create_null": "omit",
+   "response_absence": "terraform_null",
+   "update_clear": "false"
+  }
+ }
+}

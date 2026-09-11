@@ -8,24 +8,31 @@ defaults:
   versions: {min_inclusive: "6.6", max_exclusive: "6.7"}
   profile: server_managed
   profiles:
-    # The object key: required, replaces on change, never nulled.
+    # The object key: required, and replaced rather than updated. response_absence
+    # is terraform_null because that is what every read helper does today; whether
+    # a missing identity should instead be a hard error is part of the open
+    # nullable/reset decision, not something this registry assumes.
     identity:
       access: required
-      response_absence: error
+      response_absence: terraform_null
       create_null: reject
       update_clear: reject
       unknown_plan: reject
       state_ownership: configuration
       replace: true
     # The default. Optional in config, computed from the server when absent.
+    # update_clear and create_null are omitted deliberately: both follow the wire
+    # type. Only numerics are nullable, so they carry an explicit null while every
+    # other kind is omitted on create and cleared to its zero value on update.
     server_managed:
       access: optional_computed
       response_absence: terraform_null
-      create_null: omit
-      update_clear: api_null
       unknown_plan: preserve_state
       state_ownership: configuration_or_server
-    # A nested block the configuration owns outright.
+    # A nested block the configuration owns outright. Objects and arrays are not
+    # nullable, so clearing one is expressed by the collection strategy rather
+    # than by a wire value; update_clear is stated here because the wire-type
+    # derivation only covers scalars.
     container:
       access: optional
       response_absence: terraform_null
@@ -2834,3 +2841,497 @@ resources:
         api_kind: integer
       - api_name: visual_mwi_enable
         api_kind: boolean
+  - path: /devicesettings
+    terraform_type: verity_device_settings
+    description: Manages a Verity Device Settings (Eth Device Profile)
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: device_settings
+      cache_key: device_settings
+      response_collection_key: eth_device_profiles
+      delete_parameter: eth_device_profiles_name
+    fields:
+      - api_name: cli_commands
+        api_kind: string
+      - api_name: commit_to_flash_interval
+        api_kind: integer
+        description: "Frequency in minutes to write the Switch configuration to flash. If the value is blank, commit will use default switch settings. If the value is 0, commit will be turned off. (maximum: 1440)"
+      - api_name: cut_through_switching
+        api_kind: boolean
+      - api_name: device_aaa_profile
+        api_kind: string
+      - api_name: device_aaa_profile_ref_type_
+        api_kind: string
+      - api_name: disable_tcp_udp_learned_packet_acceleration
+        api_kind: boolean
+        description: "Required for AVB, PTP and Cobranet Support"
+      - api_name: dns_servers
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: DNS servers
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enabled
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: server
+            api_kind: string
+      - api_name: enable
+        api_kind: boolean
+      - api_name: external_battery_power_available
+        api_kind: integer
+        description: "External Battery Power Available (maximum: 2000)"
+      - api_name: external_power_available
+        api_kind: integer
+        description: "External Power Available (maximum: 2000)"
+      - api_name: hold_timer
+        api_kind: integer
+        description: "Hold Timer (maximum: 86400)"
+        modes: [campus]
+      - api_name: login_banner
+        api_kind: string
+      - api_name: mac_aging_timer_override
+        api_kind: integer
+        description: "Blank uses the Device's default; otherwise an integer between 1 to 1,000,000 seconds (minimum: 1, maximum: 1000000)"
+        modes: [campus]
+      - api_name: mode
+        api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+        description: Object Name. Must be unique.
+      - api_name: ntp_servers
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: NTP servers
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enabled
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: server
+            api_kind: string
+      - api_name: ntp_vrf
+        api_kind: string
+        description: "VRF used for NTP Servers. Valid values are `default/underlay`, `mgmt` and `tenant`."
+      - api_name: ntp_vrf_tenant
+        api_kind: string
+      - api_name: ntp_vrf_tenant_ref_type_
+        api_kind: string
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the Device Settings
+        collection: {strategy: singleton, ordering: ordered}
+      - api_name: packet_queue
+        api_kind: string
+      - api_name: packet_queue_ref_type_
+        api_kind: string
+      - api_name: rocev2
+        api_kind: boolean
+      - api_name: security_audit_interval
+        api_kind: integer
+        description: "Frequency in minutes of rereading this Switch running configuration and comparing it to expected values. If the value is blank, audit will use default switch settings. If the value is 0, audit will be turned off. (maximum: 1440)"
+      - api_name: spanning_tree_priority
+        api_kind: string
+        modes: [campus]
+      - api_name: syslog_servers
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Syslog servers
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enabled
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: port
+            api_kind: string
+          - api_name: scheme
+            api_kind: string
+          - api_name: server
+            api_kind: string
+      - api_name: usage_threshold
+        api_kind: number
+  - path: /fabrics
+    terraform_type: verity_fabric
+    description: Manages a Verity Fabric
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: fabric
+      cache_key: fabrics
+      response_collection_key: fabric
+      delete_parameter: fabric_name
+    fields:
+      - api_name: aggressive_reporting
+        api_kind: boolean
+      - api_name: allow_all_underlay_connections
+        api_kind: boolean
+      - api_name: anycast_mac_address
+        api_kind: string
+        description: "Anycast MAC address to use. This field should not be specified when 'anycast_mac_address_auto_assigned_' is set to true, as the API will assign this value automatically. Used for MAC VRRP."
+        modes: [datacenter]
+      - api_name: anycast_mac_address_auto_assigned_
+        api_kind: boolean
+        description: "Whether the anycast MAC address should be automatically assigned by the API. When set to true, do not specify the 'anycast_mac_address' field in your configuration."
+        modes: [datacenter]
+      - api_name: base_bgp_as_number
+        api_kind: string
+        description: Base BGP Autonomous System Number used for switches in the fabric
+      - api_name: bgp_hold_down_timer
+        api_kind: integer
+        description: "Spine BGP Hold Down Timer (minimum: 1, maximum: 3600)"
+        modes: [datacenter]
+      - api_name: bgp_keepalive_timer
+        api_kind: integer
+        description: "Spine BGP Keepalive Timer (minimum: 1, maximum: 3600)"
+        modes: [datacenter]
+      - api_name: controller_gateway
+        api_kind: string
+      - api_name: controller_ip_base
+        api_kind: string
+        description: Base IPv4 address for controller IPs in this Fabric
+      - api_name: domain_for_fabric
+        api_kind: string
+      - api_name: domain_for_fabric_ref_type_
+        api_kind: string
+      - api_name: dscp_to_p_bit_map
+        api_kind: string
+        description: "For any Service that is using DSCP to TC map packet prioritization. A string of length 64 with a 0-7 in each position (maxLength: 64)"
+      - api_name: duplicate_address_detection_max_number_of_moves
+        api_kind: integer
+        description: Duplicate Address Detection Max Number of Moves
+      - api_name: duplicate_address_detection_time
+        api_kind: integer
+        description: Duplicate Address Detection Time
+      - api_name: enable
+        api_kind: boolean
+      - api_name: enable_dhcp_snooping
+        api_kind: boolean
+        modes: [campus]
+      - api_name: enable_dscp
+        api_kind: boolean
+      - api_name: evpn_mac_holdtime
+        api_kind: integer
+      - api_name: evpn_multihoming_startup_delay
+        api_kind: integer
+      - api_name: fabric_type
+        api_kind: string
+      - api_name: force_spanning_tree_on_fabric_ports
+        api_kind: boolean
+        description: Enable spanning tree on all fabric connections. This overrides the Eth Port Settings for Fabric ports
+      - api_name: gpu_architecture
+        api_kind: string
+      - api_name: hgx_password
+        api_kind: string
+      - api_name: hgx_password_encrypted
+        api_kind: string
+      - api_name: hgx_username
+        api_kind: string
+      - api_name: ip_source_guard
+        api_kind: boolean
+        modes: [campus]
+      - api_name: leaf_bgp_advertisement_interval
+        api_kind: integer
+        description: "BGP Advertisement Interval for leafs. Use \"0\" for immediate updates (maximum: 3600)"
+        modes: [datacenter]
+      - api_name: leaf_bgp_connect_timer
+        api_kind: integer
+        description: "BGP Connect Timer (minimum: 1, maximum: 3600)"
+        modes: [datacenter]
+      - api_name: leaf_bgp_hold_down_timer
+        api_kind: integer
+        description: "Leaf BGP Hold Down Timer (minimum: 1, maximum: 3600)"
+        modes: [datacenter]
+      - api_name: leaf_bgp_keep_alive_timer
+        api_kind: integer
+        description: "Leaf BGP Keep Alive Timer (minimum: 1, maximum: 3600)"
+        modes: [datacenter]
+      - api_name: link_state_timeout_value
+        api_kind: integer
+      - api_name: mac_address_aging_time
+        api_kind: integer
+        description: "MAC Address Aging Time (minimum: 1, maximum: 100000)"
+        modes: [datacenter]
+      - api_name: max_pods
+        api_kind: integer
+      - api_name: max_sus
+        api_kind: integer
+      - api_name: max_switches
+        api_kind: string
+        description: Max number Switches to support in this site
+      - api_name: mlag_delay_restore_timer
+        api_kind: integer
+        description: "MLAG Delay Restore Timer (minimum: 1, maximum: 3600)"
+        modes: [datacenter]
+      - api_name: multi_tenant
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+        description: Object Name. Must be unique.
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the Fabric
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: system_graphs
+            api_kind: array
+            api_item_kind: object
+            profile: container
+            description: System graphs
+            collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+            fields:
+              - api_name: index
+                api_kind: integer
+      - api_name: paired_ip_subnet
+        api_kind: string
+        description: IP address range reserved for communication between paired switches
+      - api_name: pause_validation_alarms
+        api_kind: boolean
+      - api_name: plane_count
+        api_kind: string
+      - api_name: port_admin_polling_interval
+        api_kind: integer
+        description: Polling interval value in seconds used when aggressive reporting is disabled
+      - api_name: port_status_polling_interval
+        api_kind: integer
+        description: Polling interval value in seconds used when aggressive reporting is disabled
+      - api_name: read_only_mode
+        api_kind: boolean
+      - api_name: region_name
+        api_kind: string
+      - api_name: revision
+        api_kind: integer
+        description: "A logical number that signifies a revision for the MSTP configuration. All switches in an MSTP region must have the same revision number (maximum: 65535)"
+      - api_name: route_aggregation
+        api_kind: string
+      - api_name: route_aggregators
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Route aggregation entries
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: index
+            api_kind: integer
+          - api_name: route_aggregation_num_enable
+            api_kind: boolean
+          - api_name: route_aggregation_num_ip_and_mask
+            api_kind: string
+      - api_name: router_id_base_prefix
+        api_kind: string
+        description: Router ID starting IP address
+      - api_name: server_management
+        api_kind: boolean
+      - api_name: service_for_fabric
+        api_kind: string
+      - api_name: service_for_fabric_ref_type_
+        api_kind: string
+      - api_name: set_leaf_router_id_on_bgp
+        api_kind: boolean
+        description: Use the endpoint loopback0 address as the router ID for all BGP sessions on leaf switches
+      - api_name: spanning_tree_type
+        api_kind: string
+      - api_name: spine_as_number
+        api_kind: integer
+        modes: [datacenter]
+      - api_name: spine_bgp_advertisement_interval
+        api_kind: integer
+        description: "BGP Advertisement Interval for spines/superspines. Use \"0\" for immediate updates (maximum: 3600)"
+        modes: [datacenter]
+      - api_name: spine_bgp_connect_timer
+        api_kind: integer
+        description: "BGP Connect Timer (minimum: 1, maximum: 3600)"
+        modes: [datacenter]
+      - api_name: starting_octet
+        api_kind: integer
+      - api_name: su_size
+        api_kind: string
+        description: "Number of HGXs per SU. Valid values are \"32\" and \"64\"."
+      - api_name: su_support
+        api_kind: boolean
+      - api_name: switch_gateway
+        api_kind: string
+      - api_name: switch_ip_base
+        api_kind: string
+      - api_name: switch_password
+        api_kind: string
+      - api_name: switch_password_encrypted
+        api_kind: string
+      - api_name: switch_username
+        api_kind: string
+      - api_name: vtep_id_base_prefix
+        api_kind: string
+        description: Vtep ID starting IP address
+  - path: /gateways
+    terraform_type: verity_gateway
+    description: Manages a Verity Gateway
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: gateway
+      cache_key: gateways
+      response_collection_key: gateway
+      delete_parameter: gateway_name
+    fields:
+      - api_name: advertisement_interval
+        api_kind: integer
+        description: The minimum time in seconds between sending route updates to BGP neighbor
+      - api_name: allowas_in_origin
+        api_kind: boolean
+      - api_name: anycast_ip_mask
+        api_kind: string
+      - api_name: bfd_detect_multiplier
+        api_kind: integer
+      - api_name: bfd_multihop
+        api_kind: boolean
+      - api_name: bfd_receive_interval
+        api_kind: integer
+      - api_name: bfd_transmission_interval
+        api_kind: integer
+      - api_name: bgp_instance_as_number
+        api_kind: integer
+      - api_name: connect_timer
+        api_kind: integer
+        description: Time in seconds between successive attempts to establish BGP session
+      - api_name: default_originate
+        api_kind: boolean
+      - api_name: dynamic_bgp_limits
+        api_kind: integer
+      - api_name: dynamic_bgp_subnet
+        api_kind: string
+      - api_name: ebgp_multihop
+        api_kind: integer
+        description: Allows external BGP neighbors to establish peering session multiple network hops away.
+      - api_name: egress_vlan
+        api_kind: integer
+      - api_name: enable
+        api_kind: boolean
+        description: "Enable object. It's highly recommended to set this value to true so that validation on the object will be ran."
+      - api_name: enable_bfd
+        api_kind: boolean
+        description: Enable BFD (Bi-Directional Forwarding)
+      - api_name: export_route_map
+        api_kind: string
+        description: A route-map applied to routes exported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes
+      - api_name: export_route_map_ref_type_
+        api_kind: string
+      - api_name: fabric
+        api_kind: string
+      - api_name: fabric_interconnect
+        api_kind: boolean
+        undocumented: true
+      - api_name: fabric_ref_type_
+        api_kind: string
+      - api_name: gateway_mode
+        api_kind: string
+      - api_name: helper_hop_ip_address
+        api_kind: string
+      - api_name: hold_timer
+        api_kind: integer
+        description: "Time, in seconds, used to determine failure of session Keepalive messages received from remote BGP peer"
+      - api_name: import_route_map
+        api_kind: string
+        description: A Route Map applied to routes imported into the current tenant from the targeted BGP router with the purpose of filtering or modifying the routes
+      - api_name: import_route_map_ref_type_
+        api_kind: string
+      - api_name: keepalive_timer
+        api_kind: integer
+      - api_name: local_as_no_prepend
+        api_kind: boolean
+      - api_name: local_as_number
+        api_kind: integer
+      - api_name: max_local_as_occurrences
+        api_kind: integer
+      - api_name: md5_password
+        api_kind: string
+      - api_name: md5_password_encrypted
+        api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+        description: Object Name. Must be unique.
+      - api_name: neighbor_as_number
+        api_kind: integer
+        description: Autonomous System Number of remote BGP peer
+      - api_name: neighbor_ip_address
+        api_kind: string
+      - api_name: next_hop_self
+        api_kind: boolean
+      - api_name: remove_private_as
+        api_kind: boolean
+        description: Remove all private AS numbers from AS-PATH attributes for routes advertised through this BGP gateway
+      - api_name: replace_as
+        api_kind: boolean
+      - api_name: source_ip_address
+        api_kind: string
+      - api_name: static_routes
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of static routes
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: ad_value
+            api_kind: integer
+          - api_name: enable
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: ipv4_route_prefix
+            api_kind: string
+          - api_name: next_hop_ip_address
+            api_kind: string
+      - api_name: switch_encrypted_md5_password
+        api_kind: boolean
+      - api_name: tenant
+        api_kind: string
+      - api_name: tenant_ref_type_
+        api_kind: string
+      - api_name: type
+        api_kind: string
+  - path: /sfpbreakouts
+    terraform_type: verity_sfp_breakout
+    description: Manages a Verity SFP Breakout
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: sfp_breakout
+      cache_key: sfp_breakouts
+      response_collection_key: sfp_breakouts
+    fields:
+      - api_name: breakout
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of breakout configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: breakout
+            api_kind: string
+          - api_name: enable
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: part_number
+            api_kind: string
+          - api_name: vendor
+            api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+        description: Object Name. Must be unique.
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties.
+        collection: {strategy: singleton, ordering: ordered}

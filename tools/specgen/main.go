@@ -95,6 +95,7 @@ func main() {
 		opts := metadataOptions{}
 		fs.StringVar(&opts.Registry, "registry", "", "generated registry input path")
 		fs.StringVar(&opts.Output, "output", "", "generated Go metadata output path")
+		fs.StringVar(&opts.BulkOutput, "bulk-output", "", "generated bulk metadata output path")
 		fs.BoolVar(&opts.Check, "check", false, "fail if output differs from deterministic generation")
 		_ = fs.Parse(os.Args[2:])
 		if err := generateModeMetadata(opts); err != nil {

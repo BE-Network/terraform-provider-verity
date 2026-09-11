@@ -21,8 +21,31 @@ type dumpAttr struct {
 }
 
 type dumpBlock struct {
-	Description string              `json:"description"`
-	Attributes  map[string]dumpAttr `json:"attributes"`
+	Description string               `json:"description"`
+	Attributes  map[string]dumpAttr  `json:"attributes"`
+	Blocks      map[string]dumpBlock `json:"blocks,omitempty"`
+}
+
+// blocksOf recurses: a nested block may itself contain blocks, as Fabric does
+// with object_properties.system_graphs.
+func blocksOf(blocks map[string]schema.Block) map[string]dumpBlock {
+	out := map[string]dumpBlock{}
+	for name, block := range blocks {
+		list, ok := block.(schema.ListNestedBlock)
+		if !ok {
+			out[name] = dumpBlock{Description: "UNSUPPORTED_BLOCK_TYPE"}
+			continue
+		}
+		nested := dumpBlock{Description: list.Description, Attributes: map[string]dumpAttr{}}
+		for attrName, attr := range list.NestedObject.Attributes {
+			nested.Attributes[attrName] = attrOf(attr)
+		}
+		if len(list.NestedObject.Blocks) != 0 {
+			nested.Blocks = blocksOf(list.NestedObject.Blocks)
+		}
+		out[name] = nested
+	}
+	return out
 }
 
 type dumpResource struct {
@@ -73,18 +96,7 @@ func TestDumpLegacySchemas(t *testing.T) {
 		for n, a := range resp.Schema.Attributes {
 			d.Attributes[n] = attrOf(a)
 		}
-		for n, b := range resp.Schema.Blocks {
-			lb, ok := b.(schema.ListNestedBlock)
-			if !ok {
-				d.Blocks[n] = dumpBlock{Description: "UNSUPPORTED_BLOCK_TYPE"}
-				continue
-			}
-			db := dumpBlock{Description: lb.Description, Attributes: map[string]dumpAttr{}}
-			for nn, na := range lb.NestedObject.Attributes {
-				db.Attributes[nn] = attrOf(na)
-			}
-			d.Blocks[n] = db
-		}
+		d.Blocks = blocksOf(resp.Schema.Blocks)
 		out[md.TypeName] = d
 	}
 	raw, _ := json.MarshalIndent(out, "", " ")

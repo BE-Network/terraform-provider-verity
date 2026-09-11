@@ -433,7 +433,7 @@ func TestResolveFieldOverridePrefersExplicitValues(t *testing.T) {
 	inheritModes := []string{"campus", "datacenter"}
 	inheritVersions := versionRangeOverride{MinInclusive: "6.6", MaxExclusive: "6.7"}
 
-	resolved, err := resolveFieldOverride(fieldOverride{APIName: "enable", Profile: "server_managed"}, profiles, "", inheritModes, inheritVersions)
+	resolved, err := resolveFieldOverride(fieldOverride{APIName: "enable", Profile: "server_managed"}, profiles, "", false, inheritModes, inheritVersions)
 	if err != nil {
 		t.Fatalf("resolveFieldOverride() error = %v", err)
 	}
@@ -443,7 +443,7 @@ func TestResolveFieldOverridePrefersExplicitValues(t *testing.T) {
 	}
 
 	explicit := fieldOverride{APIName: "enable", Profile: "server_managed", UpdateClear: "reject", Modes: []string{"campus"}}
-	resolved, err = resolveFieldOverride(explicit, profiles, "", inheritModes, inheritVersions)
+	resolved, err = resolveFieldOverride(explicit, profiles, "", false, inheritModes, inheritVersions)
 	if err != nil {
 		t.Fatalf("resolveFieldOverride() error = %v", err)
 	}
@@ -451,7 +451,7 @@ func TestResolveFieldOverridePrefersExplicitValues(t *testing.T) {
 		t.Fatalf("explicit field = %#v", resolved)
 	}
 
-	if _, err := resolveFieldOverride(fieldOverride{APIName: "x", Profile: "server_managed", Unmanaged: true}, profiles, "", inheritModes, inheritVersions); err == nil {
+	if _, err := resolveFieldOverride(fieldOverride{APIName: "x", Profile: "server_managed", Unmanaged: true}, profiles, "", false, inheritModes, inheritVersions); err == nil {
 		t.Fatal("resolveFieldOverride() accepted an unmanaged field with a profile")
 	}
 }
@@ -463,14 +463,14 @@ func TestResolveFieldOverrideAppliesDefaultProfile(t *testing.T) {
 		"server_managed": {Access: "optional_computed", UpdateClear: "api_null"},
 		"identity":       {Access: "required", Replace: true, UpdateClear: "reject"},
 	}
-	resolved, err := resolveFieldOverride(fieldOverride{APIName: "enable"}, profiles, "server_managed", nil, versionRangeOverride{})
+	resolved, err := resolveFieldOverride(fieldOverride{APIName: "enable"}, profiles, "server_managed", false, nil, versionRangeOverride{})
 	if err != nil {
 		t.Fatalf("resolveFieldOverride() error = %v", err)
 	}
 	if resolved.Profile != "server_managed" || resolved.Access != "optional_computed" {
 		t.Fatalf("defaulted field = %#v", resolved)
 	}
-	resolved, err = resolveFieldOverride(fieldOverride{APIName: "name", Profile: "identity"}, profiles, "server_managed", nil, versionRangeOverride{})
+	resolved, err = resolveFieldOverride(fieldOverride{APIName: "name", Profile: "identity"}, profiles, "server_managed", false, nil, versionRangeOverride{})
 	if err != nil {
 		t.Fatalf("resolveFieldOverride() error = %v", err)
 	}
@@ -478,11 +478,103 @@ func TestResolveFieldOverrideAppliesDefaultProfile(t *testing.T) {
 		t.Fatalf("named profile lost to the default: %#v", resolved)
 	}
 	// An unmanaged field records API shape only and must not pick up the default.
-	resolved, err = resolveFieldOverride(fieldOverride{APIName: "object_properties", Unmanaged: true}, profiles, "server_managed", nil, versionRangeOverride{})
+	resolved, err = resolveFieldOverride(fieldOverride{APIName: "object_properties", Unmanaged: true}, profiles, "server_managed", false, nil, versionRangeOverride{})
 	if err != nil {
 		t.Fatalf("resolveFieldOverride() error = %v", err)
 	}
 	if resolved.Profile != "" || resolved.Access != "" {
 		t.Fatalf("unmanaged field picked up the default profile: %#v", resolved)
+	}
+}
+
+// How a cleared value reaches the API follows the wire type, so the derivation
+// must distinguish nullable numerics from everything else. Getting this wrong is
+// invisible in the Terraform schema, which is why it went unnoticed when every
+// field was assigned api_null.
+func TestDefaultUpdateClearFollowsTheWireType(t *testing.T) {
+	cases := []struct {
+		kind     string
+		nullable bool
+		want     string
+	}{
+		{"string", false, "empty_string"},
+		{"boolean", false, "false"},
+		{"integer", false, "zero"},
+		{"number", false, "zero"},
+		{"integer", true, "api_null"},
+		{"string", true, "api_null"},
+		{"object", false, ""},
+		{"array", false, ""},
+	}
+	for _, tc := range cases {
+		if got := defaultUpdateClear(tc.kind, tc.nullable); got != tc.want {
+			t.Errorf("defaultUpdateClear(%q, nullable=%v) = %q, want %q", tc.kind, tc.nullable, got, tc.want)
+		}
+	}
+}
+
+// A field must be able to disagree with the derivation, because the committed
+// documents and the provider do not always agree on numeric nullability.
+func TestExplicitUpdateClearOverridesTheDerivedDefault(t *testing.T) {
+	profiles := map[string]policyProfile{"server_managed": {Access: "optional_computed"}}
+	derived, err := resolveFieldOverride(fieldOverride{APIName: "poll_interval", APIKind: "integer"}, profiles, "server_managed", false, nil, versionRangeOverride{})
+	if err != nil {
+		t.Fatalf("resolveFieldOverride() error = %v", err)
+	}
+	if derived.UpdateClear != "zero" {
+		t.Fatalf("derived update_clear = %q, want zero", derived.UpdateClear)
+	}
+	explicit, err := resolveFieldOverride(fieldOverride{APIName: "poll_interval", APIKind: "integer", UpdateClear: "api_null"}, profiles, "server_managed", false, nil, versionRangeOverride{})
+	if err != nil {
+		t.Fatalf("resolveFieldOverride() error = %v", err)
+	}
+	if explicit.UpdateClear != "api_null" {
+		t.Fatalf("explicit update_clear = %q, want api_null", explicit.UpdateClear)
+	}
+}
+
+// Only numerics are nullable in this API, and tools/process_swagger.py applies
+// that to the SDK input by marking every number and integer nullable except one
+// named "index". The committed documents are the raw export and predate that
+// transform, so nullability must come from the rule rather than from their flag.
+func TestAPINullableFollowsTheSwaggerTransform(t *testing.T) {
+	cases := []struct {
+		kind, name string
+		want       bool
+	}{
+		{"integer", "port", true},
+		{"number", "receive_gain", true},
+		{"integer", "index", false},
+		{"number", "index", false},
+		{"string", "name", false},
+		{"boolean", "enable", false},
+		{"string", "index", false},
+		{"array", "filters", false},
+		{"object", "object_properties", false},
+	}
+	for _, tc := range cases {
+		if got := apiNullable(tc.kind, tc.name); got != tc.want {
+			t.Errorf("apiNullable(%q, %q) = %v, want %v", tc.kind, tc.name, got, tc.want)
+		}
+	}
+}
+
+// The bulk transport carries one split key, so a resource declaring several
+// discriminators must be refused. Ranging over the map to choose one would pick
+// an arbitrary key and produce a different file on different runs.
+func TestBulkMetadataRejectsMultipleFixedHeaders(t *testing.T) {
+	resource := spec.ResourceSpec{
+		TerraformType: "verity_example",
+		API: spec.APIResourceSpec{
+			EndpointPath: "/examples", BulkKey: "example",
+			FixedHeaders: map[string]string{"ip_version": "4", "region": "east"},
+		},
+	}
+	_, err := renderBulkMetadata(spec.Registry{resource})
+	if err == nil || !strings.Contains(err.Error(), "supports one split key") {
+		t.Fatalf("renderBulkMetadata() error = %v, want rejection of multiple fixed headers", err)
+	}
+	if !strings.Contains(err.Error(), "ip_version, region") {
+		t.Fatalf("error should name the headers in a stable order, got %v", err)
 	}
 }

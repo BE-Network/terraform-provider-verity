@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -48,6 +49,10 @@ func TestGeneratedSpecsMatchLegacySchemas(t *testing.T) {
 		"verity_extended_community_list":  "extended_community_lists",
 		"verity_gateway_profile":          "gateway_profiles",
 		"verity_grouping_rule":            "grouping_rules",
+		"verity_device_settings":          "device_settings",
+		"verity_fabric":                   "fabrics",
+		"verity_gateway":                  "gateways",
+		"verity_sfp_breakout":             "sfp_breakouts",
 		"verity_ipv4_list":                "ipv4_lists",
 		"verity_ipv4_prefix_list":         "ipv4_prefix_lists",
 		"verity_ipv6_list":                "ipv6_lists",
@@ -146,16 +151,26 @@ func assertGeneratedSchemaMatchesLegacy(t *testing.T, resourceSpec spec.Resource
 	if response.Diagnostics.HasError() {
 		t.Fatalf("legacy schema diagnostics: %s", response.Diagnostics)
 	}
+	assertGeneratedFieldsMatchSchema(t, resourceSpec.Fields, response.Schema.Attributes, response.Schema.Blocks, resourceSpec.TerraformType)
+}
+
+// assertGeneratedFieldsMatchSchema compares one level of generated fields against
+// the legacy attributes and blocks at the same level, then recurses. Nested
+// blocks can themselves contain blocks, as Fabric does with
+// object_properties.system_graphs, so a flat comparison would miss a whole
+// subtree.
+func assertGeneratedFieldsMatchSchema(t *testing.T, fields []spec.FieldSpec, attributes map[string]schema.Attribute, blocks map[string]schema.Block, path string) {
+	t.Helper()
 	// Unmanaged fields record API shape the provider deliberately does not
 	// surface, so they are excluded from the count the legacy schema must match.
-	managed := make([]spec.FieldSpec, 0, len(resourceSpec.Fields))
-	for _, field := range resourceSpec.Fields {
+	managed := make([]spec.FieldSpec, 0, len(fields))
+	for _, field := range fields {
 		if !field.Unmanaged {
 			managed = append(managed, field)
 		}
 	}
-	if len(response.Schema.Attributes)+len(response.Schema.Blocks) != len(managed) {
-		t.Fatalf("legacy top-level schema has %d attributes and %d blocks for %d managed generated fields", len(response.Schema.Attributes), len(response.Schema.Blocks), len(managed))
+	if len(attributes)+len(blocks) != len(managed) {
+		t.Fatalf("%s has %d legacy attributes and %d blocks for %d managed generated fields", path, len(attributes), len(blocks), len(managed))
 	}
 	for _, field := range managed {
 		// OpenAPI models a singleton like object_properties as an object, while
@@ -163,9 +178,9 @@ func assertGeneratedSchemaMatchesLegacy(t *testing.T, resourceSpec spec.Resource
 		// generated kinds therefore resolve to a legacy block, and the collection
 		// strategy carries the cardinality difference.
 		if field.Kind != spec.FieldKindList && field.Kind != spec.FieldKindObject {
-			attribute, exists := response.Schema.Attributes[field.TerraformName]
+			attribute, exists := attributes[field.TerraformName]
 			if !exists {
-				t.Fatalf("legacy schema is missing generated field %q", field.TerraformName)
+				t.Fatalf("%s is missing generated field %q", path, field.TerraformName)
 			}
 			assertGeneratedAttribute(t, field, attribute)
 			continue
@@ -173,21 +188,15 @@ func assertGeneratedSchemaMatchesLegacy(t *testing.T, resourceSpec spec.Resource
 		if field.Kind == spec.FieldKindObject && field.Collection.Strategy != spec.CollectionSingleton {
 			t.Fatalf("generated object field %q must use the singleton collection strategy, got %q", field.TerraformName, field.Collection.Strategy)
 		}
-		block, exists := response.Schema.Blocks[field.TerraformName]
+		block, exists := blocks[field.TerraformName]
 		if !exists {
-			t.Fatalf("legacy schema is missing generated block %q", field.TerraformName)
+			t.Fatalf("%s is missing generated block %q", path, field.TerraformName)
 		}
 		list, ok := block.(schema.ListNestedBlock)
-		if !ok || list.Description != field.Description || len(list.NestedObject.Attributes) != len(field.Fields) {
+		if !ok || list.Description != field.Description {
 			t.Fatalf("legacy block %q does not match generated metadata", field.TerraformName)
 		}
-		for _, nested := range field.Fields {
-			attribute, exists := list.NestedObject.Attributes[nested.TerraformName]
-			if !exists {
-				t.Fatalf("legacy block %q is missing generated field %q", field.TerraformName, nested.TerraformName)
-			}
-			assertGeneratedAttribute(t, nested, attribute)
-		}
+		assertGeneratedFieldsMatchSchema(t, field.Fields, list.NestedObject.Attributes, list.NestedObject.Blocks, path+"."+field.TerraformName)
 	}
 }
 
@@ -305,4 +314,97 @@ func TestCountRequiresReplaceIdentifiesTheModifier(t *testing.T) {
 	if got := countRequiresReplace([]planmodifier.Int64(nil)); got != 0 {
 		t.Fatalf("countRequiresReplace(nil) = %d, want 0", got)
 	}
+}
+
+// TestGeneratedPoliciesMatchLegacyBehavior pins each field's lifecycle policies
+// to what the legacy implementation actually does. None of these are visible in
+// the Terraform schema, so schema parity cannot catch them: the registry once
+// claimed every field sent an explicit API null on clear and omitted nulls on
+// create, when only nullable numerics do either.
+//
+// Coverage is exact rather than best-effort. Every registry resource must appear
+// in the evidence, and every field must either carry evidence or fall into a
+// category listed below, so a resource cannot lose verification silently the way
+// ACL did when the fixture keyed it under a name no resource used.
+func TestGeneratedPoliciesMatchLegacyBehavior(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join("testdata", "legacy_field_policies.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var evidence map[string]map[string]map[string]string
+	if err := json.Unmarshal(raw, &evidence); err != nil {
+		t.Fatal(err)
+	}
+	registry := generatedRegistry(t)
+	if len(evidence) != len(registry) {
+		t.Errorf("evidence covers %d resources, the registry has %d", len(evidence), len(registry))
+	}
+	checked, excluded := 0, 0
+	for _, resourceSpec := range registry {
+		fields, exists := evidence[resourceSpec.TerraformType]
+		if !exists {
+			t.Errorf("no legacy policy evidence for %s", resourceSpec.TerraformType)
+			continue
+		}
+		names := make(map[string]bool, len(resourceSpec.Fields))
+		for _, field := range resourceSpec.Fields {
+			names[field.TerraformName] = true
+		}
+		for _, field := range resourceSpec.Fields {
+			if field.Unmanaged {
+				continue
+			}
+			// Objects and arrays are cleared by their collection strategy rather
+			// than by a wire value, so no create/update helper records a policy.
+			if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
+				excluded++
+				continue
+			}
+			policies, recorded := fields[field.TerraformName]
+			if !recorded {
+				if isPairedField(field.TerraformName, names) {
+					excluded++
+					continue
+				}
+				t.Errorf("no legacy policy evidence for %s.%s", resourceSpec.TerraformType, field.TerraformName)
+				continue
+			}
+			got := map[string]string{
+				"update_clear":     string(field.UpdateClear),
+				"create_null":      string(field.CreateNull),
+				"response_absence": string(field.ResponseAbsence),
+			}
+			for policy, want := range policies {
+				// The identity field is Required and replaces on change, so
+				// Terraform never sends it null and never updates it in place.
+				// Only its read behavior is reachable, and so comparable.
+				if field.TerraformName == resourceSpec.IdentityPath && policy != "response_absence" {
+					continue
+				}
+				checked++
+				if got[policy] != want {
+					t.Errorf("%s.%s %s = %q, legacy behavior is %q",
+						resourceSpec.TerraformType, field.TerraformName, policy, got[policy], want)
+				}
+			}
+		}
+	}
+	t.Logf("%d policy assertions checked, %d fields excluded by category", checked, excluded)
+}
+
+// isPairedField reports whether a field is half of a reference or auto-assignment
+// pair. Those are driven by bespoke logic in each resource rather than by the
+// shared create and update helpers, so no policy can be read from them
+// mechanically. The registry does not model the pairing yet either; until it
+// does, both halves are excluded from policy verification.
+func isPairedField(name string, names map[string]bool) bool {
+	for _, suffix := range []string{"_ref_type_", "_auto_assigned_"} {
+		if names[name+suffix] {
+			return true
+		}
+		if base, found := strings.CutSuffix(name, suffix); found && names[base] {
+			return true
+		}
+	}
+	return false
 }

@@ -79,6 +79,7 @@ type fieldOverride struct {
 	APIKind         string                  `yaml:"api_kind"`
 	Profile         string                  `yaml:"profile"`
 	Unmanaged       bool                    `yaml:"unmanaged"`
+	Undocumented    bool                    `yaml:"undocumented"`
 	APIItemKind     string                  `yaml:"api_item_kind"`
 	TerraformName   string                  `yaml:"terraform_name"`
 	Description     string                  `yaml:"description"`
@@ -329,7 +330,7 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 	}
 	fields := make([]spec.FieldSpec, 0, len(overrides))
 	for _, source := range coverage {
-		override, err := resolveFieldOverride(overrideByName[source.APIName], profiles, defaultProfile, inheritModes, inheritVersions)
+		override, err := resolveFieldOverride(overrideByName[source.APIName], profiles, defaultProfile, apiNullable(source.Kind, source.APIName), inheritModes, inheritVersions)
 		if err != nil {
 			return nil, err
 		}
@@ -359,7 +360,7 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 				return nil, fmt.Errorf("field %q has nested API fields and cannot be unmanaged", source.APIName)
 			}
 			fields = append(fields, spec.FieldSpec{
-				APIName: source.APIName, Kind: kind, ElementKind: "", Nullable: source.Nullable,
+				APIName: source.APIName, Kind: kind, ElementKind: "", Nullable: apiNullable(source.Kind, source.APIName),
 				Modes: modesForField, Versions: versionsForField, Unmanaged: true,
 			})
 			continue
@@ -370,7 +371,14 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 		if description == "" {
 			description = source.Description
 		}
-		if override.APIKind == "" || override.TerraformName == "" || description == "" {
+		// The API ships a few fields with an empty description. Recording that as a
+		// reviewed fact keeps the registry faithful without inventing user-facing
+		// documentation, and keeps the gap visible so it can be fixed upstream.
+		if override.Undocumented {
+			if description != "" {
+				return nil, fmt.Errorf("field %q is marked undocumented but a description is available", source.APIName)
+			}
+		} else if override.APIKind == "" || override.TerraformName == "" || description == "" {
 			return nil, fmt.Errorf("field %q requires api_kind, terraform_name, and a description in either the override or OpenAPI", source.APIName)
 		}
 		if override.APIKind != source.Kind {
@@ -389,7 +397,7 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 			ElementKind:     elementKind,
 			Access:          spec.Access(override.Access),
 			Description:     description,
-			Nullable:        source.Nullable,
+			Nullable:        apiNullable(source.Kind, source.APIName),
 			Sensitive:       override.Sensitive,
 			Replace:         override.Replace,
 			Modes:           modes,
@@ -444,7 +452,7 @@ func fieldElementKind(source coverageField, override fieldOverride) (spec.FieldK
 // profile supplies lifecycle policies, the Terraform name follows the API name,
 // and modes and versions inherit from the resource. Anything stated explicitly
 // on the field wins, so a deviation is always visible in the file.
-func resolveFieldOverride(override fieldOverride, profiles map[string]policyProfile, defaultProfile string, modes []string, versions versionRangeOverride) (fieldOverride, error) {
+func resolveFieldOverride(override fieldOverride, profiles map[string]policyProfile, defaultProfile string, nullable bool, modes []string, versions versionRangeOverride) (fieldOverride, error) {
 	resolved := override
 	if resolved.Profile == "" && !resolved.Unmanaged && resolved.Access == "" {
 		resolved.Profile = defaultProfile
@@ -482,6 +490,24 @@ func resolveFieldOverride(override fieldOverride, profiles map[string]policyProf
 	if !resolved.Unmanaged && resolved.TerraformName == "" {
 		resolved.TerraformName = resolved.APIName
 	}
+	// How a cleared value reaches the API is a property of the wire type, not of
+	// the reviewed policy set: only a nullable field can carry an explicit null,
+	// so everything else clears to its zero value. Stating this once keeps the
+	// per-field overrides to the cases where the provider disagrees with the
+	// document, and those are individually reviewed.
+	if !resolved.Unmanaged && resolved.UpdateClear == "" {
+		resolved.UpdateClear = defaultUpdateClear(resolved.APIKind, nullable)
+	}
+	// Creating and clearing use the same wire capability: a field that can carry
+	// an explicit null on update carries one on create, and one that cannot is
+	// omitted from the create request entirely.
+	if !resolved.Unmanaged && resolved.CreateNull == "" && resolved.UpdateClear != "" {
+		if resolved.UpdateClear == string(spec.UpdateClearAPINull) {
+			resolved.CreateNull = string(spec.CreateNullAPINull)
+		} else {
+			resolved.CreateNull = string(spec.CreateNullOmit)
+		}
+	}
 	if len(resolved.Modes) == 0 {
 		resolved.Modes = modes
 	}
@@ -489,6 +515,37 @@ func resolveFieldOverride(override fieldOverride, profiles map[string]policyProf
 		resolved.Versions = versions
 	}
 	return resolved, nil
+}
+
+// apiNullable reports whether the API can carry an explicit null for a field.
+// By design only numerics are nullable, and tools/process_swagger.py applies that
+// rule to the SDK input by marking every number and integer nullable except one
+// named "index", which identifies a collection entry and must always be present.
+// The committed documents are the raw export, so they predate that transform and
+// cannot be read for nullability directly; the plan notes the same at line 238.
+func apiNullable(apiKind, apiName string) bool {
+	return (apiKind == "integer" || apiKind == "number") && apiName != "index"
+}
+
+// defaultUpdateClear mirrors the legacy transport helpers: a nullable numeric is
+// cleared with an explicit JSON null, a string with "", a bool with false, and a
+// number with zero.
+func defaultUpdateClear(apiKind string, nullable bool) string {
+	if nullable {
+		return string(spec.UpdateClearAPINull)
+	}
+	switch apiKind {
+	case "string":
+		return string(spec.UpdateClearEmptyString)
+	case "boolean":
+		return string(spec.UpdateClearFalse)
+	case "integer", "number":
+		return string(spec.UpdateClearZero)
+	default:
+		// Objects and arrays are cleared by the collection strategy, so leave the
+		// policy to the reviewed override rather than inventing one here.
+		return ""
+	}
 }
 
 func rejectManagedOverrideFields(override fieldOverride) error {
