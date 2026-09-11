@@ -1,0 +1,198 @@
+{
+ "acl": {
+  "header_split_key": "ip_version",
+  "resource_type": "acl"
+ },
+ "as_path_access_list": {
+  "header_split_key": "",
+  "resource_type": "as_path_access_list"
+ },
+ "authenticated_eth_port": {
+  "header_split_key": "",
+  "resource_type": "authenticated_eth_port"
+ },
+ "badge": {
+  "header_split_key": "",
+  "resource_type": "badge"
+ },
+ "bundle": {
+  "header_split_key": "",
+  "resource_type": "bundle"
+ },
+ "community_list": {
+  "header_split_key": "",
+  "resource_type": "community_list"
+ },
+ "device_aaa_profile": {
+  "header_split_key": "",
+  "resource_type": "device_aaa_profile"
+ },
+ "device_settings": {
+  "header_split_key": "",
+  "resource_type": "device_settings"
+ },
+ "device_voice_settings": {
+  "header_split_key": "",
+  "resource_type": "device_voice_settings"
+ },
+ "diagnostics_port_profile": {
+  "header_split_key": "",
+  "resource_type": "diagnostics_port_profile"
+ },
+ "diagnostics_profile": {
+  "header_split_key": "",
+  "resource_type": "diagnostics_profile"
+ },
+ "eth_port_profile": {
+  "header_split_key": "",
+  "resource_type": "eth_port_profile"
+ },
+ "eth_port_settings": {
+  "header_split_key": "",
+  "resource_type": "eth_port_settings"
+ },
+ "extended_community_list": {
+  "header_split_key": "",
+  "resource_type": "extended_community_list"
+ },
+ "fabric": {
+  "header_split_key": "",
+  "resource_type": "fabric"
+ },
+ "gateway": {
+  "header_split_key": "",
+  "resource_type": "gateway"
+ },
+ "gateway_profile": {
+  "header_split_key": "",
+  "resource_type": "gateway_profile"
+ },
+ "grouping_rule": {
+  "header_split_key": "",
+  "resource_type": "grouping_rule"
+ },
+ "ipv4_list": {
+  "header_split_key": "",
+  "resource_type": "ipv4_list"
+ },
+ "ipv4_prefix_list": {
+  "header_split_key": "",
+  "resource_type": "ipv4_prefix_list"
+ },
+ "ipv6_list": {
+  "header_split_key": "",
+  "resource_type": "ipv6_list"
+ },
+ "ipv6_prefix_list": {
+  "header_split_key": "",
+  "resource_type": "ipv6_prefix_list"
+ },
+ "lag": {
+  "header_split_key": "",
+  "resource_type": "lag"
+ },
+ "ldap_profile": {
+  "header_split_key": "",
+  "resource_type": "ldap_profile"
+ },
+ "mac_filter": {
+  "header_split_key": "",
+  "resource_type": "mac_filter"
+ },
+ "packet_broker": {
+  "header_split_key": "",
+  "resource_type": "packet_broker"
+ },
+ "packet_queue": {
+  "header_split_key": "",
+  "resource_type": "packet_queue"
+ },
+ "pair": {
+  "header_split_key": "",
+  "resource_type": "pair"
+ },
+ "pb_routing": {
+  "header_split_key": "",
+  "resource_type": "pb_routing"
+ },
+ "pb_routing_acl": {
+  "header_split_key": "",
+  "resource_type": "pb_routing_acl"
+ },
+ "plane": {
+  "header_split_key": "",
+  "resource_type": "plane"
+ },
+ "pod": {
+  "header_split_key": "",
+  "resource_type": "pod"
+ },
+ "port_acl": {
+  "header_split_key": "",
+  "resource_type": "port_acl"
+ },
+ "rack": {
+  "header_split_key": "",
+  "resource_type": "rack"
+ },
+ "route_map": {
+  "header_split_key": "",
+  "resource_type": "route_map"
+ },
+ "route_map_clause": {
+  "header_split_key": "",
+  "resource_type": "route_map_clause"
+ },
+ "service": {
+  "header_split_key": "",
+  "resource_type": "service"
+ },
+ "service_port_profile": {
+  "header_split_key": "",
+  "resource_type": "service_port_profile"
+ },
+ "sflow_collector": {
+  "header_split_key": "",
+  "resource_type": "sflow_collector"
+ },
+ "sfp_breakout": {
+  "header_split_key": "",
+  "resource_type": "sfp_breakout"
+ },
+ "spine_plane": {
+  "header_split_key": "",
+  "resource_type": "spine_plane"
+ },
+ "ssp_group": {
+  "header_split_key": "",
+  "resource_type": "ssp_group"
+ },
+ "su": {
+  "header_split_key": "",
+  "resource_type": "su"
+ },
+ "switchpoint": {
+  "header_split_key": "",
+  "resource_type": "switchpoint"
+ },
+ "tacacs_profile": {
+  "header_split_key": "",
+  "resource_type": "tacacs_profile"
+ },
+ "tenant": {
+  "header_split_key": "",
+  "resource_type": "tenant"
+ },
+ "threshold": {
+  "header_split_key": "",
+  "resource_type": "threshold"
+ },
+ "threshold_group": {
+  "header_split_key": "",
+  "resource_type": "threshold_group"
+ },
+ "voice_port_profile": {
+  "header_split_key": "",
+  "resource_type": "voice_port_profile"
+ }
+}

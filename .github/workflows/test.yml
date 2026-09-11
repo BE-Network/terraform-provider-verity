@@ -19,7 +19,7 @@ jobs:
       - name: Verify generated resource registry
         run: go run ./tools/specgen registry --input-dir specs/openapi/6.6 --overrides specs/overrides.yaml --output specs/generated_registry.json --check
       - name: Verify generated mode metadata
-        run: go run ./tools/specgen metadata --registry specs/generated_registry.json --output internal/utils/generated_mode_metadata.go --check
+        run: go run ./tools/specgen metadata --registry specs/generated_registry.json --output internal/utils/generated_mode_metadata.go --bulk-output internal/bulkops/generated_bulk_metadata.go --check
       - name: Verify generated registry matches legacy implementations
         run: go test ./internal/... ./tools/... -count=1 -timeout 5m
       - uses: hashicorp/setup-terraform@v4

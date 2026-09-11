@@ -12,6 +12,11 @@ import (
 // ================================================================================================
 
 // resourceRegistry is a mapping of resource types to their configuration details.
+//
+// ResourceType and HeaderSplitKey are not written here. Both are owned by the
+// reviewed spec registry and applied in init below, so the bulk key exists in one
+// place and the ACL header split key cannot drift from the discriminator the
+// registry records.
 // It provides a centralized registry for all resources that can be managed by the Verity provider.
 //
 // Each entry contains:
@@ -21,7 +26,6 @@ import (
 //   - APIClientGetter: Function that returns a ResourceAPIClient for the resource type
 var resourceRegistry = map[string]ResourceConfig{
 	"gateway": {
-		ResourceType:     "gateway",
 		PutRequestType:   reflect.TypeOf(openapi.GatewaysPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.GatewaysPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -41,7 +45,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"lag": {
-		ResourceType:     "lag",
 		PutRequestType:   reflect.TypeOf(openapi.LagsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.LagsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -61,7 +64,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"tenant": {
-		ResourceType:     "tenant",
 		PutRequestType:   reflect.TypeOf(openapi.TenantsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.TenantsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -81,7 +83,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"service": {
-		ResourceType:     "service",
 		PutRequestType:   reflect.TypeOf(openapi.ServicesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.ServicesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -101,7 +102,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"gateway_profile": {
-		ResourceType:     "gateway_profile",
 		PutRequestType:   reflect.TypeOf(openapi.GatewayprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.GatewayprofilesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -121,7 +121,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"device_aaa_profile": {
-		ResourceType:     "device_aaa_profile",
 		PutRequestType:   reflect.TypeOf(openapi.DeviceaaaprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.DeviceaaaprofilesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -141,7 +140,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"ldap_profile": {
-		ResourceType:     "ldap_profile",
 		PutRequestType:   reflect.TypeOf(openapi.LdapprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.LdapprofilesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -161,7 +159,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"tacacs_profile": {
-		ResourceType:     "tacacs_profile",
 		PutRequestType:   reflect.TypeOf(openapi.TacacsprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.TacacsprofilesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -181,7 +178,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"grouping_rule": {
-		ResourceType:     "grouping_rule",
 		PutRequestType:   reflect.TypeOf(openapi.GroupingrulesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.GroupingrulesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -201,7 +197,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"threshold_group": {
-		ResourceType:     "threshold_group",
 		PutRequestType:   reflect.TypeOf(openapi.ThresholdgroupsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.ThresholdgroupsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -221,7 +216,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"threshold": {
-		ResourceType:     "threshold",
 		PutRequestType:   reflect.TypeOf(openapi.ThresholdsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.ThresholdsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -241,7 +235,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"packet_queue": {
-		ResourceType:     "packet_queue",
 		PutRequestType:   reflect.TypeOf(openapi.PacketqueuesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.PacketqueuesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -261,7 +254,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"eth_port_profile": {
-		ResourceType:     "eth_port_profile",
 		PutRequestType:   reflect.TypeOf(openapi.EthportprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.EthportprofilesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -281,7 +273,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"eth_port_settings": {
-		ResourceType:     "eth_port_settings",
 		PutRequestType:   reflect.TypeOf(openapi.EthportsettingsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.EthportsettingsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -301,7 +292,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"bundle": {
-		ResourceType:     "bundle",
 		PutRequestType:   reflect.TypeOf(openapi.BundlesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.BundlesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -321,10 +311,8 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"acl": {
-		ResourceType:     "acl",
 		PutRequestType:   reflect.TypeOf(openapi.AclsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.AclsPutRequest{}),
-		HeaderSplitKey:   "ip_version",
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "acl"}
 		},
@@ -371,7 +359,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"packet_broker": {
-		ResourceType:     "packet_broker",
 		PutRequestType:   reflect.TypeOf(openapi.PacketbrokerPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.PacketbrokerPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -391,7 +378,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"badge": {
-		ResourceType:     "badge",
 		PutRequestType:   reflect.TypeOf(openapi.BadgesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.BadgesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -411,7 +397,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"switchpoint": {
-		ResourceType:     "switchpoint",
 		PutRequestType:   reflect.TypeOf(openapi.SwitchpointsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.SwitchpointsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -431,7 +416,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"pair": {
-		ResourceType:     "pair",
 		PutRequestType:   reflect.TypeOf(openapi.PairsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.PairsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -451,7 +435,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"authenticated_eth_port": {
-		ResourceType:     "authenticated_eth_port",
 		PutRequestType:   reflect.TypeOf(openapi.AuthenticatedethportsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.AuthenticatedethportsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -471,7 +454,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"device_voice_settings": {
-		ResourceType:     "device_voice_settings",
 		PutRequestType:   reflect.TypeOf(openapi.DevicevoicesettingsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.DevicevoicesettingsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -491,7 +473,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"voice_port_profile": {
-		ResourceType:     "voice_port_profile",
 		PutRequestType:   reflect.TypeOf(openapi.VoiceportprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.VoiceportprofilesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -511,7 +492,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"service_port_profile": {
-		ResourceType:     "service_port_profile",
 		PutRequestType:   reflect.TypeOf(openapi.ServiceportprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.ServiceportprofilesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -531,7 +511,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"as_path_access_list": {
-		ResourceType:     "as_path_access_list",
 		PutRequestType:   reflect.TypeOf(openapi.AspathaccesslistsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.AspathaccesslistsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -551,7 +530,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"community_list": {
-		ResourceType:     "community_list",
 		PutRequestType:   reflect.TypeOf(openapi.CommunitylistsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.CommunitylistsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -571,7 +549,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"mac_filter": {
-		ResourceType:     "mac_filter",
 		PutRequestType:   reflect.TypeOf(openapi.MacfiltersPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.MacfiltersPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -591,7 +568,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"device_settings": {
-		ResourceType:     "device_settings",
 		PutRequestType:   reflect.TypeOf(openapi.DevicesettingsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.DevicesettingsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -611,7 +587,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"extended_community_list": {
-		ResourceType:     "extended_community_list",
 		PutRequestType:   reflect.TypeOf(openapi.ExtendedcommunitylistsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.ExtendedcommunitylistsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -631,7 +606,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"ipv4_list": {
-		ResourceType:     "ipv4_list",
 		PutRequestType:   reflect.TypeOf(openapi.Ipv4listsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.Ipv4listsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -651,7 +625,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"ipv4_prefix_list": {
-		ResourceType:     "ipv4_prefix_list",
 		PutRequestType:   reflect.TypeOf(openapi.Ipv4prefixlistsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.Ipv4prefixlistsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -671,7 +644,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"ipv6_list": {
-		ResourceType:     "ipv6_list",
 		PutRequestType:   reflect.TypeOf(openapi.Ipv6listsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.Ipv6listsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -691,7 +663,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"ipv6_prefix_list": {
-		ResourceType:     "ipv6_prefix_list",
 		PutRequestType:   reflect.TypeOf(openapi.Ipv6prefixlistsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.Ipv6prefixlistsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -711,7 +682,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"route_map_clause": {
-		ResourceType:     "route_map_clause",
 		PutRequestType:   reflect.TypeOf(openapi.RoutemapclausesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.RoutemapclausesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -731,7 +701,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"route_map": {
-		ResourceType:     "route_map",
 		PutRequestType:   reflect.TypeOf(openapi.RoutemapsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.RoutemapsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -751,7 +720,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"sfp_breakout": {
-		ResourceType:     "sfp_breakout",
 		PutRequestType:   reflect.TypeOf(openapi.SfpbreakoutsPatchRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.SfpbreakoutsPatchRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -767,7 +735,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"fabric": {
-		ResourceType:     "fabric",
 		PutRequestType:   reflect.TypeOf(openapi.FabricsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.FabricsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -787,7 +754,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"plane": {
-		ResourceType:     "plane",
 		PutRequestType:   reflect.TypeOf(openapi.PlanesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.PlanesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -807,7 +773,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"rack": {
-		ResourceType:     "rack",
 		PutRequestType:   reflect.TypeOf(openapi.RacksPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.RacksPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -827,7 +792,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"pod": {
-		ResourceType:     "pod",
 		PutRequestType:   reflect.TypeOf(openapi.PodsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.PodsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -847,7 +811,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"port_acl": {
-		ResourceType:     "port_acl",
 		PutRequestType:   reflect.TypeOf(openapi.PortaclsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.PortaclsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -867,7 +830,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"sflow_collector": {
-		ResourceType:     "sflow_collector",
 		PutRequestType:   reflect.TypeOf(openapi.SflowcollectorsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.SflowcollectorsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -887,7 +849,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"diagnostics_profile": {
-		ResourceType:     "diagnostics_profile",
 		PutRequestType:   reflect.TypeOf(openapi.DiagnosticsprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.DiagnosticsprofilesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -907,7 +868,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"diagnostics_port_profile": {
-		ResourceType:     "diagnostics_port_profile",
 		PutRequestType:   reflect.TypeOf(openapi.DiagnosticsportprofilesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.DiagnosticsportprofilesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -927,7 +887,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"pb_routing": {
-		ResourceType:     "pb_routing",
 		PutRequestType:   reflect.TypeOf(openapi.PolicybasedroutingPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.PolicybasedroutingPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -947,7 +906,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"pb_routing_acl": {
-		ResourceType:     "pb_routing_acl",
 		PutRequestType:   reflect.TypeOf(openapi.PolicybasedroutingaclPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.PolicybasedroutingaclPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -967,7 +925,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"spine_plane": {
-		ResourceType:     "spine_plane",
 		PutRequestType:   reflect.TypeOf(openapi.SpineplanesPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.SpineplanesPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -987,7 +944,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"ssp_group": {
-		ResourceType:     "ssp_group",
 		PutRequestType:   reflect.TypeOf(openapi.SspgroupsPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.SspgroupsPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -1007,7 +963,6 @@ var resourceRegistry = map[string]ResourceConfig{
 		},
 	},
 	"su": {
-		ResourceType:     "su",
 		PutRequestType:   reflect.TypeOf(openapi.SusPutRequest{}),
 		PatchRequestType: reflect.TypeOf(openapi.SusPutRequest{}),
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
@@ -1026,4 +981,20 @@ var resourceRegistry = map[string]ResourceConfig{
 			return c.SUsAPI.SusGet(ctx).Execute()
 		},
 	},
+}
+
+// init fills the transport facts the spec registry owns. A bulk key with no
+// generated entry is a resource the registry does not describe, which would mean
+// the two definitions had diverged, so it fails loudly rather than running with
+// an empty resource type.
+func init() {
+	for key, config := range resourceRegistry {
+		generated, exists := generatedBulkMetadata[key]
+		if !exists {
+			panic("bulkops: no generated metadata for bulk key " + key + "; regenerate with specgen metadata")
+		}
+		config.ResourceType = key
+		config.HeaderSplitKey = generated.HeaderSplitKey
+		resourceRegistry[key] = config
+	}
 }

@@ -36,11 +36,10 @@ const (
 // see status.md. Entries move out of this map as the registry grows, and
 // ResourceCompatibility is the union of it and the generated table.
 var pendingResourceCompatibility = map[string]ResourceMode{
-	"verity_device_settings": ResourceModeBoth,
-	"verity_fabric":          ResourceModeBoth,
-	"verity_gateway":         ResourceModeDatacenter,
+	// verity_operation_stage is not API-backed, so it has no endpoint to extract
+	// and is intentionally excluded from the registry; the refactor plan keeps it
+	// bespoke. It is the only entry that is not expected to move.
 	"verity_operation_stage": ResourceModeBoth,
-	"verity_sfp_breakout":    ResourceModeBoth,
 }
 
 // ResourceCompatibility maps each Terraform resource to the operation modes it

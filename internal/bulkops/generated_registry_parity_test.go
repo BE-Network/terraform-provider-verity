@@ -55,3 +55,35 @@ func assertFixedHeadersMatchLegacySplitKey(t *testing.T, resourceSpec spec.Resou
 		t.Fatalf("%s pins an empty value for legacy split key %q", resourceSpec.TerraformType, config.HeaderSplitKey)
 	}
 }
+
+// TestBulkMetadataMatchesFrozenSnapshot pins the transport facts now filled from
+// the spec registry to the values the bulk registry carried as literals. The
+// resource type keys every operation's logging and status tracking, and the
+// header split key decides how ACL batches are divided, so deriving them had to
+// change nothing.
+func TestBulkMetadataMatchesFrozenSnapshot(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join("testdata", "bulk_metadata_snapshot.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var snapshot map[string]map[string]string
+	if err := json.Unmarshal(raw, &snapshot); err != nil {
+		t.Fatal(err)
+	}
+	if len(resourceRegistry) != len(snapshot) {
+		t.Fatalf("bulk registry has %d entries, snapshot has %d", len(resourceRegistry), len(snapshot))
+	}
+	for key, want := range snapshot {
+		config, exists := resourceRegistry[key]
+		if !exists {
+			t.Errorf("bulk registry is missing %q", key)
+			continue
+		}
+		if config.ResourceType != want["resource_type"] {
+			t.Errorf("%s resource type = %q, snapshot = %q", key, config.ResourceType, want["resource_type"])
+		}
+		if config.HeaderSplitKey != want["header_split_key"] {
+			t.Errorf("%s header split key = %q, snapshot = %q", key, config.HeaderSplitKey, want["header_split_key"])
+		}
+	}
+}
