@@ -31,63 +31,32 @@ const (
 	ResourceModeBoth       ResourceMode = "both"
 )
 
-var ResourceCompatibility = map[string]ResourceMode{
-	// Datacenter-only resources
-	"verity_tenant":                  ResourceModeDatacenter,
-	"verity_gateway":                 ResourceModeDatacenter,
-	"verity_gateway_profile":         ResourceModeDatacenter,
-	"verity_pod":                     ResourceModeDatacenter,
-	"verity_spine_plane":             ResourceModeDatacenter,
-	"verity_route_map_clause":        ResourceModeDatacenter,
-	"verity_route_map":               ResourceModeDatacenter,
-	"verity_as_path_access_list":     ResourceModeDatacenter,
-	"verity_community_list":          ResourceModeDatacenter,
-	"verity_extended_community_list": ResourceModeDatacenter,
-	"verity_ipv4_list":               ResourceModeDatacenter,
-	"verity_ipv4_prefix_list":        ResourceModeDatacenter,
-	"verity_ipv6_list":               ResourceModeDatacenter,
-	"verity_ipv6_prefix_list":        ResourceModeDatacenter,
-	"verity_packet_broker":           ResourceModeDatacenter,
-	"verity_pb_routing":              ResourceModeDatacenter,
-	"verity_pb_routing_acl":          ResourceModeDatacenter,
-	"verity_ssp_group":               ResourceModeDatacenter,
-	"verity_su":                      ResourceModeDatacenter,
-	"verity_plane":                   ResourceModeDatacenter,
-	"verity_rack":                    ResourceModeDatacenter,
+// pendingResourceCompatibility holds the resources the reviewed registry does not
+// represent yet. Each is blocked by a recorded API-versus-provider disagreement;
+// see status.md. Entries move out of this map as the registry grows, and
+// ResourceCompatibility is the union of it and the generated table.
+var pendingResourceCompatibility = map[string]ResourceMode{
+	"verity_device_settings": ResourceModeBoth,
+	"verity_fabric":          ResourceModeBoth,
+	"verity_gateway":         ResourceModeDatacenter,
+	"verity_operation_stage": ResourceModeBoth,
+	"verity_sfp_breakout":    ResourceModeBoth,
+}
 
-	// Campus-only resources
-	"verity_authenticated_eth_port": ResourceModeCampus,
-	"verity_device_voice_settings":  ResourceModeCampus,
-	"verity_mac_filter":             ResourceModeCampus,
-	"verity_service_port_profile":   ResourceModeCampus,
-	"verity_voice_port_profile":     ResourceModeCampus,
+// ResourceCompatibility maps each Terraform resource to the operation modes it
+// supports. It is derived from the reviewed spec registry, with the pending
+// resources above merged in until they are represented.
+var ResourceCompatibility = mergeResourceCompatibility()
 
-	// Resources available on both datacenter and campus systems
-	"verity_acl_v4":                   ResourceModeBoth,
-	"verity_acl_v6":                   ResourceModeBoth,
-	"verity_badge":                    ResourceModeBoth,
-	"verity_bundle":                   ResourceModeBoth,
-	"verity_aaa_profile":              ResourceModeBoth,
-	"verity_ldap_profile":             ResourceModeBoth,
-	"verity_device_settings":          ResourceModeBoth,
-	"verity_diagnostics_port_profile": ResourceModeBoth,
-	"verity_diagnostics_profile":      ResourceModeBoth,
-	"verity_eth_port_profile":         ResourceModeBoth,
-	"verity_eth_port_settings":        ResourceModeBoth,
-	"verity_lag":                      ResourceModeBoth,
-	"verity_packet_queue":             ResourceModeBoth,
-	"verity_pair":                     ResourceModeBoth,
-	"verity_port_acl":                 ResourceModeBoth,
-	"verity_service":                  ResourceModeBoth,
-	"verity_sflow_collector":          ResourceModeBoth,
-	"verity_fabric":                   ResourceModeBoth,
-	"verity_sfp_breakout":             ResourceModeBoth,
-	"verity_operation_stage":          ResourceModeBoth,
-	"verity_switchpoint":              ResourceModeBoth,
-	"verity_tacacs_profile":           ResourceModeBoth,
-	"verity_threshold_group":          ResourceModeBoth,
-	"verity_threshold":                ResourceModeBoth,
-	"verity_grouping_rule":            ResourceModeBoth,
+func mergeResourceCompatibility() map[string]ResourceMode {
+	merged := make(map[string]ResourceMode, len(generatedResourceCompatibility)+len(pendingResourceCompatibility))
+	for name, mode := range generatedResourceCompatibility {
+		merged[name] = mode
+	}
+	for name, mode := range pendingResourceCompatibility {
+		merged[name] = mode
+	}
+	return merged
 }
 
 // ValidateAPIVersion checks if the API version matches the supported version.
