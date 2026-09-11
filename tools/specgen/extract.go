@@ -44,12 +44,14 @@ type coverageQueryParameter struct {
 }
 
 type coverageField struct {
-	APIName     string   `json:"api_name"`
-	Kind        string   `json:"kind"`
-	Description string   `json:"description,omitempty"`
-	Nullable    bool     `json:"nullable"`
-	Modes       []string `json:"modes"`
-	Review      []string `json:"review_required"`
+	APIName     string          `json:"api_name"`
+	Kind        string          `json:"kind"`
+	ItemKind    string          `json:"item_kind,omitempty"`
+	Description string          `json:"description,omitempty"`
+	Nullable    bool            `json:"nullable"`
+	Modes       []string        `json:"modes"`
+	Review      []string        `json:"review_required"`
+	Fields      []coverageField `json:"fields,omitempty"`
 }
 
 func extract(opts extractOptions) error {
@@ -136,11 +138,7 @@ func extractCoverage(inputDir string) (coverageManifest, error) {
 	for _, resource := range resources {
 		sort.Strings(resource.Modes)
 		sort.Strings(resource.Operations)
-		sort.Slice(resource.Fields, func(i, j int) bool { return resource.Fields[i].APIName < resource.Fields[j].APIName })
-		for index := range resource.Fields {
-			sort.Strings(resource.Fields[index].Modes)
-			sort.Strings(resource.Fields[index].Review)
-		}
+		sortCoverageFields(resource.Fields)
 		sort.Slice(resource.DeleteParameters, func(i, j int) bool { return resource.DeleteParameters[i].Name < resource.DeleteParameters[j].Name })
 		for index := range resource.DeleteParameters {
 			sort.Strings(resource.DeleteParameters[index].Modes)
@@ -338,8 +336,28 @@ func mergeRequestShape(resource *coverageResource, mode string, rawOperation any
 		if !ok {
 			continue
 		}
-		mergeField(resource, coverageField{APIName: name, Kind: fieldKind(fieldSchema), Description: stringValue(fieldSchema["description"]), Nullable: boolValue(fieldSchema["nullable"]), Modes: []string{mode}, Review: fieldReview(fieldSchema)})
+		mergeField(resource, coverageFieldFromSchema(name, fieldSchema, mode))
 	}
+}
+
+func coverageFieldFromSchema(name string, value map[string]any, mode string) coverageField {
+	field := coverageField{APIName: name, Kind: fieldKind(value), Description: stringValue(value["description"]), Nullable: boolValue(value["nullable"]), Modes: []string{mode}, Review: fieldReview(value)}
+	nestedSchema := value
+	if field.Kind == "array" {
+		if items, ok := object(value["items"]); ok {
+			field.ItemKind = fieldKind(items)
+			nestedSchema = items
+		}
+	}
+	if properties, ok := object(nestedSchema["properties"]); ok {
+		for nestedName, rawNested := range properties {
+			if nested, ok := object(rawNested); ok {
+				field.Fields = append(field.Fields, coverageFieldFromSchema(nestedName, nested, mode))
+			}
+		}
+		sortCoverageFields(field.Fields)
+	}
+	return field
 }
 
 func mergeField(resource *coverageResource, incoming coverageField) {
@@ -353,13 +371,59 @@ func mergeField(resource *coverageResource, incoming coverageField) {
 		if field.Kind != incoming.Kind {
 			field.Review = appendUnique(field.Review, "type differs between modes or operations")
 		}
+		if field.ItemKind != incoming.ItemKind {
+			field.Review = appendUnique(field.Review, "item type differs between modes or operations")
+		}
 		if field.Description == "" {
 			field.Description = incoming.Description
 		}
 		field.Nullable = field.Nullable || incoming.Nullable
+		mergeCoverageFields(&field.Fields, incoming.Fields)
 		return
 	}
 	resource.Fields = append(resource.Fields, incoming)
+}
+
+func mergeCoverageFields(current *[]coverageField, incoming []coverageField) {
+	for _, field := range incoming {
+		found := false
+		for index := range *current {
+			if (*current)[index].APIName != field.APIName {
+				continue
+			}
+			mergeCoverageField(&(*current)[index], field)
+			found = true
+			break
+		}
+		if !found {
+			*current = append(*current, field)
+		}
+	}
+}
+
+func mergeCoverageField(current *coverageField, incoming coverageField) {
+	current.Modes = appendUnique(current.Modes, incoming.Modes...)
+	current.Review = appendUnique(current.Review, incoming.Review...)
+	if current.Kind != incoming.Kind {
+		current.Review = appendUnique(current.Review, "type differs between modes or operations")
+	}
+	if current.ItemKind != incoming.ItemKind {
+		current.Review = appendUnique(current.Review, "item type differs between modes or operations")
+	}
+	if current.Description == "" {
+		current.Description = incoming.Description
+	}
+	current.Nullable = current.Nullable || incoming.Nullable
+	mergeCoverageFields(&current.Fields, incoming.Fields)
+}
+
+func sortCoverageFields(fields []coverageField) {
+	sort.Slice(fields, func(i, j int) bool { return fields[i].APIName < fields[j].APIName })
+	for index := range fields {
+		sort.Strings(fields[index].Modes)
+		sort.Strings(fields[index].Review)
+		sortCoverageFields(fields[index].Fields)
+	}
 }
 
 func fieldReview(schema map[string]any) []string {

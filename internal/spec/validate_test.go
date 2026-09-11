@@ -25,6 +25,28 @@ func TestResourceSpecValidateRejectsIncompleteAndContradictoryFields(t *testing.
 			spec.Fields[1].Kind = FieldKindInt64
 		}, "canonical base-10"},
 		{"missing nested strategy", func(spec *ResourceSpec) { spec.Fields = append(spec.Fields, nestedField(nil)) }, "explicit collection policy"},
+		{"missing nested identity field", func(spec *ResourceSpec) {
+			spec.Fields = append(spec.Fields, nestedField(&CollectionSpec{Strategy: CollectionReplace, Ordering: CollectionOrdered, IdentityField: "missing"}))
+		}, "does not name a nested field"},
+		// An unmanaged field carries no Terraform behavior, but it still records
+		// API shape and applicability, so those must be validated like any other.
+		{"unmanaged field without a kind", func(spec *ResourceSpec) {
+			spec.Fields = append(spec.Fields, unmanagedField(func(f *FieldSpec) { f.Kind = "" }))
+		}, "field kind is required"},
+		{"unmanaged field with an empty version range", func(spec *ResourceSpec) {
+			spec.Fields = append(spec.Fields, unmanagedField(func(f *FieldSpec) { f.Versions = VersionRange{} }))
+		}, "versions"},
+		{"unmanaged field outside the resource version range", func(spec *ResourceSpec) {
+			spec.Fields = append(spec.Fields, unmanagedField(func(f *FieldSpec) {
+				f.Versions = VersionRange{MinInclusive: APIVersion{Major: 6, Minor: 5}, MaxExclusive: APIVersion{Major: 6, Minor: 7}}
+			}))
+		}, "contained by its parent"},
+		{"unmanaged field outside the resource modes", func(spec *ResourceSpec) {
+			spec.Fields = append(spec.Fields, unmanagedField(func(f *FieldSpec) { f.Modes = []Mode{ModeCampus} }))
+		}, "subset of parent modes"},
+		{"unmanaged field declaring Terraform behavior", func(spec *ResourceSpec) {
+			spec.Fields = append(spec.Fields, unmanagedField(func(f *FieldSpec) { f.Access = AccessOptional }))
+		}, "cannot declare access or lifecycle policies"},
 		{"missing reference target", func(spec *ResourceSpec) {
 			spec.Fields[1].Reference = &ReferenceSpec{TypeField: "missing", AllowedTypes: []string{"tenant"}}
 		}, "does not exist"},
@@ -111,16 +133,6 @@ func TestVersionRangeUsesNumericComparison(t *testing.T) {
 	}
 }
 
-func TestSeedRegistryIsValidForSelectedAPIVersion(t *testing.T) {
-	if err := SeedRegistry.Validate(); err != nil {
-		t.Fatalf("seed registry invalid: %v", err)
-	}
-	selected := SeedRegistry.ForVersion(SelectedAPIVersion)
-	if len(selected) != 1 || selected[0].TerraformType != "verity_ipv4_list" {
-		t.Fatalf("selected registry = %#v", selected)
-	}
-}
-
 func validIPv4ListSpec() ResourceSpec {
 	versionRange := VersionRange{MinInclusive: APIVersion{Major: 6, Minor: 6}, MaxExclusive: APIVersion{Major: 6, Minor: 7}}
 	return ResourceSpec{
@@ -157,7 +169,7 @@ func validIPv4ListSpec() ResourceSpec {
 func nestedField(collection *CollectionSpec) FieldSpec {
 	versionRange := VersionRange{MinInclusive: APIVersion{Major: 6, Minor: 6}, MaxExclusive: APIVersion{Major: 6, Minor: 7}}
 	return FieldSpec{
-		TerraformName: "nested", APIName: "nested", Kind: FieldKindList, Access: AccessOptional, Description: "Nested", Modes: []Mode{ModeDatacenter}, Versions: versionRange,
+		TerraformName: "nested", APIName: "nested", Kind: FieldKindList, ElementKind: FieldKindObject, Access: AccessOptional, Description: "Nested", Modes: []Mode{ModeDatacenter}, Versions: versionRange,
 		ResponseAbsence: ResponseAbsenceTerraformNull, CreateNull: CreateNullOmit, UpdateClear: UpdateClearAPINull, UnknownPlan: UnknownPlanReject, StateOwnership: StateConfiguration,
 		Collection: collection,
 		Fields: []FieldSpec{{
@@ -165,4 +177,18 @@ func nestedField(collection *CollectionSpec) FieldSpec {
 			ResponseAbsence: ResponseAbsenceTerraformNull, CreateNull: CreateNullOmit, UpdateClear: UpdateClearAPINull, UnknownPlan: UnknownPlanReject, StateOwnership: StateConfiguration,
 		}},
 	}
+}
+
+// unmanagedField builds a valid unmanaged field that the caller then breaks in
+// exactly one way, so each table case isolates a single validation rule.
+func unmanagedField(breakIt func(*FieldSpec)) FieldSpec {
+	field := FieldSpec{
+		APIName:   "object_properties",
+		Kind:      FieldKindObject,
+		Unmanaged: true,
+		Modes:     []Mode{ModeDatacenter},
+		Versions:  VersionRange{MinInclusive: APIVersion{Major: 6, Minor: 6}, MaxExclusive: APIVersion{Major: 6, Minor: 7}},
+	}
+	breakIt(&field)
+	return field
 }

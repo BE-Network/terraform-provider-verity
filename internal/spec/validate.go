@@ -26,11 +26,11 @@ func (r ResourceSpec) Validate() error {
 	if r.SchemaVersion < 0 {
 		return fmt.Errorf("resource %s: schema version cannot be negative", r.TerraformType)
 	}
-	if err := r.API.validate(); err != nil {
-		return fmt.Errorf("resource %s: api: %w", r.TerraformType, err)
-	}
 	if !r.Operations.Read || (!r.Operations.Create && !r.Operations.Update) {
 		return fmt.Errorf("resource %s: operations must include read and at least one mutation", r.TerraformType)
+	}
+	if err := r.API.validate(r.Operations); err != nil {
+		return fmt.Errorf("resource %s: api: %w", r.TerraformType, err)
 	}
 	if err := validateFields(r.Fields, r.TerraformType, r.Versions, r.Modes); err != nil {
 		return err
@@ -43,14 +43,23 @@ func (r ResourceSpec) Validate() error {
 	return fmt.Errorf("resource %s: identity path %q does not name a top-level field", r.TerraformType, r.IdentityPath)
 }
 
-func (a APIResourceSpec) validate() error {
+func (a APIResourceSpec) validate(operations OperationSpec) error {
 	for label, value := range map[string]string{
 		"endpoint path": a.EndpointPath, "bulk key": a.BulkKey, "request wrapper key": a.RequestWrapperKey,
-		"response collection key": a.ResponseCollectionKey, "delete parameter": a.DeleteParameter, "cache key": a.CacheKey,
+		"response collection key": a.ResponseCollectionKey, "cache key": a.CacheKey,
 	} {
 		if value == "" {
 			return fmt.Errorf("%s is required", label)
 		}
+	}
+	// A delete parameter identifies the objects a DELETE removes, so it is
+	// required exactly when the endpoint supports delete and must be absent
+	// otherwise rather than carrying an unused reviewed value.
+	if operations.Delete && a.DeleteParameter == "" {
+		return fmt.Errorf("delete parameter is required when the endpoint supports delete")
+	}
+	if !operations.Delete && a.DeleteParameter != "" {
+		return fmt.Errorf("delete parameter %q is set but the endpoint does not support delete", a.DeleteParameter)
 	}
 	if !strings.HasPrefix(a.EndpointPath, "/") {
 		return fmt.Errorf("endpoint path must start with '/'")
@@ -64,6 +73,12 @@ func validateFields(fields []FieldSpec, path string, parentRange VersionRange, p
 	}
 	byName := make(map[string]FieldSpec, len(fields))
 	for _, field := range fields {
+		if field.Unmanaged {
+			if err := validateUnmanagedField(field, path+"."+field.APIName, parentRange, parentModes); err != nil {
+				return err
+			}
+			continue
+		}
 		fieldPath := path + "." + field.TerraformName
 		if field.TerraformName == "" || field.APIName == "" {
 			return fmt.Errorf("%s: Terraform and API names are required", fieldPath)
@@ -77,6 +92,9 @@ func validateFields(fields []FieldSpec, path string, parentRange VersionRange, p
 		}
 	}
 	for _, field := range fields {
+		if field.Unmanaged {
+			continue
+		}
 		fieldPath := path + "." + field.TerraformName
 		if field.Reference != nil {
 			companion, exists := byName[field.Reference.TypeField]
@@ -105,6 +123,44 @@ func validateFields(fields []FieldSpec, path string, parentRange VersionRange, p
 				return fmt.Errorf("%s: auto-assignment flag %q is unavailable in one or more field API versions", fieldPath, field.AutoAssignment.FlagField)
 			}
 		}
+	}
+	return nil
+}
+
+// validateUnmanagedField keeps an unsurfaced API field honest: it records the
+// API shape and nothing else, so it cannot smuggle in Terraform behavior.
+func validateUnmanagedField(field FieldSpec, path string, parentRange VersionRange, parentModes []Mode) error {
+	if field.APIName == "" {
+		return fmt.Errorf("%s: API name is required", path)
+	}
+	if field.TerraformName != "" {
+		return fmt.Errorf("%s: unmanaged fields cannot declare a Terraform name", path)
+	}
+	if field.Access != "" || field.ResponseAbsence != "" || field.CreateNull != "" ||
+		field.UpdateClear != "" || field.UnknownPlan != "" || field.StateOwnership != "" {
+		return fmt.Errorf("%s: unmanaged fields cannot declare access or lifecycle policies", path)
+	}
+	if len(field.Fields) != 0 || field.Collection != nil || field.Reference != nil ||
+		field.AutoAssignment != nil || field.Default != nil || len(field.Validators) != 0 {
+		return fmt.Errorf("%s: unmanaged fields cannot declare nested structure or behavior", path)
+	}
+	// An unmanaged field still records API shape and applicability, so its kind,
+	// modes, and version range are validated exactly as a managed field's are.
+	// Only Terraform behavior is absent.
+	if !validKind(field.Kind) {
+		return fmt.Errorf("%s: field kind is required", path)
+	}
+	if err := validateModes(field.Modes); err != nil {
+		return fmt.Errorf("%s: %w", path, err)
+	}
+	if !modesSubset(field.Modes, parentModes) {
+		return fmt.Errorf("%s: field modes must be a subset of parent modes", path)
+	}
+	if err := validateRange(field.Versions); err != nil {
+		return fmt.Errorf("%s: versions: %w", path, err)
+	}
+	if !rangeSubset(field.Versions, parentRange) {
+		return fmt.Errorf("%s: version range must be contained by its parent", path)
 	}
 	return nil
 }
@@ -139,17 +195,34 @@ func validateField(field FieldSpec, path string, parentRange VersionRange, paren
 	if err := validateValidators(field.Validators, field.Kind, path); err != nil {
 		return err
 	}
-	if field.Kind == FieldKindObject || field.Kind == FieldKindList {
+	if field.Kind == FieldKindObject {
 		if field.Collection == nil {
 			return fmt.Errorf("%s: object/list fields require an explicit collection policy", path)
 		}
-		if err := validateCollection(*field.Collection, path); err != nil {
+		if field.ElementKind != "" {
+			return fmt.Errorf("%s: object fields cannot declare an element kind", path)
+		}
+		if err := validateCollection(*field.Collection, field.Fields, field.ElementKind, path); err != nil {
 			return err
 		}
 		if err := validateFields(field.Fields, path, field.Versions, field.Modes); err != nil {
 			return err
 		}
-	} else if len(field.Fields) != 0 || field.Collection != nil {
+	} else if field.Kind == FieldKindList {
+		if field.Collection == nil || !validKind(field.ElementKind) || field.ElementKind == FieldKindList {
+			return fmt.Errorf("%s: list fields require an explicit collection policy and element kind", path)
+		}
+		if err := validateCollection(*field.Collection, field.Fields, field.ElementKind, path); err != nil {
+			return err
+		}
+		if field.ElementKind == FieldKindObject {
+			if err := validateFields(field.Fields, path, field.Versions, field.Modes); err != nil {
+				return err
+			}
+		} else if len(field.Fields) != 0 {
+			return fmt.Errorf("%s: scalar list elements cannot have nested fields", path)
+		}
+	} else if field.ElementKind != "" || len(field.Fields) != 0 || field.Collection != nil {
 		return fmt.Errorf("%s: scalar fields cannot have nested fields or a collection policy", path)
 	}
 	return nil
@@ -222,7 +295,7 @@ func validateOwnership(field FieldSpec, path string) error {
 	return nil
 }
 
-func validateCollection(collection CollectionSpec, path string) error {
+func validateCollection(collection CollectionSpec, fields []FieldSpec, elementKind FieldKind, path string) error {
 	if collection.Strategy != CollectionSingleton && collection.Strategy != CollectionIndexedPatch && collection.Strategy != CollectionIndexedServerAssigned && collection.Strategy != CollectionReplace && collection.Strategy != CollectionComputedSubset {
 		return fmt.Errorf("%s: collection strategy is required", path)
 	}
@@ -230,7 +303,21 @@ func validateCollection(collection CollectionSpec, path string) error {
 		return fmt.Errorf("%s: collection ordering is required", path)
 	}
 	if collection.Strategy != CollectionSingleton && collection.IdentityField == "" {
+		if elementKind != "" && elementKind != FieldKindObject {
+			return nil
+		}
 		return fmt.Errorf("%s: collection strategy %q requires an identity field", path, collection.Strategy)
+	}
+	if elementKind != "" && elementKind != FieldKindObject && collection.IdentityField != "" {
+		return fmt.Errorf("%s: scalar list elements cannot declare an identity field", path)
+	}
+	if collection.IdentityField != "" {
+		for _, field := range fields {
+			if field.TerraformName == collection.IdentityField {
+				return nil
+			}
+		}
+		return fmt.Errorf("%s: collection identity field %q does not name a nested field", path, collection.IdentityField)
 	}
 	return nil
 }

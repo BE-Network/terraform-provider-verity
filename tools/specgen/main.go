@@ -45,7 +45,7 @@ type normalizeOptions struct {
 
 func main() {
 	if len(os.Args) < 2 {
-		fail("usage: specgen <normalize|verify|extract> [flags]")
+		fail("usage: specgen <normalize|verify|extract|registry|metadata> [flags]")
 	}
 
 	switch os.Args[1] {
@@ -79,8 +79,29 @@ func main() {
 		if err := extract(opts); err != nil {
 			fail(err.Error())
 		}
+	case "registry":
+		fs := flag.NewFlagSet("registry", flag.ExitOnError)
+		opts := registryOptions{}
+		fs.StringVar(&opts.InputDir, "input-dir", "", "canonical input directory")
+		fs.StringVar(&opts.Overrides, "overrides", "", "reviewed override YAML file")
+		fs.StringVar(&opts.Output, "output", "", "generated registry output path")
+		fs.BoolVar(&opts.Check, "check", false, "fail if output differs from deterministic generation")
+		_ = fs.Parse(os.Args[2:])
+		if err := generateRegistry(opts); err != nil {
+			fail(err.Error())
+		}
+	case "metadata":
+		fs := flag.NewFlagSet("metadata", flag.ExitOnError)
+		opts := metadataOptions{}
+		fs.StringVar(&opts.Registry, "registry", "", "generated registry input path")
+		fs.StringVar(&opts.Output, "output", "", "generated Go metadata output path")
+		fs.BoolVar(&opts.Check, "check", false, "fail if output differs from deterministic generation")
+		_ = fs.Parse(os.Args[2:])
+		if err := generateModeMetadata(opts); err != nil {
+			fail(err.Error())
+		}
 	default:
-		fail(fmt.Sprintf("unknown command %q; expected normalize, verify, or extract", os.Args[1]))
+		fail(fmt.Sprintf("unknown command %q; expected normalize, verify, extract, registry, or metadata", os.Args[1]))
 	}
 }
 

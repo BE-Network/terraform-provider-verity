@@ -1,0 +1,2836 @@
+format_version: 1
+api_version: "6.6"
+
+# Values shared by most of the registry. Below a resource, only genuine
+# deviations appear: fields inherit the default profile, the resource modes and
+# version range, and the API description from the committed OpenAPI documents.
+defaults:
+  versions: {min_inclusive: "6.6", max_exclusive: "6.7"}
+  profile: server_managed
+  profiles:
+    # The object key: required, replaces on change, never nulled.
+    identity:
+      access: required
+      response_absence: error
+      create_null: reject
+      update_clear: reject
+      unknown_plan: reject
+      state_ownership: configuration
+      replace: true
+    # The default. Optional in config, computed from the server when absent.
+    server_managed:
+      access: optional_computed
+      response_absence: terraform_null
+      create_null: omit
+      update_clear: api_null
+      unknown_plan: preserve_state
+      state_ownership: configuration_or_server
+    # A nested block the configuration owns outright.
+    container:
+      access: optional
+      response_absence: terraform_null
+      create_null: omit
+      update_clear: api_null
+      unknown_plan: reject
+      state_ownership: configuration
+
+resources:
+  - path: /ipv4lists
+    terraform_type: verity_ipv4_list
+    description: Manages a Verity IPv4 List Filter
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: ipv4_list
+      cache_key: ipv4_lists
+      response_collection_key: ipv4_list_filter
+      delete_parameter: ipv4_list_filter_name
+    fields:
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: enable
+        api_kind: boolean
+      - api_name: ipv4_list
+        api_kind: string
+  - path: /macfilters
+    terraform_type: verity_mac_filter
+    description: Manages a Verity MAC Filter.
+    modes: [campus]
+    identity_path: name
+    api:
+      bulk_key: mac_filter
+      cache_key: mac_filters
+      response_collection_key: mac_filter
+      delete_parameter: mac_filter_name
+    fields:
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: enable
+        api_kind: boolean
+      - api_name: type
+        api_kind: string
+      - api_name: filters
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of MAC filter entries
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: filter_num_mac
+            api_kind: string
+          - api_name: filter_num_mask
+            api_kind: string
+          - api_name: filter_num_enable
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+  - path: /ipv6lists
+    terraform_type: verity_ipv6_list
+    description: Manages a Verity IPv6 List Filter
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: ipv6_list
+      cache_key: ipv6_lists
+      response_collection_key: ipv6_list_filter
+      delete_parameter: ipv6_list_filter_name
+    fields:
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: enable
+        api_kind: boolean
+      - api_name: ipv6_list
+        api_kind: string
+  - path: /sflowcollectors
+    terraform_type: verity_sflow_collector
+    description: Manages a Verity SFlow Collector
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: sflow_collector
+      cache_key: sflow_collectors
+      response_collection_key: sflow_collector
+      delete_parameter: sflow_collector_name
+    fields:
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: enable
+        api_kind: boolean
+      - api_name: ip
+        api_kind: string
+      - api_name: port
+        api_kind: integer
+  - path: /acls
+    terraform_type: verity_acl_v4
+    description: Manages a Verity IPv4 IP Filter (ACL)
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: acl
+      cache_key: acls_ipv4
+      response_collection_key: ipv4_filter
+      delete_parameter: ip_filter_name
+      fixed_headers: {ip_version: "4"}
+    fields:
+      - api_name: name
+        api_kind: string
+        profile: identity
+        description: Object Name. Must be unique.
+      - api_name: enable
+        api_kind: boolean
+      - api_name: protocol
+        api_kind: string
+      - api_name: bidirectional
+        api_kind: boolean
+      - api_name: source_ip
+        api_kind: string
+      - api_name: source_port_1
+        api_kind: integer
+      - api_name: source_port_2
+        api_kind: integer
+      - api_name: source_port_operator
+        api_kind: string
+        description: "This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater-than, less-than or range."
+      - api_name: destination_ip
+        api_kind: string
+      - api_name: destination_port_1
+        api_kind: integer
+      - api_name: destination_port_2
+        api_kind: integer
+      - api_name: destination_port_operator
+        api_kind: string
+        description: "This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater-than, less-than or range."
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Additional properties for this object
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+            description: User notes
+  - path: /acls
+    terraform_type: verity_acl_v6
+    description: Manages a Verity IPv6 IP Filter (ACL)
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: acl
+      cache_key: acls_ipv6
+      response_collection_key: ipv6_filter
+      delete_parameter: ip_filter_name
+      fixed_headers: {ip_version: "6"}
+    fields:
+      - api_name: name
+        api_kind: string
+        profile: identity
+        description: Object Name. Must be unique.
+      - api_name: enable
+        api_kind: boolean
+      - api_name: protocol
+        api_kind: string
+      - api_name: bidirectional
+        api_kind: boolean
+      - api_name: source_ip
+        api_kind: string
+        description: This field matches the source IP address of an IPv6 packet
+      - api_name: source_port_1
+        api_kind: integer
+      - api_name: source_port_2
+        api_kind: integer
+      - api_name: source_port_operator
+        api_kind: string
+        description: "This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater-than, less-than or range."
+      - api_name: destination_ip
+        api_kind: string
+        description: This field matches the destination IP address of an IPv6 packet.
+      - api_name: destination_port_1
+        api_kind: integer
+      - api_name: destination_port_2
+        api_kind: integer
+      - api_name: destination_port_operator
+        api_kind: string
+        description: "This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater-than, less-than or range."
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Additional properties for this object
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+            description: User notes
+  - path: /deviceaaaprofiles
+    terraform_type: verity_aaa_profile
+    description: Manages a Verity Device AAA Profile.
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: device_aaa_profile
+      cache_key: device_aaa_profiles
+      response_collection_key: device_aaa_profile
+      delete_parameter: device_aaa_profile_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: fail_through
+        api_kind: boolean
+      - api_name: ldap_profile
+        api_kind: string
+      - api_name: ldap_profile_ref_type_
+        api_kind: string
+      - api_name: login_default
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Authentication method list for remote access
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enabled
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: login_method
+            api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        unmanaged: true
+      - api_name: tacacs_profile
+        api_kind: string
+      - api_name: tacacs_profile_ref_type_
+        api_kind: string
+  - path: /aspathaccesslists
+    terraform_type: verity_as_path_access_list
+    description: Manages a Verity AS Path Access List
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: as_path_access_list
+      cache_key: as_path_access_lists
+      response_collection_key: as_path_access_list
+      delete_parameter: as_path_access_list_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: lists
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of AS Path Access List entries
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: regular_expression
+            api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the AS Path Access List
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+      - api_name: permit_deny
+        api_kind: string
+  - path: /authenticatedethports
+    terraform_type: verity_authenticated_eth_port
+    description: Manages a Verity Authenticated Eth-Port
+    modes: [campus]
+    identity_path: name
+    api:
+      bulk_key: authenticated_eth_port
+      cache_key: authenticated_eth_ports
+      response_collection_key: authenticated_eth_port
+      delete_parameter: authenticated_eth_port_name
+    fields:
+      - api_name: allow_mac_based_authentication
+        api_kind: boolean
+      - api_name: connection_mode
+        api_kind: string
+      - api_name: enable
+        api_kind: boolean
+      - api_name: eth_ports
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Ethernet port configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: eth_port_profile_num_enable
+            api_kind: boolean
+          - api_name: eth_port_profile_num_eth_port
+            api_kind: string
+          - api_name: eth_port_profile_num_eth_port_ref_type_
+            api_kind: string
+          - api_name: eth_port_profile_num_radius_filter_id
+            api_kind: string
+          - api_name: eth_port_profile_num_walled_garden_set
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+      - api_name: mac_authentication_holdoff_sec
+        api_kind: integer
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the authenticated eth-port
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: port_monitoring
+            api_kind: string
+      - api_name: reauthorization_period_sec
+        api_kind: integer
+      - api_name: trusted_port
+        api_kind: boolean
+  - path: /badges
+    terraform_type: verity_badge
+    description: Manages a Badge resource
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: badge
+      cache_key: badges
+      response_collection_key: badge
+      delete_parameter: badge_name
+    fields:
+      - api_name: color
+        api_kind: string
+      - api_name: enable
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: number
+        api_kind: integer
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the badge
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+  - path: /bundles
+    terraform_type: verity_bundle
+    description: Manages a Verity Bundle
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: bundle
+      cache_key: bundles
+      response_collection_key: endpoint_bundle
+      delete_parameter: bundle_name
+    fields:
+      - api_name: cli_commands
+        api_kind: string
+      - api_name: device_settings
+        api_kind: string
+      - api_name: device_settings_ref_type_
+        api_kind: string
+      - api_name: device_voice_settings
+        api_kind: string
+        modes: [campus]
+      - api_name: device_voice_settings_ref_type_
+        api_kind: string
+        modes: [campus]
+      - api_name: diagnostics_profile
+        api_kind: string
+      - api_name: diagnostics_profile_ref_type_
+        api_kind: string
+      - api_name: enable
+        api_kind: boolean
+      - api_name: eth_port_paths
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of ethernet port configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: eth_port_num_diagnostics_port_profile
+            api_kind: string
+          - api_name: eth_port_num_diagnostics_port_profile_ref_type_
+            api_kind: string
+          - api_name: eth_port_num_eth_port_profile
+            api_kind: string
+          - api_name: eth_port_num_eth_port_profile_ref_type_
+            api_kind: string
+          - api_name: eth_port_num_eth_port_settings
+            api_kind: string
+          - api_name: eth_port_num_eth_port_settings_ref_type_
+            api_kind: string
+          - api_name: eth_port_num_gateway_profile
+            api_kind: string
+            modes: [datacenter]
+          - api_name: eth_port_num_gateway_profile_ref_type_
+            api_kind: string
+            modes: [datacenter]
+          - api_name: index
+            api_kind: integer
+          - api_name: port_name
+            api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the bundle
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: is_for_switch
+            api_kind: boolean
+          - api_name: is_public
+            api_kind: boolean
+            modes: [campus]
+      - api_name: protocol
+        api_kind: string
+      - api_name: rg_services
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of RG services configurations
+        modes: [campus]
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: index
+            api_kind: integer
+          - api_name: row_app_connected_service
+            api_kind: string
+          - api_name: row_app_connected_service_ref_type_
+            api_kind: string
+          - api_name: row_app_enable
+            api_kind: boolean
+          - api_name: row_app_type
+            api_kind: string
+          - api_name: row_ip_mask
+            api_kind: string
+      - api_name: user_services
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of user services configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: index
+            api_kind: integer
+          - api_name: row_app_cli_commands
+            api_kind: string
+          - api_name: row_app_connected_service
+            api_kind: string
+          - api_name: row_app_connected_service_ref_type_
+            api_kind: string
+          - api_name: row_app_enable
+            api_kind: boolean
+          - api_name: row_ip_mask
+            api_kind: string
+      - api_name: voice_port_profile_paths
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of voice port profile configurations
+        modes: [campus]
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: index
+            api_kind: integer
+          - api_name: voice_port_num_voice_port_profiles
+            api_kind: string
+          - api_name: voice_port_num_voice_port_profiles_ref_type_
+            api_kind: string
+  - path: /communitylists
+    terraform_type: verity_community_list
+    description: Manages a Verity Community List
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: community_list
+      cache_key: community_lists
+      response_collection_key: community_list
+      delete_parameter: community_list_name
+    fields:
+      - api_name: any_all
+        api_kind: string
+      - api_name: enable
+        api_kind: boolean
+      - api_name: lists
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of Community List entries
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: community_string_expanded_expression
+            api_kind: string
+          - api_name: enable
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: mode
+            api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the Community List
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+      - api_name: permit_deny
+        api_kind: string
+      - api_name: standard_expanded
+        api_kind: string
+  - path: /devicevoicesettings
+    terraform_type: verity_device_voice_settings
+    description: Manages a Verity Device Voice Settings
+    modes: [campus]
+    identity_path: name
+    api:
+      bulk_key: device_voice_settings
+      cache_key: device_voice_settings
+      response_collection_key: device_voice_settings
+      delete_parameter: device_voice_settings_name
+    fields:
+      - api_name: anon_cid_block_activate
+        api_kind: string
+      - api_name: anon_cid_block_deactivate
+        api_kind: string
+      - api_name: bit_rate
+        api_kind: string
+      - api_name: call_agent_1
+        api_kind: string
+      - api_name: call_agent_2
+        api_kind: string
+      - api_name: call_agent_port_1
+        api_kind: integer
+      - api_name: call_agent_port_2
+        api_kind: integer
+      - api_name: call_forward_on_busy_activate
+        api_kind: string
+      - api_name: call_forward_on_busy_deactivate
+        api_kind: string
+      - api_name: call_forward_on_no_answer_activate
+        api_kind: string
+      - api_name: call_forward_on_no_answer_deactivate
+        api_kind: string
+      - api_name: call_forward_unconditional_activate
+        api_kind: string
+      - api_name: call_forward_unconditional_deactivate
+        api_kind: string
+      - api_name: call_hold
+        api_kind: string
+      - api_name: cancel_call_waiting
+        api_kind: string
+      - api_name: cas_events
+        api_kind: integer
+      - api_name: cids_activate
+        api_kind: string
+      - api_name: cids_deactivate
+        api_kind: string
+      - api_name: codecs
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Codec configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: codec_num_enable
+            api_kind: boolean
+          - api_name: codec_num_name
+            api_kind: string
+          - api_name: codec_num_packetization_period
+            api_kind: string
+          - api_name: codec_num_silence_suppression
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+      - api_name: do_not_disturb_activate
+        api_kind: string
+      - api_name: do_not_disturb_deactivate
+        api_kind: string
+      - api_name: do_not_disturb_pin_change
+        api_kind: string
+      - api_name: domain
+        api_kind: string
+      - api_name: dscp_mark
+        api_kind: integer
+      - api_name: dtmf_method
+        api_kind: string
+      - api_name: emergency_service_number
+        api_kind: string
+      - api_name: enable
+        api_kind: boolean
+      - api_name: event_payload_type
+        api_kind: integer
+      - api_name: fax_t38
+        api_kind: boolean
+      - api_name: intercom_1
+        api_kind: string
+      - api_name: intercom_2
+        api_kind: string
+      - api_name: intercom_3
+        api_kind: string
+      - api_name: local_port_max
+        api_kind: integer
+      - api_name: local_port_min
+        api_kind: integer
+      - api_name: mgcp_dscp_mark
+        api_kind: integer
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        unmanaged: true
+      - api_name: outbound_proxy
+        api_kind: string
+      - api_name: outbound_proxy_port
+        api_kind: integer
+      - api_name: outbound_proxy_secondary
+        api_kind: string
+      - api_name: outbound_proxy_secondary_port
+        api_kind: integer
+      - api_name: protocol
+        api_kind: string
+      - api_name: proxy_server
+        api_kind: string
+      - api_name: proxy_server_port
+        api_kind: integer
+      - api_name: proxy_server_secondary
+        api_kind: string
+      - api_name: proxy_server_secondary_port
+        api_kind: integer
+      - api_name: region
+        api_kind: string
+      - api_name: register_expires
+        api_kind: integer
+      - api_name: registrar_server
+        api_kind: string
+      - api_name: registrar_server_port
+        api_kind: integer
+      - api_name: registrar_server_secondary
+        api_kind: string
+      - api_name: registrar_server_secondary_port
+        api_kind: integer
+      - api_name: registration_period
+        api_kind: integer
+      - api_name: rtcp
+        api_kind: boolean
+      - api_name: sip_dscp_mark
+        api_kind: integer
+      - api_name: termination_base
+        api_kind: string
+      - api_name: user_agent_domain
+        api_kind: string
+      - api_name: user_agent_port
+        api_kind: integer
+      - api_name: user_agent_transport
+        api_kind: string
+      - api_name: voicemail_server
+        api_kind: string
+      - api_name: voicemail_server_expires
+        api_kind: integer
+      - api_name: voicemail_server_port
+        api_kind: integer
+  - path: /diagnosticsportprofiles
+    terraform_type: verity_diagnostics_port_profile
+    description: Manages a Verity Diagnostics Port Profile
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: diagnostics_port_profile
+      cache_key: diagnostics_port_profiles
+      response_collection_key: diagnostics_port_profile
+      delete_parameter: diagnostics_port_profile_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: enable_sflow
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+  - path: /diagnosticsprofiles
+    terraform_type: verity_diagnostics_profile
+    description: Manages a Verity Diagnostics Profile
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: diagnostics_profile
+      cache_key: diagnostics_profiles
+      response_collection_key: diagnostics_profile
+      delete_parameter: diagnostics_profile_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: enable_sflow
+        api_kind: boolean
+      - api_name: erspan_destination_ip
+        api_kind: string
+      - api_name: erspan_dscp
+        api_kind: integer
+      - api_name: erspan_gre_type
+        api_kind: string
+      - api_name: erspan_queue
+        api_kind: integer
+      - api_name: erspan_ttl
+        api_kind: integer
+      - api_name: flow_collector
+        api_kind: string
+      - api_name: flow_collector_ref_type_
+        api_kind: string
+      - api_name: monitoring_acl
+        api_kind: string
+      - api_name: monitoring_acl_ref_type_
+        api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: poll_interval
+        api_kind: integer
+      - api_name: use_internal_collector
+        api_kind: boolean
+      - api_name: vrf_type
+        api_kind: string
+  - path: /ethportprofiles
+    terraform_type: verity_eth_port_profile
+    description: Manages an Ethernet Port Profile
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: eth_port_profile
+      cache_key: eth_port_profiles
+      response_collection_key: eth_port_profile_
+      delete_parameter: profile_name
+    fields:
+      - api_name: egress_acl
+        api_kind: string
+      - api_name: egress_acl_ref_type_
+        api_kind: string
+      - api_name: enable
+        api_kind: boolean
+      - api_name: ingress_acl
+        api_kind: string
+      - api_name: ingress_acl_ref_type_
+        api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the profile
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: icon
+            api_kind: string
+            modes: [campus]
+          - api_name: label
+            api_kind: string
+            modes: [campus]
+          - api_name: port_monitoring
+            api_kind: string
+          - api_name: sort_by_name
+            api_kind: boolean
+            modes: [campus]
+      - api_name: services
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of service configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: index
+            api_kind: integer
+          - api_name: row_num_egress_acl
+            api_kind: string
+          - api_name: row_num_egress_acl_ref_type_
+            api_kind: string
+          - api_name: row_num_enable
+            api_kind: boolean
+          - api_name: row_num_external_vlan
+            api_kind: integer
+          - api_name: row_num_ingress_acl
+            api_kind: string
+          - api_name: row_num_ingress_acl_ref_type_
+            api_kind: string
+          - api_name: row_num_lan_iptv
+            api_kind: string
+            modes: [campus]
+          - api_name: row_num_mac_filter
+            api_kind: string
+            modes: [campus]
+          - api_name: row_num_mac_filter_ref_type_
+            api_kind: string
+            modes: [campus]
+          - api_name: row_num_service
+            api_kind: string
+          - api_name: row_num_service_ref_type_
+            api_kind: string
+      - api_name: tls
+        api_kind: boolean
+        modes: [campus]
+      - api_name: tls_service
+        api_kind: string
+        modes: [campus]
+      - api_name: tls_service_ref_type_
+        api_kind: string
+        modes: [campus]
+      - api_name: trusted_port
+        api_kind: boolean
+        modes: [campus]
+  - path: /ethportsettings
+    terraform_type: verity_eth_port_settings
+    description: Manages Ethernet port settings
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: eth_port_settings
+      cache_key: eth_port_settings
+      response_collection_key: eth_port_settings
+      delete_parameter: port_name
+    fields:
+      - api_name: action
+        api_kind: string
+      - api_name: aging_time
+        api_kind: integer
+        modes: [campus]
+      - api_name: aging_type
+        api_kind: string
+        modes: [campus]
+      - api_name: allocated_power
+        api_kind: string
+      - api_name: auto_negotiation
+        api_kind: boolean
+      - api_name: bpdu_filter
+        api_kind: boolean
+      - api_name: bpdu_guard
+        api_kind: boolean
+      - api_name: broadcast
+        api_kind: boolean
+      - api_name: bsp_enable
+        api_kind: boolean
+      - api_name: cli_commands
+        api_kind: string
+      - api_name: detect_bridging_loops
+        api_kind: boolean
+        modes: [campus]
+      - api_name: duplex_mode
+        api_kind: string
+      - api_name: enable
+        api_kind: boolean
+      - api_name: enable_ecn
+        api_kind: boolean
+        modes: [datacenter]
+      - api_name: enable_speed_control
+        api_kind: boolean
+      - api_name: enable_watchdog_tuning
+        api_kind: boolean
+        modes: [datacenter]
+      - api_name: enable_wred_tuning
+        api_kind: boolean
+        modes: [datacenter]
+      - api_name: fast_learning_mode
+        api_kind: boolean
+      - api_name: fec
+        api_kind: string
+      - api_name: guard_loop
+        api_kind: boolean
+      - api_name: lldp_enable
+        api_kind: boolean
+        modes: [campus]
+      - api_name: lldp_med
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: LLDP MED configurations
+        modes: [campus]
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: index
+            api_kind: integer
+          - api_name: lldp_med_row_num_advertised_applicatio
+            api_kind: string
+          - api_name: lldp_med_row_num_dscp_mark
+            api_kind: integer
+          - api_name: lldp_med_row_num_enable
+            api_kind: boolean
+          - api_name: lldp_med_row_num_priority
+            api_kind: integer
+          - api_name: lldp_med_row_num_service
+            api_kind: string
+          - api_name: lldp_med_row_num_service_ref_type_
+            api_kind: string
+      - api_name: lldp_med_enable
+        api_kind: boolean
+        modes: [campus]
+      - api_name: lldp_mode
+        api_kind: string
+        modes: [campus]
+      - api_name: mac_limit
+        api_kind: integer
+        modes: [campus]
+      - api_name: mac_security_mode
+        api_kind: string
+        modes: [campus]
+      - api_name: max_allowed_unit
+        api_kind: string
+      - api_name: max_allowed_value
+        api_kind: integer
+      - api_name: max_bit_rate
+        api_kind: string
+      - api_name: maximum_wred_threshold
+        api_kind: integer
+        modes: [datacenter]
+      - api_name: minimum_wred_threshold
+        api_kind: integer
+        modes: [datacenter]
+      - api_name: mtu
+        api_kind: integer
+      - api_name: multicast
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        unmanaged: true
+      - api_name: packet_queue
+        api_kind: string
+      - api_name: packet_queue_ref_type_
+        api_kind: string
+      - api_name: poe_enable
+        api_kind: boolean
+      - api_name: priority
+        api_kind: string
+      - api_name: priority_flow_control_watchdog_action
+        api_kind: string
+        modes: [datacenter]
+      - api_name: priority_flow_control_watchdog_detect_time
+        api_kind: integer
+        modes: [datacenter]
+      - api_name: priority_flow_control_watchdog_restore_time
+        api_kind: integer
+        modes: [datacenter]
+      - api_name: security_violation_action
+        api_kind: string
+        modes: [campus]
+      - api_name: single_link
+        api_kind: boolean
+        modes: [datacenter]
+      - api_name: standalone_link_training
+        api_kind: boolean
+      - api_name: stp_enable
+        api_kind: boolean
+      - api_name: unidirectional_link_detection
+        api_kind: boolean
+        modes: [campus]
+      - api_name: wred_drop_probability
+        api_kind: integer
+        modes: [datacenter]
+  - path: /extendedcommunitylists
+    terraform_type: verity_extended_community_list
+    description: Manages a Verity Extended Community List
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: extended_community_list
+      cache_key: extended_community_lists
+      response_collection_key: extended_community_list
+      delete_parameter: extended_community_list_name
+    fields:
+      - api_name: any_all
+        api_kind: string
+      - api_name: enable
+        api_kind: boolean
+      - api_name: lists
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of Extended Community List entries
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: mode
+            api_kind: string
+          - api_name: route_target_expanded_expression
+            api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the Extended Community List
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+      - api_name: permit_deny
+        api_kind: string
+      - api_name: standard_expanded
+        api_kind: string
+  - path: /gatewayprofiles
+    terraform_type: verity_gateway_profile
+    description: Manages a Gateway Profile
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: gateway_profile
+      cache_key: gateway_profiles
+      response_collection_key: gateway_profile
+      delete_parameter: profile_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: external_gateways
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of external gateway configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: gateway
+            api_kind: string
+          - api_name: gateway_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+          - api_name: peer_gw
+            api_kind: boolean
+          - api_name: source_ip_mask
+            api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+  - path: /groupingrules
+    terraform_type: verity_grouping_rule
+    description: Manages a Verity Grouping Rule.
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: grouping_rule
+      cache_key: grouping_rules
+      response_collection_key: grouping_rules
+      delete_parameter: grouping_rules_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: operation
+        api_kind: string
+      - api_name: rules
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of rules within the grouping rule.
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: rule_invert
+            api_kind: boolean
+          - api_name: rule_type
+            api_kind: string
+          - api_name: rule_value
+            api_kind: string
+          - api_name: rule_value_path
+            api_kind: string
+          - api_name: rule_value_path_ref_type_
+            api_kind: string
+      - api_name: type
+        api_kind: string
+  - path: /ipv4prefixlists
+    terraform_type: verity_ipv4_prefix_list
+    description: Manages a Verity IPv4 Prefix List
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: ipv4_prefix_list
+      cache_key: ipv4_prefix_lists
+      response_collection_key: ipv4_prefix_list
+      delete_parameter: ipv4_prefix_list_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: lists
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of IPv4 Prefix List entries
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: greater_than_equal_value
+            api_kind: integer
+          - api_name: index
+            api_kind: integer
+          - api_name: ipv4_prefix
+            api_kind: string
+          - api_name: less_than_equal_value
+            api_kind: integer
+          - api_name: permit_deny
+            api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the IPv4 Prefix List
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+  - path: /ipv6prefixlists
+    terraform_type: verity_ipv6_prefix_list
+    description: Manages a Verity IPv6 Prefix List
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: ipv6_prefix_list
+      cache_key: ipv6_prefix_lists
+      response_collection_key: ipv6_prefix_list
+      delete_parameter: ipv6_prefix_list_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: lists
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of IPv6 Prefix List entries
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: greater_than_equal_value
+            api_kind: integer
+          - api_name: index
+            api_kind: integer
+          - api_name: ipv6_prefix
+            api_kind: string
+          - api_name: less_than_equal_value
+            api_kind: integer
+          - api_name: permit_deny
+            api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the IPv6 Prefix List
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+  - path: /lags
+    terraform_type: verity_lag
+    description: Manages a Link Aggregation Group (LAG)
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: lag
+      cache_key: lags
+      response_collection_key: lag
+      delete_parameter: lag_name
+    fields:
+      - api_name: color
+        api_kind: string
+      - api_name: crc_failure_threshold
+        api_kind: integer
+      - api_name: enable
+        api_kind: boolean
+      - api_name: eth_port_profile
+        api_kind: string
+      - api_name: eth_port_profile_ref_type_
+        api_kind: string
+      - api_name: fallback
+        api_kind: boolean
+      - api_name: fast_rate
+        api_kind: boolean
+      - api_name: is_peer_link
+        api_kind: boolean
+      - api_name: lacp
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties.
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: fabric
+            api_kind: string
+          - api_name: fabric_ref_type_
+            api_kind: string
+      - api_name: peer_link_vlan
+        api_kind: integer
+      - api_name: uplink
+        api_kind: boolean
+  - path: /ldapprofiles
+    terraform_type: verity_ldap_profile
+    description: Manages a Verity LDAP Profile.
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: ldap_profile
+      cache_key: ldap_profiles
+      response_collection_key: ldap_profile
+      delete_parameter: ldap_profile_name
+    fields:
+      - api_name: attribute_maps
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: LDAP attribute mapping overrides
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enabled
+            api_kind: boolean
+          - api_name: from
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+          - api_name: map_name
+            api_kind: string
+          - api_name: to
+            api_kind: string
+      - api_name: base_dn
+        api_kind: string
+      - api_name: bind_dn
+        api_kind: string
+      - api_name: bind_password
+        api_kind: string
+      - api_name: bind_time_limit
+        api_kind: integer
+      - api_name: default_port
+        api_kind: integer
+      - api_name: enable
+        api_kind: boolean
+      - api_name: encrypted_bind_password
+        api_kind: string
+      - api_name: idle_time_limit
+        api_kind: integer
+      - api_name: ldap_servers
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: LDAP server entries
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enabled
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: port
+            api_kind: integer
+          - api_name: priority
+            api_kind: integer
+          - api_name: retransmit_attempts
+            api_kind: integer
+          - api_name: server
+            api_kind: string
+          - api_name: ssl_tls_mode
+            api_kind: string
+          - api_name: use_type
+            api_kind: string
+      - api_name: ldap_version
+        api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: nss_base_group
+        api_kind: string
+      - api_name: nss_base_netgroup
+        api_kind: string
+      - api_name: nss_base_passwd
+        api_kind: string
+      - api_name: nss_base_shadow
+        api_kind: string
+      - api_name: nss_base_sudoers
+        api_kind: string
+      - api_name: nss_initgroups_ignore_users
+        api_kind: string
+      - api_name: nss_skip_members
+        api_kind: boolean
+      - api_name: object_properties
+        api_kind: object
+        unmanaged: true
+      - api_name: pam_filter
+        api_kind: string
+      - api_name: pam_group_dn
+        api_kind: string
+      - api_name: pam_login_attribute
+        api_kind: string
+      - api_name: pam_member_attribute
+        api_kind: string
+      - api_name: retransmit_attempts
+        api_kind: integer
+      - api_name: search_scope
+        api_kind: string
+      - api_name: search_time_limit
+        api_kind: integer
+      - api_name: ssl_tls_mode
+        api_kind: string
+      - api_name: sudoers_base
+        api_kind: string
+      - api_name: sudoers_search_filter
+        api_kind: string
+  - path: /packetbroker
+    terraform_type: verity_packet_broker
+    description: Manages a Verity Packet Broker
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: packet_broker
+      cache_key: packet_brokers
+      response_collection_key: pb_egress_profile
+      delete_parameter: pb_egress_profile_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: ipv4_deny
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: IPv4 Deny filters
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: filter
+            api_kind: string
+          - api_name: filter_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: ipv4_permit
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: IPv4 Permit filters
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: filter
+            api_kind: string
+          - api_name: filter_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: ipv6_deny
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: IPv6 Deny filters
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: filter
+            api_kind: string
+          - api_name: filter_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: ipv6_permit
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: IPv6 Permit filters
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: filter
+            api_kind: string
+          - api_name: filter_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: name
+        api_kind: string
+        profile: identity
+  - path: /packetqueues
+    terraform_type: verity_packet_queue
+    description: Manages a Verity Packet Queue
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: packet_queue
+      cache_key: packet_queues
+      response_collection_key: packet_queue
+      delete_parameter: packet_queue_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        unmanaged: true
+      - api_name: pbit
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: P-bit configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: index
+            api_kind: integer
+          - api_name: packet_queue_for_p_bit
+            api_kind: integer
+      - api_name: queue
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Queue configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: bandwidth_for_queue
+            api_kind: integer
+          - api_name: index
+            api_kind: integer
+          - api_name: scheduler_type
+            api_kind: string
+          - api_name: scheduler_weight
+            api_kind: integer
+  - path: /pairs
+    terraform_type: verity_pair
+    description: Manages a Verity Switch Pair.
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: pair
+      cache_key: pairs
+      response_collection_key: switch_pair
+      delete_parameter: switch_pair_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: is_whitebox_pair
+        api_kind: boolean
+      - api_name: lag
+        api_kind: string
+      - api_name: lag_ref_type_
+        api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: switchpoint_1
+        api_kind: string
+      - api_name: switchpoint_1_ref_type_
+        api_kind: string
+      - api_name: switchpoint_2
+        api_kind: string
+      - api_name: switchpoint_2_ref_type_
+        api_kind: string
+  - path: /policybasedrouting
+    terraform_type: verity_pb_routing
+    description: Manages a Policy-Based Routing resource
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: pb_routing
+      cache_key: pb_routing
+      response_collection_key: pb_routing
+      delete_parameter: pb_routing_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: policy
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Policy configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: pb_routing_acl
+            api_kind: string
+          - api_name: pb_routing_acl_ref_type_
+            api_kind: string
+  - path: /policybasedroutingacl
+    terraform_type: verity_pb_routing_acl
+    description: Manages a Policy-Based Routing ACL resource
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: pb_routing_acl
+      cache_key: pb_routing_acl
+      response_collection_key: pb_routing_acl
+      delete_parameter: pb_routing_acl_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: ip_version
+        api_kind: string
+      - api_name: ipv4_deny
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: IPv4 deny filters
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: filter
+            api_kind: string
+          - api_name: filter_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: ipv4_permit
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: IPv4 permit filters
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: filter
+            api_kind: string
+          - api_name: filter_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: ipv6_deny
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: IPv6 deny filters
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: filter
+            api_kind: string
+          - api_name: filter_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: ipv6_permit
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: IPv6 permit filters
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: filter
+            api_kind: string
+          - api_name: filter_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: next_hop_ips
+        api_kind: string
+  - path: /planes
+    terraform_type: verity_plane
+    description: Manages a Verity Plane resource
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: plane
+      cache_key: planes
+      response_collection_key: plane
+      delete_parameter: plane_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: fabric
+        api_kind: string
+      - api_name: fabric_ref_type_
+        api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the Plane
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+      - api_name: position
+        api_kind: number
+  - path: /pods
+    terraform_type: verity_pod
+    description: Manages a Pod resource
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: pod
+      cache_key: pods
+      response_collection_key: pod
+      delete_parameter: pod_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: expected_spine_count
+        api_kind: integer
+      - api_name: fabric
+        api_kind: string
+      - api_name: fabric_ref_type_
+        api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the pod
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+      - api_name: position
+        api_kind: number
+  - path: /portacls
+    terraform_type: verity_port_acl
+    description: Manages a Verity Port ACL
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: port_acl
+      cache_key: port_acls
+      response_collection_key: port_acl
+      delete_parameter: port_acl_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: ipv4_deny
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of IPv4 deny filters
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: filter
+            api_kind: string
+          - api_name: filter_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: ipv4_permit
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of IPv4 permit filters
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: filter
+            api_kind: string
+          - api_name: filter_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: ipv6_deny
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of IPv6 deny filters
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: filter
+            api_kind: string
+          - api_name: filter_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: ipv6_permit
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of IPv6 permit filters
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: filter
+            api_kind: string
+          - api_name: filter_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: name
+        api_kind: string
+        profile: identity
+  - path: /racks
+    terraform_type: verity_rack
+    description: Manages a Verity Rack resource
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: rack
+      cache_key: racks
+      response_collection_key: rack
+      delete_parameter: rack_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the Rack
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+      - api_name: position
+        api_kind: number
+      - api_name: su
+        api_kind: string
+      - api_name: su_ref_type_
+        api_kind: string
+  - path: /routemaps
+    terraform_type: verity_route_map
+    description: Manages a Verity Route Map
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: route_map
+      cache_key: route_maps
+      response_collection_key: route_map
+      delete_parameter: route_map_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the Route Map
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+      - api_name: route_map_clauses
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of Route Map Clauses
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: route_map_clause
+            api_kind: string
+          - api_name: route_map_clause_ref_type_
+            api_kind: string
+  - path: /routemapclauses
+    terraform_type: verity_route_map_clause
+    description: Manages a Verity Route Map Clause
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: route_map_clause
+      cache_key: route_map_clauses
+      response_collection_key: route_map_clause
+      delete_parameter: route_map_clause_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: match_as_path_access_list
+        api_kind: string
+      - api_name: match_as_path_access_list_ref_type_
+        api_kind: string
+      - api_name: match_community_list
+        api_kind: string
+      - api_name: match_community_list_ref_type_
+        api_kind: string
+      - api_name: match_evpn_route_type
+        api_kind: string
+      - api_name: match_evpn_route_type_default
+        api_kind: boolean
+      - api_name: match_extended_community_list
+        api_kind: string
+      - api_name: match_extended_community_list_ref_type_
+        api_kind: string
+      - api_name: match_interface_number
+        api_kind: integer
+      - api_name: match_interface_vlan
+        api_kind: integer
+      - api_name: match_ipv4_address_ip_prefix_list
+        api_kind: string
+      - api_name: match_ipv4_address_ip_prefix_list_ref_type_
+        api_kind: string
+      - api_name: match_ipv4_next_hop_ip_prefix_list
+        api_kind: string
+      - api_name: match_ipv4_next_hop_ip_prefix_list_ref_type_
+        api_kind: string
+      - api_name: match_ipv6_address_ipv6_prefix_list
+        api_kind: string
+      - api_name: match_ipv6_address_ipv6_prefix_list_ref_type_
+        api_kind: string
+      - api_name: match_ipv6_next_hop_ipv6_prefix_list
+        api_kind: string
+      - api_name: match_ipv6_next_hop_ipv6_prefix_list_ref_type_
+        api_kind: string
+      - api_name: match_local_preference
+        api_kind: integer
+      - api_name: match_metric
+        api_kind: integer
+      - api_name: match_origin
+        api_kind: string
+      - api_name: match_peer_interface
+        api_kind: integer
+      - api_name: match_peer_ip_address
+        api_kind: string
+      - api_name: match_peer_vlan
+        api_kind: integer
+      - api_name: match_source_protocol
+        api_kind: string
+      - api_name: match_tag
+        api_kind: integer
+      - api_name: match_vni
+        api_kind: integer
+      - api_name: match_vrf
+        api_kind: string
+      - api_name: match_vrf_ref_type_
+        api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the Route Map Clause
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: match_fields_shown
+            api_kind: string
+          - api_name: notes
+            api_kind: string
+      - api_name: permit_deny
+        api_kind: string
+  - path: /services
+    terraform_type: verity_service
+    description: Manages a Service resource
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: service
+      cache_key: services
+      response_collection_key: service
+      delete_parameter: service_name
+    fields:
+      - api_name: act_as_multicast_querier
+        api_kind: boolean
+        modes: [campus]
+      - api_name: allow_fast_leave
+        api_kind: boolean
+        modes: [campus]
+      - api_name: allow_local_switching
+        api_kind: boolean
+        modes: [campus]
+      - api_name: anycast_ipv4_mask
+        api_kind: string
+        modes: [datacenter]
+      - api_name: anycast_ipv6_mask
+        api_kind: string
+        modes: [datacenter]
+      - api_name: block_downstream_dhcp_server
+        api_kind: boolean
+        modes: [campus]
+      - api_name: block_unknown_unicast_flood
+        api_kind: boolean
+        modes: [campus]
+      - api_name: dhcp_server_ipv4
+        api_kind: string
+        modes: [datacenter]
+      - api_name: dhcp_server_ipv6
+        api_kind: string
+        modes: [datacenter]
+      - api_name: enable
+        api_kind: boolean
+      - api_name: ip_attach_host_advertise
+        api_kind: integer
+        modes: [datacenter]
+      - api_name: is_management_service
+        api_kind: boolean
+        modes: [campus]
+      - api_name: max_downstream_rate_mbps
+        api_kind: integer
+        modes: [campus]
+      - api_name: max_upstream_rate_mbps
+        api_kind: integer
+        modes: [campus]
+      - api_name: mst_instance
+        api_kind: integer
+        modes: [campus]
+      - api_name: mtu
+        api_kind: integer
+        modes: [datacenter]
+      - api_name: multicast_management_mode
+        api_kind: string
+        modes: [campus]
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the service.
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: warn_on_no_external_source
+            api_kind: boolean
+            modes: [campus]
+      - api_name: packet_priority
+        api_kind: string
+        modes: [campus]
+      - api_name: policy_based_routing
+        api_kind: string
+        modes: [datacenter]
+      - api_name: policy_based_routing_ref_type_
+        api_kind: string
+        modes: [datacenter]
+      - api_name: tagged_packets
+        api_kind: boolean
+        modes: [campus]
+      - api_name: tenant
+        api_kind: string
+        modes: [datacenter]
+      - api_name: tenant_ref_type_
+        api_kind: string
+        modes: [datacenter]
+      - api_name: tls
+        api_kind: boolean
+        modes: [campus]
+      - api_name: use_dscp_to_p_bit_mapping_for_l3_packets_if_available
+        api_kind: boolean
+        modes: [campus]
+      - api_name: vlan
+        api_kind: integer
+      - api_name: vni
+        api_kind: integer
+        modes: [datacenter]
+      - api_name: vni_auto_assigned_
+        api_kind: boolean
+        modes: [datacenter]
+  - path: /serviceportprofiles
+    terraform_type: verity_service_port_profile
+    description: Manages a Verity Service Port Profile
+    modes: [campus]
+    identity_path: name
+    api:
+      bulk_key: service_port_profile
+      cache_key: service_port_profiles
+      response_collection_key: service_port_profile
+      delete_parameter: service_port_profile_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: ip_mask
+        api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the service port profile
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: on_summary
+            api_kind: boolean
+          - api_name: port_monitoring
+            api_kind: string
+      - api_name: port_type
+        api_kind: string
+      - api_name: services
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Service configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: index
+            api_kind: integer
+          - api_name: row_num_enable
+            api_kind: boolean
+          - api_name: row_num_external_vlan
+            api_kind: integer
+          - api_name: row_num_limit_in
+            api_kind: integer
+          - api_name: row_num_limit_out
+            api_kind: integer
+          - api_name: row_num_service
+            api_kind: string
+          - api_name: row_num_service_ref_type_
+            api_kind: string
+      - api_name: tls_limit_in
+        api_kind: integer
+      - api_name: tls_service
+        api_kind: string
+      - api_name: tls_service_ref_type_
+        api_kind: string
+      - api_name: trusted_port
+        api_kind: boolean
+  - path: /spineplanes
+    terraform_type: verity_spine_plane
+    description: Manages a Spine Plane resource
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: spine_plane
+      cache_key: spine_planes
+      response_collection_key: spine_plane
+      delete_parameter: spine_plane_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: fabric
+        api_kind: string
+      - api_name: fabric_ref_type_
+        api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the spine plane
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+  - path: /sspgroups
+    terraform_type: verity_ssp_group
+    description: Manages a Verity SuperSpine Group resource
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: ssp_group
+      cache_key: ssp_groups
+      response_collection_key: superspine_group
+      delete_parameter: superspine_group_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: fabric
+        api_kind: string
+      - api_name: fabric_ref_type_
+        api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the superspine group
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+      - api_name: position
+        api_kind: number
+  - path: /sus
+    terraform_type: verity_su
+    description: Manages a Verity SU resource
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: su
+      cache_key: sus
+      response_collection_key: su
+      delete_parameter: su_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the SU
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: notes
+            api_kind: string
+      - api_name: pod
+        api_kind: string
+      - api_name: pod_ref_type_
+        api_kind: string
+      - api_name: position
+        api_kind: number
+  - path: /switchpoints
+    terraform_type: verity_switchpoint
+    description: Manages a Verity Switchpoint
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: switchpoint
+      cache_key: switchpoints
+      response_collection_key: switchpoint
+      delete_parameter: switchpoint_name
+    fields:
+      - api_name: authentication_protocol
+        api_kind: string
+      - api_name: badges
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Badge configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: badge
+            api_kind: string
+          - api_name: badge_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: bb_switch
+        api_kind: boolean
+      - api_name: bgp_as_number
+        api_kind: integer
+        modes: [datacenter]
+      - api_name: bgp_as_number_auto_assigned_
+        api_kind: boolean
+        modes: [datacenter]
+      - api_name: children
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Child configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: child_num_device
+            api_kind: string
+          - api_name: child_num_endpoint
+            api_kind: string
+          - api_name: child_num_endpoint_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: cli_access_mode
+        api_kind: string
+      - api_name: comm_type
+        api_kind: string
+      - api_name: communication_mode
+        api_kind: string
+      - api_name: connected_bundle
+        api_kind: string
+      - api_name: connected_bundle_ref_type_
+        api_kind: string
+      - api_name: connection_service
+        api_kind: string
+        modes: [campus]
+      - api_name: connection_service_ref_type_
+        api_kind: string
+        modes: [campus]
+      - api_name: controller_ip_and_mask
+        api_kind: string
+      - api_name: controller_ip_and_mask_auto_assigned_
+        api_kind: boolean
+      - api_name: device_managed_as
+        api_kind: string
+        modes: [campus]
+      - api_name: device_serial_number
+        api_kind: string
+      - api_name: enable
+        api_kind: boolean
+      - api_name: enable_password
+        api_kind: string
+      - api_name: enable_password_encrypted
+        api_kind: string
+      - api_name: eths
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Ethernet port configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: breakout
+            api_kind: string
+          - api_name: customer_vlan
+            api_kind: string
+          - api_name: enable
+            api_kind: boolean
+          - api_name: eth_num_icon
+            api_kind: string
+          - api_name: eth_num_label
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+          - api_name: port_name
+            api_kind: string
+      - api_name: expected_breakout
+        api_kind: string
+      - api_name: expected_breakout_uplink_port
+        api_kind: string
+      - api_name: expected_fabric
+        api_kind: string
+      - api_name: expected_fabric_ref_type_
+        api_kind: string
+      - api_name: expected_uplink_port
+        api_kind: integer
+      - api_name: gateway
+        api_kind: string
+      - api_name: gateway_auto_assigned_
+        api_kind: boolean
+      - api_name: ip_source
+        api_kind: string
+      - api_name: is_fabric
+        api_kind: boolean
+        modes: [campus]
+      - api_name: is_top_of_island
+        api_kind: boolean
+      - api_name: lldp_search_string
+        api_kind: string
+      - api_name: lldp_search_string_auto_assigned_
+        api_kind: boolean
+      - api_name: located_by
+        api_kind: string
+      - api_name: locked
+        api_kind: boolean
+      - api_name: managed_on_native_vlan
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the switchpoint
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: aggregate
+            api_kind: boolean
+          - api_name: draw_as_edge_device
+            api_kind: boolean
+            modes: [campus]
+          - api_name: emulate_rf_video_port
+            api_kind: boolean
+          - api_name: expected_parent_endpoint
+            api_kind: string
+          - api_name: expected_parent_endpoint_ref_type_
+            api_kind: string
+          - api_name: is_host
+            api_kind: boolean
+          - api_name: number_of_multipoints
+            api_kind: integer
+          - api_name: user_notes
+            api_kind: string
+      - api_name: out_of_band_management
+        api_kind: boolean
+      - api_name: passphrase
+        api_kind: string
+      - api_name: passphrase_encrypted
+        api_kind: string
+      - api_name: password
+        api_kind: string
+      - api_name: password_encrypted
+        api_kind: string
+      - api_name: plane
+        api_kind: string
+        modes: [datacenter]
+      - api_name: plane_ref_type_
+        api_kind: string
+        modes: [datacenter]
+      - api_name: pod
+        api_kind: string
+        modes: [datacenter]
+      - api_name: pod_ref_type_
+        api_kind: string
+        modes: [datacenter]
+      - api_name: port
+        api_kind: string
+        modes: [campus]
+      - api_name: position
+        api_kind: number
+        modes: [datacenter]
+      - api_name: pots
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: POTS configurations
+        modes: [campus]
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: index
+            api_kind: integer
+          - api_name: pots_num_caller_id
+            api_kind: string
+          - api_name: pots_num_enable
+            api_kind: boolean
+          - api_name: pots_num_hot_line
+            api_kind: string
+          - api_name: pots_num_password
+            api_kind: string
+          - api_name: pots_num_password_encrypted
+            api_kind: string
+          - api_name: pots_num_uri
+            api_kind: string
+          - api_name: pots_num_username
+            api_kind: string
+      - api_name: power_state
+        api_kind: string
+      - api_name: private_password
+        api_kind: string
+      - api_name: private_password_encrypted
+        api_kind: string
+      - api_name: private_protocol
+        api_kind: string
+      - api_name: rack
+        api_kind: string
+        modes: [datacenter]
+      - api_name: rack_info
+        api_kind: string
+        modes: [datacenter]
+      - api_name: rack_ref_type_
+        api_kind: string
+        modes: [datacenter]
+      - api_name: rail_group
+        api_kind: number
+        modes: [datacenter]
+      - api_name: read_only_mode
+        api_kind: boolean
+      - api_name: sdlc
+        api_kind: string
+      - api_name: security_type
+        api_kind: string
+      - api_name: snmp_community_string
+        api_kind: string
+      - api_name: snmpv3_username
+        api_kind: string
+      - api_name: spine_plane
+        api_kind: string
+        modes: [datacenter]
+      - api_name: spine_plane_ref_type_
+        api_kind: string
+        modes: [datacenter]
+      - api_name: ssh_key_or_password
+        api_kind: string
+      - api_name: ssh_key_or_password_encrypted
+        api_kind: string
+      - api_name: ssh_key_or_password_encrypted_auto_assigned_
+        api_kind: boolean
+      - api_name: ssp_group
+        api_kind: string
+        modes: [datacenter]
+      - api_name: ssp_group_ref_type_
+        api_kind: string
+        modes: [datacenter]
+      - api_name: su
+        api_kind: string
+        modes: [datacenter]
+      - api_name: su_ref_type_
+        api_kind: string
+        modes: [datacenter]
+      - api_name: switch
+        api_kind: string
+        modes: [campus]
+      - api_name: switch_gateway
+        api_kind: string
+      - api_name: switch_gateway_auto_assigned_
+        api_kind: boolean
+      - api_name: switch_ip_and_mask
+        api_kind: string
+      - api_name: switch_ip_and_mask_auto_assigned_
+        api_kind: boolean
+      - api_name: switch_ref_type_
+        api_kind: string
+        modes: [campus]
+      - api_name: switch_router_id_ip_mask
+        api_kind: string
+        modes: [datacenter]
+      - api_name: switch_router_id_ip_mask_auto_assigned_
+        api_kind: boolean
+        modes: [datacenter]
+      - api_name: switch_vtep_id_ip_mask
+        api_kind: string
+        modes: [datacenter]
+      - api_name: switch_vtep_id_ip_mask_auto_assigned_
+        api_kind: boolean
+        modes: [datacenter]
+      - api_name: tenant
+        api_kind: string
+      - api_name: tenant_ref_type_
+        api_kind: string
+      - api_name: traffic_mirrors
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Traffic mirror configurations
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: index
+            api_kind: integer
+          - api_name: traffic_mirror_num_destination_port
+            api_kind: string
+          - api_name: traffic_mirror_num_enable
+            api_kind: boolean
+          - api_name: traffic_mirror_num_inbound_traffic
+            api_kind: boolean
+          - api_name: traffic_mirror_num_outbound_traffic
+            api_kind: boolean
+          - api_name: traffic_mirror_num_source_lag_indicator
+            api_kind: boolean
+          - api_name: traffic_mirror_num_source_port
+            api_kind: string
+      - api_name: type
+        api_kind: string
+        modes: [datacenter]
+      - api_name: uplink_port
+        api_kind: string
+      - api_name: upstream_is_lag
+        api_kind: boolean
+      - api_name: username
+        api_kind: string
+      - api_name: username_auto_assigned_
+        api_kind: boolean
+      - api_name: uses_tagged_packets
+        api_kind: boolean
+        modes: [campus]
+      - api_name: ztp_identification
+        api_kind: string
+  - path: /tacacsprofiles
+    terraform_type: verity_tacacs_profile
+    description: Manages a Verity TACACS Profile.
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: tacacs_profile
+      cache_key: tacacs_profiles
+      response_collection_key: tacacs_profile
+      delete_parameter: tacacs_profile_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: tacacs_servers
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: List of TACACS+ servers
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: auth_type
+            api_kind: string
+          - api_name: enabled
+            api_kind: boolean
+          - api_name: enc_secret
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+          - api_name: port
+            api_kind: string
+          - api_name: secret
+            api_kind: string
+          - api_name: server
+            api_kind: string
+          - api_name: timeout
+            api_kind: integer
+  - path: /tenants
+    terraform_type: verity_tenant
+    description: Manages a Tenant resource
+    modes: [datacenter]
+    identity_path: name
+    api:
+      bulk_key: tenant
+      cache_key: tenants
+      response_collection_key: tenant
+      delete_parameter: tenant_name
+    fields:
+      - api_name: default_originate
+        api_kind: boolean
+      - api_name: dhcp_relay_source_ipv4s_subnet
+        api_kind: string
+      - api_name: dhcp_relay_source_ipv6s_subnet
+        api_kind: string
+      - api_name: enable
+        api_kind: boolean
+      - api_name: export_route_map
+        api_kind: string
+      - api_name: export_route_map_ref_type_
+        api_kind: string
+      - api_name: import_route_map
+        api_kind: string
+      - api_name: import_route_map_ref_type_
+        api_kind: string
+      - api_name: layer_3_vlan
+        api_kind: integer
+      - api_name: layer_3_vlan_auto_assigned_
+        api_kind: boolean
+      - api_name: layer_3_vni
+        api_kind: integer
+      - api_name: layer_3_vni_auto_assigned_
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: route_aggregation
+        api_kind: string
+      - api_name: route_aggregators
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Route aggregation entries
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: index
+            api_kind: integer
+          - api_name: route_aggregation_num_enable
+            api_kind: boolean
+          - api_name: route_aggregation_num_ip_and_mask
+            api_kind: string
+      - api_name: route_distinguisher
+        api_kind: string
+      - api_name: route_target_export
+        api_kind: string
+      - api_name: route_target_import
+        api_kind: string
+      - api_name: route_tenants
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Route tenants configuration
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: tenant
+            api_kind: string
+      - api_name: tenant_type
+        api_kind: string
+      - api_name: vrf_name
+        api_kind: string
+      - api_name: vrf_name_auto_assigned_
+        api_kind: boolean
+  - path: /thresholds
+    terraform_type: verity_threshold
+    description: Manages a Verity Threshold.
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: threshold
+      cache_key: thresholds
+      response_collection_key: threshold
+      delete_parameter: threshold_name
+    fields:
+      - api_name: critical_escalation_value
+        api_kind: string
+      - api_name: enable
+        api_kind: boolean
+      - api_name: error_escalation_value
+        api_kind: string
+      - api_name: escalation_metric
+        api_kind: string
+      - api_name: escalation_operation
+        api_kind: string
+      - api_name: for
+        api_kind: string
+      - api_name: keep_firing_for
+        api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: notice_escalation_value
+        api_kind: string
+      - api_name: operation
+        api_kind: string
+      - api_name: rules
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Rules for the threshold.
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: metric
+            api_kind: string
+          - api_name: operation
+            api_kind: string
+          - api_name: threshold
+            api_kind: string
+          - api_name: threshold_ref_type_
+            api_kind: string
+          - api_name: type
+            api_kind: string
+          - api_name: value
+            api_kind: string
+      - api_name: severity
+        api_kind: string
+      - api_name: type
+        api_kind: string
+      - api_name: warning_escalation_value
+        api_kind: string
+  - path: /thresholdgroups
+    terraform_type: verity_threshold_group
+    description: Manages a Verity Threshold Group.
+    modes: [campus, datacenter]
+    identity_path: name
+    api:
+      bulk_key: threshold_group
+      cache_key: threshold_groups
+      response_collection_key: threshold_group
+      delete_parameter: threshold_group_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: targets
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Targets to apply thresholds to.
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: element
+            api_kind: string
+          - api_name: element_ref_type_
+            api_kind: string
+          - api_name: enable
+            api_kind: boolean
+          - api_name: grouping_rules
+            api_kind: string
+          - api_name: grouping_rules_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+          - api_name: port
+            api_kind: string
+          - api_name: sdlc
+            api_kind: string
+          - api_name: type
+            api_kind: string
+      - api_name: thresholds
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: Thresholds to apply to this group.
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: enable
+            api_kind: boolean
+          - api_name: index
+            api_kind: integer
+          - api_name: severity_override
+            api_kind: string
+          - api_name: threshold
+            api_kind: string
+          - api_name: threshold_ref_type_
+            api_kind: string
+      - api_name: type
+        api_kind: string
+  - path: /voiceportprofiles
+    terraform_type: verity_voice_port_profile
+    description: Manages a Verity Voice Port Profile
+    modes: [campus]
+    identity_path: name
+    api:
+      bulk_key: voice_port_profile
+      cache_key: voice_port_profiles
+      response_collection_key: voice_port_profiles
+      delete_parameter: voice_port_profile_name
+    fields:
+      - api_name: anonymous_call_block_enable
+        api_kind: boolean
+      - api_name: audio_mwi_enable
+        api_kind: boolean
+      - api_name: call_forward_on_busy_enable
+        api_kind: boolean
+      - api_name: call_forward_on_no_answer_ring_count
+        api_kind: integer
+      - api_name: call_forward_unconditional_enable
+        api_kind: boolean
+      - api_name: call_hold_enable
+        api_kind: boolean
+      - api_name: call_three_way_enable
+        api_kind: boolean
+      - api_name: call_transfer_enable
+        api_kind: boolean
+      - api_name: call_waiting_caller_id_enable
+        api_kind: boolean
+      - api_name: call_waiting_enable
+        api_kind: boolean
+      - api_name: caller_id_enable
+        api_kind: boolean
+      - api_name: caller_id_name_enable
+        api_kind: boolean
+      - api_name: cid_blocking_enable
+        api_kind: boolean
+      - api_name: cid_name_presentation_status
+        api_kind: string
+      - api_name: cid_num_presentation_status
+        api_kind: string
+      - api_name: dial_tone_feature_delay
+        api_kind: integer
+      - api_name: digit_map
+        api_kind: string
+      - api_name: do_not_disturb_enable
+        api_kind: boolean
+      - api_name: echo_cancellation_enable
+        api_kind: boolean
+      - api_name: enable
+        api_kind: boolean
+      - api_name: hotline_enable
+        api_kind: boolean
+      - api_name: intercom_enable
+        api_kind: boolean
+      - api_name: intercom_transfer_enable
+        api_kind: boolean
+      - api_name: jitter_buffer_max
+        api_kind: integer
+      - api_name: jitter_target
+        api_kind: integer
+      - api_name: mwi_refresh_timer
+        api_kind: integer
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the voice port profile
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: format_dial_plan
+            api_kind: boolean
+          - api_name: port_monitoring
+            api_kind: string
+      - api_name: protocol
+        api_kind: string
+      - api_name: receive_gain
+        api_kind: integer
+      - api_name: release_timer
+        api_kind: integer
+      - api_name: roh_timer
+        api_kind: integer
+      - api_name: signaling_code
+        api_kind: string
+      - api_name: transmit_gain
+        api_kind: integer
+      - api_name: visual_mwi_enable
+        api_kind: boolean

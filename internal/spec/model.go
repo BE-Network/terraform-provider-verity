@@ -175,29 +175,35 @@ type ValidatorSpec struct {
 }
 
 type FieldSpec struct {
-	TerraformName string `json:"terraform_name"`
-	APIName       string `json:"api_name"`
-	Kind          FieldKind
-	Access        Access
-	Description   string
-	Nullable      bool
-	Sensitive     bool
-	Replace       bool
-	Modes         []Mode
-	Versions      VersionRange
-	Default       *LiteralSpec
-	Validators    []ValidatorSpec
+	TerraformName string    `json:"terraform_name"`
+	APIName       string    `json:"api_name"`
+	Kind          FieldKind `json:"kind"`
+	ElementKind   FieldKind `json:"element_kind,omitempty"`
+	// Unmanaged records an API field that Terraform deliberately does not
+	// surface, such as an object the API declares with no properties. The field
+	// stays in the registry so coverage remains complete and the decision is
+	// reviewable, but it carries no Terraform name, access, or lifecycle policy.
+	Unmanaged   bool            `json:"unmanaged,omitempty"`
+	Access      Access          `json:"access"`
+	Description string          `json:"description"`
+	Nullable    bool            `json:"nullable"`
+	Sensitive   bool            `json:"sensitive"`
+	Replace     bool            `json:"replace"`
+	Modes       []Mode          `json:"modes"`
+	Versions    VersionRange    `json:"versions"`
+	Default     *LiteralSpec    `json:"default,omitempty"`
+	Validators  []ValidatorSpec `json:"validators,omitempty"`
 
-	ResponseAbsence ResponseAbsencePolicy
-	CreateNull      CreateNullPolicy
-	UpdateClear     UpdateClearPolicy
-	UnknownPlan     UnknownPlanPolicy
-	StateOwnership  StateOwnershipPolicy
+	ResponseAbsence ResponseAbsencePolicy `json:"response_absence"`
+	CreateNull      CreateNullPolicy      `json:"create_null"`
+	UpdateClear     UpdateClearPolicy     `json:"update_clear"`
+	UnknownPlan     UnknownPlanPolicy     `json:"unknown_plan"`
+	StateOwnership  StateOwnershipPolicy  `json:"state_ownership"`
 
-	Fields         []FieldSpec
-	Collection     *CollectionSpec
-	Reference      *ReferenceSpec
-	AutoAssignment *AutoAssignmentSpec
+	Fields         []FieldSpec         `json:"fields,omitempty"`
+	Collection     *CollectionSpec     `json:"collection,omitempty"`
+	Reference      *ReferenceSpec      `json:"reference,omitempty"`
+	AutoAssignment *AutoAssignmentSpec `json:"auto_assignment,omitempty"`
 }
 
 type APIResourceSpec struct {
@@ -223,15 +229,15 @@ type DependencySpec struct {
 }
 
 type ResourceSpec struct {
-	TerraformType string
-	Description   string
-	Modes         []Mode
-	Versions      VersionRange
-	IdentityPath  string
-	SchemaVersion int64
-	API           APIResourceSpec
-	Operations    OperationSpec
-	Fields        []FieldSpec
-	Dependencies  DependencySpec
-	Hooks         []string
+	TerraformType string          `json:"terraform_type"`
+	Description   string          `json:"description"`
+	Modes         []Mode          `json:"modes"`
+	Versions      VersionRange    `json:"versions"`
+	IdentityPath  string          `json:"identity_path"`
+	SchemaVersion int64           `json:"schema_version"`
+	API           APIResourceSpec `json:"api"`
+	Operations    OperationSpec   `json:"operations"`
+	Fields        []FieldSpec     `json:"fields"`
+	Dependencies  DependencySpec  `json:"dependencies,omitempty"`
+	Hooks         []string        `json:"hooks,omitempty"`
 }

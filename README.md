@@ -205,7 +205,23 @@ go run ./tools/specgen verify --input-dir specs/openapi/6.6
 go run ./tools/specgen extract \
   --input-dir specs/openapi/6.6 \
   --output specs/generated_manifest.json
+
+# Regenerate the resource registry from the reviewed overrides.
+go run ./tools/specgen registry \
+  --input-dir specs/openapi/6.6 \
+  --overrides specs/overrides.yaml \
+  --output specs/generated_registry.json
 ```
+
+Resource metadata lives in `specs/overrides.yaml`, which records only what differs
+from the defaults declared at the top of that file. Lifecycle policies are named
+profiles and default to `server_managed`; modes and version ranges inherit from the
+resource; the Terraform name follows the API name; and descriptions come from the committed
+OpenAPI documents. Anything a field states explicitly wins, so every line under a
+resource is a deliberate deviation. A description override remains only where the
+API supplies none, or where one endpoint backs two resources (ACL v4/v6).
+`specs/generated_registry.json` is the fully expanded output and is checked for
+drift in CI.
 
 When preparing a new export, preserve the raw files outside the repository and
 normalize them into a new versioned directory. Record the actual export date and a
