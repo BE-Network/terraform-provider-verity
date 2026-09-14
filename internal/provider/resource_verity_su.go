@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &veritySuResource{}
 )
 
-const suResourceType = "sus"
+var suResourceType = generatedResourceKeys["verity_su"].Endpoint
+
 const suTerraformType = "verity_su"
 
 func NewVeritySuResource() resource.Resource {
@@ -459,7 +460,7 @@ func (r *veritySuResource) ImportState(ctx context.Context, req resource.ImportS
 }
 
 func populateSuState(ctx context.Context, state veritySuResourceModel, data map[string]interface{}, mode string) veritySuResourceModel {
-	const resourceType = suResourceType
+	resourceType := suResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
@@ -495,7 +496,7 @@ func (r *veritySuResource) ModifyPlan(ctx context.Context, req resource.ModifyPl
 		return
 	}
 
-	const resourceType = suResourceType
+	resourceType := suResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

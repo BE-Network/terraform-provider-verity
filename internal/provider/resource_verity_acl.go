@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityACLUnifiedResource{}
 )
 
-const aclResourceType = "acls"
+var aclResourceType = generatedResourceKeys["verity_acl_v4"].Endpoint
+
 const aclTerraformTypePrefix = "verity_acl_v"
 
 func NewVerityACLV4Resource() resource.Resource {
@@ -562,7 +563,7 @@ func (r *verityACLUnifiedResource) getCacheKey() string {
 }
 
 func populateACLState(ctx context.Context, state verityACLUnifiedResourceModel, data map[string]interface{}, mode string) verityACLUnifiedResourceModel {
-	const resourceType = aclResourceType
+	resourceType := aclResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -619,7 +620,7 @@ func (r *verityACLUnifiedResource) ModifyPlan(ctx context.Context, req resource.
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = aclResourceType
+	resourceType := aclResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

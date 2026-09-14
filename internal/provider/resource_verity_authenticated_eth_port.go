@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityAuthenticatedEthPortResource{}
 )
 
-const authenticatedEthPortResourceType = "authenticatedethports"
+var authenticatedEthPortResourceType = generatedResourceKeys["verity_authenticated_eth_port"].Endpoint
+
 const authenticatedEthPortTerraformType = "verity_authenticated_eth_port"
 
 func NewVerityAuthenticatedEthPortResource() resource.Resource {
@@ -632,7 +633,7 @@ func (r *verityAuthenticatedEthPortResource) ImportState(ctx context.Context, re
 }
 
 func populateAuthenticatedEthPortState(ctx context.Context, state verityAuthenticatedEthPortResourceModel, data map[string]interface{}, mode string) verityAuthenticatedEthPortResourceModel {
-	const resourceType = authenticatedEthPortResourceType
+	resourceType := authenticatedEthPortResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -711,7 +712,7 @@ func (r *verityAuthenticatedEthPortResource) ModifyPlan(ctx context.Context, req
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = authenticatedEthPortResourceType
+	resourceType := authenticatedEthPortResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

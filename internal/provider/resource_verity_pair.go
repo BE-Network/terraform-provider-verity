@@ -25,7 +25,7 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityPairResource{}
 )
 
-const pairResourceType = "pairs"
+var pairResourceType = generatedResourceKeys["verity_pair"].Endpoint
 
 func NewVerityPairResource() resource.Resource {
 	return &verityPairResource{}
@@ -448,7 +448,7 @@ func (r *verityPairResource) ImportState(ctx context.Context, req resource.Impor
 }
 
 func populatePairState(ctx context.Context, state verityPairResourceModel, data map[string]interface{}, mode string) verityPairResourceModel {
-	const resourceType = pairResourceType
+	resourceType := pairResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
@@ -474,7 +474,7 @@ func (r *verityPairResource) ModifyPlan(ctx context.Context, req resource.Modify
 		return
 	}
 
-	const resourceType = pairResourceType
+	resourceType := pairResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

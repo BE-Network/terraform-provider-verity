@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityBadgeResource{}
 )
 
-const badgeResourceType = "badges"
+var badgeResourceType = generatedResourceKeys["verity_badge"].Endpoint
+
 const badgeTerraformType = "verity_badge"
 
 func NewVerityBadgeResource() resource.Resource {
@@ -469,7 +470,7 @@ func (r *verityBadgeResource) ImportState(ctx context.Context, req resource.Impo
 }
 
 func populateBadgeState(ctx context.Context, state verityBadgeResourceModel, data map[string]interface{}, mode string) verityBadgeResourceModel {
-	const resourceType = badgeResourceType
+	resourceType := badgeResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -518,7 +519,7 @@ func (r *verityBadgeResource) ModifyPlan(ctx context.Context, req resource.Modif
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = badgeResourceType
+	resourceType := badgeResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

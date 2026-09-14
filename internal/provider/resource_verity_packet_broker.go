@@ -25,7 +25,7 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityPacketBrokerResource{}
 )
 
-const packetBrokerResourceType = "packetbroker"
+var packetBrokerResourceType = generatedResourceKeys["verity_packet_broker"].Endpoint
 
 func NewVerityPacketBrokerResource() resource.Resource {
 	return &verityPacketBrokerResource{}
@@ -823,7 +823,7 @@ func (r *verityPacketBrokerResource) ImportState(ctx context.Context, req resour
 }
 
 func populatePacketBrokerState(ctx context.Context, state verityPacketBrokerResourceModel, data map[string]interface{}, mode string) verityPacketBrokerResourceModel {
-	const resourceType = packetBrokerResourceType
+	resourceType := packetBrokerResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -912,7 +912,7 @@ func (r *verityPacketBrokerResource) ModifyPlan(ctx context.Context, req resourc
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = packetBrokerResourceType
+	resourceType := packetBrokerResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

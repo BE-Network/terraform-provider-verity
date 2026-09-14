@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityFabricResource{}
 )
 
-const fabricResourceType = "fabrics"
+var fabricResourceType = generatedResourceKeys["verity_fabric"].Endpoint
+
 const fabricTerraformType = "verity_fabric"
 
 func NewVerityFabricResource() resource.Resource {
@@ -1206,7 +1207,7 @@ func (r *verityFabricResource) ImportState(ctx context.Context, req resource.Imp
 }
 
 func populateFabricState(ctx context.Context, state verityFabricResourceModel, fabricData map[string]interface{}, mode string) verityFabricResourceModel {
-	const resourceType = fabricResourceType
+	resourceType := fabricResourceType
 
 	state.Name = utils.MapStringFromAPI(fabricData["name"])
 
@@ -1354,7 +1355,7 @@ func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.Modi
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = fabricResourceType
+	resourceType := fabricResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

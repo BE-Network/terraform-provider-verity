@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityPodResource{}
 )
 
-const podResourceType = "pods"
+var podResourceType = generatedResourceKeys["verity_pod"].Endpoint
+
 const podTerraformType = "verity_pod"
 
 func NewVerityPodResource() resource.Resource {
@@ -496,7 +497,7 @@ func (r *verityPodResource) ImportState(ctx context.Context, req resource.Import
 }
 
 func populatePodState(ctx context.Context, state verityPodResourceModel, data map[string]interface{}, mode string) verityPodResourceModel {
-	const resourceType = podResourceType
+	resourceType := podResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -549,7 +550,7 @@ func (r *verityPodResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = podResourceType
+	resourceType := podResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

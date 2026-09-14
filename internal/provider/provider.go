@@ -370,60 +370,83 @@ func (p *verityProvider) Resources(_ context.Context) []func() resource.Resource
 	return getAllResources()
 }
 
+// resourceConstructors maps each Terraform type to the function that builds it.
+// The constructors stay handwritten because they bind typed SDK calls, but which
+// resources the provider registers, and in what order, comes from the generated
+// registry rather than from this map.
+var resourceConstructors = map[string]func() resource.Resource{
+	"verity_tenant":                   NewVerityTenantResource,
+	"verity_gateway":                  NewVerityGatewayResource,
+	"verity_service":                  NewVerityServiceResource,
+	"verity_eth_port_profile":         NewVerityEthPortProfileResource,
+	"verity_eth_port_settings":        NewVerityEthPortSettingsResource,
+	"verity_bundle":                   NewVerityBundleResource,
+	"verity_lag":                      NewVerityLagResource,
+	"verity_gateway_profile":          NewVerityGatewayProfileResource,
+	"verity_aaa_profile":              NewVerityAaaProfileResource,
+	"verity_ldap_profile":             NewVerityLdapProfileResource,
+	"verity_acl_v4":                   NewVerityACLV4Resource,
+	"verity_acl_v6":                   NewVerityACLV6Resource,
+	"verity_badge":                    NewVerityBadgeResource,
+	"verity_authenticated_eth_port":   NewVerityAuthenticatedEthPortResource,
+	"verity_device_voice_settings":    NewVerityDeviceVoiceSettingsResource,
+	"verity_packet_broker":            NewVerityPacketBrokerResource,
+	"verity_packet_queue":             NewVerityPacketQueueResource,
+	"verity_tacacs_profile":           NewVerityTacacsProfileResource,
+	"verity_service_port_profile":     NewVerityServicePortProfileResource,
+	"verity_voice_port_profile":       NewVerityVoicePortProfileResource,
+	"verity_switchpoint":              NewVeritySwitchpointResource,
+	"verity_as_path_access_list":      NewVerityAsPathAccessListResource,
+	"verity_community_list":           NewVerityCommunityListResource,
+	"verity_mac_filter":               NewVerityMacFilterResource,
+	"verity_device_settings":          NewVerityDeviceSettingsResource,
+	"verity_extended_community_list":  NewVerityExtendedCommunityListResource,
+	"verity_ipv4_list":                NewVerityIpv4ListResource,
+	"verity_ipv4_prefix_list":         NewVerityIpv4PrefixListResource,
+	"verity_ipv6_list":                NewVerityIpv6ListResource,
+	"verity_ipv6_prefix_list":         NewVerityIpv6PrefixListResource,
+	"verity_route_map_clause":         NewVerityRouteMapClauseResource,
+	"verity_route_map":                NewVerityRouteMapResource,
+	"verity_sfp_breakout":             NewVeritySfpBreakoutResource,
+	"verity_fabric":                   NewVerityFabricResource,
+	"verity_plane":                    NewVerityPlaneResource,
+	"verity_rack":                     NewVerityRackResource,
+	"verity_pair":                     NewVerityPairResource,
+	"verity_pod":                      NewVerityPodResource,
+	"verity_port_acl":                 NewVerityPortAclResource,
+	"verity_sflow_collector":          NewVeritySflowCollectorResource,
+	"verity_diagnostics_profile":      NewVerityDiagnosticsProfileResource,
+	"verity_diagnostics_port_profile": NewVerityDiagnosticsPortProfileResource,
+	"verity_pb_routing":               NewVerityPBRoutingResource,
+	"verity_pb_routing_acl":           NewVerityPBRoutingACLResource,
+	"verity_spine_plane":              NewVeritySpinePlaneResource,
+	"verity_ssp_group":                NewVeritySspGroupResource,
+	"verity_su":                       NewVeritySuResource,
+	"verity_grouping_rule":            NewVerityGroupingRuleResource,
+	"verity_threshold_group":          NewVerityThresholdGroupResource,
+	"verity_threshold":                NewVerityThresholdResource,
+}
+
+// getAllResources enumerates every API-backed resource in the registry, in
+// canonical Terraform-name order, followed by the resources that have no API
+// endpoint. Registration no longer depends on a handwritten list that can drift
+// from the registry.
 func getAllResources() []func() resource.Resource {
-	return []func() resource.Resource{
-		NewVerityOperationStageResource,
-		NewVerityTenantResource,
-		NewVerityGatewayResource,
-		NewVerityServiceResource,
-		NewVerityEthPortProfileResource,
-		NewVerityEthPortSettingsResource,
-		NewVerityBundleResource,
-		NewVerityLagResource,
-		NewVerityGatewayProfileResource,
-		NewVerityAaaProfileResource,
-		NewVerityLdapProfileResource,
-		NewVerityACLV4Resource,
-		NewVerityACLV6Resource,
-		NewVerityBadgeResource,
-		NewVerityAuthenticatedEthPortResource,
-		NewVerityDeviceVoiceSettingsResource,
-		NewVerityPacketBrokerResource,
-		NewVerityPacketQueueResource,
-		NewVerityTacacsProfileResource,
-		NewVerityServicePortProfileResource,
-		NewVerityVoicePortProfileResource,
-		NewVeritySwitchpointResource,
-		NewVerityAsPathAccessListResource,
-		NewVerityCommunityListResource,
-		NewVerityMacFilterResource,
-		NewVerityDeviceSettingsResource,
-		NewVerityExtendedCommunityListResource,
-		NewVerityIpv4ListResource,
-		NewVerityIpv4PrefixListResource,
-		NewVerityIpv6ListResource,
-		NewVerityIpv6PrefixListResource,
-		NewVerityRouteMapClauseResource,
-		NewVerityRouteMapResource,
-		NewVeritySfpBreakoutResource,
-		NewVerityFabricResource,
-		NewVerityPlaneResource,
-		NewVerityRackResource,
-		NewVerityPairResource,
-		NewVerityPodResource,
-		NewVerityPortAclResource,
-		NewVeritySflowCollectorResource,
-		NewVerityDiagnosticsProfileResource,
-		NewVerityDiagnosticsPortProfileResource,
-		NewVerityPBRoutingResource,
-		NewVerityPBRoutingACLResource,
-		NewVeritySpinePlaneResource,
-		NewVeritySspGroupResource,
-		NewVeritySuResource,
-		NewVerityGroupingRuleResource,
-		NewVerityThresholdGroupResource,
-		NewVerityThresholdResource,
+	all := make([]func() resource.Resource, 0, len(generatedResourceOrder)+len(nonAPIResources))
+	for _, terraformType := range generatedResourceOrder {
+		constructor, exists := resourceConstructors[terraformType]
+		if !exists {
+			panic("provider: no constructor for registry resource " + terraformType + "; add one to resourceConstructors")
+		}
+		all = append(all, constructor)
 	}
+	return append(all, nonAPIResources...)
+}
+
+// nonAPIResources are registered but absent from the registry because they are
+// not API-backed. The refactor plan keeps the operation-stage barrier bespoke.
+var nonAPIResources = []func() resource.Resource{
+	NewVerityOperationStageResource,
 }
 
 func (p *verityProvider) DataSources(ctx context.Context) []func() datasource.DataSource {

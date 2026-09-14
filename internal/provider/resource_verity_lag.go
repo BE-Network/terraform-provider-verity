@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityLagResource{}
 )
 
-const lagResourceType = "lags"
+var lagResourceType = generatedResourceKeys["verity_lag"].Endpoint
+
 const lagTerraformType = "verity_lag"
 
 func NewVerityLagResource() resource.Resource {
@@ -567,7 +568,7 @@ func (r *verityLagResource) ImportState(ctx context.Context, req resource.Import
 }
 
 func populateLagState(ctx context.Context, state verityLagResourceModel, data map[string]interface{}, mode string) verityLagResourceModel {
-	const resourceType = lagResourceType
+	resourceType := lagResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -625,7 +626,7 @@ func (r *verityLagResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = lagResourceType
+	resourceType := lagResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

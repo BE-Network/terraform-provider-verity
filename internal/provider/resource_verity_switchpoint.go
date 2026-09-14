@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &veritySwitchpointResource{}
 )
 
-const switchpointResourceType = "switchpoints"
+var switchpointResourceType = generatedResourceKeys["verity_switchpoint"].Endpoint
+
 const switchpointTerraformType = "verity_switchpoint"
 
 func NewVeritySwitchpointResource() resource.Resource {
@@ -2557,7 +2558,7 @@ func (r *veritySwitchpointResource) ImportState(ctx context.Context, req resourc
 }
 
 func populateSwitchpointState(ctx context.Context, state veritySwitchpointResourceModel, switchpointData map[string]interface{}, mode string) veritySwitchpointResourceModel {
-	const resourceType = switchpointResourceType
+	resourceType := switchpointResourceType
 
 	state.Name = utils.MapStringFromAPI(switchpointData["name"])
 
@@ -2829,7 +2830,7 @@ func (r *veritySwitchpointResource) ModifyPlan(ctx context.Context, req resource
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = switchpointResourceType
+	resourceType := switchpointResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityIpv4PrefixListResource{}
 )
 
-const ipv4PrefixListResourceType = "ipv4prefixlists"
+var ipv4PrefixListResourceType = generatedResourceKeys["verity_ipv4_prefix_list"].Endpoint
+
 const ipv4PrefixListTerraformType = "verity_ipv4_prefix_list"
 
 func NewVerityIpv4PrefixListResource() resource.Resource {
@@ -583,7 +584,7 @@ func (r *verityIpv4PrefixListResource) ImportState(ctx context.Context, req reso
 }
 
 func populateIpv4PrefixListState(ctx context.Context, state verityIpv4PrefixListResourceModel, data map[string]interface{}, mode string) verityIpv4PrefixListResourceModel {
-	const resourceType = ipv4PrefixListResourceType
+	resourceType := ipv4PrefixListResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -657,7 +658,7 @@ func (r *verityIpv4PrefixListResource) ModifyPlan(ctx context.Context, req resou
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = ipv4PrefixListResourceType
+	resourceType := ipv4PrefixListResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

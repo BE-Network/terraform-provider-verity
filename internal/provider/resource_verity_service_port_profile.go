@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityServicePortProfileResource{}
 )
 
-const servicePortProfileResourceType = "serviceportprofiles"
+var servicePortProfileResourceType = generatedResourceKeys["verity_service_port_profile"].Endpoint
+
 const servicePortProfileTerraformType = "verity_service_port_profile"
 
 func NewVerityServicePortProfileResource() resource.Resource {
@@ -691,7 +692,7 @@ func (r *verityServicePortProfileResource) ImportState(ctx context.Context, req 
 }
 
 func populateServicePortProfileState(ctx context.Context, state verityServicePortProfileResourceModel, data map[string]interface{}, mode string) verityServicePortProfileResourceModel {
-	const resourceType = servicePortProfileResourceType
+	resourceType := servicePortProfileResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -775,7 +776,7 @@ func (r *verityServicePortProfileResource) ModifyPlan(ctx context.Context, req r
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = servicePortProfileResourceType
+	resourceType := servicePortProfileResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

@@ -25,8 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityIpv4ListResource{}
 )
 
-const ipv4ListResourceType = "ipv4lists"
-const ipv4ListCacheKey = "ipv4_lists"
+var ipv4ListResourceType = generatedResourceKeys["verity_ipv4_list"].Endpoint
+var ipv4ListCacheKey = generatedResourceKeys["verity_ipv4_list"].CacheKey
 
 func NewVerityIpv4ListResource() resource.Resource {
 	return &verityIpv4ListResource{}
@@ -388,7 +388,7 @@ func (r *verityIpv4ListResource) ImportState(ctx context.Context, req resource.I
 }
 
 func populateIpv4ListState(ctx context.Context, state verityIpv4ListResourceModel, data map[string]interface{}, mode string) verityIpv4ListResourceModel {
-	const resourceType = ipv4ListResourceType
+	resourceType := ipv4ListResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -420,7 +420,7 @@ func (r *verityIpv4ListResource) ModifyPlan(ctx context.Context, req resource.Mo
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = ipv4ListResourceType
+	resourceType := ipv4ListResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

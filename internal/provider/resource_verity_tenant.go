@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityTenantResource{}
 )
 
-const tenantResourceType = "tenants"
+var tenantResourceType = generatedResourceKeys["verity_tenant"].Endpoint
+
 const tenantTerraformType = "verity_tenant"
 
 func NewVerityTenantResource() resource.Resource {
@@ -1015,7 +1016,7 @@ func (r *verityTenantResource) ImportState(ctx context.Context, req resource.Imp
 }
 
 func populateTenantState(ctx context.Context, state verityTenantResourceModel, tenantData map[string]interface{}, mode string) verityTenantResourceModel {
-	const resourceType = tenantResourceType
+	resourceType := tenantResourceType
 
 	state.Name = utils.MapStringFromAPI(tenantData["name"])
 
@@ -1111,7 +1112,7 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = tenantResourceType
+	resourceType := tenantResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityLdapProfileResource{}
 )
 
-const ldapProfileResourceType = "ldapprofiles"
+var ldapProfileResourceType = generatedResourceKeys["verity_ldap_profile"].Endpoint
+
 const ldapProfileTerraformType = "verity_ldap_profile"
 
 func NewVerityLdapProfileResource() resource.Resource {
@@ -895,7 +896,7 @@ func (r *verityLdapProfileResource) ImportState(ctx context.Context, req resourc
 }
 
 func populateLdapProfileState(ctx context.Context, state verityLdapProfileResourceModel, data map[string]interface{}, mode string) verityLdapProfileResourceModel {
-	const resourceType = ldapProfileResourceType
+	resourceType := ldapProfileResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -1016,7 +1017,7 @@ func (r *verityLdapProfileResource) ModifyPlan(ctx context.Context, req resource
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = ldapProfileResourceType
+	resourceType := ldapProfileResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

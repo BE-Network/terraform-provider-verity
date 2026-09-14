@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityTacacsProfileResource{}
 )
 
-const tacacsProfileResourceType = "tacacsprofiles"
+var tacacsProfileResourceType = generatedResourceKeys["verity_tacacs_profile"].Endpoint
+
 const tacacsProfileTerraformType = "verity_tacacs_profile"
 
 func NewVerityTacacsProfileResource() resource.Resource {
@@ -540,7 +541,7 @@ func (r *verityTacacsProfileResource) ImportState(ctx context.Context, req resou
 }
 
 func populateTacacsProfileState(ctx context.Context, state verityTacacsProfileResourceModel, data map[string]interface{}, mode string) verityTacacsProfileResourceModel {
-	const resourceType = tacacsProfileResourceType
+	resourceType := tacacsProfileResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
@@ -589,7 +590,7 @@ func (r *verityTacacsProfileResource) ModifyPlan(ctx context.Context, req resour
 		return
 	}
 
-	const resourceType = tacacsProfileResourceType
+	resourceType := tacacsProfileResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

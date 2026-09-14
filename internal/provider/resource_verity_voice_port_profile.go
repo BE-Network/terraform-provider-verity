@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityVoicePortProfileResource{}
 )
 
-const voicePortProfileResourceType = "voiceportprofiles"
+var voicePortProfileResourceType = generatedResourceKeys["verity_voice_port_profile"].Endpoint
+
 const voicePortProfileTerraformType = "verity_voice_port_profile"
 
 func NewVerityVoicePortProfileResource() resource.Resource {
@@ -717,7 +718,7 @@ func (r *verityVoicePortProfileResource) ImportState(ctx context.Context, req re
 }
 
 func populateVoicePortProfileState(ctx context.Context, state verityVoicePortProfileResourceModel, data map[string]interface{}, mode string) verityVoicePortProfileResourceModel {
-	const resourceType = voicePortProfileResourceType
+	resourceType := voicePortProfileResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -797,7 +798,7 @@ func (r *verityVoicePortProfileResource) ModifyPlan(ctx context.Context, req res
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = voicePortProfileResourceType
+	resourceType := voicePortProfileResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

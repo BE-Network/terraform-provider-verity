@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityRackResource{}
 )
 
-const rackResourceType = "racks"
+var rackResourceType = generatedResourceKeys["verity_rack"].Endpoint
+
 const rackTerraformType = "verity_rack"
 
 func NewVerityRackResource() resource.Resource {
@@ -483,7 +484,7 @@ func (r *verityRackResource) ImportState(ctx context.Context, req resource.Impor
 }
 
 func populateRackState(ctx context.Context, state verityRackResourceModel, data map[string]interface{}, mode string) verityRackResourceModel {
-	const resourceType = rackResourceType
+	resourceType := rackResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -539,7 +540,7 @@ func (r *verityRackResource) ModifyPlan(ctx context.Context, req resource.Modify
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = rackResourceType
+	resourceType := rackResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

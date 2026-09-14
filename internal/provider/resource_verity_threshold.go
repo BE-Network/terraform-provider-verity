@@ -25,7 +25,7 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityThresholdResource{}
 )
 
-const thresholdResourceType = "thresholds"
+var thresholdResourceType = generatedResourceKeys["verity_threshold"].Endpoint
 
 func NewVerityThresholdResource() resource.Resource {
 	return &verityThresholdResource{}
@@ -630,7 +630,7 @@ func (r *verityThresholdResource) ImportState(ctx context.Context, req resource.
 }
 
 func populateThresholdState(ctx context.Context, state verityThresholdResourceModel, data map[string]interface{}, mode string) verityThresholdResourceModel {
-	const resourceType = thresholdResourceType
+	resourceType := thresholdResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -705,7 +705,7 @@ func (r *verityThresholdResource) ModifyPlan(ctx context.Context, req resource.M
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = thresholdResourceType
+	resourceType := thresholdResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityServiceResource{}
 )
 
-const serviceResourceType = "services"
+var serviceResourceType = generatedResourceKeys["verity_service"].Endpoint
+
 const serviceTerraformType = "verity_service"
 
 func NewVerityServiceResource() resource.Resource {
@@ -793,7 +794,7 @@ func (r *verityServiceResource) ImportState(ctx context.Context, req resource.Im
 }
 
 func populateServiceState(ctx context.Context, state verityServiceResourceModel, serviceData map[string]interface{}, mode string) verityServiceResourceModel {
-	const resourceType = serviceResourceType
+	resourceType := serviceResourceType
 
 	state.Name = utils.MapStringFromAPI(serviceData["name"])
 
@@ -867,7 +868,7 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = serviceResourceType
+	resourceType := serviceResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

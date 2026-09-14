@@ -25,7 +25,7 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityBundleResource{}
 )
 
-const bundleResourceType = "bundles"
+var bundleResourceType = generatedResourceKeys["verity_bundle"].Endpoint
 
 func NewVerityBundleResource() resource.Resource {
 	return &verityBundleResource{}
@@ -1128,7 +1128,7 @@ func (r *verityBundleResource) ImportState(ctx context.Context, req resource.Imp
 }
 
 func populateBundleState(ctx context.Context, state verityBundleResourceModel, data map[string]interface{}, mode string) verityBundleResourceModel {
-	const resourceType = bundleResourceType
+	resourceType := bundleResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -1291,7 +1291,7 @@ func (r *verityBundleResource) ModifyPlan(ctx context.Context, req resource.Modi
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = bundleResourceType
+	resourceType := bundleResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

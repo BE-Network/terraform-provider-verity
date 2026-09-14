@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityDeviceVoiceSettingsResource{}
 )
 
-const deviceVoiceSettingsResourceType = "devicevoicesettings"
+var deviceVoiceSettingsResourceType = generatedResourceKeys["verity_device_voice_settings"].Endpoint
+
 const deviceVoiceSettingsTerraformType = "verity_device_voice_settings"
 
 func NewVerityDeviceVoiceSettingsResource() resource.Resource {
@@ -995,7 +996,7 @@ func (r *verityDeviceVoiceSettingsResource) ImportState(ctx context.Context, req
 }
 
 func populateDeviceVoiceSettingsState(ctx context.Context, state verityDeviceVoiceSettingsResourceModel, data map[string]interface{}, mode string) verityDeviceVoiceSettingsResourceModel {
-	const resourceType = deviceVoiceSettingsResourceType
+	resourceType := deviceVoiceSettingsResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -1112,7 +1113,7 @@ func (r *verityDeviceVoiceSettingsResource) ModifyPlan(ctx context.Context, req 
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = deviceVoiceSettingsResourceType
+	resourceType := deviceVoiceSettingsResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityAaaProfileResource{}
 )
 
-const aaaProfileResourceType = "deviceaaaprofiles"
+var aaaProfileResourceType = generatedResourceKeys["verity_aaa_profile"].Endpoint
+
 const aaaProfileTerraformType = "verity_aaa_profile"
 
 func NewVerityAaaProfileResource() resource.Resource {
@@ -531,7 +532,7 @@ func (r *verityAaaProfileResource) ImportState(ctx context.Context, req resource
 }
 
 func populateAaaProfileState(ctx context.Context, state verityAaaProfileResourceModel, data map[string]interface{}, mode string) verityAaaProfileResourceModel {
-	const resourceType = aaaProfileResourceType
+	resourceType := aaaProfileResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
@@ -580,7 +581,7 @@ func (r *verityAaaProfileResource) ModifyPlan(ctx context.Context, req resource.
 		return
 	}
 
-	const resourceType = aaaProfileResourceType
+	resourceType := aaaProfileResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

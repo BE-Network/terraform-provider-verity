@@ -1,6 +1,6 @@
 # Schema-driven refactor status
 
-Last reviewed: 2026-09-11
+Last reviewed: 2026-09-14
 
 This document tracks implementation against [refactor_plan.md](refactor_plan.md).
 Commit state is intentionally not tracked here; use Git status and history for
@@ -28,10 +28,12 @@ so Phase 2 has not started.
 | --- | --- |
 | Registry resources | 50 of 50 API-backed |
 | Endpoints represented | 49 of 64 |
-| Field paths represented | 1068 (1063 managed) |
+| Field paths represented | 1,068 (1,063 managed, 310 nested) |
 | Nested collection strategies in use | 54 `indexed_patch`, 27 `singleton` |
+| Reference / auto-assignment pairs modelled | 92 / 15 |
+| Lifecycle policies verified against legacy | 4 of 5 (2,575 assertions) |
 | API fields recorded as unmanaged | 5 |
-| Reviewed override file | 3,337 lines |
+| Reviewed override file | 3,340 lines |
 
 Every Terraform resource the provider registers is now represented, so the
 earlier blocked list is empty. Resolving it needed three things: representing an
@@ -47,7 +49,7 @@ deliberate decision about whether they should be resources at all.
 
 ```mermaid
 flowchart LR
-    P0[Phase 0<br/>gates pass<br/>fixtures + inventory remain] --> P1[Phase 1<br/>all 50 API-backed resources<br/>mode + bulk metadata generated<br/>3 of 5 policies verified]
+    P0[Phase 0<br/>gates pass<br/>fixtures + inventory remain] --> P1[Phase 1<br/>all 50 API-backed resources<br/>all five metadata consumers generated<br/>4 of 5 policies verified]
     P1 --> P2[Phase 2<br/>not started]
     P2 --> P3[Phases 3-6<br/>not started]
 ```
@@ -98,11 +100,11 @@ An override remains in only three cases, all of which the API cannot supply:
 | `ResourceSpec` / `FieldSpec` types and strict validation | Implemented | `internal/spec/model.go`, `validate.go`, and tests validate modes, ranges, literal types, ownership, policies, links, and collection strategies. |
 | First generated registry artifact | Implemented | `specs/overrides.yaml` is the reviewed source and `specs/generated_registry.json` is its deterministic merged output. No handwritten resource seed remains. |
 | OpenAPI extraction | Implemented | `specgen extract` reads both canonical inputs and produces `specs/generated_manifest.json`. It reports 64 mutable endpoint candidates with GET/PUT/PATCH/DELETE availability, request wrappers, documented response collection keys, delete query-parameter shapes, recursive fields, array item types, mode presence, and review-required items. Missing API response schemas and cache keys remain explicit override requirements. |
-| Override format and merge | Implemented for scalar, singleton-object, nested, and scalar-list shapes | The format supports recursive fields, collection strategies, reference/auto-assignment companions, scalar-list element kinds, per-field modes and API-version ranges, unmanaged API fields, and several Terraform resources on one endpoint discriminated by `fixed_headers`. `specgen registry` resolves the declared defaults and validates target paths, field and item types, modes, documented wrapper aliases, delete-parameter requiredness, and every lifecycle policy before emitting the expanded registry. Undocumented response aliases remain reviewed override data, covered by legacy parity. |
-| Generate current mode/version, compatibility, JSON key, bulk adapter, and constructor metadata | Mostly implemented | `specgen metadata` generates `internal/utils/generated_mode_metadata.go` and `internal/bulkops/generated_bulk_metadata.go`. Mode compatibility is fully generated: `pendingModeFields` is empty and only the non-API `verity_operation_stage` remains hand-maintained. The bulk registry no longer writes its own resource type or the ACL header split key; both are filled from the registry at init and fail loudly if a bulk key is unknown. Both are pinned to frozen snapshots. Still legacy: per-resource JSON keys, which live as constants in each resource file, and constructor registration in `getAllResources`. |
-| `specgen --check` in CI | Implemented for current registry scope | CI checks canonical inputs, extraction, and generated-registry drift. |
+| Override format and merge | Implemented for scalar, singleton-object, nested, and scalar-list shapes | The format supports recursive fields, collection strategies, reference and auto-assignment pairs derived from the API's own suffix convention and enums, scalar-list element kinds, per-field modes and API-version ranges, unmanaged API fields, and several Terraform resources on one endpoint discriminated by `fixed_headers`. `specgen registry` resolves the declared defaults and validates target paths, field and item types, modes, documented wrapper aliases, delete-parameter requiredness, and every lifecycle policy before emitting the expanded registry. Undocumented response aliases remain reviewed override data, covered by legacy parity. |
+| Generate current mode/version, compatibility, JSON key, bulk adapter, and constructor metadata | Implemented | `specgen metadata` generates `internal/utils/generated_mode_metadata.go` and `internal/bulkops/generated_bulk_metadata.go`. Mode compatibility is fully generated: `pendingModeFields` is empty and only the non-API `verity_operation_stage` remains hand-maintained. The bulk registry no longer writes its own resource type or the ACL header split key; both are filled from the registry at init and fail loudly if a bulk key is unknown. Both are pinned to frozen snapshots. JSON keys and constructor registration are generated too: no resource declares its own endpoint or cache-key constant, and `getAllResources` enumerates the registry rather than a handwritten list. All five metadata consumers the plan names are now registry-driven. |
+| `specgen --check` in CI | Implemented | CI checks canonical inputs, extraction, generated-registry drift, the three generated metadata files, and runs the legacy parity tests. |
 | Report unresolved/ambiguous API fields | Implemented | The manifest marks fields and resources requiring policy, alias, or strategy review, and the merge refuses any extracted field without an explicit override. Legacy comparison covers all 50 represented resources; see Legacy parity coverage. |
-| Validate every current resource and field against ranges/policies | Mostly implemented | All 50 API-backed resources and 1,068 field paths validate against API-version ranges and modes; the 1,063 managed paths also carry complete lifecycle policies, and each is checked against the shipped Terraform schema. `update_clear`, `create_null`, and `response_absence` are verified against legacy behavior across all 50 resources (1,520 assertions, 213 fields excluded by named category); `unknown_plan`, `state_ownership`, and all nested paths are not. |
+| Validate every current resource and field against ranges/policies | Mostly implemented | All 50 API-backed resources and 1,068 field paths validate against API-version ranges and modes; the 1,063 managed paths also carry complete lifecycle policies, and each is checked against the shipped Terraform schema. `update_clear`, `create_null`, `response_absence`, and `unknown_plan` are verified against legacy behavior across all 50 resources at every nesting depth (2,575 assertions, 345 fields excluded by named category). `state_ownership` is a pure function of `access` and enforced by validation, so it needs no separate check. |
 
 ### Generated provider metadata
 
@@ -112,6 +114,7 @@ An override remains in only three cases, all of which the API cannot supply:
 | --- | --- | --- |
 | `internal/utils/generated_mode_metadata.go` | `ResourceCompatibility`, `ModeFields` | `verity_operation_stage` only, which is not API-backed |
 | `internal/bulkops/generated_bulk_metadata.go` | bulk resource types, ACL header split key | none |
+| `internal/provider/generated_resource_keys.go` | per-resource endpoint name, cache key, response collection key, canonical registration order | none |
 
 Both changes had to alter nothing observable, so each is pinned to a frozen
 snapshot of the values that shipped: `internal/utils/testdata/mode_metadata_snapshot.json`
@@ -125,6 +128,23 @@ The bulk registry previously repeated its own map key in all 49 entries and
 carried the ACL split key as a literal. Both are now filled at init from the
 registry, and an unknown bulk key panics rather than running with an empty
 resource type.
+
+The resource implementations previously declared their own endpoint name and
+cache key: 49 `ResourceType` constants and 4 `CacheKey` constants, none of which
+remain. Both now come from the generated key table, so the endpoint name a
+resource addresses has one definition instead of three, and
+`TestGeneratedResourceKeysCoverEveryResource` fails if the table does not serve
+every registered resource.
+
+Registration follows the registry too. `getAllResources` enumerated a handwritten
+slice of 51 constructors; it now walks the generated canonical order and looks
+each one up, appending the resources that have no API endpoint. The constructors
+stay handwritten because they bind typed SDK calls, but which resources the
+provider registers, and in what order, is the registry's. The plan asks for
+exactly this at line 334. `TestRegistrationFollowsTheRegistry` fails if the
+constructor map and the registry drift in either direction, if a constructor
+reports a different Terraform type than it is keyed under, or if the order stops
+being canonical.
 
 This also replaces `tools/compare_schemas.py` as the source of
 `internal/utils/schema.go`, removing the second, independently maintained
@@ -155,12 +175,15 @@ Asserted against legacy code today:
 - `update_clear`, `create_null`, and `response_absence` against the create, update,
   and read helpers each resource actually calls.
 
-Lifecycle policies are now partly verified against the legacy implementation
-rather than assumed. Three of the five are checked: 1,520 assertions, with no
-disagreements. Coverage is exact rather than best-effort — every registry
-resource must appear in the evidence and every field must either carry evidence
-or fall into a named excluded category, so a resource cannot lose verification
-silently.
+Lifecycle policies are now largely verified against the legacy implementation
+rather than assumed. Four of the five are checked at every nesting depth: 2,575
+assertions, with no disagreements. The fifth, `state_ownership`, is a pure
+function of `access`, which the schema parity test checks against the shipped
+Terraform schema, and `validateOwnership` enforces the mapping, so it carries no
+independent claim to verify. Coverage is exact rather than best-effort —
+every registry resource must appear in the evidence and every field must either
+carry evidence or fall into a named excluded category, so a resource cannot lose
+verification silently.
 
 ### Lifecycle policies are verified against legacy behavior
 
@@ -172,6 +195,7 @@ that against what the resources actually do found three separate errors:
 | `update_clear` | always `api_null` | `""`, `false`, or `0` unless the field uses a nullable helper | 282 |
 | `create_null` | always `omit` | explicit null for nullable fields | 120 |
 | `response_absence` | `error` for identity fields | every read helper returns Terraform null | 48 |
+| `unknown_plan` | `preserve_state` | omitted from the request, then supplied by the read that follows | 521 |
 
 None of these are visible in the Terraform schema, so the schema parity harness
 could not have caught them. Nothing consumed the policies yet, so no behavior was
@@ -196,24 +220,52 @@ ambiguous. The plan notes the same transform at line 238.
 instead be a hard diagnostic is a real question, but it belongs to the open
 nullable/reset decision rather than to an assumption baked into the registry.
 
-`TestGeneratedPoliciesMatchLegacyBehavior` pins all three against
-`internal/provider/testdata/legacy_field_policies.json`.
+`TestGeneratedPoliciesMatchLegacyBehavior` pins all four against
+`internal/provider/testdata/legacy_field_policies.json`. It excludes a reference
+or auto-assignment pair by reading the relationship the registry records, not by
+matching the `_ref_type_` and `_auto_assigned_` suffixes: inferring the pairing a
+second time would reinstate the convention the registry exists to replace, and
+would keep passing if the registry stopped recording a pair at all.
 
-213 top-level fields are excluded from policy verification by category, each for
-a stated reason: 80 objects and arrays, which their collection strategy clears
-rather than a wire value, and the 133 halves of reference and auto-assignment
-pairs, which each resource drives with bespoke logic instead of the shared
-helpers. The 310 nested field paths are not covered by this evidence either.
+345 fields are excluded from policy verification by category, each for a stated
+reason: objects and arrays, which their collection strategy clears rather than a
+wire value; the 54 collection identity fields, which name an entry and are always
+sent; the halves of reference and auto-assignment pairs, which each resource
+drives with bespoke logic instead of the shared helpers; and one field whose
+collection's update path handles only its reference pair and index, leaving its
+enable flag with no update path at all.
 
-Those pairs are a gap in their own right. `FieldSpec` has `Reference` and
-`AutoAssignment`, and the plan lists paired `*_ref_type_` and `*_auto_assigned_`
-behavior among the things a plain schema cannot express, but no override
-populates either yet. The pairs are currently recognised only by their naming
-convention.
+Reaching nested fields meant reading four distinct update paths, not one. Beyond
+the shared compare helpers, a singleton object clears a member by dropping the
+key, an indexed collection may carry its handler inline or in a variable, and a
+`Set*Fields` call guarded by an equality check also clears by omission because
+those helpers skip nulls. `UpdateClearOmit` was added to the policy vocabulary to
+express the first and third; the Phase 0 design had no value for "omit the key".
 
-Still unverified: `unknown_plan` and `state_ownership` on every field, all five
-policies on the 310 nested field paths, and the reference and auto-assignment
-pairs above.
+The pairing itself is now modelled. The plan lists paired `*_ref_type_` and
+`*_auto_assigned_` behavior among the things a plain schema cannot express, and
+the registry records all 92 reference pairs and 15 auto-assignment pairs across
+the represented resources, with no companion left unpaired. Allowed reference
+types come from the companion field's own enum in the committed documents rather
+than from a hand-written list, so `verity_aaa_profile.ldap_profile` records
+`type_field: ldap_profile_ref_type_` and `allowed_types: [ldap_profile]` without
+any override. `TestGeneratedPairsAreModelled` fails if a companion exists whose
+partner records no relationship.
+
+What remains unverified for these fields is their lifecycle policies, not their
+structure: each resource drives the pair with bespoke logic instead of the shared
+helpers, so no policy can be read from them mechanically.
+
+`unknown_plan` follows the same create capability. A field the request omits when
+null is omitted when unknown too, and every resource re-reads after create and
+update, so the server supplies the value. The nullable helpers are the exception:
+they key off whether the attribute was written in configuration and have no
+unknown branch at all, so nothing in the implementation states what an unknown
+value should do. Those 151 fields keep `preserve_state`, which remains the earlier
+assumption rather than a verified fact.
+
+Still unverified: the 151 nullable fields' `unknown_plan`, and the excluded
+categories above.
 
 Not yet asserted against legacy code: validators, defaults, plan modifiers other
 than RequiresReplace, request/response payload shapes, delete parameters, and
@@ -229,18 +281,33 @@ strategy while old resources still run, and every pre-migration gate in the
 executive recommendation passes."
 
 Registry coverage today: all 50 API-backed resources, 1,068 field paths (1,063
-managed and 5 explicitly unmanaged), 49 of 64 endpoints, and two nested collection
-strategies in use (54 `indexed_patch`, 27 `singleton`). Old resources still run
-untouched. The resource, field path, alias, operation, mode, version, and nested
-strategy halves of the criterion are met. Two things remain:
+managed and 5 explicitly unmanaged, 310 of them nested), 49 of 64 endpoints, two
+nested collection strategies (54 `indexed_patch`, 27 `singleton`), and 92
+reference plus 15 auto-assignment pairs. Old resources still run untouched.
 
-1. **Lifecycle policies are only partly verified.** Three of five are checked
-   against legacy behavior across all 50 resources, 1,520 assertions; the other
-   two, the 310 nested field paths, and the 213 fields excluded by category are
-   not.
-2. **Two metadata consumers remain legacy-owned.** Mode compatibility and bulk
-   transport metadata are generated; per-resource JSON keys and constructor
-   registration are not.
+Every structural clause of the criterion is met: resource, field path, alias,
+operation, mode, version, and nested strategy. All five metadata consumers the
+plan names are generated from the registry, so the third Phase 1 bullet is
+complete as well.
+
+One clause is not fully met. **Lifecycle policies are largely but not entirely
+verified.** Four of the five are checked against the legacy implementation across
+all 50 resources at every nesting depth, 2,575 assertions with no disagreements;
+the fifth, `state_ownership`, is a pure function of `access` and enforced by
+validation, so it carries no independent claim. What remains unverified:
+
+| Unverified | Count | Why |
+| --- | --- | --- |
+| Nullable fields' `unknown_plan` | 151 | The nullable helpers key off whether an attribute was written in configuration and have no unknown branch, so the implementation states nothing to read |
+| Fields excluded by named category | 345 | Objects and arrays, collection identity fields, reference and auto-assignment pair halves, and one field whose collection has no update path at all |
+
+Every policy that could be checked was wrong when first assigned — `update_clear`
+for 282 fields, `create_null` for 120, `response_absence` for 48, `unknown_plan`
+for 521. That record is the reason the remainder is called out rather than
+assumed correct.
+
+Phase 0 also remains open: request/response golden fixtures, registry-driven
+Read/PATCH coverage, and the exception inventory.
 
 ### Pre-migration gates
 
@@ -308,7 +375,8 @@ go run ./tools/specgen registry --input-dir specs/openapi/6.6 --overrides specs/
                                 --output specs/generated_registry.json --check
 go run ./tools/specgen metadata --registry specs/generated_registry.json \
                                 --output internal/utils/generated_mode_metadata.go \
-                                --bulk-output internal/bulkops/generated_bulk_metadata.go --check
+                                --bulk-output internal/bulkops/generated_bulk_metadata.go \
+                                --keys-output internal/provider/generated_resource_keys.go --check
 go test ./... -count=1
 ```
 
@@ -318,14 +386,12 @@ workflow sets; without them the lifecycle package alone takes far longer.
 
 ## Recommended next slice
 
-1. Extend policy verification to the 310 nested field paths and the 133 reference
-   and auto-assignment pairs, then to `unknown_plan` and `state_ownership`. Of the
-   three policies checked so far, all three were wrong, so the remaining two
-   deserve the same treatment rather than the benefit of the doubt. Modelling the
-   pairs in `FieldSpec.Reference` and `FieldSpec.AutoAssignment` is a prerequisite,
-   since they are currently recognised only by naming convention.
-2. Generate the remaining metadata: per-resource JSON keys, which live as
-   constants in each resource file, and constructor registration.
+1. Read the bespoke create and update logic for the reference and auto-assignment
+   pairs, and for the 151 nullable fields' unknown handling. Their structure is
+   modelled; their policies are the last unverified behavior in the registry.
+2. Complete Phase 0: request/response golden fixtures, registry-driven Read/PATCH
+   coverage, and the exception inventory. These are the remaining exit-criterion
+   items outside the registry itself.
 
 Phase 0 also still needs request/response golden fixtures, registry-driven
 Read/PATCH coverage, and the exception inventory completed.

@@ -25,7 +25,7 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityDiagnosticsPortProfileResource{}
 )
 
-const diagnosticsPortProfileResourceType = "diagnosticsportprofiles"
+var diagnosticsPortProfileResourceType = generatedResourceKeys["verity_diagnostics_port_profile"].Endpoint
 
 func NewVerityDiagnosticsPortProfileResource() resource.Resource {
 	return &verityDiagnosticsPortProfileResource{}
@@ -383,7 +383,7 @@ func (r *verityDiagnosticsPortProfileResource) ImportState(ctx context.Context, 
 }
 
 func populateDiagnosticsPortProfileState(ctx context.Context, state verityDiagnosticsPortProfileResourceModel, data map[string]interface{}, mode string) verityDiagnosticsPortProfileResourceModel {
-	const resourceType = diagnosticsPortProfileResourceType
+	resourceType := diagnosticsPortProfileResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -413,7 +413,7 @@ func (r *verityDiagnosticsPortProfileResource) ModifyPlan(ctx context.Context, r
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = diagnosticsPortProfileResourceType
+	resourceType := diagnosticsPortProfileResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

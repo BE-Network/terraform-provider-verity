@@ -25,7 +25,7 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityGroupingRuleResource{}
 )
 
-const groupingRuleResourceType = "groupingrules"
+var groupingRuleResourceType = generatedResourceKeys["verity_grouping_rule"].Endpoint
 
 func NewVerityGroupingRuleResource() resource.Resource {
 	return &verityGroupingRuleResource{}
@@ -549,7 +549,7 @@ func (r *verityGroupingRuleResource) ImportState(ctx context.Context, req resour
 }
 
 func populateGroupingRuleState(ctx context.Context, state verityGroupingRuleResourceModel, data map[string]interface{}, mode string) verityGroupingRuleResourceModel {
-	const resourceType = groupingRuleResourceType
+	resourceType := groupingRuleResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -614,7 +614,7 @@ func (r *verityGroupingRuleResource) ModifyPlan(ctx context.Context, req resourc
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = groupingRuleResourceType
+	resourceType := groupingRuleResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

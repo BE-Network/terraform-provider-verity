@@ -25,7 +25,7 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityAsPathAccessListResource{}
 )
 
-const asPathAccessListResourceType = "aspathaccesslists"
+var asPathAccessListResourceType = generatedResourceKeys["verity_as_path_access_list"].Endpoint
 
 func NewVerityAsPathAccessListResource() resource.Resource {
 	return &verityAsPathAccessListResource{}
@@ -542,7 +542,7 @@ func (r *verityAsPathAccessListResource) ImportState(ctx context.Context, req re
 }
 
 func populateAsPathAccessListState(ctx context.Context, state verityAsPathAccessListResourceModel, data map[string]interface{}, mode string) verityAsPathAccessListResourceModel {
-	const resourceType = asPathAccessListResourceType
+	resourceType := asPathAccessListResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -612,7 +612,7 @@ func (r *verityAsPathAccessListResource) ModifyPlan(ctx context.Context, req res
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = asPathAccessListResourceType
+	resourceType := asPathAccessListResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

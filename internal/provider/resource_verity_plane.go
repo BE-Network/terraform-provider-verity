@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityPlaneResource{}
 )
 
-const planeResourceType = "planes"
+var planeResourceType = generatedResourceKeys["verity_plane"].Endpoint
+
 const planeTerraformType = "verity_plane"
 
 func NewVerityPlaneResource() resource.Resource {
@@ -483,7 +484,7 @@ func (r *verityPlaneResource) ImportState(ctx context.Context, req resource.Impo
 }
 
 func populatePlaneState(ctx context.Context, state verityPlaneResourceModel, data map[string]interface{}, mode string) verityPlaneResourceModel {
-	const resourceType = planeResourceType
+	resourceType := planeResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -539,7 +540,7 @@ func (r *verityPlaneResource) ModifyPlan(ctx context.Context, req resource.Modif
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = planeResourceType
+	resourceType := planeResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

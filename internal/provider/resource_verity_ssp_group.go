@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &veritySspGroupResource{}
 )
 
-const sspGroupResourceType = "sspgroups"
+var sspGroupResourceType = generatedResourceKeys["verity_ssp_group"].Endpoint
+
 const sspGroupTerraformType = "verity_ssp_group"
 
 func NewVeritySspGroupResource() resource.Resource {
@@ -459,7 +460,7 @@ func (r *veritySspGroupResource) ImportState(ctx context.Context, req resource.I
 }
 
 func populateSspGroupState(ctx context.Context, state veritySspGroupResourceModel, data map[string]interface{}, mode string) veritySspGroupResourceModel {
-	const resourceType = sspGroupResourceType
+	resourceType := sspGroupResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
@@ -495,7 +496,7 @@ func (r *veritySspGroupResource) ModifyPlan(ctx context.Context, req resource.Mo
 		return
 	}
 
-	const resourceType = sspGroupResourceType
+	resourceType := sspGroupResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

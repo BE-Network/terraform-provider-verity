@@ -25,7 +25,7 @@ var (
 	_ resource.ResourceWithModifyPlan  = &veritySpinePlaneResource{}
 )
 
-const spinePlaneResourceType = "spineplanes"
+var spinePlaneResourceType = generatedResourceKeys["verity_spine_plane"].Endpoint
 
 func NewVeritySpinePlaneResource() resource.Resource {
 	return &veritySpinePlaneResource{}
@@ -448,7 +448,7 @@ func (r *veritySpinePlaneResource) ImportState(ctx context.Context, req resource
 }
 
 func populateSpinePlaneState(ctx context.Context, state veritySpinePlaneResourceModel, data map[string]interface{}, mode string) veritySpinePlaneResourceModel {
-	const resourceType = spinePlaneResourceType
+	resourceType := spinePlaneResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -496,7 +496,7 @@ func (r *veritySpinePlaneResource) ModifyPlan(ctx context.Context, req resource.
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = spinePlaneResourceType
+	resourceType := spinePlaneResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

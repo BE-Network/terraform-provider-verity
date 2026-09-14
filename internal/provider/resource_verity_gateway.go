@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityGatewayResource{}
 )
 
-const gatewayResourceType = "gateways"
+var gatewayResourceType = generatedResourceKeys["verity_gateway"].Endpoint
+
 const gatewayTerraformType = "verity_gateway"
 
 func NewVerityGatewayResource() resource.Resource {
@@ -914,7 +915,7 @@ func (r *verityGatewayResource) ImportState(ctx context.Context, req resource.Im
 }
 
 func populateGatewayState(ctx context.Context, state verityGatewayResourceModel, data map[string]interface{}, mode string) verityGatewayResourceModel {
-	const resourceType = gatewayResourceType
+	resourceType := gatewayResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -1018,7 +1019,7 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = gatewayResourceType
+	resourceType := gatewayResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

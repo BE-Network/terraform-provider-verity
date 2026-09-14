@@ -25,7 +25,7 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityGatewayProfileResource{}
 )
 
-const gatewayProfileResourceType = "gatewayprofiles"
+var gatewayProfileResourceType = generatedResourceKeys["verity_gateway_profile"].Endpoint
 
 func NewVerityGatewayProfileResource() resource.Resource {
 	return &verityGatewayProfileResource{}
@@ -519,7 +519,7 @@ func (r *verityGatewayProfileResource) ImportState(ctx context.Context, req reso
 
 // populateGatewayProfileState populates the state from API response data with mode-aware field mapping
 func populateGatewayProfileState(ctx context.Context, state verityGatewayProfileResourceModel, data map[string]interface{}, mode string) verityGatewayProfileResourceModel {
-	const resourceType = gatewayProfileResourceType
+	resourceType := gatewayProfileResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -580,7 +580,7 @@ func (r *verityGatewayProfileResource) ModifyPlan(ctx context.Context, req resou
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = gatewayProfileResourceType
+	resourceType := gatewayProfileResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

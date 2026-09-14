@@ -25,7 +25,7 @@ var (
 	_ resource.ResourceWithModifyPlan  = &veritySfpBreakoutResource{}
 )
 
-const sfpBreakoutResourceType = "sfpbreakouts"
+var sfpBreakoutResourceType = generatedResourceKeys["verity_sfp_breakout"].Endpoint
 
 func NewVeritySfpBreakoutResource() resource.Resource {
 	return &veritySfpBreakoutResource{}
@@ -419,7 +419,7 @@ func (r *veritySfpBreakoutResource) ImportState(ctx context.Context, req resourc
 }
 
 func populateSfpBreakoutState(ctx context.Context, state veritySfpBreakoutResourceModel, data map[string]interface{}, mode string) veritySfpBreakoutResourceModel {
-	const resourceType = sfpBreakoutResourceType
+	resourceType := sfpBreakoutResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -475,7 +475,7 @@ func (r *veritySfpBreakoutResource) ModifyPlan(ctx context.Context, req resource
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = sfpBreakoutResourceType
+	resourceType := sfpBreakoutResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

@@ -25,8 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityMacFilterResource{}
 )
 
-const macFilterResourceType = "macfilters"
-const macFilterCacheKey = "mac_filters"
+var macFilterResourceType = generatedResourceKeys["verity_mac_filter"].Endpoint
+var macFilterCacheKey = generatedResourceKeys["verity_mac_filter"].CacheKey
 
 func NewVerityMacFilterResource() resource.Resource {
 	return &verityMacFilterResource{}
@@ -490,7 +490,7 @@ func (r *verityMacFilterResource) ImportState(ctx context.Context, req resource.
 }
 
 func populateMacFilterState(ctx context.Context, state verityMacFilterResourceModel, data map[string]interface{}, mode string) verityMacFilterResourceModel {
-	const resourceType = macFilterResourceType
+	resourceType := macFilterResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
@@ -534,7 +534,7 @@ func (r *verityMacFilterResource) ModifyPlan(ctx context.Context, req resource.M
 		return
 	}
 
-	const resourceType = macFilterResourceType
+	resourceType := macFilterResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

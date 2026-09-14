@@ -25,7 +25,7 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityPBRoutingACLResource{}
 )
 
-const pbRoutingAclResourceType = "policybasedroutingacl"
+var pbRoutingAclResourceType = generatedResourceKeys["verity_pb_routing_acl"].Endpoint
 
 func NewVerityPBRoutingACLResource() resource.Resource {
 	return &verityPBRoutingACLResource{}
@@ -844,7 +844,7 @@ func (r *verityPBRoutingACLResource) ImportState(ctx context.Context, req resour
 }
 
 func populatePBRoutingACLState(ctx context.Context, state verityPBRoutingACLResourceModel, data map[string]interface{}, mode string) verityPBRoutingACLResourceModel {
-	const resourceType = pbRoutingAclResourceType
+	resourceType := pbRoutingAclResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -937,7 +937,7 @@ func (r *verityPBRoutingACLResource) ModifyPlan(ctx context.Context, req resourc
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = pbRoutingAclResourceType
+	resourceType := pbRoutingAclResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

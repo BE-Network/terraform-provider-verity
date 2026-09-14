@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityRouteMapClauseResource{}
 )
 
-const routeMapClauseResourceType = "routemapclauses"
+var routeMapClauseResourceType = generatedResourceKeys["verity_route_map_clause"].Endpoint
+
 const routeMapClauseTerraformType = "verity_route_map_clause"
 
 func NewVerityRouteMapClauseResource() resource.Resource {
@@ -780,7 +781,7 @@ func (r *verityRouteMapClauseResource) ImportState(ctx context.Context, req reso
 }
 
 func populateRouteMapClauseState(ctx context.Context, state verityRouteMapClauseResourceModel, data map[string]interface{}, mode string) verityRouteMapClauseResourceModel {
-	const resourceType = routeMapClauseResourceType
+	resourceType := routeMapClauseResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -858,7 +859,7 @@ func (r *verityRouteMapClauseResource) ModifyPlan(ctx context.Context, req resou
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = routeMapClauseResourceType
+	resourceType := routeMapClauseResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

@@ -25,7 +25,7 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityPortAclResource{}
 )
 
-const portAclResourceType = "portacls"
+var portAclResourceType = generatedResourceKeys["verity_port_acl"].Endpoint
 
 func NewVerityPortAclResource() resource.Resource {
 	return &verityPortAclResource{}
@@ -846,7 +846,7 @@ func (r *verityPortAclResource) ImportState(ctx context.Context, req resource.Im
 }
 
 func populatePortAclState(ctx context.Context, state verityPortAclResourceModel, data map[string]interface{}, mode string) verityPortAclResourceModel {
-	const resourceType = portAclResourceType
+	resourceType := portAclResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -935,7 +935,7 @@ func (r *verityPortAclResource) ModifyPlan(ctx context.Context, req resource.Mod
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = portAclResourceType
+	resourceType := portAclResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

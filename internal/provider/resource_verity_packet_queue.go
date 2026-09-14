@@ -25,7 +25,8 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityPacketQueueResource{}
 )
 
-const packetQueueResourceType = "packetqueues"
+var packetQueueResourceType = generatedResourceKeys["verity_packet_queue"].Endpoint
+
 const packetQueueTerraformType = "verity_packet_queue"
 
 func NewVerityPacketQueueResource() resource.Resource {
@@ -616,7 +617,7 @@ func (r *verityPacketQueueResource) ImportState(ctx context.Context, req resourc
 }
 
 func populatePacketQueueState(ctx context.Context, state verityPacketQueueResourceModel, data map[string]interface{}, mode string) verityPacketQueueResourceModel {
-	const resourceType = packetQueueResourceType
+	resourceType := packetQueueResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -693,7 +694,7 @@ func (r *verityPacketQueueResource) ModifyPlan(ctx context.Context, req resource
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = packetQueueResourceType
+	resourceType := packetQueueResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

@@ -25,9 +25,11 @@ var (
 	_ resource.ResourceWithModifyPlan  = &veritySflowCollectorResource{}
 )
 
-const sflowCollectorResourceType = "sflowcollectors"
+var sflowCollectorResourceType = generatedResourceKeys["verity_sflow_collector"].Endpoint
+
 const sflowCollectorTerraformType = "verity_sflow_collector"
-const sflowCollectorCacheKey = "sflow_collectors"
+
+var sflowCollectorCacheKey = generatedResourceKeys["verity_sflow_collector"].CacheKey
 
 func NewVeritySflowCollectorResource() resource.Resource {
 	return &veritySflowCollectorResource{}
@@ -425,7 +427,7 @@ func (r *veritySflowCollectorResource) ImportState(ctx context.Context, req reso
 }
 
 func populateSflowCollectorState(ctx context.Context, state veritySflowCollectorResourceModel, data map[string]interface{}, mode string) veritySflowCollectorResourceModel {
-	const resourceType = sflowCollectorResourceType
+	resourceType := sflowCollectorResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -460,7 +462,7 @@ func (r *veritySflowCollectorResource) ModifyPlan(ctx context.Context, req resou
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = sflowCollectorResourceType
+	resourceType := sflowCollectorResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{

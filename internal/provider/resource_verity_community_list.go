@@ -25,7 +25,7 @@ var (
 	_ resource.ResourceWithModifyPlan  = &verityCommunityListResource{}
 )
 
-const communityListResourceType = "communitylists"
+var communityListResourceType = generatedResourceKeys["verity_community_list"].Endpoint
 
 func NewVerityCommunityListResource() resource.Resource {
 	return &verityCommunityListResource{}
@@ -561,7 +561,7 @@ func (r *verityCommunityListResource) ImportState(ctx context.Context, req resou
 }
 
 func populateCommunityListState(ctx context.Context, state verityCommunityListResourceModel, data map[string]interface{}, mode string) verityCommunityListResourceModel {
-	const resourceType = communityListResourceType
+	resourceType := communityListResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
@@ -634,7 +634,7 @@ func (r *verityCommunityListResource) ModifyPlan(ctx context.Context, req resour
 	// Set fields that don't apply to current mode to null to prevent
 	// "known after apply" messages for irrelevant fields.
 	// =========================================================================
-	const resourceType = communityListResourceType
+	resourceType := communityListResourceType
 	mode := r.provCtx.mode
 
 	nullifier := &utils.ModeFieldNullifier{
