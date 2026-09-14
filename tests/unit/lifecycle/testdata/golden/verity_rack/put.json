@@ -1,0 +1,14 @@
+{
+  "rack": {
+    "cov_rack": {
+      "enable": true,
+      "name": "cov_rack",
+      "object_properties": {
+        "notes": ""
+      },
+      "position": 1.5,
+      "su": "",
+      "su_ref_type_": ""
+    }
+  }
+}

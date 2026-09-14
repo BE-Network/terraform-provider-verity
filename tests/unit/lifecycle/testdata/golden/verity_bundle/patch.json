@@ -1,0 +1,7 @@
+{
+  "endpoint_bundle": {
+    "cov_bundle": {
+      "enable": false
+    }
+  }
+}

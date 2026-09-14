@@ -1,0 +1,7 @@
+{
+  "rack": {
+    "cov_rack": {
+      "enable": false
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "authenticated_eth_port": {
+    "cov_aep": {
+      "allow_mac_based_authentication": true,
+      "connection_mode": "",
+      "enable": true,
+      "eth_ports": [
+        {
+          "eth_port_profile_num_enable": true,
+          "eth_port_profile_num_eth_port": "",
+          "eth_port_profile_num_eth_port_ref_type_": "",
+          "eth_port_profile_num_radius_filter_id": "",
+          "eth_port_profile_num_walled_garden_set": true,
+          "index": 1
+        }
+      ],
+      "mac_authentication_holdoff_sec": 42,
+      "name": "cov_aep",
+      "object_properties": {
+        "port_monitoring": ""
+      },
+      "reauthorization_period_sec": 42,
+      "trusted_port": true
+    }
+  }
+}

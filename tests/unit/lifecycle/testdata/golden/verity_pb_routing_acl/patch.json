@@ -1,0 +1,7 @@
+{
+  "pb_routing_acl": {
+    "cov_pbra": {
+      "enable": false
+    }
+  }
+}

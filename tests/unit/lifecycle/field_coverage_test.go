@@ -2,7 +2,10 @@ package lifecycle
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 	"testing"
@@ -26,6 +29,10 @@ type fieldInfo struct {
 type blockInfo struct {
 	Name   string
 	Fields []fieldInfo
+	// Blocks holds nested blocks. Only Fabric has them today
+	// (object_properties.system_graphs), but dropping them silently excluded the
+	// provider's only two-level nesting from every generated configuration.
+	Blocks []blockInfo
 }
 
 type resourceSchemaInfo struct {
@@ -419,6 +426,49 @@ var allResourceTests = []ResourceCoverageEntry{
 		Mode:          "campus",
 		ResourceName:  "cov_vpp",
 	},
+	// Added to close the gap against the reviewed registry: these five resources
+	// ship in the provider but had no coverage entry, so no PUT field coverage
+	// was checked for them. TestCoverageTableMatchesRegistry keeps the two in step.
+	{
+		TerraformType: "verity_mac_filter",
+		Factory:       provider.NewVerityMacFilterResource,
+		APIPath:       "/api/macfilters",
+		WrapperKey:    "mac_filter",
+		Mode:          "campus",
+		ResourceName:  "cov_mac_filter",
+	},
+	{
+		TerraformType: "verity_pair",
+		Factory:       provider.NewVerityPairResource,
+		APIPath:       "/api/pairs",
+		WrapperKey:    "switch_pair",
+		Mode:          "datacenter",
+		ResourceName:  "cov_pair",
+	},
+	{
+		TerraformType: "verity_ssp_group",
+		Factory:       provider.NewVeritySspGroupResource,
+		APIPath:       "/api/sspgroups",
+		WrapperKey:    "superspine_group",
+		Mode:          "datacenter",
+		ResourceName:  "cov_ssp_group",
+	},
+	{
+		TerraformType: "verity_su",
+		Factory:       provider.NewVeritySuResource,
+		APIPath:       "/api/sus",
+		WrapperKey:    "su",
+		Mode:          "datacenter",
+		ResourceName:  "cov_su",
+	},
+	{
+		TerraformType: "verity_tacacs_profile",
+		Factory:       provider.NewVerityTacacsProfileResource,
+		APIPath:       "/api/tacacsprofiles",
+		WrapperKey:    "tacacs_profile",
+		Mode:          "datacenter",
+		ResourceName:  "cov_tacacs_profile",
+	},
 }
 
 func attrFieldType(attr fwschema.Attribute) string {
@@ -434,6 +484,22 @@ func attrFieldType(attr fwschema.Attribute) string {
 	default:
 		return ""
 	}
+}
+
+// inspectBlock reads one nested block and recurses into any blocks it contains.
+func inspectBlock(name string, lb fwschema.ListNestedBlock) blockInfo {
+	bi := blockInfo{Name: name}
+	for attrName, attr := range lb.NestedObject.Attributes {
+		bi.Fields = append(bi.Fields, fieldInfo{Name: attrName, Type: attrFieldType(attr)})
+	}
+	sort.Slice(bi.Fields, func(i, j int) bool { return bi.Fields[i].Name < bi.Fields[j].Name })
+	for nestedName, nested := range lb.NestedObject.Blocks {
+		if nestedList, ok := nested.(fwschema.ListNestedBlock); ok {
+			bi.Blocks = append(bi.Blocks, inspectBlock(nestedName, nestedList))
+		}
+	}
+	sort.Slice(bi.Blocks, func(i, j int) bool { return bi.Blocks[i].Name < bi.Blocks[j].Name })
+	return bi
 }
 
 func inspectSchema(factory func() resource.Resource) resourceSchemaInfo {
@@ -455,14 +521,7 @@ func inspectSchema(factory func() resource.Resource) resourceSchemaInfo {
 
 	for name, block := range resp.Schema.Blocks {
 		if lb, ok := block.(fwschema.ListNestedBlock); ok {
-			bi := blockInfo{Name: name}
-			for attrName, attr := range lb.NestedObject.Attributes {
-				bi.Fields = append(bi.Fields, fieldInfo{Name: attrName, Type: attrFieldType(attr)})
-			}
-			sort.Slice(bi.Fields, func(i, j int) bool {
-				return bi.Fields[i].Name < bi.Fields[j].Name
-			})
-			rs.Blocks = append(rs.Blocks, bi)
+			rs.Blocks = append(rs.Blocks, inspectBlock(name, lb))
 		}
 	}
 	sort.Slice(rs.Blocks, func(i, j int) bool {
@@ -515,27 +574,45 @@ func generateCoverageHCL(rs resourceSchemaInfo, tfType, resourceName, mode, mode
 		if !utils.FieldAppliesToMode(modeFieldsKey, block.Name, mode) {
 			continue
 		}
-		// Skip blocks with no fields
-		if len(block.Fields) == 0 {
+		// A block with neither fields nor nested blocks has nothing to write.
+		if len(block.Fields) == 0 && len(block.Blocks) == 0 {
 			continue
 		}
-		b.WriteString(fmt.Sprintf("\n  %s {\n", block.Name))
-		for _, fi := range block.Fields {
-			nestedKey := block.Name + "." + fi.Name
-			if !utils.FieldAppliesToMode(modeFieldsKey, nestedKey, mode) {
-				continue
-			}
-			val := defaultHCLValue(fi)
-			if override, ok := overrides[nestedKey]; ok {
-				val = override
-			}
-			b.WriteString(fmt.Sprintf("    %s = %s\n", fi.Name, val))
-		}
-		b.WriteString("  }\n")
+		b.WriteString("\n")
+		writeCoverageBlock(&b, block, block.Name, "  ", mode, modeFieldsKey, overrides)
 	}
 
 	b.WriteString("}\n")
 	return b.String()
+}
+
+// writeCoverageBlock emits one block and recurses into any it contains, keying
+// mode lookups and overrides on the dotted path so a nested block's fields are
+// addressed the same way the mode tables address them.
+func writeCoverageBlock(b *strings.Builder, block blockInfo, path, indent, mode, modeFieldsKey string, overrides map[string]string) {
+	fmt.Fprintf(b, "%s%s {\n", indent, block.Name)
+	for _, fi := range block.Fields {
+		nestedKey := path + "." + fi.Name
+		if !utils.FieldAppliesToMode(modeFieldsKey, nestedKey, mode) {
+			continue
+		}
+		val := defaultHCLValue(fi)
+		if override, ok := overrides[nestedKey]; ok {
+			val = override
+		}
+		fmt.Fprintf(b, "%s  %s = %s\n", indent, fi.Name, val)
+	}
+	for _, nested := range block.Blocks {
+		nestedPath := path + "." + nested.Name
+		if !utils.FieldAppliesToMode(modeFieldsKey, nestedPath, mode) {
+			continue
+		}
+		if len(nested.Fields) == 0 && len(nested.Blocks) == 0 {
+			continue
+		}
+		writeCoverageBlock(b, nested, nestedPath, indent+"  ", mode, modeFieldsKey, overrides)
+	}
+	fmt.Fprintf(b, "%s}\n", indent)
 }
 
 func (e ResourceCoverageEntry) modeFieldsKey() string {
@@ -642,46 +719,61 @@ func verifyPutFieldCoverage(t *testing.T, body map[string]interface{}, tc Resour
 		}
 	}
 
-	// Check nested block attributes
+	// Check nested blocks, recursively. A block may itself contain blocks, as
+	// Fabric does with object_properties.system_graphs, and a block with no
+	// immediate attributes is not empty if it holds one.
 	for _, block := range rs.Blocks {
-		if !utils.FieldAppliesToMode(modeKey, block.Name, tc.Mode) {
-			continue
-		}
-		// Skip blocks with no fields defined in schema
-		if len(block.Fields) == 0 {
-			continue
-		}
-
-		// Block may appear as a JSON array (most blocks) or a JSON object (object_properties).
-		var item map[string]interface{}
-		if items, ok := res[block.Name].([]interface{}); ok {
-			if len(items) == 0 {
-				t.Errorf("[%s] block %q is an empty array in PUT body", tc.TerraformType, block.Name)
-				continue
-			}
-			item, ok = items[0].(map[string]interface{})
-			if !ok {
-				t.Errorf("[%s] block %q[0] is not an object", tc.TerraformType, block.Name)
-				continue
-			}
-		} else if obj, ok := res[block.Name].(map[string]interface{}); ok {
-			item = obj
-		} else {
-			t.Errorf("[%s] block %q absent from PUT body", tc.TerraformType, block.Name)
-			continue
-		}
-		for _, fi := range block.Fields {
-			nestedKey := block.Name + "." + fi.Name
-			if !utils.FieldAppliesToMode(modeKey, nestedKey, tc.Mode) {
-				continue
-			}
-			if _, exists := item[fi.Name]; !exists {
-				t.Errorf("[%s] nested field %s.%s absent from PUT body", tc.TerraformType, block.Name, fi.Name)
-			}
-		}
+		verifyBlockFieldCoverage(t, res, block, block.Name, tc, modeKey)
 	}
 
 	return nil
+}
+
+// verifyBlockFieldCoverage asserts one block's fields are present in the request
+// and then descends into any blocks it contains.
+func verifyBlockFieldCoverage(t *testing.T, parent map[string]interface{}, block blockInfo, path string, tc ResourceCoverageEntry, modeKey string) {
+	t.Helper()
+	if !utils.FieldAppliesToMode(modeKey, path, tc.Mode) {
+		return
+	}
+	if len(block.Fields) == 0 && len(block.Blocks) == 0 {
+		return
+	}
+
+	// A block appears as a JSON array (most blocks) or a JSON object
+	// (object_properties and other singletons).
+	var item map[string]interface{}
+	switch value := parent[block.Name].(type) {
+	case []interface{}:
+		if len(value) == 0 {
+			t.Errorf("[%s] block %q is an empty array in PUT body", tc.TerraformType, path)
+			return
+		}
+		object, ok := value[0].(map[string]interface{})
+		if !ok {
+			t.Errorf("[%s] block %q[0] is not an object", tc.TerraformType, path)
+			return
+		}
+		item = object
+	case map[string]interface{}:
+		item = value
+	default:
+		t.Errorf("[%s] block %q absent from PUT body", tc.TerraformType, path)
+		return
+	}
+
+	for _, fi := range block.Fields {
+		nestedKey := path + "." + fi.Name
+		if !utils.FieldAppliesToMode(modeKey, nestedKey, tc.Mode) {
+			continue
+		}
+		if _, exists := item[fi.Name]; !exists {
+			t.Errorf("[%s] nested field %s absent from PUT body", tc.TerraformType, nestedKey)
+		}
+	}
+	for _, nested := range block.Blocks {
+		verifyBlockFieldCoverage(t, item, nested, path+"."+nested.Name, tc, modeKey)
+	}
 }
 
 func mapKeys(m map[string]interface{}) []string {
@@ -691,4 +783,57 @@ func mapKeys(m map[string]interface{}) []string {
 	}
 	sort.Strings(keys)
 	return keys
+}
+
+// TestCoverageTableMatchesRegistry keeps the lifecycle harness in step with the
+// reviewed registry. The table is handwritten because each entry carries
+// test-only knobs, so a resource added to the registry can silently go
+// unexercised: five had, until this check was added. Endpoint path and request
+// wrapper are compared too, since a wrong one would make the test assert against
+// requests the resource never sends.
+func TestCoverageTableMatchesRegistry(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join("..", "..", "..", "specs", "generated_registry.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var artifact struct {
+		Resources []struct {
+			TerraformType string `json:"terraform_type"`
+			API           struct {
+				EndpointPath      string `json:"endpoint_path"`
+				RequestWrapperKey string `json:"request_wrapper_key"`
+			} `json:"api"`
+		} `json:"resources"`
+	}
+	if err := json.Unmarshal(raw, &artifact); err != nil {
+		t.Fatal(err)
+	}
+
+	byType := make(map[string]ResourceCoverageEntry, len(allResourceTests))
+	for _, entry := range allResourceTests {
+		if _, duplicate := byType[entry.TerraformType]; duplicate {
+			t.Errorf("%s appears twice in the coverage table", entry.TerraformType)
+		}
+		byType[entry.TerraformType] = entry
+	}
+	if len(byType) != len(artifact.Resources) {
+		t.Errorf("coverage table has %d resources, the registry has %d", len(byType), len(artifact.Resources))
+	}
+	for _, resourceSpec := range artifact.Resources {
+		entry, exists := byType[resourceSpec.TerraformType]
+		if !exists {
+			t.Errorf("no coverage entry for %s", resourceSpec.TerraformType)
+			continue
+		}
+		if want := "/api" + resourceSpec.API.EndpointPath; entry.APIPath != want {
+			t.Errorf("%s coverage path = %q, registry endpoint is %q", resourceSpec.TerraformType, entry.APIPath, want)
+		}
+		if entry.WrapperKey != resourceSpec.API.RequestWrapperKey {
+			t.Errorf("%s wrapper key = %q, registry says %q", resourceSpec.TerraformType, entry.WrapperKey, resourceSpec.API.RequestWrapperKey)
+		}
+		delete(byType, resourceSpec.TerraformType)
+	}
+	for name := range byType {
+		t.Errorf("coverage entry %q has no registry resource", name)
+	}
 }

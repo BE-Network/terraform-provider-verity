@@ -1,0 +1,7 @@
+{
+  "threshold": {
+    "cov_th": {
+      "enable": false
+    }
+  }
+}

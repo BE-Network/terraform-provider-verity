@@ -1,0 +1,42 @@
+{
+  "eth_port_settings": {
+    "cov_ethps": {
+      "action": "",
+      "allocated_power": "",
+      "auto_negotiation": true,
+      "bpdu_filter": true,
+      "bpdu_guard": true,
+      "broadcast": true,
+      "bsp_enable": true,
+      "cli_commands": "",
+      "duplex_mode": "",
+      "enable": true,
+      "enable_ecn": true,
+      "enable_speed_control": true,
+      "enable_watchdog_tuning": true,
+      "enable_wred_tuning": true,
+      "fast_learning_mode": true,
+      "fec": "",
+      "guard_loop": true,
+      "max_allowed_unit": "",
+      "max_allowed_value": 42,
+      "max_bit_rate": "",
+      "maximum_wred_threshold": 42,
+      "minimum_wred_threshold": 42,
+      "mtu": 42,
+      "multicast": true,
+      "name": "cov_ethps",
+      "packet_queue": "",
+      "packet_queue_ref_type_": "",
+      "poe_enable": true,
+      "priority": "",
+      "priority_flow_control_watchdog_action": "",
+      "priority_flow_control_watchdog_detect_time": 42,
+      "priority_flow_control_watchdog_restore_time": 42,
+      "single_link": true,
+      "standalone_link_training": true,
+      "stp_enable": true,
+      "wred_drop_probability": 42
+    }
+  }
+}

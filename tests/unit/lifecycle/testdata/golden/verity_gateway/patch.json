@@ -1,0 +1,7 @@
+{
+  "gateway": {
+    "cov_gw": {
+      "enable": false
+    }
+  }
+}

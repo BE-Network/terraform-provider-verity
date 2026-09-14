@@ -1,0 +1,40 @@
+{
+  "pb_egress_profile": {
+    "cov_pb": {
+      "enable": true,
+      "ipv4_deny": [
+        {
+          "enable": true,
+          "filter": "",
+          "filter_ref_type_": "",
+          "index": 1
+        }
+      ],
+      "ipv4_permit": [
+        {
+          "enable": true,
+          "filter": "",
+          "filter_ref_type_": "",
+          "index": 1
+        }
+      ],
+      "ipv6_deny": [
+        {
+          "enable": true,
+          "filter": "",
+          "filter_ref_type_": "",
+          "index": 1
+        }
+      ],
+      "ipv6_permit": [
+        {
+          "enable": true,
+          "filter": "",
+          "filter_ref_type_": "",
+          "index": 1
+        }
+      ],
+      "name": "cov_pb"
+    }
+  }
+}

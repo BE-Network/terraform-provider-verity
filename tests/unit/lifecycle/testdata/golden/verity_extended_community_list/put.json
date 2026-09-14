@@ -1,0 +1,22 @@
+{
+  "extended_community_list": {
+    "cov_ecl": {
+      "any_all": "",
+      "enable": true,
+      "lists": [
+        {
+          "enable": true,
+          "index": 1,
+          "mode": "",
+          "route_target_expanded_expression": ""
+        }
+      ],
+      "name": "cov_ecl",
+      "object_properties": {
+        "notes": ""
+      },
+      "permit_deny": "",
+      "standard_expanded": ""
+    }
+  }
+}

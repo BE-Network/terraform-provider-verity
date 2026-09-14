@@ -1,0 +1,20 @@
+{
+  "allow_mac_based_authentication": "true",
+  "connection_mode": "",
+  "enable": "true",
+  "eth_ports.#": "1",
+  "eth_ports.0.%": "6",
+  "eth_ports.0.eth_port_profile_num_enable": "true",
+  "eth_ports.0.eth_port_profile_num_eth_port": "",
+  "eth_ports.0.eth_port_profile_num_eth_port_ref_type_": "",
+  "eth_ports.0.eth_port_profile_num_radius_filter_id": "",
+  "eth_ports.0.eth_port_profile_num_walled_garden_set": "true",
+  "eth_ports.0.index": "1",
+  "mac_authentication_holdoff_sec": "42",
+  "name": "cov_aep",
+  "object_properties.#": "1",
+  "object_properties.0.%": "1",
+  "object_properties.0.port_monitoring": "",
+  "reauthorization_period_sec": "42",
+  "trusted_port": "true"
+}

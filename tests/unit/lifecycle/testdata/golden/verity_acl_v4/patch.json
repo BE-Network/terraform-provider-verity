@@ -1,0 +1,7 @@
+{
+  "ip_filter": {
+    "cov_aclv4": {
+      "enable": false
+    }
+  }
+}

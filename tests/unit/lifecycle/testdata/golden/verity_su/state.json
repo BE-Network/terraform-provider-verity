@@ -1,0 +1,10 @@
+{
+  "enable": "true",
+  "name": "cov_su",
+  "object_properties.#": "1",
+  "object_properties.0.%": "1",
+  "object_properties.0.notes": "",
+  "pod": "",
+  "pod_ref_type_": "",
+  "position": "1.5"
+}

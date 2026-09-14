@@ -1,0 +1,7 @@
+{
+  "grouping_rules": {
+    "cov_gr": {
+      "enable": false
+    }
+  }
+}

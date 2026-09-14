@@ -1,0 +1,18 @@
+{
+  "gateway_profile": {
+    "cov_gwp": {
+      "enable": true,
+      "external_gateways": [
+        {
+          "enable": true,
+          "gateway": "",
+          "gateway_ref_type_": "",
+          "index": 1,
+          "peer_gw": true,
+          "source_ip_mask": ""
+        }
+      ],
+      "name": "cov_gwp"
+    }
+  }
+}

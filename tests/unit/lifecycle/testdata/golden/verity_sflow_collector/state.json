@@ -1,0 +1,6 @@
+{
+  "enable": "true",
+  "ip": "",
+  "name": "cov_sflow",
+  "port": "42"
+}

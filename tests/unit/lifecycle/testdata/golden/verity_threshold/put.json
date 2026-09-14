@@ -1,0 +1,31 @@
+{
+  "threshold": {
+    "cov_th": {
+      "critical_escalation_value": "",
+      "enable": true,
+      "error_escalation_value": "",
+      "escalation_metric": "",
+      "escalation_operation": "",
+      "for": "",
+      "keep_firing_for": "",
+      "name": "cov_th",
+      "notice_escalation_value": "",
+      "operation": "",
+      "rules": [
+        {
+          "enable": true,
+          "index": 1,
+          "metric": "",
+          "operation": "",
+          "threshold": "",
+          "threshold_ref_type_": "",
+          "type": "",
+          "value": ""
+        }
+      ],
+      "severity": "",
+      "type": "",
+      "warning_escalation_value": ""
+    }
+  }
+}

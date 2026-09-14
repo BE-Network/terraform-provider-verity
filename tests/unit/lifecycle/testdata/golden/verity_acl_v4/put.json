@@ -1,0 +1,21 @@
+{
+  "ip_filter": {
+    "cov_aclv4": {
+      "bidirectional": true,
+      "destination_ip": "",
+      "destination_port_1": 42,
+      "destination_port_2": 42,
+      "destination_port_operator": "",
+      "enable": true,
+      "name": "cov_aclv4",
+      "object_properties": {
+        "notes": ""
+      },
+      "protocol": "",
+      "source_ip": "",
+      "source_port_1": 42,
+      "source_port_2": 42,
+      "source_port_operator": ""
+    }
+  }
+}

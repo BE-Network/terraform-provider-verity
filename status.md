@@ -49,7 +49,7 @@ deliberate decision about whether they should be resources at all.
 
 ```mermaid
 flowchart LR
-    P0[Phase 0<br/>gates pass<br/>fixtures + inventory remain] --> P1[Phase 1<br/>all 50 API-backed resources<br/>all five metadata consumers generated<br/>4 of 5 policies verified]
+    P0[Phase 0<br/>deliverables complete<br/>2 decisions open] --> P1[Phase 1<br/>all 50 API-backed resources<br/>all five metadata consumers generated<br/>4 of 5 policies verified]
     P1 --> P2[Phase 2<br/>not started]
     P2 --> P3[Phases 3-6<br/>not started]
 ```
@@ -61,22 +61,75 @@ flowchart LR
 | Commit reproducible 6.6 mode-specific inputs | Implemented | `specs/openapi/6.6/{datacenter,campus,manifest}.json`; `specgen verify` checks canonical format and SHA-256 checksums. |
 | Offline CI verification | Implemented | CI runs `specgen verify` and deterministic extraction check. |
 | Schema snapshot of current resources | Implemented | `tests/unit/testdata/schema_snapshot_v6_6.json` captures 51 registered resource schema versions, state types, flags, and deterministic modifier/validator parameters. |
-| Request/response golden fixtures for every resource | Not started | Needed before generic lifecycle migration. |
-| Read and PATCH field-coverage expansion | Not started | Existing tests remain useful, but registry-driven coverage is not implemented. |
-| Full exception inventory | Started | The first classified exception is resolved: ACL v4/v6 are two resources on one endpoint, now expressed with `fixed_headers` pinning `ip_version` and validated against the legacy `HeaderSplitKey`. Two further exceptions are now represented: an API object declared with no properties, which Device Settings and SFP Breakout ship as an empty block, and a field the API itself documents with an empty description, recorded with `undocumented: true`. `reviewedModes` still restates rather than overrides, erroring unless declared modes equal extracted modes, so any mode-extraction defect will need an escape hatch carrying a recorded justification. Remaining legacy exceptions still need classification. |
+| Request/response golden fixtures for every resource | Implemented | 149 fixtures across all 50 resources in `tests/unit/lifecycle/testdata/golden/`: the request each resource sends on create and update, and the state its read path produces. `TestGoldenWireFixtures` replays them, and `TestUpdateOnlyResourceGoldenPatch` covers the one resource the acceptance harness cannot carry across an update. `UPDATE_GOLDEN=1` regenerates both. |
+| Read and PATCH field-coverage expansion | Implemented | PATCH bodies and decoded read state are recorded per resource by the golden fixtures, and the coverage table covers all 50 resources rather than 45. |
+| Full exception inventory | Implemented | [docs/exception_inventory.md](docs/exception_inventory.md) classifies every deviation from the common resource contract into the plan's five categories. Behavior all 49 API-backed resources share is explicitly not counted as an exception. Two items need follow-up: `verity_tenant.vrf_name` needs a validator the override format cannot yet express, and `verity_packet_broker.ipv6_permit.enable` looks like a defect rather than a policy. |
 | API range and lifecycle-policy design | Implemented | `internal/spec` defines numeric API ranges, deterministic literals, and all five lifecycle policies. |
 | Framework generic value bridge spike | Implemented | Protocol-level `value_bridge_test.go` proves recursive generic Framework reads/writes, including null and unknown values. |
 | IPv4 List transport adapter spike | Implemented | `internal/transport` exact JSON tests plus bulk-manager integration cover omission, false/empty values, explicit-null errors, and no-panic diagnostics. |
 | Version-zero state contract and upgrade mechanism | Implemented | Snapshot captures current state types; `internal/genericresource/state.go` registers prior schemas/upgraders and has a real Framework v0-to-v1 test. |
 | Stable provider registration | Implemented | `Resources()` is mode-independent; contract test verifies names/order/state types before configuration and in both modes. |
-| Final nullable/reset policy decision | Partially implemented | Policies are represented and validated in `FieldSpec`; provider-wide behavioral mapping and legacy parity fixtures remain. |
+| Final nullable/reset policy decision | Mostly implemented | The design is settled and documented: nullability follows the transform rule, and clear-and-create behavior follows the wire type. Four of five policies are verified against the implementation for every field. Two decisions remain open, both recorded rather than assumed: what an unknown value should do for the 151 nullable fields, whose helpers have no unknown branch, and whether a missing identity in a response should be a hard diagnostic rather than a Terraform null. |
 
-### Phase 0 exit blockers
+### Phase 0 exit criterion
 
-1. Add per-resource request/response golden fixtures and registry-driven Read/PATCH coverage.
-2. Complete and review the legacy exception inventory.
-3. Map nullable/reset behavior from every legacy resource into explicit policy values.
-4. Commit the completed Phase 0 foundation after review.
+Met, with two intended-behavior decisions left open and recorded.
+
+Behavior is measurable through 149 golden fixtures and the schema snapshot;
+intended behavior changes are separated from refactoring ones and recorded as
+they were made; committed inputs regenerate offline under `specgen verify`; the
+field-policy design is settled and four of five policies are verified against the
+implementation; and the Framework, transport, registration, and state-contract
+spikes all pass.
+
+Two follow-ups are recorded rather than blocking, both in
+[docs/exception_inventory.md](docs/exception_inventory.md): a validator the
+override format cannot express, and a field whose collection offers no update
+path at all.
+
+### Golden wire fixtures
+
+Every other check in this repository compares the registry against the legacy
+*source*: schema shape, modes, aliases, lifecycle policies. That proves the
+registry describes the implementation; it cannot prove a replacement puts the
+same bytes on the wire. Phase 2 is judged on behavior parity, and parity needs a
+recorded baseline.
+
+`tests/unit/lifecycle/testdata/golden/` is that baseline: 149 fixtures across
+three directions and all 50 resources, captured from the handwritten resources as
+they ship.
+
+| Fixture | Count | Pins |
+| --- | --- | --- |
+| `put.json` | 49 | the full create request |
+| `patch.json` | 50 | which fields an update carries |
+| `state.json` | 50 | the Terraform state the read path decodes |
+
+Configurations are generated from the shipped schema and now recurse into blocks
+nested inside blocks, so Fabric's `object_properties.system_graphs` — the
+provider's only two-level nesting — is exercised rather than silently omitted.
+
+`verity_sfp_breakout` has no create fixture and never will: it refuses both create
+and delete by design, representing hardware that can only be read and updated. Its
+read state is captured by import, and its update is captured by
+`TestUpdateOnlyResourceGoldenPatch`, which drives the bulk manager directly
+against a recording server. That keeps its reachable behavior pinned without the
+Terraform lifecycle the resource cannot complete.
+
+A resource moving to the generic engine re-runs the same test, so a behavior
+change surfaces as a diff in a committed file rather than silently. The PATCH
+fixtures are the most revealing — `verity_ipv4_list` sends only
+`{"enable": false}`, which is where omission and explicit-null behavior shows —
+and the state fixtures cover the direction the request fixtures cannot: a decoder
+that dropped a field or read it as the wrong type fails here instead of passing
+because nothing asserted on the decoded value.
+
+The fixtures are regenerated deliberately with `UPDATE_GOLDEN=1`, never to make a
+red test pass. Negative controls confirm both directions bite: changing a recorded
+empty string to an explicit null fails the request check, and removing one field
+from a recorded state fails the read check.
+
+
 
 ### Descriptions follow the API
 
@@ -306,8 +359,17 @@ for 282 fields, `create_null` for 120, `response_absence` for 48, `unknown_plan`
 for 521. That record is the reason the remainder is called out rather than
 assumed correct.
 
-Phase 0 also remains open: request/response golden fixtures, registry-driven
-Read/PATCH coverage, and the exception inventory.
+**Phase 0's deliverables are complete.** Request and read-path fixtures exist for
+every resource that supports create, the coverage table covers all 50, and the
+exception inventory classifies every deviation from the common contract. The exit
+criterion is met: behavior is measurable, intended behavior changes are separated
+from refactoring ones, committed inputs regenerate offline, the field-policy
+design is settled, and all four spikes pass.
+
+Two nullable/reset decisions remain open. They are decisions about intended
+behavior rather than missing characterization, and both are recorded where they
+will be made: the 151 nullable fields' unknown handling, and whether a missing
+identity should be a hard diagnostic.
 
 ### Pre-migration gates
 
@@ -389,12 +451,10 @@ workflow sets; without them the lifecycle package alone takes far longer.
 1. Read the bespoke create and update logic for the reference and auto-assignment
    pairs, and for the 151 nullable fields' unknown handling. Their structure is
    modelled; their policies are the last unverified behavior in the registry.
-2. Complete Phase 0: request/response golden fixtures, registry-driven Read/PATCH
-   coverage, and the exception inventory. These are the remaining exit-criterion
-   items outside the registry itself.
-
-Phase 0 also still needs request/response golden fixtures, registry-driven
-Read/PATCH coverage, and the exception inventory completed.
+2. Decide the two items the exception inventory leaves open: a validator for
+   `verity_tenant.vrf_name`, which needs `FieldSpec.Validators` wired into the
+   override format, and whether `verity_packet_broker.ipv6_permit.enable` is a
+   defect to fix rather than a behavior to replicate.
 
 Keep reviewed overrides as the only editable resource metadata and generated
 registry output as the parity target.

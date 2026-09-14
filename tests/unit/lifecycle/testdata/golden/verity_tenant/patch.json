@@ -1,0 +1,7 @@
+{
+  "tenant": {
+    "cov_tenant": {
+      "enable": false
+    }
+  }
+}

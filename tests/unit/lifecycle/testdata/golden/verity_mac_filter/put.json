@@ -1,0 +1,17 @@
+{
+  "mac_filter": {
+    "cov_mac_filter": {
+      "enable": true,
+      "filters": [
+        {
+          "filter_num_enable": true,
+          "filter_num_mac": "",
+          "filter_num_mask": "",
+          "index": 1
+        }
+      ],
+      "name": "cov_mac_filter",
+      "type": ""
+    }
+  }
+}

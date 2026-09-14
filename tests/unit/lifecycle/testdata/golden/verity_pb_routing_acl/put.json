@@ -1,0 +1,42 @@
+{
+  "pb_routing_acl": {
+    "cov_pbra": {
+      "enable": true,
+      "ip_version": "",
+      "ipv4_deny": [
+        {
+          "enable": true,
+          "filter": "",
+          "filter_ref_type_": "",
+          "index": 1
+        }
+      ],
+      "ipv4_permit": [
+        {
+          "enable": true,
+          "filter": "",
+          "filter_ref_type_": "",
+          "index": 1
+        }
+      ],
+      "ipv6_deny": [
+        {
+          "enable": true,
+          "filter": "",
+          "filter_ref_type_": "",
+          "index": 1
+        }
+      ],
+      "ipv6_permit": [
+        {
+          "enable": true,
+          "filter": "",
+          "filter_ref_type_": "",
+          "index": 1
+        }
+      ],
+      "name": "cov_pbra",
+      "next_hop_ips": ""
+    }
+  }
+}

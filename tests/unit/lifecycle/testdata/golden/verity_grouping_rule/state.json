@@ -1,0 +1,15 @@
+{
+  "enable": "true",
+  "name": "cov_gr",
+  "operation": "",
+  "rules.#": "1",
+  "rules.0.%": "7",
+  "rules.0.enable": "true",
+  "rules.0.index": "1",
+  "rules.0.rule_invert": "true",
+  "rules.0.rule_type": "",
+  "rules.0.rule_value": "",
+  "rules.0.rule_value_path": "",
+  "rules.0.rule_value_path_ref_type_": "",
+  "type": ""
+}

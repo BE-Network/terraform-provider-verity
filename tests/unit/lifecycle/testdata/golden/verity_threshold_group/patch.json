@@ -1,0 +1,7 @@
+{
+  "threshold_group": {
+    "cov_tg": {
+      "enable": false
+    }
+  }
+}

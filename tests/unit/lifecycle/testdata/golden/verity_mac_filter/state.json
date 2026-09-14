@@ -1,0 +1,11 @@
+{
+  "enable": "true",
+  "filters.#": "1",
+  "filters.0.%": "4",
+  "filters.0.filter_num_enable": "true",
+  "filters.0.filter_num_mac": "",
+  "filters.0.filter_num_mask": "",
+  "filters.0.index": "1",
+  "name": "cov_mac_filter",
+  "type": ""
+}

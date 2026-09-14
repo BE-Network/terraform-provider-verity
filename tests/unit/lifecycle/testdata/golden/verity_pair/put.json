@@ -1,0 +1,15 @@
+{
+  "switch_pair": {
+    "cov_pair": {
+      "enable": true,
+      "is_whitebox_pair": true,
+      "lag": "",
+      "lag_ref_type_": "",
+      "name": "cov_pair",
+      "switchpoint_1": "",
+      "switchpoint_1_ref_type_": "",
+      "switchpoint_2": "",
+      "switchpoint_2_ref_type_": ""
+    }
+  }
+}

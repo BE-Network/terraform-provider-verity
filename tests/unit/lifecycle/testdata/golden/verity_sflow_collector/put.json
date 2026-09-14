@@ -1,0 +1,10 @@
+{
+  "sflow_collector": {
+    "cov_sflow": {
+      "enable": true,
+      "ip": "",
+      "name": "cov_sflow",
+      "port": 42
+    }
+  }
+}

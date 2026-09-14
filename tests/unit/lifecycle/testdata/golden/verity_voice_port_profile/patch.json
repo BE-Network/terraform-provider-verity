@@ -1,0 +1,7 @@
+{
+  "voice_port_profiles": {
+    "cov_vpp": {
+      "enable": false
+    }
+  }
+}

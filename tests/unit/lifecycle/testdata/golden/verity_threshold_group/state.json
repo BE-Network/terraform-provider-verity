@@ -1,0 +1,23 @@
+{
+  "enable": "true",
+  "name": "cov_tg",
+  "targets.#": "1",
+  "targets.0.%": "9",
+  "targets.0.element": "",
+  "targets.0.element_ref_type_": "",
+  "targets.0.enable": "true",
+  "targets.0.grouping_rules": "",
+  "targets.0.grouping_rules_ref_type_": "",
+  "targets.0.index": "1",
+  "targets.0.port": "",
+  "targets.0.sdlc": "",
+  "targets.0.type": "",
+  "thresholds.#": "1",
+  "thresholds.0.%": "5",
+  "thresholds.0.enable": "true",
+  "thresholds.0.index": "1",
+  "thresholds.0.severity_override": "",
+  "thresholds.0.threshold": "",
+  "thresholds.0.threshold_ref_type_": "",
+  "type": ""
+}

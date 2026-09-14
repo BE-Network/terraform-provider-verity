@@ -1,0 +1,5 @@
+{
+  "enable": "true",
+  "enable_sflow": "true",
+  "name": "cov_diagpp"
+}

@@ -1,0 +1,13 @@
+{
+  "badge": {
+    "cov_badge": {
+      "color": "",
+      "enable": true,
+      "name": "cov_badge",
+      "number": 42,
+      "object_properties": {
+        "notes": ""
+      }
+    }
+  }
+}

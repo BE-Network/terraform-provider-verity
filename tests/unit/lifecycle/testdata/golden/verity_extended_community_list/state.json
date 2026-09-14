@@ -1,0 +1,16 @@
+{
+  "any_all": "",
+  "enable": "true",
+  "lists.#": "1",
+  "lists.0.%": "4",
+  "lists.0.enable": "true",
+  "lists.0.index": "1",
+  "lists.0.mode": "",
+  "lists.0.route_target_expanded_expression": "",
+  "name": "cov_ecl",
+  "object_properties.#": "1",
+  "object_properties.0.%": "1",
+  "object_properties.0.notes": "",
+  "permit_deny": "",
+  "standard_expanded": ""
+}

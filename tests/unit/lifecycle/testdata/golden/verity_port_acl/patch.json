@@ -1,0 +1,7 @@
+{
+  "port_acl": {
+    "cov_pacl": {
+      "enable": false
+    }
+  }
+}

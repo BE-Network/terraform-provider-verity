@@ -1,0 +1,7 @@
+{
+  "fabric": {
+    "cov_fabric": {
+      "enable": false
+    }
+  }
+}

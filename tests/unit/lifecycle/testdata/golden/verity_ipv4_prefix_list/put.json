@@ -1,0 +1,21 @@
+{
+  "ipv4_prefix_list": {
+    "cov_ipv4pl": {
+      "enable": true,
+      "lists": [
+        {
+          "enable": true,
+          "greater_than_equal_value": 42,
+          "index": 1,
+          "ipv4_prefix": "",
+          "less_than_equal_value": 42,
+          "permit_deny": ""
+        }
+      ],
+      "name": "cov_ipv4pl",
+      "object_properties": {
+        "notes": ""
+      }
+    }
+  }
+}

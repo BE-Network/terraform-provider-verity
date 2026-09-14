@@ -1,0 +1,7 @@
+{
+  "route_map_clause": {
+    "cov_rmc": {
+      "enable": false
+    }
+  }
+}

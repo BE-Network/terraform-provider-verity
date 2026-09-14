@@ -1,0 +1,58 @@
+{
+  "gateway": {
+    "cov_gw": {
+      "advertisement_interval": 42,
+      "allowas_in_origin": true,
+      "anycast_ip_mask": "",
+      "bfd_detect_multiplier": 42,
+      "bfd_multihop": true,
+      "bfd_receive_interval": 42,
+      "bfd_transmission_interval": 42,
+      "bgp_instance_as_number": 42,
+      "connect_timer": 42,
+      "default_originate": true,
+      "dynamic_bgp_limits": 42,
+      "dynamic_bgp_subnet": "",
+      "ebgp_multihop": 42,
+      "egress_vlan": 42,
+      "enable": true,
+      "enable_bfd": true,
+      "export_route_map": "",
+      "export_route_map_ref_type_": "",
+      "fabric": "",
+      "fabric_interconnect": true,
+      "fabric_ref_type_": "",
+      "gateway_mode": "",
+      "helper_hop_ip_address": "",
+      "hold_timer": 42,
+      "import_route_map": "",
+      "import_route_map_ref_type_": "",
+      "keepalive_timer": 42,
+      "local_as_no_prepend": true,
+      "local_as_number": 42,
+      "max_local_as_occurrences": 42,
+      "md5_password": "",
+      "md5_password_encrypted": "",
+      "name": "cov_gw",
+      "neighbor_as_number": 42,
+      "neighbor_ip_address": "",
+      "next_hop_self": true,
+      "remove_private_as": true,
+      "replace_as": true,
+      "source_ip_address": "",
+      "static_routes": [
+        {
+          "ad_value": 42,
+          "enable": true,
+          "index": 1,
+          "ipv4_route_prefix": "",
+          "next_hop_ip_address": ""
+        }
+      ],
+      "switch_encrypted_md5_password": true,
+      "tenant": "",
+      "tenant_ref_type_": "",
+      "type": ""
+    }
+  }
+}

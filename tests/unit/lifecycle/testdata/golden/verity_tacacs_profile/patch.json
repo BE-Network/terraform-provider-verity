@@ -1,0 +1,7 @@
+{
+  "tacacs_profile": {
+    "cov_tacacs_profile": {
+      "enable": false
+    }
+  }
+}

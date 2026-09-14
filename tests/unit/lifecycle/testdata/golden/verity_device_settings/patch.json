@@ -1,0 +1,7 @@
+{
+  "eth_device_profiles": {
+    "cov_ds": {
+      "enable": false
+    }
+  }
+}

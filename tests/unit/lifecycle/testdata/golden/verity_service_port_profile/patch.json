@@ -1,0 +1,7 @@
+{
+  "service_port_profile": {
+    "cov_spp": {
+      "enable": false
+    }
+  }
+}

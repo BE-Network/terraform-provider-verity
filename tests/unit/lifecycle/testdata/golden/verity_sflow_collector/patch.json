@@ -1,0 +1,7 @@
+{
+  "sflow_collector": {
+    "cov_sflow": {
+      "enable": false
+    }
+  }
+}

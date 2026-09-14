@@ -1,0 +1,11 @@
+{
+  "enable": "true",
+  "expected_spine_count": "42",
+  "fabric": "",
+  "fabric_ref_type_": "",
+  "name": "cov_pod",
+  "object_properties.#": "1",
+  "object_properties.0.%": "1",
+  "object_properties.0.notes": "",
+  "position": "1.5"
+}

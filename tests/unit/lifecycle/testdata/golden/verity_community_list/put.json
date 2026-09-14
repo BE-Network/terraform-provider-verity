@@ -1,0 +1,22 @@
+{
+  "community_list": {
+    "cov_cl": {
+      "any_all": "",
+      "enable": true,
+      "lists": [
+        {
+          "community_string_expanded_expression": "",
+          "enable": true,
+          "index": 1,
+          "mode": ""
+        }
+      ],
+      "name": "cov_cl",
+      "object_properties": {
+        "notes": ""
+      },
+      "permit_deny": "",
+      "standard_expanded": ""
+    }
+  }
+}

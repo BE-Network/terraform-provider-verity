@@ -1,0 +1,14 @@
+{
+  "enable": "true",
+  "name": "cov_pq",
+  "pbit.#": "1",
+  "pbit.0.%": "2",
+  "pbit.0.index": "1",
+  "pbit.0.packet_queue_for_p_bit": "42",
+  "queue.#": "1",
+  "queue.0.%": "4",
+  "queue.0.bandwidth_for_queue": "42",
+  "queue.0.index": "1",
+  "queue.0.scheduler_type": "",
+  "queue.0.scheduler_weight": "42"
+}

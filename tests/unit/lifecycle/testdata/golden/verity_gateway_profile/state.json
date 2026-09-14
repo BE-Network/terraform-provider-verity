@@ -1,0 +1,12 @@
+{
+  "enable": "true",
+  "external_gateways.#": "1",
+  "external_gateways.0.%": "6",
+  "external_gateways.0.enable": "true",
+  "external_gateways.0.gateway": "",
+  "external_gateways.0.gateway_ref_type_": "",
+  "external_gateways.0.index": "1",
+  "external_gateways.0.peer_gw": "true",
+  "external_gateways.0.source_ip_mask": "",
+  "name": "cov_gwp"
+}

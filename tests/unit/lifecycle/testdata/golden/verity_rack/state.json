@@ -1,0 +1,10 @@
+{
+  "enable": "true",
+  "name": "cov_rack",
+  "object_properties.#": "1",
+  "object_properties.0.%": "1",
+  "object_properties.0.notes": "",
+  "position": "1.5",
+  "su": "",
+  "su_ref_type_": ""
+}

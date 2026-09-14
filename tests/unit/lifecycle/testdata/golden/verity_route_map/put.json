@@ -1,0 +1,19 @@
+{
+  "route_map": {
+    "cov_rm": {
+      "enable": true,
+      "name": "cov_rm",
+      "object_properties": {
+        "notes": ""
+      },
+      "route_map_clauses": [
+        {
+          "enable": true,
+          "index": 1,
+          "route_map_clause": "",
+          "route_map_clause_ref_type_": ""
+        }
+      ]
+    }
+  }
+}

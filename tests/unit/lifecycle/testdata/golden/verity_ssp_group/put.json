@@ -1,0 +1,14 @@
+{
+  "superspine_group": {
+    "cov_ssp_group": {
+      "enable": true,
+      "fabric": "",
+      "fabric_ref_type_": "",
+      "name": "cov_ssp_group",
+      "object_properties": {
+        "notes": ""
+      },
+      "position": 1.5
+    }
+  }
+}

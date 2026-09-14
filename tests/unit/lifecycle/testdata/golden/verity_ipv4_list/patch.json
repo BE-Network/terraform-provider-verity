@@ -1,0 +1,7 @@
+{
+  "ipv4_list_filter": {
+    "cov_ipv4l": {
+      "enable": false
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "as_path_access_list": {
+    "cov_apal": {
+      "enable": true,
+      "lists": [
+        {
+          "enable": true,
+          "index": 1,
+          "regular_expression": ""
+        }
+      ],
+      "name": "cov_apal",
+      "object_properties": {
+        "notes": ""
+      },
+      "permit_deny": ""
+    }
+  }
+}
