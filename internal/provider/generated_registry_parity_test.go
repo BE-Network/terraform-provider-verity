@@ -340,71 +340,155 @@ func TestGeneratedPoliciesMatchLegacyBehavior(t *testing.T) {
 		t.Errorf("evidence covers %d resources, the registry has %d", len(evidence), len(registry))
 	}
 	checked, excluded := 0, 0
-	for _, resourceSpec := range registry {
-		fields, exists := evidence[resourceSpec.TerraformType]
-		if !exists {
-			t.Errorf("no legacy policy evidence for %s", resourceSpec.TerraformType)
-			continue
-		}
-		names := make(map[string]bool, len(resourceSpec.Fields))
-		for _, field := range resourceSpec.Fields {
-			names[field.TerraformName] = true
-		}
-		for _, field := range resourceSpec.Fields {
+	var walk func(fields []spec.FieldSpec, evidence map[string]map[string]string, prefix, resourceType, identity, collectionIdentity string)
+	walk = func(fields []spec.FieldSpec, evidence map[string]map[string]string, prefix, resourceType, identity, collectionIdentity string) {
+		paired := pairedFields(fields)
+		for _, field := range fields {
 			if field.Unmanaged {
 				continue
 			}
+			path := prefix + field.TerraformName
 			// Objects and arrays are cleared by their collection strategy rather
 			// than by a wire value, so no create/update helper records a policy.
 			if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
 				excluded++
+				nestedIdentity := ""
+				if field.Collection != nil {
+					nestedIdentity = field.Collection.IdentityField
+				}
+				walk(field.Fields, evidence, path+".", resourceType, identity, nestedIdentity)
 				continue
 			}
-			policies, recorded := fields[field.TerraformName]
+			// A collection's identity field names the entry and is always sent, so
+			// it is never compared or cleared and no helper records a policy for it.
+			if collectionIdentity != "" && field.TerraformName == collectionIdentity {
+				excluded++
+				continue
+			}
+			policies, recorded := evidence[path]
 			if !recorded {
-				if isPairedField(field.TerraformName, names) {
+				// UpdateExisting for this collection handles only the reference pair
+				// and the index, so its enable flag has no update path to read a
+				// policy from. That is a legacy gap, recorded rather than inferred.
+				if resourceType == "verity_packet_broker" && path == "ipv6_permit.enable" {
 					excluded++
 					continue
 				}
-				t.Errorf("no legacy policy evidence for %s.%s", resourceSpec.TerraformType, field.TerraformName)
+				if paired[field.TerraformName] {
+					excluded++
+					continue
+				}
+				t.Errorf("no legacy policy evidence for %s.%s", resourceType, path)
 				continue
 			}
 			got := map[string]string{
 				"update_clear":     string(field.UpdateClear),
 				"create_null":      string(field.CreateNull),
 				"response_absence": string(field.ResponseAbsence),
+				"unknown_plan":     string(field.UnknownPlan),
 			}
 			for policy, want := range policies {
 				// The identity field is Required and replaces on change, so
 				// Terraform never sends it null and never updates it in place.
 				// Only its read behavior is reachable, and so comparable.
-				if field.TerraformName == resourceSpec.IdentityPath && policy != "response_absence" {
+				if path == identity && policy != "response_absence" {
 					continue
 				}
 				checked++
 				if got[policy] != want {
 					t.Errorf("%s.%s %s = %q, legacy behavior is %q",
-						resourceSpec.TerraformType, field.TerraformName, policy, got[policy], want)
+						resourceType, path, policy, got[policy], want)
 				}
 			}
 		}
 	}
+	for _, resourceSpec := range registry {
+		fields, exists := evidence[resourceSpec.TerraformType]
+		if !exists {
+			t.Errorf("no legacy policy evidence for %s", resourceSpec.TerraformType)
+			continue
+		}
+		walk(resourceSpec.Fields, fields, "", resourceSpec.TerraformType, resourceSpec.IdentityPath, "")
+	}
 	t.Logf("%d policy assertions checked, %d fields excluded by category", checked, excluded)
 }
 
-// isPairedField reports whether a field is half of a reference or auto-assignment
-// pair. Those are driven by bespoke logic in each resource rather than by the
-// shared create and update helpers, so no policy can be read from them
-// mechanically. The registry does not model the pairing yet either; until it
-// does, both halves are excluded from policy verification.
-func isPairedField(name string, names map[string]bool) bool {
-	for _, suffix := range []string{"_ref_type_", "_auto_assigned_"} {
-		if names[name+suffix] {
-			return true
+// pairedFields returns the fields at one level that are half of a reference or
+// auto-assignment pair. Each resource drives those with bespoke logic rather than
+// the shared create and update helpers, so no lifecycle policy can be read from
+// them mechanically and both halves are excluded from policy verification.
+//
+// The pairing comes from the registry, not from the field names: a base field
+// records the relationship, and its companion is whichever field the relationship
+// points at. Re-deriving it from "_ref_type_" and "_auto_assigned_" suffixes here
+// would reinstate the implicit convention the registry exists to replace, and
+// would keep passing if the registry stopped recording a pair at all.
+func pairedFields(fields []spec.FieldSpec) map[string]bool {
+	paired := make(map[string]bool)
+	for _, field := range fields {
+		if field.Reference != nil {
+			paired[field.TerraformName] = true
+			paired[field.Reference.TypeField] = true
 		}
-		if base, found := strings.CutSuffix(name, suffix); found && names[base] {
-			return true
+		if field.AutoAssignment != nil {
+			paired[field.TerraformName] = true
+			paired[field.AutoAssignment.FlagField] = true
 		}
 	}
-	return false
+	return paired
+}
+
+// TestGeneratedPairsAreModelled checks that the registry records every reference
+// and auto-assignment relationship the API spells out, rather than leaving the
+// pairing implicit in the field names. The plan lists both among the things a
+// plain schema cannot express, and the generic engine needs them to know that
+// writing one half without the other is meaningless.
+func TestGeneratedPairsAreModelled(t *testing.T) {
+	references, assignments := 0, 0
+	var walk func(fields []spec.FieldSpec, path string)
+	walk = func(fields []spec.FieldSpec, path string) {
+		byName := make(map[string]spec.FieldSpec, len(fields))
+		for _, field := range fields {
+			byName[field.TerraformName] = field
+		}
+		for _, field := range fields {
+			if base, found := strings.CutSuffix(field.TerraformName, "_ref_type_"); found {
+				partner, exists := byName[base]
+				if !exists {
+					t.Errorf("%s.%s has no base field", path, field.TerraformName)
+				} else if partner.Reference == nil {
+					t.Errorf("%s.%s is a reference companion but %s records no reference", path, field.TerraformName, base)
+				} else {
+					if partner.Reference.TypeField != field.TerraformName {
+						t.Errorf("%s.%s references type field %q, want %q", path, base, partner.Reference.TypeField, field.TerraformName)
+					}
+					if len(partner.Reference.AllowedTypes) == 0 {
+						t.Errorf("%s.%s records no allowed reference types", path, base)
+					}
+					references++
+				}
+			}
+			if base, found := strings.CutSuffix(field.TerraformName, "_auto_assigned_"); found {
+				partner, exists := byName[base]
+				if !exists {
+					t.Errorf("%s.%s has no base field", path, field.TerraformName)
+				} else if partner.AutoAssignment == nil {
+					t.Errorf("%s.%s is an auto-assignment flag but %s records no auto assignment", path, field.TerraformName, base)
+				} else {
+					if partner.AutoAssignment.FlagField != field.TerraformName {
+						t.Errorf("%s.%s names flag %q, want %q", path, base, partner.AutoAssignment.FlagField, field.TerraformName)
+					}
+					assignments++
+				}
+			}
+			walk(field.Fields, path+"."+field.TerraformName)
+		}
+	}
+	for _, resourceSpec := range generatedRegistry(t) {
+		walk(resourceSpec.Fields, resourceSpec.TerraformType)
+	}
+	if references == 0 || assignments == 0 {
+		t.Fatalf("found %d reference and %d auto-assignment pairs; the walk looks broken", references, assignments)
+	}
+	t.Logf("%d reference pairs and %d auto-assignment pairs modelled", references, assignments)
 }

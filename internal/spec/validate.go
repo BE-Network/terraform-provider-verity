@@ -286,7 +286,7 @@ func validPolicies(f FieldSpec) bool {
 	responseAbsenceValid := f.ResponseAbsence == ResponseAbsenceTerraformNull || f.ResponseAbsence == ResponseAbsenceDefault || f.ResponseAbsence == ResponseAbsencePreserve || f.ResponseAbsence == ResponseAbsenceError
 	return responseAbsenceValid &&
 		(f.CreateNull == CreateNullOmit || f.CreateNull == CreateNullAPINull || f.CreateNull == CreateNullDefault || f.CreateNull == CreateNullReject) &&
-		(f.UpdateClear == UpdateClearAPINull || f.UpdateClear == UpdateClearEmptyString || f.UpdateClear == UpdateClearZero || f.UpdateClear == UpdateClearFalse || f.UpdateClear == UpdateClearDefault || f.UpdateClear == UpdateClearOmitUnmanaged || f.UpdateClear == UpdateClearReject) &&
+		(f.UpdateClear == UpdateClearAPINull || f.UpdateClear == UpdateClearEmptyString || f.UpdateClear == UpdateClearZero || f.UpdateClear == UpdateClearFalse || f.UpdateClear == UpdateClearDefault || f.UpdateClear == UpdateClearOmit || f.UpdateClear == UpdateClearOmitUnmanaged || f.UpdateClear == UpdateClearReject) &&
 		(f.UnknownPlan == UnknownPlanOmitAndRead || f.UnknownPlan == UnknownPlanPreserve || f.UnknownPlan == UnknownPlanReject) &&
 		(f.StateOwnership == StateConfiguration || f.StateOwnership == StateServer || f.StateOwnership == StateConfigurationOrServer)
 }

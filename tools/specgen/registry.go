@@ -273,7 +273,7 @@ func mergeResourceOverride(coverage coverageResource, override resourceOverride,
 	if !versions.Contains(version) {
 		return spec.ResourceSpec{}, fmt.Errorf("versions do not include selected API version %s", version)
 	}
-	fields, err := mergeFieldOverrides(coverage.Fields, override.Fields, versions, version, defaults.Profiles, defaults.Profile, override.Modes, declaredVersions)
+	fields, err := mergeFieldOverrides(coverage.Fields, override.Fields, versions, version, defaults.Profiles, defaults.Profile, override.Modes, declaredVersions, "")
 	if err != nil {
 		return spec.ResourceSpec{}, err
 	}
@@ -300,7 +300,7 @@ func mergeResourceOverride(coverage coverageResource, override resourceOverride,
 	}, nil
 }
 
-func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, parentVersions spec.VersionRange, selectedVersion spec.APIVersion, profiles map[string]policyProfile, defaultProfile string, inheritModes []string, inheritVersions versionRangeOverride) ([]spec.FieldSpec, error) {
+func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, parentVersions spec.VersionRange, selectedVersion spec.APIVersion, profiles map[string]policyProfile, defaultProfile string, inheritModes []string, inheritVersions versionRangeOverride, enclosing string) ([]spec.FieldSpec, error) {
 	coverageByName := make(map[string]coverageField, len(coverage))
 	for _, field := range coverage {
 		coverageByName[field.APIName] = field
@@ -330,7 +330,7 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 	}
 	fields := make([]spec.FieldSpec, 0, len(overrides))
 	for _, source := range coverage {
-		override, err := resolveFieldOverride(overrideByName[source.APIName], profiles, defaultProfile, apiNullable(source.Kind, source.APIName), inheritModes, inheritVersions)
+		override, err := resolveFieldOverride(overrideByName[source.APIName], profiles, defaultProfile, apiNullable(source.Kind, source.APIName), enclosing, inheritModes, inheritVersions)
 		if err != nil {
 			return nil, err
 		}
@@ -408,11 +408,15 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 			UnknownPlan:     spec.UnknownPlanPolicy(override.UnknownPlan),
 			StateOwnership:  spec.StateOwnershipPolicy(override.StateOwnership),
 			Collection:      collectionSpec(override.Collection),
-			Reference:       referenceSpec(override.Reference),
-			AutoAssignment:  autoAssignmentSpec(override.AutoAssignment),
+			Reference:       referenceSpec(override.Reference, source.APIName, coverageByName),
+			AutoAssignment:  autoAssignmentSpec(override.AutoAssignment, source.APIName, coverageByName),
 		})
 		if len(source.Fields) != 0 || len(override.Fields) != 0 {
-			nested, err := mergeFieldOverrides(source.Fields, override.Fields, versions, selectedVersion, profiles, defaultProfile, override.Modes, override.Versions)
+			nestedEnclosing := enclosing
+			if override.Collection != nil {
+				nestedEnclosing = override.Collection.Strategy
+			}
+			nested, err := mergeFieldOverrides(source.Fields, override.Fields, versions, selectedVersion, profiles, defaultProfile, override.Modes, override.Versions, nestedEnclosing)
 			if err != nil {
 				return nil, fmt.Errorf("field %q: %w", source.APIName, err)
 			}
@@ -452,7 +456,7 @@ func fieldElementKind(source coverageField, override fieldOverride) (spec.FieldK
 // profile supplies lifecycle policies, the Terraform name follows the API name,
 // and modes and versions inherit from the resource. Anything stated explicitly
 // on the field wins, so a deviation is always visible in the file.
-func resolveFieldOverride(override fieldOverride, profiles map[string]policyProfile, defaultProfile string, nullable bool, modes []string, versions versionRangeOverride) (fieldOverride, error) {
+func resolveFieldOverride(override fieldOverride, profiles map[string]policyProfile, defaultProfile string, nullable bool, enclosing string, modes []string, versions versionRangeOverride) (fieldOverride, error) {
 	resolved := override
 	if resolved.Profile == "" && !resolved.Unmanaged && resolved.Access == "" {
 		resolved.Profile = defaultProfile
@@ -496,7 +500,7 @@ func resolveFieldOverride(override fieldOverride, profiles map[string]policyProf
 	// per-field overrides to the cases where the provider disagrees with the
 	// document, and those are individually reviewed.
 	if !resolved.Unmanaged && resolved.UpdateClear == "" {
-		resolved.UpdateClear = defaultUpdateClear(resolved.APIKind, nullable)
+		resolved.UpdateClear = defaultUpdateClear(resolved.APIKind, nullable, enclosing)
 	}
 	// Creating and clearing use the same wire capability: a field that can carry
 	// an explicit null on update carries one on create, and one that cannot is
@@ -506,6 +510,20 @@ func resolveFieldOverride(override fieldOverride, profiles map[string]policyProf
 			resolved.CreateNull = string(spec.CreateNullAPINull)
 		} else {
 			resolved.CreateNull = string(spec.CreateNullOmit)
+		}
+	}
+	// A field the request omits when null is omitted when unknown too, and the read
+	// that follows the operation supplies the server's value.
+	//
+	// The nullable helpers behave differently: they key off whether the attribute
+	// was written in configuration and have no unknown branch at all, so nothing in
+	// the implementation states what an unknown value should do. Those keep
+	// preserve_state, which is the previous assumption rather than a verified fact.
+	if !resolved.Unmanaged && resolved.UnknownPlan == "" {
+		if resolved.CreateNull == string(spec.CreateNullOmit) {
+			resolved.UnknownPlan = string(spec.UnknownPlanOmitAndRead)
+		} else if resolved.CreateNull == string(spec.CreateNullAPINull) {
+			resolved.UnknownPlan = string(spec.UnknownPlanPreserve)
 		}
 	}
 	if len(resolved.Modes) == 0 {
@@ -530,7 +548,12 @@ func apiNullable(apiKind, apiName string) bool {
 // defaultUpdateClear mirrors the legacy transport helpers: a nullable numeric is
 // cleared with an explicit JSON null, a string with "", a bool with false, and a
 // number with zero.
-func defaultUpdateClear(apiKind string, nullable bool) string {
+func defaultUpdateClear(apiKind string, nullable bool, enclosing string) string {
+	// A singleton is sent as a whole object, so clearing one of its members means
+	// dropping that key rather than sending a zero value the server would store.
+	if enclosing == string(spec.CollectionSingleton) {
+		return string(spec.UpdateClearOmit)
+	}
 	if nullable {
 		return string(spec.UpdateClearAPINull)
 	}
@@ -572,18 +595,33 @@ func collectionSpec(value *collectionOverride) *spec.CollectionSpec {
 	return &spec.CollectionSpec{Strategy: spec.CollectionStrategy(value.Strategy), Ordering: spec.CollectionOrdering(value.Ordering), IdentityField: value.IdentityField}
 }
 
-func referenceSpec(value *referenceOverride) *spec.ReferenceSpec {
-	if value == nil {
+// referenceSpec pairs a value field with the companion that names the object type
+// it points at. The API spells the pair with a "_ref_type_" suffix and lists the
+// permitted types in that companion's enum, so both halves of the relationship
+// are read from the document instead of being restated per field.
+func referenceSpec(value *referenceOverride, apiName string, siblings map[string]coverageField) *spec.ReferenceSpec {
+	if value != nil {
+		return &spec.ReferenceSpec{TypeField: value.TypeField, AllowedTypes: value.AllowedTypes}
+	}
+	companionName := apiName + "_ref_type_"
+	companion, exists := siblings[companionName]
+	if !exists || len(companion.Enum) == 0 {
 		return nil
 	}
-	return &spec.ReferenceSpec{TypeField: value.TypeField, AllowedTypes: value.AllowedTypes}
+	return &spec.ReferenceSpec{TypeField: companionName, AllowedTypes: companion.Enum}
 }
 
-func autoAssignmentSpec(value *autoAssignmentOverride) *spec.AutoAssignmentSpec {
-	if value == nil {
+// autoAssignmentSpec pairs a value field with the boolean that tells the server to
+// choose the value. The API spells that pair with an "_auto_assigned_" suffix.
+func autoAssignmentSpec(value *autoAssignmentOverride, apiName string, siblings map[string]coverageField) *spec.AutoAssignmentSpec {
+	if value != nil {
+		return &spec.AutoAssignmentSpec{FlagField: value.FlagField}
+	}
+	companionName := apiName + "_auto_assigned_"
+	if companion, exists := siblings[companionName]; !exists || companion.Kind != "boolean" {
 		return nil
 	}
-	return &spec.AutoAssignmentSpec{FlagField: value.FlagField}
+	return &spec.AutoAssignmentSpec{FlagField: companionName}
 }
 
 // validateDeleteParameter ties delete_parameter to the endpoint's DELETE support

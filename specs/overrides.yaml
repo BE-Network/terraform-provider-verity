@@ -27,7 +27,6 @@ defaults:
     server_managed:
       access: optional_computed
       response_absence: terraform_null
-      unknown_plan: preserve_state
       state_ownership: configuration_or_server
     # A nested block the configuration owns outright. Objects and arrays are not
     # nullable, so clearing one is expressed by the collection strategy rather
@@ -295,10 +294,12 @@ resources:
         fields:
           - api_name: enable
             api_kind: boolean
+            update_clear: omit
           - api_name: index
             api_kind: integer
           - api_name: regular_expression
             api_kind: string
+            update_clear: omit
       - api_name: name
         api_kind: string
         profile: identity
@@ -2338,6 +2339,8 @@ resources:
             api_kind: boolean
           - api_name: number_of_multipoints
             api_kind: integer
+            update_clear: api_null
+            create_null: api_null
           - api_name: user_notes
             api_kind: string
       - api_name: out_of_band_management

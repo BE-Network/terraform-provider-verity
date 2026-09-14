@@ -97,11 +97,15 @@ const (
 type UpdateClearPolicy string
 
 const (
-	UpdateClearAPINull       UpdateClearPolicy = "api_null"
-	UpdateClearEmptyString   UpdateClearPolicy = "empty_string"
-	UpdateClearZero          UpdateClearPolicy = "zero"
-	UpdateClearFalse         UpdateClearPolicy = "false"
-	UpdateClearDefault       UpdateClearPolicy = "default"
+	UpdateClearAPINull     UpdateClearPolicy = "api_null"
+	UpdateClearEmptyString UpdateClearPolicy = "empty_string"
+	UpdateClearZero        UpdateClearPolicy = "zero"
+	UpdateClearFalse       UpdateClearPolicy = "false"
+	UpdateClearDefault     UpdateClearPolicy = "default"
+	// UpdateClearOmit drops the key from the request entirely. A singleton object
+	// is sent whole, so clearing one of its members means omitting that member
+	// rather than sending a zero value that the server would store.
+	UpdateClearOmit          UpdateClearPolicy = "omit"
 	UpdateClearOmitUnmanaged UpdateClearPolicy = "omit_unmanaged"
 	UpdateClearReject        UpdateClearPolicy = "reject"
 )

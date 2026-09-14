@@ -49,6 +49,7 @@ type coverageField struct {
 	ItemKind    string          `json:"item_kind,omitempty"`
 	Description string          `json:"description,omitempty"`
 	Nullable    bool            `json:"nullable"`
+	Enum        []string        `json:"enum,omitempty"`
 	Modes       []string        `json:"modes"`
 	Review      []string        `json:"review_required"`
 	Fields      []coverageField `json:"fields,omitempty"`
@@ -340,8 +341,29 @@ func mergeRequestShape(resource *coverageResource, mode string, rawOperation any
 	}
 }
 
+// enumValues records a closed set of permitted values. Reference fields use one
+// to name the object types they may point at, which is what the registry needs
+// to describe a reference pair without a hand-written list.
+func enumValues(value map[string]any) []string {
+	raw, ok := value["enum"].([]any)
+	if !ok {
+		return nil
+	}
+	values := make([]string, 0, len(raw))
+	for _, item := range raw {
+		if text, ok := item.(string); ok {
+			values = append(values, text)
+		}
+	}
+	if len(values) == 0 {
+		return nil
+	}
+	sort.Strings(values)
+	return values
+}
+
 func coverageFieldFromSchema(name string, value map[string]any, mode string) coverageField {
-	field := coverageField{APIName: name, Kind: fieldKind(value), Description: stringValue(value["description"]), Nullable: boolValue(value["nullable"]), Modes: []string{mode}, Review: fieldReview(value)}
+	field := coverageField{APIName: name, Kind: fieldKind(value), Description: stringValue(value["description"]), Nullable: boolValue(value["nullable"]), Enum: enumValues(value), Modes: []string{mode}, Review: fieldReview(value)}
 	nestedSchema := value
 	if field.Kind == "array" {
 		if items, ok := object(value["items"]); ok {
