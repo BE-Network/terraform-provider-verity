@@ -18,11 +18,11 @@ API-backed; the plan keeps it bespoke (lines 402, 571, 573), so it is excluded b
 design rather than missing.
 
 The registry also drives the provider: mode compatibility and bulk transport
-metadata are generated from it, each pinned to a frozen snapshot of the values
+metadata are generated from it, each pinned to a golden file of the values
 that shipped. No production resource has moved to the generic lifecycle engine,
 so Phase 2 has not started.
 
-### Coverage snapshot
+### Coverage summary
 
 | Measure | Count |
 | --- | --- |
@@ -60,7 +60,7 @@ flowchart LR
 | --- | --- | --- |
 | Commit reproducible 6.6 mode-specific inputs | Implemented | `specs/openapi/6.6/{datacenter,campus,manifest}.json`; `specgen verify` checks canonical format and SHA-256 checksums. |
 | Offline CI verification | Implemented | CI runs `specgen verify` and deterministic extraction check. |
-| Schema snapshot of current resources | Implemented | `tests/unit/testdata/schema_snapshot_v6_6.json` captures 51 registered resource schema versions, state types, flags, and deterministic modifier/validator parameters. |
+| Schema golden file for current resources | Implemented | `tests/unit/testdata/schema_golden_v6_6.json` captures 51 registered resource schema versions, state types, flags, and deterministic modifier/validator parameters. |
 | Request/response golden fixtures for every resource | Implemented | 149 fixtures across all 50 resources in `tests/unit/lifecycle/testdata/golden/`: the request each resource sends on create and update, and the state its read path produces. `TestGoldenWireFixtures` replays them, and `TestUpdateOnlyResourceGoldenPatch` covers the one resource the acceptance harness cannot carry across an update. `UPDATE_GOLDEN=1` regenerates both. |
 | Read and PATCH field-coverage expansion | Implemented | PATCH bodies and decoded read state are recorded per resource by the golden fixtures, and the coverage table covers all 50 resources rather than 45. |
 | Full exception inventory | Implemented | [docs/exception_inventory.md](docs/exception_inventory.md) classifies every deviation from the common resource contract into the plan's five categories. Behavior all 49 API-backed resources share is explicitly not counted as an exception. Two items need follow-up: `verity_tenant.vrf_name` needs a validator the override format cannot yet express, and `verity_packet_broker.ipv6_permit.enable` looks like a defect rather than a policy. |
@@ -75,7 +75,7 @@ flowchart LR
 
 Met, with two intended-behavior decisions left open and recorded.
 
-Behavior is measurable through 149 golden fixtures and the schema snapshot;
+Behavior is measurable through 149 golden fixtures and the schema golden file;
 intended behavior changes are separated from refactoring ones and recorded as
 they were made; committed inputs regenerate offline under `specgen verify`; the
 field-policy design is settled and four of five policies are verified against the
@@ -154,7 +154,7 @@ An override remains in only three cases, all of which the API cannot supply:
 | First generated registry artifact | Implemented | `specs/overrides.yaml` is the reviewed source and `specs/generated_registry.json` is its deterministic merged output. No handwritten resource seed remains. |
 | OpenAPI extraction | Implemented | `specgen extract` reads both canonical inputs and produces `specs/generated_manifest.json`. It reports 64 mutable endpoint candidates with GET/PUT/PATCH/DELETE availability, request wrappers, documented response collection keys, delete query-parameter shapes, recursive fields, array item types, mode presence, and review-required items. Missing API response schemas and cache keys remain explicit override requirements. |
 | Override format and merge | Implemented for scalar, singleton-object, nested, and scalar-list shapes | The format supports recursive fields, collection strategies, reference and auto-assignment pairs derived from the API's own suffix convention and enums, scalar-list element kinds, per-field modes and API-version ranges, unmanaged API fields, and several Terraform resources on one endpoint discriminated by `fixed_headers`. `specgen registry` resolves the declared defaults and validates target paths, field and item types, modes, documented wrapper aliases, delete-parameter requiredness, and every lifecycle policy before emitting the expanded registry. Undocumented response aliases remain reviewed override data, covered by legacy parity. |
-| Generate current mode/version, compatibility, JSON key, bulk adapter, and constructor metadata | Implemented | `specgen metadata` generates `internal/utils/generated_mode_metadata.go` and `internal/bulkops/generated_bulk_metadata.go`. Mode compatibility is fully generated: `pendingModeFields` is empty and only the non-API `verity_operation_stage` remains hand-maintained. The bulk registry no longer writes its own resource type or the ACL header split key; both are filled from the registry at init and fail loudly if a bulk key is unknown. Both are pinned to frozen snapshots. JSON keys and constructor registration are generated too: no resource declares its own endpoint or cache-key constant, and `getAllResources` enumerates the registry rather than a handwritten list. All five metadata consumers the plan names are now registry-driven. |
+| Generate current mode/version, compatibility, JSON key, bulk adapter, and constructor metadata | Implemented | `specgen metadata` generates `internal/utils/generated_mode_metadata.go` and `internal/bulkops/generated_bulk_metadata.go`. Mode compatibility is fully generated: `pendingModeFields` is empty and only the non-API `verity_operation_stage` remains hand-maintained. The bulk registry no longer writes its own resource type or the ACL header split key; both are filled from the registry at init and fail loudly if a bulk key is unknown. Both are pinned to golden files. JSON keys and constructor registration are generated too: no resource declares its own endpoint or cache-key constant, and `getAllResources` enumerates the registry rather than a handwritten list. All five metadata consumers the plan names are now registry-driven. |
 | `specgen --check` in CI | Implemented | CI checks canonical inputs, extraction, generated-registry drift, the three generated metadata files, and runs the legacy parity tests. |
 | Report unresolved/ambiguous API fields | Implemented | The manifest marks fields and resources requiring policy, alias, or strategy review, and the merge refuses any extracted field without an explicit override. Legacy comparison covers all 50 represented resources; see Legacy parity coverage. |
 | Validate every current resource and field against ranges/policies | Mostly implemented | All 50 API-backed resources and 1,068 field paths validate against API-version ranges and modes; the 1,063 managed paths also carry complete lifecycle policies, and each is checked against the shipped Terraform schema. `update_clear`, `create_null`, `response_absence`, and `unknown_plan` are verified against legacy behavior across all 50 resources at every nesting depth (2,575 assertions, 345 fields excluded by named category). `state_ownership` is a pure function of `access` and enforced by validation, so it needs no separate check. |
@@ -170,9 +170,9 @@ An override remains in only three cases, all of which the API cannot supply:
 | `internal/provider/generated_resource_keys.go` | per-resource endpoint name, cache key, response collection key, canonical registration order | none |
 
 Both changes had to alter nothing observable, so each is pinned to a frozen
-snapshot of the values that shipped: `internal/utils/testdata/mode_metadata_snapshot.json`
+golden file of the values that shipped: `internal/utils/testdata/mode_metadata_golden.json`
 covers 51 compatibility entries and 1054 field entries, and
-`internal/bulkops/testdata/bulk_metadata_snapshot.json` covers 49 bulk keys. Mode
+`internal/bulkops/testdata/bulk_metadata_golden.json` covers 49 bulk keys. Mode
 data decides which fields reach a datacenter or campus system, and the resource
 type keys every bulk operation's status tracking, so neither could be allowed to
 drift while its source moved.
@@ -420,10 +420,10 @@ explicitly requested.
 - `internal/spec/`: provider-owned spec vocabulary and registry validation.
 - `internal/transport/`: provider-owned wire values and initial IPv4 List SDK adapter.
 - `internal/genericresource/state.go`: reusable state-upgrader registration contract.
-- `tests/unit/lifecycle/`: version-zero schema snapshot and Framework value-bridge contract tests.
+- `tests/unit/lifecycle/`: version-zero schema golden file and Framework value-bridge contract tests.
 - `internal/bulkops/`: error-aware adapter integration that preserves the legacy typed path.
-- `internal/utils/generated_mode_metadata.go`: generated mode compatibility, with a frozen snapshot pinning it to the values that shipped.
-- `internal/bulkops/generated_bulk_metadata.go`: generated bulk transport facts, likewise snapshot-pinned.
+- `internal/utils/generated_mode_metadata.go`: generated mode compatibility, with a golden file pinning it to the values that shipped.
+- `internal/bulkops/generated_bulk_metadata.go`: generated bulk transport facts, likewise pinned by a golden file.
 - `internal/provider/testdata/legacy_field_policies.json`: recorded legacy create, update, and read behavior per field, the evidence behind the verified lifecycle policies.
 - `internal/provider/legacy_schema_dump_test.go`: authoring aid that dumps the shipped schemas; inert unless `DUMP_OUT` is set.
 
