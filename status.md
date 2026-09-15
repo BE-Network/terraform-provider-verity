@@ -26,7 +26,17 @@ implementation, 3,415 assertions, and the fifth follows from `access`.
 
 No production resource has moved to the generic lifecycle engine, so Phase 2 has
 not started. The intended pilot, `verity_ipv4_list`, has golden fixtures for all
-three directions, a transport adapter spike, and no unverified policy of its own.
+three directions, a transport adapter spike, and no unverified policy of its own:
+three scalar fields, no collection, nothing nullable.
+
+Four things are carried forward rather than closed, none of them on that pilot's
+path. Adding an indexed child without naming its index does not work in either
+spelling the schema allows, characterized in
+`tests/unit/lifecycle/index_zero_test.go` and left for Phase 4's collection
+engine. `verity_tenant.vrf_name` needs a validator the override format cannot
+express. `unknown_plan: omit_and_read` is a create-path claim, since the
+`CompareAndSet*Field` helpers are unguarded for every kind. And `3e76e76` is not
+independently green; see "A known gap in the commit history".
 
 ### Coverage summary
 
@@ -327,12 +337,15 @@ collection strategy, never by a null — along with three stale test fixtures.
 omits when null is omitted when unknown too, and every resource re-reads after
 create and update, so the server supplies the value.
 
-Nullable numerics reach the same place by a different route, which `release/6.6`
-settles: their path is gated on whether the attribute was written in the `.tf`
-file at all, read by `ParseResourceConfiguredAttributes`, so an unwritten field is
-skipped and read back exactly like any other omission, and a written one resolves
-to a known value before apply. There is no separate unknown behavior to express,
-so all 932 managed fields carry `omit_and_read` and none carry `preserve_state`.
+Nullable numerics reach the same place by a different route. Their path is gated
+on whether the attribute was written in the `.tf` file at all, read by
+`ParseResourceConfiguredAttributes`, so an unwritten field is skipped and read
+back exactly like any other omission. A written one was the gap: gating on
+configuration rather than on the value left unknown falling through to the value
+branch, where it serialized as zero. The two nullable setters now skip an unknown
+like their non-nullable siblings, which is what makes the policy true; see
+"An unknown nullable numeric is omitted, not sent as zero" below. All 932 managed
+fields carry `omit_and_read` and none carry `preserve_state`, on the create path.
 
 The reference and auto-assignment pairs are verified too. `release/6.6` settles
 how they behave: `applyRefTypeFieldChange` writes `PtrString("")` for a cleared
@@ -347,7 +360,9 @@ Reading them also found a rule conflict worth keeping: a reference pair inside a
 singleton clears to `""`, not by omission, because the pair helper writes the
 value directly. Lag and Switchpoint both carry one inside `object_properties`.
 
-Still unverified: 136 fields, and only one of them for want of evidence.
+Unverified: the same 135 fields counted above, every one a field the policy
+question does not apply to. No field is allowed to lack evidence — the check
+errors on a missing record rather than skipping it.
 
 Not yet asserted against legacy code: validators, defaults, plan modifiers other
 than RequiresReplace, request/response payload shapes, delete parameters, and
@@ -372,12 +387,13 @@ operation, mode, version, and nested strategy. All five metadata consumers the
 plan names are generated from the registry, so the third Phase 1 bullet is
 complete as well.
 
-One clause is not fully met. **Lifecycle policies are largely but not entirely
-verified.** Four of the five are checked against the legacy implementation across
-all 50 resources at every nesting depth, 3,415 assertions with no disagreements;
-the fifth, `state_ownership`, is a pure function of `access` and enforced by
-validation, so it carries no independent claim. 135 fields are excluded, and every
-one is a field the policy question does not apply to:
+Met. One clause is worth stating precisely rather than leaving implied.
+**Lifecycle policies are verified, four of the five against behavior.** Those four
+are checked against the legacy implementation across all 50 resources at every
+nesting depth, 3,415 assertions with no disagreements; the fifth,
+`state_ownership`, is a pure function of `access` and enforced by validation, so
+it carries no independent claim to check. 135 fields are excluded, and every one
+is a field the policy question does not apply to:
 
 | Excluded | Count | Why |
 | --- | --- | --- |
@@ -413,9 +429,10 @@ recommendation pass. They do:
 | 5. Resource registration fixed before configuration and mode-independent | Pass | `TestResourcesAreModeIndependentAndStable` |
 | 6. Version-zero state contract and upgrader mechanism tested | Pass | `internal/genericresource/state_test.go` |
 
-The gates are not the constraint. The two Phase 1 items above are, together with
-the Phase 0 blockers listed earlier: golden fixtures, Read/PATCH coverage, and
-the exception inventory.
+All six pass, and nothing else is outstanding. The Phase 0 items that were the
+constraint while this document was being written — golden fixtures, Read/PATCH
+coverage, and the exception inventory — are all complete and recorded in their
+own sections above.
 
 ## Intended behavior changes
 
@@ -572,10 +589,12 @@ workflow sets; without them the lifecycle package alone takes far longer.
 
 ## Recommended next slice
 
-1. Implement the response-identity contract described below, so the generic
+1. Start Phase 2: the generic scalar lifecycle pilot on `verity_ipv4_list`,
+   differentially against the golden fixtures.
+2. Implement the response-identity contract described below, so the generic
    engine resolves a resource's identity from a declared source rather than
    assuming the response carries a `name` member.
-2. Decide the one item the exception inventory still leaves open: a validator for
+3. Decide the one item the exception inventory still leaves open: a validator for
    `verity_tenant.vrf_name`, which needs `FieldSpec.Validators` wired into the
    override format. The other open item, `verity_packet_broker.ipv6_permit.enable`,
    is settled: it was a defect, and it is fixed.

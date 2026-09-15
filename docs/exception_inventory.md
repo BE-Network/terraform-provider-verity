@@ -107,6 +107,13 @@ are the exceptions to that:
   non-nullable siblings already skipped an unknown. See the "Intended behavior
   changes" section of [status.md](../status.md); the update path is unchanged and
   the reason is recorded there.
+- **Adding an indexed child without naming its index** does not work, and is
+  carried into Phase 4 rather than fixed here. The API documents index zero as
+  the way to append to a collection and `index` is Optional and Computed in all
+  54 collections, but `index = 0` is a known value the server then contradicts,
+  and an omitted index is dropped by the guarded setter so the entry is sent
+  unnamed. `tests/unit/lifecycle/index_zero_test.go` pins both spellings as they
+  behave today.
 - **`verity_packet_broker.ipv6_permit.enable`** was a defect, now fixed. Packet
   Broker has four structurally identical filter collections sharing one model
   type; three compared and sent the entry's enable flag on update and
