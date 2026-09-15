@@ -88,6 +88,14 @@ func SetNullableInt64Fields(fields []NullableInt64FieldMapping) {
 			continue
 		}
 
+		// An unknown value is omitted, not sent. ValueInt64 reports zero for an
+		// unknown, so serializing one would store a zero the configuration never
+		// asked for; omitting leaves the field to the read that follows, which is
+		// what the guarded non-nullable setters above already do.
+		if field.TFValue.IsUnknown() {
+			continue
+		}
+
 		if !field.TFValue.IsNull() {
 			// Explicit value
 			val := field.TFValue.ValueInt64()
@@ -108,6 +116,11 @@ func SetNullableNumberFields(fields []NullableNumberFieldMapping) {
 	for _, field := range fields {
 		// Skip fields not explicitly written in the .tf file
 		if !field.IsConfigured {
+			continue
+		}
+
+		// An unknown value is omitted, not sent; see SetNullableInt64Fields.
+		if field.TFValue.IsUnknown() {
 			continue
 		}
 
