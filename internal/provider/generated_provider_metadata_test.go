@@ -2,11 +2,16 @@ package provider
 
 import (
 	"context"
+	"os"
+	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+
+	"terraform-provider-verity/internal/spec"
 )
 
 // TestGeneratedResourceKeysCoverEveryResource checks that the generated key table
@@ -91,4 +96,80 @@ func TestRegistrationFollowsTheRegistry(t *testing.T) {
 	if len(seen) != len(registry)+len(nonAPIResources) {
 		t.Errorf("provider registers %d resources, want %d registry resources plus %d non-API", len(seen), len(registry), len(nonAPIResources))
 	}
+}
+
+// TestModeRestrictedFieldsReachThePlanNullifier checks that every field the
+// registry marks as narrower than its resource is handed to the ModifyPlan
+// nullifier.
+//
+// A field that does not apply to the running mode is set to null in the plan so
+// Terraform does not show "known after apply" for something the API will never
+// return. The nullifier decides per field by asking FieldAppliesToMode, but the
+// list of fields it is given is handwritten in each resource, so a mode-restricted
+// field omitted from that list silently keeps showing as unknown. The registry
+// knows which fields those are, so the omission is checkable.
+func TestModeRestrictedFieldsReachThePlanNullifier(t *testing.T) {
+	sources, err := filepath.Glob(filepath.Join("resource_verity_*.go"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	listedByType := make(map[string]map[string]bool, len(sources))
+	modifyPlan := regexp.MustCompile(`(?s)func \(r \*\w+\) ModifyPlan\(.*?\n\}`)
+	typeName := regexp.MustCompile(`resp\.TypeName = req\.ProviderTypeName \+ "([a-z0-9_]+)"`)
+	quoted := regexp.MustCompile(`"([a-z0-9_]+)"`)
+	for _, source := range sources {
+		if strings.HasSuffix(source, "_test.go") {
+			continue
+		}
+		raw, err := os.ReadFile(source)
+		if err != nil {
+			t.Fatal(err)
+		}
+		names := typeName.FindAllStringSubmatch(string(raw), -1)
+		body := modifyPlan.Find(raw)
+		if len(names) == 0 || body == nil {
+			continue
+		}
+		listed := make(map[string]bool)
+		for _, match := range quoted.FindAllStringSubmatch(string(body), -1) {
+			listed[match[1]] = true
+		}
+		for _, name := range names {
+			// ACL builds its type name from the ip_version it was constructed with.
+			if name[1] == "_acl_v" {
+				listedByType["verity_acl_v4"], listedByType["verity_acl_v6"] = listed, listed
+				continue
+			}
+			listedByType["verity"+name[1]] = listed
+		}
+	}
+
+	checked := 0
+	for _, resourceSpec := range generatedRegistry(t) {
+		listed, exists := listedByType[resourceSpec.TerraformType]
+		if !exists {
+			continue
+		}
+		resourceModes := make(map[spec.Mode]bool, len(resourceSpec.Modes))
+		for _, mode := range resourceSpec.Modes {
+			resourceModes[mode] = true
+		}
+		for _, field := range resourceSpec.Fields {
+			if field.Unmanaged || field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
+				continue
+			}
+			if len(field.Modes) == len(resourceModes) {
+				continue // applies wherever the resource does, so nothing to nullify
+			}
+			checked++
+			if !listed[field.TerraformName] {
+				t.Errorf("%s.%s applies to %v but the resource supports %v, and ModifyPlan never nullifies it",
+					resourceSpec.TerraformType, field.TerraformName, field.Modes, resourceSpec.Modes)
+			}
+		}
+	}
+	if checked == 0 {
+		t.Fatal("no mode-restricted fields were checked; the scan looks broken")
+	}
+	t.Logf("%d mode-restricted fields confirmed reachable by the plan nullifier", checked)
 }

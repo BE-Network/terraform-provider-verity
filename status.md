@@ -1,6 +1,6 @@
 # Schema-driven refactor status
 
-Last reviewed: 2026-09-14
+Last reviewed: 2026-09-15
 
 This document tracks implementation against [refactor_plan.md](refactor_plan.md).
 Commit state is intentionally not tracked here; use Git status and history for
@@ -31,7 +31,7 @@ so Phase 2 has not started.
 | Field paths represented | 1,068 (1,063 managed, 310 nested) |
 | Nested collection strategies in use | 54 `indexed_patch`, 27 `singleton` |
 | Reference / auto-assignment pairs modelled | 92 / 15 |
-| Lifecycle policies verified against legacy | 4 of 5 (2,575 assertions) |
+| Lifecycle policies verified against legacy | 4 of 5 (3,415 assertions) |
 | API fields recorded as unmanaged | 5 |
 | Reviewed override file | 3,340 lines |
 
@@ -49,8 +49,8 @@ deliberate decision about whether they should be resources at all.
 
 ```mermaid
 flowchart LR
-    P0[Phase 0<br/>deliverables complete<br/>2 decisions open] --> P1[Phase 1<br/>all 50 API-backed resources<br/>all five metadata consumers generated<br/>4 of 5 policies verified]
-    P1 --> P2[Phase 2<br/>not started]
+    P0[Phase 0<br/>complete] --> P1[Phase 1<br/>complete<br/>50 resources, 5 metadata consumers<br/>3,415 policy assertions]
+    P1 --> P2[Phase 2<br/>ready to start<br/>pilot: verity_ipv4_list]
     P2 --> P3[Phases 3-6<br/>not started]
 ```
 
@@ -69,11 +69,11 @@ flowchart LR
 | IPv4 List transport adapter spike | Implemented | `internal/transport` exact JSON tests plus bulk-manager integration cover omission, false/empty values, explicit-null errors, and no-panic diagnostics. |
 | Version-zero state contract and upgrade mechanism | Implemented | Snapshot captures current state types; `internal/genericresource/state.go` registers prior schemas/upgraders and has a real Framework v0-to-v1 test. |
 | Stable provider registration | Implemented | `Resources()` is mode-independent; contract test verifies names/order/state types before configuration and in both modes. |
-| Final nullable/reset policy decision | Mostly implemented | The design is settled and documented: nullability follows the transform rule, and clear-and-create behavior follows the wire type. Four of five policies are verified against the implementation for every field. Two decisions remain open, both recorded rather than assumed: what an unknown value should do for the 151 nullable fields, whose helpers have no unknown branch, and whether a missing identity in a response should be a hard diagnostic rather than a Terraform null. |
+| Final nullable/reset policy decision | Mostly implemented | The design is settled and documented: nullability follows the transform rule, and clear-and-create behavior follows the wire type. Four of five policies are verified against the implementation for every field. Decided. Explicit null is numeric-only and enforced in validation; unknown handling is settled by `release/6.6`, whose gating on configured attributes puts nullable numerics in the same place as every other omission; and an unresolvable identity is an intended behavior change recorded under Intended behavior changes. |
 
 ### Phase 0 exit criterion
 
-Met, with two intended-behavior decisions left open and recorded.
+Met. One intended behavior change is recorded, separate from the parity work.
 
 Behavior is measurable through 149 golden fixtures and the schema golden file;
 intended behavior changes are separated from refactoring ones and recorded as
@@ -157,7 +157,7 @@ An override remains in only three cases, all of which the API cannot supply:
 | Generate current mode/version, compatibility, JSON key, bulk adapter, and constructor metadata | Implemented | `specgen metadata` generates `internal/utils/generated_mode_metadata.go` and `internal/bulkops/generated_bulk_metadata.go`. Mode compatibility is fully generated: `pendingModeFields` is empty and only the non-API `verity_operation_stage` remains hand-maintained. The bulk registry no longer writes its own resource type or the ACL header split key; both are filled from the registry at init and fail loudly if a bulk key is unknown. Both are pinned to golden files. JSON keys and constructor registration are generated too: no resource declares its own endpoint or cache-key constant, and `getAllResources` enumerates the registry rather than a handwritten list. All five metadata consumers the plan names are now registry-driven. |
 | `specgen --check` in CI | Implemented | CI checks canonical inputs, extraction, generated-registry drift, the three generated metadata files, and runs the legacy parity tests. |
 | Report unresolved/ambiguous API fields | Implemented | The manifest marks fields and resources requiring policy, alias, or strategy review, and the merge refuses any extracted field without an explicit override. Legacy comparison covers all 50 represented resources; see Legacy parity coverage. |
-| Validate every current resource and field against ranges/policies | Mostly implemented | All 50 API-backed resources and 1,068 field paths validate against API-version ranges and modes; the 1,063 managed paths also carry complete lifecycle policies, and each is checked against the shipped Terraform schema. `update_clear`, `create_null`, `response_absence`, and `unknown_plan` are verified against legacy behavior across all 50 resources at every nesting depth (2,575 assertions, 345 fields excluded by named category). `state_ownership` is a pure function of `access` and enforced by validation, so it needs no separate check. |
+| Validate every current resource and field against ranges/policies | Implemented | All 50 API-backed resources and 1,068 field paths validate against API-version ranges and modes; the 1,063 managed paths also carry complete lifecycle policies, and each is checked against the shipped Terraform schema. `update_clear`, `create_null`, `response_absence`, and `unknown_plan` are verified against legacy behavior across all 50 resources at every nesting depth (3,415 assertions, 135 fields excluded by named category). `state_ownership` is a pure function of `access` and enforced by validation, so it needs no separate check. |
 
 ### Generated provider metadata
 
@@ -227,6 +227,9 @@ Asserted against legacy code today:
   resource with no shipped counterpart fails rather than being skipped.
 - `update_clear`, `create_null`, and `response_absence` against the create, update,
   and read helpers each resource actually calls.
+- Every mode-restricted field against the `ModifyPlan` nullifier lists, so a field
+  that does not apply to the running mode cannot silently show as "known after
+  apply" because it was left out of a handwritten list.
 
 Lifecycle policies are now largely verified against the legacy implementation
 rather than assumed. Four of the five are checked at every nesting depth: 2,575
@@ -280,13 +283,12 @@ matching the `_ref_type_` and `_auto_assigned_` suffixes: inferring the pairing 
 second time would reinstate the convention the registry exists to replace, and
 would keep passing if the registry stopped recording a pair at all.
 
-345 fields are excluded from policy verification by category, each for a stated
-reason: objects and arrays, which their collection strategy clears rather than a
-wire value; the 54 collection identity fields, which name an entry and are always
-sent; the halves of reference and auto-assignment pairs, which each resource
-drives with bespoke logic instead of the shared helpers; and one field whose
-collection's update path handles only its reference pair and index, leaving its
-enable flag with no update path at all.
+135 fields are excluded from policy verification, and each is a field the question
+does not apply to rather than one lacking evidence: 81 objects and arrays, which
+their collection strategy clears rather than a wire value, and 54 collection
+identity fields, which name an entry and are always sent. Reference and
+auto-assignment pair halves used to be excluded too; they are now verified through
+their own helpers.
 
 Reaching nested fields meant reading four distinct update paths, not one. Beyond
 the shared compare helpers, a singleton object clears a member by dropping the
@@ -309,16 +311,37 @@ What remains unverified for these fields is their lifecycle policies, not their
 structure: each resource drives the pair with bespoke logic instead of the shared
 helpers, so no policy can be read from them mechanically.
 
-`unknown_plan` follows the same create capability. A field the request omits when
-null is omitted when unknown too, and every resource re-reads after create and
-update, so the server supplies the value. The nullable helpers are the exception:
-they key off whether the attribute was written in configuration and have no
-unknown branch at all, so nothing in the implementation states what an unknown
-value should do. Those 151 fields keep `preserve_state`, which remains the earlier
-assumption rather than a verified fact.
+Explicit null is numeric-only on this API, and the registry now enforces it:
+`internal/spec` rejects any non-numeric field declaring `api_null` or marked
+nullable. That caught 81 containers carrying `api_null` from a placeholder in the
+`container` profile — a list or object is cleared by omitting it or by its
+collection strategy, never by a null — along with three stale test fixtures.
 
-Still unverified: the 151 nullable fields' `unknown_plan`, and the excluded
-categories above.
+`unknown_plan` follows the same create capability for every field. One the request
+omits when null is omitted when unknown too, and every resource re-reads after
+create and update, so the server supplies the value.
+
+Nullable numerics reach the same place by a different route, which `release/6.6`
+settles: their path is gated on whether the attribute was written in the `.tf`
+file at all, read by `ParseResourceConfiguredAttributes`, so an unwritten field is
+skipped and read back exactly like any other omission, and a written one resolves
+to a known value before apply. There is no separate unknown behavior to express,
+so all 932 managed fields carry `omit_and_read` and none carry `preserve_state`.
+
+The reference and auto-assignment pairs are verified too. `release/6.6` settles
+how they behave: `applyRefTypeFieldChange` writes `PtrString("")` for a cleared
+half in every branch, and the inline auto-assignment logic writes
+`NewNullableInt64(nil)` for a cleared numeric and `PtrBool` for its flag. All 92
+reference pairs are string/string and all 15 auto-assignment flags are bool, so
+the pairs follow the same wire-type rule as everything else despite their own
+helpers. The evidence records which helper drives each field, so a resource
+switching paths would show up rather than passing silently.
+
+Reading them also found a rule conflict worth keeping: a reference pair inside a
+singleton clears to `""`, not by omission, because the pair helper writes the
+value directly. Lag and Switchpoint both carry one inside `object_properties`.
+
+Still unverified: 136 fields, and only one of them for want of evidence.
 
 Not yet asserted against legacy code: validators, defaults, plan modifiers other
 than RequiresReplace, request/response payload shapes, delete parameters, and
@@ -345,13 +368,12 @@ complete as well.
 
 One clause is not fully met. **Lifecycle policies are largely but not entirely
 verified.** Four of the five are checked against the legacy implementation across
-all 50 resources at every nesting depth, 2,575 assertions with no disagreements;
+all 50 resources at every nesting depth, 3,415 assertions with no disagreements;
 the fifth, `state_ownership`, is a pure function of `access` and enforced by
 validation, so it carries no independent claim. What remains unverified:
 
 | Unverified | Count | Why |
 | --- | --- | --- |
-| Nullable fields' `unknown_plan` | 151 | The nullable helpers key off whether an attribute was written in configuration and have no unknown branch, so the implementation states nothing to read |
 | Fields excluded by named category | 345 | Objects and arrays, collection identity fields, reference and auto-assignment pair halves, and one field whose collection has no update path at all |
 
 Every policy that could be checked was wrong when first assigned — `update_clear`
@@ -366,10 +388,9 @@ criterion is met: behavior is measurable, intended behavior changes are separate
 from refactoring ones, committed inputs regenerate offline, the field-policy
 design is settled, and all four spikes pass.
 
-Two nullable/reset decisions remain open. They are decisions about intended
-behavior rather than missing characterization, and both are recorded where they
-will be made: the 151 nullable fields' unknown handling, and whether a missing
-identity should be a hard diagnostic.
+Both remaining decisions are made. The identity-resolution change is recorded
+under Intended behavior changes, to be implemented with the generic reader, and
+the Packet Broker defect it was paired with is fixed.
 
 ### Pre-migration gates
 
@@ -388,6 +409,42 @@ recommendation pass. They do:
 The gates are not the constraint. The two Phase 1 items above are, together with
 the Phase 0 blockers listed earlier: golden fixtures, Read/PATCH coverage, and
 the exception inventory.
+
+## Intended behavior changes
+
+Phase 0 requires intended behavior changes to be separated from refactoring ones.
+Everything else in this document is parity work: the registry describes what the
+provider does today, and the golden fixtures pin it. The entries here are the
+exceptions, decided deliberately and not yet implemented.
+
+### A response that cannot identify its object is an error
+
+**Legacy behavior, unchanged and still recorded as parity.** Every resource reads
+its identity with `MapStringFromAPI(data["name"])`, which yields a Terraform null
+when the member is absent. The registry records `response_absence: terraform_null`
+for identity fields to match, and the parity fixtures are not altered.
+
+**Intended generic behavior.** The generic engine raises a diagnostic naming the
+resource and the identity it could not resolve, rather than writing a null into a
+Required attribute.
+
+The path is unreachable today: `FindResourceByAPIName` locates an object by
+reading that same `name` member, so an object can only be found if its identity
+was readable. A later absence would mean an internally inconsistent response, and
+a null would hide it.
+
+**The contract is that the identity must be resolvable, not that the response
+carries a `name` member.** API 6.7 is expected to drop the member and identify
+objects by their collection key instead. When those inputs are committed, the
+source belongs in versioned registry metadata on `APIResourceSpec` so the decoder
+reads a declared source rather than guessing, and the change stays deliberate and
+testable. Nothing is added for it now: 6.6 is the only committed version, the
+member is present in every response it describes, and speculative vocabulary
+would carry one value in use and no test.
+
+**Implement with the generic reader**, together with a contract test covering a
+response whose object cannot be identified. The divergence is marked here rather
+than folded into a parity fixture.
 
 ## SDK reproducibility baseline
 
@@ -448,9 +505,9 @@ workflow sets; without them the lifecycle package alone takes far longer.
 
 ## Recommended next slice
 
-1. Read the bespoke create and update logic for the reference and auto-assignment
-   pairs, and for the 151 nullable fields' unknown handling. Their structure is
-   modelled; their policies are the last unverified behavior in the registry.
+1. Implement the response-identity contract described below, so the generic
+   engine resolves a resource's identity from a declared source rather than
+   assuming the response carries a `name` member.
 2. Decide the two items the exception inventory leaves open: a validator for
    `verity_tenant.vrf_name`, which needs `FieldSpec.Validators` wired into the
    override format, and whether `verity_packet_broker.ipv6_permit.enable` is a

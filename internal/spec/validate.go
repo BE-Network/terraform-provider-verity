@@ -184,6 +184,18 @@ func validateField(field FieldSpec, path string, parentRange VersionRange, paren
 	if !validPolicies(field) {
 		return fmt.Errorf("%s: all lifecycle policies are required", path)
 	}
+	// Only numerics carry an explicit null on this API: a cleared string is an
+	// empty string and a cleared bool is false, neither of which is null. A
+	// non-numeric claiming api_null would make the generic engine send a null the
+	// API does not accept for that field.
+	if field.Kind != FieldKindInt64 && field.Kind != FieldKindNumber {
+		if field.CreateNull == CreateNullAPINull || field.UpdateClear == UpdateClearAPINull {
+			return fmt.Errorf("%s: only numeric fields support an explicit null, but kind %q declares api_null", path, field.Kind)
+		}
+		if field.Nullable {
+			return fmt.Errorf("%s: only numeric fields are nullable, but kind %q is marked nullable", path, field.Kind)
+		}
+	}
 	if err := validateOwnership(field, path); err != nil {
 		return err
 	}

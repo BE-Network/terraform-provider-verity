@@ -21,16 +21,29 @@ Expressible as `FieldSpec` data. No code needed after migration.
 
 | Exception | Scope | Detail |
 | --- | --- | --- |
-| Reference pairs | 92 pairs across 29 resources | A value field and its `*_ref_type_` companion must be written together. Modelled as `FieldSpec.Reference`, with allowed types read from the companion's OpenAPI enum. |
+| Reference pairs | 92 pairs across 29 resources | A value field and its `*_ref_type_` companion must be written together. Modelled as `FieldSpec.Reference`, with allowed types read from the companion's OpenAPI enum. Both halves clear to `""`, including inside a singleton, where the pair helper overrides the usual clear-by-omission. |
 | Multiple permitted reference types | 5 resources | `verity_packet_broker`, `verity_gateway`, `verity_bundle`, `verity_lag`, `verity_threshold_group` use `HandleMultipleRefTypesSupported`; their enums list more than one target type. Same `Reference` shape, longer `AllowedTypes`. |
 | Auto-assignment pairs | 15 pairs across 4 resources | `verity_fabric`, `verity_service`, `verity_tenant`, `verity_switchpoint`. A boolean `*_auto_assigned_` flag makes the server choose the value. Modelled as `FieldSpec.AutoAssignment`. |
-| Numeric nullability | all numerics except `index` | `tools/process_swagger.py` marks every number and integer nullable except one named `index`. Drives `update_clear` and `create_null`; the committed documents predate the transform. |
+| Explicit null is numeric-only | 151 fields | Only integers and floats carry an explicit null on this API. `tools/process_swagger.py` marks every number and integer nullable except one named `index`. A cleared string is an empty string and a cleared bool is false; a container is cleared by omission or by its collection strategy. `internal/spec` enforces this, so a non-numeric declaring `api_null` fails validation. |
 | Singleton members clear by omission | 38 fields | A member of an object sent whole is cleared by dropping its key, not by sending a zero value. Required adding `UpdateClearOmit`, which the Phase 0 vocabulary lacked. |
 | Nullable member inside a singleton | `verity_switchpoint.object_properties.number_of_multipoints` | Sends an explicit null where its siblings omit. |
 | Guarded `Set*Fields` in a collection | 2 fields, both on `verity_as_path_access_list.lists` | Cleared by omission where the same field on sibling resources sends a zero value. |
 | API object declared with no properties | 7 endpoints | `object_properties` is an empty object. Two resources ship it as an empty block; five do not surface it at all, recorded as `unmanaged`. |
 | Field the API documents with an empty description | `verity_gateway.fabric_interconnect` | The OpenAPI document itself carries `"description": ""`. Recorded with `undocumented: true` rather than inventing text. |
 | Value constrained beyond its type | `verity_tenant.vrf_name` | Rejects a generated placeholder; the coverage harness supplies a valid value. Needs a validator in the spec, which the format does not yet express. |
+
+### Mode-restricted fields are nullified in the plan
+
+Not an exception, but the reason `FieldSpec.Modes` has to be right. Every resource
+implements `ModifyPlan` to set fields that do not apply to the running mode to
+null, so Terraform does not show "known after apply" for something the API will
+never return. The nullifier decides per field by asking `FieldAppliesToMode`,
+which now reads the generated mode table, but the list of fields it is given is
+handwritten in each resource.
+
+`TestModeRestrictedFieldsReachThePlanNullifier` checks that all 100 top-level
+mode-restricted fields appear in those lists, so one omitted from a list fails
+rather than silently showing as unknown.
 
 ## Collection policy
 
@@ -50,7 +63,6 @@ Expressible as `OperationSpec` plus transport metadata.
 | --- | --- | --- |
 | One endpoint, two resources | `verity_acl_v4`, `verity_acl_v6` | `/acls` backs both, discriminated by a required `ip_version` header. Needs header-aware bulk PUT/PATCH/DELETE/GET, a `HeaderResponseExtractor` because the response key differs by version (`ipv4_filter` / `ipv6_filter`), distinct cache keys, and the header as a required delete query parameter. Modelled as `FixedHeaders`; bulk key plus discriminator is what must stay unique. |
 | Neither create nor delete | `verity_sfp_breakout` | Both return a hard diagnostic: the resource represents existing hardware that can only be read and updated. It is brought into state by import for its read fixture, and its update fixture is recorded by `TestUpdateOnlyResourceGoldenPatch`, which drives the bulk manager directly because a test case that must destroy what it creates cannot hold this resource across an update. It has no create fixture and never will. |
-| Field with no update path | `verity_packet_broker.ipv6_permit.enable` | The collection's `UpdateExisting` handles only its reference pair and index, so the flag cannot be changed on an existing entry. A legacy gap, recorded rather than replicated. |
 | DELETE with no required identifying parameter | `/alarms/mask` | Supports delete but exposes only optional array parameters, so nothing names the objects to remove. Unrepresented. |
 | PATCH-only endpoints | `/sdlcs/upgrade`, `/switchpoints/upgrade`, `/systemconfig` | No GET, so no read path. Unrepresented. |
 | Endpoint with no mutable fields | `/readmode` | Unrepresented. |
@@ -79,10 +91,20 @@ Nothing in the four policy categories needs handwritten code after migration;
 each is already modelled in `internal/spec` or has a named place to go. Two items
 are the exceptions to that:
 
+- **Identity resolution** is an intended behavior change rather than an exception;
+  see the "Intended behavior changes" section of [status.md](../status.md). Legacy
+  writes a Terraform null when a response cannot identify its object; the generic
+  engine should fail with a diagnostic instead.
 - **`verity_tenant.vrf_name`** needs a validator, and the override format has no
   way to express one. `FieldSpec.Validators` exists and is validated, but no
   override populates it. This is the one field-policy gap with no current
   representation.
-- **`verity_packet_broker.ipv6_permit.enable`** is most likely a defect rather
-  than a policy. Replicating it in the generic engine would preserve a bug; the
-  registry records the absence so the decision is deliberate.
+- **`verity_packet_broker.ipv6_permit.enable`** was a defect, now fixed. Packet
+  Broker has four structurally identical filter collections sharing one model
+  type; three compared and sent the entry's enable flag on update and
+  `ipv6_permit` did not, with the comment left in place and the call removed.
+  Terraform planned a change, the PATCH omitted it, and the next read restored the
+  old value, so the plan never converged.
+  `TestPacketBrokerIPv6PermitEnableReachesPatch` covers it. The golden fixtures do
+  not: their scenario flips the resource's top-level enable, not the nested one,
+  which is why a targeted regression test was needed.

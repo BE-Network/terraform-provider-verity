@@ -155,12 +155,12 @@ func validIPv4ListSpec() ResourceSpec {
 			{
 				TerraformName: "enable", APIName: "enable", Kind: FieldKindBool, Access: AccessOptionalComputed, Description: "Enable",
 				Modes: []Mode{ModeDatacenter}, Versions: versionRange,
-				ResponseAbsence: ResponseAbsenceTerraformNull, CreateNull: CreateNullOmit, UpdateClear: UpdateClearAPINull, UnknownPlan: UnknownPlanPreserve, StateOwnership: StateConfigurationOrServer,
+				ResponseAbsence: ResponseAbsenceTerraformNull, CreateNull: CreateNullOmit, UpdateClear: UpdateClearFalse, UnknownPlan: UnknownPlanOmitAndRead, StateOwnership: StateConfigurationOrServer,
 			},
 			{
 				TerraformName: "ipv4_list", APIName: "ipv4_list", Kind: FieldKindString, Access: AccessOptionalComputed, Description: "IPv4 addresses",
 				Modes: []Mode{ModeDatacenter}, Versions: versionRange,
-				ResponseAbsence: ResponseAbsenceTerraformNull, CreateNull: CreateNullOmit, UpdateClear: UpdateClearAPINull, UnknownPlan: UnknownPlanPreserve, StateOwnership: StateConfigurationOrServer,
+				ResponseAbsence: ResponseAbsenceTerraformNull, CreateNull: CreateNullOmit, UpdateClear: UpdateClearEmptyString, UnknownPlan: UnknownPlanOmitAndRead, StateOwnership: StateConfigurationOrServer,
 			},
 		},
 	}
@@ -170,11 +170,11 @@ func nestedField(collection *CollectionSpec) FieldSpec {
 	versionRange := VersionRange{MinInclusive: APIVersion{Major: 6, Minor: 6}, MaxExclusive: APIVersion{Major: 6, Minor: 7}}
 	return FieldSpec{
 		TerraformName: "nested", APIName: "nested", Kind: FieldKindList, ElementKind: FieldKindObject, Access: AccessOptional, Description: "Nested", Modes: []Mode{ModeDatacenter}, Versions: versionRange,
-		ResponseAbsence: ResponseAbsenceTerraformNull, CreateNull: CreateNullOmit, UpdateClear: UpdateClearAPINull, UnknownPlan: UnknownPlanReject, StateOwnership: StateConfiguration,
+		ResponseAbsence: ResponseAbsenceTerraformNull, CreateNull: CreateNullOmit, UpdateClear: UpdateClearOmit, UnknownPlan: UnknownPlanReject, StateOwnership: StateConfiguration,
 		Collection: collection,
 		Fields: []FieldSpec{{
 			TerraformName: "value", APIName: "value", Kind: FieldKindString, Access: AccessOptional, Description: "Value", Modes: []Mode{ModeDatacenter}, Versions: versionRange,
-			ResponseAbsence: ResponseAbsenceTerraformNull, CreateNull: CreateNullOmit, UpdateClear: UpdateClearAPINull, UnknownPlan: UnknownPlanReject, StateOwnership: StateConfiguration,
+			ResponseAbsence: ResponseAbsenceTerraformNull, CreateNull: CreateNullOmit, UpdateClear: UpdateClearOmit, UnknownPlan: UnknownPlanReject, StateOwnership: StateConfiguration,
 		}},
 	}
 }
@@ -191,4 +191,39 @@ func unmanagedField(breakIt func(*FieldSpec)) FieldSpec {
 	}
 	breakIt(&field)
 	return field
+}
+
+// Only numerics carry an explicit null on this API. A cleared string is an empty
+// string and a cleared bool is false; neither is a null, and a container is
+// cleared by omission or by its collection strategy. Declaring api_null on any of
+// them would make the generic engine send a null the API does not accept there.
+func TestOnlyNumericFieldsMayDeclareAnExplicitNull(t *testing.T) {
+	for _, tc := range []struct {
+		name   string
+		break_ func(*ResourceSpec)
+		want   string
+	}{
+		{"bool clears to an explicit null", func(s *ResourceSpec) { s.Fields[1].UpdateClear = UpdateClearAPINull }, "only numeric fields support an explicit null"},
+		{"string creates with an explicit null", func(s *ResourceSpec) { s.Fields[2].CreateNull = CreateNullAPINull }, "only numeric fields support an explicit null"},
+		{"string marked nullable", func(s *ResourceSpec) { s.Fields[2].Nullable = true }, "only numeric fields are nullable"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			spec := validIPv4ListSpec()
+			tc.break_(&spec)
+			err := spec.Validate()
+			if err == nil || !strings.Contains(err.Error(), tc.want) {
+				t.Fatalf("Validate() error = %v, want %q", err, tc.want)
+			}
+		})
+	}
+
+	// A numeric may, and the registry relies on it.
+	spec := validIPv4ListSpec()
+	spec.Fields[1].Kind = FieldKindInt64
+	spec.Fields[1].UpdateClear = UpdateClearAPINull
+	spec.Fields[1].CreateNull = CreateNullAPINull
+	spec.Fields[1].Nullable = true
+	if err := spec.Validate(); err != nil {
+		t.Fatalf("numeric field rejected for declaring an explicit null: %v", err)
+	}
 }

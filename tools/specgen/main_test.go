@@ -244,7 +244,7 @@ func TestMergeFieldOverridesSupportsNestedCollections(t *testing.T) {
 	parent := overrideField("members", "array", "members")
 	parent.Access = "optional"
 	parent.APIItemKind = "object"
-	parent.ResponseAbsence, parent.CreateNull, parent.UpdateClear, parent.UnknownPlan = "terraform_null", "omit", "api_null", "reject"
+	parent.ResponseAbsence, parent.CreateNull, parent.UpdateClear, parent.UnknownPlan = "terraform_null", "omit", "omit", "reject"
 	parent.Collection = &collectionOverride{Strategy: "replace", Ordering: "ordered", IdentityField: "name"}
 	parent.Fields = []fieldOverride{child}
 	fields, err := mergeFieldOverrides([]coverageField{{
@@ -282,7 +282,7 @@ func TestMergeFieldOverridesSupportsScalarLists(t *testing.T) {
 	override := fieldOverride{
 		APIName: "names", APIKind: "array", APIItemKind: "string", TerraformName: "names", Description: "Names",
 		Modes: []string{"datacenter"}, Versions: versions, Access: "optional",
-		ResponseAbsence: "terraform_null", CreateNull: "omit", UpdateClear: "api_null", UnknownPlan: "reject", StateOwnership: "configuration",
+		ResponseAbsence: "terraform_null", CreateNull: "omit", UpdateClear: "omit", UnknownPlan: "reject", StateOwnership: "configuration",
 		Collection: &collectionOverride{Strategy: "replace", Ordering: "ordered"},
 	}
 	fields, err := mergeFieldOverrides([]coverageField{{APIName: "names", Kind: "array", ItemKind: "string", Description: "Names", Modes: []string{"datacenter"}}}, []fieldOverride{override}, spec.VersionRange{MinInclusive: spec.APIVersion{Major: 6, Minor: 6}, MaxExclusive: spec.APIVersion{Major: 6, Minor: 7}}, spec.APIVersion{Major: 6, Minor: 6}, nil, "", nil, versionRangeOverride{MinInclusive: "6.6", MaxExclusive: "6.7"}, "")
@@ -433,7 +433,7 @@ func TestResolveFieldOverridePrefersExplicitValues(t *testing.T) {
 	inheritModes := []string{"campus", "datacenter"}
 	inheritVersions := versionRangeOverride{MinInclusive: "6.6", MaxExclusive: "6.7"}
 
-	resolved, err := resolveFieldOverride(fieldOverride{APIName: "enable", Profile: "server_managed"}, profiles, "", false, "", inheritModes, inheritVersions)
+	resolved, err := resolveFieldOverride(fieldOverride{APIName: "enable", Profile: "server_managed"}, profiles, "", false, false, "", inheritModes, inheritVersions)
 	if err != nil {
 		t.Fatalf("resolveFieldOverride() error = %v", err)
 	}
@@ -443,7 +443,7 @@ func TestResolveFieldOverridePrefersExplicitValues(t *testing.T) {
 	}
 
 	explicit := fieldOverride{APIName: "enable", Profile: "server_managed", UpdateClear: "reject", Modes: []string{"campus"}}
-	resolved, err = resolveFieldOverride(explicit, profiles, "", false, "", inheritModes, inheritVersions)
+	resolved, err = resolveFieldOverride(explicit, profiles, "", false, false, "", inheritModes, inheritVersions)
 	if err != nil {
 		t.Fatalf("resolveFieldOverride() error = %v", err)
 	}
@@ -451,7 +451,7 @@ func TestResolveFieldOverridePrefersExplicitValues(t *testing.T) {
 		t.Fatalf("explicit field = %#v", resolved)
 	}
 
-	if _, err := resolveFieldOverride(fieldOverride{APIName: "x", Profile: "server_managed", Unmanaged: true}, profiles, "", false, "", inheritModes, inheritVersions); err == nil {
+	if _, err := resolveFieldOverride(fieldOverride{APIName: "x", Profile: "server_managed", Unmanaged: true}, profiles, "", false, false, "", inheritModes, inheritVersions); err == nil {
 		t.Fatal("resolveFieldOverride() accepted an unmanaged field with a profile")
 	}
 }
@@ -463,14 +463,14 @@ func TestResolveFieldOverrideAppliesDefaultProfile(t *testing.T) {
 		"server_managed": {Access: "optional_computed", UpdateClear: "api_null"},
 		"identity":       {Access: "required", Replace: true, UpdateClear: "reject"},
 	}
-	resolved, err := resolveFieldOverride(fieldOverride{APIName: "enable"}, profiles, "server_managed", false, "", nil, versionRangeOverride{})
+	resolved, err := resolveFieldOverride(fieldOverride{APIName: "enable"}, profiles, "server_managed", false, false, "", nil, versionRangeOverride{})
 	if err != nil {
 		t.Fatalf("resolveFieldOverride() error = %v", err)
 	}
 	if resolved.Profile != "server_managed" || resolved.Access != "optional_computed" {
 		t.Fatalf("defaulted field = %#v", resolved)
 	}
-	resolved, err = resolveFieldOverride(fieldOverride{APIName: "name", Profile: "identity"}, profiles, "server_managed", false, "", nil, versionRangeOverride{})
+	resolved, err = resolveFieldOverride(fieldOverride{APIName: "name", Profile: "identity"}, profiles, "server_managed", false, false, "", nil, versionRangeOverride{})
 	if err != nil {
 		t.Fatalf("resolveFieldOverride() error = %v", err)
 	}
@@ -478,7 +478,7 @@ func TestResolveFieldOverrideAppliesDefaultProfile(t *testing.T) {
 		t.Fatalf("named profile lost to the default: %#v", resolved)
 	}
 	// An unmanaged field records API shape only and must not pick up the default.
-	resolved, err = resolveFieldOverride(fieldOverride{APIName: "object_properties", Unmanaged: true}, profiles, "server_managed", false, "", nil, versionRangeOverride{})
+	resolved, err = resolveFieldOverride(fieldOverride{APIName: "object_properties", Unmanaged: true}, profiles, "server_managed", false, false, "", nil, versionRangeOverride{})
 	if err != nil {
 		t.Fatalf("resolveFieldOverride() error = %v", err)
 	}
@@ -507,7 +507,7 @@ func TestDefaultUpdateClearFollowsTheWireType(t *testing.T) {
 		{"array", false, ""},
 	}
 	for _, tc := range cases {
-		if got := defaultUpdateClear(tc.kind, tc.nullable, ""); got != tc.want {
+		if got := defaultUpdateClear(tc.kind, tc.nullable, "", false); got != tc.want {
 			t.Errorf("defaultUpdateClear(%q, nullable=%v) = %q, want %q", tc.kind, tc.nullable, got, tc.want)
 		}
 	}
@@ -517,14 +517,14 @@ func TestDefaultUpdateClearFollowsTheWireType(t *testing.T) {
 // documents and the provider do not always agree on numeric nullability.
 func TestExplicitUpdateClearOverridesTheDerivedDefault(t *testing.T) {
 	profiles := map[string]policyProfile{"server_managed": {Access: "optional_computed"}}
-	derived, err := resolveFieldOverride(fieldOverride{APIName: "poll_interval", APIKind: "integer"}, profiles, "server_managed", false, "", nil, versionRangeOverride{})
+	derived, err := resolveFieldOverride(fieldOverride{APIName: "poll_interval", APIKind: "integer"}, profiles, "server_managed", false, false, "", nil, versionRangeOverride{})
 	if err != nil {
 		t.Fatalf("resolveFieldOverride() error = %v", err)
 	}
 	if derived.UpdateClear != "zero" {
 		t.Fatalf("derived update_clear = %q, want zero", derived.UpdateClear)
 	}
-	explicit, err := resolveFieldOverride(fieldOverride{APIName: "poll_interval", APIKind: "integer", UpdateClear: "api_null"}, profiles, "server_managed", false, "", nil, versionRangeOverride{})
+	explicit, err := resolveFieldOverride(fieldOverride{APIName: "poll_interval", APIKind: "integer", UpdateClear: "api_null"}, profiles, "server_managed", false, false, "", nil, versionRangeOverride{})
 	if err != nil {
 		t.Fatalf("resolveFieldOverride() error = %v", err)
 	}
@@ -584,11 +584,24 @@ func TestBulkMetadataRejectsMultipleFixedHeaders(t *testing.T) {
 // on the enclosing collection, not on the member's own type.
 func TestDefaultUpdateClearOmitsInsideASingleton(t *testing.T) {
 	for _, kind := range []string{"string", "boolean", "integer", "number"} {
-		if got := defaultUpdateClear(kind, false, string(spec.CollectionSingleton)); got != "omit" {
+		if got := defaultUpdateClear(kind, false, string(spec.CollectionSingleton), false); got != "omit" {
 			t.Errorf("defaultUpdateClear(%q, false, singleton) = %q, want omit", kind, got)
 		}
 	}
-	if got := defaultUpdateClear("string", false, string(spec.CollectionIndexedPatch)); got != "empty_string" {
+	if got := defaultUpdateClear("string", false, string(spec.CollectionIndexedPatch), false); got != "empty_string" {
 		t.Errorf("defaultUpdateClear(string, false, indexed_patch) = %q, want empty_string", got)
+	}
+}
+
+// A reference pair inside a singleton clears to the wire type's zero, not by
+// omission: both halves move together through their own helper, which writes the
+// value directly. Lag and Switchpoint both carry one inside object_properties.
+func TestDefaultUpdateClearPrefersThePairRuleInsideASingleton(t *testing.T) {
+	singleton := string(spec.CollectionSingleton)
+	if got := defaultUpdateClear("string", false, singleton, false); got != "omit" {
+		t.Errorf("unpaired singleton member = %q, want omit", got)
+	}
+	if got := defaultUpdateClear("string", false, singleton, true); got != "empty_string" {
+		t.Errorf("paired singleton member = %q, want empty_string", got)
 	}
 }

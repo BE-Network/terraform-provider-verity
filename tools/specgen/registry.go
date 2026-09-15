@@ -328,9 +328,20 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 		sort.Strings(missing)
 		return nil, fmt.Errorf("every extracted field needs an explicit override; missing %s", strings.Join(missing, ", "))
 	}
+	// Both halves of a reference or auto-assignment pair are recognised from the
+	// API's own suffixes, the same way referenceSpec and autoAssignmentSpec do.
+	pairedNames := make(map[string]bool, len(coverageByName))
+	for name := range coverageByName {
+		for _, suffix := range []string{"_ref_type_", "_auto_assigned_"} {
+			if base, found := strings.CutSuffix(name, suffix); found && coverageByName[base].APIName != "" {
+				pairedNames[name], pairedNames[base] = true, true
+			}
+		}
+	}
+
 	fields := make([]spec.FieldSpec, 0, len(overrides))
 	for _, source := range coverage {
-		override, err := resolveFieldOverride(overrideByName[source.APIName], profiles, defaultProfile, apiNullable(source.Kind, source.APIName), enclosing, inheritModes, inheritVersions)
+		override, err := resolveFieldOverride(overrideByName[source.APIName], profiles, defaultProfile, apiNullable(source.Kind, source.APIName), pairedNames[source.APIName], enclosing, inheritModes, inheritVersions)
 		if err != nil {
 			return nil, err
 		}
@@ -456,7 +467,7 @@ func fieldElementKind(source coverageField, override fieldOverride) (spec.FieldK
 // profile supplies lifecycle policies, the Terraform name follows the API name,
 // and modes and versions inherit from the resource. Anything stated explicitly
 // on the field wins, so a deviation is always visible in the file.
-func resolveFieldOverride(override fieldOverride, profiles map[string]policyProfile, defaultProfile string, nullable bool, enclosing string, modes []string, versions versionRangeOverride) (fieldOverride, error) {
+func resolveFieldOverride(override fieldOverride, profiles map[string]policyProfile, defaultProfile string, nullable, paired bool, enclosing string, modes []string, versions versionRangeOverride) (fieldOverride, error) {
 	resolved := override
 	if resolved.Profile == "" && !resolved.Unmanaged && resolved.Access == "" {
 		resolved.Profile = defaultProfile
@@ -500,7 +511,7 @@ func resolveFieldOverride(override fieldOverride, profiles map[string]policyProf
 	// per-field overrides to the cases where the provider disagrees with the
 	// document, and those are individually reviewed.
 	if !resolved.Unmanaged && resolved.UpdateClear == "" {
-		resolved.UpdateClear = defaultUpdateClear(resolved.APIKind, nullable, enclosing)
+		resolved.UpdateClear = defaultUpdateClear(resolved.APIKind, nullable, enclosing, paired)
 	}
 	// Creating and clearing use the same wire capability: a field that can carry
 	// an explicit null on update carries one on create, and one that cannot is
@@ -512,19 +523,17 @@ func resolveFieldOverride(override fieldOverride, profiles map[string]policyProf
 			resolved.CreateNull = string(spec.CreateNullOmit)
 		}
 	}
-	// A field the request omits when null is omitted when unknown too, and the read
-	// that follows the operation supplies the server's value.
+	// A field the request omits is omitted when unknown too, and the read that
+	// follows the operation supplies the server's value.
 	//
-	// The nullable helpers behave differently: they key off whether the attribute
-	// was written in configuration and have no unknown branch at all, so nothing in
-	// the implementation states what an unknown value should do. Those keep
-	// preserve_state, which is the previous assumption rather than a verified fact.
-	if !resolved.Unmanaged && resolved.UnknownPlan == "" {
-		if resolved.CreateNull == string(spec.CreateNullOmit) {
-			resolved.UnknownPlan = string(spec.UnknownPlanOmitAndRead)
-		} else if resolved.CreateNull == string(spec.CreateNullAPINull) {
-			resolved.UnknownPlan = string(spec.UnknownPlanPreserve)
-		}
+	// Nullable numerics reach the same place by a different route. Their path is
+	// gated on whether the attribute was written in configuration at all, read
+	// from the .tf file by ParseResourceConfiguredAttributes, so an unwritten
+	// field is skipped and read back exactly like any other omission. A written
+	// one resolves to a known value before apply, which is the ordinary case.
+	// Either way there is no separate unknown behavior to express.
+	if !resolved.Unmanaged && resolved.UnknownPlan == "" && resolved.CreateNull != "" {
+		resolved.UnknownPlan = string(spec.UnknownPlanOmitAndRead)
 	}
 	if len(resolved.Modes) == 0 {
 		resolved.Modes = modes
@@ -548,10 +557,15 @@ func apiNullable(apiKind, apiName string) bool {
 // defaultUpdateClear mirrors the legacy transport helpers: a nullable numeric is
 // cleared with an explicit JSON null, a string with "", a bool with false, and a
 // number with zero.
-func defaultUpdateClear(apiKind string, nullable bool, enclosing string) string {
+func defaultUpdateClear(apiKind string, nullable bool, enclosing string, paired bool) string {
 	// A singleton is sent as a whole object, so clearing one of its members means
 	// dropping that key rather than sending a zero value the server would store.
-	if enclosing == string(spec.CollectionSingleton) {
+	//
+	// A paired field is the exception: both halves of a reference or
+	// auto-assignment move together through their own helper, which writes the
+	// value directly and so clears it to the wire type's zero. Lag and Switchpoint
+	// both carry a reference pair inside object_properties and clear it that way.
+	if enclosing == string(spec.CollectionSingleton) && !paired {
 		return string(spec.UpdateClearOmit)
 	}
 	if nullable {
