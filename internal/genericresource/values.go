@@ -121,13 +121,88 @@ func buildCreate(fields []spec.FieldSpec, plan map[string]attr.Value) (transport
 //
 // Clearing is the case that needs the spec: what "no value" looks like on the
 // wire is per field, and the engine must not guess it from the Go type.
-func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value) (transport.WireObject, bool, error) {
+// nullableSource carries what only the configuration can answer: whether a
+// nullable attribute is written at all, and what it was written as.
+//
+// A nullable numeric is the one field that can be cleared by an explicit null,
+// and `x = null` is indistinguishable from an absent x in a plan for an
+// Optional and Computed attribute — both arrive as the value already in state.
+// The handwritten resources resolve it by reading the .tf files, and so does
+// this, through the same parser.
+type nullableSource struct {
+	config     map[string]attr.Value
+	configured func(terraformName string) bool
+}
+
+func (n nullableSource) known(field spec.FieldSpec) (attr.Value, bool) {
+	if n.configured == nil || !n.configured(field.TerraformName) {
+		return nil, false
+	}
+	value, held := n.config[field.TerraformName]
+	if !held {
+		return nil, false
+	}
+	return value, true
+}
+
+func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value, nullables nullableSource, diagnostics *diag.Diagnostics) (transport.WireObject, bool, error) {
 	object := make(transport.WireObject, len(fields))
 	changed := false
+
+	// Reference pairs are decided together and then skipped by the loop below,
+	// because neither half's policy describes what the API requires of the two.
+	companions, paired, err := referencePairs(fields)
+	if err != nil {
+		return nil, false, err
+	}
 	for _, field := range fields {
-		if field.Unmanaged {
+		if field.Unmanaged || field.Reference == nil {
 			continue
 		}
+		pairChanged, err := applyReferencePair(field, companions[field.TerraformName], plan, state, object, diagnostics)
+		if err != nil {
+			return nil, false, err
+		}
+		if diagnostics.HasError() {
+			return nil, false, nil
+		}
+		changed = changed || pairChanged
+	}
+
+	for _, field := range fields {
+		if field.Unmanaged || paired[field.TerraformName] {
+			continue
+		}
+
+		// A nullable field is decided from configuration rather than from the
+		// plan, because only configuration distinguishes "cleared" from "not
+		// mentioned". One that is not written is left alone entirely.
+		if field.Nullable {
+			written, isWritten := nullables.known(field)
+			if !isWritten {
+				continue
+			}
+			previous, hadPrevious := state[field.TerraformName]
+			if hadPrevious && written.Equal(previous) {
+				continue
+			}
+			if written.IsUnknown() {
+				continue
+			}
+			if written.IsNull() {
+				object[field.APIName] = transport.Null()
+				changed = true
+				continue
+			}
+			wire, err := toWire(field, written)
+			if err != nil {
+				return nil, false, err
+			}
+			object[field.APIName] = wire
+			changed = true
+			continue
+		}
+
 		planned, present := plan[field.TerraformName]
 		if !present {
 			continue

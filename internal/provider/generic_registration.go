@@ -24,12 +24,17 @@ import (
 // the default path through this file is the one that changes nothing.
 const GenericResourcesEnvVar = "VERITY_GENERIC_RESOURCES"
 
-// genericAdapters holds the transport adapter for each resource the engine can
-// serve. The bulk manager type-asserts the value it is handed, so an adapter is
-// what lets a canonical object reach it; a resource with no adapter here cannot
-// be served generically however complete its spec is.
-var genericAdapters = map[string]genericresource.TransportAdapter{
-	"verity_ipv4_list": transport.IPv4ListAdapter{},
+// genericAdapters is the generated adapter table. The bulk manager type-asserts
+// the value it is handed, so an adapter is what lets a canonical object reach
+// it; a resource with no adapter cannot be served generically however complete
+// its spec is.
+//
+// specgen emits one per resource it can serve and records why it skipped the
+// rest, so this set grows as the engine's reach does rather than as someone
+// remembers to add an entry.
+func genericAdapter(terraformType string) (genericresource.TransportAdapter, bool) {
+	adapter, found := transport.GeneratedAdapters[terraformType]
+	return adapter, found
 }
 
 // genericSelection reads the switch. An empty set means every resource stays
@@ -60,7 +65,7 @@ func genericConstructor(terraformType string, selected map[string]bool) (func() 
 	if !selected[terraformType] && !selected["all"] {
 		return nil, nil
 	}
-	adapter, hasAdapter := genericAdapters[terraformType]
+	adapter, hasAdapter := genericAdapter(terraformType)
 	if !hasAdapter {
 		if selected["all"] {
 			// "all" is a convenience, not a claim that every resource is ready.

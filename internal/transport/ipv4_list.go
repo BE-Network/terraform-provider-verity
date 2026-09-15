@@ -84,15 +84,3 @@ func wireBool(object WireObject, field string) (*bool, error) {
 	result := value.BoolValue()
 	return &result, nil
 }
-
-// ResourceValue converts one canonical object into the typed value the bulk
-// manager asserts for IPv4 List. BuildPut and BuildPatch above cross the same
-// boundary for a whole batch; this crosses it for the single resource a
-// lifecycle operation is about.
-func (IPv4ListAdapter) ResourceValue(object WireObject) (interface{}, error) {
-	values, err := ipv4ListValues(map[string]WireObject{"": object}, false)
-	if err != nil {
-		return nil, err
-	}
-	return values[""], nil
-}

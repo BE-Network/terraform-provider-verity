@@ -91,6 +91,17 @@ func main() {
 		if err := generateRegistry(opts); err != nil {
 			fail(err.Error())
 		}
+	case "adapters":
+		fs := flag.NewFlagSet("adapters", flag.ExitOnError)
+		opts := adapterOptions{}
+		fs.StringVar(&opts.Registry, "registry", "", "generated registry input path")
+		fs.StringVar(&opts.OpenAPIDir, "openapi-dir", "", "generated SDK package directory")
+		fs.StringVar(&opts.Output, "output", "", "generated adapter output path")
+		fs.BoolVar(&opts.Check, "check", false, "fail if output differs from deterministic generation")
+		_ = fs.Parse(os.Args[2:])
+		if err := generateAdapters(opts); err != nil {
+			fail(err.Error())
+		}
 	case "metadata":
 		fs := flag.NewFlagSet("metadata", flag.ExitOnError)
 		opts := metadataOptions{}

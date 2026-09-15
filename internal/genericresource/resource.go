@@ -129,6 +129,65 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 		}
 		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root(field.TerraformName), nullOf(field.Kind))...)
 	}
+
+	if req.State.Raw.IsNull() {
+		// Creating: there is no prior value for a cleared field to differ from.
+		return
+	}
+	r.planExplicitNulls(ctx, req, resp)
+}
+
+// planExplicitNulls makes a cleared nullable field visible as a change.
+//
+// Terraform copies state into the plan for an Optional and Computed attribute
+// whose configuration is null, so writing `x = null` plans as no change at all
+// and Update is never called. The handwritten resources detect the explicit null
+// by parsing the .tf files and force the planned value to null; without the same
+// step the generic engine silently ignores a clear.
+//
+// Only a nullable field needs this. Every other kind is cleared by a zero value
+// the configuration can state outright, which plans as an ordinary change.
+func (r *Resource) planExplicitNulls(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	nullable := make([]spec.FieldSpec, 0, len(r.spec.Fields))
+	for _, field := range r.spec.Fields {
+		if field.Nullable && !field.Unmanaged {
+			nullable = append(nullable, field)
+		}
+	}
+	if len(nullable) == 0 {
+		return
+	}
+
+	config, diags := readScalars(ctx, req.Config, r.spec.Fields)
+	resp.Diagnostics.Append(diags...)
+	state, stateDiags := readScalars(ctx, req.State, r.spec.Fields)
+	resp.Diagnostics.Append(stateDiags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var plan map[string]attr.Value
+	plan, diags = readScalars(ctx, req.Plan, r.spec.Fields)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	configured := r.runtime.ConfiguredAttributes(ctx, r.spec.TerraformType, r.identityOf(plan))
+
+	for _, field := range nullable {
+		if !configured.IsConfigured(field.TerraformName) {
+			continue
+		}
+		configValue, held := config[field.TerraformName]
+		if !held || configValue == nil || !configValue.IsNull() {
+			continue
+		}
+		previous, hadPrevious := state[field.TerraformName]
+		if !hadPrevious || previous == nil || previous.IsNull() {
+			continue
+		}
+		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root(field.TerraformName), nullOf(field.Kind))...)
+	}
 }
 
 func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -184,9 +243,14 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 	}
 
 	name := r.identityOf(plan)
-	object, changed, err := buildUpdate(r.spec.Fields, plan, state)
+	object, changed, err := buildUpdate(r.spec.Fields, plan, state, r.nullableSource(ctx, req.Config, name, &resp.Diagnostics), &resp.Diagnostics)
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid Configuration", fmt.Sprintf("%s %s: %s", r.spec.TerraformType, name, err))
+		return
+	}
+	// A reference pair reports a refused combination through diagnostics rather
+	// than an error, in the words the handwritten helpers use.
+	if resp.Diagnostics.HasError() {
 		return
 	}
 	if !changed {
@@ -209,6 +273,26 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 	r.runtime.ClearCache(ctx, r.spec.API.CacheKey)
 
 	r.settleAfterWrite(ctx, name, plan, &resp.State, &resp.Diagnostics)
+}
+
+// nullableSource reads the configuration and the .tf files, but only when the
+// resource actually has a nullable field. Parsing is not free, and a resource
+// with none has nothing to learn from it.
+func (r *Resource) nullableSource(ctx context.Context, config tfsdk.Config, name string, diagnostics *diag.Diagnostics) nullableSource {
+	hasNullable := false
+	for _, field := range r.spec.Fields {
+		if field.Nullable && !field.Unmanaged {
+			hasNullable = true
+			break
+		}
+	}
+	if !hasNullable {
+		return nullableSource{}
+	}
+	values, diags := readScalars(ctx, config, r.spec.Fields)
+	diagnostics.Append(diags...)
+	attributes := r.runtime.ConfiguredAttributes(ctx, r.spec.TerraformType, name)
+	return nullableSource{config: values, configured: attributes.IsConfigured}
 }
 
 func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

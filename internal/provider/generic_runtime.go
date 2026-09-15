@@ -46,6 +46,12 @@ func (g genericRuntime) BulkManager() *bulkops.Manager { return g.provCtx.bulkOp
 
 func (g genericRuntime) NotifyOperationAdded() { g.provCtx.NotifyOperationAdded() }
 
+// ConfiguredAttributes parses the .tf files the same way the handwritten
+// resources do, from the same working directory.
+func (g genericRuntime) ConfiguredAttributes(ctx context.Context, terraformType, resourceName string) *utils.ConfiguredAttributes {
+	return utils.ParseResourceConfiguredAttributes(ctx, g.provCtx.workDir, terraformType, resourceName)
+}
+
 // FetchCollection reads a resource's endpoint and returns the objects under its
 // response collection key, through the same cache and retry the handwritten
 // resources use.

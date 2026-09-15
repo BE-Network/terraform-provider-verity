@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"terraform-provider-verity/internal/spec"
@@ -109,7 +110,7 @@ func TestBuildUpdateSendsOnlyChangedFields(t *testing.T) {
 		"ipv4_list": types.StringValue("10.0.0.1"),
 	}
 
-	unchanged, changed, err := buildUpdate(scalarFields(), state, state)
+	unchanged, changed, err := buildUpdate(scalarFields(), state, state, nullableSource{}, &diag.Diagnostics{})
 	if err != nil {
 		t.Fatalf("buildUpdate: %v", err)
 	}
@@ -122,7 +123,7 @@ func TestBuildUpdateSendsOnlyChangedFields(t *testing.T) {
 		"enable":    types.BoolValue(false),
 		"ipv4_list": types.StringValue("10.0.0.1"),
 	}
-	object, changed, err := buildUpdate(scalarFields(), plan, state)
+	object, changed, err := buildUpdate(scalarFields(), plan, state, nullableSource{}, &diag.Diagnostics{})
 	if err != nil {
 		t.Fatalf("buildUpdate: %v", err)
 	}
@@ -150,7 +151,7 @@ func TestBuildUpdateClearsByDeclaredPolicy(t *testing.T) {
 		"ipv4_list": types.StringNull(),
 	}
 
-	object, changed, err := buildUpdate(scalarFields(), plan, state)
+	object, changed, err := buildUpdate(scalarFields(), plan, state, nullableSource{}, &diag.Diagnostics{})
 	if err != nil {
 		t.Fatalf("buildUpdate: %v", err)
 	}
@@ -180,7 +181,7 @@ func TestBuildUpdateOmitsUnknown(t *testing.T) {
 		"ipv4_list": types.StringUnknown(),
 	}
 
-	object, changed, err := buildUpdate(scalarFields(), plan, state)
+	object, changed, err := buildUpdate(scalarFields(), plan, state, nullableSource{}, &diag.Diagnostics{})
 	if err != nil {
 		t.Fatalf("buildUpdate: %v", err)
 	}
@@ -199,7 +200,7 @@ func TestBuildUpdateRefusesToClearTheIdentity(t *testing.T) {
 	state := map[string]attr.Value{"name": types.StringValue("list-a")}
 	plan := map[string]attr.Value{"name": types.StringNull()}
 
-	if _, _, err := buildUpdate(scalarFields(), plan, state); err == nil {
+	if _, _, err := buildUpdate(scalarFields(), plan, state, nullableSource{}, &diag.Diagnostics{}); err == nil {
 		t.Fatal("clearing the identity was accepted; update_clear: reject must refuse it")
 	}
 }

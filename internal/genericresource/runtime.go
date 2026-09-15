@@ -6,6 +6,7 @@ import (
 	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/spec"
 	"terraform-provider-verity/internal/transport"
+	"terraform-provider-verity/internal/utils"
 )
 
 // Runtime is what the generic engine needs from the provider: the ambient facts
@@ -27,6 +28,14 @@ type Runtime interface {
 	// FetchCollection returns the objects at a resource's endpoint, keyed by their
 	// API name, going through the provider's cache and retry policy.
 	FetchCollection(ctx context.Context, resource spec.ResourceSpec, resourceName string) (map[string]interface{}, error)
+	// ConfiguredAttributes reports which attributes the configuration writes.
+	//
+	// A plan cannot answer this for an Optional and Computed attribute: writing
+	// `x = null` and leaving x out both arrive as the same planned value, the one
+	// already in state. Only a nullable field needs the distinction, because it
+	// is the only kind that can be cleared by an explicit null, and the
+	// handwritten resources read it the same way — by parsing the .tf files.
+	ConfiguredAttributes(ctx context.Context, terraformType, resourceName string) *utils.ConfiguredAttributes
 }
 
 // TransportAdapter converts the engine's canonical object into the typed value

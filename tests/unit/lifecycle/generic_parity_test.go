@@ -9,13 +9,16 @@ import (
 	fwresource "github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
+	"sort"
 	"terraform-provider-verity/internal/genericresource"
+
 	"terraform-provider-verity/internal/provider"
+	"terraform-provider-verity/internal/transport"
 	"terraform-provider-verity/tests/unit/mock"
 )
 
-// The Phase 2 pilot is judged against the same fixtures as the resource it
-// replaces.
+// Every generically served resource is judged against the same fixtures as the
+// resource it replaces.
 //
 // Every other check compares the generic engine to a description of the legacy
 // implementation. This compares it to the legacy implementation's recorded
@@ -29,12 +32,37 @@ import (
 // second baseline: a fixture of its own would only prove the engine agrees with
 // itself.
 //
-// It cannot run in parallel, because the switch that selects the engine is an
+// These cannot run in parallel, because the switch that selects the engine is an
 // environment variable and t.Setenv forbids it.
-func TestGenericIPv4ListMatchesLegacyGoldenFixtures(t *testing.T) {
-	t.Setenv(provider.GenericResourcesEnvVar, "verity_ipv4_list")
+func TestGenericResourcesMatchLegacyGoldenFixtures(t *testing.T) {
+	for _, terraformType := range genericallyServable(t) {
+		t.Run(terraformType, func(t *testing.T) {
+			assertGoldenParity(t, terraformType)
+		})
+	}
+}
 
-	entry := coverageEntry(t, "verity_ipv4_list")
+// genericallyServable is the set the engine can serve, read from the generated
+// adapter table rather than listed here. A resource that becomes servable is
+// covered by this test the moment specgen emits its adapter, so the migration
+// front and its parity evidence cannot drift apart.
+func genericallyServable(t *testing.T) []string {
+	t.Helper()
+	names := make([]string, 0, len(transport.GeneratedAdapters))
+	for terraformType := range transport.GeneratedAdapters {
+		names = append(names, terraformType)
+	}
+	sort.Strings(names)
+	if len(names) == 0 {
+		t.Fatal("no generated adapters, so this test proved nothing")
+	}
+	return names
+}
+
+func assertGoldenParity(t *testing.T, terraformType string) {
+	t.Setenv(provider.GenericResourcesEnvVar, terraformType)
+
+	entry := coverageEntry(t, terraformType)
 	assertServedGenerically(t, entry.TerraformType)
 
 	ms := mock.NewMockServer(entry.Mode)

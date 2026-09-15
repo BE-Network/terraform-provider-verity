@@ -7,8 +7,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 
+	"sort"
+
 	"terraform-provider-verity/internal/genericresource"
 	"terraform-provider-verity/internal/spec"
+	"terraform-provider-verity/internal/transport"
 )
 
 // The generic engine must serve the schema the provider already ships.
@@ -21,15 +24,42 @@ import (
 //
 // A schema difference is a state-compatibility break, so this is the check that
 // has to pass before the generic resource is allowed to serve real state.
-func TestCompiledSchemaMatchesLegacyIPv4List(t *testing.T) {
+func TestCompiledSchemaMatchesLegacy(t *testing.T) {
 	t.Parallel()
 
-	resourceSpec := registrySpec(t, "verity_ipv4_list")
+	// Every resource the engine can serve, not just the pilot. Checking one of
+	// them left the others' schemas unverified, and a schema difference is what
+	// decides whether Terraform plans a change at all.
+	servable := make([]string, 0, len(transport.GeneratedAdapters))
+	for terraformType := range transport.GeneratedAdapters {
+		servable = append(servable, terraformType)
+	}
+	sort.Strings(servable)
+	if len(servable) == 0 {
+		t.Fatal("no generated adapters, so this test proved nothing")
+	}
+
+	for _, terraformType := range servable {
+		t.Run(terraformType, func(t *testing.T) {
+			t.Parallel()
+			assertSchemaParity(t, terraformType)
+		})
+	}
+}
+
+func assertSchemaParity(t *testing.T, terraformType string) {
+	t.Helper()
+
+	resourceSpec := registrySpec(t, terraformType)
 	compiled, err := genericresource.CompileSchema(resourceSpec)
 	if err != nil {
 		t.Fatalf("compile schema: %v", err)
 	}
-	legacy := legacySchema(t, NewVerityIpv4ListResource)
+	constructor, registered := resourceConstructors[terraformType]
+	if !registered {
+		t.Fatalf("%s has no handwritten constructor to compare against", terraformType)
+	}
+	legacy := legacySchema(t, constructor)
 
 	if compiled.Description != legacy.Description {
 		t.Errorf("schema description = %q, legacy is %q", compiled.Description, legacy.Description)
@@ -180,4 +210,35 @@ func TestEveryScalarOnlyResourceCompiles(t *testing.T) {
 		t.Fatal("no scalar-only resource was compiled, so this check proved nothing")
 	}
 	t.Logf("%d scalar-only resources compile from the registry", compiled)
+}
+
+// An adapter is the remaining boundary between the generic codec and the typed
+// OpenAPI client. A scalar-only resource that compiles but receives no adapter
+// is not actually migratable, so fail rather than merely list it in generated
+// output as an unexplained skip.
+func TestEveryScalarOnlyResourceHasGeneratedAdapter(t *testing.T) {
+	t.Parallel()
+
+	adapters := 0
+	for _, resourceSpec := range generatedRegistry(t) {
+		scalarOnly := true
+		for _, field := range resourceSpec.Fields {
+			if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
+				scalarOnly = false
+				break
+			}
+		}
+		if !scalarOnly {
+			continue
+		}
+		if _, present := transport.GeneratedAdapters[resourceSpec.TerraformType]; !present {
+			t.Errorf("%s is scalar-only but has no generated transport adapter", resourceSpec.TerraformType)
+			continue
+		}
+		adapters++
+	}
+	if adapters == 0 {
+		t.Fatal("no scalar-only resource has a generated adapter, so this check proved nothing")
+	}
+	t.Logf("%d scalar-only resources have generated transport adapters", adapters)
 }
