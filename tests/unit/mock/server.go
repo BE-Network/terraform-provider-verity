@@ -389,6 +389,21 @@ func mergeIndexedArray(existing, patch []interface{}) []interface{} {
 			for k, v := range m {
 				existingItem[k] = v
 			}
+		} else if idx == 0 {
+			// Add with a server-assigned index. The API documents index zero as
+			// "add an object to the list", so several new entries can arrive in one
+			// request all carrying zero; the server is what tells them apart by
+			// giving each the next free index. Keying them all at zero here would
+			// collapse them into one and hide exactly that.
+			next := float64(1)
+			for {
+				if _, taken := indexMap[next]; !taken {
+					break
+				}
+				next++
+			}
+			m["index"] = next
+			indexMap[next] = m
 		} else {
 			// Add: new item
 			indexMap[idx] = m
