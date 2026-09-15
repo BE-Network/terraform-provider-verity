@@ -99,6 +99,14 @@ are the exceptions to that:
   way to express one. `FieldSpec.Validators` exists and is validated, but no
   override populates it. This is the one field-policy gap with no current
   representation.
+- **Unknown nullable numerics** were a defect, now fixed. The two nullable
+  setters gate on whether the attribute is written in configuration rather than
+  on whether the value is null, because null is a value they have to send. That
+  left unknown falling through to the value branch, where `ValueInt64` reports
+  zero, so a request stored a zero the configuration never asked for. Their 781
+  non-nullable siblings already skipped an unknown. See the "Intended behavior
+  changes" section of [status.md](../status.md); the update path is unchanged and
+  the reason is recorded there.
 - **`verity_packet_broker.ipv6_permit.enable`** was a defect, now fixed. Packet
   Broker has four structurally identical filter collections sharing one model
   type; three compared and sent the entry's enable flag on update and

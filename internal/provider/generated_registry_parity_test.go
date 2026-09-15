@@ -413,9 +413,12 @@ func TestGeneratedPoliciesMatchLegacyBehavior(t *testing.T) {
 }
 
 // pairedFields returns the fields at one level that are half of a reference or
-// auto-assignment pair. Each resource drives those with bespoke logic rather than
-// the shared create and update helpers, so no lifecycle policy can be read from
-// them mechanically and both halves are excluded from policy verification.
+// auto-assignment pair. Each resource drives those with the reference and
+// auto-assignment helpers rather than the shared create and update ones, so the
+// policy evidence records them under those helpers instead. They are verified
+// like any other field; naming them here only lets a missing pair be reported as
+// the specific failure it is, since a pair with no evidence means the extractor
+// stopped recognising one of those helpers rather than that the field is exempt.
 //
 // The pairing comes from the registry, not from the field names: a base field
 // records the relationship, and its companion is whichever field the relationship

@@ -9,18 +9,24 @@ not treated as refactor deliverables.
 
 ## Current position
 
-All six pre-migration gates from the plan's executive recommendation pass.
+**Phases 0 and 1 are complete**, and all six pre-migration gates from the plan's
+executive recommendation pass. Phase 2's start condition is met.
 
-A deterministic registry now covers **all 50 API-backed Terraform resources**
-across 49 endpoints, and every one is checked field by field against the schema
-the provider actually ships. The 51st, `verity_operation_stage`, is not
-API-backed; the plan keeps it bespoke (lines 402, 571, 573), so it is excluded by
-design rather than missing.
+A deterministic registry covers **all 50 API-backed Terraform resources** across
+49 endpoints, and every one is checked field by field against the schema the
+provider actually ships. The 51st, `verity_operation_stage`, is not API-backed;
+the plan keeps it bespoke (lines 402, 571, 573), so it is excluded by design
+rather than missing.
 
-The registry also drives the provider: mode compatibility and bulk transport
-metadata are generated from it, each pinned to a golden file of the values
-that shipped. No production resource has moved to the generic lifecycle engine,
-so Phase 2 has not started.
+The registry also drives the provider. All five metadata consumers the plan names
+are generated from it — mode compatibility, bulk transport metadata, per-resource
+JSON keys, and registration order — each pinned to a golden file of the values
+that shipped. Four of the five lifecycle policies are verified against the legacy
+implementation, 3,415 assertions, and the fifth follows from `access`.
+
+No production resource has moved to the generic lifecycle engine, so Phase 2 has
+not started. The intended pilot, `verity_ipv4_list`, has golden fixtures for all
+three directions, a transport adapter spike, and no unverified policy of its own.
 
 ### Coverage summary
 
@@ -63,13 +69,13 @@ flowchart LR
 | Schema golden file for current resources | Implemented | `tests/unit/testdata/schema_golden_v6_6.json` captures 51 registered resource schema versions, state types, flags, and deterministic modifier/validator parameters. |
 | Request/response golden fixtures for every resource | Implemented | 149 fixtures across all 50 resources in `tests/unit/lifecycle/testdata/golden/`: the request each resource sends on create and update, and the state its read path produces. `TestGoldenWireFixtures` replays them, and `TestUpdateOnlyResourceGoldenPatch` covers the one resource the acceptance harness cannot carry across an update. `UPDATE_GOLDEN=1` regenerates both. |
 | Read and PATCH field-coverage expansion | Implemented | PATCH bodies and decoded read state are recorded per resource by the golden fixtures, and the coverage table covers all 50 resources rather than 45. |
-| Full exception inventory | Implemented | [docs/exception_inventory.md](docs/exception_inventory.md) classifies every deviation from the common resource contract into the plan's five categories. Behavior all 49 API-backed resources share is explicitly not counted as an exception. Two items need follow-up: `verity_tenant.vrf_name` needs a validator the override format cannot yet express, and `verity_packet_broker.ipv6_permit.enable` looks like a defect rather than a policy. |
+| Full exception inventory | Implemented | [docs/exception_inventory.md](docs/exception_inventory.md) classifies every deviation from the common resource contract into the plan's five categories. Behavior all 49 API-backed resources share is explicitly not counted as an exception. One item needs follow-up: `verity_tenant.vrf_name` needs a validator the override format cannot yet express. The one other follow-up, `verity_packet_broker.ipv6_permit.enable`, turned out to be a provider defect and is fixed. |
 | API range and lifecycle-policy design | Implemented | `internal/spec` defines numeric API ranges, deterministic literals, and all five lifecycle policies. |
 | Framework generic value bridge spike | Implemented | Protocol-level `value_bridge_test.go` proves recursive generic Framework reads/writes, including null and unknown values. |
 | IPv4 List transport adapter spike | Implemented | `internal/transport` exact JSON tests plus bulk-manager integration cover omission, false/empty values, explicit-null errors, and no-panic diagnostics. |
 | Version-zero state contract and upgrade mechanism | Implemented | Snapshot captures current state types; `internal/genericresource/state.go` registers prior schemas/upgraders and has a real Framework v0-to-v1 test. |
 | Stable provider registration | Implemented | `Resources()` is mode-independent; contract test verifies names/order/state types before configuration and in both modes. |
-| Final nullable/reset policy decision | Mostly implemented | The design is settled and documented: nullability follows the transform rule, and clear-and-create behavior follows the wire type. Four of five policies are verified against the implementation for every field. Decided. Explicit null is numeric-only and enforced in validation; unknown handling is settled by `release/6.6`, whose gating on configured attributes puts nullable numerics in the same place as every other omission; and an unresolvable identity is an intended behavior change recorded under Intended behavior changes. |
+| Final nullable/reset policy decision | Implemented | The design is settled and documented: nullability follows the transform rule, and clear-and-create behavior follows the wire type. Four of five policies are verified against the implementation for every field. Decided. Explicit null is numeric-only and enforced in validation; unknown handling is settled, and settling it turned up a defect in the nullable setters that is now fixed, recorded under Intended behavior changes; and an unresolvable identity is an intended behavior change recorded there too. |
 
 ### Phase 0 exit criterion
 
@@ -82,10 +88,10 @@ field-policy design is settled and four of five policies are verified against th
 implementation; and the Framework, transport, registration, and state-contract
 spikes all pass.
 
-Two follow-ups are recorded rather than blocking, both in
+One follow-up is recorded rather than blocking, in
 [docs/exception_inventory.md](docs/exception_inventory.md): a validator the
-override format cannot express, and a field whose collection offers no update
-path at all.
+override format cannot express. The other, a field whose collection offered no
+update path, was a defect and is fixed.
 
 ### Golden wire fixtures
 
@@ -307,9 +313,9 @@ than from a hand-written list, so `verity_aaa_profile.ldap_profile` records
 any override. `TestGeneratedPairsAreModelled` fails if a companion exists whose
 partner records no relationship.
 
-What remains unverified for these fields is their lifecycle policies, not their
-structure: each resource drives the pair with bespoke logic instead of the shared
-helpers, so no policy can be read from them mechanically.
+Their lifecycle policies are verified too. Each resource drives a pair with its
+own helper rather than the shared ones, so the evidence records which helper is
+used and what that helper sends; see the policy section below.
 
 Explicit null is numeric-only on this API, and the registry now enforces it:
 `internal/spec` rejects any non-numeric field declaring `api_null` or marked
@@ -370,16 +376,17 @@ One clause is not fully met. **Lifecycle policies are largely but not entirely
 verified.** Four of the five are checked against the legacy implementation across
 all 50 resources at every nesting depth, 3,415 assertions with no disagreements;
 the fifth, `state_ownership`, is a pure function of `access` and enforced by
-validation, so it carries no independent claim. What remains unverified:
+validation, so it carries no independent claim. 135 fields are excluded, and every
+one is a field the policy question does not apply to:
 
-| Unverified | Count | Why |
+| Excluded | Count | Why |
 | --- | --- | --- |
-| Fields excluded by named category | 345 | Objects and arrays, collection identity fields, reference and auto-assignment pair halves, and one field whose collection has no update path at all |
+| Containers | 81 | Cleared by their collection strategy rather than by a wire value |
+| Collection identity fields | 54 | Always sent, never compared or cleared |
 
 Every policy that could be checked was wrong when first assigned — `update_clear`
 for 282 fields, `create_null` for 120, `response_absence` for 48, `unknown_plan`
-for 521. That record is the reason the remainder is called out rather than
-assumed correct.
+for 521. Four for four is why each was chased down rather than assumed correct.
 
 **Phase 0's deliverables are complete.** Request and read-path fixtures exist for
 every resource that supports create, the coverage table covers all 50, and the
@@ -416,6 +423,41 @@ Phase 0 requires intended behavior changes to be separated from refactoring ones
 Everything else in this document is parity work: the registry describes what the
 provider does today, and the golden fixtures pin it. The entries here are the
 exceptions, decided deliberately and not yet implemented.
+
+### An unknown nullable numeric is omitted, not sent as zero
+
+**Legacy behavior, now corrected.** `SetStringFields`, `SetBoolFields` and
+`SetInt64Fields` skip a value that is unknown at apply, so the field is left out
+of the request and the read that follows supplies it. The two nullable setters
+did not. A nullable numeric carries an explicit null on this API, so its setter
+cannot read "is it null?" as "was it left out?" — null is a value it has to send.
+It gates on `IsConfigured` instead, which reads the `.tf` file, and that left
+unknown unaccounted for: neither null nor absent from configuration, it fell
+through to the value branch, where `ValueInt64` and `ValueBigFloat` both report
+zero for an unknown. The request stored a zero the configuration never asked for.
+
+This is the same shape as the Packet Broker defect: structurally identical
+siblings, one missing the guard the others have. `SetNullableInt64Fields` and
+`SetNullableNumberFields` now skip an unknown, which is what the registry already
+records for these 151 fields as `unknown_plan: omit_and_read` and what their 781
+non-nullable siblings already did. `TestSetNullableInt64FieldsOmitsUnknown` and
+`TestSetNullableNumberFieldsOmitsUnknown` cover it, with a third test holding the
+known and explicit-null branches so the guard cannot widen into skipping null.
+
+The change is safe under either reading of how often an unknown reaches a setter
+at apply. If Terraform resolves every configured reference before the dependent
+applies, the guard is unreachable and nothing changes; if one survives, a zero
+stops being written in place of a value nobody specified. It is recorded as an
+intended change rather than parity because the golden fixtures cannot distinguish
+the two — none of them configures an unknown.
+
+**Not changed: the update path.** The six `CompareAndSet*Field` helpers are all
+unguarded, for every kind, so `omit_and_read` is a create-path claim only. There
+is no sibling inconsistency to resolve there and no evidence of a defect, and
+guarding them would alter what an update sends for all 932 fields that claim the
+policy rather than the 151 this finding is about. It is left alone deliberately;
+the generic engine should implement the policy for both directions, and that is
+the point at which the update path gets decided on its own merits.
 
 ### A response that cannot identify its object is an error
 
@@ -461,7 +503,7 @@ explicitly requested.
 
 | Phase | Status | Start condition |
 | --- | --- | --- |
-| Phase 2: generic scalar lifecycle pilot | Not started | Phase 0 and Phase 1 exit criteria must pass. The intended first pilot is `verity_ipv4_list`. |
+| Phase 2: generic scalar lifecycle pilot | Ready to start | Phase 0 and Phase 1 exit criteria both pass. The intended first pilot is `verity_ipv4_list`. |
 | Phase 3: shared semantic policies | Not started | Begins after scalar pilot parity; Badge follows nullable/reset and singleton-policy contracts. |
 | Phase 4: indexed collections | Not started | Begins after shared field policies are stable. |
 | Phase 5: complex/exceptional resources | Not started | Begins after collection strategies are proven. |
@@ -483,6 +525,31 @@ explicitly requested.
 - `internal/bulkops/generated_bulk_metadata.go`: generated bulk transport facts, likewise pinned by a golden file.
 - `internal/provider/testdata/legacy_field_policies.json`: recorded legacy create, update, and read behavior per field, the evidence behind the verified lifecycle policies.
 - `internal/provider/legacy_schema_dump_test.go`: authoring aid that dumps the shipped schemas; inert unless `DUMP_OUT` is set.
+
+## A known gap in the commit history
+
+`3e76e76` does not pass `go test ./internal/provider/` on its own. It regenerated
+`internal/provider/testdata/legacy_field_policies.json` with an extractor that had
+already been corrected, while `specs/generated_registry.json` still carried the
+derivations those corrections superseded. The registry caught up in `e1c54fc`, so
+the two commits are green together and HEAD is green; only the point between them
+is not. The eight mismatches are all of that shape:
+
+    verity_lag.object_properties.fabric        update_clear "omit" vs "empty_string"
+    verity_service.vni                         unknown_plan "preserve_state" vs "omit_and_read"
+    verity_switchpoint.bgp_as_number           unknown_plan "preserve_state" vs "omit_and_read"
+    verity_tenant.layer_3_vlan, layer_3_vni    unknown_plan "preserve_state" vs "omit_and_read"
+    ... and three more pairs of the same two kinds
+
+The clean fix is to squash the two, and it is not available: both are on
+`origin/main`, so squashing means force-pushing a shared branch. It is recorded
+here instead, because the cost of the rewrite is higher than the cost of the gap —
+a bisect that lands exactly on `3e76e76` reports a failure that `e1c54fc`
+already fixed, and nothing else is affected.
+
+The generated evidence and the registry that explains it belong in one commit.
+Later slices should regenerate both together rather than letting the extractor
+run ahead of the derivations it feeds.
 
 ## How to verify this status
 
@@ -508,10 +575,10 @@ workflow sets; without them the lifecycle package alone takes far longer.
 1. Implement the response-identity contract described below, so the generic
    engine resolves a resource's identity from a declared source rather than
    assuming the response carries a `name` member.
-2. Decide the two items the exception inventory leaves open: a validator for
+2. Decide the one item the exception inventory still leaves open: a validator for
    `verity_tenant.vrf_name`, which needs `FieldSpec.Validators` wired into the
-   override format, and whether `verity_packet_broker.ipv6_permit.enable` is a
-   defect to fix rather than a behavior to replicate.
+   override format. The other open item, `verity_packet_broker.ipv6_permit.enable`,
+   is settled: it was a defect, and it is fixed.
 
 Keep reviewed overrides as the only editable resource metadata and generated
 registry output as the parity target.
