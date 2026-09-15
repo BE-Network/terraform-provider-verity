@@ -651,6 +651,7 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 				fieldChanged := false
 
 				// Handle boolean field changes
+				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
 
 				// Handle filter and filter_ref_type_ using multiple ref types supported pattern
 				if !utils.HandleMultipleRefTypesSupported(

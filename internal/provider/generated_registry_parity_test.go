@@ -367,15 +367,11 @@ func TestGeneratedPoliciesMatchLegacyBehavior(t *testing.T) {
 			}
 			policies, recorded := evidence[path]
 			if !recorded {
-				// UpdateExisting for this collection handles only the reference pair
-				// and the index, so its enable flag has no update path to read a
-				// policy from. That is a legacy gap, recorded rather than inferred.
-				if resourceType == "verity_packet_broker" && path == "ipv6_permit.enable" {
-					excluded++
-					continue
-				}
+				// A paired field is driven by the reference or auto-assignment
+				// helpers rather than the shared ones. Those are read in the
+				// evidence too, so a pair reaching here means one was missed.
 				if paired[field.TerraformName] {
-					excluded++
+					t.Errorf("no legacy policy evidence for paired field %s.%s", resourceType, path)
 					continue
 				}
 				t.Errorf("no legacy policy evidence for %s.%s", resourceType, path)
@@ -388,6 +384,9 @@ func TestGeneratedPoliciesMatchLegacyBehavior(t *testing.T) {
 				"unknown_plan":     string(field.UnknownPlan),
 			}
 			for policy, want := range policies {
+				if policy == "driver" {
+					continue
+				}
 				// The identity field is Required and replaces on change, so
 				// Terraform never sends it null and never updates it in place.
 				// Only its read behavior is reachable, and so comparable.
