@@ -10,7 +10,8 @@ not treated as refactor deliverables.
 ## Current position
 
 **Phases 0 and 1 are complete**, and all six pre-migration gates from the plan's
-executive recommendation pass. Phase 2's start condition is met.
+executive recommendation pass. **Phase 2 has started** and is an opt-in pilot: the
+generic engine serves `verity_ipv4_list` behind a switch that is off by default.
 
 A deterministic registry covers **all 50 API-backed Terraform resources** across
 49 endpoints, and every one is checked field by field against the schema the
@@ -24,10 +25,10 @@ JSON keys, and registration order — each pinned to a golden file of the values
 that shipped. Four of the five lifecycle policies are verified against the legacy
 implementation, 3,415 assertions, and the fifth follows from `access`.
 
-No production resource has moved to the generic lifecycle engine, so Phase 2 has
-not started. The intended pilot, `verity_ipv4_list`, has golden fixtures for all
-three directions, a transport adapter spike, and no unverified policy of its own:
-three scalar fields, no collection, nothing nullable.
+**Phase 2 is in progress.** The generic scalar engine exists and serves
+`verity_ipv4_list` behind a switch, reproducing the golden fixtures captured from
+the handwritten resource byte for byte. See "Phase 2: generic scalar lifecycle
+pilot" below for what is done and what the exit criterion still needs.
 
 Four things are carried forward rather than closed, none of them on that pilot's
 path. Adding an indexed child without naming its index does not work in either
@@ -66,7 +67,7 @@ deliberate decision about whether they should be resources at all.
 ```mermaid
 flowchart LR
     P0[Phase 0<br/>complete] --> P1[Phase 1<br/>complete<br/>50 resources, 5 metadata consumers<br/>3,415 policy assertions]
-    P1 --> P2[Phase 2<br/>ready to start<br/>pilot: verity_ipv4_list]
+    P1 --> P2[Phase 2<br/>in progress<br/>pilot: verity_ipv4_list, opt-in]
     P2 --> P3[Phases 3-6<br/>not started]
 ```
 
@@ -434,6 +435,57 @@ constraint while this document was being written — golden fixtures, Read/PATCH
 coverage, and the exception inventory — are all complete and recorded in their
 own sections above.
 
+## Phase 2: generic scalar lifecycle pilot
+
+The plan asks for schema compilation plus create/read/update/delete/import for
+scalar fields, `verity_ipv4_list` migrated behind a switch, both implementations
+run differentially against the same mock responses, and the bulk manager left
+alone. The exit criterion is behavior parity with no handwritten model, mapper,
+nullifier, or lifecycle methods.
+
+| Item | State | Evidence |
+| --- | --- | --- |
+| Schema compiled from the spec | Implemented | `CompileSchema` in `internal/genericresource/schema.go`. `TestCompiledSchemaMatchesLegacyIPv4List` compares it to the handwritten schema attribute by attribute: type, the three access flags, sensitivity, description, and whether a change forces replacement. |
+| Create, read, update, delete, import | Implemented | `internal/genericresource/resource.go`. Every decision is read from the spec; nothing in it consults a field's name. |
+| Mode nullifier from the spec | Implemented | `ModifyPlan` and the decoder both read `FieldSpec.Modes` directly, not `utils.FieldAppliesToMode`. That helper answers the same question from the generated table, but by two strings and failing open on any miss — unknown endpoint, unknown field, or unrecognised mode all return true. Reading `Modes` fails closed, which is safe because `validateModes` rejects an empty or unrecognised list and the registry is validated before the engine sees it. `TestStateFromAPIHonorsFieldModes` covers it with a synthetic resource that appears in no table. |
+| Migrated behind a switch | Implemented | `VERITY_GENERIC_RESOURCES` names the resources the engine serves. Unset, the provider registers exactly what it did before. |
+| Differential against the same responses | Implemented | `TestGenericIPv4ListMatchesLegacyGoldenFixtures` drives the generic engine through the configuration the golden fixtures were captured from and compares against those same fixtures, rather than recording a second baseline that would only prove the engine agrees with itself. |
+| Bulk manager unchanged | Held | Not modified. The manager type-asserts the value it is handed, so a per-resource transport adapter crosses that boundary; `IPv4ListAdapter.ResourceValue` is the pilot's. |
+| Registry embedded in the binary | Implemented | `internal/registry` embeds it. `go:embed` cannot reach outside its package directory, so specgen writes the same bytes to `specs/` and there from one generation, and CI drift-checks both. |
+
+### What the pilot proves, and what it does not
+
+Parity is asserted against committed bytes: the PUT, the PATCH, and the state
+after apply all match what the handwritten resource produced.
+
+Three controls keep that from passing vacuously, and all three are committed
+rather than run by hand. `assertServedGenerically` fails if the switch did not
+take effect, which is what stops the file asserting parity for an engine it never
+ran. `TestGoldenComparatorDetectsADroppedField` and
+`TestGoldenComparatorDetectsAChangedStateValue` exercise the comparison itself
+against the committed fixtures, covering both directions a migrated resource can
+diverge in: a request going out incomplete, and a response decoded wrongly on the
+way back.
+
+Two things are deliberately not claimed:
+
+- **The engine implements `unknown_plan` on both create and update**, where the
+  legacy compare helpers implement it on neither. This closes the update-path
+  carry-forward for migrated resources and is a behavior difference, not a
+  parity gap: no golden fixture configures an unknown, so the fixtures cannot
+  distinguish them. Covered by `TestBuildUpdateOmitsUnknown`.
+- **Scalars only.** A spec carrying a collection is refused at construction
+  rather than served partially, and `TestCompileSchemaRefusesCollections` pins
+  that. Six scalar-only resources compile today; only the pilot is switched on.
+
+### Remaining before Phase 2 closes
+
+The exit criterion says "no handwritten model, mapper, nullifier, or lifecycle
+methods". That is true of the generic path, but `resource_verity_ipv4_list.go`
+still exists and is what the provider registers by default. Closing the phase
+means choosing the default and deleting the handwritten resource, which is a
+migration decision rather than an implementation one.
+
 ## Intended behavior changes
 
 Phase 0 requires intended behavior changes to be separated from refactoring ones.
@@ -520,7 +572,7 @@ explicitly requested.
 
 | Phase | Status | Start condition |
 | --- | --- | --- |
-| Phase 2: generic scalar lifecycle pilot | Ready to start | Phase 0 and Phase 1 exit criteria both pass. The intended first pilot is `verity_ipv4_list`. |
+| Phase 2: generic scalar lifecycle pilot | In progress | The engine serves `verity_ipv4_list` behind `VERITY_GENERIC_RESOURCES`, reproducing the legacy golden fixtures. Closing it needs the real 6.6 validation, then a decision to make the generic path the default and retire the handwritten resource. |
 | Phase 3: shared semantic policies | Not started | Begins after scalar pilot parity; Badge follows nullable/reset and singleton-policy contracts. |
 | Phase 4: indexed collections | Not started | Begins after shared field policies are stable. |
 | Phase 5: complex/exceptional resources | Not started | Begins after collection strategies are proven. |
@@ -589,8 +641,10 @@ workflow sets; without them the lifecycle package alone takes far longer.
 
 ## Recommended next slice
 
-1. Start Phase 2: the generic scalar lifecycle pilot on `verity_ipv4_list`,
-   differentially against the golden fixtures.
+1. Validate the Phase 2 pilot against a real 6.6 deployment with
+   `VERITY_GENERIC_RESOURCES=verity_ipv4_list`, then decide whether the generic
+   path becomes the default and the handwritten resource is retired. That
+   decision is what closes Phase 2; the switch stays off until it is made.
 2. Implement the response-identity contract described below, so the generic
    engine resolves a resource's identity from a declared source rather than
    assuming the response carries a `name` member.

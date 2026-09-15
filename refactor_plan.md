@@ -580,7 +580,7 @@ Exit criterion: existing behavior is measurable, intended behavior changes are s
 
 Exit criterion: one generated registry accounts for every existing resource, field path, alias, operation, mode, version, lifecycle policy, and nested strategy while old resources still run, and every pre-migration gate in the executive recommendation passes. Only then may Phase 2 start the production generic-resource migration.
 
-### Phase 2: generic scalar lifecycle pilot — READY TO START
+### Phase 2: generic scalar lifecycle pilot — IN PROGRESS
 
 - Implement schema compilation plus create/read/update/delete/import for scalar fields only.
 - Migrate `verity_ipv4_list` behind a feature/build switch or in a parity test. It has only `name`, `enable`, and `ipv4_list`, with no nullable-source parser or nested block.
@@ -588,6 +588,22 @@ Exit criterion: one generated registry accounts for every existing resource, fie
 - Keep the existing bulk manager unchanged except for accepting canonical spec metadata.
 
 Exit criterion: the pilot has behavior parity and no handwritten model, mapper, nullifier, or lifecycle methods.
+
+Where it stands: the engine is built and serves `verity_ipv4_list` behind the
+`VERITY_GENERIC_RESOURCES` switch, reproducing the golden fixtures captured from
+the handwritten resource byte for byte — the PUT, the PATCH, and the state after
+apply. Schema compilation, the scalar codec, all five lifecycle methods, and the
+mode nullifier are spec-driven, and the reviewed registry is embedded in the
+binary. The bulk manager is unchanged, reached through a per-resource transport
+adapter.
+
+The switch is off by default, so the provider registers what it always did. The
+first half of the exit criterion is met and the second is not: the handwritten
+`resource_verity_ipv4_list.go` still exists and is still what ships. Closing the
+phase means validating the pilot against a real 6.6 deployment, then deciding to
+make the generic path the default and delete the handwritten resource. Until that
+decision, this is an opt-in pilot rather than a migration. See
+[status.md](status.md) for the evidence behind each item.
 
 ### Phase 3: shared semantic field policies
 

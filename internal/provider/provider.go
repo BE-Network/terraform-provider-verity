@@ -433,7 +433,19 @@ var resourceConstructors = map[string]func() resource.Resource{
 // from the registry.
 func getAllResources() []func() resource.Resource {
 	all := make([]func() resource.Resource, 0, len(generatedResourceOrder)+len(nonAPIResources))
+	// The registration order is the registry's, whichever engine serves a
+	// resource, so turning the switch on moves an implementation without moving
+	// the resource's place in the provider.
+	selected := genericSelection()
 	for _, terraformType := range generatedResourceOrder {
+		generic, err := genericConstructor(terraformType, selected)
+		if err != nil {
+			panic("provider: " + err.Error())
+		}
+		if generic != nil {
+			all = append(all, generic)
+			continue
+		}
 		constructor, exists := resourceConstructors[terraformType]
 		if !exists {
 			panic("provider: no constructor for registry resource " + terraformType + "; add one to resourceConstructors")
