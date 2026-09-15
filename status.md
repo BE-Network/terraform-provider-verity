@@ -27,8 +27,11 @@ implementation, 3,415 assertions, and the fifth follows from `access`.
 
 **Phase 2 is in progress.** The generic scalar engine exists and serves
 `verity_ipv4_list` behind a switch, reproducing the golden fixtures captured from
-the handwritten resource byte for byte. See "Phase 2: generic scalar lifecycle
-pilot" below for what is done and what the exit criterion still needs.
+the handwritten resource byte for byte. **Phase 3 has an initial scalar-only
+slice in progress:** generated adapters now make six scalar-only resources
+available to the same opt-in engine, and top-level reference pairs have parity
+coverage. Neither phase is closed; see their sections below for the remaining
+work.
 
 Four things are carried forward rather than closed, none of them on that pilot's
 path. Adding an indexed child without naming its index does not work in either
@@ -68,7 +71,8 @@ deliberate decision about whether they should be resources at all.
 flowchart LR
     P0[Phase 0<br/>complete] --> P1[Phase 1<br/>complete<br/>50 resources, 5 metadata consumers<br/>3,415 policy assertions]
     P1 --> P2[Phase 2<br/>in progress<br/>pilot: verity_ipv4_list, opt-in]
-    P2 --> P3[Phases 3-6<br/>not started]
+    P2 --> P3[Phase 3<br/>initial scalar slice<br/>in progress]
+    P3 --> P4[Phases 4-6<br/>not started]
 ```
 
 ## Phase 0: characterize and freeze behavior
@@ -445,12 +449,12 @@ nullifier, or lifecycle methods.
 
 | Item | State | Evidence |
 | --- | --- | --- |
-| Schema compiled from the spec | Implemented | `CompileSchema` in `internal/genericresource/schema.go`. `TestCompiledSchemaMatchesLegacyIPv4List` compares it to the handwritten schema attribute by attribute: type, the three access flags, sensitivity, description, and whether a change forces replacement. |
+| Schema compiled from the spec | Implemented | `CompileSchema` in `internal/genericresource/schema.go`. `TestCompiledSchemaMatchesLegacy` compares every currently generically servable resource to the handwritten schema attribute by attribute: type, the three access flags, sensitivity, description, and whether a change forces replacement. |
 | Create, read, update, delete, import | Implemented | `internal/genericresource/resource.go`. Every decision is read from the spec; nothing in it consults a field's name. |
 | Mode nullifier from the spec | Implemented | `ModifyPlan` and the decoder both read `FieldSpec.Modes` directly, not `utils.FieldAppliesToMode`. That helper answers the same question from the generated table, but by two strings and failing open on any miss — unknown endpoint, unknown field, or unrecognised mode all return true. Reading `Modes` fails closed, which is safe because `validateModes` rejects an empty or unrecognised list and the registry is validated before the engine sees it. `TestStateFromAPIHonorsFieldModes` covers it with a synthetic resource that appears in no table. |
 | Migrated behind a switch | Implemented | `VERITY_GENERIC_RESOURCES` names the resources the engine serves. Unset, the provider registers exactly what it did before. |
-| Differential against the same responses | Implemented | `TestGenericIPv4ListMatchesLegacyGoldenFixtures` drives the generic engine through the configuration the golden fixtures were captured from and compares against those same fixtures, rather than recording a second baseline that would only prove the engine agrees with itself. |
-| Bulk manager unchanged | Held | Not modified. The manager type-asserts the value it is handed, so a per-resource transport adapter crosses that boundary; `IPv4ListAdapter.ResourceValue` is the pilot's. |
+| Differential against the same responses | Implemented | `TestGenericResourcesMatchLegacyGoldenFixtures` drives every currently servable resource through the configuration its golden fixtures were captured from and compares against those same fixtures, rather than recording a second baseline that would only prove the engine agrees with itself. |
+| Bulk manager unchanged | Held | Not modified. The manager type-asserts the value it is handed, so a generated per-resource transport adapter crosses that boundary. |
 | Registry embedded in the binary | Implemented | `internal/registry` embeds it. `go:embed` cannot reach outside its package directory, so specgen writes the same bytes to `specs/` and there from one generation, and CI drift-checks both. |
 
 ### What the pilot proves, and what it does not
@@ -476,7 +480,8 @@ Two things are deliberately not claimed:
   distinguish them. Covered by `TestBuildUpdateOmitsUnknown`.
 - **Scalars only.** A spec carrying a collection is refused at construction
   rather than served partially, and `TestCompileSchemaRefusesCollections` pins
-  that. Six scalar-only resources compile today; only the pilot is switched on.
+  that. Six scalar-only resources compile and have generated transport adapters;
+  all remain opt-in.
 
 ### Remaining before Phase 2 closes
 
@@ -485,6 +490,36 @@ methods". That is true of the generic path, but `resource_verity_ipv4_list.go`
 still exists and is what the provider registers by default. Closing the phase
 means choosing the default and deleting the handwritten resource, which is a
 migration decision rather than an implementation one.
+
+## Phase 3: shared semantic field policies
+
+The first scalar-only slice is in progress. `specgen adapters` now derives the
+typed OpenAPI boundary from the reviewed registry and generated SDK JSON tags;
+it emits adapters for all six scalar-only resources and records why every other
+resource is not yet servable. CI drift-checks that output, and
+`TestEveryScalarOnlyResourceHasGeneratedAdapter` prevents a scalar-only resource
+from compiling yet silently losing its transport boundary.
+
+`verity_ipv6_list` is the structural twin of the Phase 2 pilot. The remaining
+four servable resources exercise the first Phase 3 policies: `verity_pair` has
+three top-level reference pairs, `verity_diagnostics_profile` has two reference
+pairs and four nullable numerics, and `verity_sflow_collector` has a nullable
+numeric. The generic path remains opt-in for all of them.
+
+| Policy | State | Evidence / boundary |
+| --- | --- | --- |
+| Top-level reference pairs | Implemented for scalar resources | `buildUpdate` groups each registry `Reference` with its declared companion, calls the existing validation helpers for legacy-identical diagnostics, and sends the required halves atomically. `references_test.go` pins single- and multiple-type transitions, clear, diagnostics, and malformed registry links. `TestGenericMatchesLegacyOnPairAndNullableUpdates` differentially compares the legacy and generic PUT/PATCH bodies. |
+| Nullable numeric parity | Temporary compatibility implementation | `ModifyPlan` and update obtain configured-attribute presence through the `Runtime` interface and preserve legacy explicit-null behavior. The same differential test covers a changed value, omission, and an explicit null. This depends on `ParseResourceConfiguredAttributes`, so it is not the final Terraform-facing reset contract. |
+| Auto-assignment pairs | Not started | All current examples also contain collections, so they become reachable only after singleton/collection support. |
+| Nested reference pairs and singleton objects | Not started | The scalar engine rejects collections deliberately. Singleton support is the next structural gate; indexed lists remain Phase 4. |
+
+The nullable compatibility adapter is deliberately not called Phase 3 completion.
+The plan requires source-file scanning to remain temporary and not be a permanent
+requirement of newly generic resources. A source-independent reset expression
+(for example an explicit reset field) needs a Terraform-facing design decision
+before a nullable resource can become a default generic migration. Until then,
+the opt-in path exists to measure legacy parity without silently making that
+compatibility mechanism permanent.
 
 ## Intended behavior changes
 
@@ -573,7 +608,7 @@ explicitly requested.
 | Phase | Status | Start condition |
 | --- | --- | --- |
 | Phase 2: generic scalar lifecycle pilot | In progress | The engine serves `verity_ipv4_list` behind `VERITY_GENERIC_RESOURCES`, reproducing the legacy golden fixtures. Closing it needs the real 6.6 validation, then a decision to make the generic path the default and retire the handwritten resource. |
-| Phase 3: shared semantic policies | Not started | Begins after scalar pilot parity; Badge follows nullable/reset and singleton-policy contracts. |
+| Phase 3: shared semantic policies | Initial scalar-only slice in progress | Top-level reference pairs and nullable parity are exercised by opt-in resources. A source-independent reset contract, auto-assignment, and singleton support remain before Badge. |
 | Phase 4: indexed collections | Not started | Begins after shared field policies are stable. |
 | Phase 5: complex/exceptional resources | Not started | Begins after collection strategies are proven. |
 | Phase 6: remove legacy duplication | Not started | Begins only after all API-backed resources use the generic engine. |
@@ -628,6 +663,9 @@ go run ./tools/specgen verify   --input-dir specs/openapi/6.6
 go run ./tools/specgen extract  --input-dir specs/openapi/6.6 --output specs/generated_manifest.json --check
 go run ./tools/specgen registry --input-dir specs/openapi/6.6 --overrides specs/overrides.yaml \
                                 --output specs/generated_registry.json --check
+go run ./tools/specgen adapters --registry specs/generated_registry.json \
+                                --openapi-dir openapi \
+                                --output internal/transport/generated_adapters.go --check
 go run ./tools/specgen metadata --registry specs/generated_registry.json \
                                 --output internal/utils/generated_mode_metadata.go \
                                 --bulk-output internal/bulkops/generated_bulk_metadata.go \
@@ -645,10 +683,13 @@ workflow sets; without them the lifecycle package alone takes far longer.
    `VERITY_GENERIC_RESOURCES=verity_ipv4_list`, then decide whether the generic
    path becomes the default and the handwritten resource is retired. That
    decision is what closes Phase 2; the switch stays off until it is made.
-2. Implement the response-identity contract described below, so the generic
+2. Decide a source-independent Terraform-facing reset contract for nullable
+   values before making a nullable resource default-generic. The current adapter
+   is intentionally compatibility-only.
+3. Implement the response-identity contract described below, so the generic
    engine resolves a resource's identity from a declared source rather than
    assuming the response carries a `name` member.
-3. Decide the one item the exception inventory still leaves open: a validator for
+4. Decide the one item the exception inventory still leaves open: a validator for
    `verity_tenant.vrf_name`, which needs `FieldSpec.Validators` wired into the
    override format. The other open item, `verity_packet_broker.ipv6_permit.enable`,
    is settled: it was a defect, and it is fixed.

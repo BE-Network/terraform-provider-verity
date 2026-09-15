@@ -1,6 +1,6 @@
 # Refactoring plan: schema-driven Verity resources
 
-- Status: Phase 0 ready; generic-resource migration gated by the decisions and spikes below
+- Status: Phases 0 and 1 closed; Phase 2 is an opt-in pilot; Phase 3 has an initial scalar-only slice in progress
 - Prepared: 2026-09-08
 - Scope: API-backed Terraform resources in `internal/provider`, their field handling, resource registration, bulk-operation metadata, and schema/OpenAPI tooling.
 
@@ -505,18 +505,20 @@ Adding an ordinary scalar or nested field should require only an OpenAPI update 
 
 ## Migration plan
 
-### Status: Phase 0 and Phase 1 are closed (2026-09-15)
+### Status: Phases 0 and 1 are closed; Phases 2 and 3 are in progress (2026-09-15)
 
 Both exit criteria are met, and every pre-migration gate in the executive
-recommendation passes. Phase 2 may begin.
+recommendation passes. Phase 2 is an opt-in pilot, and its demonstrated scalar
+parity permits the first Phase 3 scalar-policy slice to proceed; neither phase
+has met its exit criterion.
 
 Evidence, all runnable from a clean checkout:
 
 - `go test ./...` is green, with the CI delay variables from
   `.github/workflows/test.yml`.
-- All four `specgen --check` invocations report no drift, so the committed
-  OpenAPI inputs, the registry, and the five generated metadata consumers
-  regenerate offline and byte-identically.
+- All five `specgen` verification/generation commands report no drift (four use
+  `--check`), so the committed OpenAPI inputs, the registry, and the five
+  generated metadata consumers regenerate offline and byte-identically.
 - One registry covers all 50 API-backed resources. `verity_operation_stage` is
   excluded by design: it has no endpoint.
 - 3,415 lifecycle-policy assertions compare the registry against evidence
@@ -605,7 +607,7 @@ make the generic path the default and delete the handwritten resource. Until tha
 decision, this is an opt-in pilot rather than a migration. See
 [status.md](status.md) for the evidence behind each item.
 
-### Phase 3: shared semantic field policies
+### Phase 3: shared semantic field policies — IN PROGRESS
 
 - Implement reference pairs at top level and in nested objects/lists.
 - Implement auto-assignment pairs.
@@ -616,6 +618,20 @@ decision, this is an opt-in pilot rather than a migration. See
 - Deprecate direct use of `Set*Fields`, `CompareAndSet*`, object-property switches, and manual mode nullifier lists in migrated resources.
 
 Exit criterion: adding any supported scalar kind or semantic pair requires a spec change only.
+
+Where it stands: the initial scalar-only slice generates the typed transport
+adapters instead of adding a handwritten adapter per resource. All six
+scalar-only resources therefore have schema parity and golden-fixture parity
+under the opt-in switch. Top-level reference pairs are implemented from
+`FieldSpec.Reference`, with differential tests for changing and clearing them.
+
+Nullable numeric behavior currently uses the legacy configured-attribute source
+parser through one runtime interface so an explicit `null` has parity with the
+handwritten resources. This is a compatibility adapter, not completion of the
+reset design: the plan does not permit filesystem scanning to be a permanent
+requirement of newly generic resources. Choose and test a source-independent
+Terraform-facing reset expression before making a nullable resource default
+generic. Nested pairs, auto-assignment, and singleton objects remain unstarted.
 
 ### Phase 4: indexed collections
 
