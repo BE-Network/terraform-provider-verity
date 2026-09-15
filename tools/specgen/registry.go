@@ -18,10 +18,11 @@ import (
 const registryFormatVersion = 1
 
 type registryOptions struct {
-	InputDir  string
-	Overrides string
-	Output    string
-	Check     bool
+	InputDir    string
+	Overrides   string
+	Output      string
+	EmbedOutput string
+	Check       bool
 }
 
 type overridesDocument struct {
@@ -202,17 +203,31 @@ func generateRegistry(opts registryOptions) error {
 	if err != nil {
 		return fmt.Errorf("encode generated registry: %w", err)
 	}
-	if opts.Check {
-		existing, err := os.ReadFile(opts.Output)
-		if err != nil {
-			return fmt.Errorf("read generated registry for check: %w", err)
-		}
-		if !bytes.Equal(existing, encoded) {
-			return fmt.Errorf("generated registry differs: rerun specgen registry --input-dir %s --overrides %s --output %s", opts.InputDir, opts.Overrides, opts.Output)
-		}
-		return nil
+	// The registry is written twice from one generation. The copy under specs/ is
+	// the reviewable artifact; the copy under internal/registry/ is the one the
+	// provider embeds, because go:embed cannot reach outside its own package
+	// directory. Writing both here is what keeps them from drifting: there is one
+	// generation and two destinations, not two sources.
+	destinations := []string{opts.Output}
+	if opts.EmbedOutput != "" {
+		destinations = append(destinations, opts.EmbedOutput)
 	}
-	return writeFile(opts.Output, encoded)
+	for _, destination := range destinations {
+		if opts.Check {
+			existing, err := os.ReadFile(destination)
+			if err != nil {
+				return fmt.Errorf("read generated registry for check: %w", err)
+			}
+			if !bytes.Equal(existing, encoded) {
+				return fmt.Errorf("%s differs: rerun specgen registry --input-dir %s --overrides %s --output %s", destination, opts.InputDir, opts.Overrides, opts.Output)
+			}
+			continue
+		}
+		if err := writeFile(destination, encoded); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func readOverrides(path string) (overridesDocument, error) {

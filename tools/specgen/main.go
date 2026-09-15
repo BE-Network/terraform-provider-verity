@@ -85,6 +85,7 @@ func main() {
 		fs.StringVar(&opts.InputDir, "input-dir", "", "canonical input directory")
 		fs.StringVar(&opts.Overrides, "overrides", "", "reviewed override YAML file")
 		fs.StringVar(&opts.Output, "output", "", "generated registry output path")
+		fs.StringVar(&opts.EmbedOutput, "embed-output", "", "second output path for the copy the provider embeds")
 		fs.BoolVar(&opts.Check, "check", false, "fail if output differs from deterministic generation")
 		_ = fs.Parse(os.Args[2:])
 		if err := generateRegistry(opts); err != nil {
