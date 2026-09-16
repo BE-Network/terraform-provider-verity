@@ -398,9 +398,8 @@ func parameterToJson(obj interface{}) (string, error) {
 
 // callAPI do the request.
 func (c *APIClient) callAPI(request *http.Request) (*http.Response, error) {
+	isAuthRequest := strings.HasSuffix(request.URL.Path, "/auth") || strings.Contains(request.URL.Path, "/auth/")
 	if c.cfg.Debug {
-		isAuthRequest := strings.HasSuffix(request.URL.Path, "/auth") || strings.Contains(request.URL.Path, "/auth/")
-
 		if isAuthRequest {
 			// For auth requests, create a buffer to read the body
 			var bodyBytes []byte
@@ -439,8 +438,12 @@ func (c *APIClient) callAPI(request *http.Request) (*http.Response, error) {
 	}
 
 	if c.cfg.Debug {
-		dump, err := httputil.DumpResponse(resp, true)
+		dump, err := httputil.DumpResponse(resp, !isAuthRequest)
 		if err != nil {
+			return resp, err
+		}
+		if isAuthRequest {
+			log.Printf("\n%s\n[REDACTED AUTH RESPONSE BODY]\n", string(dump))
 			return resp, err
 		}
 		log.Printf("\n%s\n", string(dump))

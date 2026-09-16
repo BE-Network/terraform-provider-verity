@@ -4,8 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"net/http/httputil"
 	"strings"
+
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"terraform-provider-verity/internal/bulkops"
 	"terraform-provider-verity/internal/genericresource"
@@ -91,11 +95,27 @@ func (g genericRuntime) get(ctx context.Context, resourceSpec spec.ResourceSpec)
 		request.Header.Set(name, value)
 	}
 
+	// The generic reader calls the HTTP client directly, unlike the handwritten
+	// resources that call generated SDK endpoint methods. Record the same useful
+	// request evidence at debug level without exposing the server URL, headers, or
+	// any credential that may be present in either.
+	tflog.Debug(ctx, fmt.Sprintf("Generic API request for %s: %s %s",
+		resourceSpec.TerraformType, request.Method, request.URL.EscapedPath()))
 	response, err := config.HTTPClient.Do(request)
 	if err != nil {
 		return nil, fmt.Errorf("error reading %s: %w", resourceSpec.TerraformType, err)
 	}
 	defer response.Body.Close()
+	if config.Debug {
+		// DumpResponse preserves response.Body, so decoding below sees the exact
+		// same bytes that were logged. This deliberately matches openapi.callAPI's
+		// established multi-line HTTP debug format.
+		dump, err := httputil.DumpResponse(response, true)
+		if err != nil {
+			return nil, fmt.Errorf("dump %s response: %w", resourceSpec.TerraformType, err)
+		}
+		log.Printf("\n%s\n", string(dump))
+	}
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
 		return nil, fmt.Errorf("error reading %s: unexpected status %s", resourceSpec.TerraformType, response.Status)
 	}
