@@ -26,9 +26,8 @@ JSON keys, and registration order — each pinned to a golden file of the values
 that shipped. Four of the five lifecycle policies are verified against the legacy
 implementation, 3,415 assertions, and the fifth follows from `access`.
 
-**Phase 2 is closed.** The generic scalar engine serves `verity_ipv4_list`
-behind an opt-in switch, reproducing the golden fixtures captured from the
-handwritten resource byte for byte. **Phase 3 has an initial scalar-only slice
+The Phase 2 engine reproduces the golden fixtures captured from the handwritten
+`verity_ipv4_list` byte for byte. **Phase 3 has an initial scalar-only slice
 in progress:** generated adapters now make six scalar-only resources available
 to the same opt-in engine, and top-level reference pairs have parity coverage.
 
@@ -515,17 +514,31 @@ numeric. The generic path remains opt-in for all of them.
 | Policy | State | Evidence / boundary |
 | --- | --- | --- |
 | Top-level reference pairs | Implemented for scalar resources | `buildUpdate` groups each registry `Reference` with its declared companion, calls the existing validation helpers for legacy-identical diagnostics, and sends the required halves atomically. `references_test.go` pins single- and multiple-type transitions, clear, diagnostics, and malformed registry links. `TestGenericMatchesLegacyOnPairAndNullableUpdates` differentially compares the legacy and generic PUT/PATCH bodies. |
-| Nullable numeric parity | Temporary compatibility implementation | `ModifyPlan` and update obtain configured-attribute presence through the `Runtime` interface and preserve legacy explicit-null behavior. The same differential test covers a changed value, omission, and an explicit null. This depends on `ParseResourceConfiguredAttributes`, so it is not the final Terraform-facing reset contract. |
+| Nullable numerics | Implemented for scalar resources | The `.tf` scan is the decided contract (see `refactor_plan.md` section 6). Create, update, and `ModifyPlan` read configured-attribute presence through the `Runtime` interface; the value then goes through the field's declared policies, so with the current `api_null` policies `x = null` sends an explicit API null and an absent `x` is left to the server. `nullable_test.go` pins each state on create and update; `TestGenericMatchesLegacyOnPairAndNullableUpdates` compares legacy and generic bodies for a changed value, a removal, and an explicit null on both create and update. |
 | Auto-assignment pairs | Not started | All current examples also contain collections, so they become reachable only after singleton/collection support. |
 | Nested reference pairs and singleton objects | Not started | The scalar engine rejects collections deliberately. Singleton support is the next structural gate; indexed lists remain Phase 4. |
 
-The nullable compatibility adapter is deliberately not called Phase 3 completion.
-The plan requires source-file scanning to remain temporary and not be a permanent
-requirement of newly generic resources. A source-independent reset expression
-(for example an explicit reset field) needs a Terraform-facing design decision
-before a nullable resource can become a default generic migration. Until then,
-the opt-in path exists to measure legacy parity without silently making that
-compatibility mechanism permanent.
+The nullable contract is settled: the `.tf` scan stays, because Terraform alone
+cannot distinguish `x = null` from an absent `x` and both must keep their meaning.
+The scan only reports whether an attribute is written and what it holds; the
+field's declared `create_null`, `update_clear`, and `unknown_plan` policies decide
+what is sent, as for any other field. `nullable_test.go` pins that with synthetic
+nullable fields whose policies are not `api_null`.
+
+The scan records an attribute whatever its value, so `x = var.y` resolving to null
+is treated as a written null, and its policies decide what is sent — an API null
+with today's registry. Its accepted limits are where it looks and how it matches: it
+reads only `*.tf` in the working directory (not child modules elsewhere or
+`.tf.json`), and matches by a literal `name` or else by block label. When it does
+not find a resource, every nullable numeric on it is treated as not written —
+neither a value nor a null is sent — which is also what the handwritten resources
+do.
+
+Building this found and fixed one gap in the engine. `x = null` on create plans
+as unknown, not null, because the attribute is Computed with no prior state; the
+engine read the plan and dropped the explicit null the handwritten resource
+sends. Create now reads the configured-attribute source as update does, and the
+differential test covers it.
 
 ## Intended behavior changes
 
@@ -614,7 +627,7 @@ explicitly requested.
 | Phase | Status | Start condition |
 | --- | --- | --- |
 | Phase 2: generic scalar lifecycle pilot | Complete | The engine serves `verity_ipv4_list` behind `VERITY_GENERIC_RESOURCES`, reproducing the legacy golden fixtures. Keeping the generic path opt-in and retaining the handwritten default are later migration decisions. |
-| Phase 3: shared semantic policies | Initial scalar-only slice in progress | Top-level reference pairs and nullable parity are exercised by opt-in resources. A source-independent reset contract, auto-assignment, and singleton support remain before Badge. |
+| Phase 3: shared semantic policies | Initial scalar-only slice in progress | Top-level reference pairs and nullable numerics are implemented for opt-in scalar resources, with the `.tf` scan kept as the nullable contract. Singleton support and auto-assignment remain before Badge. |
 | Phase 4: indexed collections | Not started | Begins after shared field policies are stable. |
 | Phase 5: complex/exceptional resources | Not started | Begins after collection strategies are proven. |
 | Phase 6: remove legacy duplication | Not started | Begins only after all API-backed resources use the generic engine. |
@@ -685,9 +698,10 @@ workflow sets; without them the lifecycle package alone takes far longer.
 
 ## Recommended next slice
 
-1. Decide a source-independent Terraform-facing reset contract for nullable
-   values before making a nullable resource default-generic. The current adapter
-   is intentionally compatibility-only.
+1. Implement singleton objects: an `object_properties`-style object exposed as a
+   single-entry list block, preserving the version-zero state shape. It takes the
+   engine from 6 to 19 servable resources and unblocks `verity_badge` and
+   `verity_lag`.
 2. Implement the response-identity contract described below, so the generic
    engine resolves a resource's identity from a declared source rather than
    assuming the response carries a `name` member.

@@ -72,7 +72,7 @@ Phase 0 can begin immediately. Work on the production generic lifecycle engine m
 
 5. **Special field semantics are inconsistently centralized.** Generic reference-pair helpers are used directly by only a small part of the resource set; other references are handled as ordinary strings or by resource-specific code. Auto-assigned fields have repeated validation and payload-suppression logic.
 
-6. **The nullable-field solution depends on Terraform source files.** `ParseResourceConfiguredAttributes` scans `*.tf` in the provider working directory to distinguish omission from explicit `null`. That cannot reliably represent all valid Terraform configurations, including child modules, `.tf.json`, expressions whose value is null, generated configurations, renamed resource labels, or clients that do not expose local source files to the provider. Filesystem parsing should not be part of the final lifecycle engine.
+6. **The nullable-field solution depends on Terraform source files.** `ParseResourceConfiguredAttributes` scans `*.tf` in the provider working directory to distinguish omission from explicit `null`. That cannot reliably represent all valid Terraform configurations, including child modules, `.tf.json`, expressions whose value is null, generated configurations, renamed resource labels, or clients that do not expose local source files to the provider. Filesystem parsing should not be part of the final lifecycle engine. *(Superseded: the scan is kept as the permanent nullable contract; see the decision under section 6, which also corrects this list — a null from an expression is handled, because the scan records the attribute whatever its value.)*
 
 7. **Mode metadata fails open.** `FieldAppliesToMode` treats unknown resources and fields as available in both modes. This avoids breakage but lets a newly added field bypass mode review. A generated spec should validate every field and fail generation/CI when mode is unresolved.
 
@@ -380,9 +380,21 @@ Evaluate these options with protocol-level tests and document one provider-wide 
 1. **Preferred where API defaults are stable:** model the default in Terraform, treat removal as reset to that default/null, and send a PATCH when desired state differs from prior state. Omit null fields only during create when the server should choose the default.
 2. **For unmanaged computed values:** mark them computed-only, so the provider never treats omission as a request to clear.
 3. **For a true three-way API distinction that Terraform cannot express:** expose an explicit generic reset mechanism, for example `reset_fields = ["peer_link_vlan"]`, or a narrowly scoped per-field reset flag. This is more honest and module-safe than parsing `.tf` files.
-4. Retain HCL scanning only as a temporary compatibility adapter, behind one interface and with deprecation tests. It must not be required by newly generic resources.
+4. Retain HCL scanning only as a temporary compatibility adapter, behind one interface and with deprecation tests. It must not be required by newly generic resources. *(Adopted as the permanent contract instead; see the decision below.)*
 
 Do not silently choose “null always means false/zero/empty.” The current scalar comparison helpers demonstrate why each kind needs a defined clear representation.
+
+**Decision (2026-09-17): keep the `.tf` scanning as the permanent contract.** Terraform cannot tell the provider whether a nullable numeric was written as `null` or left out, and users need both: `x = null` must send an explicit API null that clears the value, and an absent `x` must leave the server's value alone. The existing configured-attribute scan is the mechanism that makes that distinction, so the generic engine preserves it rather than replacing it with a reset field or a reset-on-removal rule. Option 4 above is therefore adopted without the "temporary" qualification: the scan stays behind the engine's `Runtime` interface and is used for nullable fields on create, update, and plan.
+
+The scan answers only two questions — whether the attribute is written, and what its configuration value is. What a null or unknown then sends is still decided by the field's declared `create_null`, `update_clear`, and `unknown_plan` policies, exactly as for every other field.
+
+The scan records an attribute by name whatever its right-hand side is, so `x = var.y` counts as written, and a variable that resolves to null is treated exactly like a literal `null`: the field's policies decide whether that sends an API null, omits, defaults, or rejects, and with today's registry policies it sends an API null. Its real limits are where it looks and how it matches a resource:
+
+- it reads only `*.tf` files directly in the provider working directory, so child modules in other directories and `.tf.json` files are not seen;
+- it matches a resource by its `name` attribute when that is a literal string, and otherwise by block label, so a resource whose `name` comes from an expression and whose label differs from that name — typical with `count` or `for_each` — is not found;
+- a run without the configuration files in the working directory finds nothing.
+
+These are accepted rather than solved. When the scan does not find a resource, every nullable numeric on it is treated as not written: neither a value nor a null is sent for it, and the server keeps what it has. That is the handwritten resources' behavior today, so migrating a resource does not change it.
 
 ### 7. Consolidate registries and scheduling metadata
 
@@ -628,13 +640,14 @@ scalar-only resources therefore have schema parity and golden-fixture parity
 under the opt-in switch. Top-level reference pairs are implemented from
 `FieldSpec.Reference`, with differential tests for changing and clearing them.
 
-Nullable numeric behavior currently uses the legacy configured-attribute source
-parser through one runtime interface so an explicit `null` has parity with the
-handwritten resources. This is a compatibility adapter, not completion of the
-reset design: the plan does not permit filesystem scanning to be a permanent
-requirement of newly generic resources. Choose and test a source-independent
-Terraform-facing reset expression before making a nullable resource default
-generic. Nested pairs, auto-assignment, and singleton objects remain unstarted.
+Nullable numeric behavior is implemented with the configured-attribute scan, the
+contract decided under section 6. The engine uses it on create, on update, and in
+`ModifyPlan` to learn whether an attribute is written and what it holds; the
+field's declared policies then decide what is sent, so with the current
+registry's `api_null` policies `x = null` sends an explicit null and an absent `x`
+is left alone, exactly as the handwritten resources do. Differential tests
+compare both implementations for each case. Nested pairs, auto-assignment, and singleton
+objects remain unstarted.
 
 ### Phase 4: indexed collections
 
@@ -736,7 +749,7 @@ The Framework value-bridge spike is a prerequisite to these tests and remains in
 | PATCH semantics differ by array/resource | Require an explicit collection strategy; add hooks only for proven exceptions. |
 | Generator changes every resource at once | Pin source API version, make output deterministic, and review generated manifest diffs separately from engine changes. |
 | Bulk scheduling refactor destabilizes lifecycle migration | Generate adapters first and preserve the current manager; move ordering to metadata in a later isolated phase. |
-| Nullable behavior cannot be represented by omission/null alone | Define Terraform-facing reset semantics; do not retain filesystem parsing as an invisible permanent dependency. |
+| Nullable behavior cannot be represented by omission/null alone | Keep the configured-attribute scan as the documented contract (section 6), behind the `Runtime` interface, with its matching limits stated and the declared lifecycle policies deciding what a null sends. |
 | Runtime server schema changes Terraform's public contract | Embed a build-time schema registry and continue matching provider releases to supported API versions. |
 
 ## Approaches not recommended as the final design
