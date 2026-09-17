@@ -1,6 +1,6 @@
 # Refactoring plan: schema-driven Verity resources
 
-- Status: Phases 0, 1, and 2 closed; Phase 3 in progress (18 opt-in generic resources, singleton objects and the ACLs included)
+- Status: Phases 0, 1, and 2 closed; Phase 3 implementation complete up to what needs Phase 4 (19 opt-in generic resources); the default-migration step is a pending decision
 - Prepared: 2026-09-08
 - Scope: API-backed Terraform resources in `internal/provider`, their field handling, resource registration, bulk-operation metadata, and schema/OpenAPI tooling.
 
@@ -634,25 +634,33 @@ registration, batching, adapter encoding, and transport. See
 
 Exit criterion: adding any supported scalar kind or semantic pair requires a spec change only.
 
-Where it stands: the engine serves 18 resources behind the opt-in switch — six
-scalar-only and twelve whose only nested shape is a singleton `object_properties`
-block, the two ACLs among them. One rule, `genericresource.Supported`, decides
-that set, and the typed transport adapters are generated for exactly what it
-accepts rather than written per resource. All 18 have schema parity, blocks
-included, and golden-fixture parity with the handwritten resources.
+Where it stands: the engine serves 19 resources behind the opt-in switch — six
+scalar-only and thirteen whose only nested shape is a singleton
+`object_properties` block, which is every singleton-only resource in the
+registry. One rule, `genericresource.Supported`, decides that set, and the typed
+transport adapters are generated for exactly what it accepts rather than written
+per resource. All 19 have schema parity, blocks included, and golden-fixture
+parity with the handwritten resources.
 
 Implemented: reference pairs at the top level and inside a singleton, from
 `FieldSpec.Reference`; nullable numerics under the configured-attribute scan
-decided in section 6, with the declared policies deciding what is sent; and
+decided in section 6, with the declared policies deciding what is sent;
 singleton objects compiled to the version-zero list block, following the
-handwritten create, update, and read rules; and the `ip_version` parameter that
-selects an ACL on the shared `/acls` endpoint, passed on writes as the
-handwritten resources pass it and sent in the query on reads, where the OpenAPI
-documents declare it. Differential tests compare both implementations for each.
+handwritten create, update, and read rules; the `ip_version` parameter that
+selects an ACL on the shared `/acls` endpoint; and auto-assignment pairs, from
+`FieldSpec.AutoAssignment`, with the one resource-specific dependency
+(`verity_service` recomputes `vni` from `vlan`) declared as
+`auto_assignment.recomputed_when` rather than coded. Differential tests compare
+both implementations for each. The exit criterion holds for every kind and pair
+the engine serves: adding one is a spec change.
 
-Remaining: auto-assignment pairs (which unblock `verity_service`, and need a
-survey of the four resources that carry them first) and nullable members inside
-a singleton. Comparing
+Remaining, in two groups. Items that need indexed collections: reference pairs
+inside lists, nullable members inside a singleton, and `verity_switchpoint`'s
+auto-assignment pairs, seven of which follow a narrower handwritten rule that has
+to be decided before it migrates. And the migration step this phase names —
+`verity_badge` and resources like `verity_lag` becoming generic by default, with
+their handwritten `Set*Fields`, `CompareAndSet*`, and nullifier lists retired —
+which is a rollout decision now that the contract tests pass. Comparing
 singleton updates also found three handwritten cases that do not converge, which
 the engine reproduces for parity; whether one of them is a live defect depends on
 whether the API replaces or merges a partially PATCHed `object_properties`. See
