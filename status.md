@@ -27,12 +27,13 @@ that shipped. Four of the five lifecycle policies are verified against the legac
 implementation, 3,415 assertions, and the fifth follows from `access`.
 
 The Phase 2 engine reproduces the golden fixtures captured from the handwritten
-`verity_ipv4_list` byte for byte. **Phase 3 is in progress:** the engine now
-serves 19 resources behind the same opt-in switch — six scalar-only resources and
-thirteen whose only nested shape is a singleton `object_properties` block, the two
-ACLs and `verity_service` included — with top-level and in-block reference pairs,
-nullable numerics, endpoint-selecting parameters, and auto-assignment pairs
-implemented. Every singleton-only resource in the registry is now servable.
+`verity_ipv4_list` byte for byte. **Phase 3's implementation is complete up to
+what needs Phase 4, and Phase 4 is in progress:** the engine now serves 37
+resources behind the same opt-in switch — every resource whose indexed lists have
+flat entries, on top of the scalar-only and singleton-only resources. Reference
+pairs, nullable numerics, endpoint-selecting parameters, auto-assignment pairs,
+singleton objects, and indexed collections are implemented. See "Phase 4: indexed
+collections" for what is left.
 
 A live 6.6 run with `VERITY_GENERIC_RESOURCES=verity_ipv4_list` confirmed that
 the generic implementation registered, batched two creates into one
@@ -509,7 +510,7 @@ other resource's reason in the generated file, and
 `TestEverySupportedResourceCompilesAndHasAnAdapter` fails if the rule, the
 compiler, and the generator ever disagree. CI drift-checks the generated adapters.
 
-It currently accepts 19 resources, all opt-in:
+At the end of Phase 3 it accepted 19 resources, all opt-in:
 
 - six scalar-only: `verity_ipv4_list`, `verity_ipv6_list`, `verity_pair`,
   `verity_sflow_collector`, `verity_diagnostics_profile`,
@@ -520,8 +521,8 @@ It currently accepts 19 resources, all opt-in:
   `verity_spine_plane`, `verity_ssp_group`, `verity_su`,
   `verity_voice_port_profile`.
 
-Every other resource is refused because it carries an indexed collection, which
-is Phase 4.
+Every other resource was refused because it carries an indexed collection. Phase 4
+has since raised the servable set to 37; see below.
 
 All 19 have schema parity with the handwritten resource, blocks included, and
 reproduce its golden PUT, PATCH, and state byte for byte.
@@ -632,6 +633,61 @@ engine read the plan and dropped the explicit null the handwritten resource
 sends. Create now reads the configured-attribute source as update does, and the
 differential test covers it.
 
+## Phase 4: indexed collections
+
+The plan asks for the list strategies to be implemented and property-tested,
+starting with a simple single-list resource and continuing with resources that
+carry several lists, with add, update, delete, and API-assigned index refresh
+verified in both plan and state. The exit criterion is that indexed nested blocks
+no longer need resource-specific handler closures.
+
+Two facts from the registry shaped the work. Every one of the 54 lists uses the
+same strategy, `indexed_patch`, with object entries identified by `index`. And
+every handwritten list, in all 31 resources that carry one, reconciles through the
+same function, `ProcessIndexedArrayUpdates`; only the closures that say what an
+entry sends differ, and those closures are exactly what the members' declared
+policies already describe.
+
+| Item | State | Evidence / boundary |
+| --- | --- | --- |
+| `indexed_patch` | Implemented, opt-in | `indexed.go`. Create sends every entry, each member by its create policies. Update matches plan entries to state entries by index: a new index is sent whole, a known index sends the index and only the members that changed, and a state index the plan no longer holds is sent alone, which deletes it. A response array becomes the list in the API's order; an empty or missing one is an absent block. Reference pairs inside an entry reuse the top-level pair logic and validation. `indexed_test.go` pins each rule; `TestGenericMatchesLegacyOnIndexedCollections` compares both implementations over twelve cases on `verity_mac_filter` and `verity_packet_broker`. |
+| Server-assigned index, full replacement, ordering, subset strategies | Not implemented, deliberately | No registry resource uses any of them. An implementation would have no handwritten behavior to be checked against, so it would be a design rather than a migration. `Supported` refuses any list strategy other than `indexed_patch`. |
+| Generated list adapters | Implemented | The generator emits a slice conversion per list from the SDK's entry struct. |
+| Nullable members of a block | Not started | Nine resources have one in a list entry: `verity_eth_port_profile`, `verity_eth_port_settings`, `verity_gateway`, `verity_ipv4_prefix_list`, `verity_ipv6_prefix_list`, `verity_ldap_profile`, `verity_packet_queue`, `verity_service_port_profile`, and `verity_tacacs_profile`. `verity_switchpoint` has one in its singleton, `object_properties.number_of_multipoints`. Both need the configuration scan at a nested path. |
+| A list inside a singleton | Not started | `verity_fabric.object_properties.system_graphs`, the only two-level nesting. |
+| An `object_properties` block with no members | Not started | `verity_device_settings` and `verity_sfp_breakout` ship the API's memberless object as an empty block. |
+| Update-only resources | Implemented | The engine refuses create and delete for a resource whose operations exclude them, as `verity_sfp_breakout` does; it becomes servable once its empty block is. |
+
+37 resources are servable, and all 37 have schema parity and golden-fixture parity
+with the handwritten resources.
+
+### What the list comparison found
+
+Three of these handwritten behaviors are reproduced by the engine and pinned by
+the differential tests, so fixing them has to be a deliberate change to both. The
+fourth, removal order, the engine deliberately does not reproduce:
+
+- **Reordering entries drifts.** Entries are matched by index, so writing the
+  same entries in a different order sends nothing; the read returns them in the
+  API's order and every later plan proposes the reorder again.
+- **An entry written without an index never reconciles.** Its index plans as
+  unknown, is read as zero, and reaches the wire as a create with no index; the
+  apply is then rejected. This is the case `index_zero_test.go` characterizes.
+- **Several removals are sent in random order — not reproduced.** The handwritten
+  function emits removed entries in Go map iteration order, so the same change
+  can produce a differently ordered PATCH from one run to the next. The engine
+  sorts them by index instead. This is a deliberate difference, not parity: the
+  request becomes reproducible, and nothing could have depended on the
+  handwritten order because it was never stable. The comparison for that case
+  ignores array order so it checks the same set of removals without asserting
+  either order.
+- **`verity_tenant` rejects an empty `vrf_name` written while its assignment is
+  turned on.** The validation treats `""` as unset and lets it through, and the
+  plan then marks the value unknown, which Terraform refuses for a value the
+  configuration writes. Found while measuring tenant's auto-assignment, which
+  became servable with its lists; `TestGenericMatchesLegacyOnTenantAutoAssignment`
+  confirms tenant otherwise matches the service algorithm.
+
 ## Intended behavior changes
 
 Phase 0 requires intended behavior changes to be separated from refactoring ones.
@@ -720,7 +776,7 @@ explicitly requested.
 | --- | --- | --- |
 | Phase 2: generic scalar lifecycle pilot | Complete | The engine serves `verity_ipv4_list` behind `VERITY_GENERIC_RESOURCES`, reproducing the legacy golden fixtures. Keeping the generic path opt-in and retaining the handwritten default are later migration decisions. |
 | Phase 3: shared semantic policies | Implementation complete for everything reachable before Phase 4 | 19 opt-in resources, every singleton-only resource included. Remaining items either need indexed collections (nested pairs in lists, switchpoint's pairs, nullable members inside a singleton) or are the migration decision itself: making generic resources the default and retiring their handwritten implementations. |
-| Phase 4: indexed collections | Not started | Begins after shared field policies are stable. |
+| Phase 4: indexed collections | In progress | `indexed_patch` implemented; 37 opt-in resources. Nullable entry members, a list inside a singleton, and memberless blocks remain. |
 | Phase 5: complex/exceptional resources | Not started | Begins after collection strategies are proven. |
 | Phase 6: remove legacy duplication | Not started | Begins only after all API-backed resources use the generic engine. |
 
@@ -800,9 +856,12 @@ workflow sets; without them the lifecycle package alone takes far longer.
    handwritten implementations are retired. Its contract tests pass; this is a
    rollout decision, and the live merge answer above bears on the singleton
    resources.
-3. Start Phase 4, indexed collections. Every remaining unservable resource needs
-   it, and it is where switchpoint's auto-assignment inconsistency has to be
-   decided.
+3. Continue Phase 4 with nullable members of blocks, the largest remaining group:
+   nine resources with one in a list entry, and `verity_switchpoint` with one in
+   its singleton; then the memberless `object_properties` block, which
+   also makes `verity_sfp_breakout` servable; then `verity_fabric`'s list inside
+   a singleton. `verity_switchpoint`'s auto-assignment inconsistency has to be
+   decided before it migrates.
 4. Implement the response-identity contract described below, so the generic
    engine resolves a resource's identity from a declared source rather than
    assuming the response carries a `name` member.

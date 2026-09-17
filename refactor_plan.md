@@ -1,6 +1,6 @@
 # Refactoring plan: schema-driven Verity resources
 
-- Status: Phases 0, 1, and 2 closed; Phase 3 implementation complete up to what needs Phase 4 (19 opt-in generic resources); the default-migration step is a pending decision
+- Status: Phases 0, 1, and 2 closed; Phase 3 implementation complete up to what needs Phase 4; Phase 4 in progress (37 opt-in generic resources); the default-migration step is a pending decision
 - Prepared: 2026-09-08
 - Scope: API-backed Terraform resources in `internal/provider`, their field handling, resource registration, bulk-operation metadata, and schema/OpenAPI tooling.
 
@@ -666,7 +666,7 @@ the engine reproduces for parity; whether one of them is a live defect depends o
 whether the API replaces or merges a partially PATCHed `object_properties`. See
 status.md.
 
-### Phase 4: indexed collections
+### Phase 4: indexed collections — IN PROGRESS
 
 - Implement and property-test `indexed_patch`, server-assigned index, full replacement, ordering, and subset strategies.
 - Start with a simple single-list resource such as an access/community/prefix list.
@@ -674,6 +674,25 @@ status.md.
 - Verify list add/update/delete and API-assigned index refresh in both plan and state.
 
 Exit criterion: indexed nested blocks no longer require resource-specific handler closures.
+
+Where it stands: every list in the registry — 54 of them — uses `indexed_patch`
+with object entries identified by `index`, and every handwritten list reconciles
+through the same `ProcessIndexedArrayUpdates` function, so one implementation
+covers them. `indexed_patch` is implemented from the members' declared policies,
+with no per-resource closures, and the engine serves 37 resources, including the
+simple single-list resources the plan names first and the multi-list
+`verity_packet_broker`, `verity_port_acl`, and `verity_pb_routing_acl`. Add,
+change, removal, reordering, and an entry without an index are compared against
+the handwritten implementation in plan and requests.
+
+The other strategies the first bullet lists are not implemented: no registry
+resource uses them, so there is no behavior to verify an implementation against.
+Remaining: nullable members of blocks (nine resources in a list entry,
+`verity_switchpoint` in its singleton), a list inside a singleton (`verity_fabric`), and the memberless `object_properties` block
+(`verity_device_settings`, `verity_sfp_breakout`). See status.md for the
+handwritten list behaviors the engine reproduces, including reorder drift, and
+the one it deliberately does not: removals are sorted by index rather than sent in
+the handwritten code's unstable map order.
 
 ### Phase 5: complex and exceptional resources
 
