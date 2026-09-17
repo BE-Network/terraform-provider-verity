@@ -220,3 +220,86 @@ func TestAutoAssignedValueWrittenAsNullIsSent(t *testing.T) {
 		t.Errorf("generic PATCH = %s, want %s: a written null must be sent", got, want)
 	}
 }
+
+// verity_tenant carries three auto-assignment pairs — two nullable integers and
+// the string vrf_name — and became servable once indexed collections were. The
+// survey found its handwritten algorithm identical to verity_service's, but that
+// was read from source; these cases measure it, for a numeric pair and for the
+// string pair whose validation treats an empty string as unset.
+func TestGenericMatchesLegacyOnTenantAutoAssignment(t *testing.T) {
+	tenant := func(pairs string) string {
+		return `resource "verity_tenant" "test" {
+  name = "difftenant"
+  default_originate = true
+  dhcp_relay_source_ipv4s_subnet = ""
+  dhcp_relay_source_ipv6s_subnet = ""
+  enable = true
+  export_route_map = ""
+  export_route_map_ref_type_ = ""
+  import_route_map = ""
+  import_route_map_ref_type_ = ""
+  route_aggregation = ""
+  route_distinguisher = ""
+  route_target_export = ""
+  route_target_import = ""
+  tenant_type = ""
+` + pairs + `}
+`
+	}
+	const manual = "  layer_3_vlan = 42\n  layer_3_vlan_auto_assigned_ = false\n"
+
+	scenarios := []struct {
+		name           string
+		create, update string
+		outcome        lifecycleOutcome
+	}{
+		{
+			name:   "numeric assignment on at create",
+			create: tenant(manual + "  layer_3_vni_auto_assigned_ = true\n  vrf_name = \"TestVrf\"\n  vrf_name_auto_assigned_ = false\n"),
+			update: tenant(manual + "  layer_3_vni_auto_assigned_ = true\n  vrf_name = \"TestVrf\"\n  vrf_name_auto_assigned_ = false\n"),
+		},
+		{
+			name:   "numeric assignment turned off with a new value",
+			create: tenant(manual + "  layer_3_vni_auto_assigned_ = true\n  vrf_name = \"TestVrf\"\n  vrf_name_auto_assigned_ = false\n"),
+			update: tenant(manual + "  layer_3_vni = 5000\n  layer_3_vni_auto_assigned_ = false\n  vrf_name = \"TestVrf\"\n  vrf_name_auto_assigned_ = false\n"),
+		},
+		{
+			name:   "string assignment turned on",
+			create: tenant(manual + "  layer_3_vni = 5000\n  layer_3_vni_auto_assigned_ = false\n  vrf_name = \"TestVrf\"\n  vrf_name_auto_assigned_ = false\n"),
+			update: tenant(manual + "  layer_3_vni = 5000\n  layer_3_vni_auto_assigned_ = false\n  vrf_name_auto_assigned_ = true\n"),
+			outcome: lifecycleOutcome{updatePlanChecks: []plancheck.PlanCheck{
+				plancheck.ExpectUnknownValue("verity_tenant.test", tfjsonpath.New("vrf_name")),
+			}},
+		},
+		{
+			// The handwritten validation treats an empty string as unset and lets
+			// it through, and the plan then marks vrf_name unknown because
+			// assignment is turning on. Terraform rejects that plan: a value the
+			// configuration writes, even an empty one, cannot plan as unknown. It
+			// is a handwritten defect the engine reproduces, recorded in status.md.
+			name:    "an empty string written while string assignment is turned on",
+			create:  tenant(manual + "  layer_3_vni = 5000\n  layer_3_vni_auto_assigned_ = false\n  vrf_name = \"TestVrf\"\n  vrf_name_auto_assigned_ = false\n"),
+			update:  tenant(manual + "  layer_3_vni = 5000\n  layer_3_vni_auto_assigned_ = false\n  vrf_name = \"\"\n  vrf_name_auto_assigned_ = true\n"),
+			outcome: lifecycleOutcome{applyError: regexp.MustCompile(`(?s)planned an invalid value\s+for verity_tenant.test.vrf_name`)},
+		},
+		{
+			name:    "a value written while numeric assignment is on is refused",
+			create:  tenant(manual + "  layer_3_vni = 5000\n  layer_3_vni_auto_assigned_ = false\n  vrf_name = \"TestVrf\"\n  vrf_name_auto_assigned_ = false\n"),
+			update:  tenant(manual + "  layer_3_vni = 5000\n  layer_3_vni_auto_assigned_ = true\n  vrf_name = \"TestVrf\"\n  vrf_name_auto_assigned_ = false\n"),
+			outcome: lifecycleOutcome{applyError: regexp.MustCompile(`(?s)'layer_3_vni' field cannot be specified in the configuration when\s+'layer_3_vni_auto_assigned_' is set to true`)},
+		},
+	}
+
+	for _, scenario := range scenarios {
+		t.Run(scenario.name, func(t *testing.T) {
+			legacy := captureLifecycle(t, "verity_tenant", false, scenario.create, scenario.update, scenario.outcome)
+			generic := captureLifecycle(t, "verity_tenant", true, scenario.create, scenario.update, scenario.outcome)
+			for _, operation := range []string{"PUT", "PATCH"} {
+				want, got := canonical(t, legacy[operation]), canonical(t, generic[operation])
+				if want != got {
+					t.Errorf("%s differs between implementations\n  legacy:  %s\n  generic: %s", operation, want, got)
+				}
+			}
+		})
+	}
+}

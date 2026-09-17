@@ -130,7 +130,7 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 			resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root(field.TerraformName), nullFor(field))...)
 			continue
 		}
-		if field.Kind == spec.FieldKindObject {
+		if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
 			r.nullifyOutOfModeMembers(ctx, field, mode, req, resp)
 		}
 	}
@@ -145,7 +145,7 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 	r.planAutoAssignment(ctx, req, resp)
 }
 
-// nullifyOutOfModeMembers applies the mode rule inside a singleton block: a
+// nullifyOutOfModeMembers applies the mode rule inside a block: a
 // member the running mode does not expose is nulled in every entry the plan
 // holds, so it does not show as "known after apply" either. The handwritten
 // resources nullify every entry, not only the first, and so does this.
@@ -226,6 +226,15 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 		return
 	}
 	if !r.ready(&resp.Diagnostics) {
+		return
+	}
+	if !r.spec.Operations.Create {
+		// Some objects exist only as hardware or configuration the API manages;
+		// they are imported and updated, never created.
+		resp.Diagnostics.AddError(
+			"Create Not Supported",
+			fmt.Sprintf("%s cannot be created through this API; import it instead", r.spec.TerraformType),
+		)
 		return
 	}
 	if err := r.runtime.EnsureAuthenticated(ctx); err != nil {
@@ -591,6 +600,10 @@ func nullifyUnknown(fields []spec.FieldSpec, values map[string]attr.Value) map[s
 		}
 		if field.Kind == spec.FieldKindObject {
 			settled[field.TerraformName] = settleSingleton(field, value)
+			continue
+		}
+		if field.Kind == spec.FieldKindList {
+			settled[field.TerraformName] = settleList(field, value)
 			continue
 		}
 		settled[field.TerraformName] = value

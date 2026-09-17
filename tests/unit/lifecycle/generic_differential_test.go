@@ -199,6 +199,7 @@ func captureLifecycle(t *testing.T, terraformType string, generic bool, createCo
 	}
 
 	entry := coverageEntry(t, terraformType)
+	t.Logf("=== lifecycle for %s, generic=%v", terraformType, generic)
 	ms := mock.NewMockServer(entry.Mode)
 	defer ms.Close()
 	ms.SetTestLogger(t)

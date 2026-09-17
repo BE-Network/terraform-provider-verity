@@ -229,3 +229,12 @@ func wireObject(value WireValue) (WireObject, error) {
 	}
 	return value.ObjectValue(), nil
 }
+
+// wireList unwraps an indexed collection for a generated list adapter. Like an
+// object, a list is omitted when absent rather than sent as null.
+func wireList(value WireValue) ([]WireValue, error) {
+	if value.Kind() != ValueKindList {
+		return nil, fmt.Errorf("expected list, got %s", value.Kind())
+	}
+	return value.ListValue(), nil
+}

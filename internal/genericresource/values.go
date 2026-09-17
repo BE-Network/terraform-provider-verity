@@ -50,8 +50,9 @@ func readScalars(ctx context.Context, source attributeSource, fields []spec.Fiel
 			var value types.Number
 			diagnostics.Append(source.GetAttribute(ctx, attributePath, &value)...)
 			values[field.TerraformName] = value
-		case spec.FieldKindObject:
-			// A singleton is stored as a list block; its entry is read later.
+		case spec.FieldKindObject, spec.FieldKindList:
+			// A singleton and an indexed collection are both stored as list
+			// blocks; their entries are read later.
 			var value types.List
 			diagnostics.Append(source.GetAttribute(ctx, attributePath, &value)...)
 			values[field.TerraformName] = value
@@ -119,6 +120,8 @@ func buildCreate(fields []spec.FieldSpec, plan map[string]attr.Value, nullables 
 		)
 		if field.Kind == spec.FieldKindObject {
 			wire, send, err = createSingleton(field, value)
+		} else if field.Kind == spec.FieldKindList {
+			wire, send, err = createList(field, value)
 		} else {
 			wire, send, err = createWire(field, value)
 		}
@@ -269,8 +272,12 @@ func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value, nul
 		if hadPrevious && value.Equal(previous) {
 			continue
 		}
-		if field.Kind == spec.FieldKindObject {
-			wire, objectChanged, err := updateSingleton(field, value, previous, diagnostics)
+		if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
+			update := updateSingleton
+			if field.Kind == spec.FieldKindList {
+				update = updateList
+			}
+			wire, objectChanged, err := update(field, value, previous, diagnostics)
 			if err != nil {
 				return nil, false, err
 			}
@@ -438,8 +445,12 @@ func stateFromAPI(fields []spec.FieldSpec, data map[string]interface{}, mode str
 			values[field.TerraformName] = decoded
 			continue
 		}
-		if field.Kind == spec.FieldKindObject {
-			decoded, err := singletonFromAPI(field, raw, mode)
+		if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
+			decode := singletonFromAPI
+			if field.Kind == spec.FieldKindList {
+				decode = listFromAPI
+			}
+			decoded, err := decode(field, raw, mode)
 			if err != nil {
 				return nil, err
 			}

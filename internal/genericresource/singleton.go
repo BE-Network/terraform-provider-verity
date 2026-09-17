@@ -36,7 +36,7 @@ func elementType(field spec.FieldSpec) types.ObjectType {
 // nullFor is the null value of a field's state type, which for a singleton is a
 // null list of its entry type rather than a null scalar.
 func nullFor(field spec.FieldSpec) attr.Value {
-	if field.Kind == spec.FieldKindObject {
+	if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
 		return types.ListNull(elementType(field))
 	}
 	return nullOf(field.Kind)

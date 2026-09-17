@@ -38,7 +38,7 @@ func CompileSchema(resource spec.ResourceSpec) (schema.Schema, error) {
 		if _, duplicate := blocks[field.TerraformName]; duplicate {
 			return schema.Schema{}, fmt.Errorf("%s: duplicate Terraform block %q", resource.TerraformType, field.TerraformName)
 		}
-		if field.Kind == spec.FieldKindObject {
+		if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
 			block, err := compileSingletonBlock(field)
 			if err != nil {
 				return schema.Schema{}, fmt.Errorf("%s.%s: %w", resource.TerraformType, field.TerraformName, err)
@@ -67,7 +67,8 @@ func CompileSchema(resource spec.ResourceSpec) (schema.Schema, error) {
 }
 
 // compileSingletonBlock exposes a singleton object the way every handwritten
-// resource does: as a list block holding at most one entry. The API sends an
+// resource does: as a list block holding at most one entry. An indexed list is
+// the same block holding any number of entries, so it compiles here too. The API sends an
 // object, but the shipped state records a list, and changing that shape would
 // break every existing state file; the version-zero contract is what keeps it.
 func compileSingletonBlock(field spec.FieldSpec) (schema.Block, error) {

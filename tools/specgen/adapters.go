@@ -114,15 +114,18 @@ type adapterField struct {
 	APIName string
 	GoName  string
 	Setter  string
-	// Nested is set for a singleton object. Its members are converted by a
-	// generated function named by Setter, into the struct the SDK declares for
-	// the object.
+	// Nested is set for a singleton object or an indexed list. Its members are
+	// converted by a generated function named by Setter, into the struct the SDK
+	// declares for the object or for each list entry.
 	Nested *nestedAdapter
 }
 
 type nestedAdapter struct {
 	GoTypeName string
 	Fields     []adapterField
+	// List is true for an indexed collection, whose Go type is a slice of the
+	// entry struct rather than a pointer to it.
+	List bool
 }
 
 // putRequestTypeName derives the request type from the endpoint the way the SDK
@@ -231,11 +234,15 @@ func planFields(terraformType string, fields []spec.FieldSpec, value goStruct, s
 		if !found {
 			return nil, fmt.Sprintf("%s carries no %q field", value.Name, field.APIName)
 		}
-		if field.Kind == spec.FieldKindObject {
-			nestedName := strings.TrimPrefix(target.GoType, "*")
+		if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
+			prefix, shape := "*", "a pointer to"
+			if field.Kind == spec.FieldKindList {
+				prefix, shape = "[]", "a slice of"
+			}
+			nestedName := strings.TrimPrefix(target.GoType, prefix)
 			nested, found := structs[nestedName]
 			if nestedName == target.GoType || !found {
-				return nil, fmt.Sprintf("%s.%s is %s, not a pointer to a generated struct", value.Name, target.GoName, target.GoType)
+				return nil, fmt.Sprintf("%s.%s is %s, not %s a generated struct", value.Name, target.GoName, target.GoType, shape)
 			}
 			members, reason := planFields(terraformType, field.Fields, nested, structs)
 			if reason != "" {
@@ -245,7 +252,7 @@ func planFields(terraformType string, fields []spec.FieldSpec, value goStruct, s
 				APIName: field.APIName,
 				GoName:  target.GoName,
 				Setter:  strings.TrimSuffix(adapterTypeName(terraformType), "Adapter") + target.GoName + "Value",
-				Nested:  &nestedAdapter{GoTypeName: nestedName, Fields: members},
+				Nested:  &nestedAdapter{GoTypeName: nestedName, Fields: members, List: field.Kind == spec.FieldKindList},
 			})
 			continue
 		}
@@ -370,6 +377,10 @@ func generateAdapters(opts adapterOptions) error {
 // pointer because the SDK omits an absent object rather than sending it empty.
 func writeNestedAdapter(buf *bytes.Buffer, field adapterField) {
 	nested := field.Nested
+	if nested.List {
+		writeListAdapter(buf, field)
+		return
+	}
 	fmt.Fprintf(buf, "\nfunc %s(wire WireValue, target **openapi.%s) error {\n", field.Setter, nested.GoTypeName)
 	buf.WriteString("\tmembers, err := wireObject(wire)\n\tif err != nil {\n\t\treturn err\n\t}\n")
 	fmt.Fprintf(buf, "\tvar value openapi.%s\n", nested.GoTypeName)
@@ -382,6 +393,28 @@ func writeNestedAdapter(buf *bytes.Buffer, field adapterField) {
 	buf.WriteString("\t\tdefault:\n")
 	fmt.Fprintf(buf, "\t\t\treturn fmt.Errorf(\"%s has no field %%q\", name)\n", nested.GoTypeName)
 	buf.WriteString("\t\t}\n\t}\n\t*target = &value\n\treturn nil\n}\n")
+}
+
+// writeListAdapter emits the conversion for one indexed collection: each entry of
+// the codec's canonical list into the struct the SDK declares for an entry, in
+// the order the codec produced them.
+func writeListAdapter(buf *bytes.Buffer, field adapterField) {
+	nested := field.Nested
+	fmt.Fprintf(buf, "\nfunc %s(wire WireValue, target *[]openapi.%s) error {\n", field.Setter, nested.GoTypeName)
+	buf.WriteString("\tentries, err := wireList(wire)\n\tif err != nil {\n\t\treturn err\n\t}\n")
+	fmt.Fprintf(buf, "\tvalues := make([]openapi.%s, 0, len(entries))\n", nested.GoTypeName)
+	buf.WriteString("\tfor position, entry := range entries {\n")
+	buf.WriteString("\t\tmembers, err := wireObject(entry)\n\t\tif err != nil {\n\t\t\treturn fmt.Errorf(\"[%d]: %w\", position, err)\n\t\t}\n")
+	fmt.Fprintf(buf, "\t\tvar value openapi.%s\n", nested.GoTypeName)
+	buf.WriteString("\t\tfor name, member := range members {\n\t\t\tswitch name {\n")
+	for _, member := range nested.Fields {
+		fmt.Fprintf(buf, "\t\t\tcase %q:\n", member.APIName)
+		fmt.Fprintf(buf, "\t\t\t\tif err := %s(member, &value.%s); err != nil {\n", member.Setter, member.GoName)
+		buf.WriteString("\t\t\t\t\treturn fmt.Errorf(\"[%d].%s: %w\", position, name, err)\n\t\t\t\t}\n")
+	}
+	buf.WriteString("\t\t\tdefault:\n")
+	fmt.Fprintf(buf, "\t\t\t\treturn fmt.Errorf(\"%s has no field %%q\", name)\n", nested.GoTypeName)
+	buf.WriteString("\t\t\t}\n\t\t}\n\t\tvalues = append(values, value)\n\t}\n\t*target = values\n\treturn nil\n}\n")
 }
 
 // adapterTypeName turns verity_ipv4_list into ipv4ListAdapter.

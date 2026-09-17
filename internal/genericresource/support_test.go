@@ -51,8 +51,35 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 		t.Fatalf("a resource selected by a fixed parameter was refused: %v", err)
 	}
 
-	list := singletonSpec(notesMember())
-	list.Fields = append(list.Fields, spec.FieldSpec{TerraformName: "entries", APIName: "entries", Kind: spec.FieldKindList})
+	indexMember := notesMember()
+	indexMember.TerraformName, indexMember.APIName, indexMember.Kind = "index", "index", spec.FieldKindInt64
+	indexedList := func(members ...spec.FieldSpec) spec.FieldSpec {
+		return spec.FieldSpec{
+			TerraformName: "entries", APIName: "entries", Kind: spec.FieldKindList, ElementKind: spec.FieldKindObject,
+			Access: spec.AccessOptional, Modes: []spec.Mode{spec.ModeDatacenter},
+			Collection: &spec.CollectionSpec{Strategy: spec.CollectionIndexedPatch, IdentityField: "index"},
+			Fields:     members,
+		}
+	}
+	withList := func(list spec.FieldSpec) spec.ResourceSpec {
+		resource := singletonSpec(notesMember())
+		resource.Fields = append(resource.Fields, list)
+		return resource
+	}
+	if err := Supported(withList(indexedList(indexMember, notesMember()))); err != nil {
+		t.Fatalf("an indexed_patch list of flat members was refused: %v", err)
+	}
+
+	otherStrategy := indexedList(indexMember, notesMember())
+	otherStrategy.Collection = &spec.CollectionSpec{Strategy: spec.CollectionReplace, IdentityField: "index"}
+
+	stringIndex := notesMember()
+	stringIndex.TerraformName, stringIndex.APIName = "index", "index"
+
+	nullableEntryMember := notesMember()
+	nullableEntryMember.Kind, nullableEntryMember.Nullable = spec.FieldKindInt64, true
+
+	listInBlock := singletonSpec(indexedList(indexMember, notesMember()))
 
 	nestedAuto := notesMember()
 	nestedAuto.AutoAssignment = &spec.AutoAssignmentSpec{FlagField: "notes_auto_assigned_"}
@@ -71,9 +98,12 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 		resource spec.ResourceSpec
 		reason   string
 	}{
-		{"indexed collection", list, "indexed collection"},
+		{"list with a strategy no resource uses", withList(otherStrategy), "without the indexed_patch strategy"},
+		{"list identified by a non-integer member", withList(indexedList(stringIndex, notesMember())), "not an int64 member"},
+		{"nullable member of a list entry", withList(indexedList(indexMember, nullableEntryMember)), "nullable member of a block"},
+		{"list inside a block", listInBlock, "list inside a block"},
 		{"auto-assignment inside an object", singletonSpec(nestedAuto), "auto-assignment pair inside an object"},
-		{"nullable member of an object", singletonSpec(nullableMember), "nullable member"},
+		{"nullable member of an object", singletonSpec(nullableMember), "nullable member of a block"},
 		{"object inside an object", singletonSpec(nestedObject), "object inside an object"},
 		{"object without the singleton strategy", notSingleton, "without the singleton strategy"},
 		{"object with no members", singletonSpec(), "no members"},
