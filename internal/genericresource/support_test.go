@@ -42,8 +42,14 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 		t.Fatalf("a singleton with a scalar member was refused: %v", err)
 	}
 
-	withHeader := singletonSpec(notesMember())
-	withHeader.API.FixedHeaders = map[string]string{"ip_version": "4"}
+	// A fixed parameter selecting between resources on one endpoint is served: the
+	// write path passes it to the bulk manager and the read sends it as a query
+	// parameter.
+	withParameter := singletonSpec(notesMember())
+	withParameter.API.FixedHeaders = map[string]string{"ip_version": "4"}
+	if err := Supported(withParameter); err != nil {
+		t.Fatalf("a resource selected by a fixed parameter was refused: %v", err)
+	}
 
 	list := singletonSpec(notesMember())
 	list.Fields = append(list.Fields, spec.FieldSpec{TerraformName: "entries", APIName: "entries", Kind: spec.FieldKindList})
@@ -65,7 +71,6 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 		resource spec.ResourceSpec
 		reason   string
 	}{
-		{"fixed header", withHeader, "fixed header"},
 		{"indexed collection", list, "indexed collection"},
 		{"auto-assignment", auto, "auto-assignment"},
 		{"nullable member of an object", singletonSpec(nullableMember), "nullable member"},

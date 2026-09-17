@@ -242,8 +242,8 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 		return
 	}
 
-	if !bulkops.ExecuteResourceOperation(ctx, r.runtime.BulkManager(), r.runtime.NotifyOperationAdded,
-		"create", r.spec.API.BulkKey, name, value, &resp.Diagnostics) {
+	if !bulkops.ExecuteResourceOperationWithOptions(ctx, r.runtime.BulkManager(), r.runtime.NotifyOperationAdded,
+		"create", r.spec.API.BulkKey, name, value, &resp.Diagnostics, r.operationOptions()) {
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("%s %s creation operation completed successfully", r.spec.TerraformType, name))
@@ -291,8 +291,8 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 		return
 	}
 
-	if !bulkops.ExecuteResourceOperation(ctx, r.runtime.BulkManager(), r.runtime.NotifyOperationAdded,
-		"update", r.spec.API.BulkKey, name, value, &resp.Diagnostics) {
+	if !bulkops.ExecuteResourceOperationWithOptions(ctx, r.runtime.BulkManager(), r.runtime.NotifyOperationAdded,
+		"update", r.spec.API.BulkKey, name, value, &resp.Diagnostics, r.operationOptions()) {
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("%s %s update operation completed successfully", r.spec.TerraformType, name))
@@ -343,8 +343,8 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 	}
 
 	name := r.identityOf(state)
-	if !bulkops.ExecuteResourceOperation(ctx, r.runtime.BulkManager(), r.runtime.NotifyOperationAdded,
-		"delete", r.spec.API.BulkKey, name, nil, &resp.Diagnostics) {
+	if !bulkops.ExecuteResourceOperationWithOptions(ctx, r.runtime.BulkManager(), r.runtime.NotifyOperationAdded,
+		"delete", r.spec.API.BulkKey, name, nil, &resp.Diagnostics, r.operationOptions()) {
 		return
 	}
 	tflog.Info(ctx, fmt.Sprintf("%s %s deletion operation completed successfully", r.spec.TerraformType, name))
@@ -521,6 +521,17 @@ func (r *Resource) identityOf(values map[string]attr.Value) string {
 		return text.ValueString()
 	}
 	return ""
+}
+
+// operationOptions carries the fixed parameters that select this resource on a
+// shared endpoint, which the bulk manager adds to every write and uses to keep
+// resources that share an endpoint in separate batches. The handwritten ACL
+// resources pass the same map.
+func (r *Resource) operationOptions() *bulkops.ResourceOperationOptions {
+	if len(r.spec.API.FixedHeaders) == 0 {
+		return nil
+	}
+	return &bulkops.ResourceOperationOptions{HeaderParams: r.spec.API.FixedHeaders}
 }
 
 func (r *Resource) ready(diagnostics *diag.Diagnostics) bool {

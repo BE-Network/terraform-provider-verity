@@ -21,14 +21,9 @@ import (
 //     implements, and treating it as a value would send the whole list;
 //   - an auto-assignment pair has a flag that changes whether its value is sent
 //     at all, and treating the flag as an ordinary bool would send both;
-//   - a fixed header selects between resources sharing one endpoint, and the
-//     write path does not yet pass it, so a write would reach the wrong objects;
 //   - a nullable member inside a singleton needs the configuration scan at a
 //     nested path, which the engine reads only at the top level.
 func Supported(resource spec.ResourceSpec) error {
-	if len(resource.API.FixedHeaders) != 0 {
-		return fmt.Errorf("it is selected by a fixed header, which the write path does not pass yet")
-	}
 	for _, field := range resource.Fields {
 		if field.Unmanaged {
 			continue

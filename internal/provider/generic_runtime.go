@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"net/url"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -81,17 +82,25 @@ func (g genericRuntime) get(ctx context.Context, resourceSpec spec.ResourceSpec)
 	}
 	endpoint := strings.TrimSuffix(base, "/") + resourceSpec.API.EndpointPath
 
+	// One endpoint can back several resources, selected by a fixed parameter; the
+	// ACLs are the case, separated by ip_version. The registry calls these
+	// fixed_headers after the bulk manager's HeaderParams, but the OpenAPI
+	// documents declare ip_version `in: query` for every operation, and the
+	// generated SDK and the handwritten resources send it that way.
+	if len(resourceSpec.API.FixedHeaders) != 0 {
+		query := url.Values{}
+		for name, value := range resourceSpec.API.FixedHeaders {
+			query.Set(name, value)
+		}
+		endpoint += "?" + query.Encode()
+	}
+
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
 	if err != nil {
 		return nil, fmt.Errorf("build request for %s: %w", endpoint, err)
 	}
 	request.Header.Set("Accept", "application/json")
 	for name, value := range config.DefaultHeader {
-		request.Header.Set(name, value)
-	}
-	// One endpoint can back several resources, discriminated by a fixed header;
-	// ACLs are the case, separated by ip_version.
-	for name, value := range resourceSpec.API.FixedHeaders {
 		request.Header.Set(name, value)
 	}
 

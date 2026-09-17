@@ -228,11 +228,23 @@ func captureLifecycle(t *testing.T, terraformType string, generic bool, createCo
 	// apply is expected to fail. Destroy issues no PUT or PATCH, so the last of
 	// each is still the update's.
 	captured := map[string]map[string]interface{}{}
-	for _, method := range []string{"PUT", "PATCH"} {
+	for _, method := range []string{"PUT", "PATCH", "DELETE"} {
 		requests := ms.GetRequestsByMethodAndPath(method, entry.APIPath)
-		if len(requests) > 0 {
-			captured[method] = requests[len(requests)-1].Body
+		if len(requests) == 0 {
+			continue
 		}
+		last := requests[len(requests)-1]
+		if method != "DELETE" {
+			captured[method] = last.Body
+		}
+		// The query is recorded beside the body under its own key, so a
+		// parameter that selects between resources on a shared endpoint is
+		// compared too. Callers that compare only bodies are unaffected.
+		query := make(map[string]interface{}, len(last.QueryParams))
+		for name, values := range last.QueryParams {
+			query[name] = values
+		}
+		captured[method+" query"] = query
 	}
 	return captured
 }

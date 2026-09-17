@@ -8,8 +8,6 @@
 //
 // Resources without an adapter, and why:
 //   verity_aaa_profile: login_default is an indexed collection, which the engine does not serve yet
-//   verity_acl_v4: it is selected by a fixed header, which the write path does not pass yet
-//   verity_acl_v6: it is selected by a fixed header, which the write path does not pass yet
 //   verity_as_path_access_list: lists is an indexed collection, which the engine does not serve yet
 //   verity_authenticated_eth_port: eth_ports is an indexed collection, which the engine does not serve yet
 //   verity_bundle: eth_port_paths is an indexed collection, which the engine does not serve yet
@@ -52,6 +50,8 @@ import (
 
 // GeneratedAdapters holds every generated adapter by Terraform type.
 var GeneratedAdapters = map[string]ResourceValueAdapter{
+	"verity_acl_v4":                   aclV4Adapter{},
+	"verity_acl_v6":                   aclV6Adapter{},
 	"verity_badge":                    badgeAdapter{},
 	"verity_diagnostics_port_profile": diagnosticsPortProfileAdapter{},
 	"verity_diagnostics_profile":      diagnosticsProfileAdapter{},
@@ -68,6 +68,180 @@ var GeneratedAdapters = map[string]ResourceValueAdapter{
 	"verity_ssp_group":                sspGroupAdapter{},
 	"verity_su":                       suAdapter{},
 	"verity_voice_port_profile":       voicePortProfileAdapter{},
+}
+
+type aclV4Adapter struct{}
+
+func (aclV4Adapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.AclsPutRequestIpFilterValue
+	for name, wire := range object {
+		switch name {
+		case "bidirectional":
+			if err := wireBoolPtr(wire, &value.Bidirectional); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "destination_ip":
+			if err := wireStringPtr(wire, &value.DestinationIp); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "destination_port_1":
+			if err := wireNullableInt64(wire, &value.DestinationPort1); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "destination_port_2":
+			if err := wireNullableInt64(wire, &value.DestinationPort2); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "destination_port_operator":
+			if err := wireStringPtr(wire, &value.DestinationPortOperator); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := aclV4ObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "protocol":
+			if err := wireStringPtr(wire, &value.Protocol); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "source_ip":
+			if err := wireStringPtr(wire, &value.SourceIp); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "source_port_1":
+			if err := wireNullableInt64(wire, &value.SourcePort1); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "source_port_2":
+			if err := wireNullableInt64(wire, &value.SourcePort2); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "source_port_operator":
+			if err := wireStringPtr(wire, &value.SourcePortOperator); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("AclsPutRequestIpFilterValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func aclV4ObjectPropertiesValue(wire WireValue, target **openapi.AclsPutRequestIpFilterValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.AclsPutRequestIpFilterValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "notes":
+			if err := wireStringPtr(member, &value.Notes); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("AclsPutRequestIpFilterValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
+}
+
+type aclV6Adapter struct{}
+
+func (aclV6Adapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.AclsPutRequestIpFilterValue
+	for name, wire := range object {
+		switch name {
+		case "bidirectional":
+			if err := wireBoolPtr(wire, &value.Bidirectional); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "destination_ip":
+			if err := wireStringPtr(wire, &value.DestinationIp); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "destination_port_1":
+			if err := wireNullableInt64(wire, &value.DestinationPort1); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "destination_port_2":
+			if err := wireNullableInt64(wire, &value.DestinationPort2); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "destination_port_operator":
+			if err := wireStringPtr(wire, &value.DestinationPortOperator); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := aclV6ObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "protocol":
+			if err := wireStringPtr(wire, &value.Protocol); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "source_ip":
+			if err := wireStringPtr(wire, &value.SourceIp); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "source_port_1":
+			if err := wireNullableInt64(wire, &value.SourcePort1); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "source_port_2":
+			if err := wireNullableInt64(wire, &value.SourcePort2); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "source_port_operator":
+			if err := wireStringPtr(wire, &value.SourcePortOperator); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("AclsPutRequestIpFilterValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func aclV6ObjectPropertiesValue(wire WireValue, target **openapi.AclsPutRequestIpFilterValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.AclsPutRequestIpFilterValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "notes":
+			if err := wireStringPtr(member, &value.Notes); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("AclsPutRequestIpFilterValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
 }
 
 type badgeAdapter struct{}
