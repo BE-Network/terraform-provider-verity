@@ -27,9 +27,10 @@ that shipped. Four of the five lifecycle policies are verified against the legac
 implementation, 3,415 assertions, and the fifth follows from `access`.
 
 The Phase 2 engine reproduces the golden fixtures captured from the handwritten
-`verity_ipv4_list` byte for byte. **Phase 3 has an initial scalar-only slice
-in progress:** generated adapters now make six scalar-only resources available
-to the same opt-in engine, and top-level reference pairs have parity coverage.
+`verity_ipv4_list` byte for byte. **Phase 3 is in progress:** the engine now
+serves 16 resources behind the same opt-in switch — six scalar-only resources and
+ten whose only nested shape is a singleton `object_properties` block — with
+top-level and in-block reference pairs and nullable numerics implemented.
 
 A live 6.6 run with `VERITY_GENERIC_RESOURCES=verity_ipv4_list` confirmed that
 the generic implementation registered, batched two creates into one
@@ -483,10 +484,11 @@ Two things are deliberately not claimed:
   carry-forward for migrated resources and is a behavior difference, not a
   parity gap: no golden fixture configures an unknown, so the fixtures cannot
   distinguish them. Covered by `TestBuildUpdateOmitsUnknown`.
-- **Scalars only.** A spec carrying a collection is refused at construction
-  rather than served partially, and `TestCompileSchemaRefusesCollections` pins
-  that. Six scalar-only resources compile and have generated transport adapters;
-  all remain opt-in.
+- **Scalars only, at Phase 2 close.** A spec carrying a collection was refused at
+  construction rather than served partially. Phase 3 has since added singleton
+  objects; `Supported` is now the single rule for what the engine serves, and
+  `TestCompileSchemaRefusesUnsupportedResources` pins that everything else is
+  still refused.
 
 ### Phase 2 conclusion
 
@@ -498,25 +500,73 @@ registration, batching, adapter encoding, and transport.
 
 ## Phase 3: shared semantic field policies
 
-The first scalar-only slice is in progress. `specgen adapters` now derives the
-typed OpenAPI boundary from the reviewed registry and generated SDK JSON tags;
-it emits adapters for all six scalar-only resources and records why every other
-resource is not yet servable. CI drift-checks that output, and
-`TestEveryScalarOnlyResourceHasGeneratedAdapter` prevents a scalar-only resource
-from compiling yet silently losing its transport boundary.
+Phase 3 is in progress. What the engine can serve is decided in one place,
+`genericresource.Supported`: the engine refuses to construct anything it rejects,
+`specgen adapters` generates adapters only for what it accepts and records every
+other resource's reason in the generated file, and
+`TestEverySupportedResourceCompilesAndHasAnAdapter` fails if the rule, the
+compiler, and the generator ever disagree. CI drift-checks the generated adapters.
 
-`verity_ipv6_list` is the structural twin of the Phase 2 pilot. The remaining
-four servable resources exercise the first Phase 3 policies: `verity_pair` has
-three top-level reference pairs, `verity_diagnostics_profile` has two reference
-pairs and four nullable numerics, and `verity_sflow_collector` has a nullable
-numeric. The generic path remains opt-in for all of them.
+It currently accepts 16 resources, all opt-in:
+
+- six scalar-only: `verity_ipv4_list`, `verity_ipv6_list`, `verity_pair`,
+  `verity_sflow_collector`, `verity_diagnostics_profile`,
+  `verity_diagnostics_port_profile`;
+- ten whose only nested shape is a singleton block: `verity_badge`, `verity_lag`,
+  `verity_plane`, `verity_pod`, `verity_rack`, `verity_route_map_clause`,
+  `verity_spine_plane`, `verity_ssp_group`, `verity_su`,
+  `verity_voice_port_profile`.
+
+The other three singleton-only resources are refused on purpose, each for
+something the engine would otherwise get silently wrong: `verity_service` has an
+auto-assignment pair, and `verity_acl_v4`/`verity_acl_v6` are selected by a fixed
+`ip_version` header that the write path does not pass yet. Before `Supported`
+existed the ACLs were excluded only because their request wrapper name did not
+match; had that changed, their writes would have gone out without the header.
+
+All 16 have schema parity with the handwritten resource, blocks included, and
+reproduce its golden PUT, PATCH, and state byte for byte.
 
 | Policy | State | Evidence / boundary |
 | --- | --- | --- |
 | Top-level reference pairs | Implemented for scalar resources | `buildUpdate` groups each registry `Reference` with its declared companion, calls the existing validation helpers for legacy-identical diagnostics, and sends the required halves atomically. `references_test.go` pins single- and multiple-type transitions, clear, diagnostics, and malformed registry links. `TestGenericMatchesLegacyOnPairAndNullableUpdates` differentially compares the legacy and generic PUT/PATCH bodies. |
 | Nullable numerics | Implemented for scalar resources | The `.tf` scan is the decided contract (see `refactor_plan.md` section 6). Create, update, and `ModifyPlan` read configured-attribute presence through the `Runtime` interface; the value then goes through the field's declared policies, so with the current `api_null` policies `x = null` sends an explicit API null and an absent `x` is left to the server. `nullable_test.go` pins each state on create and update; `TestGenericMatchesLegacyOnPairAndNullableUpdates` compares legacy and generic bodies for a changed value, a removal, and an explicit null on both create and update. |
-| Auto-assignment pairs | Not started | All current examples also contain collections, so they become reachable only after singleton/collection support. |
-| Nested reference pairs and singleton objects | Not started | The scalar engine rejects collections deliberately. Singleton support is the next structural gate; indexed lists remain Phase 4. |
+| Auto-assignment pairs | Not started | `verity_service` is the only resource it would unblock now that singletons are served; the other three carry indexed lists. `Supported` refuses auto-assignment until then. |
+| Singleton objects | Implemented, opt-in | A singleton compiles to the same `ListNestedBlock` the handwritten resources declare, so state shape and schema version zero are unchanged. `singleton.go` follows the handwritten rules: create sends the object when the block is written; update considers it only when plan and state both hold an entry and sends only the members that changed; a response object becomes a one-entry block. Members go through the same declared policies as every other field, and out-of-mode members are nulled in the plan. `singleton_test.go` pins each rule; `TestGenericMatchesLegacyOnSingletonUpdates` compares both implementations for member changes, clears, removals, block addition and removal, and an unrelated change. |
+| Reference pairs inside a singleton | Implemented, opt-in | The top-level pair logic runs over the block's members, with the handwritten validation and empty-string clears. Covered for `verity_lag` by unit and differential tests. |
+| Nullable members inside a singleton | Not started | They need the configuration scan at a nested path. No servable resource has one; `Supported` refuses them. |
+
+### Singleton defects carried for parity
+
+Comparing both implementations over singleton updates turned up three cases
+where the handwritten resource itself does not converge. The engine reproduces
+each exactly — same requests, same failure — and the differential test requires
+that, so a fix has to be a deliberate change to both rather than a quiet
+divergence:
+
+1. **Removing the block** sends nothing. The read restores the server's object and
+   every later plan proposes the removal again.
+2. **Adding the block** to a resource whose state holds none sends nothing, for
+   the same reason, with the same perpetual diff.
+3. **Changing only the value of a reference pair inside the block** (`verity_lag`
+   `object_properties.fabric`) sends the value alone, as a one-type pair does at
+   the top level. The mock replaces a PATCHed object whole, so the type is lost
+   and Terraform rejects the apply.
+
+The third turns on a question only the live API can answer: does a PATCH replace
+`object_properties` whole, or merge its members? The codebase assumes both. The
+registry models singleton members as cleared by omission, which only works if
+the object is replaced; the handwritten update sends only changed members, which
+only works if it is merged. If the live API replaces the object, every
+multi-member singleton update in the handwritten resources can wipe members it
+did not mean to touch.
+
+One singleton case differs on purpose. A block written with a member left out
+plans that member as unknown. The handwritten create builds the object with
+`SetObjectPropertiesFields`, which checks only for null and sends an unknown
+string as `""`, clearing the server's value; the engine follows the member's
+`unknown_plan: omit_and_read` and leaves it out.
+`TestSingletonEmptyBlockOnCreateOmitsUnknownMembers` pins both exact bodies.
 
 The nullable contract is settled: the `.tf` scan stays, because Terraform alone
 cannot distinguish `x = null` from an absent `x` and both must keep their meaning.
@@ -627,7 +677,7 @@ explicitly requested.
 | Phase | Status | Start condition |
 | --- | --- | --- |
 | Phase 2: generic scalar lifecycle pilot | Complete | The engine serves `verity_ipv4_list` behind `VERITY_GENERIC_RESOURCES`, reproducing the legacy golden fixtures. Keeping the generic path opt-in and retaining the handwritten default are later migration decisions. |
-| Phase 3: shared semantic policies | Initial scalar-only slice in progress | Top-level reference pairs and nullable numerics are implemented for opt-in scalar resources, with the `.tf` scan kept as the nullable contract. Singleton support and auto-assignment remain before Badge. |
+| Phase 3: shared semantic policies | In progress | 16 opt-in resources: top-level and in-block reference pairs, nullable numerics under the `.tf` scan contract, and singleton objects. Auto-assignment, fixed headers, and nested nullables remain; two carried singleton defects drift regardless, and the live object-merge question decides whether the third is real. |
 | Phase 4: indexed collections | Not started | Begins after shared field policies are stable. |
 | Phase 5: complex/exceptional resources | Not started | Begins after collection strategies are proven. |
 | Phase 6: remove legacy duplication | Not started | Begins only after all API-backed resources use the generic engine. |
@@ -698,14 +748,17 @@ workflow sets; without them the lifecycle package alone takes far longer.
 
 ## Recommended next slice
 
-1. Implement singleton objects: an `object_properties`-style object exposed as a
-   single-entry list block, preserving the version-zero state shape. It takes the
-   engine from 6 to 19 servable resources and unblocks `verity_badge` and
-   `verity_lag`.
-2. Implement the response-identity contract described below, so the generic
+1. Check one thing against the live 6.6 API: whether a PATCH that carries only
+   some members of `object_properties` replaces the object or merges into it.
+   It decides whether the third singleton defect above is real on the live API,
+   and how the engine should send singleton updates. The first two, adding or
+   removing the block, drift whatever the answer is.
+2. Implement auto-assignment pairs, which makes `verity_service` servable, and
+   pass fixed headers through the write path, which does the same for the ACLs.
+3. Implement the response-identity contract described below, so the generic
    engine resolves a resource's identity from a declared source rather than
    assuming the response carries a `name` member.
-3. Decide the one item the exception inventory still leaves open: a validator for
+4. Decide the one item the exception inventory still leaves open: a validator for
    `verity_tenant.vrf_name`, which needs `FieldSpec.Validators` wired into the
    override format. The other open item, `verity_packet_broker.ipv6_permit.enable`,
    is settled: it was a defect, and it is fixed.

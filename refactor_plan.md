@@ -1,6 +1,6 @@
 # Refactoring plan: schema-driven Verity resources
 
-- Status: Phases 0, 1, and 2 closed; Phase 3 has an initial scalar-only slice in progress
+- Status: Phases 0, 1, and 2 closed; Phase 3 in progress (16 opt-in generic resources, singleton objects included)
 - Prepared: 2026-09-08
 - Scope: API-backed Terraform resources in `internal/provider`, their field handling, resource registration, bulk-operation metadata, and schema/OpenAPI tooling.
 
@@ -634,20 +634,26 @@ registration, batching, adapter encoding, and transport. See
 
 Exit criterion: adding any supported scalar kind or semantic pair requires a spec change only.
 
-Where it stands: the initial scalar-only slice generates the typed transport
-adapters instead of adding a handwritten adapter per resource. All six
-scalar-only resources therefore have schema parity and golden-fixture parity
-under the opt-in switch. Top-level reference pairs are implemented from
-`FieldSpec.Reference`, with differential tests for changing and clearing them.
+Where it stands: the engine serves 16 resources behind the opt-in switch — six
+scalar-only and ten whose only nested shape is a singleton `object_properties`
+block. One rule, `genericresource.Supported`, decides that set, and the typed
+transport adapters are generated for exactly what it accepts rather than written
+per resource. All 16 have schema parity, blocks included, and golden-fixture
+parity with the handwritten resources.
 
-Nullable numeric behavior is implemented with the configured-attribute scan, the
-contract decided under section 6. The engine uses it on create, on update, and in
-`ModifyPlan` to learn whether an attribute is written and what it holds; the
-field's declared policies then decide what is sent, so with the current
-registry's `api_null` policies `x = null` sends an explicit null and an absent `x`
-is left alone, exactly as the handwritten resources do. Differential tests
-compare both implementations for each case. Nested pairs, auto-assignment, and singleton
-objects remain unstarted.
+Implemented: reference pairs at the top level and inside a singleton, from
+`FieldSpec.Reference`; nullable numerics under the configured-attribute scan
+decided in section 6, with the declared policies deciding what is sent; and
+singleton objects compiled to the version-zero list block, following the
+handwritten create, update, and read rules. Differential tests compare both
+implementations for each.
+
+Remaining: auto-assignment pairs (which unblock `verity_service`), fixed headers
+on the write path (the ACLs), and nullable members inside a singleton. Comparing
+singleton updates also found three handwritten cases that do not converge, which
+the engine reproduces for parity; whether one of them is a live defect depends on
+whether the API replaces or merges a partially PATCHed `object_properties`. See
+status.md.
 
 ### Phase 4: indexed collections
 
