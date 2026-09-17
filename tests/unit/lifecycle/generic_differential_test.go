@@ -168,6 +168,14 @@ type lifecycleOutcome struct {
 	driftAfterApply bool
 	// applyError means the update apply itself fails with this message.
 	applyError *regexp.Regexp
+	// updatePlanChecks run against the update's plan before it is applied. A
+	// value the server will choose is marked unknown in the plan and never shows
+	// up in a request body, so this is the only place that rule is visible.
+	updatePlanChecks []plancheck.PlanCheck
+	// intermediate configurations are applied, in order, between the create and
+	// the update. Some rules only show once state holds a value an earlier step
+	// put there.
+	intermediate []string
 }
 
 // captureLifecycle applies a create then an update and returns the last body of
@@ -204,24 +212,19 @@ func captureLifecycle(t *testing.T, terraformType string, generic bool, createCo
 		Config:      provider + updateConfig,
 		ExpectError: expect.applyError,
 	}
+	if len(expect.updatePlanChecks) != 0 {
+		update.ConfigPlanChecks.PreApply = expect.updatePlanChecks
+	}
 	if expect.driftAfterApply {
 		// ExpectNonEmptyPlan only tolerates drift; the plan check requires it, so
 		// an implementation that converges fails here instead of passing silently.
 		update.ExpectNonEmptyPlan = true
-		update.ConfigPlanChecks = fwresource.ConfigPlanChecks{
-			PostApplyPostRefresh: []plancheck.PlanCheck{plancheck.ExpectNonEmptyPlan()},
-		}
+		update.ConfigPlanChecks.PostApplyPostRefresh = []plancheck.PlanCheck{plancheck.ExpectNonEmptyPlan()}
 	}
 
 	fwresource.UnitTest(t, fwresource.TestCase{
 		ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(),
-		Steps: []fwresource.TestStep{
-			{
-				PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), provider+createConfig) },
-				Config:    provider + createConfig,
-			},
-			update,
-		},
+		Steps:                    lifecycleSteps(t, ms.URL(), provider, createConfig, expect.intermediate, update),
 	})
 
 	// Read after the case rather than in a Check, which does not run when the
@@ -247,6 +250,22 @@ func captureLifecycle(t *testing.T, terraformType string, generic bool, createCo
 		captured[method+" query"] = query
 	}
 	return captured
+}
+
+func lifecycleSteps(t *testing.T, url, provider, createConfig string, intermediate []string, update fwresource.TestStep) []fwresource.TestStep {
+	t.Helper()
+	steps := []fwresource.TestStep{{
+		PreConfig: func() { mock.WriteTFConfig(t, url, provider+createConfig) },
+		Config:    provider + createConfig,
+	}}
+	for _, config := range intermediate {
+		config := config
+		steps = append(steps, fwresource.TestStep{
+			PreConfig: func() { mock.WriteTFConfig(t, url, provider+config) },
+			Config:    provider + config,
+		})
+	}
+	return append(steps, update)
 }
 
 // canonical renders a body so a difference in key order is not read as a

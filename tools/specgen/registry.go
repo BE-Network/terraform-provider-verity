@@ -117,7 +117,8 @@ type referenceOverride struct {
 }
 
 type autoAssignmentOverride struct {
-	FlagField string `yaml:"flag_field"`
+	FlagField      string   `yaml:"flag_field"`
+	RecomputedWhen []string `yaml:"recomputed_when"`
 }
 
 type registryArtifact struct {
@@ -643,14 +644,22 @@ func referenceSpec(value *referenceOverride, apiName string, siblings map[string
 // autoAssignmentSpec pairs a value field with the boolean that tells the server to
 // choose the value. The API spells that pair with an "_auto_assigned_" suffix.
 func autoAssignmentSpec(value *autoAssignmentOverride, apiName string, siblings map[string]coverageField) *spec.AutoAssignmentSpec {
-	if value != nil {
-		return &spec.AutoAssignmentSpec{FlagField: value.FlagField}
+	// The flag is derived from the API's own suffix convention, and an override
+	// only states what the convention cannot: a differently named flag, or the
+	// fields the server recomputes the value from.
+	flag := apiName + "_auto_assigned_"
+	if value != nil && value.FlagField != "" {
+		flag = value.FlagField
+	} else if companion, exists := siblings[flag]; !exists || companion.Kind != "boolean" {
+		if value == nil {
+			return nil
+		}
 	}
-	companionName := apiName + "_auto_assigned_"
-	if companion, exists := siblings[companionName]; !exists || companion.Kind != "boolean" {
-		return nil
+	result := &spec.AutoAssignmentSpec{FlagField: flag}
+	if value != nil && len(value.RecomputedWhen) != 0 {
+		result.RecomputedWhen = append([]string(nil), value.RecomputedWhen...)
 	}
-	return &spec.AutoAssignmentSpec{FlagField: companionName}
+	return result
 }
 
 // validateDeleteParameter ties delete_parameter to the endpoint's DELETE support

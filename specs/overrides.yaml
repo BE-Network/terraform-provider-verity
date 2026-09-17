@@ -2033,6 +2033,10 @@ resources:
       - api_name: vni
         api_kind: integer
         modes: [datacenter]
+        # The API assigns vni from the VLAN, so a VLAN change leaves vni unknown
+        # until the read that follows, whether or not assignment is on.
+        auto_assignment:
+          recomputed_when: [vlan]
       - api_name: vni_auto_assigned_
         api_kind: boolean
         modes: [datacenter]

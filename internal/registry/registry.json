@@ -24179,7 +24179,10 @@
           "access": "optional_computed",
           "api_name": "vni",
           "auto_assignment": {
-            "flag_field": "vni_auto_assigned_"
+            "flag_field": "vni_auto_assigned_",
+            "recomputed_when": [
+              "vlan"
+            ]
           },
           "create_null": "api_null",
           "description": "Identifies the service within the VXLAN fabric - Range is 1-16777215. If not using auto, must be outside of the reserved range settings",

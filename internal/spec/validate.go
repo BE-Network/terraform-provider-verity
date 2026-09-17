@@ -122,6 +122,27 @@ func validateFields(fields []FieldSpec, path string, parentRange VersionRange, p
 			if !rangeSubset(field.Versions, flag.Versions) {
 				return fmt.Errorf("%s: auto-assignment flag %q is unavailable in one or more field API versions", fieldPath, field.AutoAssignment.FlagField)
 			}
+			for _, trigger := range field.AutoAssignment.RecomputedWhen {
+				source, exists := byName[trigger]
+				if !exists {
+					return fmt.Errorf("%s: auto-assignment is recomputed when %q changes, which does not exist in this scope", fieldPath, trigger)
+				}
+				if trigger == field.TerraformName || trigger == field.AutoAssignment.FlagField {
+					return fmt.Errorf("%s: auto-assignment cannot be recomputed from its own value or flag %q", fieldPath, trigger)
+				}
+				if source.Kind == FieldKindObject || source.Kind == FieldKindList {
+					return fmt.Errorf("%s: auto-assignment is recomputed when %q changes, which must be a scalar", fieldPath, trigger)
+				}
+				// A trigger missing from one of the value's modes or API versions
+				// would silently stop recomputing the value there, so it must be
+				// available everywhere the value is, as the flag must.
+				if !modesSubset(field.Modes, source.Modes) {
+					return fmt.Errorf("%s: auto-assignment trigger %q is unavailable in one or more field modes", fieldPath, trigger)
+				}
+				if !rangeSubset(field.Versions, source.Versions) {
+					return fmt.Errorf("%s: auto-assignment trigger %q is unavailable in one or more field API versions", fieldPath, trigger)
+				}
+			}
 		}
 	}
 	return nil

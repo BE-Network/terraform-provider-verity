@@ -73,8 +73,21 @@ func readScalars(ctx context.Context, source attributeSource, fields []spec.Fiel
 // omission safe for a Computed attribute.
 func buildCreate(fields []spec.FieldSpec, plan map[string]attr.Value, nullables nullableSource) (transport.WireObject, error) {
 	object := make(transport.WireObject, len(fields))
+
+	// An auto-assignment pair is decided together: the flag decides whether the
+	// value is sent at all, so neither half follows its own policy alone.
+	pairs, autoPaired, err := autoAssignmentPairs(fields)
+	if err != nil {
+		return nil, err
+	}
+	for _, pair := range pairs {
+		if err := createAutoAssigned(pair, plan, nullables, object); err != nil {
+			return nil, err
+		}
+	}
+
 	for _, field := range fields {
-		if field.Unmanaged {
+		if field.Unmanaged || autoPaired[field.TerraformName] {
 			continue
 		}
 
@@ -216,8 +229,20 @@ func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value, nul
 		changed = changed || pairChanged
 	}
 
+	autoPairs, autoPaired, err := autoAssignmentPairs(fields)
+	if err != nil {
+		return nil, false, err
+	}
+	for _, pair := range autoPairs {
+		pairChanged, err := updateAutoAssigned(pair, plan, state, nullables.config, object)
+		if err != nil {
+			return nil, false, err
+		}
+		changed = changed || pairChanged
+	}
+
 	for _, field := range fields {
-		if field.Unmanaged || paired[field.TerraformName] {
+		if field.Unmanaged || paired[field.TerraformName] || autoPaired[field.TerraformName] {
 			continue
 		}
 

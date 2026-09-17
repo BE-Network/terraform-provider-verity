@@ -136,10 +136,13 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 	}
 
 	if req.State.Raw.IsNull() {
-		// Creating: there is no prior value for a cleared field to differ from.
+		// Creating: there is no prior value for a cleared field to differ from,
+		// but a value the server will assign is still unknown until it does.
+		r.planAutoAssignment(ctx, req, resp)
 		return
 	}
 	r.planExplicitNulls(ctx, req, resp)
+	r.planAutoAssignment(ctx, req, resp)
 }
 
 // nullifyOutOfModeMembers applies the mode rule inside a singleton block: a
@@ -305,14 +308,16 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 // resource actually has a nullable field. Parsing is not free, and a resource
 // with none has nothing to learn from it.
 func (r *Resource) nullableSource(ctx context.Context, config tfsdk.Config, name string, diagnostics *diag.Diagnostics) nullableSource {
-	hasNullable := false
+	// The configuration is needed for a nullable field, and for an
+	// auto-assignment flag, which is sent only when the configuration states it.
+	needsConfig := false
 	for _, field := range r.spec.Fields {
-		if field.Nullable && !field.Unmanaged {
-			hasNullable = true
+		if !field.Unmanaged && (field.Nullable || field.AutoAssignment != nil) {
+			needsConfig = true
 			break
 		}
 	}
-	if !hasNullable {
+	if !needsConfig {
 		return nullableSource{}
 	}
 	values, diags := readScalars(ctx, config, r.spec.Fields)

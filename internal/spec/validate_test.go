@@ -227,3 +227,62 @@ func TestOnlyNumericFieldsMayDeclareAnExplicitNull(t *testing.T) {
 		t.Fatalf("numeric field rejected for declaring an explicit null: %v", err)
 	}
 }
+
+// recomputed_when names the fields the server derives an auto-assigned value
+// from. A name that is not a sibling scalar, or that is the pair itself, would
+// make the plan rule watch something that cannot change the value, so each is
+// refused.
+func TestAutoAssignmentRecomputedWhenMustNameASiblingScalar(t *testing.T) {
+	withPair := func(recomputedWhen ...string) ResourceSpec {
+		spec := validIPv4ListSpec()
+		// ipv4_list is the auto-assigned value, enable its flag, and name the only
+		// other scalar in scope.
+		spec.Fields[2].AutoAssignment = &AutoAssignmentSpec{FlagField: "enable", RecomputedWhen: recomputedWhen}
+		return spec
+	}
+
+	if err := withPair("name").Validate(); err != nil {
+		t.Fatalf("a sibling scalar trigger was rejected: %v", err)
+	}
+
+	// A trigger must exist wherever the value does. name is narrowed here while
+	// ipv4_list keeps the resource's full mode set and version range.
+	narrowModes := withPair("name")
+	narrowModes.Modes = []Mode{ModeDatacenter, ModeCampus}
+	for i := range narrowModes.Fields {
+		narrowModes.Fields[i].Modes = []Mode{ModeDatacenter, ModeCampus}
+	}
+	narrowModes.Fields[0].Modes = []Mode{ModeDatacenter}
+
+	narrowVersions := withPair("name")
+	narrowVersions.Fields[0].Versions.MaxExclusive = APIVersion{Major: narrowVersions.Versions.MinInclusive.Major, Minor: narrowVersions.Versions.MinInclusive.Minor}
+	narrowVersions.Fields[0].Versions.MaxExclusive.Minor++
+	narrowVersions.Versions.MaxExclusive.Minor += 2
+	for i := range narrowVersions.Fields[1:] {
+		narrowVersions.Fields[i+1].Versions.MaxExclusive = narrowVersions.Versions.MaxExclusive
+	}
+
+	objectTrigger := withPair("props")
+	objectTrigger.Fields = append(objectTrigger.Fields, nestedField(&CollectionSpec{Strategy: CollectionSingleton, Ordering: CollectionOrdered}))
+	objectTrigger.Fields[len(objectTrigger.Fields)-1].TerraformName = "props"
+
+	for _, tc := range []struct {
+		name string
+		spec ResourceSpec
+		want string
+	}{
+		{"missing field", withPair("missing"), "does not exist in this scope"},
+		{"the value itself", withPair("ipv4_list"), "its own value or flag"},
+		{"the flag", withPair("enable"), "its own value or flag"},
+		{"an object", objectTrigger, "must be a scalar"},
+		{"a trigger missing from one of the value's modes", narrowModes, "trigger \"name\" is unavailable in one or more field modes"},
+		{"a trigger missing from part of the value's version range", narrowVersions, "trigger \"name\" is unavailable in one or more field API versions"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			err := tc.spec.Validate()
+			if err == nil || !strings.Contains(err.Error(), tc.want) {
+				t.Fatalf("Validate() error = %v, want %q", err, tc.want)
+			}
+		})
+	}
+}

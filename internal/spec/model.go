@@ -156,6 +156,11 @@ type ReferenceSpec struct {
 
 type AutoAssignmentSpec struct {
 	FlagField string `json:"flag_field"`
+	// RecomputedWhen names sibling fields whose change makes the server derive the
+	// value again, so the plan cannot keep the value it has in state. Service's
+	// vni is the case: the API assigns it from the VLAN, so a VLAN change leaves
+	// vni unknown until the read that follows.
+	RecomputedWhen []string `json:"recomputed_when,omitempty"`
 }
 
 type ValidatorKind string

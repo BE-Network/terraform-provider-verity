@@ -54,8 +54,8 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 	list := singletonSpec(notesMember())
 	list.Fields = append(list.Fields, spec.FieldSpec{TerraformName: "entries", APIName: "entries", Kind: spec.FieldKindList})
 
-	auto := singletonSpec(notesMember())
-	auto.Fields[0].AutoAssignment = &spec.AutoAssignmentSpec{FlagField: "name_auto_assigned_"}
+	nestedAuto := notesMember()
+	nestedAuto.AutoAssignment = &spec.AutoAssignmentSpec{FlagField: "notes_auto_assigned_"}
 
 	nullableMember := notesMember()
 	nullableMember.Kind, nullableMember.Nullable = spec.FieldKindInt64, true
@@ -72,7 +72,7 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 		reason   string
 	}{
 		{"indexed collection", list, "indexed collection"},
-		{"auto-assignment", auto, "auto-assignment"},
+		{"auto-assignment inside an object", singletonSpec(nestedAuto), "auto-assignment pair inside an object"},
 		{"nullable member of an object", singletonSpec(nullableMember), "nullable member"},
 		{"object inside an object", singletonSpec(nestedObject), "object inside an object"},
 		{"object without the singleton strategy", notSingleton, "without the singleton strategy"},

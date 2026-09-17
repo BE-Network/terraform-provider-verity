@@ -17,7 +17,7 @@
 //   verity_eth_port_profile: services is an indexed collection, which the engine does not serve yet
 //   verity_eth_port_settings: lldp_med is an indexed collection, which the engine does not serve yet
 //   verity_extended_community_list: lists is an indexed collection, which the engine does not serve yet
-//   verity_fabric: anycast_mac_address is an auto-assignment pair, which the engine does not implement yet
+//   verity_fabric: system_graphs is an indexed collection, which the engine does not serve yet
 //   verity_gateway: static_routes is an indexed collection, which the engine does not serve yet
 //   verity_gateway_profile: external_gateways is an indexed collection, which the engine does not serve yet
 //   verity_grouping_rule: rules is an indexed collection, which the engine does not serve yet
@@ -31,12 +31,11 @@
 //   verity_pb_routing_acl: ipv4_deny is an indexed collection, which the engine does not serve yet
 //   verity_port_acl: ipv4_deny is an indexed collection, which the engine does not serve yet
 //   verity_route_map: route_map_clauses is an indexed collection, which the engine does not serve yet
-//   verity_service: vni is an auto-assignment pair, which the engine does not implement yet
 //   verity_service_port_profile: services is an indexed collection, which the engine does not serve yet
 //   verity_sfp_breakout: breakout is an indexed collection, which the engine does not serve yet
 //   verity_switchpoint: badges is an indexed collection, which the engine does not serve yet
 //   verity_tacacs_profile: tacacs_servers is an indexed collection, which the engine does not serve yet
-//   verity_tenant: layer_3_vlan is an auto-assignment pair, which the engine does not implement yet
+//   verity_tenant: route_aggregators is an indexed collection, which the engine does not serve yet
 //   verity_threshold: rules is an indexed collection, which the engine does not serve yet
 //   verity_threshold_group: targets is an indexed collection, which the engine does not serve yet
 
@@ -63,6 +62,7 @@ var GeneratedAdapters = map[string]ResourceValueAdapter{
 	"verity_pod":                      podAdapter{},
 	"verity_rack":                     rackAdapter{},
 	"verity_route_map_clause":         routeMapClauseAdapter{},
+	"verity_service":                  serviceAdapter{},
 	"verity_sflow_collector":          sflowCollectorAdapter{},
 	"verity_spine_plane":              spinePlaneAdapter{},
 	"verity_ssp_group":                sspGroupAdapter{},
@@ -943,6 +943,161 @@ func routeMapClauseObjectPropertiesValue(wire WireValue, target **openapi.Routem
 			}
 		default:
 			return fmt.Errorf("RoutemapclausesPutRequestRouteMapClauseValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
+}
+
+type serviceAdapter struct{}
+
+func (serviceAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.ServicesPutRequestServiceValue
+	for name, wire := range object {
+		switch name {
+		case "act_as_multicast_querier":
+			if err := wireBoolPtr(wire, &value.ActAsMulticastQuerier); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "allow_fast_leave":
+			if err := wireBoolPtr(wire, &value.AllowFastLeave); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "allow_local_switching":
+			if err := wireBoolPtr(wire, &value.AllowLocalSwitching); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "anycast_ipv4_mask":
+			if err := wireStringPtr(wire, &value.AnycastIpv4Mask); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "anycast_ipv6_mask":
+			if err := wireStringPtr(wire, &value.AnycastIpv6Mask); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "block_downstream_dhcp_server":
+			if err := wireBoolPtr(wire, &value.BlockDownstreamDhcpServer); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "block_unknown_unicast_flood":
+			if err := wireBoolPtr(wire, &value.BlockUnknownUnicastFlood); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "dhcp_server_ipv4":
+			if err := wireStringPtr(wire, &value.DhcpServerIpv4); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "dhcp_server_ipv6":
+			if err := wireStringPtr(wire, &value.DhcpServerIpv6); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "ip_attach_host_advertise":
+			if err := wireNullableInt64(wire, &value.IpAttachHostAdvertise); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "is_management_service":
+			if err := wireBoolPtr(wire, &value.IsManagementService); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "max_downstream_rate_mbps":
+			if err := wireNullableInt64(wire, &value.MaxDownstreamRateMbps); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "max_upstream_rate_mbps":
+			if err := wireNullableInt64(wire, &value.MaxUpstreamRateMbps); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "mst_instance":
+			if err := wireNullableInt64(wire, &value.MstInstance); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "mtu":
+			if err := wireNullableInt64(wire, &value.Mtu); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "multicast_management_mode":
+			if err := wireStringPtr(wire, &value.MulticastManagementMode); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := serviceObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "packet_priority":
+			if err := wireStringPtr(wire, &value.PacketPriority); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "policy_based_routing":
+			if err := wireStringPtr(wire, &value.PolicyBasedRouting); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "policy_based_routing_ref_type_":
+			if err := wireStringPtr(wire, &value.PolicyBasedRoutingRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "tagged_packets":
+			if err := wireBoolPtr(wire, &value.TaggedPackets); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "tenant":
+			if err := wireStringPtr(wire, &value.Tenant); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "tenant_ref_type_":
+			if err := wireStringPtr(wire, &value.TenantRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "tls":
+			if err := wireBoolPtr(wire, &value.Tls); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "use_dscp_to_p_bit_mapping_for_l3_packets_if_available":
+			if err := wireBoolPtr(wire, &value.UseDscpToPBitMappingForL3PacketsIfAvailable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "vlan":
+			if err := wireNullableInt64(wire, &value.Vlan); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "vni":
+			if err := wireNullableInt64(wire, &value.Vni); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "vni_auto_assigned_":
+			if err := wireBoolPtr(wire, &value.VniAutoAssigned); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("ServicesPutRequestServiceValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func serviceObjectPropertiesValue(wire WireValue, target **openapi.ServicesPutRequestServiceValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.ServicesPutRequestServiceValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "warn_on_no_external_source":
+			if err := wireBoolPtr(member, &value.WarnOnNoExternalSource); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("ServicesPutRequestServiceValueObjectProperties has no field %q", name)
 		}
 	}
 	*target = &value

@@ -19,8 +19,8 @@ import (
 //
 //   - an indexed collection needs the add/update/delete strategy Phase 4
 //     implements, and treating it as a value would send the whole list;
-//   - an auto-assignment pair has a flag that changes whether its value is sent
-//     at all, and treating the flag as an ordinary bool would send both;
+//   - an auto-assignment pair inside an object has a flag that changes whether
+//     its value is sent at all, and the pair rules run only at the top level;
 //   - a nullable member inside a singleton needs the configuration scan at a
 //     nested path, which the engine reads only at the top level.
 func Supported(resource spec.ResourceSpec) error {
@@ -36,8 +36,8 @@ func Supported(resource spec.ResourceSpec) error {
 }
 
 func supportedField(field spec.FieldSpec, nested bool) error {
-	if field.AutoAssignment != nil {
-		return fmt.Errorf("%s is an auto-assignment pair, which the engine does not implement yet", field.APIName)
+	if field.AutoAssignment != nil && nested {
+		return fmt.Errorf("%s is an auto-assignment pair inside an object, which the engine does not implement yet", field.APIName)
 	}
 	switch field.Kind {
 	case spec.FieldKindString, spec.FieldKindBool, spec.FieldKindInt64, spec.FieldKindNumber:
