@@ -205,7 +205,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	}
 
 	name := r.identityOf(plan)
-	object, err := buildCreate(r.spec.Fields, plan)
+	object, err := buildCreate(r.spec.Fields, plan, r.nullableSource(ctx, req.Config, name, &resp.Diagnostics))
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid Configuration", fmt.Sprintf("%s %s: %s", r.spec.TerraformType, name, err))
 		return

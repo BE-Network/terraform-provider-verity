@@ -66,53 +66,86 @@ func readScalars(ctx context.Context, source attributeSource, fields []spec.Fiel
 // by UnknownPlan, a null by CreateNull, and anything else is sent as it stands.
 // A field the request omits is read back afterwards, which is what makes
 // omission safe for a Computed attribute.
-func buildCreate(fields []spec.FieldSpec, plan map[string]attr.Value) (transport.WireObject, error) {
+func buildCreate(fields []spec.FieldSpec, plan map[string]attr.Value, nullables nullableSource) (transport.WireObject, error) {
 	object := make(transport.WireObject, len(fields))
 	for _, field := range fields {
 		if field.Unmanaged {
 			continue
 		}
-		value, present := plan[field.TerraformName]
-		if !present {
-			continue
-		}
-		if value.IsUnknown() {
-			switch field.UnknownPlan {
-			case spec.UnknownPlanOmitAndRead, spec.UnknownPlanPreserve:
+
+		// The source of the value differs for a nullable field; what is done with
+		// the value does not. On create a nullable attribute is Computed with no
+		// prior state, so `x = null` plans as unknown and only the configuration
+		// scan shows what was written. The scan answers whether the field was
+		// written and what it holds, and the declared policies decide the rest.
+		var value attr.Value
+		if field.Nullable {
+			written, isWritten := nullables.known(field)
+			if !isWritten {
+				// Not written: the server keeps its value.
 				continue
-			case spec.UnknownPlanReject:
-				return nil, fmt.Errorf("%s is not known at apply time, and this field cannot be sent unknown", field.TerraformName)
-			default:
-				return nil, fmt.Errorf("%s declares no unknown_plan policy", field.TerraformName)
 			}
-		}
-		if value.IsNull() {
-			switch field.CreateNull {
-			case spec.CreateNullOmit:
+			value = written
+		} else {
+			planned, present := plan[field.TerraformName]
+			if !present {
 				continue
-			case spec.CreateNullAPINull:
-				object[field.APIName] = transport.Null()
-				continue
-			case spec.CreateNullReject:
-				return nil, fmt.Errorf("%s is null, and this field must have a value", field.TerraformName)
-			case spec.CreateNullDefault:
-				literal, err := literalWire(field)
-				if err != nil {
-					return nil, err
-				}
-				object[field.APIName] = literal
-				continue
-			default:
-				return nil, fmt.Errorf("%s declares no create_null policy", field.TerraformName)
 			}
+			value = planned
 		}
-		wire, err := toWire(field, value)
+
+		wire, send, err := createWire(field, value)
 		if err != nil {
 			return nil, err
 		}
-		object[field.APIName] = wire
+		if send {
+			object[field.APIName] = wire
+		}
 	}
 	return object, nil
+}
+
+// createWire applies one field's declared create policies to its value: an
+// unknown by UnknownPlan, a null by CreateNull, and anything else sent as it
+// stands. It reports whether the field belongs in the request at all.
+//
+// Every field goes through here, whatever supplied its value, so a policy the
+// registry declares is honored uniformly rather than assumed for a class of
+// field.
+func createWire(field spec.FieldSpec, value attr.Value) (transport.WireValue, bool, error) {
+	if value.IsUnknown() {
+		switch field.UnknownPlan {
+		case spec.UnknownPlanOmitAndRead, spec.UnknownPlanPreserve:
+			return transport.WireValue{}, false, nil
+		case spec.UnknownPlanReject:
+			return transport.WireValue{}, false, fmt.Errorf("%s is not known at apply time, and this field cannot be sent unknown", field.TerraformName)
+		default:
+			return transport.WireValue{}, false, fmt.Errorf("%s declares no unknown_plan policy", field.TerraformName)
+		}
+	}
+	if value.IsNull() {
+		switch field.CreateNull {
+		case spec.CreateNullOmit:
+			return transport.WireValue{}, false, nil
+		case spec.CreateNullAPINull:
+			return transport.Null(), true, nil
+		case spec.CreateNullReject:
+			return transport.WireValue{}, false, fmt.Errorf("%s is null, and this field must have a value", field.TerraformName)
+		case spec.CreateNullDefault:
+			literal, err := literalWire(field)
+			if err != nil {
+				return transport.WireValue{}, false, err
+			}
+			return literal, true, nil
+		default:
+			return transport.WireValue{}, false, fmt.Errorf("%s declares no create_null policy", field.TerraformName)
+		}
+	}
+	wire, err := toWire(field, value)
+	if err != nil {
+		return transport.WireValue{}, false, err
+	}
+	return wire, true, nil
 }
 
 // buildUpdate turns a plan and the state it replaces into the object an update
@@ -174,76 +207,71 @@ func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value, nul
 			continue
 		}
 
-		// A nullable field is decided from configuration rather than from the
-		// plan, because only configuration distinguishes "cleared" from "not
-		// mentioned". One that is not written is left alone entirely.
+		// As on create, a nullable field differs only in where its value comes
+		// from: the configuration scan, because only configuration distinguishes
+		// "cleared" from "not mentioned". A field that is not written is left
+		// alone; one that is written goes through the declared policies.
+		var value attr.Value
 		if field.Nullable {
 			written, isWritten := nullables.known(field)
 			if !isWritten {
 				continue
 			}
-			previous, hadPrevious := state[field.TerraformName]
-			if hadPrevious && written.Equal(previous) {
+			value = written
+		} else {
+			planned, present := plan[field.TerraformName]
+			if !present {
 				continue
 			}
-			if written.IsUnknown() {
-				continue
-			}
-			if written.IsNull() {
-				object[field.APIName] = transport.Null()
-				changed = true
-				continue
-			}
-			wire, err := toWire(field, written)
-			if err != nil {
-				return nil, false, err
-			}
-			object[field.APIName] = wire
-			changed = true
-			continue
+			value = planned
 		}
 
-		planned, present := plan[field.TerraformName]
-		if !present {
-			continue
-		}
 		previous, hadPrevious := state[field.TerraformName]
-		if hadPrevious && planned.Equal(previous) {
+		if hadPrevious && value.Equal(previous) {
 			continue
 		}
-		if planned.IsUnknown() {
-			// The same reasoning as create: the request leaves it out and the read
-			// that follows supplies it. Leaving it out is not a change to send, so
-			// it does not on its own make the update worth making.
-			switch field.UnknownPlan {
-			case spec.UnknownPlanOmitAndRead, spec.UnknownPlanPreserve:
-				continue
-			case spec.UnknownPlanReject:
-				return nil, false, fmt.Errorf("%s is not known at apply time, and this field cannot be sent unknown", field.TerraformName)
-			default:
-				return nil, false, fmt.Errorf("%s declares no unknown_plan policy", field.TerraformName)
-			}
-		}
-		if planned.IsNull() {
-			cleared, omit, err := clearedWire(field)
-			if err != nil {
-				return nil, false, err
-			}
-			changed = true
-			if omit {
-				continue
-			}
-			object[field.APIName] = cleared
-			continue
-		}
-		wire, err := toWire(field, planned)
+		wire, send, fieldChanged, err := updateWire(field, value)
 		if err != nil {
 			return nil, false, err
 		}
-		object[field.APIName] = wire
-		changed = true
+		changed = changed || fieldChanged
+		if send {
+			object[field.APIName] = wire
+		}
 	}
 	return object, changed, nil
+}
+
+// updateWire applies one field's declared update policies to a value that
+// differs from state. It reports whether the field belongs in the request and
+// whether the update counts as a change: a clear by omission is a change with
+// nothing to send, and an unknown left to the read is neither.
+func updateWire(field spec.FieldSpec, value attr.Value) (wire transport.WireValue, send, changed bool, err error) {
+	if value.IsUnknown() {
+		// The request leaves it out and the read that follows supplies it.
+		// Leaving it out is not a change to send, so it does not on its own make
+		// the update worth making.
+		switch field.UnknownPlan {
+		case spec.UnknownPlanOmitAndRead, spec.UnknownPlanPreserve:
+			return transport.WireValue{}, false, false, nil
+		case spec.UnknownPlanReject:
+			return transport.WireValue{}, false, false, fmt.Errorf("%s is not known at apply time, and this field cannot be sent unknown", field.TerraformName)
+		default:
+			return transport.WireValue{}, false, false, fmt.Errorf("%s declares no unknown_plan policy", field.TerraformName)
+		}
+	}
+	if value.IsNull() {
+		cleared, omit, err := clearedWire(field)
+		if err != nil {
+			return transport.WireValue{}, false, false, err
+		}
+		return cleared, !omit, true, nil
+	}
+	converted, err := toWire(field, value)
+	if err != nil {
+		return transport.WireValue{}, false, false, err
+	}
+	return converted, true, true, nil
 }
 
 // clearedWire says what clearing one field looks like, and whether clearing it

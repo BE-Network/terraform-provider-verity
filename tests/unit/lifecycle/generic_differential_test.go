@@ -105,6 +105,29 @@ func TestGenericMatchesLegacyOnPairAndNullableUpdates(t *testing.T) {
 `,
 		},
 		{
+			// Create is where an explicit null is easiest to lose: the attribute is
+			// Computed with no prior state, so the plan holds an unknown rather than
+			// a null, and only the configuration shows what was written.
+			name: "nullable numeric is written as null on create",
+			create: fixed + `  poll_interval = null
+  flow_collector = "collector-a"
+  flow_collector_ref_type_ = "sflow_collector"
+`,
+			update: fixed + `  poll_interval = null
+  flow_collector = "collector-a"
+  flow_collector_ref_type_ = "sflow_collector"
+`,
+		},
+		{
+			name: "nullable numeric is absent on create",
+			create: fixed + `  flow_collector = "collector-a"
+  flow_collector_ref_type_ = "sflow_collector"
+`,
+			update: fixed + `  flow_collector = "collector-a"
+  flow_collector_ref_type_ = "sflow_collector"
+`,
+		},
+		{
 			name: "nullable numeric is written as null",
 			create: fixed + `  poll_interval = 30
   flow_collector = "collector-a"

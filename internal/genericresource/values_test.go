@@ -57,7 +57,7 @@ func TestBuildCreateOmitsNullAndUnknown(t *testing.T) {
 		"name":      types.StringValue("list-a"),
 		"enable":    types.BoolNull(),
 		"ipv4_list": types.StringUnknown(),
-	})
+	}, nullableSource{})
 	if err != nil {
 		t.Fatalf("buildCreate: %v", err)
 	}
@@ -73,7 +73,7 @@ func TestBuildCreateSendsKnownValues(t *testing.T) {
 		"name":      types.StringValue("list-a"),
 		"enable":    types.BoolValue(true),
 		"ipv4_list": types.StringValue("10.0.0.1"),
-	})
+	}, nullableSource{})
 	if err != nil {
 		t.Fatalf("buildCreate: %v", err)
 	}
@@ -89,12 +89,12 @@ func TestBuildCreateRejectsUnknownIdentity(t *testing.T) {
 
 	if _, err := buildCreate(scalarFields(), map[string]attr.Value{
 		"name": types.StringUnknown(),
-	}); err == nil {
+	}, nullableSource{}); err == nil {
 		t.Fatal("an unknown identity was accepted; unknown_plan: reject must refuse it")
 	}
 	if _, err := buildCreate(scalarFields(), map[string]attr.Value{
 		"name": types.StringNull(),
-	}); err == nil {
+	}, nullableSource{}); err == nil {
 		t.Fatal("a null identity was accepted; create_null: reject must refuse it")
 	}
 }
