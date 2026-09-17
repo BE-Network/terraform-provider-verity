@@ -1,6 +1,6 @@
 # Schema-driven refactor status
 
-Last reviewed: 2026-09-15
+Last reviewed: 2026-09-17
 
 This document tracks implementation against [refactor_plan.md](refactor_plan.md).
 Commit state is intentionally not tracked here; use Git status and history for
@@ -9,9 +9,10 @@ not treated as refactor deliverables.
 
 ## Current position
 
-**Phases 0 and 1 are complete**, and all six pre-migration gates from the plan's
-executive recommendation pass. **Phase 2 has started** and is an opt-in pilot: the
-generic engine serves `verity_ipv4_list` behind a switch that is off by default.
+**Phases 0, 1, and 2 are complete**, and all six pre-migration gates from the
+plan's executive recommendation pass. Phase 2 closed as an opt-in pilot: the
+generic engine serves `verity_ipv4_list` behind a switch that remains off by
+default.
 
 A deterministic registry covers **all 50 API-backed Terraform resources** across
 49 endpoints, and every one is checked field by field against the schema the
@@ -25,13 +26,17 @@ JSON keys, and registration order — each pinned to a golden file of the values
 that shipped. Four of the five lifecycle policies are verified against the legacy
 implementation, 3,415 assertions, and the fifth follows from `access`.
 
-**Phase 2 is in progress.** The generic scalar engine exists and serves
-`verity_ipv4_list` behind a switch, reproducing the golden fixtures captured from
-the handwritten resource byte for byte. **Phase 3 has an initial scalar-only
-slice in progress:** generated adapters now make six scalar-only resources
-available to the same opt-in engine, and top-level reference pairs have parity
-coverage. Neither phase is closed; see their sections below for the remaining
-work.
+**Phase 2 is closed.** The generic scalar engine serves `verity_ipv4_list`
+behind an opt-in switch, reproducing the golden fixtures captured from the
+handwritten resource byte for byte. **Phase 3 has an initial scalar-only slice
+in progress:** generated adapters now make six scalar-only resources available
+to the same opt-in engine, and top-level reference pairs have parity coverage.
+
+A live 6.6 run with `VERITY_GENERIC_RESOURCES=verity_ipv4_list` confirmed that
+the generic implementation registered, batched two creates into one
+`PUT /api/ipv4lists`, and encoded the expected `ipv4_list_filter` request body.
+The generic IPv4 List implementation is therefore validated in the live
+environment as well as by the parity suite.
 
 Four things are carried forward rather than closed, none of them on that pilot's
 path. Adding an indexed child without naming its index does not work in either
@@ -70,7 +75,7 @@ deliberate decision about whether they should be resources at all.
 ```mermaid
 flowchart LR
     P0[Phase 0<br/>complete] --> P1[Phase 1<br/>complete<br/>50 resources, 5 metadata consumers<br/>3,415 policy assertions]
-    P1 --> P2[Phase 2<br/>in progress<br/>pilot: verity_ipv4_list, opt-in]
+    P1 --> P2[Phase 2<br/>complete<br/>opt-in pilot: verity_ipv4_list]
     P2 --> P3[Phase 3<br/>initial scalar slice<br/>in progress]
     P3 --> P4[Phases 4-6<br/>not started]
 ```
@@ -439,7 +444,7 @@ constraint while this document was being written — golden fixtures, Read/PATCH
 coverage, and the exception inventory — are all complete and recorded in their
 own sections above.
 
-## Phase 2: generic scalar lifecycle pilot
+## Phase 2: generic scalar lifecycle pilot — CLOSED
 
 The plan asks for schema compilation plus create/read/update/delete/import for
 scalar fields, `verity_ipv4_list` migrated behind a switch, both implementations
@@ -456,6 +461,7 @@ nullifier, or lifecycle methods.
 | Differential against the same responses | Implemented | `TestGenericResourcesMatchLegacyGoldenFixtures` drives every currently servable resource through the configuration its golden fixtures were captured from and compares against those same fixtures, rather than recording a second baseline that would only prove the engine agrees with itself. |
 | Bulk manager unchanged | Held | Not modified. The manager type-asserts the value it is handed, so a generated per-resource transport adapter crosses that boundary. |
 | Registry embedded in the binary | Implemented | `internal/registry` embeds it. `go:embed` cannot reach outside its package directory, so specgen writes the same bytes to `specs/` and there from one generation, and CI drift-checks both. |
+| Live 6.6 IPv4 List validation | Confirmed | With `VERITY_GENERIC_RESOURCES=verity_ipv4_list`, the generic implementation registered, batched two creates into one `PUT /api/ipv4lists`, and encoded the expected `ipv4_list_filter` request body with the expected names, booleans, and empty list strings. |
 
 ### What the pilot proves, and what it does not
 
@@ -483,13 +489,13 @@ Two things are deliberately not claimed:
   that. Six scalar-only resources compile and have generated transport adapters;
   all remain opt-in.
 
-### Remaining before Phase 2 closes
+### Phase 2 conclusion
 
 The exit criterion says "no handwritten model, mapper, nullifier, or lifecycle
-methods". That is true of the generic path, but `resource_verity_ipv4_list.go`
-still exists and is what the provider registers by default. Closing the phase
-means choosing the default and deleting the handwritten resource, which is a
-migration decision rather than an implementation one.
+methods". That is true of the generic path. `resource_verity_ipv4_list.go`
+remains the default implementation by deliberate migration policy, not because
+the opt-in pilot is incomplete. The live run adds non-blocking evidence for
+registration, batching, adapter encoding, and transport.
 
 ## Phase 3: shared semantic field policies
 
@@ -607,7 +613,7 @@ explicitly requested.
 
 | Phase | Status | Start condition |
 | --- | --- | --- |
-| Phase 2: generic scalar lifecycle pilot | In progress | The engine serves `verity_ipv4_list` behind `VERITY_GENERIC_RESOURCES`, reproducing the legacy golden fixtures. Closing it needs the real 6.6 validation, then a decision to make the generic path the default and retire the handwritten resource. |
+| Phase 2: generic scalar lifecycle pilot | Complete | The engine serves `verity_ipv4_list` behind `VERITY_GENERIC_RESOURCES`, reproducing the legacy golden fixtures. Keeping the generic path opt-in and retaining the handwritten default are later migration decisions. |
 | Phase 3: shared semantic policies | Initial scalar-only slice in progress | Top-level reference pairs and nullable parity are exercised by opt-in resources. A source-independent reset contract, auto-assignment, and singleton support remain before Badge. |
 | Phase 4: indexed collections | Not started | Begins after shared field policies are stable. |
 | Phase 5: complex/exceptional resources | Not started | Begins after collection strategies are proven. |
@@ -679,17 +685,13 @@ workflow sets; without them the lifecycle package alone takes far longer.
 
 ## Recommended next slice
 
-1. Validate the Phase 2 pilot against a real 6.6 deployment with
-   `VERITY_GENERIC_RESOURCES=verity_ipv4_list`, then decide whether the generic
-   path becomes the default and the handwritten resource is retired. That
-   decision is what closes Phase 2; the switch stays off until it is made.
-2. Decide a source-independent Terraform-facing reset contract for nullable
+1. Decide a source-independent Terraform-facing reset contract for nullable
    values before making a nullable resource default-generic. The current adapter
    is intentionally compatibility-only.
-3. Implement the response-identity contract described below, so the generic
+2. Implement the response-identity contract described below, so the generic
    engine resolves a resource's identity from a declared source rather than
    assuming the response carries a `name` member.
-4. Decide the one item the exception inventory still leaves open: a validator for
+3. Decide the one item the exception inventory still leaves open: a validator for
    `verity_tenant.vrf_name`, which needs `FieldSpec.Validators` wired into the
    override format. The other open item, `verity_packet_broker.ipv6_permit.enable`,
    is settled: it was a defect, and it is fixed.

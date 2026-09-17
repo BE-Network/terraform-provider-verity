@@ -1,6 +1,6 @@
 # Refactoring plan: schema-driven Verity resources
 
-- Status: Phases 0 and 1 closed; Phase 2 is an opt-in pilot; Phase 3 has an initial scalar-only slice in progress
+- Status: Phases 0, 1, and 2 closed; Phase 3 has an initial scalar-only slice in progress
 - Prepared: 2026-09-08
 - Scope: API-backed Terraform resources in `internal/provider`, their field handling, resource registration, bulk-operation metadata, and schema/OpenAPI tooling.
 
@@ -505,12 +505,12 @@ Adding an ordinary scalar or nested field should require only an OpenAPI update 
 
 ## Migration plan
 
-### Status: Phases 0 and 1 are closed; Phases 2 and 3 are in progress (2026-09-15)
+### Status: Phases 0, 1, and 2 are closed; Phase 3 is in progress (2026-09-17)
 
 Both exit criteria are met, and every pre-migration gate in the executive
-recommendation passes. Phase 2 is an opt-in pilot, and its demonstrated scalar
-parity permits the first Phase 3 scalar-policy slice to proceed; neither phase
-has met its exit criterion.
+recommendation passes. Phase 2 closed as an opt-in pilot: its demonstrated
+scalar parity permits the Phase 3 scalar-policy work to proceed. Phase 3 has not
+met its exit criterion.
 
 Evidence, all runnable from a clean checkout:
 
@@ -529,6 +529,10 @@ Evidence, all runnable from a clean checkout:
 - 149 golden wire fixtures pin PUT, PATCH, and post-apply state per resource,
   plus the schema golden file. They are the parity baseline Phase 2 is judged
   against.
+- A live 6.6 run with `VERITY_GENERIC_RESOURCES=verity_ipv4_list` confirmed the
+  generic IPv4 List implementation works: it registered, constructed the
+  expected `ipv4_list_filter` request, and batched two creates into one
+  `PUT /api/ipv4lists`.
 - Every case the Phase 0 list names is covered, including the last one,
   "multiple new index-zero items"; see the carry-forward below for what it found.
 
@@ -582,7 +586,7 @@ Exit criterion: existing behavior is measurable, intended behavior changes are s
 
 Exit criterion: one generated registry accounts for every existing resource, field path, alias, operation, mode, version, lifecycle policy, and nested strategy while old resources still run, and every pre-migration gate in the executive recommendation passes. Only then may Phase 2 start the production generic-resource migration.
 
-### Phase 2: generic scalar lifecycle pilot — IN PROGRESS
+### Phase 2: generic scalar lifecycle pilot — CLOSED
 
 - Implement schema compilation plus create/read/update/delete/import for scalar fields only.
 - Migrate `verity_ipv4_list` behind a feature/build switch or in a parity test. It has only `name`, `enable`, and `ipv4_list`, with no nullable-source parser or nested block.
@@ -599,12 +603,11 @@ mode nullifier are spec-driven, and the reviewed registry is embedded in the
 binary. The bulk manager is unchanged, reached through a per-resource transport
 adapter.
 
-The switch is off by default, so the provider registers what it always did. The
-first half of the exit criterion is met and the second is not: the handwritten
-`resource_verity_ipv4_list.go` still exists and is still what ships. Closing the
-phase means validating the pilot against a real 6.6 deployment, then deciding to
-make the generic path the default and delete the handwritten resource. Until that
-decision, this is an opt-in pilot rather than a migration. See
+The switch remains off by default, so the provider registers what it always did.
+That is intentional: Phase 2 closes the opt-in pilot, not the later decision to
+make it the default or retire the handwritten
+`resource_verity_ipv4_list.go`. A live 6.6 run additionally confirmed generic
+registration, batching, adapter encoding, and transport. See
 [status.md](status.md) for the evidence behind each item.
 
 ### Phase 3: shared semantic field policies — IN PROGRESS
