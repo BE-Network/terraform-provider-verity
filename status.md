@@ -28,9 +28,10 @@ implementation, 3,415 assertions, and the fifth follows from `access`.
 
 The Phase 2 engine reproduces the golden fixtures captured from the handwritten
 `verity_ipv4_list` byte for byte. **Phase 3 is in progress:** the engine now
-serves 16 resources behind the same opt-in switch — six scalar-only resources and
-ten whose only nested shape is a singleton `object_properties` block — with
-top-level and in-block reference pairs and nullable numerics implemented.
+serves 18 resources behind the same opt-in switch — six scalar-only resources and
+twelve whose only nested shape is a singleton `object_properties` block, the two
+ACLs included — with top-level and in-block reference pairs, nullable numerics,
+and endpoint-selecting parameters implemented.
 
 A live 6.6 run with `VERITY_GENERIC_RESOURCES=verity_ipv4_list` confirmed that
 the generic implementation registered, batched two creates into one
@@ -507,25 +508,29 @@ other resource's reason in the generated file, and
 `TestEverySupportedResourceCompilesAndHasAnAdapter` fails if the rule, the
 compiler, and the generator ever disagree. CI drift-checks the generated adapters.
 
-It currently accepts 16 resources, all opt-in:
+It currently accepts 18 resources, all opt-in:
 
 - six scalar-only: `verity_ipv4_list`, `verity_ipv6_list`, `verity_pair`,
   `verity_sflow_collector`, `verity_diagnostics_profile`,
   `verity_diagnostics_port_profile`;
-- ten whose only nested shape is a singleton block: `verity_badge`, `verity_lag`,
-  `verity_plane`, `verity_pod`, `verity_rack`, `verity_route_map_clause`,
-  `verity_spine_plane`, `verity_ssp_group`, `verity_su`,
-  `verity_voice_port_profile`.
+- twelve whose only nested shape is a singleton block: `verity_acl_v4`,
+  `verity_acl_v6`, `verity_badge`, `verity_lag`, `verity_plane`, `verity_pod`,
+  `verity_rack`, `verity_route_map_clause`, `verity_spine_plane`,
+  `verity_ssp_group`, `verity_su`, `verity_voice_port_profile`.
 
-The other three singleton-only resources are refused on purpose, each for
-something the engine would otherwise get silently wrong: `verity_service` has an
-auto-assignment pair, and `verity_acl_v4`/`verity_acl_v6` are selected by a fixed
-`ip_version` header that the write path does not pass yet. Before `Supported`
-existed the ACLs were excluded only because their request wrapper name did not
-match; had that changed, their writes would have gone out without the header.
+The remaining singleton-only resource, `verity_service`, is refused on purpose:
+it has an auto-assignment pair, and treating its flag as an ordinary bool would
+send values the API is meant to assign.
 
-All 16 have schema parity with the handwritten resource, blocks included, and
+All 18 have schema parity with the handwritten resource, blocks included, and
 reproduce its golden PUT, PATCH, and state byte for byte.
+
+**A correction to the previous revision of this document.** It said the ACLs had
+been kept out of the engine only because their request wrapper name did not
+match. That was wrong: the registry's wrapper, `ip_filter`, matches the SDK. The
+scalar-only rule excluded them because of their `object_properties` singleton,
+and adding singleton support without `Supported` would have served them with no
+`ip_version` on their writes. The risk was real; the stated reason was not.
 
 | Policy | State | Evidence / boundary |
 | --- | --- | --- |
@@ -534,6 +539,7 @@ reproduce its golden PUT, PATCH, and state byte for byte.
 | Auto-assignment pairs | Not started | `verity_service` is the only resource it would unblock now that singletons are served; the other three carry indexed lists. `Supported` refuses auto-assignment until then. |
 | Singleton objects | Implemented, opt-in | A singleton compiles to the same `ListNestedBlock` the handwritten resources declare, so state shape and schema version zero are unchanged. `singleton.go` follows the handwritten rules: create sends the object when the block is written; update considers it only when plan and state both hold an entry and sends only the members that changed; a response object becomes a one-entry block. Members go through the same declared policies as every other field, and out-of-mode members are nulled in the plan. `singleton_test.go` pins each rule; `TestGenericMatchesLegacyOnSingletonUpdates` compares both implementations for member changes, clears, removals, block addition and removal, and an unrelated change. |
 | Reference pairs inside a singleton | Implemented, opt-in | The top-level pair logic runs over the block's members, with the handwritten validation and empty-string clears. Covered for `verity_lag` by unit and differential tests. |
+| Parameters that select a resource on a shared endpoint | Implemented, opt-in | The ACLs share `/acls` and are told apart by `ip_version`. The registry records it as `fixed_headers`, a name taken from the bulk manager's `HeaderParams`, but both OpenAPI documents declare it `in: query` for GET, PUT, PATCH, and DELETE. Writes pass it to the bulk manager exactly as the handwritten ACL resource does; the generic read sends it in the query string. `TestGenericRuntimeSendsFixedParametersInTheQuery` serves each version's objects only for its query value and rejects a header-borne one; `TestGenericMatchesLegacyOnACLUpdates` compares both implementations' bodies and the query of every PUT, PATCH, and DELETE for both versions, including nullable port changes, explicit nulls, and removal. Renaming the registry field to match what it is remains a follow-up. |
 | Nullable members inside a singleton | Not started | They need the configuration scan at a nested path. No servable resource has one; `Supported` refuses them. |
 
 ### Singleton defects carried for parity
@@ -677,7 +683,7 @@ explicitly requested.
 | Phase | Status | Start condition |
 | --- | --- | --- |
 | Phase 2: generic scalar lifecycle pilot | Complete | The engine serves `verity_ipv4_list` behind `VERITY_GENERIC_RESOURCES`, reproducing the legacy golden fixtures. Keeping the generic path opt-in and retaining the handwritten default are later migration decisions. |
-| Phase 3: shared semantic policies | In progress | 16 opt-in resources: top-level and in-block reference pairs, nullable numerics under the `.tf` scan contract, and singleton objects. Auto-assignment, fixed headers, and nested nullables remain; two carried singleton defects drift regardless, and the live object-merge question decides whether the third is real. |
+| Phase 3: shared semantic policies | In progress | 18 opt-in resources: top-level and in-block reference pairs, nullable numerics under the `.tf` scan contract, singleton objects, and endpoint-selecting parameters. Auto-assignment and nested nullables remain; two carried singleton defects drift regardless, and the live object-merge question decides whether the third is real. |
 | Phase 4: indexed collections | Not started | Begins after shared field policies are stable. |
 | Phase 5: complex/exceptional resources | Not started | Begins after collection strategies are proven. |
 | Phase 6: remove legacy duplication | Not started | Begins only after all API-backed resources use the generic engine. |
@@ -753,8 +759,12 @@ workflow sets; without them the lifecycle package alone takes far longer.
    It decides whether the third singleton defect above is real on the live API,
    and how the engine should send singleton updates. The first two, adding or
    removing the block, drift whatever the answer is.
-2. Implement auto-assignment pairs, which makes `verity_service` servable, and
-   pass fixed headers through the write path, which does the same for the ACLs.
+2. Survey auto-assignment across `verity_service`, `verity_fabric`,
+   `verity_switchpoint`, and `verity_tenant` before implementing it. It is not a
+   pair rule alone: the handwritten service validates on create, update, and in
+   `ModifyPlan`, must resend `vni` when turning assignment off, and marks `vni`
+   unknown when `vlan` changes. Only `verity_service` becomes servable from it
+   today; the other three also need indexed collections.
 3. Implement the response-identity contract described below, so the generic
    engine resolves a resource's identity from a declared source rather than
    assuming the response carries a `name` member.
