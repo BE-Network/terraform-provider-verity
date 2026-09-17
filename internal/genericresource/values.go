@@ -50,6 +50,11 @@ func readScalars(ctx context.Context, source attributeSource, fields []spec.Fiel
 			var value types.Number
 			diagnostics.Append(source.GetAttribute(ctx, attributePath, &value)...)
 			values[field.TerraformName] = value
+		case spec.FieldKindObject:
+			// A singleton is stored as a list block; its entry is read later.
+			var value types.List
+			diagnostics.Append(source.GetAttribute(ctx, attributePath, &value)...)
+			values[field.TerraformName] = value
 		default:
 			diagnostics.AddError(
 				"Unsupported Field Kind",
@@ -94,7 +99,16 @@ func buildCreate(fields []spec.FieldSpec, plan map[string]attr.Value, nullables 
 			value = planned
 		}
 
-		wire, send, err := createWire(field, value)
+		var (
+			wire transport.WireValue
+			send bool
+			err  error
+		)
+		if field.Kind == spec.FieldKindObject {
+			wire, send, err = createSingleton(field, value)
+		} else {
+			wire, send, err = createWire(field, value)
+		}
 		if err != nil {
 			return nil, err
 		}
@@ -228,6 +242,20 @@ func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value, nul
 
 		previous, hadPrevious := state[field.TerraformName]
 		if hadPrevious && value.Equal(previous) {
+			continue
+		}
+		if field.Kind == spec.FieldKindObject {
+			wire, objectChanged, err := updateSingleton(field, value, previous, diagnostics)
+			if err != nil {
+				return nil, false, err
+			}
+			if diagnostics.HasError() {
+				return nil, false, nil
+			}
+			if objectChanged {
+				object[field.APIName] = wire
+				changed = true
+			}
 			continue
 		}
 		wire, send, fieldChanged, err := updateWire(field, value)
@@ -373,12 +401,20 @@ func stateFromAPI(fields []spec.FieldSpec, data map[string]interface{}, mode str
 			continue
 		}
 		if !appliesToMode(field, mode) {
-			values[field.TerraformName] = nullOf(field.Kind)
+			values[field.TerraformName] = nullFor(field)
 			continue
 		}
 		raw, present := data[field.APIName]
 		if !present || raw == nil {
 			decoded, err := absentValue(field, prior)
+			if err != nil {
+				return nil, err
+			}
+			values[field.TerraformName] = decoded
+			continue
+		}
+		if field.Kind == spec.FieldKindObject {
+			decoded, err := singletonFromAPI(field, raw, mode)
 			if err != nil {
 				return nil, err
 			}
@@ -417,15 +453,15 @@ func appliesToMode(field spec.FieldSpec, mode string) bool {
 func absentValue(field spec.FieldSpec, prior map[string]attr.Value) (attr.Value, error) {
 	switch field.ResponseAbsence {
 	case spec.ResponseAbsenceTerraformNull:
-		return nullOf(field.Kind), nil
+		return nullFor(field), nil
 	case spec.ResponseAbsencePreserve:
 		if previous, held := prior[field.TerraformName]; held && previous != nil {
 			return previous, nil
 		}
-		return nullOf(field.Kind), nil
+		return nullFor(field), nil
 	case spec.ResponseAbsenceDefault:
 		if field.Default == nil {
-			return nullOf(field.Kind), nil
+			return nullFor(field), nil
 		}
 		return literalAttr(field)
 	case spec.ResponseAbsenceError:
@@ -438,7 +474,7 @@ func absentValue(field spec.FieldSpec, prior map[string]attr.Value) (attr.Value,
 func literalAttr(field spec.FieldSpec) (attr.Value, error) {
 	switch field.Default.Kind {
 	case spec.LiteralNull:
-		return nullOf(field.Kind), nil
+		return nullFor(field), nil
 	case spec.LiteralString:
 		return types.StringValue(field.Default.Value), nil
 	case spec.LiteralBool:
@@ -501,7 +537,7 @@ func attributeTypes(fields []spec.FieldSpec) map[string]attr.Type {
 		if field.Unmanaged {
 			continue
 		}
-		if null := nullOf(field.Kind); null != nil {
+		if null := nullFor(field); null != nil {
 			types_[field.TerraformName] = null.Type(context.Background())
 		}
 	}

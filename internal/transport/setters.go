@@ -219,3 +219,13 @@ func float32Of(value WireValue) (float32, error) {
 		return 0, fmt.Errorf("expected number, got %s", value.Kind())
 	}
 }
+
+// wireObject unwraps a singleton object for a generated nested adapter. An
+// object is never sent as null — an absent block is omitted instead — so a null
+// here means the codec and the adapter disagree.
+func wireObject(value WireValue) (WireObject, error) {
+	if value.Kind() != ValueKindObject {
+		return nil, fmt.Errorf("expected object, got %s", value.Kind())
+	}
+	return value.ObjectValue(), nil
+}

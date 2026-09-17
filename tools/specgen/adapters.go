@@ -13,6 +13,7 @@ import (
 	"sort"
 	"strings"
 
+	"terraform-provider-verity/internal/genericresource"
 	"terraform-provider-verity/internal/spec"
 )
 
@@ -113,6 +114,15 @@ type adapterField struct {
 	APIName string
 	GoName  string
 	Setter  string
+	// Nested is set for a singleton object. Its members are converted by a
+	// generated function named by Setter, into the struct the SDK declares for
+	// the object.
+	Nested *nestedAdapter
+}
+
+type nestedAdapter struct {
+	GoTypeName string
+	Fields     []adapterField
 }
 
 // putRequestTypeName derives the request type from the endpoint the way the SDK
@@ -177,6 +187,11 @@ func planAdapters(registry spec.Registry, structs map[string]goStruct) (adapters
 }
 
 func planOne(resource spec.ResourceSpec, structs map[string]goStruct) (resourceAdapter, string) {
+	// The engine's own support rule decides servability, so the adapters and the
+	// engine cannot disagree about which resources can be migrated.
+	if err := genericresource.Supported(resource); err != nil {
+		return resourceAdapter{}, err.Error()
+	}
 	requestName := putRequestTypeName(resource.API.EndpointPath)
 	request, found := structs[requestName]
 	if !found {
@@ -195,26 +210,53 @@ func planOne(resource spec.ResourceSpec, structs map[string]goStruct) (resourceA
 		return resourceAdapter{}, fmt.Sprintf("no %s in the generated SDK", valueTypeName)
 	}
 
-	adapter := resourceAdapter{TerraformType: resource.TerraformType, GoTypeName: valueTypeName}
-	for _, field := range resource.Fields {
+	fields, reason := planFields(resource.TerraformType, resource.Fields, value, structs)
+	if reason != "" {
+		return resourceAdapter{}, reason
+	}
+	return resourceAdapter{TerraformType: resource.TerraformType, GoTypeName: valueTypeName, Fields: fields}, ""
+}
+
+// planFields maps a level of spec fields onto the struct the SDK declares for
+// it, recursing into a singleton's own struct. The engine's support rule has
+// already decided what can appear here, so an unexpected shape is reported as a
+// mismatch between the SDK and the registry rather than accommodated.
+func planFields(terraformType string, fields []spec.FieldSpec, value goStruct, structs map[string]goStruct) ([]adapterField, string) {
+	planned := make([]adapterField, 0, len(fields))
+	for _, field := range fields {
 		if field.Unmanaged {
 			continue
 		}
-		if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
-			return resourceAdapter{}, fmt.Sprintf("%s is a collection, which the scalar engine does not serve yet", field.APIName)
-		}
 		target, found := value.Fields[field.APIName]
 		if !found {
-			return resourceAdapter{}, fmt.Sprintf("%s carries no %q field", valueTypeName, field.APIName)
+			return nil, fmt.Sprintf("%s carries no %q field", value.Name, field.APIName)
+		}
+		if field.Kind == spec.FieldKindObject {
+			nestedName := strings.TrimPrefix(target.GoType, "*")
+			nested, found := structs[nestedName]
+			if nestedName == target.GoType || !found {
+				return nil, fmt.Sprintf("%s.%s is %s, not a pointer to a generated struct", value.Name, target.GoName, target.GoType)
+			}
+			members, reason := planFields(terraformType, field.Fields, nested, structs)
+			if reason != "" {
+				return nil, reason
+			}
+			planned = append(planned, adapterField{
+				APIName: field.APIName,
+				GoName:  target.GoName,
+				Setter:  strings.TrimSuffix(adapterTypeName(terraformType), "Adapter") + target.GoName + "Value",
+				Nested:  &nestedAdapter{GoTypeName: nestedName, Fields: members},
+			})
+			continue
 		}
 		setter, supported := setterFor(target.GoType)
 		if !supported {
-			return resourceAdapter{}, fmt.Sprintf("%s.%s has unsupported type %s", valueTypeName, target.GoName, target.GoType)
+			return nil, fmt.Sprintf("%s.%s has unsupported type %s", value.Name, target.GoName, target.GoType)
 		}
-		adapter.Fields = append(adapter.Fields, adapterField{APIName: field.APIName, GoName: target.GoName, Setter: setter})
+		planned = append(planned, adapterField{APIName: field.APIName, GoName: target.GoName, Setter: setter})
 	}
-	sort.Slice(adapter.Fields, func(i, j int) bool { return adapter.Fields[i].APIName < adapter.Fields[j].APIName })
-	return adapter, ""
+	sort.Slice(planned, func(i, j int) bool { return planned[i].APIName < planned[j].APIName })
+	return planned, ""
 }
 
 func readRegistry(path string) (spec.Registry, error) {
@@ -299,6 +341,11 @@ func generateAdapters(opts adapterOptions) error {
 		buf.WriteString("\t\t\t// means the registry and this adapter were generated apart.\n")
 		fmt.Fprintf(&buf, "\t\t\treturn nil, fmt.Errorf(\"%s has no field %%q\", name)\n", adapter.GoTypeName)
 		buf.WriteString("\t\t}\n\t}\n\treturn value, nil\n}\n")
+		for _, field := range adapter.Fields {
+			if field.Nested != nil {
+				writeNestedAdapter(&buf, field)
+			}
+		}
 	}
 
 	formatted, err := format.Source(buf.Bytes())
@@ -316,6 +363,25 @@ func generateAdapters(opts adapterOptions) error {
 		return nil
 	}
 	return writeFile(opts.Output, formatted)
+}
+
+// writeNestedAdapter emits the conversion for one singleton object: the codec's
+// canonical object into the struct the SDK declares for it, set through a
+// pointer because the SDK omits an absent object rather than sending it empty.
+func writeNestedAdapter(buf *bytes.Buffer, field adapterField) {
+	nested := field.Nested
+	fmt.Fprintf(buf, "\nfunc %s(wire WireValue, target **openapi.%s) error {\n", field.Setter, nested.GoTypeName)
+	buf.WriteString("\tmembers, err := wireObject(wire)\n\tif err != nil {\n\t\treturn err\n\t}\n")
+	fmt.Fprintf(buf, "\tvar value openapi.%s\n", nested.GoTypeName)
+	buf.WriteString("\tfor name, member := range members {\n\t\tswitch name {\n")
+	for _, member := range nested.Fields {
+		fmt.Fprintf(buf, "\t\tcase %q:\n", member.APIName)
+		fmt.Fprintf(buf, "\t\t\tif err := %s(member, &value.%s); err != nil {\n", member.Setter, member.GoName)
+		buf.WriteString("\t\t\t\treturn fmt.Errorf(\"%s: %w\", name, err)\n\t\t\t}\n")
+	}
+	buf.WriteString("\t\tdefault:\n")
+	fmt.Fprintf(buf, "\t\t\treturn fmt.Errorf(\"%s has no field %%q\", name)\n", nested.GoTypeName)
+	buf.WriteString("\t\t}\n\t}\n\t*target = &value\n\treturn nil\n}\n")
 }
 
 // adapterTypeName turns verity_ipv4_list into ipv4ListAdapter.

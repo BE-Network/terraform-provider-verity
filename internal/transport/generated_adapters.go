@@ -7,50 +7,40 @@
 // is the boundary the plan puts between the two.
 //
 // Resources without an adapter, and why:
-//   verity_aaa_profile: login_default is a collection, which the scalar engine does not serve yet
-//   verity_acl_v4: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_acl_v6: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_as_path_access_list: lists is a collection, which the scalar engine does not serve yet
-//   verity_authenticated_eth_port: eth_ports is a collection, which the scalar engine does not serve yet
-//   verity_badge: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_bundle: eth_port_paths is a collection, which the scalar engine does not serve yet
-//   verity_community_list: lists is a collection, which the scalar engine does not serve yet
-//   verity_device_settings: dns_servers is a collection, which the scalar engine does not serve yet
-//   verity_device_voice_settings: codecs is a collection, which the scalar engine does not serve yet
-//   verity_eth_port_profile: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_eth_port_settings: lldp_med is a collection, which the scalar engine does not serve yet
-//   verity_extended_community_list: lists is a collection, which the scalar engine does not serve yet
-//   verity_fabric: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_gateway: static_routes is a collection, which the scalar engine does not serve yet
-//   verity_gateway_profile: external_gateways is a collection, which the scalar engine does not serve yet
-//   verity_grouping_rule: rules is a collection, which the scalar engine does not serve yet
-//   verity_ipv4_prefix_list: lists is a collection, which the scalar engine does not serve yet
-//   verity_ipv6_prefix_list: lists is a collection, which the scalar engine does not serve yet
-//   verity_lag: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_ldap_profile: attribute_maps is a collection, which the scalar engine does not serve yet
-//   verity_mac_filter: filters is a collection, which the scalar engine does not serve yet
-//   verity_packet_broker: ipv4_deny is a collection, which the scalar engine does not serve yet
-//   verity_packet_queue: pbit is a collection, which the scalar engine does not serve yet
-//   verity_pb_routing: policy is a collection, which the scalar engine does not serve yet
-//   verity_pb_routing_acl: ipv4_deny is a collection, which the scalar engine does not serve yet
-//   verity_plane: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_pod: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_port_acl: ipv4_deny is a collection, which the scalar engine does not serve yet
-//   verity_rack: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_route_map: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_route_map_clause: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_service: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_service_port_profile: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_sfp_breakout: no SfpbreakoutsPutRequest in the generated SDK
-//   verity_spine_plane: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_ssp_group: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_su: object_properties is a collection, which the scalar engine does not serve yet
-//   verity_switchpoint: badges is a collection, which the scalar engine does not serve yet
-//   verity_tacacs_profile: tacacs_servers is a collection, which the scalar engine does not serve yet
-//   verity_tenant: route_aggregators is a collection, which the scalar engine does not serve yet
-//   verity_threshold: rules is a collection, which the scalar engine does not serve yet
-//   verity_threshold_group: targets is a collection, which the scalar engine does not serve yet
-//   verity_voice_port_profile: object_properties is a collection, which the scalar engine does not serve yet
+//   verity_aaa_profile: login_default is an indexed collection, which the engine does not serve yet
+//   verity_acl_v4: it is selected by a fixed header, which the write path does not pass yet
+//   verity_acl_v6: it is selected by a fixed header, which the write path does not pass yet
+//   verity_as_path_access_list: lists is an indexed collection, which the engine does not serve yet
+//   verity_authenticated_eth_port: eth_ports is an indexed collection, which the engine does not serve yet
+//   verity_bundle: eth_port_paths is an indexed collection, which the engine does not serve yet
+//   verity_community_list: lists is an indexed collection, which the engine does not serve yet
+//   verity_device_settings: dns_servers is an indexed collection, which the engine does not serve yet
+//   verity_device_voice_settings: codecs is an indexed collection, which the engine does not serve yet
+//   verity_eth_port_profile: services is an indexed collection, which the engine does not serve yet
+//   verity_eth_port_settings: lldp_med is an indexed collection, which the engine does not serve yet
+//   verity_extended_community_list: lists is an indexed collection, which the engine does not serve yet
+//   verity_fabric: anycast_mac_address is an auto-assignment pair, which the engine does not implement yet
+//   verity_gateway: static_routes is an indexed collection, which the engine does not serve yet
+//   verity_gateway_profile: external_gateways is an indexed collection, which the engine does not serve yet
+//   verity_grouping_rule: rules is an indexed collection, which the engine does not serve yet
+//   verity_ipv4_prefix_list: lists is an indexed collection, which the engine does not serve yet
+//   verity_ipv6_prefix_list: lists is an indexed collection, which the engine does not serve yet
+//   verity_ldap_profile: attribute_maps is an indexed collection, which the engine does not serve yet
+//   verity_mac_filter: filters is an indexed collection, which the engine does not serve yet
+//   verity_packet_broker: ipv4_deny is an indexed collection, which the engine does not serve yet
+//   verity_packet_queue: pbit is an indexed collection, which the engine does not serve yet
+//   verity_pb_routing: policy is an indexed collection, which the engine does not serve yet
+//   verity_pb_routing_acl: ipv4_deny is an indexed collection, which the engine does not serve yet
+//   verity_port_acl: ipv4_deny is an indexed collection, which the engine does not serve yet
+//   verity_route_map: route_map_clauses is an indexed collection, which the engine does not serve yet
+//   verity_service: vni is an auto-assignment pair, which the engine does not implement yet
+//   verity_service_port_profile: services is an indexed collection, which the engine does not serve yet
+//   verity_sfp_breakout: breakout is an indexed collection, which the engine does not serve yet
+//   verity_switchpoint: badges is an indexed collection, which the engine does not serve yet
+//   verity_tacacs_profile: tacacs_servers is an indexed collection, which the engine does not serve yet
+//   verity_tenant: layer_3_vlan is an auto-assignment pair, which the engine does not implement yet
+//   verity_threshold: rules is an indexed collection, which the engine does not serve yet
+//   verity_threshold_group: targets is an indexed collection, which the engine does not serve yet
 
 package transport
 
@@ -62,12 +52,77 @@ import (
 
 // GeneratedAdapters holds every generated adapter by Terraform type.
 var GeneratedAdapters = map[string]ResourceValueAdapter{
+	"verity_badge":                    badgeAdapter{},
 	"verity_diagnostics_port_profile": diagnosticsPortProfileAdapter{},
 	"verity_diagnostics_profile":      diagnosticsProfileAdapter{},
 	"verity_ipv4_list":                ipv4ListAdapter{},
 	"verity_ipv6_list":                ipv6ListAdapter{},
+	"verity_lag":                      lagAdapter{},
 	"verity_pair":                     pairAdapter{},
+	"verity_plane":                    planeAdapter{},
+	"verity_pod":                      podAdapter{},
+	"verity_rack":                     rackAdapter{},
+	"verity_route_map_clause":         routeMapClauseAdapter{},
 	"verity_sflow_collector":          sflowCollectorAdapter{},
+	"verity_spine_plane":              spinePlaneAdapter{},
+	"verity_ssp_group":                sspGroupAdapter{},
+	"verity_su":                       suAdapter{},
+	"verity_voice_port_profile":       voicePortProfileAdapter{},
+}
+
+type badgeAdapter struct{}
+
+func (badgeAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.BadgesPutRequestBadgeValue
+	for name, wire := range object {
+		switch name {
+		case "color":
+			if err := wireStringPtr(wire, &value.Color); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "number":
+			if err := wireNullableInt64(wire, &value.Number); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := badgeObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("BadgesPutRequestBadgeValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func badgeObjectPropertiesValue(wire WireValue, target **openapi.AclsPutRequestIpFilterValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.AclsPutRequestIpFilterValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "notes":
+			if err := wireStringPtr(member, &value.Notes); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("AclsPutRequestIpFilterValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
 }
 
 type diagnosticsPortProfileAdapter struct{}
@@ -226,6 +281,97 @@ func (ipv6ListAdapter) ResourceValue(object WireObject) (interface{}, error) {
 	return value, nil
 }
 
+type lagAdapter struct{}
+
+func (lagAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.LagsPutRequestLagValue
+	for name, wire := range object {
+		switch name {
+		case "color":
+			if err := wireStringPtr(wire, &value.Color); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "crc_failure_threshold":
+			if err := wireNullableInt64(wire, &value.CrcFailureThreshold); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "eth_port_profile":
+			if err := wireStringPtr(wire, &value.EthPortProfile); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "eth_port_profile_ref_type_":
+			if err := wireStringPtr(wire, &value.EthPortProfileRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "fallback":
+			if err := wireBoolPtr(wire, &value.Fallback); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "fast_rate":
+			if err := wireBoolPtr(wire, &value.FastRate); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "is_peer_link":
+			if err := wireBoolPtr(wire, &value.IsPeerLink); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "lacp":
+			if err := wireBoolPtr(wire, &value.Lacp); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := lagObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "peer_link_vlan":
+			if err := wireNullableInt64(wire, &value.PeerLinkVlan); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "uplink":
+			if err := wireBoolPtr(wire, &value.Uplink); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("LagsPutRequestLagValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func lagObjectPropertiesValue(wire WireValue, target **openapi.LagsPutRequestLagValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.LagsPutRequestLagValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "fabric":
+			if err := wireStringPtr(member, &value.Fabric); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		case "fabric_ref_type_":
+			if err := wireStringPtr(member, &value.FabricRefType); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("LagsPutRequestLagValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
+}
+
 type pairAdapter struct{}
 
 func (pairAdapter) ResourceValue(object WireObject) (interface{}, error) {
@@ -277,6 +423,358 @@ func (pairAdapter) ResourceValue(object WireObject) (interface{}, error) {
 	return value, nil
 }
 
+type planeAdapter struct{}
+
+func (planeAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.PlanesPutRequestPlaneValue
+	for name, wire := range object {
+		switch name {
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "fabric":
+			if err := wireStringPtr(wire, &value.Fabric); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "fabric_ref_type_":
+			if err := wireStringPtr(wire, &value.FabricRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := planeObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "position":
+			if err := wireNullableFloat64(wire, &value.Position); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("PlanesPutRequestPlaneValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func planeObjectPropertiesValue(wire WireValue, target **openapi.AclsPutRequestIpFilterValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.AclsPutRequestIpFilterValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "notes":
+			if err := wireStringPtr(member, &value.Notes); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("AclsPutRequestIpFilterValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
+}
+
+type podAdapter struct{}
+
+func (podAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.PodsPutRequestPodValue
+	for name, wire := range object {
+		switch name {
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "expected_spine_count":
+			if err := wireNullableInt64(wire, &value.ExpectedSpineCount); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "fabric":
+			if err := wireStringPtr(wire, &value.Fabric); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "fabric_ref_type_":
+			if err := wireStringPtr(wire, &value.FabricRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := podObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "position":
+			if err := wireNullableFloat64(wire, &value.Position); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("PodsPutRequestPodValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func podObjectPropertiesValue(wire WireValue, target **openapi.AclsPutRequestIpFilterValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.AclsPutRequestIpFilterValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "notes":
+			if err := wireStringPtr(member, &value.Notes); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("AclsPutRequestIpFilterValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
+}
+
+type rackAdapter struct{}
+
+func (rackAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.RacksPutRequestRackValue
+	for name, wire := range object {
+		switch name {
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := rackObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "position":
+			if err := wireNullableFloat64(wire, &value.Position); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "su":
+			if err := wireStringPtr(wire, &value.Su); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "su_ref_type_":
+			if err := wireStringPtr(wire, &value.SuRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("RacksPutRequestRackValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func rackObjectPropertiesValue(wire WireValue, target **openapi.AclsPutRequestIpFilterValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.AclsPutRequestIpFilterValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "notes":
+			if err := wireStringPtr(member, &value.Notes); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("AclsPutRequestIpFilterValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
+}
+
+type routeMapClauseAdapter struct{}
+
+func (routeMapClauseAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.RoutemapclausesPutRequestRouteMapClauseValue
+	for name, wire := range object {
+		switch name {
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_as_path_access_list":
+			if err := wireStringPtr(wire, &value.MatchAsPathAccessList); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_as_path_access_list_ref_type_":
+			if err := wireStringPtr(wire, &value.MatchAsPathAccessListRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_community_list":
+			if err := wireStringPtr(wire, &value.MatchCommunityList); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_community_list_ref_type_":
+			if err := wireStringPtr(wire, &value.MatchCommunityListRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_evpn_route_type":
+			if err := wireStringPtr(wire, &value.MatchEvpnRouteType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_evpn_route_type_default":
+			if err := wireBoolPtr(wire, &value.MatchEvpnRouteTypeDefault); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_extended_community_list":
+			if err := wireStringPtr(wire, &value.MatchExtendedCommunityList); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_extended_community_list_ref_type_":
+			if err := wireStringPtr(wire, &value.MatchExtendedCommunityListRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_interface_number":
+			if err := wireNullableInt64(wire, &value.MatchInterfaceNumber); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_interface_vlan":
+			if err := wireNullableInt64(wire, &value.MatchInterfaceVlan); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_ipv4_address_ip_prefix_list":
+			if err := wireStringPtr(wire, &value.MatchIpv4AddressIpPrefixList); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_ipv4_address_ip_prefix_list_ref_type_":
+			if err := wireStringPtr(wire, &value.MatchIpv4AddressIpPrefixListRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_ipv4_next_hop_ip_prefix_list":
+			if err := wireStringPtr(wire, &value.MatchIpv4NextHopIpPrefixList); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_ipv4_next_hop_ip_prefix_list_ref_type_":
+			if err := wireStringPtr(wire, &value.MatchIpv4NextHopIpPrefixListRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_ipv6_address_ipv6_prefix_list":
+			if err := wireStringPtr(wire, &value.MatchIpv6AddressIpv6PrefixList); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_ipv6_address_ipv6_prefix_list_ref_type_":
+			if err := wireStringPtr(wire, &value.MatchIpv6AddressIpv6PrefixListRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_ipv6_next_hop_ipv6_prefix_list":
+			if err := wireStringPtr(wire, &value.MatchIpv6NextHopIpv6PrefixList); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_ipv6_next_hop_ipv6_prefix_list_ref_type_":
+			if err := wireStringPtr(wire, &value.MatchIpv6NextHopIpv6PrefixListRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_local_preference":
+			if err := wireNullableInt64(wire, &value.MatchLocalPreference); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_metric":
+			if err := wireNullableInt64(wire, &value.MatchMetric); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_origin":
+			if err := wireStringPtr(wire, &value.MatchOrigin); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_peer_interface":
+			if err := wireNullableInt64(wire, &value.MatchPeerInterface); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_peer_ip_address":
+			if err := wireStringPtr(wire, &value.MatchPeerIpAddress); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_peer_vlan":
+			if err := wireNullableInt64(wire, &value.MatchPeerVlan); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_source_protocol":
+			if err := wireStringPtr(wire, &value.MatchSourceProtocol); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_tag":
+			if err := wireNullableInt64(wire, &value.MatchTag); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_vni":
+			if err := wireNullableInt64(wire, &value.MatchVni); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_vrf":
+			if err := wireStringPtr(wire, &value.MatchVrf); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "match_vrf_ref_type_":
+			if err := wireStringPtr(wire, &value.MatchVrfRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := routeMapClauseObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "permit_deny":
+			if err := wireStringPtr(wire, &value.PermitDeny); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("RoutemapclausesPutRequestRouteMapClauseValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func routeMapClauseObjectPropertiesValue(wire WireValue, target **openapi.RoutemapclausesPutRequestRouteMapClauseValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.RoutemapclausesPutRequestRouteMapClauseValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "match_fields_shown":
+			if err := wireStringPtr(member, &value.MatchFieldsShown); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		case "notes":
+			if err := wireStringPtr(member, &value.Notes); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("RoutemapclausesPutRequestRouteMapClauseValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
+}
+
 type sflowCollectorAdapter struct{}
 
 func (sflowCollectorAdapter) ResourceValue(object WireObject) (interface{}, error) {
@@ -306,4 +804,356 @@ func (sflowCollectorAdapter) ResourceValue(object WireObject) (interface{}, erro
 		}
 	}
 	return value, nil
+}
+
+type spinePlaneAdapter struct{}
+
+func (spinePlaneAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.SpineplanesPutRequestSpinePlaneValue
+	for name, wire := range object {
+		switch name {
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "fabric":
+			if err := wireStringPtr(wire, &value.Fabric); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "fabric_ref_type_":
+			if err := wireStringPtr(wire, &value.FabricRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := spinePlaneObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("SpineplanesPutRequestSpinePlaneValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func spinePlaneObjectPropertiesValue(wire WireValue, target **openapi.AclsPutRequestIpFilterValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.AclsPutRequestIpFilterValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "notes":
+			if err := wireStringPtr(member, &value.Notes); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("AclsPutRequestIpFilterValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
+}
+
+type sspGroupAdapter struct{}
+
+func (sspGroupAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.SspgroupsPutRequestSuperspineGroupValue
+	for name, wire := range object {
+		switch name {
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "fabric":
+			if err := wireStringPtr(wire, &value.Fabric); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "fabric_ref_type_":
+			if err := wireStringPtr(wire, &value.FabricRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := sspGroupObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "position":
+			if err := wireNullableFloat64(wire, &value.Position); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("SspgroupsPutRequestSuperspineGroupValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func sspGroupObjectPropertiesValue(wire WireValue, target **openapi.AclsPutRequestIpFilterValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.AclsPutRequestIpFilterValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "notes":
+			if err := wireStringPtr(member, &value.Notes); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("AclsPutRequestIpFilterValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
+}
+
+type suAdapter struct{}
+
+func (suAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.SusPutRequestSuValue
+	for name, wire := range object {
+		switch name {
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := suObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "pod":
+			if err := wireStringPtr(wire, &value.Pod); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "pod_ref_type_":
+			if err := wireStringPtr(wire, &value.PodRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "position":
+			if err := wireNullableFloat64(wire, &value.Position); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("SusPutRequestSuValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func suObjectPropertiesValue(wire WireValue, target **openapi.AclsPutRequestIpFilterValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.AclsPutRequestIpFilterValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "notes":
+			if err := wireStringPtr(member, &value.Notes); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("AclsPutRequestIpFilterValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
+}
+
+type voicePortProfileAdapter struct{}
+
+func (voicePortProfileAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.VoiceportprofilesPutRequestVoicePortProfilesValue
+	for name, wire := range object {
+		switch name {
+		case "anonymous_call_block_enable":
+			if err := wireBoolPtr(wire, &value.AnonymousCallBlockEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "audio_mwi_enable":
+			if err := wireBoolPtr(wire, &value.AudioMwiEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "call_forward_on_busy_enable":
+			if err := wireBoolPtr(wire, &value.CallForwardOnBusyEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "call_forward_on_no_answer_ring_count":
+			if err := wireNullableInt64(wire, &value.CallForwardOnNoAnswerRingCount); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "call_forward_unconditional_enable":
+			if err := wireBoolPtr(wire, &value.CallForwardUnconditionalEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "call_hold_enable":
+			if err := wireBoolPtr(wire, &value.CallHoldEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "call_three_way_enable":
+			if err := wireBoolPtr(wire, &value.CallThreeWayEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "call_transfer_enable":
+			if err := wireBoolPtr(wire, &value.CallTransferEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "call_waiting_caller_id_enable":
+			if err := wireBoolPtr(wire, &value.CallWaitingCallerIdEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "call_waiting_enable":
+			if err := wireBoolPtr(wire, &value.CallWaitingEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "caller_id_enable":
+			if err := wireBoolPtr(wire, &value.CallerIdEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "caller_id_name_enable":
+			if err := wireBoolPtr(wire, &value.CallerIdNameEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "cid_blocking_enable":
+			if err := wireBoolPtr(wire, &value.CidBlockingEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "cid_name_presentation_status":
+			if err := wireStringPtr(wire, &value.CidNamePresentationStatus); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "cid_num_presentation_status":
+			if err := wireStringPtr(wire, &value.CidNumPresentationStatus); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "dial_tone_feature_delay":
+			if err := wireNullableInt64(wire, &value.DialToneFeatureDelay); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "digit_map":
+			if err := wireStringPtr(wire, &value.DigitMap); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "do_not_disturb_enable":
+			if err := wireBoolPtr(wire, &value.DoNotDisturbEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "echo_cancellation_enable":
+			if err := wireBoolPtr(wire, &value.EchoCancellationEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "hotline_enable":
+			if err := wireBoolPtr(wire, &value.HotlineEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "intercom_enable":
+			if err := wireBoolPtr(wire, &value.IntercomEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "intercom_transfer_enable":
+			if err := wireBoolPtr(wire, &value.IntercomTransferEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "jitter_buffer_max":
+			if err := wireNullableInt64(wire, &value.JitterBufferMax); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "jitter_target":
+			if err := wireNullableInt64(wire, &value.JitterTarget); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "mwi_refresh_timer":
+			if err := wireNullableInt64(wire, &value.MwiRefreshTimer); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := voicePortProfileObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "protocol":
+			if err := wireStringPtr(wire, &value.Protocol); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "receive_gain":
+			if err := wireNullableInt64(wire, &value.ReceiveGain); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "release_timer":
+			if err := wireNullableInt64(wire, &value.ReleaseTimer); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "roh_timer":
+			if err := wireNullableInt64(wire, &value.RohTimer); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "signaling_code":
+			if err := wireStringPtr(wire, &value.SignalingCode); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "transmit_gain":
+			if err := wireNullableInt64(wire, &value.TransmitGain); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "visual_mwi_enable":
+			if err := wireBoolPtr(wire, &value.VisualMwiEnable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("VoiceportprofilesPutRequestVoicePortProfilesValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func voicePortProfileObjectPropertiesValue(wire WireValue, target **openapi.VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "format_dial_plan":
+			if err := wireBoolPtr(member, &value.FormatDialPlan); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		case "port_monitoring":
+			if err := wireStringPtr(member, &value.PortMonitoring); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
 }

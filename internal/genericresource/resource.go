@@ -48,6 +48,8 @@ type Resource struct {
 // data into a Runtime, which is how the engine stays independent of the package
 // that registers it.
 func New(resourceSpec spec.ResourceSpec, adapter TransportAdapter, bind func(providerData interface{}) (Runtime, error)) (func() resource.Resource, error) {
+	// CompileSchema applies Supported, so an unsupported spec never becomes a
+	// resource the provider registers.
 	compiled, err := CompileSchema(resourceSpec)
 	if err != nil {
 		return nil, err
@@ -124,10 +126,13 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 		if field.Unmanaged {
 			continue
 		}
-		if appliesToMode(field, mode) {
+		if !appliesToMode(field, mode) {
+			resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root(field.TerraformName), nullFor(field))...)
 			continue
 		}
-		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root(field.TerraformName), nullOf(field.Kind))...)
+		if field.Kind == spec.FieldKindObject {
+			r.nullifyOutOfModeMembers(ctx, field, mode, req, resp)
+		}
 	}
 
 	if req.State.Raw.IsNull() {
@@ -135,6 +140,27 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 		return
 	}
 	r.planExplicitNulls(ctx, req, resp)
+}
+
+// nullifyOutOfModeMembers applies the mode rule inside a singleton block: a
+// member the running mode does not expose is nulled in every entry the plan
+// holds, so it does not show as "known after apply" either. The handwritten
+// resources nullify every entry, not only the first, and so does this.
+func (r *Resource) nullifyOutOfModeMembers(ctx context.Context, field spec.FieldSpec, mode string, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	var block types.List
+	resp.Diagnostics.Append(req.Plan.GetAttribute(ctx, path.Root(field.TerraformName), &block)...)
+	if resp.Diagnostics.HasError() || block.IsNull() || block.IsUnknown() {
+		return
+	}
+	for index := range block.Elements() {
+		entry := path.Root(field.TerraformName).AtListIndex(index)
+		for _, member := range field.Fields {
+			if member.Unmanaged || appliesToMode(member, mode) {
+				continue
+			}
+			resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, entry.AtName(member.TerraformName), nullFor(member))...)
+		}
+	}
 }
 
 // planExplicitNulls makes a cleared nullable field visible as a change.
@@ -405,7 +431,7 @@ func (r *Resource) settleAfterWrite(ctx context.Context, name string, plan map[s
 		if field.Unmanaged {
 			continue
 		}
-		minimal[field.TerraformName] = nullOf(field.Kind)
+		minimal[field.TerraformName] = nullFor(field)
 	}
 	minimal[r.spec.IdentityPath] = types.StringValue(name)
 	diagnostics.Append(r.setState(ctx, state, minimal)...)
@@ -544,7 +570,11 @@ func nullifyUnknown(fields []spec.FieldSpec, values map[string]attr.Value) map[s
 		}
 		value, held := values[field.TerraformName]
 		if !held || value == nil || value.IsUnknown() {
-			settled[field.TerraformName] = nullOf(field.Kind)
+			settled[field.TerraformName] = nullFor(field)
+			continue
+		}
+		if field.Kind == spec.FieldKindObject {
+			settled[field.TerraformName] = settleSingleton(field, value)
 			continue
 		}
 		settled[field.TerraformName] = value

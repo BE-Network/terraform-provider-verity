@@ -81,6 +81,55 @@ func assertSchemaParity(t *testing.T, terraformType string) {
 		}
 		compareAttributes(t, name, got, want)
 	}
+
+	// Blocks are compared as strictly as attributes. A block's type decides the
+	// state shape, so a singleton compiled to anything but the list block the
+	// handwritten resource declares would break existing state.
+	if len(compiled.Blocks) != len(legacy.Blocks) {
+		t.Fatalf("compiled %d blocks, legacy has %d", len(compiled.Blocks), len(legacy.Blocks))
+	}
+	for name, want := range legacy.Blocks {
+		got, present := compiled.Blocks[name]
+		if !present {
+			t.Errorf("compiled schema has no block %q", name)
+			continue
+		}
+		compareBlocks(t, name, got, want)
+	}
+}
+
+func compareBlocks(t *testing.T, name string, got, want schema.Block) {
+	t.Helper()
+
+	gotList, gotOK := got.(schema.ListNestedBlock)
+	wantList, wantOK := want.(schema.ListNestedBlock)
+	if !gotOK || !wantOK {
+		t.Errorf("%s: block is %T, legacy is %T; only list blocks are compared", name, got, want)
+		return
+	}
+	if gotList.Description != wantList.Description {
+		t.Errorf("%s: description = %q, legacy is %q", name, gotList.Description, wantList.Description)
+	}
+	if len(gotList.Validators) != len(wantList.Validators) || len(gotList.PlanModifiers) != len(wantList.PlanModifiers) {
+		t.Errorf("%s: %d validators and %d plan modifiers, legacy has %d and %d", name,
+			len(gotList.Validators), len(gotList.PlanModifiers), len(wantList.Validators), len(wantList.PlanModifiers))
+	}
+	if gotType, wantType := got.Type(), want.Type(); !gotType.Equal(wantType) {
+		t.Errorf("%s: type = %s, legacy is %s", name, gotType, wantType)
+	}
+	gotMembers, wantMembers := gotList.NestedObject.Attributes, wantList.NestedObject.Attributes
+	if len(gotMembers) != len(wantMembers) || len(gotList.NestedObject.Blocks) != len(wantList.NestedObject.Blocks) {
+		t.Errorf("%s: %d members and %d nested blocks, legacy has %d and %d", name,
+			len(gotMembers), len(gotList.NestedObject.Blocks), len(wantMembers), len(wantList.NestedObject.Blocks))
+	}
+	for member, wantMember := range wantMembers {
+		gotMember, present := gotMembers[member]
+		if !present {
+			t.Errorf("%s: no member %q", name, member)
+			continue
+		}
+		compareAttributes(t, name+"."+member, gotMember, wantMember)
+	}
 }
 
 // compareAttributes checks the facts Terraform acts on: the value type, the three
@@ -156,89 +205,52 @@ func registrySpec(t *testing.T, terraformType string) spec.ResourceSpec {
 	return spec.ResourceSpec{}
 }
 
-// The compiler must refuse what it cannot serve rather than approximate it. A
-// collection needs the strategy Phase 4 implements, and silently emitting a bare
-// attribute for one would produce a schema that accepts configuration the engine
-// then ignores.
-func TestCompileSchemaRefusesCollections(t *testing.T) {
+// The compiler must refuse what the engine cannot serve rather than approximate
+// it. An indexed collection needs the strategy Phase 4 implements, and silently
+// emitting a bare attribute for one would produce a schema that accepts
+// configuration the engine then ignores.
+func TestCompileSchemaRefusesUnsupportedResources(t *testing.T) {
 	t.Parallel()
 
+	refused := 0
 	for _, resourceSpec := range generatedRegistry(t) {
-		hasCollection := false
-		for _, field := range resourceSpec.Fields {
-			if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
-				hasCollection = true
-				break
-			}
-		}
-		if !hasCollection {
+		if genericresource.Supported(resourceSpec) == nil {
 			continue
 		}
 		if _, err := genericresource.CompileSchema(resourceSpec); err == nil {
-			t.Errorf("%s carries a collection but compiled without error", resourceSpec.TerraformType)
+			t.Errorf("%s is unsupported but compiled without error", resourceSpec.TerraformType)
 		}
-		return
+		refused++
 	}
-	t.Fatal("no registry resource carries a collection, so this check proved nothing")
+	if refused == 0 {
+		t.Fatal("no registry resource is unsupported, so this check proved nothing")
+	}
 }
 
-// Every scalar-only resource in the registry must compile, not just the pilot.
-// If one does not, the engine's reach is narrower than the registry claims and
-// the next migration would discover it the hard way.
-func TestEveryScalarOnlyResourceCompiles(t *testing.T) {
+// Every resource the support rule accepts must compile and have a generated
+// adapter. The support rule, the compiler, and the generator are separate code,
+// and a resource one of them accepts and another does not is not migratable.
+func TestEverySupportedResourceCompilesAndHasAnAdapter(t *testing.T) {
 	t.Parallel()
 
-	compiled := 0
+	supported := 0
 	for _, resourceSpec := range generatedRegistry(t) {
-		scalarOnly := true
-		for _, field := range resourceSpec.Fields {
-			if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
-				scalarOnly = false
-				break
-			}
-		}
-		if !scalarOnly {
+		if genericresource.Supported(resourceSpec) != nil {
 			continue
 		}
+		supported++
 		if _, err := genericresource.CompileSchema(resourceSpec); err != nil {
-			t.Errorf("%s is scalar-only but did not compile: %v", resourceSpec.TerraformType, err)
-			continue
-		}
-		compiled++
-	}
-	if compiled == 0 {
-		t.Fatal("no scalar-only resource was compiled, so this check proved nothing")
-	}
-	t.Logf("%d scalar-only resources compile from the registry", compiled)
-}
-
-// An adapter is the remaining boundary between the generic codec and the typed
-// OpenAPI client. A scalar-only resource that compiles but receives no adapter
-// is not actually migratable, so fail rather than merely list it in generated
-// output as an unexplained skip.
-func TestEveryScalarOnlyResourceHasGeneratedAdapter(t *testing.T) {
-	t.Parallel()
-
-	adapters := 0
-	for _, resourceSpec := range generatedRegistry(t) {
-		scalarOnly := true
-		for _, field := range resourceSpec.Fields {
-			if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
-				scalarOnly = false
-				break
-			}
-		}
-		if !scalarOnly {
-			continue
+			t.Errorf("%s is supported but did not compile: %v", resourceSpec.TerraformType, err)
 		}
 		if _, present := transport.GeneratedAdapters[resourceSpec.TerraformType]; !present {
-			t.Errorf("%s is scalar-only but has no generated transport adapter", resourceSpec.TerraformType)
-			continue
+			t.Errorf("%s is supported but has no generated transport adapter", resourceSpec.TerraformType)
 		}
-		adapters++
 	}
-	if adapters == 0 {
-		t.Fatal("no scalar-only resource has a generated adapter, so this check proved nothing")
+	if supported == 0 {
+		t.Fatal("no registry resource is supported, so this check proved nothing")
 	}
-	t.Logf("%d scalar-only resources have generated transport adapters", adapters)
+	if supported != len(transport.GeneratedAdapters) {
+		t.Errorf("%d resources are supported but %d adapters were generated", supported, len(transport.GeneratedAdapters))
+	}
+	t.Logf("%d resources are supported, compile, and have generated adapters", supported)
 }

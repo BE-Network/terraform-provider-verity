@@ -3,10 +3,11 @@ package lifecycle
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"testing"
 
 	fwresource "github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 
 	"terraform-provider-verity/internal/provider"
 	"terraform-provider-verity/tests/unit/mock"
@@ -155,11 +156,30 @@ func TestGenericMatchesLegacyOnPairAndNullableUpdates(t *testing.T) {
 	}
 }
 
+// lifecycleOutcome states how the update step ends when it is not a clean apply.
+//
+// Some handwritten behavior is itself broken, and the generic engine is required
+// to reproduce it rather than quietly differ: parity means the same requests and
+// the same failure, and the fix belongs in a deliberate change to both. A case
+// that expects a failure asserts it happens, so an implementation that stops
+// failing is a difference the test reports.
+type lifecycleOutcome struct {
+	// driftAfterApply means the refresh after the update still plans a change.
+	driftAfterApply bool
+	// applyError means the update apply itself fails with this message.
+	applyError *regexp.Regexp
+}
+
 // captureLifecycle applies a create then an update and returns the last body of
 // each method. The switch is set per run, so the two runs differ in nothing but
 // which implementation serves the resource.
-func captureLifecycle(t *testing.T, terraformType string, generic bool, createConfig, updateConfig string) map[string]map[string]interface{} {
+func captureLifecycle(t *testing.T, terraformType string, generic bool, createConfig, updateConfig string, outcome ...lifecycleOutcome) map[string]map[string]interface{} {
 	t.Helper()
+
+	var expect lifecycleOutcome
+	if len(outcome) > 0 {
+		expect = outcome[0]
+	}
 
 	selection := ""
 	if generic {
@@ -179,7 +199,19 @@ func captureLifecycle(t *testing.T, terraformType string, generic bool, createCo
 	}
 
 	provider := mock.ProviderConfig(ms.URL(), entry.Mode)
-	captured := map[string]map[string]interface{}{}
+	update := fwresource.TestStep{
+		PreConfig:   func() { mock.WriteTFConfig(t, ms.URL(), provider+updateConfig) },
+		Config:      provider + updateConfig,
+		ExpectError: expect.applyError,
+	}
+	if expect.driftAfterApply {
+		// ExpectNonEmptyPlan only tolerates drift; the plan check requires it, so
+		// an implementation that converges fails here instead of passing silently.
+		update.ExpectNonEmptyPlan = true
+		update.ConfigPlanChecks = fwresource.ConfigPlanChecks{
+			PostApplyPostRefresh: []plancheck.PlanCheck{plancheck.ExpectNonEmptyPlan()},
+		}
+	}
 
 	fwresource.UnitTest(t, fwresource.TestCase{
 		ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(),
@@ -188,21 +220,20 @@ func captureLifecycle(t *testing.T, terraformType string, generic bool, createCo
 				PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), provider+createConfig) },
 				Config:    provider + createConfig,
 			},
-			{
-				PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), provider+updateConfig) },
-				Config:    provider + updateConfig,
-				Check: func(*terraform.State) error {
-					for _, method := range []string{"PUT", "PATCH"} {
-						requests := ms.GetRequestsByMethodAndPath(method, entry.APIPath)
-						if len(requests) > 0 {
-							captured[method] = requests[len(requests)-1].Body
-						}
-					}
-					return nil
-				},
-			},
+			update,
 		},
 	})
+
+	// Read after the case rather than in a Check, which does not run when the
+	// apply is expected to fail. Destroy issues no PUT or PATCH, so the last of
+	// each is still the update's.
+	captured := map[string]map[string]interface{}{}
+	for _, method := range []string{"PUT", "PATCH"} {
+		requests := ms.GetRequestsByMethodAndPath(method, entry.APIPath)
+		if len(requests) > 0 {
+			captured[method] = requests[len(requests)-1].Body
+		}
+	}
 	return captured
 }
 

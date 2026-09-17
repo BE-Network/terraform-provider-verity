@@ -18,30 +18,73 @@ import (
 // provider serves. It is the first half of the generic engine: the half that
 // decides what a configuration may say, before anything decides what to send.
 //
-// Phase 2 is the scalar pilot, so this compiles scalar fields only and refuses
-// anything else rather than emitting an approximation. An object or list needs
-// the collection strategy from CollectionSpec, which Phase 4 implements; a spec
-// that reaches here carrying one is a spec this engine cannot serve yet, and
-// saying so is the whole point of refusing.
+// It compiles what Supported accepts and refuses the rest rather than emitting
+// an approximation: scalar attributes, and singleton objects as blocks.
 func CompileSchema(resource spec.ResourceSpec) (schema.Schema, error) {
+	if err := Supported(resource); err != nil {
+		return schema.Schema{}, fmt.Errorf("%s: %w", resource.TerraformType, err)
+	}
 	attributes := make(map[string]schema.Attribute, len(resource.Fields))
+	blocks := make(map[string]schema.Block)
 	for _, field := range resource.Fields {
-		attribute, err := compileAttribute(field)
-		if err != nil {
-			return schema.Schema{}, fmt.Errorf("%s.%s: %w", resource.TerraformType, field.TerraformName, err)
+		if field.Unmanaged {
+			// An unmanaged field is recorded so the registry accounts for it, but
+			// the shipped schema does not expose it.
+			continue
 		}
 		if _, duplicate := attributes[field.TerraformName]; duplicate {
 			return schema.Schema{}, fmt.Errorf("%s: duplicate Terraform attribute %q", resource.TerraformType, field.TerraformName)
 		}
+		if _, duplicate := blocks[field.TerraformName]; duplicate {
+			return schema.Schema{}, fmt.Errorf("%s: duplicate Terraform block %q", resource.TerraformType, field.TerraformName)
+		}
+		if field.Kind == spec.FieldKindObject {
+			block, err := compileSingletonBlock(field)
+			if err != nil {
+				return schema.Schema{}, fmt.Errorf("%s.%s: %w", resource.TerraformType, field.TerraformName, err)
+			}
+			blocks[field.TerraformName] = block
+			continue
+		}
+		attribute, err := compileAttribute(field)
+		if err != nil {
+			return schema.Schema{}, fmt.Errorf("%s.%s: %w", resource.TerraformType, field.TerraformName, err)
+		}
 		attributes[field.TerraformName] = attribute
 	}
-	if len(attributes) == 0 {
+	if len(attributes) == 0 && len(blocks) == 0 {
 		return schema.Schema{}, fmt.Errorf("%s: no fields to compile", resource.TerraformType)
 	}
-	return schema.Schema{
+	compiled := schema.Schema{
 		Description: resource.Description,
 		Version:     resource.SchemaVersion,
 		Attributes:  attributes,
+	}
+	if len(blocks) != 0 {
+		compiled.Blocks = blocks
+	}
+	return compiled, nil
+}
+
+// compileSingletonBlock exposes a singleton object the way every handwritten
+// resource does: as a list block holding at most one entry. The API sends an
+// object, but the shipped state records a list, and changing that shape would
+// break every existing state file; the version-zero contract is what keeps it.
+func compileSingletonBlock(field spec.FieldSpec) (schema.Block, error) {
+	members := make(map[string]schema.Attribute, len(field.Fields))
+	for _, member := range field.Fields {
+		if member.Unmanaged {
+			continue
+		}
+		attribute, err := compileAttribute(member)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", member.TerraformName, err)
+		}
+		members[member.TerraformName] = attribute
+	}
+	return schema.ListNestedBlock{
+		Description:  field.Description,
+		NestedObject: schema.NestedBlockObject{Attributes: members},
 	}, nil
 }
 
