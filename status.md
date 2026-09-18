@@ -28,12 +28,11 @@ implementation, 3,415 assertions, and the fifth follows from `access`.
 
 The Phase 2 engine reproduces the golden fixtures captured from the handwritten
 `verity_ipv4_list` byte for byte. **Phase 3's implementation is complete up to
-what needs Phase 4, and Phase 4 is in progress:** the engine now serves 37
-resources behind the same opt-in switch — every resource whose indexed lists have
-flat entries, on top of the scalar-only and singleton-only resources. Reference
-pairs, nullable numerics, endpoint-selecting parameters, auto-assignment pairs,
-singleton objects, and indexed collections are implemented. See "Phase 4: indexed
-collections" for what is left.
+what needs Phase 4, and Phase 4 is in progress:** the engine now serves 46 of the
+50 API-backed resources behind the same opt-in switch. Reference pairs, nullable
+numerics at the top level and inside list entries, endpoint-selecting parameters,
+auto-assignment pairs, singleton objects, and indexed collections are
+implemented. Four resources remain; see "Phase 4: indexed collections".
 
 A live 6.6 run with `VERITY_GENERIC_RESOURCES=verity_ipv4_list` confirmed that
 the generic implementation registered, batched two creates into one
@@ -522,7 +521,7 @@ At the end of Phase 3 it accepted 19 resources, all opt-in:
   `verity_voice_port_profile`.
 
 Every other resource was refused because it carries an indexed collection. Phase 4
-has since raised the servable set to 37; see below.
+has since raised the servable set to 46; see below.
 
 All 19 have schema parity with the handwritten resource, blocks included, and
 reproduce its golden PUT, PATCH, and state byte for byte.
@@ -581,28 +580,30 @@ request bodies:
 
 ### Singleton defects carried for parity
 
-Comparing both implementations over singleton updates turned up three cases
-where the handwritten resource itself does not converge. The engine reproduces
-each exactly — same requests, same failure — and the differential test requires
-that, so a fix has to be a deliberate change to both rather than a quiet
-divergence:
+Comparing both implementations over singleton updates turned up two cases where
+the handwritten resource itself does not converge. The engine reproduces each
+exactly — same requests, same failure — and the differential test requires that,
+so a fix has to be a deliberate change to both rather than a quiet divergence:
 
 1. **Removing the block** sends nothing. The read restores the server's object and
    every later plan proposes the removal again.
 2. **Adding the block** to a resource whose state holds none sends nothing, for
    the same reason, with the same perpetual diff.
-3. **Changing only the value of a reference pair inside the block** (`verity_lag`
-   `object_properties.fabric`) sends the value alone, as a one-type pair does at
-   the top level. The mock replaces a PATCHed object whole, so the type is lost
-   and Terraform rejects the apply.
 
-The third turns on a question only the live API can answer: does a PATCH replace
-`object_properties` whole, or merge its members? The codebase assumes both. The
-registry models singleton members as cleared by omission, which only works if
-the object is replaced; the handwritten update sends only changed members, which
-only works if it is merged. If the live API replaces the object, every
-multi-member singleton update in the handwritten resources can wipe members it
-did not mean to touch.
+**How the API treats a partial object — answered.** The live API merges a PATCHed
+`object_properties` member by member: a request carries only the members that
+changed, and the API updates those alone. That confirms the handwritten update,
+which sends only changed members, and the engine does the same.
+
+It also resolved a third case this section used to list. Changing only the value
+of a reference pair inside the block (`verity_lag` `object_properties.fabric`)
+had failed in both implementations, because the test mock replaced a PATCHed
+object whole and lost `fabric_ref_type_`. That was the mock, not the provider.
+The mock now merges object members the way the API does, pinned by
+`TestPatchMergesObjectMembers`, and the case is an ordinary parity check that
+both implementations pass. The registry's description of singleton member clears
+was written from the replacement premise and has been corrected: omitting a
+member leaves it unchanged; it does not clear it.
 
 One singleton case differs on purpose. A block written with a member left out
 plans that member as unknown. The handwritten create builds the object with
@@ -653,12 +654,13 @@ policies already describe.
 | `indexed_patch` | Implemented, opt-in | `indexed.go`. Create sends every entry, each member by its create policies. Update matches plan entries to state entries by index: a new index is sent whole, a known index sends the index and only the members that changed, and a state index the plan no longer holds is sent alone, which deletes it. A response array becomes the list in the API's order; an empty or missing one is an absent block. Reference pairs inside an entry reuse the top-level pair logic and validation. `indexed_test.go` pins each rule; `TestGenericMatchesLegacyOnIndexedCollections` compares both implementations over twelve cases on `verity_mac_filter` and `verity_packet_broker`. |
 | Server-assigned index, full replacement, ordering, subset strategies | Not implemented, deliberately | No registry resource uses any of them. An implementation would have no handwritten behavior to be checked against, so it would be a design rather than a migration. `Supported` refuses any list strategy other than `indexed_patch`. |
 | Generated list adapters | Implemented | The generator emits a slice conversion per list from the SDK's entry struct. |
-| Nullable members of a block | Not started | Nine resources have one in a list entry: `verity_eth_port_profile`, `verity_eth_port_settings`, `verity_gateway`, `verity_ipv4_prefix_list`, `verity_ipv6_prefix_list`, `verity_ldap_profile`, `verity_packet_queue`, `verity_service_port_profile`, and `verity_tacacs_profile`. `verity_switchpoint` has one in its singleton, `object_properties.number_of_multipoints`. Both need the configuration scan at a nested path. |
+| Nullable members of a list entry | Implemented, opt-in | Nine resources: `verity_eth_port_profile`, `verity_eth_port_settings`, `verity_gateway`, `verity_ipv4_prefix_list`, `verity_ipv6_prefix_list`, `verity_ldap_profile`, `verity_packet_queue`, `verity_service_port_profile`, `verity_tacacs_profile`. All nine handle every such member through the same handwritten path, checked before implementing. The configuration scan records each entry's attributes under the literal index it is written with, so the engine reads a member from the configuration entry with that index, sends it only when the scan recorded it, and forces a written null into the plan at that entry's position when state holds a value. An entry written without an index therefore has no written nullable members, as in the handwritten resources. `TestGenericMatchesLegacyOnNullableEntryMembers` compares both implementations over eight cases on create, update, and an added entry. |
+| Nullable members of a singleton | Not started, deliberately | Only `verity_switchpoint.object_properties.number_of_multipoints`. Serving it would make switchpoint servable under the shared auto-assignment rule, which seven of its ten pairs do not follow, so it waits on that decision. |
 | A list inside a singleton | Not started | `verity_fabric.object_properties.system_graphs`, the only two-level nesting. |
 | An `object_properties` block with no members | Not started | `verity_device_settings` and `verity_sfp_breakout` ship the API's memberless object as an empty block. |
 | Update-only resources | Implemented | The engine refuses create and delete for a resource whose operations exclude them, as `verity_sfp_breakout` does; it becomes servable once its empty block is. |
 
-37 resources are servable, and all 37 have schema parity and golden-fixture parity
+46 resources are servable, and all 46 have schema parity and golden-fixture parity
 with the handwritten resources.
 
 ### What the list comparison found
@@ -776,7 +778,7 @@ explicitly requested.
 | --- | --- | --- |
 | Phase 2: generic scalar lifecycle pilot | Complete | The engine serves `verity_ipv4_list` behind `VERITY_GENERIC_RESOURCES`, reproducing the legacy golden fixtures. Keeping the generic path opt-in and retaining the handwritten default are later migration decisions. |
 | Phase 3: shared semantic policies | Implementation complete for everything reachable before Phase 4 | 19 opt-in resources, every singleton-only resource included. Remaining items either need indexed collections (nested pairs in lists, switchpoint's pairs, nullable members inside a singleton) or are the migration decision itself: making generic resources the default and retiring their handwritten implementations. |
-| Phase 4: indexed collections | In progress | `indexed_patch` implemented; 37 opt-in resources. Nullable entry members, a list inside a singleton, and memberless blocks remain. |
+| Phase 4: indexed collections | In progress | `indexed_patch` and nullable list-entry members implemented; 46 opt-in resources. Remaining: the memberless block (`verity_device_settings`, `verity_sfp_breakout`), a list inside a singleton (`verity_fabric`), and `verity_switchpoint`, which waits on its auto-assignment decision. |
 | Phase 5: complex/exceptional resources | Not started | Begins after collection strategies are proven. |
 | Phase 6: remove legacy duplication | Not started | Begins only after all API-backed resources use the generic engine. |
 
@@ -846,26 +848,21 @@ workflow sets; without them the lifecycle package alone takes far longer.
 
 ## Recommended next slice
 
-1. Check one thing against the live 6.6 API: whether a PATCH that carries only
-   some members of `object_properties` replaces the object or merges into it.
-   It decides whether the third singleton defect above is real on the live API,
-   and how the engine should send singleton updates. The first two, adding or
-   removing the block, drift whatever the answer is.
-2. Decide the migration step Phase 3 names: whether `verity_badge`, `verity_lag`,
+1. Decide the migration step Phase 3 names: whether `verity_badge`, `verity_lag`,
    and the other opt-in resources become generic by default, and when their
    handwritten implementations are retired. Its contract tests pass; this is a
-   rollout decision, and the live merge answer above bears on the singleton
-   resources.
-3. Continue Phase 4 with nullable members of blocks, the largest remaining group:
-   nine resources with one in a list entry, and `verity_switchpoint` with one in
-   its singleton; then the memberless `object_properties` block, which
-   also makes `verity_sfp_breakout` servable; then `verity_fabric`'s list inside
-   a singleton. `verity_switchpoint`'s auto-assignment inconsistency has to be
-   decided before it migrates.
-4. Implement the response-identity contract described below, so the generic
+   rollout decision. Retiring a resource is what allows its
+   `resource_verity_*.go` file to be deleted in Phase 6.
+2. Continue Phase 4 with the memberless `object_properties` block, which makes
+   `verity_device_settings` and `verity_sfp_breakout` servable; then
+   `verity_fabric`'s list inside a singleton. `verity_switchpoint` needs its
+   auto-assignment inconsistency decided: seven of its ten pairs follow a
+   narrower handwritten rule, and deciding which is correct is what unblocks it,
+   together with its nullable singleton member.
+3. Implement the response-identity contract described below, so the generic
    engine resolves a resource's identity from a declared source rather than
    assuming the response carries a `name` member.
-5. Decide the one item the exception inventory still leaves open: a validator for
+4. Decide the one item the exception inventory still leaves open: a validator for
    `verity_tenant.vrf_name`, which needs `FieldSpec.Validators` wired into the
    override format. The other open item, `verity_packet_broker.ipv6_permit.enable`,
    is settled: it was a defect, and it is fixed.

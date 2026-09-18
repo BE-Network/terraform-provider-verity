@@ -1,6 +1,6 @@
 # Refactoring plan: schema-driven Verity resources
 
-- Status: Phases 0, 1, and 2 closed; Phase 3 implementation complete up to what needs Phase 4; Phase 4 in progress (37 opt-in generic resources); the default-migration step is a pending decision
+- Status: Phases 0, 1, and 2 closed; Phase 3 implementation complete up to what needs Phase 4; Phase 4 in progress (46 of 50 API-backed resources served opt-in); the default-migration step is a pending decision
 - Prepared: 2026-09-08
 - Scope: API-backed Terraform resources in `internal/provider`, their field handling, resource registration, bulk-operation metadata, and schema/OpenAPI tooling.
 
@@ -661,10 +661,11 @@ to be decided before it migrates. And the migration step this phase names —
 `verity_badge` and resources like `verity_lag` becoming generic by default, with
 their handwritten `Set*Fields`, `CompareAndSet*`, and nullifier lists retired —
 which is a rollout decision now that the contract tests pass. Comparing
-singleton updates also found three handwritten cases that do not converge, which
-the engine reproduces for parity; whether one of them is a live defect depends on
-whether the API replaces or merges a partially PATCHed `object_properties`. See
-status.md.
+singleton updates also found two handwritten cases that do not converge — adding
+or removing the block — which the engine reproduces for parity. The live API
+merges a partially PATCHed `object_properties` member by member, so sending only
+changed members is correct; a third apparent defect was the test mock replacing
+the object, and is gone now that the mock merges. See status.md.
 
 ### Phase 4: indexed collections — IN PROGRESS
 
@@ -679,7 +680,7 @@ Where it stands: every list in the registry — 54 of them — uses `indexed_pat
 with object entries identified by `index`, and every handwritten list reconciles
 through the same `ProcessIndexedArrayUpdates` function, so one implementation
 covers them. `indexed_patch` is implemented from the members' declared policies,
-with no per-resource closures, and the engine serves 37 resources, including the
+with no per-resource closures, and the engine serves 46 resources, including the
 simple single-list resources the plan names first and the multi-list
 `verity_packet_broker`, `verity_port_acl`, and `verity_pb_routing_acl`. Add,
 change, removal, reordering, and an entry without an index are compared against
@@ -687,9 +688,12 @@ the handwritten implementation in plan and requests.
 
 The other strategies the first bullet lists are not implemented: no registry
 resource uses them, so there is no behavior to verify an implementation against.
-Remaining: nullable members of blocks (nine resources in a list entry,
-`verity_switchpoint` in its singleton), a list inside a singleton (`verity_fabric`), and the memberless `object_properties` block
-(`verity_device_settings`, `verity_sfp_breakout`). See status.md for the
+Nullable members of list entries are implemented too, reading each entry's
+configuration under the literal index the scan records it by. Remaining: the
+memberless `object_properties` block (`verity_device_settings`,
+`verity_sfp_breakout`), a list inside a singleton (`verity_fabric`), and
+`verity_switchpoint`, whose only other gap — a nullable singleton member — is held
+back until its auto-assignment inconsistency is decided. See status.md for the
 handwritten list behaviors the engine reproduces, including reorder drift, and
 the one it deliberately does not: removals are sorted by index rather than sent in
 the handwritten code's unstable map order.
