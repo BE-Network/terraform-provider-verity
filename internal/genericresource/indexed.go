@@ -59,13 +59,19 @@ func listEntries(field spec.FieldSpec, value attr.Value) ([]map[string]attr.Valu
 }
 
 // createEntry builds one entry as a create sends it.
-func createEntry(field spec.FieldSpec, entry map[string]attr.Value) (transport.WireValue, error) {
+func createEntry(field spec.FieldSpec, entry map[string]attr.Value, nullables nullableSource) (transport.WireValue, error) {
 	object := make(transport.WireObject, len(field.Fields))
 	for _, member := range field.Fields {
 		if member.Unmanaged {
 			continue
 		}
 		value, held := entry[member.TerraformName]
+		if member.Nullable {
+			// As at the top level, only the configuration shows whether a null
+			// was written, and a member that is not written is left to the
+			// server.
+			value, held = nullables.entryMember(field, member, entry)
+		}
 		if !held {
 			continue
 		}
@@ -81,7 +87,7 @@ func createEntry(field spec.FieldSpec, entry map[string]attr.Value) (transport.W
 }
 
 // createList decides what a create sends for a list block.
-func createList(field spec.FieldSpec, value attr.Value) (transport.WireValue, bool, error) {
+func createList(field spec.FieldSpec, value attr.Value, nullables nullableSource) (transport.WireValue, bool, error) {
 	entries, present, err := listEntries(field, value)
 	if err != nil {
 		return transport.WireValue{}, false, err
@@ -91,7 +97,7 @@ func createList(field spec.FieldSpec, value attr.Value) (transport.WireValue, bo
 	}
 	wires := make([]transport.WireValue, 0, len(entries))
 	for _, entry := range entries {
-		wire, err := createEntry(field, entry)
+		wire, err := createEntry(field, entry, nullables)
 		if err != nil {
 			return transport.WireValue{}, false, err
 		}
@@ -113,7 +119,7 @@ func entryIndex(field spec.FieldSpec, entry map[string]attr.Value) (int64, bool)
 
 // updateList decides what an update sends for a list block that differs from
 // state, and whether anything changed.
-func updateList(field spec.FieldSpec, plan, state attr.Value, diagnostics *diag.Diagnostics) (transport.WireValue, bool, error) {
+func updateList(field spec.FieldSpec, plan, state attr.Value, nullables nullableSource, diagnostics *diag.Diagnostics) (transport.WireValue, bool, error) {
 	planned, _, err := listEntries(field, plan)
 	if err != nil {
 		return transport.WireValue{}, false, err
@@ -150,7 +156,7 @@ func updateList(field spec.FieldSpec, plan, state attr.Value, diagnostics *diag.
 
 		before, exists := byIndex[index]
 		if !exists {
-			wire, err := createEntry(field, entry)
+			wire, err := createEntry(field, entry, nullables)
 			if err != nil {
 				return transport.WireValue{}, false, err
 			}
@@ -178,6 +184,9 @@ func updateList(field spec.FieldSpec, plan, state attr.Value, diagnostics *diag.
 				continue
 			}
 			value, held := entry[member.TerraformName]
+			if member.Nullable {
+				value, held = nullables.entryMember(field, member, entry)
+			}
 			if !held {
 				continue
 			}

@@ -59,7 +59,7 @@ func readScalars(ctx context.Context, source attributeSource, fields []spec.Fiel
 		default:
 			diagnostics.AddError(
 				"Unsupported Field Kind",
-				fmt.Sprintf("field %q has kind %q, which the scalar engine cannot read", field.TerraformName, field.Kind),
+				fmt.Sprintf("field %q has kind %q, which the engine cannot read", field.TerraformName, field.Kind),
 			)
 		}
 	}
@@ -121,7 +121,7 @@ func buildCreate(fields []spec.FieldSpec, plan map[string]attr.Value, nullables 
 		if field.Kind == spec.FieldKindObject {
 			wire, send, err = createSingleton(field, value)
 		} else if field.Kind == spec.FieldKindList {
-			wire, send, err = createList(field, value)
+			wire, send, err = createList(field, value, nullables)
 		} else {
 			wire, send, err = createWire(field, value)
 		}
@@ -195,6 +195,36 @@ func createWire(field spec.FieldSpec, value attr.Value) (transport.WireValue, bo
 type nullableSource struct {
 	config     map[string]attr.Value
 	configured func(terraformName string) bool
+	// indexed reports whether a member of a list entry is written, for the entry
+	// the configuration identifies by that index. The scan records nested
+	// attributes under the literal index an entry is written with, so an entry
+	// written without one has none recorded.
+	indexed func(block string, index int64, member string) bool
+}
+
+// entryMember returns a nullable member's configuration value for one list entry
+// and whether that member is written. The configuration entry is the one written
+// with the same index; failing that, the plan entry stands in, as it does in the
+// handwritten resources. An unknown or null index reads as zero, as there.
+func (n nullableSource) entryMember(field, member spec.FieldSpec, planEntry map[string]attr.Value) (attr.Value, bool) {
+	var index int64
+	if value, ok := planEntry[field.Collection.IdentityField].(types.Int64); ok {
+		index = value.ValueInt64()
+	}
+	if n.indexed == nil || !n.indexed(field.TerraformName, index, member.TerraformName) {
+		return nil, false
+	}
+	source := planEntry
+	if entries, present, err := listEntries(field, n.config[field.TerraformName]); err == nil && present {
+		for _, candidate := range entries {
+			if value, ok := candidate[field.Collection.IdentityField].(types.Int64); ok && !value.IsNull() && !value.IsUnknown() && value.ValueInt64() == index {
+				source = candidate
+				break
+			}
+		}
+	}
+	value, held := source[member.TerraformName]
+	return value, held
 }
 
 func (n nullableSource) known(field spec.FieldSpec) (attr.Value, bool) {
@@ -273,11 +303,16 @@ func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value, nul
 			continue
 		}
 		if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
-			update := updateSingleton
+			var (
+				wire          transport.WireValue
+				objectChanged bool
+				err           error
+			)
 			if field.Kind == spec.FieldKindList {
-				update = updateList
+				wire, objectChanged, err = updateList(field, value, previous, nullables, diagnostics)
+			} else {
+				wire, objectChanged, err = updateSingleton(field, value, previous, diagnostics)
 			}
-			wire, objectChanged, err := update(field, value, previous, diagnostics)
 			if err != nil {
 				return nil, false, err
 			}
@@ -335,8 +370,9 @@ func updateWire(field spec.FieldSpec, value attr.Value) (wire transport.WireValu
 }
 
 // clearedWire says what clearing one field looks like, and whether clearing it
-// means sending nothing at all. Omission is a real strategy here, not an absence
-// of one: a member of an object sent whole is cleared by dropping its key.
+// means sending nothing at all. Omission is a declared strategy, not an absence
+// of one: it is what the handwritten resources send for a null object member,
+// which the API, merging the object member by member, leaves unchanged.
 func clearedWire(field spec.FieldSpec) (value transport.WireValue, omit bool, err error) {
 	switch field.UpdateClear {
 	case spec.UpdateClearEmptyString:
@@ -416,7 +452,7 @@ func toWire(field spec.FieldSpec, value attr.Value) (transport.WireValue, error)
 		}
 		return transport.Decimal(typed.ValueBigFloat().Text('f', -1)), nil
 	default:
-		return transport.WireValue{}, fmt.Errorf("%s has kind %q, which the scalar engine cannot send", field.TerraformName, field.Kind)
+		return transport.WireValue{}, fmt.Errorf("%s has kind %q, which the engine cannot send", field.TerraformName, field.Kind)
 	}
 }
 

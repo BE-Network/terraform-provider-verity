@@ -169,8 +169,9 @@ func compileAttribute(field spec.FieldSpec) (schema.Attribute, error) {
 		return attribute, nil
 
 	case spec.FieldKindObject, spec.FieldKindList:
-		return nil, fmt.Errorf("kind %q is a collection, which the scalar engine does not compile; "+
-			"it needs the strategy in CollectionSpec", field.Kind)
+		// A collection is compiled as a block, not as an attribute, and one
+		// nested inside a block is refused by Supported before reaching here.
+		return nil, fmt.Errorf("kind %q is a collection, which is compiled as a block rather than an attribute", field.Kind)
 
 	default:
 		return nil, fmt.Errorf("unknown field kind %q", field.Kind)

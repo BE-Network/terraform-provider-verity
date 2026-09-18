@@ -30,7 +30,7 @@ var (
 // resource the registry describes, for as much of the registry as it can yet
 // reach.
 //
-// Phase 2 is the scalar pilot, so a spec carrying a collection is refused at
+// Supported decides what it can serve, and a spec it rejects is refused at
 // construction rather than served partially. Everything this type does is
 // decided by the spec it holds — the schema, what a request carries, what a
 // response means, and which fields the plan nullifies — so migrating a resource
@@ -178,12 +178,19 @@ func (r *Resource) nullifyOutOfModeMembers(ctx context.Context, field spec.Field
 // the configuration can state outright, which plans as an ordinary change.
 func (r *Resource) planExplicitNulls(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	nullable := make([]spec.FieldSpec, 0, len(r.spec.Fields))
+	var lists []spec.FieldSpec
 	for _, field := range r.spec.Fields {
-		if field.Nullable && !field.Unmanaged {
+		if field.Unmanaged {
+			continue
+		}
+		if field.Nullable {
 			nullable = append(nullable, field)
 		}
+		if hasNullableMember(field) {
+			lists = append(lists, field)
+		}
 	}
-	if len(nullable) == 0 {
+	if len(nullable) == 0 && len(lists) == 0 {
 		return
 	}
 
@@ -216,6 +223,60 @@ func (r *Resource) planExplicitNulls(ctx context.Context, req resource.ModifyPla
 			continue
 		}
 		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root(field.TerraformName), nullOf(field.Kind))...)
+	}
+
+	for _, field := range lists {
+		r.planEntryExplicitNulls(ctx, field, config, state, configured, resp)
+	}
+}
+
+// planEntryExplicitNulls applies the same rule inside a list. Each configuration
+// entry is matched to the state entry with its index, and a nullable member
+// written as null where state holds a value is planned as null at that entry's
+// position. The handwritten resources read the index the same way: an unknown or
+// null one reads as zero.
+func (r *Resource) planEntryExplicitNulls(ctx context.Context, field spec.FieldSpec, config, state map[string]attr.Value, configured *utils.ConfiguredAttributes, resp *resource.ModifyPlanResponse) {
+	configEntries, present, err := listEntries(field, config[field.TerraformName])
+	if err != nil || !present {
+		return
+	}
+	stateEntries, _, err := listEntries(field, state[field.TerraformName])
+	if err != nil {
+		return
+	}
+	for position, configEntry := range configEntries {
+		var index int64
+		if value, ok := configEntry[field.Collection.IdentityField].(types.Int64); ok {
+			index = value.ValueInt64()
+		}
+		var before map[string]attr.Value
+		for _, candidate := range stateEntries {
+			if value, ok := candidate[field.Collection.IdentityField].(types.Int64); ok && value.ValueInt64() == index {
+				before = candidate
+				break
+			}
+		}
+		if before == nil {
+			continue
+		}
+		for _, member := range field.Fields {
+			if member.Unmanaged || !member.Nullable {
+				continue
+			}
+			if !configured.IsIndexedBlockAttributeConfigured(field.TerraformName, index, member.TerraformName) {
+				continue
+			}
+			written, held := configEntry[member.TerraformName]
+			if !held || written == nil || !written.IsNull() {
+				continue
+			}
+			prior, had := before[member.TerraformName]
+			if !had || prior == nil || prior.IsNull() {
+				continue
+			}
+			resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx,
+				path.Root(field.TerraformName).AtListIndex(position).AtName(member.TerraformName), nullOf(member.Kind))...)
+		}
 	}
 }
 
@@ -319,20 +380,40 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 func (r *Resource) nullableSource(ctx context.Context, config tfsdk.Config, name string, diagnostics *diag.Diagnostics) nullableSource {
 	// The configuration is needed for a nullable field, and for an
 	// auto-assignment flag, which is sent only when the configuration states it.
-	needsConfig := false
-	for _, field := range r.spec.Fields {
-		if !field.Unmanaged && (field.Nullable || field.AutoAssignment != nil) {
-			needsConfig = true
-			break
-		}
-	}
-	if !needsConfig {
+	if !r.needsConfiguration() {
 		return nullableSource{}
 	}
 	values, diags := readScalars(ctx, config, r.spec.Fields)
 	diagnostics.Append(diags...)
 	attributes := r.runtime.ConfiguredAttributes(ctx, r.spec.TerraformType, name)
-	return nullableSource{config: values, configured: attributes.IsConfigured}
+	return nullableSource{config: values, configured: attributes.IsConfigured, indexed: attributes.IsIndexedBlockAttributeConfigured}
+}
+
+// needsConfiguration reports whether any field's request depends on the
+// configuration itself: a nullable field, a nullable member of a list entry, or
+// an auto-assignment flag, which is sent only when the configuration states it.
+func (r *Resource) needsConfiguration() bool {
+	for _, field := range r.spec.Fields {
+		if field.Unmanaged {
+			continue
+		}
+		if field.Nullable || field.AutoAssignment != nil || hasNullableMember(field) {
+			return true
+		}
+	}
+	return false
+}
+
+func hasNullableMember(field spec.FieldSpec) bool {
+	if field.Kind != spec.FieldKindList {
+		return false
+	}
+	for _, member := range field.Fields {
+		if member.Nullable && !member.Unmanaged {
+			return true
+		}
+	}
+	return false
 }
 
 func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

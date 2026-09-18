@@ -283,7 +283,7 @@ func readRegistry(path string) (spec.Registry, error) {
 	return artifact.Resources, nil
 }
 
-// generateAdapters emits one transport adapter per resource the scalar engine
+// generateAdapters emits one transport adapter per resource the generic engine
 // can serve.
 //
 // The plan puts a generated adapter at the boundary between the codec and the
@@ -314,7 +314,7 @@ func generateAdapters(opts adapterOptions) error {
 	buf.WriteString("//\n")
 	buf.WriteString("// Source: specs/generated_registry.json and the generated SDK's own JSON tags.\n")
 	buf.WriteString("//\n")
-	buf.WriteString("// One adapter per resource the scalar engine can serve. Each converts the\n")
+	buf.WriteString("// One adapter per resource the generic engine can serve. Each converts the\n")
 	buf.WriteString("// codec's canonical object into the typed value the bulk manager asserts, which\n")
 	buf.WriteString("// is the boundary the plan puts between the two.\n")
 	buf.WriteString("//\n")

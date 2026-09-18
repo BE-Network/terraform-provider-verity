@@ -81,6 +81,12 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 
 	listInBlock := singletonSpec(indexedList(indexMember, notesMember()))
 
+	// A nullable member of a list entry is served; the configuration scan records
+	// each entry's attributes under its index.
+	if err := Supported(withList(indexedList(indexMember, nullableEntryMember))); err != nil {
+		t.Fatalf("a list with a nullable entry member was refused: %v", err)
+	}
+
 	nestedAuto := notesMember()
 	nestedAuto.AutoAssignment = &spec.AutoAssignmentSpec{FlagField: "notes_auto_assigned_"}
 
@@ -100,10 +106,10 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 	}{
 		{"list with a strategy no resource uses", withList(otherStrategy), "without the indexed_patch strategy"},
 		{"list identified by a non-integer member", withList(indexedList(stringIndex, notesMember())), "not an int64 member"},
-		{"nullable member of a list entry", withList(indexedList(indexMember, nullableEntryMember)), "nullable member of a block"},
+
 		{"list inside a block", listInBlock, "list inside a block"},
 		{"auto-assignment inside an object", singletonSpec(nestedAuto), "auto-assignment pair inside an object"},
-		{"nullable member of an object", singletonSpec(nullableMember), "nullable member of a block"},
+		{"nullable member of a singleton", singletonSpec(nullableMember), "nullable member of a singleton block"},
 		{"object inside an object", singletonSpec(nestedObject), "object inside an object"},
 		{"object without the singleton strategy", notSingleton, "without the singleton strategy"},
 		{"object with no members", singletonSpec(), "no members"},

@@ -187,3 +187,54 @@ func TestSettleListNullsUnknownMembers(t *testing.T) {
 		t.Fatalf("settled list = %v (err %v), want the unknown index as null", entries, err)
 	}
 }
+
+// A nullable member of a list entry is read from the configuration entry written
+// with the same index, and only when the scan recorded it under that index. The
+// plan entry stands in when no configuration entry carries the index, as in the
+// handwritten resources.
+func TestEntryMemberReadsTheConfigurationEntryByIndex(t *testing.T) {
+	t.Parallel()
+
+	field := listField()
+	field.Fields[1].Kind, field.Fields[1].Nullable = spec.FieldKindInt64, true
+	member := field.Fields[1]
+
+	configEntry := func(index int64, notes attr.Value) map[string]attr.Value {
+		return map[string]attr.Value{"index": types.Int64Value(index), "notes": notes, "lag": types.StringValue(""), "lag_ref_type_": types.StringValue("")}
+	}
+	config, err := listValue(field, []map[string]attr.Value{configEntry(2, types.Int64Null()), configEntry(1, types.Int64Value(7))})
+	if err != nil {
+		t.Fatal(err)
+	}
+	written := map[int64]bool{1: true, 2: true}
+	source := nullableSource{
+		config: map[string]attr.Value{"entries": config},
+		indexed: func(block string, index int64, name string) bool {
+			return block == "entries" && name == "notes" && written[index]
+		},
+	}
+
+	planEntry := map[string]attr.Value{"index": types.Int64Value(2), "notes": types.Int64Unknown()}
+	value, held := source.entryMember(field, member, planEntry)
+	if !held || !value.IsNull() {
+		t.Fatalf("index 2 read %v (held %v), want the configuration entry's written null", value, held)
+	}
+
+	planEntry["index"] = types.Int64Value(1)
+	value, held = source.entryMember(field, member, planEntry)
+	if !held || !value.Equal(types.Int64Value(7)) {
+		t.Fatalf("index 1 read %v (held %v), want 7 from the matching entry, not the first one", value, held)
+	}
+
+	written[3] = true
+	planEntry = map[string]attr.Value{"index": types.Int64Value(3), "notes": types.Int64Value(9)}
+	value, held = source.entryMember(field, member, planEntry)
+	if !held || !value.Equal(types.Int64Value(9)) {
+		t.Fatalf("index 3 read %v (held %v), want the plan entry when no configuration entry carries the index", value, held)
+	}
+
+	planEntry["index"] = types.Int64Value(4)
+	if _, held := source.entryMember(field, member, planEntry); held {
+		t.Fatal("a member the scan did not record under the entry's index was treated as written")
+	}
+}

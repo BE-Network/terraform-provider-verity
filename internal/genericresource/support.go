@@ -21,28 +21,36 @@ import (
 //     is nothing to check an implementation of it against;
 //   - an auto-assignment pair inside an object has a flag that changes whether
 //     its value is sent at all, and the pair rules run only at the top level;
-//   - a nullable member of a block needs the configuration scan at a nested
-//     path, which the engine reads only at the top level.
+//   - a nullable member of a singleton block waits on verity_switchpoint, the
+//     only resource with one, whose auto-assignment decision is still open.
 func Supported(resource spec.ResourceSpec) error {
 	for _, field := range resource.Fields {
 		if field.Unmanaged {
 			continue
 		}
-		if err := supportedField(field, false); err != nil {
+		if err := supportedField(field, ""); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func supportedField(field spec.FieldSpec, nested bool) error {
+// container is the kind of block a member sits in: "" at the top level, or
+// object or list for a member of a singleton or of a list entry.
+func supportedField(field spec.FieldSpec, container spec.FieldKind) error {
+	nested := container != ""
 	if field.AutoAssignment != nil && nested {
 		return fmt.Errorf("%s is an auto-assignment pair inside an object, which the engine does not implement yet", field.APIName)
 	}
 	switch field.Kind {
 	case spec.FieldKindString, spec.FieldKindBool, spec.FieldKindInt64, spec.FieldKindNumber:
-		if nested && field.Nullable {
-			return fmt.Errorf("%s is a nullable member of a block, which needs a nested configuration scan the engine does not do yet", field.APIName)
+		// A nullable member of a list entry is served: the configuration scan
+		// records each entry's attributes under its index. One inside a
+		// singleton is not yet. The only resource with one is
+		// verity_switchpoint, whose auto-assignment pairs do not all follow the
+		// shared rule, so serving it waits on that decision rather than on this.
+		if container == spec.FieldKindObject && field.Nullable {
+			return fmt.Errorf("%s is a nullable member of a singleton block, which the engine does not serve yet", field.APIName)
 		}
 		return nil
 	case spec.FieldKindList:
@@ -66,7 +74,7 @@ func supportedField(field spec.FieldSpec, nested bool) error {
 			if member.Unmanaged {
 				continue
 			}
-			if err := supportedField(member, true); err != nil {
+			if err := supportedField(member, spec.FieldKindList); err != nil {
 				return err
 			}
 		}
@@ -85,7 +93,7 @@ func supportedField(field spec.FieldSpec, nested bool) error {
 			if member.Unmanaged {
 				continue
 			}
-			if err := supportedField(member, true); err != nil {
+			if err := supportedField(member, spec.FieldKindObject); err != nil {
 				return err
 			}
 		}
