@@ -579,9 +579,10 @@ func TestBulkMetadataRejectsMultipleFixedHeaders(t *testing.T) {
 	}
 }
 
-// A singleton is sent as a whole object, so clearing one of its members drops
-// that key rather than sending a zero value the server would store. That depends
-// on the enclosing collection, not on the member's own type.
+// A null member of a singleton is dropped from the request rather than sent as a
+// zero value, as the handwritten resources do; the API, merging the object member
+// by member, leaves it unchanged. That depends on the enclosing collection, not on
+// the member's own type.
 func TestDefaultUpdateClearOmitsInsideASingleton(t *testing.T) {
 	for _, kind := range []string{"string", "boolean", "integer", "number"} {
 		if got := defaultUpdateClear(kind, false, string(spec.CollectionSingleton), false); got != "omit" {

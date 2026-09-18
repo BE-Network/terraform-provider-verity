@@ -126,3 +126,35 @@ func keysOf(m map[float64]map[string]interface{}) []float64 {
 	}
 	return out
 }
+
+// A PATCH that carries some members of an object updates only those members.
+// The API merges object_properties this way; a mock that replaced the object
+// would drop every member the PATCH did not mention, and a test against it would
+// report that loss as a provider defect.
+func TestPatchMergesObjectMembers(t *testing.T) {
+	t.Parallel()
+
+	ms := NewMockServer("datacenter")
+	defer ms.Close()
+
+	path := "/api/lags"
+	ms.resourceState = map[string]map[string]map[string]interface{}{
+		path: {"lag": {"l": map[string]interface{}{
+			"name":              "l",
+			"object_properties": map[string]interface{}{"fabric": "fabric-a", "fabric_ref_type_": "fabric"},
+		}}},
+	}
+	ms.applyPatchState(path, map[string]interface{}{
+		"lag": map[string]interface{}{"l": map[string]interface{}{
+			"object_properties": map[string]interface{}{"fabric": "fabric-b"},
+		}},
+	}, nil)
+
+	got := ms.resourceState[path]["lag"]["l"].(map[string]interface{})["object_properties"].(map[string]interface{})
+	if got["fabric"] != "fabric-b" {
+		t.Errorf("fabric = %v, want the patched value", got["fabric"])
+	}
+	if got["fabric_ref_type_"] != "fabric" {
+		t.Errorf("fabric_ref_type_ = %v, want it kept: a member the PATCH did not carry is unchanged", got["fabric_ref_type_"])
+	}
+}

@@ -574,8 +574,9 @@ func apiNullable(apiKind, apiName string) bool {
 // cleared with an explicit JSON null, a string with "", a bool with false, and a
 // number with zero.
 func defaultUpdateClear(apiKind string, nullable bool, enclosing string, paired bool) string {
-	// A singleton is sent as a whole object, so clearing one of its members means
-	// dropping that key rather than sending a zero value the server would store.
+	// A null member of a singleton is dropped from the request rather than sent as
+	// a zero value, which is what the handwritten resources do. The API merges a
+	// PATCHed object member by member, so the dropped member keeps its value.
 	//
 	// A paired field is the exception: both halves of a reference or
 	// auto-assignment move together through their own helper, which writes the

@@ -342,6 +342,24 @@ func (ms *MockServer) applyPatchState(path string, body map[string]interface{}, 
 						existing[k] = mergeIndexedArray(existingArr, patchArr)
 						continue
 					}
+					// An object is merged member by member, as the API merges
+					// object_properties: a PATCH carries only the members that
+					// changed, and every other member keeps its value.
+					// Replacing the object wholesale here would drop them and
+					// report a defect the API does not have.
+					if patchObject, ok := v.(map[string]interface{}); ok {
+						if existingObject, ok := existing[k].(map[string]interface{}); ok {
+							merged := make(map[string]interface{}, len(existingObject)+len(patchObject))
+							for member, value := range existingObject {
+								merged[member] = value
+							}
+							for member, value := range patchObject {
+								merged[member] = value
+							}
+							existing[k] = merged
+							continue
+						}
+					}
 					existing[k] = v
 				}
 				ms.resourceState[path][key][resourceName] = existing

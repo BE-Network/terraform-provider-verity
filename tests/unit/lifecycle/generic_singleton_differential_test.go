@@ -2,7 +2,6 @@ package lifecycle
 
 import (
 	"fmt"
-	"regexp"
 	"testing"
 )
 
@@ -94,14 +93,12 @@ func TestGenericMatchesLegacyOnSingletonUpdates(t *testing.T) {
 		},
 		{
 			// With one permitted type a value-only change sends the value alone.
-			// Inside an object the mock replaces the whole object, so the type is
-			// lost and the apply is rejected. Whether the live API also replaces
-			// the object is the open question recorded in status.md.
+			// The API merges object_properties, so the type the PATCH does not
+			// carry keeps its value.
 			name:          "reference pair inside the block changes its value",
 			terraformType: "verity_lag",
 			create:        lag("  object_properties {\n    fabric = \"fabric-a\"\n    fabric_ref_type_ = \"fabric\"\n  }\n"),
 			update:        lag("  object_properties {\n    fabric = \"fabric-b\"\n    fabric_ref_type_ = \"fabric\"\n  }\n"),
-			outcome:       lifecycleOutcome{applyError: regexp.MustCompile(`(?s)inconsistent result after apply.*fabric_ref_type_`)},
 		},
 		{
 			name:          "reference pair inside the block is cleared",

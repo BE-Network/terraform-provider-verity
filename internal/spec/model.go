@@ -102,9 +102,11 @@ const (
 	UpdateClearZero        UpdateClearPolicy = "zero"
 	UpdateClearFalse       UpdateClearPolicy = "false"
 	UpdateClearDefault     UpdateClearPolicy = "default"
-	// UpdateClearOmit drops the key from the request entirely. A singleton object
-	// is sent whole, so clearing one of its members means omitting that member
-	// rather than sending a zero value that the server would store.
+	// UpdateClearOmit drops the key from the request entirely. It is what the
+	// handwritten resources send for a null member of object_properties. The API
+	// merges a PATCHed object member by member, so an omitted member is left
+	// unchanged rather than cleared; a member is cleared by sending its empty
+	// value, which a configuration writes as "" and which is sent as written.
 	UpdateClearOmit          UpdateClearPolicy = "omit"
 	UpdateClearOmitUnmanaged UpdateClearPolicy = "omit_unmanaged"
 	UpdateClearReject        UpdateClearPolicy = "reject"
