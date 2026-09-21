@@ -158,3 +158,51 @@ func TestPatchMergesObjectMembers(t *testing.T) {
 		t.Errorf("fabric_ref_type_ = %v, want it kept: a member the PATCH did not carry is unchanged", got["fabric_ref_type_"])
 	}
 }
+
+// An indexed array inside an object is patched by index, not replaced: a PATCH
+// that adds one system_graphs entry must leave the others in place, exactly as a
+// top-level indexed array is patched.
+func TestPatchMergesIndexedArraysInsideObjects(t *testing.T) {
+	t.Parallel()
+
+	ms := NewMockServer("datacenter")
+	defer ms.Close()
+
+	path := "/api/fabrics"
+	ms.resourceState = map[string]map[string]map[string]interface{}{
+		path: {"fabric": {"f": map[string]interface{}{
+			"name": "f",
+			"object_properties": map[string]interface{}{
+				"system_graphs": []interface{}{map[string]interface{}{"index": float64(1)}},
+			},
+		}}},
+	}
+	ms.applyPatchState(path, map[string]interface{}{
+		"fabric": map[string]interface{}{"f": map[string]interface{}{
+			"object_properties": map[string]interface{}{
+				"system_graphs": []interface{}{map[string]interface{}{"index": float64(2)}},
+			},
+		}},
+	}, nil)
+
+	graphs := ms.resourceState[path]["fabric"]["f"].(map[string]interface{})["object_properties"].(map[string]interface{})["system_graphs"].([]interface{})
+	if len(graphs) != 2 {
+		t.Fatalf("system_graphs = %v, want entries 1 and 2: adding an entry must not drop the others", graphs)
+	}
+}
+
+// An entry that carries only its index deletes that index when it exists and adds
+// it when it does not. The second case is verity_fabric's system_graphs create,
+// whose entries have no other member.
+func TestMergeIndexedArrayIndexOnlyEntries(t *testing.T) {
+	t.Parallel()
+
+	existing := []interface{}{map[string]interface{}{"index": float64(1)}}
+	merged := mergeIndexedArray(existing, []interface{}{
+		map[string]interface{}{"index": float64(1)},
+		map[string]interface{}{"index": float64(2)},
+	})
+	if len(merged) != 1 || merged[0].(map[string]interface{})["index"] != float64(2) {
+		t.Fatalf("merged = %v, want index 1 deleted and index 2 added", merged)
+	}
+}

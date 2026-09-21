@@ -354,6 +354,15 @@ func (ms *MockServer) applyPatchState(path string, body map[string]interface{}, 
 								merged[member] = value
 							}
 							for member, value := range patchObject {
+								// An indexed array inside the object is patched
+								// by index, as the same array is at the top
+								// level: verity_fabric's system_graphs arrives
+								// carrying only the entries that changed.
+								if patchArr, ok := value.([]interface{}); ok && isIndexedArray(patchArr) {
+									existingArr, _ := existingObject[member].([]interface{})
+									merged[member] = mergeIndexedArray(existingArr, patchArr)
+									continue
+								}
 								merged[member] = value
 							}
 							existing[k] = merged
@@ -399,10 +408,18 @@ func mergeIndexedArray(existing, patch []interface{}) []interface{} {
 			continue
 		}
 
-		if len(m) == 1 {
-			// Delete: only "index" field present
+		existingItem, exists := indexMap[idx]
+		if len(m) == 1 && exists {
+			// Delete: an entry carrying only the index of one that exists.
 			delete(indexMap, idx)
-		} else if existingItem, exists := indexMap[idx]; exists {
+		} else if len(m) == 1 && idx != 0 {
+			// Add: an entry carrying only a new index. verity_fabric's
+			// system_graphs entries have no member but the index, so creating one
+			// is indistinguishable from a deletion marker except by whether the
+			// index already exists. Reading every index-only entry as a deletion
+			// dropped such creates; the handwritten provider sends the same bytes.
+			indexMap[idx] = m
+		} else if exists {
 			// Update: merge fields into existing item
 			for k, v := range m {
 				existingItem[k] = v
