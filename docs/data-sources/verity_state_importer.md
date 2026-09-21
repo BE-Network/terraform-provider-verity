@@ -78,6 +78,26 @@ Note: Not all files will be created. Tasks are filtered by provider mode and API
 Additionally, the importer writes:
 - import_blocks.tf — a generated file containing a sequence of Terraform import blocks for the resources found in the output directory.
 
+## Arguments not supported by this provider version
+
+A Verity system can run a newer API than this provider supports and return arguments the provider's schema does not have. Terraform would reject a generated file containing even one of them. The importer checks every argument, including those inside nested blocks, against the provider's resource schemas. It leaves out the ones the schemas don't have and reports them in a single warning:
+
+```
+Warning: Some arguments are not supported by this provider version
+
+The Verity API returned arguments that this provider version does not support.
+They were left out of the generated configuration, so Terraform will not manage them:
+
+  verity_switchpoint: traffic_mirrors.traffic_mirror_num_monitoring_acl, traffic_mirrors.traffic_mirror_num_monitoring_acl_ref_type_
+  verity_tenant: maximum_ebgp_paths, maximum_ebgp_paths_mode
+
+Please check for a newer provider version that supports them.
+```
+
+Terraform leaves those arguments unmanaged, and the resources import normally. Upgrade the provider to manage them.
+
+The importer also writes the warning to `unsupported_arguments.txt` in the output directory. The `tools/import_verity_state.sh` and `tools/import_verity_state.ps1` scripts print it at the end of the import, where it isn't buried under the second apply's output. An import that leaves nothing out removes the file.
+
 ## Next Steps
 
 After running the data source:
