@@ -155,13 +155,36 @@ func (r *Resource) nullifyOutOfModeMembers(ctx context.Context, field spec.Field
 	if resp.Diagnostics.HasError() || block.IsNull() || block.IsUnknown() {
 		return
 	}
-	for index := range block.Elements() {
-		entry := path.Root(field.TerraformName).AtListIndex(index)
+	r.nullifyOutOfModeEntries(ctx, path.Root(field.TerraformName), block, field, mode, resp)
+}
+
+// nullifyOutOfModeEntries nulls the out-of-mode members of every entry of one
+// block, and descends into a list the block contains — verity_fabric's
+// object_properties.system_graphs — so a member nested two levels down follows
+// the same rule.
+func (r *Resource) nullifyOutOfModeEntries(ctx context.Context, blockPath path.Path, block types.List, field spec.FieldSpec, mode string, resp *resource.ModifyPlanResponse) {
+	for index, element := range block.Elements() {
+		entry := blockPath.AtListIndex(index)
+		object, ok := element.(types.Object)
+		if !ok || object.IsNull() || object.IsUnknown() {
+			continue
+		}
 		for _, member := range field.Fields {
-			if member.Unmanaged || appliesToMode(member, mode) {
+			if member.Unmanaged {
 				continue
 			}
-			resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, entry.AtName(member.TerraformName), nullFor(member))...)
+			if !appliesToMode(member, mode) {
+				resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, entry.AtName(member.TerraformName), nullFor(member))...)
+				continue
+			}
+			if member.Kind != spec.FieldKindList {
+				continue
+			}
+			nested, ok := object.Attributes()[member.TerraformName].(types.List)
+			if !ok || nested.IsNull() || nested.IsUnknown() {
+				continue
+			}
+			r.nullifyOutOfModeEntries(ctx, entry.AtName(member.TerraformName), nested, member, mode, resp)
 		}
 	}
 }

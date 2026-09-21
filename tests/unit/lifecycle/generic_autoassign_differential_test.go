@@ -3,6 +3,7 @@ package lifecycle
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
@@ -294,6 +295,47 @@ func TestGenericMatchesLegacyOnTenantAutoAssignment(t *testing.T) {
 		t.Run(scenario.name, func(t *testing.T) {
 			legacy := captureLifecycle(t, "verity_tenant", false, scenario.create, scenario.update, scenario.outcome)
 			generic := captureLifecycle(t, "verity_tenant", true, scenario.create, scenario.update, scenario.outcome)
+			for _, operation := range []string{"PUT", "PATCH"} {
+				want, got := canonical(t, legacy[operation]), canonical(t, generic[operation])
+				if want != got {
+					t.Errorf("%s differs between implementations\n  legacy:  %s\n  generic: %s", operation, want, got)
+				}
+			}
+		})
+	}
+}
+
+// verity_fabric's anycast_mac_address is a string auto-assignment pair, and the
+// resource became servable once its list inside object_properties was. As for
+// tenant, the survey's reading that it follows the shared algorithm is measured
+// here rather than assumed.
+func TestGenericMatchesLegacyOnFabricAutoAssignment(t *testing.T) {
+	entry := coverageEntry(t, "verity_fabric")
+	rs := inspectSchema(entry.Factory)
+	base := generateCoverageHCL(rs, entry.TerraformType, "difffabric", entry.Mode, entry.modeFieldsKey(), entry.Overrides)
+	const value, flag = `  anycast_mac_address = ""` + "\n", `  anycast_mac_address_auto_assigned_ = false` + "\n"
+	if !strings.Contains(base, value) || !strings.Contains(base, flag) {
+		t.Fatal("the harness configuration no longer writes the anycast pair the way this test expects")
+	}
+	assignmentOn := strings.Replace(strings.Replace(base, value, "", 1), flag, "  anycast_mac_address_auto_assigned_ = true\n", 1)
+	writtenWhileOn := strings.Replace(strings.Replace(base, value, "  anycast_mac_address = \"aa:bb:cc:dd:ee:ff\"\n", 1), flag, "  anycast_mac_address_auto_assigned_ = true\n", 1)
+
+	scenarios := []struct {
+		name    string
+		update  string
+		outcome lifecycleOutcome
+	}{
+		{"assignment turned on", assignmentOn, lifecycleOutcome{updatePlanChecks: []plancheck.PlanCheck{
+			plancheck.ExpectUnknownValue("verity_fabric.test", tfjsonpath.New("anycast_mac_address")),
+		}}},
+		{"a value written while assignment is on is refused", writtenWhileOn, lifecycleOutcome{
+			applyError: regexp.MustCompile(`(?s)'anycast_mac_address'\s+field\s+cannot\s+be\s+specified\s+in\s+the\s+configuration\s+when\s+'anycast_mac_address_auto_assigned_'\s+is\s+set\s+to\s+true`),
+		}},
+	}
+	for _, scenario := range scenarios {
+		t.Run(scenario.name, func(t *testing.T) {
+			legacy := captureLifecycle(t, entry.TerraformType, false, base, scenario.update, scenario.outcome)
+			generic := captureLifecycle(t, entry.TerraformType, true, base, scenario.update, scenario.outcome)
 			for _, operation := range []string{"PUT", "PATCH"} {
 				want, got := canonical(t, legacy[operation]), canonical(t, generic[operation])
 				if want != got {

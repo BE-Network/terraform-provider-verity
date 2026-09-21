@@ -408,6 +408,18 @@ func writeNestedAdapter(buf *bytes.Buffer, field adapterField) {
 	buf.WriteString("\t\tdefault:\n")
 	fmt.Fprintf(buf, "\t\t\treturn fmt.Errorf(\"%s has no field %%q\", name)\n", nested.GoTypeName)
 	buf.WriteString("\t\t}\n\t}\n\t*target = &value\n\treturn nil\n}\n")
+	writeNestedMembers(buf, nested)
+}
+
+// writeNestedMembers emits the conversions a nested struct's own members need,
+// which is how verity_fabric's system_graphs list inside object_properties gets
+// its adapter.
+func writeNestedMembers(buf *bytes.Buffer, nested *nestedAdapter) {
+	for _, member := range nested.Fields {
+		if member.Nested != nil {
+			writeNestedAdapter(buf, member)
+		}
+	}
 }
 
 // writeListAdapter emits the conversion for one indexed collection: each entry of
@@ -430,6 +442,7 @@ func writeListAdapter(buf *bytes.Buffer, field adapterField) {
 	buf.WriteString("\t\t\tdefault:\n")
 	fmt.Fprintf(buf, "\t\t\t\treturn fmt.Errorf(\"%s has no field %%q\", name)\n", nested.GoTypeName)
 	buf.WriteString("\t\t\t}\n\t\t}\n\t\tvalues = append(values, value)\n\t}\n\t*target = values\n\treturn nil\n}\n")
+	writeNestedMembers(buf, nested)
 }
 
 // adapterTypeName turns verity_ipv4_list into ipv4ListAdapter.

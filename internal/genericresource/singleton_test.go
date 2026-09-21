@@ -228,3 +228,93 @@ func TestUpdateEmptySingletonFollowsPresence(t *testing.T) {
 		})
 	}
 }
+
+// graphBlock is verity_fabric's object_properties: a singleton holding only an
+// indexed list whose entries carry nothing but their index.
+func graphBlock() spec.FieldSpec {
+	index := notesMember()
+	index.TerraformName, index.APIName, index.Kind = "index", "index", spec.FieldKindInt64
+	graphs := spec.FieldSpec{
+		TerraformName: "system_graphs", APIName: "system_graphs", Kind: spec.FieldKindList, ElementKind: spec.FieldKindObject,
+		Access: spec.AccessOptional, Modes: []spec.Mode{spec.ModeDatacenter},
+		Collection: &spec.CollectionSpec{Strategy: spec.CollectionIndexedPatch, IdentityField: "index"},
+		CreateNull: spec.CreateNullOmit, UpdateClear: spec.UpdateClearOmit,
+		UnknownPlan: spec.UnknownPlanReject, ResponseAbsence: spec.ResponseAbsenceTerraformNull,
+		Fields: []spec.FieldSpec{index},
+	}
+	return singletonSpec(graphs).Fields[1]
+}
+
+func graphs(t *testing.T, indexes ...int64) attr.Value {
+	t.Helper()
+	field := graphBlock()
+	list := field.Fields[0]
+	entries := make([]map[string]attr.Value, 0, len(indexes))
+	for _, index := range indexes {
+		entries = append(entries, map[string]attr.Value{"index": types.Int64Value(index)})
+	}
+	value := types.ListValueMust(elementType(list), nil)
+	if len(entries) != 0 {
+		var err error
+		if value, err = listValueTyped(list, entries); err != nil {
+			t.Fatal(err)
+		}
+	}
+	block, err := singletonValue(field, map[string]attr.Value{"system_graphs": value})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return block
+}
+
+func listValueTyped(field spec.FieldSpec, entries []map[string]attr.Value) (types.List, error) {
+	value, err := listValue(field, entries)
+	if err != nil {
+		return types.List{}, err
+	}
+	return value.(types.List), nil
+}
+
+// A written block with no entries still sends its list, empty, as the
+// handwritten fabric create does.
+func TestCreateSingletonSendsAnEmptyNestedList(t *testing.T) {
+	t.Parallel()
+
+	wire, send, err := createSingleton(graphBlock(), graphs(t))
+	if err != nil || !send {
+		t.Fatalf("createSingleton: send=%v err=%v", send, err)
+	}
+	if got := encode(t, transport.WireObject{"object_properties": wire}); got != `{"object_properties":{"system_graphs":[]}}` {
+		t.Fatalf("create sent %s, want an empty system_graphs list", got)
+	}
+}
+
+// A nested list is reconciled whenever either side holds the block: adding the
+// block creates its entries, and removing it deletes them.
+func TestUpdateSingletonReconcilesANestedListAcrossPresence(t *testing.T) {
+	t.Parallel()
+
+	field := graphBlock()
+	absent := types.ListValueMust(elementType(field), nil)
+	cases := []struct {
+		name        string
+		plan, state attr.Value
+		want        string
+	}{
+		{"added with an entry", graphs(t, 1), absent, `{"object_properties":{"system_graphs":[{"index":1}]}}`},
+		{"removed with an entry", absent, graphs(t, 1), `{"object_properties":{"system_graphs":[{"index":1}]}}`},
+		{"an entry added to a present block", graphs(t, 1, 2), graphs(t, 1), `{"object_properties":{"system_graphs":[{"index":2}]}}`},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			var diagnostics diag.Diagnostics
+			wire, changed, err := updateSingleton(field, tc.plan, tc.state, &diagnostics)
+			if err != nil || diagnostics.HasError() || !changed {
+				t.Fatalf("updateSingleton: changed=%v err=%v %v", changed, err, diagnostics)
+			}
+			if got := encode(t, transport.WireObject{"object_properties": wire}); got != tc.want {
+				t.Fatalf("update sent %s, want %s", got, tc.want)
+			}
+		})
+	}
+}

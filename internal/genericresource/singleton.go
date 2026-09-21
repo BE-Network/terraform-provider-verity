@@ -87,7 +87,24 @@ func createSingleton(field spec.FieldSpec, value attr.Value) (transport.WireValu
 		if !held {
 			continue
 		}
-		wire, send, err := createWire(member, memberValue)
+		var (
+			wire transport.WireValue
+			send bool
+			err  error
+		)
+		if member.Kind == spec.FieldKindList {
+			// A list inside the singleton has no nullable members; Supported
+			// refuses them, so there is no configuration to consult. With no
+			// entries it is still sent, as an empty list: verity_fabric's
+			// handwritten create builds object_properties.system_graphs as a
+			// non-nil slice whenever the block is written, and the SDK sends it.
+			wire, send, err = createList(member, memberValue, nullableSource{})
+			if err == nil && !send {
+				wire, send = transport.List([]transport.WireValue{}), true
+			}
+		} else {
+			wire, send, err = createWire(member, memberValue)
+		}
 		if err != nil {
 			return transport.WireValue{}, false, fmt.Errorf("%s.%w", field.TerraformName, err)
 		}
@@ -149,16 +166,42 @@ func updateSingleton(field spec.FieldSpec, plan, state attr.Value, diagnostics *
 	if err != nil {
 		return transport.WireValue{}, false, err
 	}
-	if !plannedPresent || !previousPresent {
-		return transport.WireValue{}, false, nil
-	}
-	if !hasManagedMembers(field) {
-		// Present in both, and there is nothing inside it to differ.
+	if !plannedPresent && !previousPresent {
 		return transport.WireValue{}, false, nil
 	}
 
 	object := make(transport.WireObject, len(field.Fields))
 	changed := false
+
+	// A list inside the singleton is reconciled whenever either side holds the
+	// block, with an absent side read as an empty list: adding the block
+	// creates its entries and removing it deletes them. That is what
+	// verity_fabric's handwritten update does for object_properties.system_graphs,
+	// and it differs from the rule for the singleton's scalar members below.
+	for _, member := range field.Fields {
+		if member.Unmanaged || member.Kind != spec.FieldKindList {
+			continue
+		}
+		wire, listChanged, err := updateList(member, planned[member.TerraformName], previous[member.TerraformName], nullableSource{}, diagnostics)
+		if err != nil {
+			return transport.WireValue{}, false, fmt.Errorf("%s: %w", field.TerraformName, err)
+		}
+		if diagnostics.HasError() {
+			return transport.WireValue{}, false, nil
+		}
+		if listChanged {
+			object[member.APIName] = wire
+			changed = true
+		}
+	}
+
+	if !plannedPresent || !previousPresent {
+		// Scalar members are considered only when both sides hold the block.
+		if !changed {
+			return transport.WireValue{}, false, nil
+		}
+		return transport.Object(object), true, nil
+	}
 
 	// A reference pair inside the object is decided together, exactly as at the
 	// top level, and both halves clear to an empty string rather than by the
@@ -182,7 +225,7 @@ func updateSingleton(field spec.FieldSpec, plan, state attr.Value, diagnostics *
 	}
 
 	for _, member := range field.Fields {
-		if member.Unmanaged || paired[member.TerraformName] {
+		if member.Unmanaged || paired[member.TerraformName] || member.Kind == spec.FieldKindList {
 			continue
 		}
 		value, held := planned[member.TerraformName]
@@ -220,6 +263,11 @@ func singletonFromAPI(field spec.FieldSpec, raw interface{}, mode string) (attr.
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", field.TerraformName, err)
 	}
+	// verity_fabric's handwritten read records a missing system_graphs as an
+	// empty list rather than an absent one. Terraform treats the two the same
+	// for a nested block, and substituting one for the other changed nothing a
+	// plan, a request, or the differential tests could observe, so the list
+	// decodes here as any other list does.
 	return singletonValue(field, members)
 }
 

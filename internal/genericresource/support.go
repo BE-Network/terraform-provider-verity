@@ -28,17 +28,19 @@ func Supported(resource spec.ResourceSpec) error {
 		if field.Unmanaged {
 			continue
 		}
-		if err := supportedField(field, ""); err != nil {
+		if err := supportedField(field, nil); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// container is the kind of block a member sits in: "" at the top level, or
-// object or list for a member of a singleton or of a list entry.
-func supportedField(field spec.FieldSpec, container spec.FieldKind) error {
-	nested := container != ""
+// containers lists the blocks a field sits in, outermost first: empty at the top
+// level, [object] for a member of a singleton, [list] for a member of a list
+// entry, and [object list] for a member of a list inside a singleton.
+func supportedField(field spec.FieldSpec, containers []spec.FieldKind) error {
+	nested := len(containers) != 0
+	insideSingleton := nested && containers[0] == spec.FieldKindObject
 	if field.AutoAssignment != nil && nested {
 		return fmt.Errorf("%s is an auto-assignment pair inside an object, which the engine does not implement yet", field.APIName)
 	}
@@ -49,13 +51,18 @@ func supportedField(field spec.FieldSpec, container spec.FieldKind) error {
 		// singleton is not yet. The only resource with one is
 		// verity_switchpoint, whose auto-assignment pairs do not all follow the
 		// shared rule, so serving it waits on that decision rather than on this.
-		if container == spec.FieldKindObject && field.Nullable {
+		// A nullable member of a list inside a singleton would need the scan's
+		// key for a doubly nested entry, and no resource has one.
+		if insideSingleton && field.Nullable {
 			return fmt.Errorf("%s is a nullable member of a singleton block, which the engine does not serve yet", field.APIName)
 		}
 		return nil
 	case spec.FieldKindList:
-		if nested {
-			return fmt.Errorf("%s is a list inside a block, which the engine does not serve yet", field.APIName)
+		// A list may sit at the top level or directly inside a singleton, which
+		// is verity_fabric's object_properties.system_graphs, the provider's
+		// only two-level nesting. Nothing nests deeper.
+		if nested && !(len(containers) == 1 && insideSingleton) {
+			return fmt.Errorf("%s is a list nested more deeply than inside a singleton, which the engine does not serve", field.APIName)
 		}
 		// indexed_patch is the only list strategy any registry resource uses, so
 		// it is the only one implemented; a strategy with no user has nothing to
@@ -70,18 +77,19 @@ func supportedField(field spec.FieldSpec, container spec.FieldKind) error {
 		if !found || identity.Kind != spec.FieldKindInt64 {
 			return fmt.Errorf("%s identifies its entries by %q, which is not an int64 member", field.APIName, field.Collection.IdentityField)
 		}
+		inner := append(append([]spec.FieldKind(nil), containers...), spec.FieldKindList)
 		for _, member := range field.Fields {
 			if member.Unmanaged {
 				continue
 			}
-			if err := supportedField(member, spec.FieldKindList); err != nil {
+			if err := supportedField(member, inner); err != nil {
 				return err
 			}
 		}
 		return nil
 	case spec.FieldKindObject:
 		if nested {
-			return fmt.Errorf("%s is an object inside an object, which the engine does not serve yet", field.APIName)
+			return fmt.Errorf("%s is an object inside a block, which the engine does not serve yet", field.APIName)
 		}
 		if field.Collection == nil || field.Collection.Strategy != spec.CollectionSingleton {
 			return fmt.Errorf("%s is an object without the singleton strategy, which the engine does not serve", field.APIName)
@@ -94,7 +102,7 @@ func supportedField(field spec.FieldSpec, container spec.FieldKind) error {
 			if member.Unmanaged {
 				continue
 			}
-			if err := supportedField(member, spec.FieldKindObject); err != nil {
+			if err := supportedField(member, []spec.FieldKind{spec.FieldKindObject}); err != nil {
 				return err
 			}
 		}

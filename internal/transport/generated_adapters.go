@@ -7,7 +7,6 @@
 // is the boundary the plan puts between the two.
 //
 // Resources without an adapter, and why:
-//   verity_fabric: system_graphs is a list inside a block, which the engine does not serve yet
 //   verity_switchpoint: number_of_multipoints is a nullable member of a singleton block, which the engine does not serve yet
 
 package transport
@@ -35,6 +34,7 @@ var GeneratedAdapters = map[string]ResourceValueAdapter{
 	"verity_eth_port_profile":         ethPortProfileAdapter{},
 	"verity_eth_port_settings":        ethPortSettingsAdapter{},
 	"verity_extended_community_list":  extendedCommunityListAdapter{},
+	"verity_fabric":                   fabricAdapter{},
 	"verity_gateway":                  gatewayAdapter{},
 	"verity_gateway_profile":          gatewayProfileAdapter{},
 	"verity_grouping_rule":            groupingRuleAdapter{},
@@ -2156,6 +2156,373 @@ func extendedCommunityListObjectPropertiesValue(wire WireValue, target **openapi
 		}
 	}
 	*target = &value
+	return nil
+}
+
+type fabricAdapter struct{}
+
+func (fabricAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.FabricsPutRequestFabricValue
+	for name, wire := range object {
+		switch name {
+		case "aggressive_reporting":
+			if err := wireBoolPtr(wire, &value.AggressiveReporting); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "allow_all_underlay_connections":
+			if err := wireBoolPtr(wire, &value.AllowAllUnderlayConnections); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "anycast_mac_address":
+			if err := wireStringPtr(wire, &value.AnycastMacAddress); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "anycast_mac_address_auto_assigned_":
+			if err := wireBoolPtr(wire, &value.AnycastMacAddressAutoAssigned); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "base_bgp_as_number":
+			if err := wireStringPtr(wire, &value.BaseBgpAsNumber); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "bgp_hold_down_timer":
+			if err := wireNullableInt64(wire, &value.BgpHoldDownTimer); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "bgp_keepalive_timer":
+			if err := wireNullableInt64(wire, &value.BgpKeepaliveTimer); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "controller_gateway":
+			if err := wireStringPtr(wire, &value.ControllerGateway); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "controller_ip_base":
+			if err := wireStringPtr(wire, &value.ControllerIpBase); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "domain_for_fabric":
+			if err := wireStringPtr(wire, &value.DomainForFabric); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "domain_for_fabric_ref_type_":
+			if err := wireStringPtr(wire, &value.DomainForFabricRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "dscp_to_p_bit_map":
+			if err := wireStringPtr(wire, &value.DscpToPBitMap); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "duplicate_address_detection_max_number_of_moves":
+			if err := wireNullableInt64(wire, &value.DuplicateAddressDetectionMaxNumberOfMoves); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "duplicate_address_detection_time":
+			if err := wireNullableInt64(wire, &value.DuplicateAddressDetectionTime); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "enable_dhcp_snooping":
+			if err := wireBoolPtr(wire, &value.EnableDhcpSnooping); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "enable_dscp":
+			if err := wireBoolPtr(wire, &value.EnableDscp); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "evpn_mac_holdtime":
+			if err := wireNullableInt64(wire, &value.EvpnMacHoldtime); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "evpn_multihoming_startup_delay":
+			if err := wireNullableInt64(wire, &value.EvpnMultihomingStartupDelay); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "fabric_type":
+			if err := wireStringPtr(wire, &value.FabricType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "force_spanning_tree_on_fabric_ports":
+			if err := wireBoolPtr(wire, &value.ForceSpanningTreeOnFabricPorts); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "gpu_architecture":
+			if err := wireStringPtr(wire, &value.GpuArchitecture); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "hgx_password":
+			if err := wireStringPtr(wire, &value.HgxPassword); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "hgx_password_encrypted":
+			if err := wireStringPtr(wire, &value.HgxPasswordEncrypted); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "hgx_username":
+			if err := wireStringPtr(wire, &value.HgxUsername); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "ip_source_guard":
+			if err := wireBoolPtr(wire, &value.IpSourceGuard); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "leaf_bgp_advertisement_interval":
+			if err := wireNullableInt64(wire, &value.LeafBgpAdvertisementInterval); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "leaf_bgp_connect_timer":
+			if err := wireNullableInt64(wire, &value.LeafBgpConnectTimer); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "leaf_bgp_hold_down_timer":
+			if err := wireNullableInt64(wire, &value.LeafBgpHoldDownTimer); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "leaf_bgp_keep_alive_timer":
+			if err := wireNullableInt64(wire, &value.LeafBgpKeepAliveTimer); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "link_state_timeout_value":
+			if err := wireNullableInt64(wire, &value.LinkStateTimeoutValue); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "mac_address_aging_time":
+			if err := wireNullableInt64(wire, &value.MacAddressAgingTime); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "max_pods":
+			if err := wireNullableInt64(wire, &value.MaxPods); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "max_sus":
+			if err := wireNullableInt64(wire, &value.MaxSus); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "max_switches":
+			if err := wireStringPtr(wire, &value.MaxSwitches); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "mlag_delay_restore_timer":
+			if err := wireNullableInt64(wire, &value.MlagDelayRestoreTimer); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "multi_tenant":
+			if err := wireBoolPtr(wire, &value.MultiTenant); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := fabricObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "paired_ip_subnet":
+			if err := wireStringPtr(wire, &value.PairedIpSubnet); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "pause_validation_alarms":
+			if err := wireBoolPtr(wire, &value.PauseValidationAlarms); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "plane_count":
+			if err := wireStringPtr(wire, &value.PlaneCount); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "port_admin_polling_interval":
+			if err := wireNullableInt64(wire, &value.PortAdminPollingInterval); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "port_status_polling_interval":
+			if err := wireNullableInt64(wire, &value.PortStatusPollingInterval); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "read_only_mode":
+			if err := wireBoolPtr(wire, &value.ReadOnlyMode); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "region_name":
+			if err := wireStringPtr(wire, &value.RegionName); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "revision":
+			if err := wireNullableInt64(wire, &value.Revision); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "route_aggregation":
+			if err := wireStringPtr(wire, &value.RouteAggregation); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "route_aggregators":
+			if err := fabricRouteAggregatorsValue(wire, &value.RouteAggregators); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "router_id_base_prefix":
+			if err := wireStringPtr(wire, &value.RouterIdBasePrefix); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "server_management":
+			if err := wireBoolPtr(wire, &value.ServerManagement); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "service_for_fabric":
+			if err := wireStringPtr(wire, &value.ServiceForFabric); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "service_for_fabric_ref_type_":
+			if err := wireStringPtr(wire, &value.ServiceForFabricRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_leaf_router_id_on_bgp":
+			if err := wireBoolPtr(wire, &value.SetLeafRouterIdOnBgp); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "spanning_tree_type":
+			if err := wireStringPtr(wire, &value.SpanningTreeType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "spine_as_number":
+			if err := wireNullableInt64(wire, &value.SpineAsNumber); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "spine_bgp_advertisement_interval":
+			if err := wireNullableInt64(wire, &value.SpineBgpAdvertisementInterval); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "spine_bgp_connect_timer":
+			if err := wireNullableInt64(wire, &value.SpineBgpConnectTimer); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "starting_octet":
+			if err := wireNullableInt64(wire, &value.StartingOctet); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "su_size":
+			if err := wireStringPtr(wire, &value.SuSize); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "su_support":
+			if err := wireBoolPtr(wire, &value.SuSupport); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_gateway":
+			if err := wireStringPtr(wire, &value.SwitchGateway); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_ip_base":
+			if err := wireStringPtr(wire, &value.SwitchIpBase); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_password":
+			if err := wireStringPtr(wire, &value.SwitchPassword); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_password_encrypted":
+			if err := wireStringPtr(wire, &value.SwitchPasswordEncrypted); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_username":
+			if err := wireStringPtr(wire, &value.SwitchUsername); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "vtep_id_base_prefix":
+			if err := wireStringPtr(wire, &value.VtepIdBasePrefix); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("FabricsPutRequestFabricValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func fabricObjectPropertiesValue(wire WireValue, target **openapi.FabricsPutRequestFabricValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.FabricsPutRequestFabricValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "system_graphs":
+			if err := fabricSystemGraphsValue(member, &value.SystemGraphs); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("FabricsPutRequestFabricValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
+}
+
+func fabricSystemGraphsValue(wire WireValue, target *[]openapi.FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner) error {
+	entries, err := wireList(wire)
+	if err != nil {
+		return err
+	}
+	values := make([]openapi.FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner, 0, len(entries))
+	for position, entry := range entries {
+		members, err := wireObject(entry)
+		if err != nil {
+			return fmt.Errorf("[%d]: %w", position, err)
+		}
+		var value openapi.FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner
+		for name, member := range members {
+			switch name {
+			case "index":
+				if err := wireInt64Ptr(member, &value.Index); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			default:
+				return fmt.Errorf("FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner has no field %q", name)
+			}
+		}
+		values = append(values, value)
+	}
+	*target = values
+	return nil
+}
+
+func fabricRouteAggregatorsValue(wire WireValue, target *[]openapi.FabricsPutRequestFabricValueRouteAggregatorsInner) error {
+	entries, err := wireList(wire)
+	if err != nil {
+		return err
+	}
+	values := make([]openapi.FabricsPutRequestFabricValueRouteAggregatorsInner, 0, len(entries))
+	for position, entry := range entries {
+		members, err := wireObject(entry)
+		if err != nil {
+			return fmt.Errorf("[%d]: %w", position, err)
+		}
+		var value openapi.FabricsPutRequestFabricValueRouteAggregatorsInner
+		for name, member := range members {
+			switch name {
+			case "index":
+				if err := wireInt64Ptr(member, &value.Index); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "route_aggregation_num_enable":
+				if err := wireBoolPtr(member, &value.RouteAggregationNumEnable); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "route_aggregation_num_ip_and_mask":
+				if err := wireStringPtr(member, &value.RouteAggregationNumIpAndMask); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			default:
+				return fmt.Errorf("FabricsPutRequestFabricValueRouteAggregatorsInner has no field %q", name)
+			}
+		}
+		values = append(values, value)
+	}
+	*target = values
 	return nil
 }
 

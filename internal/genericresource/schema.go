@@ -73,8 +73,22 @@ func CompileSchema(resource spec.ResourceSpec) (schema.Schema, error) {
 // break every existing state file; the version-zero contract is what keeps it.
 func compileSingletonBlock(field spec.FieldSpec) (schema.Block, error) {
 	members := make(map[string]schema.Attribute, len(field.Fields))
+	var blocks map[string]schema.Block
 	for _, member := range field.Fields {
 		if member.Unmanaged {
+			continue
+		}
+		if member.Kind == spec.FieldKindList {
+			// A list inside a singleton is a block nested in the block, as
+			// verity_fabric declares object_properties.system_graphs.
+			block, err := compileSingletonBlock(member)
+			if err != nil {
+				return nil, fmt.Errorf("%s: %w", member.TerraformName, err)
+			}
+			if blocks == nil {
+				blocks = make(map[string]schema.Block)
+			}
+			blocks[member.TerraformName] = block
 			continue
 		}
 		attribute, err := compileAttribute(member)
@@ -85,7 +99,7 @@ func compileSingletonBlock(field spec.FieldSpec) (schema.Block, error) {
 	}
 	return schema.ListNestedBlock{
 		Description:  field.Description,
-		NestedObject: schema.NestedBlockObject{Attributes: members},
+		NestedObject: schema.NestedBlockObject{Attributes: members, Blocks: blocks},
 	}, nil
 }
 

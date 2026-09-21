@@ -83,7 +83,17 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 	nullableEntryMember := notesMember()
 	nullableEntryMember.Kind, nullableEntryMember.Nullable = spec.FieldKindInt64, true
 
-	listInBlock := singletonSpec(indexedList(indexMember, notesMember()))
+	// A list directly inside a singleton is served: verity_fabric's
+	// object_properties.system_graphs is the one resource that has one.
+	if err := Supported(singletonSpec(indexedList(indexMember, notesMember()))); err != nil {
+		t.Fatalf("a list inside a singleton was refused: %v", err)
+	}
+	// Nothing nests more deeply, and a nullable member of a nested list would need
+	// the scan's key for a doubly nested entry.
+	listInList := withList(indexedList(indexMember, indexedList(indexMember, notesMember())))
+	nestedNullable := notesMember()
+	nestedNullable.Kind, nestedNullable.Nullable = spec.FieldKindInt64, true
+	nullableInNestedList := singletonSpec(indexedList(indexMember, nestedNullable))
 
 	// A nullable member of a list entry is served; the configuration scan records
 	// each entry's attributes under its index.
@@ -111,10 +121,11 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 		{"list with a strategy no resource uses", withList(otherStrategy), "without the indexed_patch strategy"},
 		{"list identified by a non-integer member", withList(indexedList(stringIndex, notesMember())), "not an int64 member"},
 
-		{"list inside a block", listInBlock, "list inside a block"},
+		{"list inside a list entry", listInList, "nested more deeply than inside a singleton"},
+		{"nullable member of a list inside a singleton", nullableInNestedList, "nullable member of a singleton block"},
 		{"auto-assignment inside an object", singletonSpec(nestedAuto), "auto-assignment pair inside an object"},
 		{"nullable member of a singleton", singletonSpec(nullableMember), "nullable member of a singleton block"},
-		{"object inside an object", singletonSpec(nestedObject), "object inside an object"},
+		{"object inside an object", singletonSpec(nestedObject), "object inside a block"},
 		{"object without the singleton strategy", notSingleton, "without the singleton strategy"},
 	}
 	for _, tc := range cases {
