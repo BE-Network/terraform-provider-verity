@@ -18,11 +18,11 @@ import (
 // configuration may not set it, the plan cannot know it in advance, and the
 // request carries the flag instead of the value.
 //
-// The rules below are the ones verity_service, verity_tenant, and verity_fabric
-// implement identically, surveyed from their handwritten code rather than
-// designed here. verity_switchpoint implements the same plan rules but a
-// narrower update rule for seven of its ten pairs; it is not servable yet, and
-// that difference has to be decided before it is.
+// The rules below are the ones verity_service, verity_tenant, verity_fabric,
+// and all ten verity_switchpoint pairs implement, surveyed from their
+// handwritten code rather than designed here. Where a handwritten resend reads
+// an unknown plan value as zero, the engine resends state's value instead; the
+// differential tests pin each such case.
 
 type autoAssignedPair struct {
 	value spec.FieldSpec

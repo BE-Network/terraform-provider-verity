@@ -249,7 +249,45 @@ func (r *Resource) planExplicitNulls(ctx context.Context, req resource.ModifyPla
 	}
 
 	for _, field := range lists {
+		if field.Kind == spec.FieldKindObject {
+			r.planSingletonExplicitNulls(ctx, field, config, state, configured, resp)
+			continue
+		}
 		r.planEntryExplicitNulls(ctx, field, config, state, configured, resp)
+	}
+}
+
+// planSingletonExplicitNulls applies the explicit-null rule to a singleton's
+// members: when the configuration and state both hold the block, a nullable
+// member written as null where state holds a value is planned as null in the
+// block's one entry. It is what verity_switchpoint's handwritten plan does for
+// object_properties.number_of_multipoints.
+func (r *Resource) planSingletonExplicitNulls(ctx context.Context, field spec.FieldSpec, config, state map[string]attr.Value, configured *utils.ConfiguredAttributes, resp *resource.ModifyPlanResponse) {
+	configMembers, configPresent, err := singletonMembers(field, config[field.TerraformName])
+	if err != nil || !configPresent {
+		return
+	}
+	stateMembers, statePresent, err := singletonMembers(field, state[field.TerraformName])
+	if err != nil || !statePresent {
+		return
+	}
+	for _, member := range field.Fields {
+		if member.Unmanaged || !member.Nullable {
+			continue
+		}
+		if !configured.IsBlockAttributeConfigured(field.TerraformName + "." + member.TerraformName) {
+			continue
+		}
+		written, held := configMembers[member.TerraformName]
+		if !held || written == nil || !written.IsNull() {
+			continue
+		}
+		prior, had := stateMembers[member.TerraformName]
+		if !had || prior == nil || prior.IsNull() {
+			continue
+		}
+		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx,
+			path.Root(field.TerraformName).AtListIndex(0).AtName(member.TerraformName), nullOf(member.Kind))...)
 	}
 }
 
@@ -409,7 +447,12 @@ func (r *Resource) nullableSource(ctx context.Context, config tfsdk.Config, name
 	values, diags := readScalars(ctx, config, r.spec.Fields)
 	diagnostics.Append(diags...)
 	attributes := r.runtime.ConfiguredAttributes(ctx, r.spec.TerraformType, name)
-	return nullableSource{config: values, configured: attributes.IsConfigured, indexed: attributes.IsIndexedBlockAttributeConfigured}
+	return nullableSource{
+		config:     values,
+		configured: attributes.IsConfigured,
+		indexed:    attributes.IsIndexedBlockAttributeConfigured,
+		block:      attributes.IsBlockAttributeConfigured,
+	}
 }
 
 // needsConfiguration reports whether any field's request depends on the
@@ -428,7 +471,7 @@ func (r *Resource) needsConfiguration() bool {
 }
 
 func hasNullableMember(field spec.FieldSpec) bool {
-	if field.Kind != spec.FieldKindList {
+	if field.Kind != spec.FieldKindList && field.Kind != spec.FieldKindObject {
 		return false
 	}
 	for _, member := range field.Fields {

@@ -119,7 +119,7 @@ func buildCreate(fields []spec.FieldSpec, plan map[string]attr.Value, nullables 
 			err  error
 		)
 		if field.Kind == spec.FieldKindObject {
-			wire, send, err = createSingleton(field, value)
+			wire, send, err = createSingleton(field, value, nullables)
 		} else if field.Kind == spec.FieldKindList {
 			wire, send, err = createList(field, value, nullables)
 		} else {
@@ -200,6 +200,24 @@ type nullableSource struct {
 	// attributes under the literal index an entry is written with, so an entry
 	// written without one has none recorded.
 	indexed func(block string, index int64, member string) bool
+	// block reports whether a member of a singleton is written, keyed
+	// "block.member" as the scan records it.
+	block func(path string) bool
+}
+
+// singletonMember returns a nullable singleton member's configuration value and
+// whether it is written. The value comes from the configuration's entry of the
+// block, falling back to the plan's, as in the handwritten resources.
+func (n nullableSource) singletonMember(field, member spec.FieldSpec, planMembers map[string]attr.Value) (attr.Value, bool) {
+	if n.block == nil || !n.block(field.TerraformName+"."+member.TerraformName) {
+		return nil, false
+	}
+	source := planMembers
+	if members, present, err := singletonMembers(field, n.config[field.TerraformName]); err == nil && present {
+		source = members
+	}
+	value, held := source[member.TerraformName]
+	return value, held
 }
 
 // entryMember returns a nullable member's configuration value for one list entry
@@ -315,7 +333,7 @@ func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value, nul
 			case !hasManagedMembers(field):
 				wire, send, objectChanged, err = updateEmptySingleton(field, value, previous)
 			default:
-				wire, objectChanged, err = updateSingleton(field, value, previous, diagnostics)
+				wire, objectChanged, err = updateSingleton(field, value, previous, nullables, diagnostics)
 			}
 			if err != nil {
 				return nil, false, err

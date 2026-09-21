@@ -70,7 +70,7 @@ func singletonMembers(field spec.FieldSpec, value attr.Value) (map[string]attr.V
 // not written goes through the object's own create policy; one that is written
 // is sent as an object, each member decided by its own policies, and sent even
 // when no member survives, because the handwritten resources send it that way.
-func createSingleton(field spec.FieldSpec, value attr.Value) (transport.WireValue, bool, error) {
+func createSingleton(field spec.FieldSpec, value attr.Value, nullables nullableSource) (transport.WireValue, bool, error) {
 	members, present, err := singletonMembers(field, value)
 	if err != nil {
 		return transport.WireValue{}, false, err
@@ -84,6 +84,11 @@ func createSingleton(field spec.FieldSpec, value attr.Value) (transport.WireValu
 			continue
 		}
 		memberValue, held := members[member.TerraformName]
+		if member.Nullable {
+			// Only the configuration shows whether a null was written; a member
+			// that is not written is left to the server.
+			memberValue, held = nullables.singletonMember(field, member, members)
+		}
 		if !held {
 			continue
 		}
@@ -157,7 +162,7 @@ func hasManagedMembers(field spec.FieldSpec) bool {
 // Adding or removing the block sends nothing, as it does in the handwritten
 // resources. Removal leaves the server's object alone, and an addition is picked
 // up on a later update once the read has put the server's object into state.
-func updateSingleton(field spec.FieldSpec, plan, state attr.Value, diagnostics *diag.Diagnostics) (transport.WireValue, bool, error) {
+func updateSingleton(field spec.FieldSpec, plan, state attr.Value, nullables nullableSource, diagnostics *diag.Diagnostics) (transport.WireValue, bool, error) {
 	planned, plannedPresent, err := singletonMembers(field, plan)
 	if err != nil {
 		return transport.WireValue{}, false, err
@@ -229,6 +234,9 @@ func updateSingleton(field spec.FieldSpec, plan, state attr.Value, diagnostics *
 			continue
 		}
 		value, held := planned[member.TerraformName]
+		if member.Nullable {
+			value, held = nullables.singletonMember(field, member, planned)
+		}
 		if !held {
 			continue
 		}

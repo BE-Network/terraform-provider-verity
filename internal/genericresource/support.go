@@ -46,15 +46,13 @@ func supportedField(field spec.FieldSpec, containers []spec.FieldKind) error {
 	}
 	switch field.Kind {
 	case spec.FieldKindString, spec.FieldKindBool, spec.FieldKindInt64, spec.FieldKindNumber:
-		// A nullable member of a list entry is served: the configuration scan
-		// records each entry's attributes under its index. One inside a
-		// singleton is not yet. The only resource with one is
-		// verity_switchpoint, whose auto-assignment pairs do not all follow the
-		// shared rule, so serving it waits on that decision rather than on this.
-		// A nullable member of a list inside a singleton would need the scan's
-		// key for a doubly nested entry, and no resource has one.
-		if insideSingleton && field.Nullable {
-			return fmt.Errorf("%s is a nullable member of a singleton block, which the engine does not serve yet", field.APIName)
+		// A nullable member of a list entry is served: the scan records each
+		// entry's attributes under its index. So is one of a singleton, which the
+		// scan records under "block.member". A nullable member of a list inside a
+		// singleton would need the scan's key for a doubly nested entry, and no
+		// resource has one.
+		if len(containers) > 1 && field.Nullable {
+			return fmt.Errorf("%s is a nullable member of a list inside a singleton block, which the engine does not serve", field.APIName)
 		}
 		return nil
 	case spec.FieldKindList:

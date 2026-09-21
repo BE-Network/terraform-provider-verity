@@ -101,11 +101,17 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 		t.Fatalf("a list with a nullable entry member was refused: %v", err)
 	}
 
-	nestedAuto := notesMember()
-	nestedAuto.AutoAssignment = &spec.AutoAssignmentSpec{FlagField: "notes_auto_assigned_"}
-
+	// So is a nullable member of a singleton; the scan records it under
+	// "block.member". verity_switchpoint's object_properties.number_of_multipoints
+	// is the one resource that has one.
 	nullableMember := notesMember()
 	nullableMember.Kind, nullableMember.Nullable = spec.FieldKindInt64, true
+	if err := Supported(singletonSpec(nullableMember)); err != nil {
+		t.Fatalf("a singleton with a nullable member was refused: %v", err)
+	}
+
+	nestedAuto := notesMember()
+	nestedAuto.AutoAssignment = &spec.AutoAssignmentSpec{FlagField: "notes_auto_assigned_"}
 
 	nestedObject := notesMember()
 	nestedObject.Kind = spec.FieldKindObject
@@ -122,9 +128,8 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 		{"list identified by a non-integer member", withList(indexedList(stringIndex, notesMember())), "not an int64 member"},
 
 		{"list inside a list entry", listInList, "nested more deeply than inside a singleton"},
-		{"nullable member of a list inside a singleton", nullableInNestedList, "nullable member of a singleton block"},
+		{"nullable member of a list inside a singleton", nullableInNestedList, "nullable member of a list inside a singleton"},
 		{"auto-assignment inside an object", singletonSpec(nestedAuto), "auto-assignment pair inside an object"},
-		{"nullable member of a singleton", singletonSpec(nullableMember), "nullable member of a singleton block"},
 		{"object inside an object", singletonSpec(nestedObject), "object inside a block"},
 		{"object without the singleton strategy", notSingleton, "without the singleton strategy"},
 	}

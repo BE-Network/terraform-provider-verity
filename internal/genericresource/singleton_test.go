@@ -280,7 +280,7 @@ func listValueTyped(field spec.FieldSpec, entries []map[string]attr.Value) (type
 func TestCreateSingletonSendsAnEmptyNestedList(t *testing.T) {
 	t.Parallel()
 
-	wire, send, err := createSingleton(graphBlock(), graphs(t))
+	wire, send, err := createSingleton(graphBlock(), graphs(t), nullableSource{})
 	if err != nil || !send {
 		t.Fatalf("createSingleton: send=%v err=%v", send, err)
 	}
@@ -308,7 +308,7 @@ func TestUpdateSingletonReconcilesANestedListAcrossPresence(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			var diagnostics diag.Diagnostics
-			wire, changed, err := updateSingleton(field, tc.plan, tc.state, &diagnostics)
+			wire, changed, err := updateSingleton(field, tc.plan, tc.state, nullableSource{}, &diagnostics)
 			if err != nil || diagnostics.HasError() || !changed {
 				t.Fatalf("updateSingleton: changed=%v err=%v %v", changed, err, diagnostics)
 			}

@@ -7,7 +7,6 @@
 // is the boundary the plan puts between the two.
 //
 // Resources without an adapter, and why:
-//   verity_switchpoint: number_of_multipoints is a nullable member of a singleton block, which the engine does not serve yet
 
 package transport
 
@@ -63,6 +62,7 @@ var GeneratedAdapters = map[string]ResourceValueAdapter{
 	"verity_spine_plane":              spinePlaneAdapter{},
 	"verity_ssp_group":                sspGroupAdapter{},
 	"verity_su":                       suAdapter{},
+	"verity_switchpoint":              switchpointAdapter{},
 	"verity_tacacs_profile":           tacacsProfileAdapter{},
 	"verity_tenant":                   tenantAdapter{},
 	"verity_threshold":                thresholdAdapter{},
@@ -5395,6 +5395,673 @@ func suObjectPropertiesValue(wire WireValue, target **openapi.AclsPutRequestIpFi
 		}
 	}
 	*target = &value
+	return nil
+}
+
+type switchpointAdapter struct{}
+
+func (switchpointAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.SwitchpointsPutRequestSwitchpointValue
+	for name, wire := range object {
+		switch name {
+		case "authentication_protocol":
+			if err := wireStringPtr(wire, &value.AuthenticationProtocol); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "badges":
+			if err := switchpointBadgesValue(wire, &value.Badges); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "bb_switch":
+			if err := wireBoolPtr(wire, &value.BbSwitch); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "bgp_as_number":
+			if err := wireNullableInt64(wire, &value.BgpAsNumber); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "bgp_as_number_auto_assigned_":
+			if err := wireBoolPtr(wire, &value.BgpAsNumberAutoAssigned); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "children":
+			if err := switchpointChildrenValue(wire, &value.Children); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "cli_access_mode":
+			if err := wireStringPtr(wire, &value.CliAccessMode); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "comm_type":
+			if err := wireStringPtr(wire, &value.CommType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "communication_mode":
+			if err := wireStringPtr(wire, &value.CommunicationMode); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "connected_bundle":
+			if err := wireStringPtr(wire, &value.ConnectedBundle); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "connected_bundle_ref_type_":
+			if err := wireStringPtr(wire, &value.ConnectedBundleRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "connection_service":
+			if err := wireStringPtr(wire, &value.ConnectionService); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "connection_service_ref_type_":
+			if err := wireStringPtr(wire, &value.ConnectionServiceRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "controller_ip_and_mask":
+			if err := wireStringPtr(wire, &value.ControllerIpAndMask); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "controller_ip_and_mask_auto_assigned_":
+			if err := wireBoolPtr(wire, &value.ControllerIpAndMaskAutoAssigned); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "device_managed_as":
+			if err := wireStringPtr(wire, &value.DeviceManagedAs); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "device_serial_number":
+			if err := wireStringPtr(wire, &value.DeviceSerialNumber); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "enable_password":
+			if err := wireStringPtr(wire, &value.EnablePassword); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "enable_password_encrypted":
+			if err := wireStringPtr(wire, &value.EnablePasswordEncrypted); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "eths":
+			if err := switchpointEthsValue(wire, &value.Eths); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "expected_breakout":
+			if err := wireStringPtr(wire, &value.ExpectedBreakout); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "expected_breakout_uplink_port":
+			if err := wireStringPtr(wire, &value.ExpectedBreakoutUplinkPort); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "expected_fabric":
+			if err := wireStringPtr(wire, &value.ExpectedFabric); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "expected_fabric_ref_type_":
+			if err := wireStringPtr(wire, &value.ExpectedFabricRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "expected_uplink_port":
+			if err := wireNullableInt64(wire, &value.ExpectedUplinkPort); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "gateway":
+			if err := wireStringPtr(wire, &value.Gateway); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "gateway_auto_assigned_":
+			if err := wireBoolPtr(wire, &value.GatewayAutoAssigned); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "ip_source":
+			if err := wireStringPtr(wire, &value.IpSource); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "is_fabric":
+			if err := wireBoolPtr(wire, &value.IsFabric); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "is_top_of_island":
+			if err := wireBoolPtr(wire, &value.IsTopOfIsland); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "lldp_search_string":
+			if err := wireStringPtr(wire, &value.LldpSearchString); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "lldp_search_string_auto_assigned_":
+			if err := wireBoolPtr(wire, &value.LldpSearchStringAutoAssigned); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "located_by":
+			if err := wireStringPtr(wire, &value.LocatedBy); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "locked":
+			if err := wireBoolPtr(wire, &value.Locked); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "managed_on_native_vlan":
+			if err := wireBoolPtr(wire, &value.ManagedOnNativeVlan); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := switchpointObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "out_of_band_management":
+			if err := wireBoolPtr(wire, &value.OutOfBandManagement); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "passphrase":
+			if err := wireStringPtr(wire, &value.Passphrase); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "passphrase_encrypted":
+			if err := wireStringPtr(wire, &value.PassphraseEncrypted); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "password":
+			if err := wireStringPtr(wire, &value.Password); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "password_encrypted":
+			if err := wireStringPtr(wire, &value.PasswordEncrypted); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "plane":
+			if err := wireStringPtr(wire, &value.Plane); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "plane_ref_type_":
+			if err := wireStringPtr(wire, &value.PlaneRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "pod":
+			if err := wireStringPtr(wire, &value.Pod); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "pod_ref_type_":
+			if err := wireStringPtr(wire, &value.PodRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "port":
+			if err := wireStringPtr(wire, &value.Port); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "position":
+			if err := wireNullableFloat64(wire, &value.Position); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "pots":
+			if err := switchpointPotsValue(wire, &value.Pots); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "power_state":
+			if err := wireStringPtr(wire, &value.PowerState); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "private_password":
+			if err := wireStringPtr(wire, &value.PrivatePassword); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "private_password_encrypted":
+			if err := wireStringPtr(wire, &value.PrivatePasswordEncrypted); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "private_protocol":
+			if err := wireStringPtr(wire, &value.PrivateProtocol); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "rack":
+			if err := wireStringPtr(wire, &value.Rack); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "rack_info":
+			if err := wireStringPtr(wire, &value.RackInfo); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "rack_ref_type_":
+			if err := wireStringPtr(wire, &value.RackRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "rail_group":
+			if err := wireNullableFloat64(wire, &value.RailGroup); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "read_only_mode":
+			if err := wireBoolPtr(wire, &value.ReadOnlyMode); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "sdlc":
+			if err := wireStringPtr(wire, &value.Sdlc); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "security_type":
+			if err := wireStringPtr(wire, &value.SecurityType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "snmp_community_string":
+			if err := wireStringPtr(wire, &value.SnmpCommunityString); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "snmpv3_username":
+			if err := wireStringPtr(wire, &value.Snmpv3Username); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "spine_plane":
+			if err := wireStringPtr(wire, &value.SpinePlane); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "spine_plane_ref_type_":
+			if err := wireStringPtr(wire, &value.SpinePlaneRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "ssh_key_or_password":
+			if err := wireStringPtr(wire, &value.SshKeyOrPassword); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "ssh_key_or_password_encrypted":
+			if err := wireStringPtr(wire, &value.SshKeyOrPasswordEncrypted); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "ssh_key_or_password_encrypted_auto_assigned_":
+			if err := wireBoolPtr(wire, &value.SshKeyOrPasswordEncryptedAutoAssigned); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "ssp_group":
+			if err := wireStringPtr(wire, &value.SspGroup); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "ssp_group_ref_type_":
+			if err := wireStringPtr(wire, &value.SspGroupRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "su":
+			if err := wireStringPtr(wire, &value.Su); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "su_ref_type_":
+			if err := wireStringPtr(wire, &value.SuRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch":
+			if err := wireStringPtr(wire, &value.Switch); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_gateway":
+			if err := wireStringPtr(wire, &value.SwitchGateway); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_gateway_auto_assigned_":
+			if err := wireBoolPtr(wire, &value.SwitchGatewayAutoAssigned); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_ip_and_mask":
+			if err := wireStringPtr(wire, &value.SwitchIpAndMask); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_ip_and_mask_auto_assigned_":
+			if err := wireBoolPtr(wire, &value.SwitchIpAndMaskAutoAssigned); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_ref_type_":
+			if err := wireStringPtr(wire, &value.SwitchRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_router_id_ip_mask":
+			if err := wireStringPtr(wire, &value.SwitchRouterIdIpMask); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_router_id_ip_mask_auto_assigned_":
+			if err := wireBoolPtr(wire, &value.SwitchRouterIdIpMaskAutoAssigned); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_vtep_id_ip_mask":
+			if err := wireStringPtr(wire, &value.SwitchVtepIdIpMask); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_vtep_id_ip_mask_auto_assigned_":
+			if err := wireBoolPtr(wire, &value.SwitchVtepIdIpMaskAutoAssigned); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "tenant":
+			if err := wireStringPtr(wire, &value.Tenant); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "tenant_ref_type_":
+			if err := wireStringPtr(wire, &value.TenantRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "traffic_mirrors":
+			if err := switchpointTrafficMirrorsValue(wire, &value.TrafficMirrors); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "type":
+			if err := wireStringPtr(wire, &value.Type); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "uplink_port":
+			if err := wireStringPtr(wire, &value.UplinkPort); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "upstream_is_lag":
+			if err := wireBoolPtr(wire, &value.UpstreamIsLag); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "username":
+			if err := wireStringPtr(wire, &value.Username); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "username_auto_assigned_":
+			if err := wireBoolPtr(wire, &value.UsernameAutoAssigned); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "uses_tagged_packets":
+			if err := wireBoolPtr(wire, &value.UsesTaggedPackets); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "ztp_identification":
+			if err := wireStringPtr(wire, &value.ZtpIdentification); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("SwitchpointsPutRequestSwitchpointValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func switchpointBadgesValue(wire WireValue, target *[]openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner) error {
+	entries, err := wireList(wire)
+	if err != nil {
+		return err
+	}
+	values := make([]openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner, 0, len(entries))
+	for position, entry := range entries {
+		members, err := wireObject(entry)
+		if err != nil {
+			return fmt.Errorf("[%d]: %w", position, err)
+		}
+		var value openapi.SwitchpointsPutRequestSwitchpointValueBadgesInner
+		for name, member := range members {
+			switch name {
+			case "badge":
+				if err := wireStringPtr(member, &value.Badge); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "badge_ref_type_":
+				if err := wireStringPtr(member, &value.BadgeRefType); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "index":
+				if err := wireInt64Ptr(member, &value.Index); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			default:
+				return fmt.Errorf("SwitchpointsPutRequestSwitchpointValueBadgesInner has no field %q", name)
+			}
+		}
+		values = append(values, value)
+	}
+	*target = values
+	return nil
+}
+
+func switchpointChildrenValue(wire WireValue, target *[]openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner) error {
+	entries, err := wireList(wire)
+	if err != nil {
+		return err
+	}
+	values := make([]openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner, 0, len(entries))
+	for position, entry := range entries {
+		members, err := wireObject(entry)
+		if err != nil {
+			return fmt.Errorf("[%d]: %w", position, err)
+		}
+		var value openapi.SwitchpointsPutRequestSwitchpointValueChildrenInner
+		for name, member := range members {
+			switch name {
+			case "child_num_device":
+				if err := wireStringPtr(member, &value.ChildNumDevice); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "child_num_endpoint":
+				if err := wireStringPtr(member, &value.ChildNumEndpoint); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "child_num_endpoint_ref_type_":
+				if err := wireStringPtr(member, &value.ChildNumEndpointRefType); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "index":
+				if err := wireInt64Ptr(member, &value.Index); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			default:
+				return fmt.Errorf("SwitchpointsPutRequestSwitchpointValueChildrenInner has no field %q", name)
+			}
+		}
+		values = append(values, value)
+	}
+	*target = values
+	return nil
+}
+
+func switchpointEthsValue(wire WireValue, target *[]openapi.SwitchpointsPutRequestSwitchpointValueEthsInner) error {
+	entries, err := wireList(wire)
+	if err != nil {
+		return err
+	}
+	values := make([]openapi.SwitchpointsPutRequestSwitchpointValueEthsInner, 0, len(entries))
+	for position, entry := range entries {
+		members, err := wireObject(entry)
+		if err != nil {
+			return fmt.Errorf("[%d]: %w", position, err)
+		}
+		var value openapi.SwitchpointsPutRequestSwitchpointValueEthsInner
+		for name, member := range members {
+			switch name {
+			case "breakout":
+				if err := wireStringPtr(member, &value.Breakout); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "customer_vlan":
+				if err := wireStringPtr(member, &value.CustomerVlan); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "enable":
+				if err := wireBoolPtr(member, &value.Enable); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "eth_num_icon":
+				if err := wireStringPtr(member, &value.EthNumIcon); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "eth_num_label":
+				if err := wireStringPtr(member, &value.EthNumLabel); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "index":
+				if err := wireInt64Ptr(member, &value.Index); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "port_name":
+				if err := wireStringPtr(member, &value.PortName); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			default:
+				return fmt.Errorf("SwitchpointsPutRequestSwitchpointValueEthsInner has no field %q", name)
+			}
+		}
+		values = append(values, value)
+	}
+	*target = values
+	return nil
+}
+
+func switchpointObjectPropertiesValue(wire WireValue, target **openapi.SwitchpointsPutRequestSwitchpointValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.SwitchpointsPutRequestSwitchpointValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "aggregate":
+			if err := wireBoolPtr(member, &value.Aggregate); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		case "draw_as_edge_device":
+			if err := wireBoolPtr(member, &value.DrawAsEdgeDevice); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		case "emulate_rf_video_port":
+			if err := wireBoolPtr(member, &value.EmulateRfVideoPort); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		case "expected_parent_endpoint":
+			if err := wireStringPtr(member, &value.ExpectedParentEndpoint); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		case "expected_parent_endpoint_ref_type_":
+			if err := wireStringPtr(member, &value.ExpectedParentEndpointRefType); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		case "is_host":
+			if err := wireBoolPtr(member, &value.IsHost); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		case "number_of_multipoints":
+			if err := wireNullableInt64(member, &value.NumberOfMultipoints); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		case "user_notes":
+			if err := wireStringPtr(member, &value.UserNotes); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("SwitchpointsPutRequestSwitchpointValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
+}
+
+func switchpointPotsValue(wire WireValue, target *[]openapi.SwitchpointsPutRequestSwitchpointValuePotsInner) error {
+	entries, err := wireList(wire)
+	if err != nil {
+		return err
+	}
+	values := make([]openapi.SwitchpointsPutRequestSwitchpointValuePotsInner, 0, len(entries))
+	for position, entry := range entries {
+		members, err := wireObject(entry)
+		if err != nil {
+			return fmt.Errorf("[%d]: %w", position, err)
+		}
+		var value openapi.SwitchpointsPutRequestSwitchpointValuePotsInner
+		for name, member := range members {
+			switch name {
+			case "index":
+				if err := wireInt64Ptr(member, &value.Index); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "pots_num_caller_id":
+				if err := wireStringPtr(member, &value.PotsNumCallerId); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "pots_num_enable":
+				if err := wireBoolPtr(member, &value.PotsNumEnable); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "pots_num_hot_line":
+				if err := wireStringPtr(member, &value.PotsNumHotLine); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "pots_num_password":
+				if err := wireStringPtr(member, &value.PotsNumPassword); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "pots_num_password_encrypted":
+				if err := wireStringPtr(member, &value.PotsNumPasswordEncrypted); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "pots_num_uri":
+				if err := wireStringPtr(member, &value.PotsNumUri); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "pots_num_username":
+				if err := wireStringPtr(member, &value.PotsNumUsername); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			default:
+				return fmt.Errorf("SwitchpointsPutRequestSwitchpointValuePotsInner has no field %q", name)
+			}
+		}
+		values = append(values, value)
+	}
+	*target = values
+	return nil
+}
+
+func switchpointTrafficMirrorsValue(wire WireValue, target *[]openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) error {
+	entries, err := wireList(wire)
+	if err != nil {
+		return err
+	}
+	values := make([]openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner, 0, len(entries))
+	for position, entry := range entries {
+		members, err := wireObject(entry)
+		if err != nil {
+			return fmt.Errorf("[%d]: %w", position, err)
+		}
+		var value openapi.SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner
+		for name, member := range members {
+			switch name {
+			case "index":
+				if err := wireInt64Ptr(member, &value.Index); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "traffic_mirror_num_destination_port":
+				if err := wireStringPtr(member, &value.TrafficMirrorNumDestinationPort); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "traffic_mirror_num_enable":
+				if err := wireBoolPtr(member, &value.TrafficMirrorNumEnable); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "traffic_mirror_num_inbound_traffic":
+				if err := wireBoolPtr(member, &value.TrafficMirrorNumInboundTraffic); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "traffic_mirror_num_outbound_traffic":
+				if err := wireBoolPtr(member, &value.TrafficMirrorNumOutboundTraffic); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "traffic_mirror_num_source_lag_indicator":
+				if err := wireBoolPtr(member, &value.TrafficMirrorNumSourceLagIndicator); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "traffic_mirror_num_source_port":
+				if err := wireStringPtr(member, &value.TrafficMirrorNumSourcePort); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			default:
+				return fmt.Errorf("SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner has no field %q", name)
+			}
+		}
+		values = append(values, value)
+	}
+	*target = values
 	return nil
 }
 

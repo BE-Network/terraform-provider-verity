@@ -206,24 +206,37 @@ func registrySpec(t *testing.T, terraformType string) spec.ResourceSpec {
 }
 
 // The compiler must refuse what the engine cannot serve rather than approximate
-// it. An indexed collection needs the strategy Phase 4 implements, and silently
-// emitting a bare attribute for one would produce a schema that accepts
-// configuration the engine then ignores.
+// it. Emitting a bare attribute for a shape the engine does not implement would
+// produce a schema that accepts configuration the engine then ignores. Every
+// registry resource is now served, so the check runs on a registry resource
+// given a shape no resource has: an object nested inside its singleton block.
 func TestCompileSchemaRefusesUnsupportedResources(t *testing.T) {
 	t.Parallel()
 
-	refused := 0
 	for _, resourceSpec := range generatedRegistry(t) {
-		if genericresource.Supported(resourceSpec) == nil {
+		if err := genericresource.Supported(resourceSpec); err != nil {
+			t.Errorf("%s is unsupported: %v", resourceSpec.TerraformType, err)
+		}
+	}
+
+	unsupported := registrySpec(t, "verity_switchpoint")
+	unsupported.Fields = append([]spec.FieldSpec(nil), unsupported.Fields...)
+	for i, field := range unsupported.Fields {
+		if field.TerraformName != "object_properties" {
 			continue
 		}
-		if _, err := genericresource.CompileSchema(resourceSpec); err == nil {
-			t.Errorf("%s is unsupported but compiled without error", resourceSpec.TerraformType)
-		}
-		refused++
+		block := field
+		block.Fields = append(append([]spec.FieldSpec(nil), field.Fields...), spec.FieldSpec{
+			TerraformName: "nested", APIName: "nested", Kind: spec.FieldKindObject,
+			Access: spec.AccessOptional, Modes: field.Modes,
+		})
+		unsupported.Fields[i] = block
 	}
-	if refused == 0 {
-		t.Fatal("no registry resource is unsupported, so this check proved nothing")
+	if genericresource.Supported(unsupported) == nil {
+		t.Fatal("the altered switchpoint is supported, so this check proves nothing")
+	}
+	if _, err := genericresource.CompileSchema(unsupported); err == nil {
+		t.Fatal("an unsupported resource compiled without error")
 	}
 }
 
