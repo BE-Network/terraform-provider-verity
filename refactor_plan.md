@@ -1,6 +1,6 @@
 # Refactoring plan: schema-driven Verity resources
 
-- Status: Phases 0, 1, and 2 closed; Phase 3 implementation complete up to what needs Phase 4; Phase 4 implementation complete up to one decision (49 of 50 API-backed resources served opt-in); the default-migration step is a pending decision
+- Status: Phases 0, 1, and 2 closed; Phase 3 implementation complete up to what needs Phase 4; Phase 4 implementation complete (all 50 API-backed resources served opt-in); the default-migration step is a pending decision
 - Prepared: 2026-09-08
 - Scope: API-backed Terraform resources in `internal/provider`, their field handling, resource registration, bulk-operation metadata, and schema/OpenAPI tooling.
 
@@ -656,8 +656,9 @@ the engine serves: adding one is a spec change.
 
 Remaining, in two groups. Items that need indexed collections: reference pairs
 inside lists, nullable members inside a singleton, and `verity_switchpoint`'s
-auto-assignment pairs, seven of which follow a narrower handwritten rule that has
-to be decided before it migrates. And the migration step this phase names —
+auto-assignment pairs, all since served in Phase 4. An earlier version of this
+plan said seven of the switchpoint pairs follow a narrower handwritten rule. That
+was wrong: all ten follow the shared algorithm. And the migration step this phase names —
 `verity_badge` and resources like `verity_lag` becoming generic by default, with
 their handwritten `Set*Fields`, `CompareAndSet*`, and nullifier lists retired —
 which is a rollout decision now that the contract tests pass. Comparing
@@ -667,7 +668,7 @@ merges a partially PATCHed `object_properties` member by member, so sending only
 changed members is correct; a third apparent defect was the test mock replacing
 the object, and is gone now that the mock merges. See status.md.
 
-### Phase 4: indexed collections — IN PROGRESS
+### Phase 4: indexed collections — IMPLEMENTATION COMPLETE
 
 - Implement and property-test `indexed_patch`, server-assigned index, full replacement, ordering, and subset strategies.
 - Start with a simple single-list resource such as an access/community/prefix list.
@@ -680,7 +681,7 @@ Where it stands: every list in the registry — 54 of them — uses `indexed_pat
 with object entries identified by `index`, and every handwritten list reconciles
 through the same `ProcessIndexedArrayUpdates` function, so one implementation
 covers them. `indexed_patch` is implemented from the members' declared policies,
-with no per-resource closures, and the engine serves 49 resources, including the
+with no per-resource closures, and the engine serves all 50 resources, including the
 simple single-list resources the plan names first and the multi-list
 `verity_packet_broker`, `verity_port_acl`, and `verity_pb_routing_acl`. Add,
 change, removal, reordering, and an entry without an index are compared against
@@ -694,10 +695,14 @@ configuration under the literal index the scan records it by. The memberless
 which makes `verity_device_settings` and the update-only `verity_sfp_breakout`
 servable. The list inside a singleton is implemented too, with the dedicated tests
 Phase 5 asks for before deep nesting migrates, which makes `verity_fabric`
-servable. The exit criterion holds for every resource the engine serves. The only
-resource left, `verity_switchpoint`, is held back by a decision rather than engine
-work: its auto-assignment pairs do not all follow the shared rule, and its one
-other gap, a nullable singleton member, waits on that. See status.md for the
+servable. `verity_switchpoint` is the last. A re-audit found that all ten of its
+auto-assignment pairs follow the shared algorithm, and a key-by-key differential
+test over six transitions confirms it. The one exception is a turn-off without
+a written value: there, five handwritten pairs send the zero value of an unknown
+plan instead of state's value. The engine resends state's value there too, and that is
+accepted as a bug fix. A test pins both bodies, and no registry exception reproduces the legacy behavior. Its nullable singleton member,
+`object_properties.number_of_multipoints`, is implemented following the
+handwritten path. The exit criterion holds for every resource. See status.md for the
 handwritten list behaviors the engine reproduces, including reorder drift, and
 the one it deliberately does not: removals are sorted by index rather than sent in
 the handwritten code's unstable map order.

@@ -29,13 +29,14 @@ implementation, 3,415 assertions, and the fifth follows from `access`.
 The Phase 2 engine reproduces the golden fixtures captured from the handwritten
 `verity_ipv4_list` byte for byte. **Phase 3's implementation is complete up to
 what needs Phase 4, and Phase 4's implementation is complete up to one
-decision:** the engine now serves 49 of the 50 API-backed resources behind the
-same opt-in switch. Reference pairs, nullable numerics at the top level and inside
-list entries, endpoint-selecting parameters, auto-assignment pairs, singleton
-objects including memberless ones, indexed collections including one nested in a
-singleton, and update-only resources are implemented. The one resource left,
-`verity_switchpoint`, waits on a decision about its auto-assignment pairs, not on
-engine work; see "Phase 4: indexed collections".
+decision:** the engine now serves all 50 API-backed resources behind the
+same opt-in switch. Reference pairs, nullable numerics at the top level, inside
+list entries, and inside a singleton, endpoint-selecting parameters,
+auto-assignment pairs, singleton objects including memberless ones, indexed
+collections including one nested in a singleton, and update-only resources are
+implemented. `verity_switchpoint`, the last to become servable, uses the shared
+auto-assignment algorithm for all ten of its pairs; see "Auto-assignment". The
+remaining decision is the rollout: making generic resources the default.
 
 A live 6.6 run with `VERITY_GENERIC_RESOURCES=verity_ipv4_list` confirmed that
 the generic implementation registered, batched two creates into one
@@ -553,7 +554,7 @@ and adding singleton support without `Supported` would have served them with no
 | Singleton objects | Implemented, opt-in | A singleton compiles to the same `ListNestedBlock` the handwritten resources declare, so state shape and schema version zero are unchanged. `singleton.go` follows the handwritten rules: create sends the object when the block is written; update considers it only when plan and state both hold an entry and sends only the members that changed; a response object becomes a one-entry block. Members go through the same declared policies as every other field, and out-of-mode members are nulled in the plan. `singleton_test.go` pins each rule; `TestGenericMatchesLegacyOnSingletonUpdates` compares both implementations for member changes, clears, removals, block addition and removal, and an unrelated change. |
 | Reference pairs inside a singleton | Implemented, opt-in | The top-level pair logic runs over the block's members, with the handwritten validation and empty-string clears. Covered for `verity_lag` by unit and differential tests. |
 | Parameters that select a resource on a shared endpoint | Implemented, opt-in | The ACLs share `/acls` and are told apart by `ip_version`. The registry records it as `fixed_headers`, a name taken from the bulk manager's `HeaderParams`, but both OpenAPI documents declare it `in: query` for GET, PUT, PATCH, and DELETE. Writes pass it to the bulk manager exactly as the handwritten ACL resource does; the generic read sends it in the query string. `TestGenericRuntimeSendsFixedParametersInTheQuery` serves each version's objects only for its query value and rejects a header-borne one; `TestGenericMatchesLegacyOnACLUpdates` compares both implementations' bodies and the query of every PUT, PATCH, and DELETE for both versions, including nullable port changes, explicit nulls, and removal. Renaming the registry field to match what it is remains a follow-up. |
-| Nullable members inside a singleton | Not started | They need the configuration scan at a nested path. No servable resource has one; `Supported` refuses them. |
+| Nullable members inside a singleton | Implemented in Phase 4, opt-in | See "Phase 4: indexed collections". |
 
 ### Auto-assignment: what the survey found and where the engine differs
 
@@ -562,21 +563,26 @@ written. `verity_service`, `verity_tenant`, and `verity_fabric` implement one
 algorithm identically, and the engine implements that. Two findings are not
 settled by it:
 
-- **`verity_switchpoint` is inconsistent with itself.** Three of its ten pairs
-  (`bgp_as_number`, `switch_router_id_ip_mask`, `switch_vtep_id_ip_mask`) follow
-  the shared algorithm. The other seven skip the resend when assignment is turned
-  off, and five of those (all but `controller_ip_and_mask` and
-  `switch_ip_and_mask`) also skip the "only when the configuration states the
-  flag" check. It is not servable — it carries indexed collections —
-  so nothing uses the engine's rule for it yet. Which behavior is correct has to
-  be decided before it migrates.
+- **`verity_switchpoint`'s ten pairs follow the shared algorithm.** An earlier
+  version of this document said seven of them follow a narrower rule. That was
+  wrong: it read code structure as policy. Three pairs read the configuration
+  into a local variable and seven reuse an earlier read, and all ten send the
+  flag only when the configuration states it, resend the value on turn-off from
+  the plan or else state, and include the flag when the value changes and the
+  flag does not. `controller_ip_and_mask` and `switch_ip_and_mask` lack a
+  redundant apply-time validation branch the others have; their plan step
+  refuses the same configuration, and no test shows a wire difference.
+  `TestGenericMatchesLegacyOnSwitchpointAutoAssignment` writes all ten pairs the
+  same way in one configuration and compares both implementations key by key
+  over six transitions. One transition differs, for five pairs, and the engine's
+  behavior is accepted as a bug fix; see difference 3 below.
 - **Diagnostic wording is generic.** The handwritten summaries use per-resource
   labels ("VNI cannot be specified when auto-assigned"); the engine names the
   field (`'vni' cannot be specified when auto-assigned`). Every detail sentence
   is word for word the handwritten one. Validation also moves from apply to plan,
   so the refusal appears earlier.
 
-Two differences are deliberate, each pinned by a test asserting both exact
+Three differences are deliberate, each pinned by a test asserting both exact
 request bodies:
 
 1. **An unwritten `vni` on create.** vni is Optional and Computed, so it plans as
@@ -589,6 +595,26 @@ request bodies:
    their auto-assigned numerics; Terraform plans the state value and the null is
    silently dropped. The engine applies the decided nullable contract — a written
    null is sent — to every nullable field. `TestAutoAssignedValueWrittenAsNullIsSent`.
+3. **Switchpoint assignment turned off without writing the value.** This is
+   difference 1 again, on the update path. Take a switchpoint whose state holds
+   `bgp_as_number = 65001`, `controller_ip_and_mask = "10.3.0.1/24"`, and so on,
+   with every `*_auto_assigned_ = true`, and a configuration that changes only
+   the flags to `false` and writes no values. Every value is unwritten, Optional
+   and Computed, so all ten plan as unknown. The test's plan check confirms this.
+   For `bgp_as_number`, `switch_vtep_id_ip_mask`, `switch_router_id_ip_mask`,
+   `controller_ip_and_mask`, and `switch_ip_and_mask`, the handwritten resend
+   tests only `!plan.X.IsNull()`, which an unknown passes. It then sends the
+   zero value: the PATCH carries `"bgp_as_number": 0`,
+   `"controller_ip_and_mask": ""`, `"switch_ip_and_mask": ""`,
+   `"switch_router_id_ip_mask": ""`, and `"switch_vtep_id_ip_mask": ""`, which
+   clears the values the resend exists to keep. The other five pairs also test
+   `!plan.X.IsUnknown()` and resend state's value, and the engine does that for
+   all ten: `"bgp_as_number": 65001`, `"controller_ip_and_mask": "10.3.0.1/24"`.
+   Every other key of the two PATCH bodies is identical. The case in
+   `TestGenericMatchesLegacyOnSwitchpointAutoAssignment` pins both sides pair by
+   pair. **Accepted as a bug fix:** the engine's behavior is kept, and no
+   registry exception reproduces the zero values. It is the one transition where
+   switchpoint is not byte-for-byte identical to the handwritten resource.
 
 ### Singleton defects carried for parity
 
@@ -667,13 +693,13 @@ policies already describe.
 | Server-assigned index, full replacement, ordering, subset strategies | Not implemented, deliberately | No registry resource uses any of them. An implementation would have no handwritten behavior to be checked against, so it would be a design rather than a migration. `Supported` refuses any list strategy other than `indexed_patch`. |
 | Generated list adapters | Implemented | The generator emits a slice conversion per list from the SDK's entry struct. |
 | Nullable members of a list entry | Implemented, opt-in | Nine resources: `verity_eth_port_profile`, `verity_eth_port_settings`, `verity_gateway`, `verity_ipv4_prefix_list`, `verity_ipv6_prefix_list`, `verity_ldap_profile`, `verity_packet_queue`, `verity_service_port_profile`, `verity_tacacs_profile`. All nine handle every such member through the same handwritten path, checked before implementing. The configuration scan records each entry's attributes under the literal index it is written with, so the engine reads a member from the configuration entry with that index, sends it only when the scan recorded it, and forces a written null into the plan at that entry's position when state holds a value. An entry written without an index therefore has no written nullable members, as in the handwritten resources. `TestGenericMatchesLegacyOnNullableEntryMembers` compares both implementations over eight cases on create, update, and an added entry. |
-| Nullable members of a singleton | Not started, deliberately | Only `verity_switchpoint.object_properties.number_of_multipoints`. Serving it would make switchpoint servable under the shared auto-assignment rule, which seven of its ten pairs do not follow, so it waits on that decision. |
+| Nullable members of a singleton | Implemented, opt-in | Only `verity_switchpoint.object_properties.number_of_multipoints`. The engine follows the handwritten path. The member is read from the configuration's block, falling back to the plan's. The scan's `object_properties.number_of_multipoints` key says whether it is written. Create sends it only when written, a written null included. Update applies it only when both the plan and state hold the block, as for every singleton scalar. When the configuration and state both hold the block and a written null meets a state value, the plan step plans null at `object_properties[0].number_of_multipoints`. `TestGenericMatchesLegacyOnSwitchpointNullableMember` compares both implementations over five create and update cases. A nullable member of a list inside a singleton stays refused; no resource has one. |
 | A list inside a singleton | Implemented, opt-in | `verity_fabric.object_properties.system_graphs`, the provider's only two-level nesting. The plan asks for dedicated tests of this path before the resource migrates; `TestGenericMatchesLegacyOnListInsideSingleton` compares both implementations when a graph is added or removed, when the block is written with no graphs, added with one, or removed with one, and when another field changes. Two handwritten rules differ from a plain singleton and are followed: the nested list is reconciled whenever either side holds the block, so adding or removing the block creates or deletes its entries; and a written block with no entries still sends the list, empty. Nothing may nest more deeply, and a nullable member of a nested list stays refused; no resource has one. |
 | An `object_properties` block with no members | Implemented, opt-in | `verity_device_settings` and `verity_sfp_breakout` ship the API's memberless object as an empty block, whose SDK type is a plain map. Only its presence can change, and the handwritten resources treat that as a change of the resource: a written block is sent as `{}` on create and when added, and removing it counts as a change with nothing to send. `updateEmptySingleton` follows that rule; `TestGenericMatchesLegacyOnEmptyBlock` compares both implementations when the block is written at create, added, and removed. |
 | Update-only resources | Implemented, opt-in | The engine refuses create and delete for a resource whose operations exclude them, and the generator types an update-only resource from the SDK's PATCH body, which is what the bulk manager asserts for it. `verity_sfp_breakout` is checked by import against its golden state and, because the harness cannot hold it across an update, by `TestGenericUpdateOnlyAdapterMatchesGoldenPatch` at the bulk manager. |
 
-49 resources are servable, and all 49 have schema parity and golden-fixture parity
-with the handwritten resources.
+All 50 resources are servable, and all 50 have schema parity and golden-fixture
+parity with the handwritten resources.
 
 ### Two things the mock now models, one of them to confirm
 
@@ -817,7 +843,7 @@ explicitly requested.
 | --- | --- | --- |
 | Phase 2: generic scalar lifecycle pilot | Complete | The engine serves `verity_ipv4_list` behind `VERITY_GENERIC_RESOURCES`, reproducing the legacy golden fixtures. Keeping the generic path opt-in and retaining the handwritten default are later migration decisions. |
 | Phase 3: shared semantic policies | Implementation complete for everything reachable before Phase 4 | 19 opt-in resources, every singleton-only resource included. Remaining items either need indexed collections (nested pairs in lists, switchpoint's pairs, nullable members inside a singleton) or are the migration decision itself: making generic resources the default and retiring their handwritten implementations. |
-| Phase 4: indexed collections | Implementation complete up to one decision | `indexed_patch`, nullable list-entry members, memberless blocks, update-only resources, and a list inside a singleton implemented; 49 opt-in resources. `verity_switchpoint` waits on its auto-assignment decision, not on engine work. |
+| Phase 4: indexed collections | Implementation complete | `indexed_patch`, nullable list-entry and singleton members, memberless blocks, update-only resources, and a list inside a singleton are implemented. All 50 resources are opt-in. One switchpoint difference is an accepted bug fix, pinned by a test (Auto-assignment, difference 3). |
 | Phase 5: complex/exceptional resources | Not started | Begins after collection strategies are proven. |
 | Phase 6: remove legacy duplication | Not started | Begins only after all API-backed resources use the generic engine. |
 
@@ -892,17 +918,12 @@ workflow sets; without them the lifecycle package alone takes far longer.
    handwritten implementations are retired. Its contract tests pass; this is a
    rollout decision. Retiring a resource is what allows its
    `resource_verity_*.go` file to be deleted in Phase 6.
-2. Decide `verity_switchpoint`'s auto-assignment rule, the last thing between
-   the engine and all 50 resources: seven of its ten pairs follow a narrower
-   handwritten rule than the other three and the other resources. Once decided,
-   its nullable singleton member (`object_properties.number_of_multipoints`) is a
-   small addition.
-3. Confirm against a live fabric that an index-only `system_graphs` entry adds a
+2. Confirm against a live fabric that an index-only `system_graphs` entry adds a
    graph when the index is new; the mock now assumes so.
-4. Implement the response-identity contract described below, so the generic
+3. Implement the response-identity contract described below, so the generic
    engine resolves a resource's identity from a declared source rather than
    assuming the response carries a `name` member.
-5. Decide the one item the exception inventory still leaves open: a validator for
+4. Decide the one item the exception inventory still leaves open: a validator for
    `verity_tenant.vrf_name`, which needs `FieldSpec.Validators` wired into the
    override format. The other open item, `verity_packet_broker.ipv6_permit.enable`,
    is settled: it was a defect, and it is fixed.
