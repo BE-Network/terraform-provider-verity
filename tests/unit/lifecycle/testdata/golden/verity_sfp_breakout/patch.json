@@ -5,12 +5,9 @@
         {
           "breakout": "1x100G",
           "enable": true,
-          "index": 1,
-          "part_number": "",
-          "vendor": ""
+          "index": 1
         }
-      ],
-      "name": ""
+      ]
     }
   }
 }

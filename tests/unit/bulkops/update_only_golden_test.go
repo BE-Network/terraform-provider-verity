@@ -49,16 +49,19 @@ func TestUpdateOnlyResourceGoldenPatch(t *testing.T) {
 	manager := bulkops.GetManager(newTestClient(server.URL), nopClearCache, nil, "datacenter")
 
 	// A breakout entry as the provider builds one: the object is addressed by
-	// name, and the entry inside it by index.
-	value := openapi.NewSfpbreakoutsPatchRequestSfpBreakoutsValue()
-	breakout := openapi.NewSfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner()
+	// name, and the entry inside it by index. The values are struct literals, as
+	// in resource_verity_sfp_breakout.go. The SDK's New... constructors would
+	// fill in OpenAPI defaults — an empty name, vendor, and part number — that
+	// the resource never sends, and this fixture was first recorded that way.
+	breakout := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{}
 	breakout.SetIndex(1)
 	breakout.SetBreakout("1x100G")
 	breakout.SetEnable(true)
-	value.SetBreakout([]openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{*breakout})
+	value := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue{}
+	value.SetBreakout([]openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{breakout})
 
 	ctx := context.Background()
-	manager.AddPatch(ctx, "sfp_breakout", "SFP Breakouts", *value)
+	manager.AddPatch(ctx, "sfp_breakout", "SFP Breakouts", value)
 	if diags, _ := manager.ExecuteDatacenterOperations(ctx); diags.HasError() {
 		t.Fatalf("ExecuteDatacenterOperations returned errors: %v", diags)
 	}
