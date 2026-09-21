@@ -1,6 +1,6 @@
 # Refactoring plan: schema-driven Verity resources
 
-- Status: Phases 0, 1, and 2 closed; Phase 3 implementation complete up to what needs Phase 4; Phase 4 in progress (48 of 50 API-backed resources served opt-in); the default-migration step is a pending decision
+- Status: Phases 0, 1, and 2 closed; Phase 3 implementation complete up to what needs Phase 4; Phase 4 implementation complete up to one decision (49 of 50 API-backed resources served opt-in); the default-migration step is a pending decision
 - Prepared: 2026-09-08
 - Scope: API-backed Terraform resources in `internal/provider`, their field handling, resource registration, bulk-operation metadata, and schema/OpenAPI tooling.
 
@@ -680,7 +680,7 @@ Where it stands: every list in the registry — 54 of them — uses `indexed_pat
 with object entries identified by `index`, and every handwritten list reconciles
 through the same `ProcessIndexedArrayUpdates` function, so one implementation
 covers them. `indexed_patch` is implemented from the members' declared policies,
-with no per-resource closures, and the engine serves 48 resources, including the
+with no per-resource closures, and the engine serves 49 resources, including the
 simple single-list resources the plan names first and the multi-list
 `verity_packet_broker`, `verity_port_acl`, and `verity_pb_routing_acl`. Add,
 change, removal, reordering, and an entry without an index are compared against
@@ -692,9 +692,12 @@ Nullable members of list entries are implemented too, reading each entry's
 configuration under the literal index the scan records it by. The memberless
 `object_properties` block is implemented, following the handwritten presence rule,
 which makes `verity_device_settings` and the update-only `verity_sfp_breakout`
-servable. Remaining: a list inside a singleton (`verity_fabric`), and
-`verity_switchpoint`, whose only other gap — a nullable singleton member — is held
-back until its auto-assignment inconsistency is decided. See status.md for the
+servable. The list inside a singleton is implemented too, with the dedicated tests
+Phase 5 asks for before deep nesting migrates, which makes `verity_fabric`
+servable. The exit criterion holds for every resource the engine serves. The only
+resource left, `verity_switchpoint`, is held back by a decision rather than engine
+work: its auto-assignment pairs do not all follow the shared rule, and its one
+other gap, a nullable singleton member, waits on that. See status.md for the
 handwritten list behaviors the engine reproduces, including reorder drift, and
 the one it deliberately does not: removals are sorted by index rather than sent in
 the handwritten code's unstable map order.
