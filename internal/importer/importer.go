@@ -22,6 +22,11 @@ type Importer struct {
 	client *openapi.APIClient
 	ctx    context.Context
 	Mode   string
+
+	// supported holds each resource type's schema, when the caller provides
+	// it, and unsupported what was left out for not being in it.
+	supported   map[string]*SchemaFields
+	unsupported map[string]map[string]bool
 }
 
 type NestedBlockIterationStyle struct {
@@ -791,6 +796,10 @@ func (i *Importer) ImportAll(outputDir string) error {
 				"terraform_type": task.terraformResourceType,
 			})
 			return fmt.Errorf("no resource config found for %s", task.terraformResourceType)
+		}
+
+		if objects, ok := data.(map[string]map[string]interface{}); ok {
+			i.PruneUnsupported(task.terraformResourceType, objects)
 		}
 
 		tfConfig, err := i.generateResourceTFByName(resourceKey, data)

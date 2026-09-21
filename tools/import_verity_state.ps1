@@ -5,6 +5,18 @@ function Log {
     Write-Host "[$([DateTime]::Now.ToString('yyyy-MM-dd HH:mm:ss'))] $message" -ForegroundColor $color
 }
 
+# The importer writes this file when the Verity API returns arguments this
+# provider version does not support, and leaves them out of the generated files.
+$UnsupportedFile = "unsupported_arguments.txt"
+
+function Show-UnsupportedArguments {
+    if ((Test-Path $UnsupportedFile) -and ((Get-Item $UnsupportedFile).Length -gt 0)) {
+        Log "[WARN] Some arguments are not supported by this provider version:" -color Yellow
+        Get-Content $UnsupportedFile | ForEach-Object { Write-Host "    $_" -ForegroundColor Yellow }
+        Log "[WARN] This list is saved in $UnsupportedFile" -color Yellow
+    }
+}
+
 Log "Verity State Importer Script" -color Cyan
 Log "============================" -color Cyan
 
@@ -119,6 +131,7 @@ Remove-Item -Path "$mainTfFile.orig" -Force -ErrorAction SilentlyContinue
 Log "[INFO] Running second terraform apply to import resources into state..." -color Cyan
 terraform apply -auto-approve
 if ($LASTEXITCODE -ne 0) {
+    Show-UnsupportedArguments
     Log "[ERROR] Resource import failed." -color Red
     exit 1
 }
@@ -127,3 +140,4 @@ if ($LASTEXITCODE -ne 0) {
 Log "[INFO] Import successful. Removing import_blocks.tf..." -color Green
 Remove-Item -Path "import_blocks.tf" -Force
 Log "[INFO] Import process completed successfully!" -color Green
+Show-UnsupportedArguments

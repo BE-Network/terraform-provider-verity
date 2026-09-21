@@ -117,7 +117,7 @@ func (d *stateImporterDataSource) Read(ctx context.Context, req datasource.ReadR
 	}
 
 	client := d.client.client
-	imp := importer.NewImporter(client, d.client.mode)
+	imp := importer.NewImporter(client, d.client.mode).WithSupportedFields(importerSupportedFields(ctx))
 	err = imp.ImportAll(absPath)
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -125,6 +125,14 @@ func (d *stateImporterDataSource) Read(ctx context.Context, req datasource.ReadR
 			fmt.Sprintf("Error importing resources: %v", err),
 		)
 		return
+	}
+	warning := unsupportedFieldsWarning(imp.UnsupportedFields())
+	if warning != "" {
+		tflog.Warn(ctx, warning)
+		resp.Diagnostics.AddWarning("Some arguments are not supported by this provider version", warning)
+	}
+	if err := writeUnsupportedArgumentsFile(absPath, warning); err != nil {
+		resp.Diagnostics.AddWarning("Error Writing "+unsupportedArgumentsFile, err.Error())
 	}
 
 	data.ImportedFiles = []types.String{}

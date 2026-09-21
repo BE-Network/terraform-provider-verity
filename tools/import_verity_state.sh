@@ -4,6 +4,20 @@ function log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
 }
 
+# The importer writes this file when the Verity API returns arguments this
+# provider version does not support, and leaves them out of the generated files.
+UNSUPPORTED_FILE="unsupported_arguments.txt"
+
+function show_unsupported_arguments() {
+  if [ -s "$UNSUPPORTED_FILE" ]; then
+    log "[WARN] Some arguments are not supported by this provider version:"
+    while IFS= read -r line; do
+      echo "    $line"
+    done < "$UNSUPPORTED_FILE"
+    log "[WARN] This list is saved in $UNSUPPORTED_FILE"
+  fi
+}
+
 log "Verity State Importer Script"
 log "============================"
 
@@ -93,6 +107,7 @@ rm -f "${MAIN_TF_FILE}.orig"
 log "[INFO] Running second terraform apply to import resources into state..."
 terraform apply -auto-approve
 if [ $? -ne 0 ]; then
+  show_unsupported_arguments
   log "[ERROR] Resource import failed."
   exit 1
 fi
@@ -101,3 +116,4 @@ fi
 log "[INFO] Import successful. Removing import_blocks.tf..."
 rm -f import_blocks.tf
 log "[INFO] Import process completed successfully!"
+show_unsupported_arguments
