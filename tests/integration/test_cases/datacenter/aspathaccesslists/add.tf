@@ -1,5 +1,3 @@
-# Test case: Add new resources
-# Define resources to be injected into the corresponding .tf file for testing
 
 resource "verity_as_path_access_list" "as_path_access_list_test_script1" {
     name = "as_path_access_list_test_script1"

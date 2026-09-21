@@ -154,18 +154,15 @@ func (r *verityPlaneResource) Create(ctx context.Context, req resource.CreateReq
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Fabric", APIField: &planeReq.Fabric, TFValue: plan.Fabric},
 		{FieldName: "FabricRefType", APIField: &planeReq.FabricRefType, TFValue: plan.FabricRefType},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &planeReq.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle nullable number fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, planeTerraformType, name)
 
@@ -173,7 +170,6 @@ func (r *verityPlaneResource) Create(ctx context.Context, req resource.CreateReq
 		{FieldName: "Position", APIField: &planeReq.Position, TFValue: config.Position, IsConfigured: configuredAttrs.IsConfigured("position")},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
@@ -206,7 +202,6 @@ func (r *verityPlaneResource) Create(ctx context.Context, req resource.CreateReq
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -243,7 +238,6 @@ func (r *verityPlaneResource) Read(ctx context.Context, req resource.ReadRequest
 
 	planeName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if planeData, exists := r.bulkOpsMgr.GetResourceResponse("plane", planeName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached plane data for %s from recent operation", planeName))
@@ -344,7 +338,6 @@ func (r *verityPlaneResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityPlaneResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -364,20 +357,15 @@ func (r *verityPlaneResource) Update(ctx context.Context, req resource.UpdateReq
 	planeReq := openapi.PlanesPutRequestPlaneValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, planeTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { planeReq.Name = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { planeReq.Enable = v }, &hasChanges)
 
-	// Handle nullable number field changes
 	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat64) { planeReq.Position = *v }, &hasChanges)
 
-	// Handle Fabric and FabricRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.Fabric, state.Fabric, plan.FabricRefType, state.FabricRefType,
 		func(v *string) { planeReq.Fabric = v },
@@ -389,7 +377,6 @@ func (r *verityPlaneResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		props := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 		propsChanged := false
@@ -423,7 +410,6 @@ func (r *verityPlaneResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if planeData, exists := bulkMgr.GetResourceResponse("plane", name); exists {
 			newState := populatePlaneState(ctx, minState, utils.MergeMissingPlanScalars(planeData, plan, planeResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -432,7 +418,6 @@ func (r *verityPlaneResource) Update(ctx context.Context, req resource.UpdateReq
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -488,17 +473,13 @@ func populatePlaneState(ctx context.Context, state verityPlaneResourceModel, dat
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Number fields
 	state.Position = utils.MapNumberWithMode(data, "position", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// String fields
 	state.Fabric = utils.MapStringWithMode(data, "fabric", resourceType, mode)
 	state.FabricRefType = utils.MapStringWithMode(data, "fabric_ref_type_", resourceType, mode)
 
-	// Handle object_properties list block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if props, ok := data["object_properties"].(map[string]interface{}); ok {
 			state.ObjectProperties = []verityPlaneObjectPropertiesModel{
@@ -522,9 +503,7 @@ func populatePlaneState(ctx context.Context, state verityPlaneResourceModel, dat
 }
 
 func (r *verityPlaneResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -535,11 +514,6 @@ func (r *verityPlaneResource) ModifyPlan(ctx context.Context, req resource.Modif
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := planeResourceType
 	mode := r.provCtx.mode
 
@@ -559,16 +533,10 @@ func (r *verityPlaneResource) ModifyPlan(ctx context.Context, req resource.Modif
 		StringFields: []string{"notes"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityPlaneResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -581,11 +549,6 @@ func (r *verityPlaneResource) ModifyPlan(ctx context.Context, req resource.Modif
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable number fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, planeTerraformType, name)

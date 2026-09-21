@@ -1,5 +1,3 @@
-# Test case: Modify existing resources
-# Define modified versions of the resources from add.tf
 
 resource "verity_site" "TOR_Complex" {
 	object_properties {

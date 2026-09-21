@@ -12,47 +12,37 @@ import (
 	"time"
 )
 
-// ================================================================================================
-// TYPE DEFINITIONS AND CONSTANTS
-// ================================================================================================
-
-// ContextProviderFunc provides access to provider context data.
 type ContextProviderFunc func() interface{}
 
-// ClearCacheFunc clears cached data when operations complete.
 type ClearCacheFunc func(ctx context.Context, provider interface{}, cacheKey string)
 
-// OperationStatus represents the current state of a bulk operation.
 type OperationStatus int
 
-// Operation represents a single pending bulk operation.
 type Operation struct {
-	ResourceType       string          // The type of resource (e.g., "gateway", "tenant")
-	ResourceName       string          // The name/identifier of the specific resource
-	OperationType      string          // The operation type ("PUT", "PATCH", "DELETE")
-	Status             OperationStatus // Current status of the operation
-	Error              error           // Error if operation failed
-	ExecutionStartTime time.Time       // When the API call actually started executing
+	ResourceType       string
+	ResourceName       string
+	OperationType      string
+	Status             OperationStatus
+	Error              error
+	ExecutionStartTime time.Time
 }
 
-// ResourceExistenceCheck provides configuration for checking if resources already exist.
 type ResourceExistenceCheck struct {
-	FetchResources func(ctx context.Context) (map[string]interface{}, error) // Function to fetch existing resources
-	ResourceType   string                                                    // Type of resource to check
-	OperationType  string                                                    // Operation being performed
+	FetchResources func(ctx context.Context) (map[string]interface{}, error)
+	ResourceType   string
+	OperationType  string
 }
 
-// BulkOperationConfig encapsulates all configuration needed to execute a bulk operation.
 type BulkOperationConfig struct {
-	ResourceType      string                                                                                                                                 // Type of resource being operated on
-	OperationType     string                                                                                                                                 // Type of operation (PUT/PATCH/DELETE)
-	ExtractOperations func() (map[string]interface{}, []string)                                                                                              // Extracts pending operations
-	CheckPreExistence func(ctx context.Context, resourceNames []string, originalOperations map[string]interface{}) ([]string, map[string]interface{}, error) // Filters out existing resources
-	PrepareRequest    func(filteredData map[string]interface{}) interface{}                                                                                  // Prepares API request
+	ResourceType            string
+	OperationType           string
+	ExtractOperations       func() (map[string]interface{}, []string)
+	CheckPreExistence       func(ctx context.Context, resourceNames []string, originalOperations map[string]interface{}) ([]string, map[string]interface{}, error)
+	PrepareRequest          func(filteredData map[string]interface{}) interface{}
 	PrepareRequestWithError func(filteredData map[string]interface{}) (interface{}, error)
-	ExecuteRequest          func(ctx context.Context, request interface{}) (*http.Response, error)                  // Executes API request
-	ProcessResponse         func(ctx context.Context, resp *http.Response, operations map[string]interface{}) error // Processes API response
-	UpdateRecentOps         func()                                                                                  // Updates recent operation tracking
+	ExecuteRequest          func(ctx context.Context, request interface{}) (*http.Response, error)
+	ProcessResponse         func(ctx context.Context, resp *http.Response, operations map[string]interface{}) error
+	UpdateRecentOps         func()
 }
 
 func (c BulkOperationConfig) prepareRequest(filteredData map[string]interface{}) (interface{}, error) {
@@ -65,18 +55,16 @@ func (c BulkOperationConfig) prepareRequest(filteredData map[string]interface{})
 	return c.PrepareRequest(filteredData), nil
 }
 
-// ResourceOperations holds all operation data for a single resource type.
 type ResourceOperations struct {
-	Put            map[string]interface{}            // Pending PUT operations
-	Patch          map[string]interface{}            // Pending PATCH operations
-	Delete         []string                          // Pending DELETE operations
-	RecentOps      bool                              // Whether recent operations occurred
-	RecentOpTime   time.Time                         // Time of most recent operation
-	Responses      map[string]map[string]interface{} // Cached API responses
-	ResponsesMutex sync.RWMutex                      // Mutex for response cache
+	Put            map[string]interface{}
+	Patch          map[string]interface{}
+	Delete         []string
+	RecentOps      bool
+	RecentOpTime   time.Time
+	Responses      map[string]map[string]interface{}
+	ResponsesMutex sync.RWMutex
 }
 
-// NewResourceOperations creates a new ResourceOperations instance with initialized maps.
 func NewResourceOperations() *ResourceOperations {
 	return &ResourceOperations{
 		Put:       make(map[string]interface{}),
@@ -87,47 +75,38 @@ func NewResourceOperations() *ResourceOperations {
 	}
 }
 
-// ResourceConfig defines configuration for a specific resource type.
 type ResourceConfig struct {
-	ResourceType     string                                                                         // String identifier for the resource
-	PutRequestType   reflect.Type                                                                   // Type for PUT requests
-	PatchRequestType reflect.Type                                                                   // Type for PATCH requests
-	APIClientGetter  func(*openapi.APIClient) ResourceAPIClient                                     // Function to get API client
-	PutFunc          func(*openapi.APIClient, context.Context, interface{}) (*http.Response, error) // Direct PUT API call
-	PatchFunc        func(*openapi.APIClient, context.Context, interface{}) (*http.Response, error) // Direct PATCH API call
-	DeleteFunc       func(*openapi.APIClient, context.Context, []string) (*http.Response, error)    // Direct DELETE API call
-	GetFunc          func(*openapi.APIClient, context.Context) (*http.Response, error)              // Direct GET API call
+	ResourceType     string
+	PutRequestType   reflect.Type
+	PatchRequestType reflect.Type
+	APIClientGetter  func(*openapi.APIClient) ResourceAPIClient
+	PutFunc          func(*openapi.APIClient, context.Context, interface{}) (*http.Response, error)
+	PatchFunc        func(*openapi.APIClient, context.Context, interface{}) (*http.Response, error)
+	DeleteFunc       func(*openapi.APIClient, context.Context, []string) (*http.Response, error)
+	GetFunc          func(*openapi.APIClient, context.Context) (*http.Response, error)
 
-	// HeaderSplitKey specifies which header param to use for splitting operations into separate batches
-	// Example: "ip_version" for ACLs (splits into IPv4/IPv6 batches)
 	HeaderSplitKey string
 
-	// HeaderAwareFuncs provide header-aware API call functions that accept header params
 	HeaderPutFunc    func(*openapi.APIClient, context.Context, interface{}, map[string]string) (*http.Response, error)
 	HeaderPatchFunc  func(*openapi.APIClient, context.Context, interface{}, map[string]string) (*http.Response, error)
 	HeaderDeleteFunc func(*openapi.APIClient, context.Context, []string, map[string]string) (*http.Response, error)
 	HeaderGetFunc    func(*openapi.APIClient, context.Context, map[string]string) (*http.Response, error)
 
-	// HeaderResponseExtractor extracts resource data from GET response based on header values
-	// Used when response format differs based on headers (e.g., ACL returns ipv4_filter or ipv6_filter)
 	HeaderResponseExtractor func(rawResponse map[string]interface{}, headers map[string]string) (map[string]interface{}, error)
 }
 
-// GenericAPIClient implements ResourceAPIClient for all resource types using reflection.
 type GenericAPIClient struct {
-	client       *openapi.APIClient // The underlying OpenAPI client
-	resourceType string             // The resource type this client handles
+	client       *openapi.APIClient
+	resourceType string
 }
 
-// ResourceAPIClient provides a unified interface for all resource API operations.
 type ResourceAPIClient interface {
-	Put(ctx context.Context, request interface{}) (*http.Response, error)   // Execute PUT operation
-	Patch(ctx context.Context, request interface{}) (*http.Response, error) // Execute PATCH operation
-	Delete(ctx context.Context, names []string) (*http.Response, error)     // Execute DELETE operation
-	Get(ctx context.Context) (*http.Response, error)                        // Execute GET operation
+	Put(ctx context.Context, request interface{}) (*http.Response, error)
+	Patch(ctx context.Context, request interface{}) (*http.Response, error)
+	Delete(ctx context.Context, names []string) (*http.Response, error)
+	Get(ctx context.Context) (*http.Response, error)
 }
 
-// Operation status constants.
 const (
 	OperationPending OperationStatus = iota
 	OperationExecuting
@@ -135,14 +114,12 @@ const (
 	OperationFailed
 )
 
-// Configuration constants for bulk operation timing and limits.
 const (
-	MaxBatchSize       = 1000              // Maximum number of resources per batch
-	MaxDeleteBatchSize = 100               // Maximum resources per DELETE batch to avoid URL length limits
-	OperationTimeout   = 300 * time.Second // Timeout for individual API operations
+	MaxBatchSize       = 1000
+	MaxDeleteBatchSize = 100
+	OperationTimeout   = 300 * time.Second
 )
 
-// Timing variables (configurable for CI/testing).
 var (
 	DefaultBatchDelay                = parseDuration("VERITY_DEFAULT_BATCH_DELAY", 2*time.Second)
 	BatchCollectionWindow            = parseDuration("VERITY_BATCH_COLLECTION_WINDOW", 2000*time.Millisecond)
@@ -153,8 +130,6 @@ var (
 	DebounceDelay                    = parseDuration("VERITY_DEBOUNCE_DELAY", 15*time.Second)
 )
 
-// parseDuration reads a Go duration string from the environment variable.
-// Returns the default value if the variable is unset or unparseable.
 func parseDuration(envVar string, defaultVal time.Duration) time.Duration {
 	if v := os.Getenv(envVar); v != "" {
 		if d, err := time.ParseDuration(v); err == nil {
@@ -173,7 +148,6 @@ func parseInt(envVar string, defaultVal int) int {
 	return defaultVal
 }
 
-// ResourceOperationData holds operation data for a resource type
 type ResourceOperationData struct {
 	PutOperations    interface{}
 	PatchOperations  interface{}

@@ -15,16 +15,10 @@ import (
 	"terraform-provider-verity/internal/utils"
 )
 
-// attributeSource is the part of tfsdk.Plan, tfsdk.State and tfsdk.Config this
-// engine uses. Taking the narrow interface rather than the concrete types lets
-// one reader serve all three.
 type attributeSource interface {
 	GetAttribute(ctx context.Context, p path.Path, target interface{}) diag.Diagnostics
 }
 
-// readScalars pulls every spec field out of a plan or state into a map keyed by
-// Terraform name. The value keeps its null and unknown state, because the
-// lifecycle policies are decided on exactly that distinction.
 func readScalars(ctx context.Context, source attributeSource, fields []spec.FieldSpec) (map[string]attr.Value, diag.Diagnostics) {
 	var diagnostics diag.Diagnostics
 	values := make(map[string]attr.Value, len(fields))
@@ -51,8 +45,7 @@ func readScalars(ctx context.Context, source attributeSource, fields []spec.Fiel
 			diagnostics.Append(source.GetAttribute(ctx, attributePath, &value)...)
 			values[field.TerraformName] = value
 		case spec.FieldKindObject, spec.FieldKindList:
-			// A singleton and an indexed collection are both stored as list
-			// blocks; their entries are read later.
+
 			var value types.List
 			diagnostics.Append(source.GetAttribute(ctx, attributePath, &value)...)
 			values[field.TerraformName] = value
@@ -66,17 +59,9 @@ func readScalars(ctx context.Context, source attributeSource, fields []spec.Fiel
 	return values, diagnostics
 }
 
-// buildCreate turns a plan into the object a create sends.
-//
-// Each field is decided by its own declared policy and nothing else: an unknown
-// by UnknownPlan, a null by CreateNull, and anything else is sent as it stands.
-// A field the request omits is read back afterwards, which is what makes
-// omission safe for a Computed attribute.
 func buildCreate(fields []spec.FieldSpec, plan map[string]attr.Value, nullables nullableSource) (transport.WireObject, error) {
 	object := make(transport.WireObject, len(fields))
 
-	// An auto-assignment pair is decided together: the flag decides whether the
-	// value is sent at all, so neither half follows its own policy alone.
 	pairs, autoPaired, err := autoAssignmentPairs(fields)
 	if err != nil {
 		return nil, err
@@ -92,16 +77,11 @@ func buildCreate(fields []spec.FieldSpec, plan map[string]attr.Value, nullables 
 			continue
 		}
 
-		// The source of the value differs for a nullable field; what is done with
-		// the value does not. On create a nullable attribute is Computed with no
-		// prior state, so `x = null` plans as unknown and only the configuration
-		// scan shows what was written. The scan answers whether the field was
-		// written and what it holds, and the declared policies decide the rest.
 		var value attr.Value
 		if field.Nullable {
 			written, isWritten := nullables.known(field)
 			if !isWritten {
-				// Not written: the server keeps its value.
+
 				continue
 			}
 			value = written
@@ -135,13 +115,6 @@ func buildCreate(fields []spec.FieldSpec, plan map[string]attr.Value, nullables 
 	return object, nil
 }
 
-// createWire applies one field's declared create policies to its value: an
-// unknown by UnknownPlan, a null by CreateNull, and anything else sent as it
-// stands. It reports whether the field belongs in the request at all.
-//
-// Every field goes through here, whatever supplied its value, so a policy the
-// registry declares is honored uniformly rather than assumed for a class of
-// field.
 func createWire(field spec.FieldSpec, value attr.Value) (transport.WireValue, bool, error) {
 	if value.IsUnknown() {
 		switch field.UnknownPlan {
@@ -178,36 +151,15 @@ func createWire(field spec.FieldSpec, value attr.Value) (transport.WireValue, bo
 	return wire, true, nil
 }
 
-// buildUpdate turns a plan and the state it replaces into the object an update
-// sends, along with whether anything changed at all. An update carries only the
-// fields that differ, so a field equal to its state is absent from the result.
-//
-// Clearing is the case that needs the spec: what "no value" looks like on the
-// wire is per field, and the engine must not guess it from the Go type.
-// nullableSource carries what only the configuration can answer: whether a
-// nullable attribute is written at all, and what it was written as.
-//
-// A nullable numeric is the one field that can be cleared by an explicit null,
-// and `x = null` is indistinguishable from an absent x in a plan for an
-// Optional and Computed attribute — both arrive as the value already in state.
-// The handwritten resources resolve it by reading the .tf files, and so does
-// this, through the same parser.
 type nullableSource struct {
 	config     map[string]attr.Value
 	configured func(terraformName string) bool
-	// indexed reports whether a member of a list entry is written, for the entry
-	// the configuration identifies by that index. The scan records nested
-	// attributes under the literal index an entry is written with, so an entry
-	// written without one has none recorded.
+
 	indexed func(block string, index int64, member string) bool
-	// block reports whether a member of a singleton is written, keyed
-	// "block.member" as the scan records it.
+
 	block func(path string) bool
 }
 
-// singletonMember returns a nullable singleton member's configuration value and
-// whether it is written. The value comes from the configuration's entry of the
-// block, falling back to the plan's, as in the handwritten resources.
 func (n nullableSource) singletonMember(field, member spec.FieldSpec, planMembers map[string]attr.Value) (attr.Value, bool) {
 	if n.block == nil || !n.block(field.TerraformName+"."+member.TerraformName) {
 		return nil, false
@@ -220,10 +172,6 @@ func (n nullableSource) singletonMember(field, member spec.FieldSpec, planMember
 	return value, held
 }
 
-// entryMember returns a nullable member's configuration value for one list entry
-// and whether that member is written. The configuration entry is the one written
-// with the same index; failing that, the plan entry stands in, as it does in the
-// handwritten resources. An unknown or null index reads as zero, as there.
 func (n nullableSource) entryMember(field, member spec.FieldSpec, planEntry map[string]attr.Value) (attr.Value, bool) {
 	var index int64
 	if value, ok := planEntry[field.Collection.IdentityField].(types.Int64); ok {
@@ -260,8 +208,6 @@ func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value, nul
 	object := make(transport.WireObject, len(fields))
 	changed := false
 
-	// Reference pairs are decided together and then skipped by the loop below,
-	// because neither half's policy describes what the API requires of the two.
 	companions, paired, err := referencePairs(fields)
 	if err != nil {
 		return nil, false, err
@@ -297,10 +243,6 @@ func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value, nul
 			continue
 		}
 
-		// As on create, a nullable field differs only in where its value comes
-		// from: the configuration scan, because only configuration distinguishes
-		// "cleared" from "not mentioned". A field that is not written is left
-		// alone; one that is written goes through the declared policies.
 		var value attr.Value
 		if field.Nullable {
 			written, isWritten := nullables.known(field)
@@ -361,15 +303,9 @@ func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value, nul
 	return object, changed, nil
 }
 
-// updateWire applies one field's declared update policies to a value that
-// differs from state. It reports whether the field belongs in the request and
-// whether the update counts as a change: a clear by omission is a change with
-// nothing to send, and an unknown left to the read is neither.
 func updateWire(field spec.FieldSpec, value attr.Value) (wire transport.WireValue, send, changed bool, err error) {
 	if value.IsUnknown() {
-		// The request leaves it out and the read that follows supplies it.
-		// Leaving it out is not a change to send, so it does not on its own make
-		// the update worth making.
+
 		switch field.UnknownPlan {
 		case spec.UnknownPlanOmitAndRead, spec.UnknownPlanPreserve:
 			return transport.WireValue{}, false, false, nil
@@ -393,10 +329,6 @@ func updateWire(field spec.FieldSpec, value attr.Value) (wire transport.WireValu
 	return converted, true, true, nil
 }
 
-// clearedWire says what clearing one field looks like, and whether clearing it
-// means sending nothing at all. Omission is a declared strategy, not an absence
-// of one: it is what the handwritten resources send for a null object member,
-// which the API, merging the object member by member, leaves unchanged.
 func clearedWire(field spec.FieldSpec) (value transport.WireValue, omit bool, err error) {
 	switch field.UpdateClear {
 	case spec.UpdateClearEmptyString:
@@ -446,9 +378,6 @@ func literalWire(field spec.FieldSpec) (transport.WireValue, error) {
 	}
 }
 
-// toWire converts one known, non-null Framework value. The kind comes from the
-// spec, so a value whose Go type disagrees with it is a registry error rather
-// than something to coerce quietly.
 func toWire(field spec.FieldSpec, value attr.Value) (transport.WireValue, error) {
 	switch field.Kind {
 	case spec.FieldKindString:
@@ -480,12 +409,6 @@ func toWire(field spec.FieldSpec, value attr.Value) (transport.WireValue, error)
 	}
 }
 
-// stateFromAPI decodes a response object into the values state will hold.
-//
-// A field that does not apply to the running mode reads as null whatever the
-// response says, which is what keeps a campus-only field from appearing in a
-// datacenter plan. Otherwise ResponseAbsence decides what an absent member
-// means.
 func stateFromAPI(fields []spec.FieldSpec, data map[string]interface{}, mode string, prior map[string]attr.Value) (map[string]attr.Value, error) {
 	values := make(map[string]attr.Value, len(fields))
 	for _, field := range fields {
@@ -522,20 +445,6 @@ func stateFromAPI(fields []spec.FieldSpec, data map[string]interface{}, mode str
 	return values, nil
 }
 
-// appliesToMode reports whether a field is part of the API surface the running
-// mode exposes.
-//
-// It reads the spec's own Modes rather than utils.FieldAppliesToMode, which
-// answers the same question from the generated lookup table. The table is
-// derived from this registry, so the data agrees, but it is reached by two
-// strings and fails open on any miss: an unknown endpoint, an unknown field, or
-// an unrecognised mode all return true. A field this engine holds the spec for
-// should not be decided by a lookup that can silently answer "yes" because it
-// found nothing.
-//
-// Reading Modes fails closed instead, which is safe because it cannot be empty:
-// validateModes requires at least one mode and rejects any value that is not
-// datacenter or campus, and the registry is validated before the engine sees it.
 func appliesToMode(field spec.FieldSpec, mode string) bool {
 	for _, candidate := range field.Modes {
 		if string(candidate) == mode {
@@ -545,7 +454,6 @@ func appliesToMode(field spec.FieldSpec, mode string) bool {
 	return false
 }
 
-// absentValue applies ResponseAbsence to a member the response did not carry.
 func absentValue(field spec.FieldSpec, prior map[string]attr.Value) (attr.Value, error) {
 	switch field.ResponseAbsence {
 	case spec.ResponseAbsenceTerraformNull:
@@ -592,9 +500,6 @@ func literalAttr(field spec.FieldSpec) (attr.Value, error) {
 	}
 }
 
-// fromAPI decodes one present member. It delegates to the same helpers the
-// handwritten resources use, so a value that decoded one way before decodes the
-// same way now — including the JSON-number handling an int64 needs.
 func fromAPI(kind spec.FieldKind, raw interface{}) attr.Value {
 	switch kind {
 	case spec.FieldKindString:
@@ -625,8 +530,6 @@ func nullOf(kind spec.FieldKind) attr.Value {
 	}
 }
 
-// attributeTypes describes the object state holds, which the engine needs to
-// build a whole state value rather than setting attributes one at a time.
 func attributeTypes(fields []spec.FieldSpec) map[string]attr.Type {
 	types_ := make(map[string]attr.Type, len(fields))
 	for _, field := range fields {

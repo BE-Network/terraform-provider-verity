@@ -1,7 +1,5 @@
 package utils
 
-// ResourceJSONKeys maps internal resource type names to their JSON response keys
-// This is the single source of truth for both importer and bulkops modules
 var ResourceJSONKeys = map[string]string{
 	"tenant":                   "tenant",
 	"gateway":                  "gateway",
@@ -55,8 +53,6 @@ var ResourceJSONKeys = map[string]string{
 	"acls_ipv6":                "ipv6_filter",
 }
 
-// GetResourceJSONKey returns the JSON key for a given resource type
-// Returns an empty string if the resource type is not found
 func GetResourceJSONKey(resourceType string) string {
 	if key, ok := ResourceJSONKeys[resourceType]; ok {
 		return key
@@ -64,8 +60,6 @@ func GetResourceJSONKey(resourceType string) string {
 	return ""
 }
 
-// GetACLJSONKey returns the appropriate JSON key for ACL resources based on IP version
-// ipVersion should be "4" for IPv4 or "6" for IPv6
 func GetACLJSONKey(ipVersion string) string {
 	if ipVersion == "4" {
 		return "ipv4_filter"
@@ -73,8 +67,6 @@ func GetACLJSONKey(ipVersion string) string {
 	return "ipv6_filter"
 }
 
-// ImporterResourceMapping maps importer resource names (plural) to their API functions and JSON keys
-// This provides compatibility with the importer's naming conventions
 var ImporterResourceMapping = map[string]string{
 	"tenants":                 "tenant",
 	"gateways":                "gateway",
@@ -128,7 +120,6 @@ var ImporterResourceMapping = map[string]string{
 	"aclsipv6":                "ipv6_filter",
 }
 
-// GetImporterJSONKey returns the JSON key for a given importer resource name (plural form)
 func GetImporterJSONKey(importerResourceName string) string {
 	if key, ok := ImporterResourceMapping[importerResourceName]; ok {
 		return key

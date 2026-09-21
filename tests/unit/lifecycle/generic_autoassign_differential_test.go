@@ -11,16 +11,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
-// verity_service is the one servable resource with an auto-assignment pair: vni
-// and vni_auto_assigned_, with vni recomputed by the API when vlan changes. The
-// golden fixtures create it with assignment off and flip enable, so none of the
-// pair's own rules are visible to them. Each case here runs both implementations
-// over the same configuration and compares what they send, and where the
-// handwritten resource refuses a configuration, requires the engine to refuse it
-// too.
-//
-// Every attribute outside the pair is written in full, so nothing plans as
-// unknown except what a case means to leave to the server.
 func TestGenericMatchesLegacyOnAutoAssignment(t *testing.T) {
 	service := func(vlan int, pair string) string {
 		return fmt.Sprintf(`resource "verity_service" "test" {
@@ -83,10 +73,7 @@ func TestGenericMatchesLegacyOnAutoAssignment(t *testing.T) {
 			}},
 		},
 		{
-			// The rule only shows once state holds a vni: without it, the plan
-			// would keep that state value as an ignored change instead of leaving
-			// vni to the server. Assignment is turned on in between so the mock
-			// keeps the vni the create stored.
+
 			name:   "vlan changes with assignment on and a vni in state",
 			create: service(10, "  vni = 100\n  vni_auto_assigned_ = false\n"),
 			update: service(20, "  vni_auto_assigned_ = true\n"),
@@ -98,9 +85,7 @@ func TestGenericMatchesLegacyOnAutoAssignment(t *testing.T) {
 			},
 		},
 		{
-			// vni is written on create so the create itself matches; the case is
-			// about the update, where the vlan change leaves an unwritten vni to
-			// the server. The create without a vni is pinned separately below.
+
 			name:   "vlan changes with assignment off and vni not written",
 			create: service(10, "  vni = 100\n  vni_auto_assigned_ = false\n"),
 			update: service(20, "  vni_auto_assigned_ = false\n"),
@@ -139,15 +124,6 @@ func TestGenericMatchesLegacyOnAutoAssignment(t *testing.T) {
 	}
 }
 
-// Creating a service with assignment off and no vni is where the engine
-// deliberately differs.
-//
-// vni is Optional and Computed, so an unwritten one plans as unknown. The
-// handwritten create tests only !plan.Vni.IsNull(), which an unknown passes, and
-// ValueInt64 reports zero for it, so every such create sends "vni": 0. The engine
-// applies vni's unknown_plan, omit_and_read, and leaves it to the server. It is
-// the same unknown-as-zero difference recorded for singleton members and the
-// update path; this pins both exact bodies so neither side can drift.
 func TestAutoAssignedValueNotWrittenOnCreateIsOmitted(t *testing.T) {
 	create := `resource "verity_service" "test" {
   name = "diffsvc"
@@ -181,14 +157,6 @@ func TestAutoAssignedValueNotWrittenOnCreateIsOmitted(t *testing.T) {
 	}
 }
 
-// Writing vni = null with assignment off is the other place the engine
-// deliberately differs.
-//
-// The handwritten service leaves vni out of its explicit-null plan step, unlike
-// verity_tenant and verity_switchpoint, which include their auto-assigned
-// numerics. Terraform therefore plans the state value, no update is made, and the
-// null is silently dropped. The engine applies the decided nullable contract —
-// a written null is sent — to every nullable field, so the PATCH clears vni.
 func TestAutoAssignedValueWrittenAsNullIsSent(t *testing.T) {
 	config := func(vni string) string {
 		return `resource "verity_service" "test" {
@@ -222,11 +190,6 @@ func TestAutoAssignedValueWrittenAsNullIsSent(t *testing.T) {
 	}
 }
 
-// verity_tenant carries three auto-assignment pairs — two nullable integers and
-// the string vrf_name — and became servable once indexed collections were. The
-// survey found its handwritten algorithm identical to verity_service's, but that
-// was read from source; these cases measure it, for a numeric pair and for the
-// string pair whose validation treats an empty string as unset.
 func TestGenericMatchesLegacyOnTenantAutoAssignment(t *testing.T) {
 	tenant := func(pairs string) string {
 		return `resource "verity_tenant" "test" {
@@ -273,11 +236,7 @@ func TestGenericMatchesLegacyOnTenantAutoAssignment(t *testing.T) {
 			}},
 		},
 		{
-			// The handwritten validation treats an empty string as unset and lets
-			// it through, and the plan then marks vrf_name unknown because
-			// assignment is turning on. Terraform rejects that plan: a value the
-			// configuration writes, even an empty one, cannot plan as unknown. It
-			// is a handwritten defect the engine reproduces, recorded in status.md.
+
 			name:    "an empty string written while string assignment is turned on",
 			create:  tenant(manual + "  layer_3_vni = 5000\n  layer_3_vni_auto_assigned_ = false\n  vrf_name = \"TestVrf\"\n  vrf_name_auto_assigned_ = false\n"),
 			update:  tenant(manual + "  layer_3_vni = 5000\n  layer_3_vni_auto_assigned_ = false\n  vrf_name = \"\"\n  vrf_name_auto_assigned_ = true\n"),
@@ -305,10 +264,6 @@ func TestGenericMatchesLegacyOnTenantAutoAssignment(t *testing.T) {
 	}
 }
 
-// verity_fabric's anycast_mac_address is a string auto-assignment pair, and the
-// resource became servable once its list inside object_properties was. As for
-// tenant, the survey's reading that it follows the shared algorithm is measured
-// here rather than assumed.
 func TestGenericMatchesLegacyOnFabricAutoAssignment(t *testing.T) {
 	entry := coverageEntry(t, "verity_fabric")
 	rs := inspectSchema(entry.Factory)

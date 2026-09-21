@@ -114,7 +114,6 @@ func (r *verityDiagnosticsPortProfileResource) Create(ctx context.Context, req r
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", TFValue: plan.Enable, APIField: &diagnosticsPortProfileProps.Enable},
 		{FieldName: "EnableSflow", TFValue: plan.EnableSflow, APIField: &diagnosticsPortProfileProps.EnableSflow},
@@ -144,7 +143,6 @@ func (r *verityDiagnosticsPortProfileResource) Create(ctx context.Context, req r
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -181,7 +179,6 @@ func (r *verityDiagnosticsPortProfileResource) Read(ctx context.Context, req res
 
 	diagnosticsPortProfileName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if diagnosticsPortProfileData, exists := r.bulkOpsMgr.GetResourceResponse("diagnostics_port_profile", diagnosticsPortProfileName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached diagnostics port profile data for %s from recent operation", diagnosticsPortProfileName))
@@ -294,10 +291,8 @@ func (r *verityDiagnosticsPortProfileResource) Update(ctx context.Context, req r
 	diagnosticsPortProfileProps := openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { diagnosticsPortProfileProps.Name = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { diagnosticsPortProfileProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.EnableSflow, state.EnableSflow, func(v *bool) { diagnosticsPortProfileProps.EnableSflow = v }, &hasChanges)
 
@@ -322,7 +317,6 @@ func (r *verityDiagnosticsPortProfileResource) Update(ctx context.Context, req r
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if diagnosticsPortProfileData, exists := bulkMgr.GetResourceResponse("diagnostics_port_profile", name); exists {
 			newState := populateDiagnosticsPortProfileState(ctx, minState, utils.MergeMissingPlanScalars(diagnosticsPortProfileData, plan, diagnosticsPortProfileResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -331,7 +325,6 @@ func (r *verityDiagnosticsPortProfileResource) Update(ctx context.Context, req r
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -387,7 +380,6 @@ func populateDiagnosticsPortProfileState(ctx context.Context, state verityDiagno
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.EnableSflow = utils.MapBoolWithMode(data, "enable_sflow", resourceType, mode)
 
@@ -395,9 +387,7 @@ func populateDiagnosticsPortProfileState(ctx context.Context, state verityDiagno
 }
 
 func (r *verityDiagnosticsPortProfileResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -408,11 +398,6 @@ func (r *verityDiagnosticsPortProfileResource) ModifyPlan(ctx context.Context, r
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := diagnosticsPortProfileResourceType
 	mode := r.provCtx.mode
 

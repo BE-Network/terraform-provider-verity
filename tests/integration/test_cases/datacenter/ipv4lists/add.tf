@@ -1,5 +1,3 @@
-# Test case: Add new resources
-# Define resources to be injected into the corresponding .tf file for testing
 
 resource "verity_ipv4_list" "ipv4_test_script1" {
     name = "ipv4_test_script1"

@@ -21,7 +21,7 @@ import sys
 import hcl2
 
 
-# Folder name -> JSON wrapper key mapping
+
 FOLDER_TO_WRAPPER_KEY = {
     "tenants":                 "tenant",
     "gateways":                "gateway",
@@ -67,19 +67,19 @@ FOLDER_TO_WRAPPER_KEY = {
     "aclsipv6":                "ip_filter",
 }
 
-# Folder names for ACL resources that need ip_version query parameter
+
 ACL_FOLDERS = {
     "acls_ipv4": "4",
     "acls_ipv6": "6",
 }
 
-# Resources that cannot be created via PUT
+
 NON_CREATABLE = {"sites", "sfpbreakouts"}
 
-# Nested blocks that should be unwrapped from a list to a single object
+
 SINGLE_OBJECT_BLOCKS = {"object_properties"}
 
-# Terraform meta-arguments to strip from resource attributes
+
 META_ARGUMENTS = {"depends_on", "provider", "lifecycle", "count", "for_each"}
 
 

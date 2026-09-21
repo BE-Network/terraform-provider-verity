@@ -12,16 +12,6 @@ import (
 	"terraform-provider-verity/internal/registry"
 )
 
-// The importer leaves out what the provider's schema does not have. That must
-// never include an argument the provider supports, or an import that works
-// today would silently lose it. The golden request bodies are generated from
-// configurations that write every argument of every resource, so checking them
-// against the schemas the provider serves, with either engine, must leave out
-// nothing.
-//
-// The mock API responses under tests/unit/testdata/responses are not used: some
-// carry keys the 6.6 API does not return, such as a top-level enable on an SFP
-// breakout, which the importer is right to leave out.
 func TestImporterKeepsEverySupportedArgument(t *testing.T) {
 	resources, err := registry.Load()
 	if err != nil {
@@ -29,8 +19,7 @@ func TestImporterKeepsEverySupportedArgument(t *testing.T) {
 	}
 	typesByWrapper := map[string][]string{}
 	for _, resource := range resources {
-		// Requests and responses may wrap objects under different keys, as the
-		// ACLs do; the fixtures hold both.
+
 		keys := map[string]bool{resource.API.RequestWrapperKey: true, resource.API.ResponseCollectionKey: true}
 		for key := range keys {
 			if key != "" {
@@ -89,9 +78,6 @@ func TestImporterKeepsEverySupportedArgument(t *testing.T) {
 	}
 }
 
-// What the user saw from a newer Verity system: arguments the provider does not
-// support, at the top level and inside a list entry, are left out and named in
-// one warning.
 func TestImporterLeavesOutArgumentsFromANewerAPI(t *testing.T) {
 	imp := importer.NewImporter(nil, "datacenter").WithSupportedFields(importerSupportedFields(context.Background()))
 	tenants := map[string]map[string]interface{}{
@@ -135,9 +121,6 @@ func TestImporterLeavesOutArgumentsFromANewerAPI(t *testing.T) {
 	}
 }
 
-// The file the import scripts print holds the warning after an import that
-// left arguments out, and is removed by one that left out nothing, so it never
-// describes an earlier system.
 func TestUnsupportedArgumentsFileFollowsTheLastImport(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, unsupportedArgumentsFile)

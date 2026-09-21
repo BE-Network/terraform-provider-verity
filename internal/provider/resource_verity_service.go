@@ -285,7 +285,6 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		return
 	}
 
-	// Validate VNI specification when auto-assigned
 	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
 		if !plan.Vni.IsNull() && !plan.Vni.IsUnknown() {
 			resp.Diagnostics.AddError(
@@ -309,7 +308,6 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Tenant", APIField: &serviceReq.Tenant, TFValue: plan.Tenant},
 		{FieldName: "TenantRefType", APIField: &serviceReq.TenantRefType, TFValue: plan.TenantRefType},
@@ -323,7 +321,6 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "PolicyBasedRoutingRefType", APIField: &serviceReq.PolicyBasedRoutingRefType, TFValue: plan.PolicyBasedRoutingRefType},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &serviceReq.Enable, TFValue: plan.Enable},
 		{FieldName: "TaggedPackets", APIField: &serviceReq.TaggedPackets, TFValue: plan.TaggedPackets},
@@ -337,7 +334,6 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "AllowFastLeave", APIField: &serviceReq.AllowFastLeave, TFValue: plan.AllowFastLeave},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, serviceTerraformType, name)
 
@@ -350,12 +346,11 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "MstInstance", APIField: &serviceReq.MstInstance, TFValue: config.MstInstance, IsConfigured: configuredAttrs.IsConfigured("mst_instance")},
 	})
 
-	// Handle auto-assigned VNI logic
 	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
 		serviceReq.VniAutoAssigned = openapi.PtrBool(true)
-		// Don't include the specific VNI in the request
+
 	} else if !plan.Vni.IsNull() {
-		// User explicitly specified a value
+
 		vniVal := plan.Vni.ValueInt64()
 		serviceReq.Vni = *openapi.NewNullableInt64(&vniVal)
 		if !plan.VniAutoAssigned.IsNull() {
@@ -370,7 +365,6 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		}
 	}
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
@@ -404,7 +398,6 @@ func (r *verityServiceResource) Create(ctx context.Context, req resource.CreateR
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -441,7 +434,6 @@ func (r *verityServiceResource) Read(ctx context.Context, req resource.ReadReque
 
 	serviceName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if serviceData, exists := r.bulkOpsMgr.GetResourceResponse("service", serviceName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached service data for %s from recent operation", serviceName))
@@ -542,7 +534,6 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityServiceResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -550,12 +541,8 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	// Validate auto-assigned fields - this check prevents ineffective API calls
-	// Only error if the auto-assigned flag is enabled AND the user is explicitly setting a value
-	// AND the auto-assigned flag itself is not changing (which would be a valid operation)
-	// Don't error if the field is unknown (computed during plan recalculation)
 	if !plan.Vni.Equal(state.Vni) &&
-		!plan.Vni.IsNull() && !plan.Vni.IsUnknown() && // User is explicitly setting a value
+		!plan.Vni.IsNull() && !plan.Vni.IsUnknown() &&
 		!plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() &&
 		plan.VniAutoAssigned.Equal(state.VniAutoAssigned) {
 		resp.Diagnostics.AddError(
@@ -577,11 +564,9 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	serviceReq := openapi.ServicesPutRequestServiceValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, serviceTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { serviceReq.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Tenant, state.Tenant, func(v *string) { serviceReq.Tenant = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.DhcpServerIpv4, state.DhcpServerIpv4, func(v *string) { serviceReq.DhcpServerIpv4 = v }, &hasChanges)
@@ -591,7 +576,6 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetStringField(plan.PacketPriority, state.PacketPriority, func(v *string) { serviceReq.PacketPriority = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.MulticastManagementMode, state.MulticastManagementMode, func(v *string) { serviceReq.MulticastManagementMode = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { serviceReq.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.TaggedPackets, state.TaggedPackets, func(v *bool) { serviceReq.TaggedPackets = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.Tls, state.Tls, func(v *bool) { serviceReq.Tls = v }, &hasChanges)
@@ -603,19 +587,16 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetBoolField(plan.UseDscpToPBitMappingForL3PacketsIfAvailable, state.UseDscpToPBitMappingForL3PacketsIfAvailable, func(v *bool) { serviceReq.UseDscpToPBitMappingForL3PacketsIfAvailable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.AllowFastLeave, state.AllowFastLeave, func(v *bool) { serviceReq.AllowFastLeave = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.Mtu, state.Mtu, configuredAttrs.IsConfigured("mtu"), func(v *openapi.NullableInt64) { serviceReq.Mtu = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.IpAttachHostAdvertise, state.IpAttachHostAdvertise, configuredAttrs.IsConfigured("ip_attach_host_advertise"), func(v *openapi.NullableInt64) { serviceReq.IpAttachHostAdvertise = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MaxUpstreamRateMbps, state.MaxUpstreamRateMbps, configuredAttrs.IsConfigured("max_upstream_rate_mbps"), func(v *openapi.NullableInt64) { serviceReq.MaxUpstreamRateMbps = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MaxDownstreamRateMbps, state.MaxDownstreamRateMbps, configuredAttrs.IsConfigured("max_downstream_rate_mbps"), func(v *openapi.NullableInt64) { serviceReq.MaxDownstreamRateMbps = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MstInstance, state.MstInstance, configuredAttrs.IsConfigured("mst_instance"), func(v *openapi.NullableInt64) { serviceReq.MstInstance = *v }, &hasChanges)
 
-	// Handle VLAN changes (preserve special handling for Unknown state)
 	if !plan.Vlan.IsUnknown() && !plan.Vlan.Equal(state.Vlan) {
 		utils.CompareAndSetNullableInt64Field(config.Vlan, state.Vlan, configuredAttrs.IsConfigured("vlan"), func(v *openapi.NullableInt64) { serviceReq.Vlan = *v }, &hasChanges)
 	}
 
-	// Handle VNI and VniAutoAssigned changes
 	vniChanged := !plan.Vni.IsUnknown() && !plan.Vni.Equal(state.Vni)
 	vniAutoAssignedChanged := !plan.VniAutoAssigned.Equal(state.VniAutoAssigned)
 
@@ -630,7 +611,7 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		}
 
 		if vniAutoAssignedChanged {
-			// Only send vni_auto_assigned_ if the user has explicitly specified it in their configuration
+
 			var config verityServiceResourceModel
 			userSpecifiedVniAutoAssigned := false
 			if !req.Config.Raw.IsNull() {
@@ -642,26 +623,21 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 			if userSpecifiedVniAutoAssigned {
 				serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
 
-				// Special case: When changing from auto-assigned (true) to manual (false),
-				// the API requires both vni_auto_assigned_ and vni fields to be sent.
-				// Otherwise, the vni_auto_assigned_ change will be ignored by the API.
 				if !state.VniAutoAssigned.IsNull() && state.VniAutoAssigned.ValueBool() &&
 					!plan.VniAutoAssigned.ValueBool() {
-					// Changing from auto-assigned=true to auto-assigned=false
-					// Must include VNI value in the request for the change to take effect
+
 					if !plan.Vni.IsNull() {
 						vniVal := plan.Vni.ValueInt64()
 						serviceReq.Vni = *openapi.NewNullableInt64(&vniVal)
 					} else if !state.Vni.IsNull() {
-						// Use current state VNI if plan doesn't specify one
+
 						vniVal := state.Vni.ValueInt64()
 						serviceReq.Vni = *openapi.NewNullableInt64(&vniVal)
 					}
 				}
 			}
 		} else if vniChanged {
-			// VNI changed but VniAutoAssigned didn't change
-			// Send the auto-assigned flag to maintain consistency with API
+
 			if !plan.VniAutoAssigned.IsNull() {
 				serviceReq.VniAutoAssigned = openapi.PtrBool(plan.VniAutoAssigned.ValueBool())
 			} else if !state.VniAutoAssigned.IsNull() {
@@ -674,7 +650,6 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		hasChanges = true
 	}
 
-	// Handle tenant and tenant_ref_type_ fields using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.Tenant, state.Tenant, plan.TenantRefType, state.TenantRefType,
 		func(v *string) { serviceReq.Tenant = v },
@@ -696,7 +671,6 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.ServicesPutRequestServiceValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -742,7 +716,6 @@ func (r *verityServiceResource) Update(ctx context.Context, req resource.UpdateR
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -798,7 +771,6 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 
 	state.Name = utils.MapStringFromAPI(serviceData["name"])
 
-	// Int fields
 	state.Vlan = utils.MapInt64WithMode(serviceData, "vlan", resourceType, mode)
 	state.Vni = utils.MapInt64WithMode(serviceData, "vni", resourceType, mode)
 	state.Mtu = utils.MapInt64WithMode(serviceData, "mtu", resourceType, mode)
@@ -807,7 +779,6 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 	state.MaxDownstreamRateMbps = utils.MapInt64WithMode(serviceData, "max_downstream_rate_mbps", resourceType, mode)
 	state.MstInstance = utils.MapInt64WithMode(serviceData, "mst_instance", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(serviceData, "enable", resourceType, mode)
 	state.VniAutoAssigned = utils.MapBoolWithMode(serviceData, "vni_auto_assigned_", resourceType, mode)
 	state.TaggedPackets = utils.MapBoolWithMode(serviceData, "tagged_packets", resourceType, mode)
@@ -820,7 +791,6 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 	state.UseDscpToPBitMappingForL3PacketsIfAvailable = utils.MapBoolWithMode(serviceData, "use_dscp_to_p_bit_mapping_for_l3_packets_if_available", resourceType, mode)
 	state.AllowFastLeave = utils.MapBoolWithMode(serviceData, "allow_fast_leave", resourceType, mode)
 
-	// String fields
 	state.Tenant = utils.MapStringWithMode(serviceData, "tenant", resourceType, mode)
 	state.TenantRefType = utils.MapStringWithMode(serviceData, "tenant_ref_type_", resourceType, mode)
 	state.DhcpServerIpv4 = utils.MapStringWithMode(serviceData, "dhcp_server_ipv4", resourceType, mode)
@@ -832,7 +802,6 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 	state.PolicyBasedRouting = utils.MapStringWithMode(serviceData, "policy_based_routing", resourceType, mode)
 	state.PolicyBasedRoutingRefType = utils.MapStringWithMode(serviceData, "policy_based_routing_ref_type_", resourceType, mode)
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := serviceData["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityServiceObjectPropertiesModel{
@@ -850,9 +819,7 @@ func populateServiceState(ctx context.Context, state verityServiceResourceModel,
 }
 
 func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -863,11 +830,6 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := serviceResourceType
 	mode := r.provCtx.mode
 
@@ -907,20 +869,14 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 		BoolFields: []string{"warn_on_no_external_source"},
 	})
 
-	// =========================================================================
-	// CREATE operation - handle auto-assigned fields
-	// =========================================================================
 	if req.State.Raw.IsNull() {
-		// Service-specific: VNI auto-assignment on create
+
 		if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
 			resp.Plan.SetAttribute(ctx, path.Root("vni"), types.Int64Unknown())
 		}
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityServiceResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -933,11 +889,6 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, serviceTerraformType, name)
@@ -956,11 +907,6 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 		},
 	})
 
-	// =========================================================================
-	// Resource-specific auto-assigned field logic (VNI)
-	// =========================================================================
-
-	// Validate: VNI cannot be specified when auto-assigned
 	if !config.VniAutoAssigned.IsNull() && config.VniAutoAssigned.ValueBool() {
 		if !config.Vni.IsNull() && !config.Vni.IsUnknown() {
 			resp.Diagnostics.AddError(
@@ -971,24 +917,23 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 		}
 	}
 
-	// Handle VNI behavior based on auto-assignment and VLAN changes
 	if !plan.VniAutoAssigned.IsNull() && plan.VniAutoAssigned.ValueBool() {
 		if !plan.VniAutoAssigned.Equal(state.VniAutoAssigned) {
-			// vni_auto_assigned_ is changing to true - API will assign VNI
+
 			resp.Plan.SetAttribute(ctx, path.Root("vni"), types.Int64Unknown())
 			resp.Diagnostics.AddWarning(
 				"VNI will be assigned by the API",
 				"The 'vni' field will be automatically assigned by the API because 'vni_auto_assigned_' is being set to true.",
 			)
 		} else if !plan.Vlan.Equal(state.Vlan) {
-			// VLAN is changing with auto-assignment enabled - VNI will be updated
+
 			resp.Plan.SetAttribute(ctx, path.Root("vni"), types.Int64Unknown())
 			resp.Diagnostics.AddWarning(
 				"VNI will be updated by the API",
 				"The 'vni' field will be automatically updated by the API because 'vni_auto_assigned_' is set to true and VLAN is changing.",
 			)
 		} else if !plan.Vni.Equal(state.Vni) {
-			// User tried to change VNI but it's auto-assigned - suppress diff
+
 			resp.Diagnostics.AddWarning(
 				"Ignoring vni changes with auto-assignment enabled",
 				"The 'vni' field changes will be ignored because 'vni_auto_assigned_' is set to true.",
@@ -998,7 +943,7 @@ func (r *verityServiceResource) ModifyPlan(ctx context.Context, req resource.Mod
 			}
 		}
 	} else if !plan.Vlan.Equal(state.Vlan) && plan.Vni.Equal(state.Vni) {
-		// VLAN changing without auto-assignment - VNI may be affected if not explicitly set
+
 		hasExplicitVni := !config.Vni.IsNull() && !config.Vni.IsUnknown()
 		if !hasExplicitVni {
 			resp.Plan.SetAttribute(ctx, path.Root("vni"), types.Int64Unknown())

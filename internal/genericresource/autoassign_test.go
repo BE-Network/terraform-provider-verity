@@ -10,8 +10,6 @@ import (
 	"terraform-provider-verity/internal/transport"
 )
 
-// autoFields models verity_service's pair: a nullable vni the API can assign,
-// its flag, and the vlan vni is recomputed from.
 func autoFields() []spec.FieldSpec {
 	base := nullableFields()
 	vlan := base[1]
@@ -131,8 +129,6 @@ func TestChangedTriggerAndIsSet(t *testing.T) {
 		t.Errorf("changedTrigger with a changed vlan = %q, want vlan", got)
 	}
 
-	// An empty string names nothing, so writing one while assignment is on is
-	// not refused; the handwritten validation treats it the same way.
 	if isSet(types.StringValue("")) || isSet(types.Int64Unknown()) || isSet(types.Int64Null()) {
 		t.Error("an empty, unknown, or null value was treated as set")
 	}
@@ -141,13 +137,11 @@ func TestChangedTriggerAndIsSet(t *testing.T) {
 	}
 }
 
-// A pair whose flag is missing or not a bool would send one half of something
-// the API requires whole, so it is refused rather than served.
 func TestAutoAssignmentPairsRefusesAMalformedFlag(t *testing.T) {
 	t.Parallel()
 
 	fields := autoFields()
-	fields = fields[:3] // drop the flag
+	fields = fields[:3]
 	if _, _, err := autoAssignmentPairs(fields); err == nil {
 		t.Fatal("an auto-assigned value with no flag field was accepted")
 	}

@@ -10,14 +10,6 @@ import (
 	"terraform-provider-verity/internal/spec"
 )
 
-// Terraform delivers `x = null` and an absent x identically for an Optional and
-// Computed attribute, so the provider cannot tell "clear this" from "not
-// mentioned" by the value alone. It tells them apart by reading the .tf files,
-// which is the contract the handwritten resources established and the generic
-// engine keeps. The scan decides only whether the field is written and what it
-// holds; one that is not written is left to the server, and for one that is,
-// the field's declared policies decide whether a null is sent as an API null,
-// omitted, defaulted, or rejected. With today's registry policies it is sent.
 func nullableFields() []spec.FieldSpec {
 	return []spec.FieldSpec{
 		{
@@ -35,8 +27,6 @@ func nullableFields() []spec.FieldSpec {
 	}
 }
 
-// written reports poll_interval as written in the .tf files with the given
-// configuration value; notWritten reports it absent.
 func written(value attr.Value) nullableSource {
 	return nullableSource{
 		config:     map[string]attr.Value{"poll_interval": value},
@@ -54,8 +44,6 @@ func notWritten() nullableSource {
 func TestBuildCreateNullableFollowsTheConfigurationSource(t *testing.T) {
 	t.Parallel()
 
-	// The plan holds an unknown in every case, as it does for a Computed
-	// attribute on create; the decision has to come from the source.
 	plan := map[string]attr.Value{
 		"name":          types.StringValue("p"),
 		"poll_interval": types.Int64Unknown(),
@@ -91,8 +79,7 @@ func TestBuildUpdateNullableFollowsTheConfigurationSource(t *testing.T) {
 		"name":          types.StringValue("p"),
 		"poll_interval": types.Int64Value(30),
 	}
-	// The plan still holds the state value, which is what Terraform proposes for
-	// an Optional and Computed attribute whose configuration is null.
+
 	plan := state
 
 	cases := []struct {
@@ -122,10 +109,6 @@ func TestBuildUpdateNullableFollowsTheConfigurationSource(t *testing.T) {
 	}
 }
 
-// nullableWithPolicies is a nullable numeric whose lifecycle policies are not the
-// api_null ones every current registry field happens to use. Validation allows
-// them, so the engine must honor them: the configuration scan decides only
-// whether the field was written and what it holds, never what a null means.
 func nullableWithPolicies(createNull spec.CreateNullPolicy, updateClear spec.UpdateClearPolicy, unknown spec.UnknownPlanPolicy) []spec.FieldSpec {
 	fields := nullableFields()
 	fields[1].CreateNull = createNull

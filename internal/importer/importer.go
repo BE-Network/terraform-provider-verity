@@ -23,8 +23,6 @@ type Importer struct {
 	ctx    context.Context
 	Mode   string
 
-	// supported holds each resource type's schema, when the caller provides
-	// it, and unsupported what was left out for not being in it.
 	supported   map[string]*SchemaFields
 	unsupported map[string]map[string]bool
 }
@@ -53,7 +51,6 @@ type ImporterFunc func(context.Context, *openapi.APIClient) (*http.Response, err
 
 var nameSplitRE = regexp.MustCompile(`(\d+|\D+)`)
 
-// importerRegistry maps resource names to their API caller function
 var importerRegistry = map[string]struct {
 	apiCaller ImporterFunc
 }{
@@ -203,7 +200,6 @@ var importerRegistry = map[string]struct {
 	}},
 }
 
-// terraformTypeToResourceKey maps Terraform resource types to resourceConfigs keys
 var terraformTypeToResourceKey = map[string]string{
 	"verity_tenant":                   "tenant",
 	"verity_gateway":                  "gateway",
@@ -257,7 +253,6 @@ var terraformTypeToResourceKey = map[string]string{
 	"verity_threshold":                "threshold",
 }
 
-// resourceConfigs is a registry of all resource configurations for generating Terraform code
 var resourceConfigs = map[string]ResourceConfig{
 	"tenant": {
 		ResourceType:              "tenant",
@@ -680,7 +675,6 @@ func NewImporter(client *openapi.APIClient, mode string) *Importer {
 	}
 }
 
-// ImportAll fetches all resources and saves them as Terraform configuration files
 func (i *Importer) ImportAll(outputDir string) error {
 	if err := os.MkdirAll(outputDir, 0755); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
@@ -748,7 +742,6 @@ func (i *Importer) ImportAll(outputDir string) error {
 		{name: "thresholds", terraformResourceType: "verity_threshold", importer: func() (interface{}, error) { return i.importResource("thresholds") }},
 	}
 
-	// Filter tasks based on mode and API version compatibility
 	var resourceTasks []struct {
 		name                  string
 		terraformResourceType string
@@ -788,7 +781,6 @@ func (i *Importer) ImportAll(outputDir string) error {
 			continue
 		}
 
-		// Get the resource config key from the terraform type
 		resourceKey, ok := terraformTypeToResourceKey[task.terraformResourceType]
 		if !ok {
 			tflog.Error(i.ctx, "No resource config found for terraform type", map[string]interface{}{
@@ -853,7 +845,6 @@ func (i *Importer) importResource(resourceName string) (interface{}, error) {
 		return nil, fmt.Errorf("failed to decode %s response: %v", resourceName, err)
 	}
 
-	// Look up JSON key mapping
 	jsonKey := utils.GetImporterJSONKey(resourceName)
 	if jsonKey == "" {
 		return nil, fmt.Errorf("no JSON key mapping found for %s", resourceName)
@@ -861,7 +852,7 @@ func (i *Importer) importResource(resourceName string) (interface{}, error) {
 
 	data, ok := result[jsonKey]
 	if !ok {
-		// Return empty map if the key doesn't exist
+
 		return make(map[string]map[string]interface{}), nil
 	}
 
@@ -935,7 +926,6 @@ func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (
 		tfConfig.WriteString(fmt.Sprintf(config.HeaderNameLineFormat, name))
 		tfConfig.WriteString(fmt.Sprintf(config.HeaderDependsOnLineFormat, config.StageName))
 
-		// Skip object_properties section entirely if specified
 		skipObjectProperties := false
 		for _, key := range config.AdditionalTopLevelSkipKeys {
 			if key == "object_properties" {
@@ -945,25 +935,23 @@ func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (
 		}
 
 		if !skipObjectProperties {
-			// Check if object_properties exists in the API response
+
 			objPropsRaw, objectPropertiesExists := resource["object_properties"]
 
-			// Only include object_properties if it's actually present in the API response
 			if objectPropertiesExists {
 				tfConfig.WriteString("	object_properties")
 				objProps, _ := objPropsRaw.(map[string]interface{})
 
-				// Check if object_properties is empty (exists but has no fields)
 				isEmptyObjectProps := len(objProps) == 0
 
 				if isEmptyObjectProps && config.EmptyObjectPropsAsSingleLine {
 					tfConfig.WriteString(" {}\n")
 				} else if isEmptyObjectProps {
-					// Case: object_properties exists but is empty
+
 					tfConfig.WriteString(" {\n")
 					tfConfig.WriteString("	}\n")
 				} else {
-					// Case: object_properties exists and has content
+
 					tfConfig.WriteString(" {\n")
 					var objPropsContentBuilder strings.Builder
 					if config.ObjectPropsHandler != nil {
@@ -973,7 +961,7 @@ func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (
 					tfConfig.WriteString("	}\n")
 				}
 			}
-			// Case: object_properties doesn't exist in API response - don't include it at all
+
 		}
 
 		skipKeysSet := map[string]bool{
@@ -1010,7 +998,7 @@ func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (
 			case bool:
 				tfConfig.WriteString(fmt.Sprintf("	%s = %t\n", tfFieldName, v))
 			case float64:
-				// Check if it's a whole number
+
 				if v == float64(int(v)) {
 					tfConfig.WriteString(fmt.Sprintf("	%s = %d\n", tfFieldName, int(v)))
 				} else {
@@ -1091,11 +1079,10 @@ func (i *Importer) generateStagesTF() (string, error) {
 		"mode": i.Mode,
 	})
 
-	// Define stage orderings for each mode
 	type StageDefinition struct {
 		StageName      string
 		ResourceType   string
-		DependsOnStage string // empty string means it's the first stage
+		DependsOnStage string
 	}
 
 	var stageOrder []StageDefinition
@@ -1133,7 +1120,7 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"pair_stage", "verity_pair", "threshold_group_stage"},
 		}
 	} else {
-		// Datacenter order
+
 		stageOrder = []StageDefinition{
 			{"sfp_breakout_stage", "verity_sfp_breakout", ""},
 			{"community_list_stage", "verity_community_list", "sfp_breakout_stage"},
@@ -1183,7 +1170,6 @@ func (i *Importer) generateStagesTF() (string, error) {
 		}
 	}
 
-	// Filter stages based on resource compatibility with mode
 	var compatibleStages []StageDefinition
 	var lastCompatibleStage string
 
@@ -1243,7 +1229,6 @@ func (i *Importer) importACLs(ipVersion string) (map[string]map[string]interface
 	}
 	defer resp.Body.Close()
 
-	// Use dynamic JSON key lookup from utils
 	jsonKey := utils.GetACLJSONKey(ipVersion)
 
 	var result map[string]map[string]map[string]interface{}
@@ -1258,11 +1243,6 @@ func (i *Importer) importACLs(ipVersion string) (map[string]map[string]interface
 	return make(map[string]map[string]interface{}), nil
 }
 
-// universalObjectPropsHandler dynamically processes all fields present in the object_properties
-// section of the API response and converts them to Terraform configuration format.
-// - If objProps is nil or empty map: generates no content
-// - If objProps has fields: generates TF config for all fields (including nested structures)
-// - Fields specified in ObjectPropsNestedBlockFields are rendered as blocks instead of attributes
 func universalObjectPropsHandler(objProps map[string]interface{}, builder *strings.Builder, config ResourceConfig) {
 	if len(objProps) > 0 {
 		var keys []string
@@ -1275,7 +1255,7 @@ func universalObjectPropsHandler(objProps map[string]interface{}, builder *strin
 			value := objProps[key]
 
 			if config.ObjectPropsNestedBlockFields != nil && config.ObjectPropsNestedBlockFields[key] {
-				// Render as nested blocks
+
 				if valueArray, ok := value.([]interface{}); ok {
 					for _, item := range valueArray {
 						builder.WriteString(fmt.Sprintf("		%s {\n", key))
@@ -1295,12 +1275,12 @@ func universalObjectPropsHandler(objProps map[string]interface{}, builder *strin
 					}
 				}
 			} else {
-				// Render as attribute assignment
+
 				builder.WriteString(fmt.Sprintf("		%s = %s\n", key, formatObjectPropsValue(value, "	")))
 			}
 		}
 	}
-	// If objProps is nil or empty, generate no content
+
 }
 
 func formatObjectPropsValue(value interface{}, indent string) string {
@@ -1310,7 +1290,7 @@ func formatObjectPropsValue(value interface{}, indent string) string {
 	case bool:
 		return fmt.Sprintf("%t", v)
 	case float64:
-		// Check if it's a whole number
+
 		if v == float64(int(v)) {
 			return fmt.Sprintf("%d", int(v))
 		}
@@ -1327,7 +1307,7 @@ func formatObjectPropsValue(value interface{}, indent string) string {
 		for i, item := range v {
 			result.WriteString(indent + "		")
 			if itemMap, ok := item.(map[string]interface{}); ok {
-				// Handle array of objects
+
 				result.WriteString("{\n")
 				var keys []string
 				for key := range itemMap {
@@ -1341,7 +1321,7 @@ func formatObjectPropsValue(value interface{}, indent string) string {
 				}
 				result.WriteString(indent + "		}")
 			} else {
-				// Handle array of primitives
+
 				result.WriteString(formatObjectPropsValue(item, indent+"		"))
 			}
 
@@ -1387,7 +1367,7 @@ func formatValue(value interface{}) string {
 	case bool:
 		return fmt.Sprintf("%t", v)
 	case float64:
-		// Check if it's a whole number
+
 		if v == float64(int(v)) {
 			return fmt.Sprintf("%d", int(v))
 		}

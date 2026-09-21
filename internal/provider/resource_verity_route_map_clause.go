@@ -322,7 +322,6 @@ func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "PermitDeny", APIField: &routeMapClauseProps.PermitDeny, TFValue: plan.PermitDeny},
 		{FieldName: "MatchAsPathAccessList", APIField: &routeMapClauseProps.MatchAsPathAccessList, TFValue: plan.MatchAsPathAccessList},
@@ -347,13 +346,11 @@ func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.
 		{FieldName: "MatchIpv6NextHopIpv6PrefixListRefType", APIField: &routeMapClauseProps.MatchIpv6NextHopIpv6PrefixListRefType, TFValue: plan.MatchIpv6NextHopIpv6PrefixListRefType},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &routeMapClauseProps.Enable, TFValue: plan.Enable},
 		{FieldName: "MatchEvpnRouteTypeDefault", APIField: &routeMapClauseProps.MatchEvpnRouteTypeDefault, TFValue: plan.MatchEvpnRouteTypeDefault},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, routeMapClauseTerraformType, name)
 
@@ -368,7 +365,6 @@ func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.
 		{FieldName: "MatchVni", APIField: &routeMapClauseProps.MatchVni, TFValue: config.MatchVni, IsConfigured: configuredAttrs.IsConfigured("match_vni")},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.RoutemapclausesPutRequestRouteMapClauseValueObjectProperties{}
@@ -403,7 +399,6 @@ func (r *verityRouteMapClauseResource) Create(ctx context.Context, req resource.
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -440,7 +435,6 @@ func (r *verityRouteMapClauseResource) Read(ctx context.Context, req resource.Re
 
 	name := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if routeMapClauseData, exists := r.bulkOpsMgr.GetResourceResponse("route_map_clause", name); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached route_map_clause data for %s from recent operation", name))
@@ -539,7 +533,6 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityRouteMapClauseResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -559,11 +552,9 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 	routeMapClauseProps := openapi.RoutemapclausesPutRequestRouteMapClauseValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, routeMapClauseTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { routeMapClauseProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.PermitDeny, state.PermitDeny, func(v *string) { routeMapClauseProps.PermitDeny = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.MatchOrigin, state.MatchOrigin, func(v *string) { routeMapClauseProps.MatchOrigin = v }, &hasChanges)
@@ -571,11 +562,9 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetStringField(plan.MatchSourceProtocol, state.MatchSourceProtocol, func(v *string) { routeMapClauseProps.MatchSourceProtocol = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.MatchEvpnRouteType, state.MatchEvpnRouteType, func(v *string) { routeMapClauseProps.MatchEvpnRouteType = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { routeMapClauseProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.MatchEvpnRouteTypeDefault, state.MatchEvpnRouteTypeDefault, func(v *bool) { routeMapClauseProps.MatchEvpnRouteTypeDefault = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.MatchInterfaceNumber, state.MatchInterfaceNumber, configuredAttrs.IsConfigured("match_interface_number"), func(v *openapi.NullableInt64) { routeMapClauseProps.MatchInterfaceNumber = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MatchInterfaceVlan, state.MatchInterfaceVlan, configuredAttrs.IsConfigured("match_interface_vlan"), func(v *openapi.NullableInt64) { routeMapClauseProps.MatchInterfaceVlan = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MatchLocalPreference, state.MatchLocalPreference, configuredAttrs.IsConfigured("match_local_preference"), func(v *openapi.NullableInt64) { routeMapClauseProps.MatchLocalPreference = *v }, &hasChanges)
@@ -585,7 +574,6 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetNullableInt64Field(config.MatchTag, state.MatchTag, configuredAttrs.IsConfigured("match_tag"), func(v *openapi.NullableInt64) { routeMapClauseProps.MatchTag = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MatchVni, state.MatchVni, configuredAttrs.IsConfigured("match_vni"), func(v *openapi.NullableInt64) { routeMapClauseProps.MatchVni = *v }, &hasChanges)
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.RoutemapclausesPutRequestRouteMapClauseValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -603,7 +591,6 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	// Handle MatchAsPathAccessList and MatchAsPathAccessListRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.MatchAsPathAccessList, state.MatchAsPathAccessList, plan.MatchAsPathAccessListRefType, state.MatchAsPathAccessListRefType,
 		func(v *string) { routeMapClauseProps.MatchAsPathAccessList = v },
@@ -615,7 +602,6 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Handle MatchCommunityList and MatchCommunityListRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.MatchCommunityList, state.MatchCommunityList, plan.MatchCommunityListRefType, state.MatchCommunityListRefType,
 		func(v *string) { routeMapClauseProps.MatchCommunityList = v },
@@ -627,7 +613,6 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Handle MatchExtendedCommunityList and MatchExtendedCommunityListRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.MatchExtendedCommunityList, state.MatchExtendedCommunityList, plan.MatchExtendedCommunityListRefType, state.MatchExtendedCommunityListRefType,
 		func(v *string) { routeMapClauseProps.MatchExtendedCommunityList = v },
@@ -639,7 +624,6 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Handle MatchIpv4AddressIpPrefixList and MatchIpv4AddressIpPrefixListRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.MatchIpv4AddressIpPrefixList, state.MatchIpv4AddressIpPrefixList, plan.MatchIpv4AddressIpPrefixListRefType, state.MatchIpv4AddressIpPrefixListRefType,
 		func(v *string) { routeMapClauseProps.MatchIpv4AddressIpPrefixList = v },
@@ -651,7 +635,6 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Handle MatchIpv4NextHopIpPrefixList and MatchIpv4NextHopIpPrefixListRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.MatchIpv4NextHopIpPrefixList, state.MatchIpv4NextHopIpPrefixList, plan.MatchIpv4NextHopIpPrefixListRefType, state.MatchIpv4NextHopIpPrefixListRefType,
 		func(v *string) { routeMapClauseProps.MatchIpv4NextHopIpPrefixList = v },
@@ -663,7 +646,6 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Handle MatchVrf and MatchVrfRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.MatchVrf, state.MatchVrf, plan.MatchVrfRefType, state.MatchVrfRefType,
 		func(v *string) { routeMapClauseProps.MatchVrf = v },
@@ -675,7 +657,6 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Handle MatchIpv6AddressIpv6PrefixList and MatchIpv6AddressIpv6PrefixListRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.MatchIpv6AddressIpv6PrefixList, state.MatchIpv6AddressIpv6PrefixList, plan.MatchIpv6AddressIpv6PrefixListRefType, state.MatchIpv6AddressIpv6PrefixListRefType,
 		func(v *string) { routeMapClauseProps.MatchIpv6AddressIpv6PrefixList = v },
@@ -687,7 +668,6 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Handle MatchIpv6NextHopIpv6PrefixList and MatchIpv6NextHopIpv6PrefixListRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.MatchIpv6NextHopIpv6PrefixList, state.MatchIpv6NextHopIpv6PrefixList, plan.MatchIpv6NextHopIpv6PrefixListRefType, state.MatchIpv6NextHopIpv6PrefixListRefType,
 		func(v *string) { routeMapClauseProps.MatchIpv6NextHopIpv6PrefixList = v },
@@ -720,7 +700,6 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if routeMapClauseData, exists := bulkMgr.GetResourceResponse("route_map_clause", name); exists {
 			newState := populateRouteMapClauseState(ctx, minState, utils.MergeMissingPlanScalars(routeMapClauseData, plan, routeMapClauseResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -729,7 +708,6 @@ func (r *verityRouteMapClauseResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -785,7 +763,6 @@ func populateRouteMapClauseState(ctx context.Context, state verityRouteMapClause
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// String fields
 	state.PermitDeny = utils.MapStringWithMode(data, "permit_deny", resourceType, mode)
 	state.MatchAsPathAccessList = utils.MapStringWithMode(data, "match_as_path_access_list", resourceType, mode)
 	state.MatchAsPathAccessListRefType = utils.MapStringWithMode(data, "match_as_path_access_list_ref_type_", resourceType, mode)
@@ -808,11 +785,9 @@ func populateRouteMapClauseState(ctx context.Context, state verityRouteMapClause
 	state.MatchIpv6NextHopIpv6PrefixList = utils.MapStringWithMode(data, "match_ipv6_next_hop_ipv6_prefix_list", resourceType, mode)
 	state.MatchIpv6NextHopIpv6PrefixListRefType = utils.MapStringWithMode(data, "match_ipv6_next_hop_ipv6_prefix_list_ref_type_", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.MatchEvpnRouteTypeDefault = utils.MapBoolWithMode(data, "match_evpn_route_type_default", resourceType, mode)
 
-	// Int64 fields
 	state.MatchInterfaceNumber = utils.MapInt64WithMode(data, "match_interface_number", resourceType, mode)
 	state.MatchInterfaceVlan = utils.MapInt64WithMode(data, "match_interface_vlan", resourceType, mode)
 	state.MatchLocalPreference = utils.MapInt64WithMode(data, "match_local_preference", resourceType, mode)
@@ -822,7 +797,6 @@ func populateRouteMapClauseState(ctx context.Context, state verityRouteMapClause
 	state.MatchTag = utils.MapInt64WithMode(data, "match_tag", resourceType, mode)
 	state.MatchVni = utils.MapInt64WithMode(data, "match_vni", resourceType, mode)
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityRouteMapClauseObjectPropertiesModel{
@@ -841,9 +815,7 @@ func populateRouteMapClauseState(ctx context.Context, state verityRouteMapClause
 }
 
 func (r *verityRouteMapClauseResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -854,11 +826,6 @@ func (r *verityRouteMapClauseResource) ModifyPlan(ctx context.Context, req resou
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := routeMapClauseResourceType
 	mode := r.provCtx.mode
 
@@ -915,16 +882,10 @@ func (r *verityRouteMapClauseResource) ModifyPlan(ctx context.Context, req resou
 		StringFields: []string{"notes", "match_fields_shown"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityRouteMapClauseResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -937,11 +898,6 @@ func (r *verityRouteMapClauseResource) ModifyPlan(ctx context.Context, req resou
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, routeMapClauseTerraformType, name)

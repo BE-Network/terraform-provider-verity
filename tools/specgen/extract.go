@@ -341,9 +341,6 @@ func mergeRequestShape(resource *coverageResource, mode string, rawOperation any
 	}
 }
 
-// enumValues records a closed set of permitted values. Reference fields use one
-// to name the object types they may point at, which is what the registry needs
-// to describe a reference pair without a hand-written list.
 func enumValues(value map[string]any) []string {
 	raw, ok := value["enum"].([]any)
 	if !ok {

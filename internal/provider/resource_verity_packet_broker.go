@@ -233,7 +233,6 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &pbProps.Enable, TFValue: plan.Enable},
 	})
@@ -346,7 +345,6 @@ func (r *verityPacketBrokerResource) Create(ctx context.Context, req resource.Cr
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -383,7 +381,6 @@ func (r *verityPacketBrokerResource) Read(ctx context.Context, req resource.Read
 
 	pbName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if pbData, exists := r.bulkOpsMgr.GetResourceResponse("packet_broker", pbName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached packet broker data for %s from recent operation", pbName))
@@ -496,30 +493,24 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 	pbProps := openapi.PacketbrokerPutRequestPbEgressProfileValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { pbProps.Name = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { pbProps.Enable = v }, &hasChanges)
 
-	// Handle IPv4 Permit using consolidated handler
 	changedIpv4Permit, ipv4PermitChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Permit, state.Ipv4Permit,
 		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner]{
 			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
 				newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
 					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
 				})
@@ -530,10 +521,8 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 				updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
 
-				// Handle filter and filter_ref_type_ using multiple ref types supported pattern
 				if !utils.HandleMultipleRefTypesSupported(
 					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
 					func(v *string) { updateFilter.Filter = v },
@@ -544,7 +533,6 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 					return updateFilter, false
 				}
 
-				// Always include index — API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateFilter.Index, TFValue: planItem.Index},
 				})
@@ -562,24 +550,20 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 		hasChanges = true
 	}
 
-	// Handle IPv4 Deny
 	changedIpv4Deny, ipv4DenyChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Deny, state.Ipv4Deny,
 		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner]{
 			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
 				newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
 					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
 				})
@@ -590,10 +574,8 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 				updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
 
-				// Handle filter and filter_ref_type_ using multiple ref types supported pattern
 				if !utils.HandleMultipleRefTypesSupported(
 					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
 					func(v *string) { updateFilter.Filter = v },
@@ -604,7 +586,6 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 					return updateFilter, false
 				}
 
-				// Always include index — API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateFilter.Index, TFValue: planItem.Index},
 				})
@@ -622,24 +603,20 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 		hasChanges = true
 	}
 
-	// Handle IPv6 Permit
 	changedIpv6Permit, ipv6PermitChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Permit, state.Ipv6Permit,
 		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner]{
 			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
 				newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
 					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
 				})
@@ -650,10 +627,8 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 				updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
 
-				// Handle filter and filter_ref_type_ using multiple ref types supported pattern
 				if !utils.HandleMultipleRefTypesSupported(
 					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
 					func(v *string) { updateFilter.Filter = v },
@@ -664,7 +639,6 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 					return updateFilter, false
 				}
 
-				// Always include index — API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateFilter.Index, TFValue: planItem.Index},
 				})
@@ -682,24 +656,20 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 		hasChanges = true
 	}
 
-	// Handle IPv6 Deny
 	changedIpv6Deny, ipv6DenyChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Deny, state.Ipv6Deny,
 		utils.IndexedItemHandler[verityPacketBrokerFilterModel, openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner]{
 			CreateNew: func(planItem verityPacketBrokerFilterModel) openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
 				newFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
 					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
 				})
@@ -710,10 +680,8 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 				updateFilter := openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
 
-				// Handle filter and filter_ref_type_ using multiple ref types supported pattern
 				if !utils.HandleMultipleRefTypesSupported(
 					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
 					func(v *string) { updateFilter.Filter = v },
@@ -724,7 +692,6 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 					return updateFilter, false
 				}
 
-				// Always include index — API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateFilter.Index, TFValue: planItem.Index},
 				})
@@ -763,7 +730,6 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if pbData, exists := bulkMgr.GetResourceResponse("packet_broker", name); exists {
 			newState := populatePacketBrokerState(ctx, minState, utils.MergeMissingPlanScalars(pbData, plan, packetBrokerResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -772,7 +738,6 @@ func (r *verityPacketBrokerResource) Update(ctx context.Context, req resource.Up
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -828,10 +793,8 @@ func populatePacketBrokerState(ctx context.Context, state verityPacketBrokerReso
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// Helper function to parse filter arrays with mode awareness
 	parseFilters := func(apiFilters []interface{}, blockName string) []verityPacketBrokerFilterModel {
 		var filters []verityPacketBrokerFilterModel
 		for _, f := range apiFilters {
@@ -850,7 +813,6 @@ func populatePacketBrokerState(ctx context.Context, state verityPacketBrokerReso
 		return filters
 	}
 
-	// Handle filter arrays with mode awareness
 	if utils.FieldAppliesToMode(resourceType, "ipv4_permit", mode) {
 		if ipv4Permit, ok := data["ipv4_permit"].([]interface{}); ok && len(ipv4Permit) > 0 {
 			state.Ipv4Permit = parseFilters(ipv4Permit, "ipv4_permit")
@@ -895,9 +857,7 @@ func populatePacketBrokerState(ctx context.Context, state verityPacketBrokerReso
 }
 
 func (r *verityPacketBrokerResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -908,11 +868,6 @@ func (r *verityPacketBrokerResource) ModifyPlan(ctx context.Context, req resourc
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := packetBrokerResourceType
 	mode := r.provCtx.mode
 

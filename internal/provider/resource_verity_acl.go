@@ -42,7 +42,7 @@ type verityACLUnifiedResource struct {
 	client               *openapi.APIClient
 	bulkOpsMgr           *bulkops.Manager
 	notifyOperationAdded func()
-	ipVersion            string // "4" for IPv4, "6" for IPv6
+	ipVersion            string
 }
 
 type verityACLUnifiedResourceModel struct {
@@ -208,7 +208,6 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Protocol", APIField: &aclProps.Protocol, TFValue: plan.Protocol},
 		{FieldName: "SourceIp", APIField: &aclProps.SourceIp, TFValue: plan.SourceIP},
@@ -217,13 +216,11 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 		{FieldName: "DestinationPortOperator", APIField: &aclProps.DestinationPortOperator, TFValue: plan.DestinationPortOperator},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &aclProps.Enable, TFValue: plan.Enable},
 		{FieldName: "Bidirectional", APIField: &aclProps.Bidirectional, TFValue: plan.Bidirectional},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, aclTerraformTypePrefix+r.ipVersion, name)
 
@@ -234,7 +231,6 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 		{FieldName: "DestinationPort2", APIField: &aclProps.DestinationPort2, TFValue: config.DestinationPort2, IsConfigured: configuredAttrs.IsConfigured("destination_port_2")},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
@@ -272,7 +268,6 @@ func (r *verityACLUnifiedResource) Create(ctx context.Context, req resource.Crea
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -309,7 +304,6 @@ func (r *verityACLUnifiedResource) Read(ctx context.Context, req resource.ReadRe
 
 	aclName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if aclData, exists := r.bulkOpsMgr.GetResourceResponse("acl_v"+r.ipVersion, aclName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached IPv%s ACL data for %s from recent operation", r.ipVersion, aclName))
@@ -349,7 +343,6 @@ func (r *verityACLUnifiedResource) Read(ctx context.Context, req resource.ReadRe
 				return ACLsResponse{}, fmt.Errorf("failed to decode IPv%s ACLs response: %v", r.ipVersion, err)
 			}
 
-			// Extract the correct field based on IP version
 			var filterKey string
 			if r.ipVersion == "6" {
 				filterKey = "ipv6_filter"
@@ -375,7 +368,6 @@ func (r *verityACLUnifiedResource) Read(ctx context.Context, req resource.ReadRe
 
 	tflog.Debug(ctx, fmt.Sprintf("Looking for IPv%s ACL with name: %s", r.ipVersion, aclName))
 
-	// ACLs use the map key as the name
 	aclData, exists := utils.FindResourceByKey(result.ACLs, aclName)
 	if !exists {
 		tflog.Debug(ctx, fmt.Sprintf("IPv%s ACL with name '%s' not found in API response", r.ipVersion, aclName))
@@ -412,7 +404,6 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityACLUnifiedResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -432,11 +423,9 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 	aclProps := openapi.AclsPutRequestIpFilterValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, aclTerraformTypePrefix+r.ipVersion, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { aclProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Protocol, state.Protocol, func(v *string) { aclProps.Protocol = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SourceIP, state.SourceIP, func(v *string) { aclProps.SourceIp = v }, &hasChanges)
@@ -444,17 +433,14 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 	utils.CompareAndSetStringField(plan.DestinationIP, state.DestinationIP, func(v *string) { aclProps.DestinationIp = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.DestinationPortOperator, state.DestinationPortOperator, func(v *string) { aclProps.DestinationPortOperator = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { aclProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.Bidirectional, state.Bidirectional, func(v *bool) { aclProps.Bidirectional = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.SourcePort1, state.SourcePort1, configuredAttrs.IsConfigured("source_port_1"), func(v *openapi.NullableInt64) { aclProps.SourcePort1 = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.SourcePort2, state.SourcePort2, configuredAttrs.IsConfigured("source_port_2"), func(v *openapi.NullableInt64) { aclProps.SourcePort2 = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.DestinationPort1, state.DestinationPort1, configuredAttrs.IsConfigured("destination_port_1"), func(v *openapi.NullableInt64) { aclProps.DestinationPort1 = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.DestinationPort2, state.DestinationPort2, configuredAttrs.IsConfigured("destination_port_2"), func(v *openapi.NullableInt64) { aclProps.DestinationPort2 = *v }, &hasChanges)
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -495,7 +481,6 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if aclData, exists := bulkMgr.GetResourceResponse("acl_v"+r.ipVersion, name); exists {
 			newState := populateACLState(ctx, minState, utils.MergeMissingPlanScalars(aclData, plan, aclResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -504,7 +489,6 @@ func (r *verityACLUnifiedResource) Update(ctx context.Context, req resource.Upda
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -567,24 +551,20 @@ func populateACLState(ctx context.Context, state verityACLUnifiedResourceModel, 
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// String fields
 	state.Protocol = utils.MapStringWithMode(data, "protocol", resourceType, mode)
 	state.SourceIP = utils.MapStringWithMode(data, "source_ip", resourceType, mode)
 	state.SourcePortOperator = utils.MapStringWithMode(data, "source_port_operator", resourceType, mode)
 	state.DestinationIP = utils.MapStringWithMode(data, "destination_ip", resourceType, mode)
 	state.DestinationPortOperator = utils.MapStringWithMode(data, "destination_port_operator", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.Bidirectional = utils.MapBoolWithMode(data, "bidirectional", resourceType, mode)
 
-	// Int fields
 	state.SourcePort1 = utils.MapInt64WithMode(data, "source_port_1", resourceType, mode)
 	state.SourcePort2 = utils.MapInt64WithMode(data, "source_port_2", resourceType, mode)
 	state.DestinationPort1 = utils.MapInt64WithMode(data, "destination_port_1", resourceType, mode)
 	state.DestinationPort2 = utils.MapInt64WithMode(data, "destination_port_2", resourceType, mode)
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityACLUnifiedObjectPropertiesModel{
@@ -602,9 +582,7 @@ func populateACLState(ctx context.Context, state verityACLUnifiedResourceModel, 
 }
 
 func (r *verityACLUnifiedResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -615,11 +593,6 @@ func (r *verityACLUnifiedResource) ModifyPlan(ctx context.Context, req resource.
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := aclResourceType
 	mode := r.provCtx.mode
 
@@ -651,16 +624,10 @@ func (r *verityACLUnifiedResource) ModifyPlan(ctx context.Context, req resource.
 		StringFields: []string{"notes"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityACLUnifiedResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -673,11 +640,6 @@ func (r *verityACLUnifiedResource) ModifyPlan(ctx context.Context, req resource.
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, aclTerraformTypePrefix+r.ipVersion, name)

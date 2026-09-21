@@ -10,17 +10,6 @@ import (
 	"terraform-provider-verity/tests/unit/mock"
 )
 
-// TestPacketBrokerIPv6PermitEnableReachesPatch covers a reconciliation bug.
-//
-// Packet Broker has four structurally identical filter collections that share one
-// model type. Three of them compared and sent the entry's enable flag on update;
-// ipv6_permit did not, leaving the comment in place with the call removed. The
-// effect was that Terraform planned a change to the flag, the PATCH omitted it,
-// and the next read restored the old value, so the plan never converged.
-//
-// The other three collections define the intended contract, so this asserts the
-// fixed behavior directly rather than through the field-coverage harness: an
-// existing entry changing only enable must carry it in the PATCH body.
 func TestPacketBrokerIPv6PermitEnableReachesPatch(t *testing.T) {
 	t.Parallel()
 

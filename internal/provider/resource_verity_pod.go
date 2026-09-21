@@ -160,18 +160,15 @@ func (r *verityPodResource) Create(ctx context.Context, req resource.CreateReque
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Fabric", APIField: &podReq.Fabric, TFValue: plan.Fabric},
 		{FieldName: "FabricRefType", APIField: &podReq.FabricRefType, TFValue: plan.FabricRefType},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &podReq.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle nullable int64 and number fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, podTerraformType, name)
 
@@ -183,7 +180,6 @@ func (r *verityPodResource) Create(ctx context.Context, req resource.CreateReque
 		{FieldName: "Position", APIField: &podReq.Position, TFValue: config.Position, IsConfigured: configuredAttrs.IsConfigured("position")},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
@@ -217,7 +213,6 @@ func (r *verityPodResource) Create(ctx context.Context, req resource.CreateReque
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -254,7 +249,6 @@ func (r *verityPodResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	podName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if podData, exists := r.bulkOpsMgr.GetResourceResponse("pod", podName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached pod data for %s from recent operation", podName))
@@ -353,7 +347,6 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityPodResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -373,21 +366,16 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 	podReq := openapi.PodsPutRequestPodValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, podTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { podReq.Name = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { podReq.Enable = v }, &hasChanges)
 
-	// Handle nullable int64 and number field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.ExpectedSpineCount, state.ExpectedSpineCount, configuredAttrs.IsConfigured("expected_spine_count"), func(v *openapi.NullableInt64) { podReq.ExpectedSpineCount = *v }, &hasChanges)
 	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat64) { podReq.Position = *v }, &hasChanges)
 
-	// Handle fabric and fabric_ref_type_ using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.Fabric, state.Fabric, plan.FabricRefType, state.FabricRefType,
 		func(v *string) { podReq.Fabric = v },
@@ -398,7 +386,6 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -436,7 +423,6 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if podData, exists := bulkMgr.GetResourceResponse("pod", name); exists {
 			newState := populatePodState(ctx, minState, utils.MergeMissingPlanScalars(podData, plan, podResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -445,7 +431,6 @@ func (r *verityPodResource) Update(ctx context.Context, req resource.UpdateReque
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -501,20 +486,15 @@ func populatePodState(ctx context.Context, state verityPodResourceModel, data ma
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Int fields
 	state.ExpectedSpineCount = utils.MapInt64WithMode(data, "expected_spine_count", resourceType, mode)
 
-	// Number fields
 	state.Position = utils.MapNumberWithMode(data, "position", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// String fields
 	state.Fabric = utils.MapStringWithMode(data, "fabric", resourceType, mode)
 	state.FabricRefType = utils.MapStringWithMode(data, "fabric_ref_type_", resourceType, mode)
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityPodObjectPropertiesModel{
@@ -532,9 +512,7 @@ func populatePodState(ctx context.Context, state verityPodResourceModel, data ma
 }
 
 func (r *verityPodResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -545,11 +523,6 @@ func (r *verityPodResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := podResourceType
 	mode := r.provCtx.mode
 
@@ -582,16 +555,10 @@ func (r *verityPodResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 		StringFields: []string{"notes"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityPodResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -604,11 +571,6 @@ func (r *verityPodResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, podTerraformType, name)

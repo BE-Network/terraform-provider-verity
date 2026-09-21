@@ -12,33 +12,13 @@ import (
 	"terraform-provider-verity/internal/transport"
 )
 
-// GenericResourcesEnvVar names the resources the generic engine serves.
-//
-// Phase 2 migrates one resource, and a migration is only safe if it can be
-// turned off in the field: the switch is what lets the generic engine be run
-// against a real 6.6 deployment beside the implementation it replaces, without
-// committing every user to it. Set it to a comma-separated list of Terraform
-// types, or to "all" for every resource the engine can serve.
-//
-// Unset, the provider registers the handwritten resources exactly as before, so
-// the default path through this file is the one that changes nothing.
 const GenericResourcesEnvVar = "VERITY_GENERIC_RESOURCES"
 
-// genericAdapters is the generated adapter table. The bulk manager type-asserts
-// the value it is handed, so an adapter is what lets a canonical object reach
-// it; a resource with no adapter cannot be served generically however complete
-// its spec is.
-//
-// specgen emits one per resource it can serve and records why it skipped the
-// rest, so this set grows as the engine's reach does rather than as someone
-// remembers to add an entry.
 func genericAdapter(terraformType string) (genericresource.TransportAdapter, bool) {
 	adapter, found := transport.GeneratedAdapters[terraformType]
 	return adapter, found
 }
 
-// genericSelection reads the switch. An empty set means every resource stays
-// handwritten.
 func genericSelection() map[string]bool {
 	raw := strings.TrimSpace(os.Getenv(GenericResourcesEnvVar))
 	if raw == "" {
@@ -55,12 +35,6 @@ func genericSelection() map[string]bool {
 	return selected
 }
 
-// genericConstructor returns the generic factory for a resource when the switch
-// selects it and the engine can serve it.
-//
-// A selection the engine cannot honor is an error rather than a silent fallback
-// to the handwritten resource: someone who asked for the generic engine and
-// quietly got the old one would be testing the wrong thing and would not know.
 func genericConstructor(terraformType string, selected map[string]bool) (func() resource.Resource, error) {
 	if !selected[terraformType] && !selected["all"] {
 		return nil, nil
@@ -68,7 +42,7 @@ func genericConstructor(terraformType string, selected map[string]bool) (func() 
 	adapter, hasAdapter := genericAdapter(terraformType)
 	if !hasAdapter {
 		if selected["all"] {
-			// "all" is a convenience, not a claim that every resource is ready.
+
 			return nil, nil
 		}
 		return nil, fmt.Errorf("%s=%s selects %s, which has no transport adapter yet",

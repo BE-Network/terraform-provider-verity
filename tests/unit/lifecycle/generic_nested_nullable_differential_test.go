@@ -6,12 +6,6 @@ import (
 	"testing"
 )
 
-// A nullable member of a list entry has the same problem as a top-level one —
-// Terraform delivers `x = null` and an absent x identically — with an extra
-// dependency: the configuration scan records nested attributes under the literal
-// index each entry is written with. These cases run both implementations over the
-// same configuration for verity_tacacs_profile.tacacs_servers.timeout, on create,
-// on update, and for an entry added to an existing list.
 func TestGenericMatchesLegacyOnNullableEntryMembers(t *testing.T) {
 	profile := func(servers ...string) string {
 		return fmt.Sprintf("resource \"verity_tacacs_profile\" \"test\" {\n  name = \"difftacacs\"\n  enable = true\n%s}\n", strings.Join(servers, ""))

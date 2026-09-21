@@ -11,8 +11,6 @@ import (
 	"terraform-provider-verity/internal/transport"
 )
 
-// singletonFields is a resource with an identity and one singleton block holding
-// a plain member and a reference pair, the shape verity_lag carries.
 func singletonFields() []spec.FieldSpec {
 	pair := pairFields()
 	lag, lagType := pair[1], pair[2]
@@ -113,8 +111,6 @@ func TestUpdateSingleton(t *testing.T) {
 	}
 }
 
-// A pair inside the block refuses the same combinations as at the top level, in
-// the handwritten helper's words.
 func TestUpdateSingletonValidatesNestedReferencePairs(t *testing.T) {
 	t.Parallel()
 
@@ -172,8 +168,6 @@ func TestSingletonFromAPI(t *testing.T) {
 	}
 }
 
-// Writing a plan to state settles unknown members inside the block, not only at
-// the top level; an unknown cannot be stored.
 func TestNullifyUnknownSettlesSingletonMembers(t *testing.T) {
 	t.Parallel()
 
@@ -188,9 +182,6 @@ func TestNullifyUnknownSettlesSingletonMembers(t *testing.T) {
 	}
 }
 
-// An object the API declares with no properties can only be present or absent.
-// Adding it sends an empty object; removing it is a change with nothing to send,
-// as the handwritten resources treat it.
 func TestUpdateEmptySingletonFollowsPresence(t *testing.T) {
 	t.Parallel()
 
@@ -229,8 +220,6 @@ func TestUpdateEmptySingletonFollowsPresence(t *testing.T) {
 	}
 }
 
-// graphBlock is verity_fabric's object_properties: a singleton holding only an
-// indexed list whose entries carry nothing but their index.
 func graphBlock() spec.FieldSpec {
 	index := notesMember()
 	index.TerraformName, index.APIName, index.Kind = "index", "index", spec.FieldKindInt64
@@ -275,8 +264,6 @@ func listValueTyped(field spec.FieldSpec, entries []map[string]attr.Value) (type
 	return value.(types.List), nil
 }
 
-// A written block with no entries still sends its list, empty, as the
-// handwritten fabric create does.
 func TestCreateSingletonSendsAnEmptyNestedList(t *testing.T) {
 	t.Parallel()
 
@@ -289,8 +276,6 @@ func TestCreateSingletonSendsAnEmptyNestedList(t *testing.T) {
 	}
 }
 
-// A nested list is reconciled whenever either side holds the block: adding the
-// block creates its entries, and removing it deletes them.
 func TestUpdateSingletonReconcilesANestedListAcrossPresence(t *testing.T) {
 	t.Parallel()
 

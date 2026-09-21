@@ -284,7 +284,6 @@ func createImportBlocks(ctx context.Context, dirPath string, mode string) (strin
 
 			resourceType := resourceMatches[1]
 
-			// Only process supported Verity resources
 			if _, isSupported := supportedResources[resourceType]; !isSupported {
 				tflog.Debug(ctx, "Skipping unsupported resource type", map[string]any{
 					"resource_type": resourceType,
@@ -317,7 +316,6 @@ func createImportBlocks(ctx context.Context, dirPath string, mode string) (strin
 		}
 	}
 
-	// Write all collected import blocks grouped by resource type
 	for resourceType, blocks := range importBlocks {
 		if len(blocks) > 0 {
 			if _, err := file.WriteString(fmt.Sprintf("# %s imports\n", resourceType)); err != nil {

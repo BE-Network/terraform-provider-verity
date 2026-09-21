@@ -185,16 +185,13 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &pqProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Parse HCL to detect explicitly configured attributes
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, packetQueueTerraformType, name)
 
-	// Handle Pbit
 	if len(plan.Pbit) > 0 {
 		pbitConfigMap := utils.BuildIndexedConfigMap(config.Pbit)
 
@@ -202,12 +199,10 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 		for i, pbit := range plan.Pbit {
 			pbitItem := openapi.PacketqueuesPutRequestPacketQueueValuePbitInner{}
 
-			// Handle int64 fields
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &pbitItem.Index, TFValue: pbit.Index},
 			})
 
-			// Get per-block configured info for nullable Int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(pbit, pbitConfigMap, "pbit", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "PacketQueueForPBit", APIField: &pbitItem.PacketQueueForPBit, TFValue: configItem.PacketQueueForPBit, IsConfigured: cfg.IsFieldConfigured("packet_queue_for_p_bit")},
@@ -218,7 +213,6 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 		pqProps.Pbit = pbitArray
 	}
 
-	// Handle Queue
 	if len(plan.Queue) > 0 {
 		queueConfigMap := utils.BuildIndexedConfigMap(config.Queue)
 
@@ -226,19 +220,16 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 		for i, queue := range plan.Queue {
 			queueItem := openapi.PacketqueuesPutRequestPacketQueueValueQueueInner{}
 
-			// Handle int64 fields
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &queueItem.Index, TFValue: queue.Index},
 			})
 
-			// Get per-block configured info for nullable Int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(queue, queueConfigMap, "queue", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "BandwidthForQueue", APIField: &queueItem.BandwidthForQueue, TFValue: configItem.BandwidthForQueue, IsConfigured: cfg.IsFieldConfigured("bandwidth_for_queue")},
 				{FieldName: "SchedulerWeight", APIField: &queueItem.SchedulerWeight, TFValue: configItem.SchedulerWeight, IsConfigured: cfg.IsFieldConfigured("scheduler_weight")},
 			})
 
-			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "SchedulerType", APIField: &queueItem.SchedulerType, TFValue: queue.SchedulerType},
 			})
@@ -272,7 +263,6 @@ func (r *verityPacketQueueResource) Create(ctx context.Context, req resource.Cre
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -309,7 +299,6 @@ func (r *verityPacketQueueResource) Read(ctx context.Context, req resource.ReadR
 
 	pqName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if pqData, exists := r.bulkOpsMgr.GetResourceResponse("packet_queue", pqName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached packet queue data for %s from recent operation", pqName))
@@ -422,10 +411,8 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 	pqProps := openapi.PacketqueuesPutRequestPacketQueueValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { pqProps.Name = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { pqProps.Enable = v }, &hasChanges)
 
 	workDir := r.provCtx.workDir
@@ -435,18 +422,15 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 	pbitConfigMap := utils.BuildIndexedConfigMap(config.Pbit)
 	queueConfigMap := utils.BuildIndexedConfigMap(config.Queue)
 
-	// Handle Pbit
 	changedPbits, pbitsChanged := utils.ProcessIndexedArrayUpdates(plan.Pbit, state.Pbit,
 		utils.IndexedItemHandler[verityPacketQueuePbitModel, openapi.PacketqueuesPutRequestPacketQueueValuePbitInner]{
 			CreateNew: func(planItem verityPacketQueuePbitModel) openapi.PacketqueuesPutRequestPacketQueueValuePbitInner {
 				newPbit := openapi.PacketqueuesPutRequestPacketQueueValuePbitInner{}
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newPbit.Index, TFValue: planItem.Index},
 				})
 
-				// Get per-block configured info for nullable Int64 fields
 				configItem, cfg := utils.GetIndexedBlockConfig(planItem, pbitConfigMap, "pbit", configuredAttrs)
 				utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 					{FieldName: "PacketQueueForPBit", APIField: &newPbit.PacketQueueForPBit, TFValue: configItem.PacketQueueForPBit, IsConfigured: cfg.IsFieldConfigured("packet_queue_for_p_bit")},
@@ -458,12 +442,10 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 				updatePbit := openapi.PacketqueuesPutRequestPacketQueueValuePbitInner{}
 				fieldChanged := false
 
-				// Always include index — API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updatePbit.Index, TFValue: planItem.Index},
 				})
 
-				// Handle nullable int64 field changes
 				configItem, cfg := utils.GetIndexedBlockConfig(planItem, pbitConfigMap, "pbit", configuredAttrs)
 				utils.CompareAndSetNullableInt64Field(configItem.PacketQueueForPBit, stateItem.PacketQueueForPBit, cfg.IsFieldConfigured("packet_queue_for_p_bit"), func(v *openapi.NullableInt64) { updatePbit.PacketQueueForPBit = *v }, &fieldChanged)
 
@@ -480,25 +462,21 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 		hasChanges = true
 	}
 
-	// Handle Queue
 	updatedQueues, queuesChanged := utils.ProcessIndexedArrayUpdates(plan.Queue, state.Queue,
 		utils.IndexedItemHandler[verityPacketQueueQueueModel, openapi.PacketqueuesPutRequestPacketQueueValueQueueInner]{
 			CreateNew: func(planItem verityPacketQueueQueueModel) openapi.PacketqueuesPutRequestPacketQueueValueQueueInner {
 				newQueue := openapi.PacketqueuesPutRequestPacketQueueValueQueueInner{}
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newQueue.Index, TFValue: planItem.Index},
 				})
 
-				// Get per-block configured info for nullable Int64 fields
 				configItem, cfg := utils.GetIndexedBlockConfig(planItem, queueConfigMap, "queue", configuredAttrs)
 				utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 					{FieldName: "BandwidthForQueue", APIField: &newQueue.BandwidthForQueue, TFValue: configItem.BandwidthForQueue, IsConfigured: cfg.IsFieldConfigured("bandwidth_for_queue")},
 					{FieldName: "SchedulerWeight", APIField: &newQueue.SchedulerWeight, TFValue: configItem.SchedulerWeight, IsConfigured: cfg.IsFieldConfigured("scheduler_weight")},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "SchedulerType", APIField: &newQueue.SchedulerType, TFValue: planItem.SchedulerType},
 				})
@@ -509,17 +487,14 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 				updateQueue := openapi.PacketqueuesPutRequestPacketQueueValueQueueInner{}
 				fieldChanged := false
 
-				// Always include index — API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateQueue.Index, TFValue: planItem.Index},
 				})
 
-				// Handle nullable int64 field changes
 				configItem, cfg := utils.GetIndexedBlockConfig(planItem, queueConfigMap, "queue", configuredAttrs)
 				utils.CompareAndSetNullableInt64Field(configItem.BandwidthForQueue, stateItem.BandwidthForQueue, cfg.IsFieldConfigured("bandwidth_for_queue"), func(v *openapi.NullableInt64) { updateQueue.BandwidthForQueue = *v }, &fieldChanged)
 				utils.CompareAndSetNullableInt64Field(configItem.SchedulerWeight, stateItem.SchedulerWeight, cfg.IsFieldConfigured("scheduler_weight"), func(v *openapi.NullableInt64) { updateQueue.SchedulerWeight = *v }, &fieldChanged)
 
-				// Handle string field changes
 				utils.CompareAndSetStringField(planItem.SchedulerType, stateItem.SchedulerType, func(v *string) { updateQueue.SchedulerType = v }, &fieldChanged)
 
 				return updateQueue, fieldChanged
@@ -556,7 +531,6 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if pqData, exists := bulkMgr.GetResourceResponse("packet_queue", name); exists {
 			newState := populatePacketQueueState(ctx, minState, utils.MergeMissingPlanScalars(pqData, plan, packetQueueResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -565,7 +539,6 @@ func (r *verityPacketQueueResource) Update(ctx context.Context, req resource.Upd
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -621,10 +594,8 @@ func populatePacketQueueState(ctx context.Context, state verityPacketQueueResour
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// Handle pbit array with mode awareness
 	if utils.FieldAppliesToMode(resourceType, "pbit", mode) {
 		if pbitArray, ok := data["pbit"].([]interface{}); ok && len(pbitArray) > 0 {
 			var pbits []verityPacketQueuePbitModel
@@ -647,7 +618,6 @@ func populatePacketQueueState(ctx context.Context, state verityPacketQueueResour
 		state.Pbit = nil
 	}
 
-	// Handle queue array with mode awareness
 	if utils.FieldAppliesToMode(resourceType, "queue", mode) {
 		if queueArray, ok := data["queue"].([]interface{}); ok && len(queueArray) > 0 {
 			var queues []verityPacketQueueQueueModel
@@ -676,9 +646,7 @@ func populatePacketQueueState(ctx context.Context, state verityPacketQueueResour
 }
 
 func (r *verityPacketQueueResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -689,11 +657,6 @@ func (r *verityPacketQueueResource) ModifyPlan(ctx context.Context, req resource
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := packetQueueResourceType
 	mode := r.provCtx.mode
 
@@ -721,16 +684,10 @@ func (r *verityPacketQueueResource) ModifyPlan(ctx context.Context, req resource
 		Int64Fields:  []string{"index", "bandwidth_for_queue", "scheduler_weight"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityPacketQueueResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -743,14 +700,10 @@ func (r *verityPacketQueueResource) ModifyPlan(ctx context.Context, req resource
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable fields in nested blocks
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, packetQueueTerraformType, name)
 
-	// Handle pbit block nullable fields
 	for i, configItem := range config.Pbit {
 		itemIndex := configItem.Index.ValueInt64()
 		var stateItem *verityPacketQueuePbitModel
@@ -776,7 +729,6 @@ func (r *verityPacketQueueResource) ModifyPlan(ctx context.Context, req resource
 		}
 	}
 
-	// Handle queue block nullable fields
 	for i, configItem := range config.Queue {
 		itemIndex := configItem.Index.ValueInt64()
 		var stateItem *verityPacketQueueQueueModel

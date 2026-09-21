@@ -11,32 +11,6 @@ import (
 	"terraform-provider-verity/tests/unit/mock"
 )
 
-// Adding an indexed child without naming its index does not work today.
-//
-// The migration plan asks Phase 0 to characterize "multiple new index-zero
-// items", and nothing else exercised it: every other nested-block test writes
-// indexes explicitly as 1..N and adds at most one entry per step, which never
-// produces two entries sharing an index.
-//
-// The API documents the contract on the attribute itself — "The index
-// identifying the object. Zero if you want to add an object to the list." — and
-// `index` is Optional and Computed in all 54 collections, so both spellings of
-// that intent are things a configuration can express. Neither survives an apply:
-//
-//   - Written as `index = 0`, the value is known, so Terraform holds the provider
-//     to it. The request carries zero, the server assigns a real index, and the
-//     apply fails with "inconsistent result after apply".
-//   - Left out, the value plans as unknown. SetInt64Fields skips an unknown, so
-//     the entry reaches the wire with no index member at all rather than the zero
-//     the API asks for, and nothing correlates it back.
-//
-// So an indexed child can only be added by writing an index the server has not
-// assigned yet, which means guessing the server's numbering.
-//
-// These tests pin that as it stands rather than assert the behavior anyone would
-// want. They are characterization, in the Phase 0 sense: the generic collection
-// engine in Phase 4 is where this gets fixed, and when it does, these tests fail
-// and are rewritten deliberately instead of the change passing unnoticed.
 const (
 	indexZeroType         = "verity_packet_broker"
 	indexZeroAPIPath      = "/api/packetbroker"
@@ -59,9 +33,6 @@ resource %q "test" {
 `, indexZeroType, indexZeroResourceName)
 }
 
-// indexZeroAdded appends two entries to the baseline, both asking for an index.
-// newEntry supplies the body of each, so the two spellings differ only in whether
-// the index is written.
 func indexZeroAdded(url, newEntry string) string {
 	return mock.ProviderConfig(url, "datacenter") + fmt.Sprintf(`
 resource %q "test" {
@@ -95,9 +66,6 @@ func newIndexZeroServer(t *testing.T) *mock.MockServer {
 	return ms
 }
 
-// TestIndexZeroAddRejectedAsInconsistentResult records the documented spelling:
-// `index = 0` is a known value, so Terraform requires the applied state to match
-// it, and the server's assigned index never will.
 func TestIndexZeroAddRejectedAsInconsistentResult(t *testing.T) {
 	t.Parallel()
 
@@ -115,19 +83,13 @@ func TestIndexZeroAddRejectedAsInconsistentResult(t *testing.T) {
 			{
 				PreConfig: func() { ms.Reset(); mock.WriteTFConfig(t, ms.URL(), added) },
 				Config:    added,
-				// Both new entries do reach the request, each carrying index zero;
-				// what fails is reconciling the indexes the server assigns back into
-				// a configuration that pinned them to zero.
+
 				ExpectError: regexp.MustCompile(`(?s)inconsistent result after apply.*index`),
 			},
 		},
 	})
 }
 
-// TestIndexZeroAddOmitsTheIndexEntirely records the other spelling. Leaving the
-// attribute out plans an unknown, and the guarded setter drops an unknown, so the
-// entry is sent with no index member rather than the zero that would ask the
-// server for one.
 func TestIndexZeroAddOmitsTheIndexEntirely(t *testing.T) {
 	t.Parallel()
 
@@ -150,8 +112,7 @@ func TestIndexZeroAddOmitsTheIndexEntirely(t *testing.T) {
 					patched = true
 					return nil
 				},
-				// The entries carry no index, so the server cannot place them and the
-				// read returns the one entry it already had.
+
 				ExpectError: regexp.MustCompile(`(?s)inconsistent result after apply.*block count changed from 3 to 1`),
 			},
 		},
@@ -160,8 +121,6 @@ func TestIndexZeroAddOmitsTheIndexEntirely(t *testing.T) {
 		t.Fatal("the apply was expected to fail before its state check ran")
 	}
 
-	// The request itself is the evidence: two new entries were sent, and neither
-	// named an index.
 	patches := ms.GetRequestsByMethodAndPath("PATCH", indexZeroAPIPath)
 	if len(patches) == 0 {
 		t.Fatalf("no PATCH captured for %s", indexZeroAPIPath)

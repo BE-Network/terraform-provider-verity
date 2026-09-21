@@ -166,17 +166,14 @@ func (r *verityAsPathAccessListResource) Create(ctx context.Context, req resourc
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "PermitDeny", APIField: &asPathAccessListProps.PermitDeny, TFValue: plan.PermitDeny},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &asPathAccessListProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
@@ -186,7 +183,6 @@ func (r *verityAsPathAccessListResource) Create(ctx context.Context, req resourc
 		asPathAccessListProps.ObjectProperties = &objProps
 	}
 
-	// Handle lists
 	if len(plan.Lists) > 0 {
 		lists := make([]openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner, len(plan.Lists))
 		for i, item := range plan.Lists {
@@ -229,7 +225,6 @@ func (r *verityAsPathAccessListResource) Create(ctx context.Context, req resourc
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -266,7 +261,6 @@ func (r *verityAsPathAccessListResource) Read(ctx context.Context, req resource.
 
 	asPathAccessListName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if asPathAccessListData, exists := r.bulkOpsMgr.GetResourceResponse("as_path_access_list", asPathAccessListName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached as path access list data for %s from recent operation", asPathAccessListName))
@@ -379,14 +373,11 @@ func (r *verityAsPathAccessListResource) Update(ctx context.Context, req resourc
 	asPathAccessListProps := openapi.AspathaccesslistsPutRequestAsPathAccessListValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { asPathAccessListProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.PermitDeny, state.PermitDeny, func(val *string) { asPathAccessListProps.PermitDeny = val }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(val *bool) { asPathAccessListProps.Enable = val }, &hasChanges)
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -403,7 +394,6 @@ func (r *verityAsPathAccessListResource) Update(ctx context.Context, req resourc
 		}
 	}
 
-	// Handle lists
 	listsHandler := utils.IndexedItemHandler[verityAsPathAccessListListsModel, openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner]{
 		CreateNew: func(planItem verityAsPathAccessListListsModel) openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner {
 			item := openapi.AspathaccesslistsPutRequestAsPathAccessListValueListsInner{}
@@ -481,7 +471,6 @@ func (r *verityAsPathAccessListResource) Update(ctx context.Context, req resourc
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if asPathAccessListData, exists := bulkMgr.GetResourceResponse("as_path_access_list", name); exists {
 			newState := populateAsPathAccessListState(ctx, minState, utils.MergeMissingPlanScalars(asPathAccessListData, plan, asPathAccessListResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -490,7 +479,6 @@ func (r *verityAsPathAccessListResource) Update(ctx context.Context, req resourc
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -546,13 +534,10 @@ func populateAsPathAccessListState(ctx context.Context, state verityAsPathAccess
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// String fields
 	state.PermitDeny = utils.MapStringWithMode(data, "permit_deny", resourceType, mode)
 
-	// Handle lists array
 	if utils.FieldAppliesToMode(resourceType, "lists", mode) {
 		if listsData, ok := data["lists"].([]interface{}); ok && len(listsData) > 0 {
 			var lists []verityAsPathAccessListListsModel
@@ -576,7 +561,6 @@ func populateAsPathAccessListState(ctx context.Context, state verityAsPathAccess
 		state.Lists = nil
 	}
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityAsPathAccessListObjectPropertiesModel{
@@ -594,9 +578,7 @@ func populateAsPathAccessListState(ctx context.Context, state verityAsPathAccess
 }
 
 func (r *verityAsPathAccessListResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -607,11 +589,6 @@ func (r *verityAsPathAccessListResource) ModifyPlan(ctx context.Context, req res
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := asPathAccessListResourceType
 	mode := r.provCtx.mode
 

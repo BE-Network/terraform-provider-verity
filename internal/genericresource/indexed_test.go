@@ -10,8 +10,6 @@ import (
 	"terraform-provider-verity/internal/spec"
 )
 
-// listField is an indexed collection of entries identified by index, holding a
-// plain member and a reference pair, the shape verity_packet_broker carries.
 func listField() spec.FieldSpec {
 	index := notesMember()
 	index.TerraformName, index.APIName, index.Kind = "index", "index", spec.FieldKindInt64
@@ -74,7 +72,7 @@ func TestCreateListSendsEveryEntry(t *testing.T) {
 	if err != nil {
 		t.Fatalf("buildCreate: %v", err)
 	}
-	// The second entry's unknown index is left out, as its unknown_plan says.
+
 	want := `{"entries":[{"index":1,"lag":"","lag_ref_type_":"","notes":"a"},{"lag":"","lag_ref_type_":"","notes":"b"}],"name":"p"}`
 	if got := encode(t, object); got != want {
 		t.Fatalf("create sent %s, want %s", got, want)
@@ -133,8 +131,6 @@ func TestUpdateListReconcilesByIndex(t *testing.T) {
 	}
 }
 
-// A reference pair inside an entry is decided together, with the handwritten
-// validation, exactly as at the top level.
 func TestUpdateListAppliesReferencePairsInsideEntries(t *testing.T) {
 	t.Parallel()
 
@@ -164,7 +160,7 @@ func TestListFromAPI(t *testing.T) {
 	if err != nil || !present || len(entries) != 2 {
 		t.Fatalf("decoded %v entries (present %v, err %v), want 2", len(entries), present, err)
 	}
-	// The API's order is kept, not sorted by index.
+
 	if !entries[0]["index"].Equal(types.Int64Value(2)) || !entries[1]["index"].Equal(types.Int64Value(1)) {
 		t.Fatalf("entries decoded out of the response's order: %v", entries)
 	}
@@ -188,10 +184,6 @@ func TestSettleListNullsUnknownMembers(t *testing.T) {
 	}
 }
 
-// A nullable member of a list entry is read from the configuration entry written
-// with the same index, and only when the scan recorded it under that index. The
-// plan entry stands in when no configuration entry carries the index, as in the
-// handwritten resources.
 func TestEntryMemberReadsTheConfigurationEntryByIndex(t *testing.T) {
 	t.Parallel()
 

@@ -166,12 +166,10 @@ func (r *verityRouteMapResource) Create(ctx context.Context, req resource.Create
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &routeMapReq.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
@@ -181,24 +179,20 @@ func (r *verityRouteMapResource) Create(ctx context.Context, req resource.Create
 		routeMapReq.ObjectProperties = &objProps
 	}
 
-	// Handle route_map_clauses list
 	if len(plan.RouteMapClauses) > 0 {
 		routeMapClausesList := make([]openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner, len(plan.RouteMapClauses))
 		for i, clause := range plan.RouteMapClauses {
 			clauseProps := openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{}
 
-			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &clauseProps.Enable, TFValue: clause.Enable},
 			})
 
-			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "RouteMapClause", APIField: &clauseProps.RouteMapClause, TFValue: clause.RouteMapClause},
 				{FieldName: "RouteMapClauseRefType", APIField: &clauseProps.RouteMapClauseRefType, TFValue: clause.RouteMapClauseRefType},
 			})
 
-			// Handle int64 fields
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &clauseProps.Index, TFValue: clause.Index},
 			})
@@ -232,7 +226,6 @@ func (r *verityRouteMapResource) Create(ctx context.Context, req resource.Create
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -269,7 +262,6 @@ func (r *verityRouteMapResource) Read(ctx context.Context, req resource.ReadRequ
 
 	name := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if routeMapData, exists := r.bulkOpsMgr.GetResourceResponse("route_map", name); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached route_map data for %s from recent operation", name))
@@ -382,13 +374,10 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 	routeMapProps := openapi.RoutemapsPutRequestRouteMapValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { routeMapProps.Name = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { routeMapProps.Enable = v }, &hasChanges)
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -405,24 +394,20 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 		}
 	}
 
-	// Handle route_map_clauses
 	changedRouteMapClauses, routeMapClausesChanged := utils.ProcessIndexedArrayUpdates(plan.RouteMapClauses, state.RouteMapClauses,
 		utils.IndexedItemHandler[verityRouteMapClausesModel, openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner]{
 			CreateNew: func(planItem verityRouteMapClausesModel) openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner {
 				newClause := openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "Enable", APIField: &newClause.Enable, TFValue: planItem.Enable},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "RouteMapClause", APIField: &newClause.RouteMapClause, TFValue: planItem.RouteMapClause},
 					{FieldName: "RouteMapClauseRefType", APIField: &newClause.RouteMapClauseRefType, TFValue: planItem.RouteMapClauseRefType},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newClause.Index, TFValue: planItem.Index},
 				})
@@ -433,10 +418,8 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 				updateClause := openapi.RoutemapsPutRequestRouteMapValueRouteMapClausesInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateClause.Enable = v }, &fieldChanged)
 
-				// Handle route_map_clause and route_map_clause_ref_type_ using one ref type supported pattern
 				if !utils.HandleOneRefTypeSupported(
 					planItem.RouteMapClause, stateItem.RouteMapClause, planItem.RouteMapClauseRefType, stateItem.RouteMapClauseRefType,
 					func(v *string) { updateClause.RouteMapClause = v },
@@ -447,7 +430,6 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 					return updateClause, false
 				}
 
-				// Always include index — API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateClause.Index, TFValue: planItem.Index},
 				})
@@ -486,7 +468,6 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if routeMapData, exists := bulkMgr.GetResourceResponse("route_map", name); exists {
 			newState := populateRouteMapState(ctx, minState, utils.MergeMissingPlanScalars(routeMapData, plan, routeMapResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -495,7 +476,6 @@ func (r *verityRouteMapResource) Update(ctx context.Context, req resource.Update
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -551,10 +531,8 @@ func populateRouteMapState(ctx context.Context, state verityRouteMapResourceMode
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityRouteMapObjectPropertiesModel{
@@ -568,7 +546,6 @@ func populateRouteMapState(ctx context.Context, state verityRouteMapResourceMode
 		state.ObjectProperties = nil
 	}
 
-	// Handle route_map_clauses block
 	if utils.FieldAppliesToMode(resourceType, "route_map_clauses", mode) {
 		if routeMapClausesData, ok := data["route_map_clauses"].([]interface{}); ok && len(routeMapClausesData) > 0 {
 			var routeMapClauses []verityRouteMapClausesModel
@@ -601,9 +578,7 @@ func populateRouteMapState(ctx context.Context, state verityRouteMapResourceMode
 }
 
 func (r *verityRouteMapResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -614,11 +589,6 @@ func (r *verityRouteMapResource) ModifyPlan(ctx context.Context, req resource.Mo
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := routeMapResourceType
 	mode := r.provCtx.mode
 

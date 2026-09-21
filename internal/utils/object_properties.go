@@ -8,11 +8,10 @@ import (
 
 type ObjectPropertiesField struct {
 	Name     string
-	TFValue  interface{} // Can be types.String, types.Bool, types.Int64
-	APIValue interface{} // Pointer to API field (e.g., **string, **bool, **int64)
+	TFValue  interface{}
+	APIValue interface{}
 }
 
-// SetObjectPropertiesFields sets API fields from TF values for object_properties
 func SetObjectPropertiesFields(fields []ObjectPropertiesField) {
 	for _, field := range fields {
 		switch tfVal := field.TFValue.(type) {
@@ -33,7 +32,7 @@ func SetObjectPropertiesFields(fields []ObjectPropertiesField) {
 				}
 			}
 		case types.Int64:
-			// Try regular **int64 pointer first
+
 			if apiPtr, ok := field.APIValue.(**int64); ok {
 				if !tfVal.IsNull() {
 					val := tfVal.ValueInt64()
@@ -42,7 +41,7 @@ func SetObjectPropertiesFields(fields []ObjectPropertiesField) {
 					*apiPtr = nil
 				}
 			} else if apiNullablePtr, ok := field.APIValue.(*openapi.NullableInt64); ok {
-				// Handle NullableInt64 type
+
 				if !tfVal.IsNull() {
 					val := tfVal.ValueInt64()
 					*apiNullablePtr = *openapi.NewNullableInt64(&val)
@@ -54,8 +53,6 @@ func SetObjectPropertiesFields(fields []ObjectPropertiesField) {
 	}
 }
 
-// CompareObjectPropertiesFields checks if any object_properties fields have changed
-// Returns true if any field differs between plan and state
 func CompareObjectPropertiesFields(fields []ObjectPropertiesFieldComparison) bool {
 	for _, field := range fields {
 		switch planVal := field.PlanValue.(type) {
@@ -95,10 +92,9 @@ type ObjectPropertiesFieldWithComparison struct {
 	APIValue   interface{}
 }
 
-// CompareAndSetObjectPropertiesFields sets only the fields that have changed between plan and state
 func CompareAndSetObjectPropertiesFields(fields []ObjectPropertiesFieldWithComparison, hasChanges *bool) {
 	for _, field := range fields {
-		// Check if field has changed
+
 		switch planVal := field.PlanValue.(type) {
 		case types.String:
 			if stateVal, ok := field.StateValue.(types.String); ok {
@@ -129,7 +125,7 @@ func CompareAndSetObjectPropertiesFields(fields []ObjectPropertiesFieldWithCompa
 		case types.Int64:
 			if stateVal, ok := field.StateValue.(types.Int64); ok {
 				if !planVal.Equal(stateVal) {
-					// Try regular **int64 pointer first
+
 					if apiPtr, ok := field.APIValue.(**int64); ok {
 						if !planVal.IsNull() {
 							val := planVal.ValueInt64()
@@ -139,7 +135,7 @@ func CompareAndSetObjectPropertiesFields(fields []ObjectPropertiesFieldWithCompa
 						}
 						*hasChanges = true
 					} else if apiNullablePtr, ok := field.APIValue.(*openapi.NullableInt64); ok {
-						// Handle NullableInt64 type
+
 						if !planVal.IsNull() {
 							val := planVal.ValueInt64()
 							*apiNullablePtr = *openapi.NewNullableInt64(&val)
@@ -154,8 +150,6 @@ func CompareAndSetObjectPropertiesFields(fields []ObjectPropertiesFieldWithCompa
 	}
 }
 
-// MapObjectPropertiesFromAPI reads object_properties from API map and populates TF state
-// The mapper function is called with each field from the API map to allow custom mapping
 type ObjectPropertiesMapper func(fieldName string, apiValue interface{}) interface{}
 
 func MapObjectPropertiesFieldsFromAPI(objPropsMap map[string]interface{}, fieldNames []string) map[string]types.String {

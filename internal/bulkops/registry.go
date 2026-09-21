@@ -7,23 +7,6 @@ import (
 	"terraform-provider-verity/openapi"
 )
 
-// ================================================================================================
-// RESOURCE REGISTRY
-// ================================================================================================
-
-// resourceRegistry is a mapping of resource types to their configuration details.
-//
-// ResourceType and HeaderSplitKey are not written here. Both are owned by the
-// reviewed spec registry and applied in init below, so the bulk key exists in one
-// place and the ACL header split key cannot drift from the discriminator the
-// registry records.
-// It provides a centralized registry for all resources that can be managed by the Verity provider.
-//
-// Each entry contains:
-//   - ResourceType: String identifier for the resource type
-//   - PutRequestType: The reflect.Type for PUT API requests for this resource
-//   - PatchRequestType: The reflect.Type for PATCH API requests for this resource
-//   - APIClientGetter: Function that returns a ResourceAPIClient for the resource type
 var resourceRegistry = map[string]ResourceConfig{
 	"gateway": {
 		PutRequestType:   reflect.TypeOf(openapi.GatewaysPutRequest{}),
@@ -345,7 +328,7 @@ var resourceRegistry = map[string]ResourceConfig{
 			return request.Execute()
 		},
 		HeaderResponseExtractor: func(rawResponse map[string]interface{}, headers map[string]string) (map[string]interface{}, error) {
-			// ACL response has different field names based on IP version
+
 			var filterKey string
 			if headers["ip_version"] == "6" {
 				filterKey = "ipv6_filter"
@@ -725,11 +708,11 @@ var resourceRegistry = map[string]ResourceConfig{
 		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
 			return &GenericAPIClient{client: c, resourceType: "sfp_breakout"}
 		},
-		PutFunc: nil, // SFP Breakouts only support PATCH
+		PutFunc: nil,
 		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
 			return c.SFPBreakoutsAPI.SfpbreakoutsPatch(ctx).SfpbreakoutsPatchRequest(*req.(*openapi.SfpbreakoutsPatchRequest)).Execute()
 		},
-		DeleteFunc: nil, // No DELETE operation
+		DeleteFunc: nil,
 		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
 			return c.SFPBreakoutsAPI.SfpbreakoutsGet(ctx).Execute()
 		},
@@ -983,10 +966,6 @@ var resourceRegistry = map[string]ResourceConfig{
 	},
 }
 
-// init fills the transport facts the spec registry owns. A bulk key with no
-// generated entry is a resource the registry does not describe, which would mean
-// the two definitions had diverged, so it fails loudly rather than running with
-// an empty resource type.
 func init() {
 	for key, config := range resourceRegistry {
 		generated, exists := generatedBulkMetadata[key]

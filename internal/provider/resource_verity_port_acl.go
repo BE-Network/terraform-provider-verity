@@ -233,29 +233,24 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &portAclProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle IPv4 Permit
 	if len(plan.Ipv4Permit) > 0 {
 		filters := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, len(plan.Ipv4Permit))
 		for i, item := range plan.Ipv4Permit {
 			filter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{}
 
-			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &filter.Enable, TFValue: item.Enable},
 			})
 
-			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "Filter", APIField: &filter.Filter, TFValue: item.Filter},
 				{FieldName: "FilterRefType", APIField: &filter.FilterRefType, TFValue: item.FilterRefType},
 			})
 
-			// Handle int64 fields
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &filter.Index, TFValue: item.Index},
 			})
@@ -265,24 +260,20 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 		portAclProps.Ipv4Permit = filters
 	}
 
-	// Handle IPv4 Deny
 	if len(plan.Ipv4Deny) > 0 {
 		filters := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, len(plan.Ipv4Deny))
 		for i, item := range plan.Ipv4Deny {
 			filter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{}
 
-			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &filter.Enable, TFValue: item.Enable},
 			})
 
-			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "Filter", APIField: &filter.Filter, TFValue: item.Filter},
 				{FieldName: "FilterRefType", APIField: &filter.FilterRefType, TFValue: item.FilterRefType},
 			})
 
-			// Handle int64 fields
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &filter.Index, TFValue: item.Index},
 			})
@@ -292,24 +283,20 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 		portAclProps.Ipv4Deny = filters
 	}
 
-	// Handle IPv6 Permit
 	if len(plan.Ipv6Permit) > 0 {
 		filters := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, len(plan.Ipv6Permit))
 		for i, item := range plan.Ipv6Permit {
 			filter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 
-			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &filter.Enable, TFValue: item.Enable},
 			})
 
-			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "Filter", APIField: &filter.Filter, TFValue: item.Filter},
 				{FieldName: "FilterRefType", APIField: &filter.FilterRefType, TFValue: item.FilterRefType},
 			})
 
-			// Handle int64 fields
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &filter.Index, TFValue: item.Index},
 			})
@@ -319,24 +306,20 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 		portAclProps.Ipv6Permit = filters
 	}
 
-	// Handle IPv6 Deny
 	if len(plan.Ipv6Deny) > 0 {
 		filters := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, len(plan.Ipv6Deny))
 		for i, item := range plan.Ipv6Deny {
 			filter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 
-			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &filter.Enable, TFValue: item.Enable},
 			})
 
-			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "Filter", APIField: &filter.Filter, TFValue: item.Filter},
 				{FieldName: "FilterRefType", APIField: &filter.FilterRefType, TFValue: item.FilterRefType},
 			})
 
-			// Handle int64 fields
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &filter.Index, TFValue: item.Index},
 			})
@@ -370,7 +353,6 @@ func (r *verityPortAclResource) Create(ctx context.Context, req resource.CreateR
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -407,7 +389,6 @@ func (r *verityPortAclResource) Read(ctx context.Context, req resource.ReadReque
 
 	name := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if portAclData, exists := r.bulkOpsMgr.GetResourceResponse("port_acl", name); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached port_acl data for %s from recent operation", name))
@@ -518,30 +499,24 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 	portAclProps := openapi.PortaclsPutRequestPortAclValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { portAclProps.Name = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { portAclProps.Enable = v }, &hasChanges)
 
-	// Handle IPv4 Permit
 	changedIpv4Permits, ipv4PermitsChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Permit, state.Ipv4Permit,
 		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner]{
 			CreateNew: func(planItem verityPortAclFilterModel) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner {
 				newFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
 					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
 				})
@@ -552,10 +527,8 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 				updateFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
 
-				// Handle filter and filter_ref_type_ using one ref type supported pattern
 				if !utils.HandleOneRefTypeSupported(
 					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
 					func(v *string) { updateFilter.Filter = v },
@@ -566,7 +539,6 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 					return updateFilter, false
 				}
 
-				// Always include index — API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateFilter.Index, TFValue: planItem.Index},
 				})
@@ -584,24 +556,20 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 		hasChanges = true
 	}
 
-	// Handle IPv4 Deny
 	changedIpv4Denies, ipv4DeniesChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv4Deny, state.Ipv4Deny,
 		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner]{
 			CreateNew: func(planItem verityPortAclFilterModel) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner {
 				newFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
 					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
 				})
@@ -612,10 +580,8 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 				updateFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
 
-				// Handle filter and filter_ref_type_ using one ref type supported pattern
 				if !utils.HandleOneRefTypeSupported(
 					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
 					func(v *string) { updateFilter.Filter = v },
@@ -626,7 +592,6 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 					return updateFilter, false
 				}
 
-				// Always include index — API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateFilter.Index, TFValue: planItem.Index},
 				})
@@ -644,24 +609,20 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 		hasChanges = true
 	}
 
-	// Handle IPv6 Permit
 	changedIpv6Permits, ipv6PermitsChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Permit, state.Ipv6Permit,
 		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner]{
 			CreateNew: func(planItem verityPortAclFilterModel) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
 				newFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
 					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
 				})
@@ -672,10 +633,8 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 				updateFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
 
-				// Handle filter and filter_ref_type_ using one ref type supported pattern
 				if !utils.HandleOneRefTypeSupported(
 					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
 					func(v *string) { updateFilter.Filter = v },
@@ -686,7 +645,6 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 					return updateFilter, false
 				}
 
-				// Always include index — API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateFilter.Index, TFValue: planItem.Index},
 				})
@@ -704,24 +662,20 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 		hasChanges = true
 	}
 
-	// Handle IPv6 Deny
 	changedIpv6Denies, ipv6DeniesChanged := utils.ProcessIndexedArrayUpdates(plan.Ipv6Deny, state.Ipv6Deny,
 		utils.IndexedItemHandler[verityPortAclFilterModel, openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner]{
 			CreateNew: func(planItem verityPortAclFilterModel) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
 				newFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "Enable", APIField: &newFilter.Enable, TFValue: planItem.Enable},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Filter", APIField: &newFilter.Filter, TFValue: planItem.Filter},
 					{FieldName: "FilterRefType", APIField: &newFilter.FilterRefType, TFValue: planItem.FilterRefType},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newFilter.Index, TFValue: planItem.Index},
 				})
@@ -732,10 +686,8 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 				updateFilter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateFilter.Enable = v }, &fieldChanged)
 
-				// Handle filter and filter_ref_type_ using one ref type supported pattern
 				if !utils.HandleOneRefTypeSupported(
 					planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
 					func(v *string) { updateFilter.Filter = v },
@@ -746,7 +698,6 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 					return updateFilter, false
 				}
 
-				// Always include index — API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateFilter.Index, TFValue: planItem.Index},
 				})
@@ -785,7 +736,6 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if portAclData, exists := bulkMgr.GetResourceResponse("port_acl", name); exists {
 			newState := populatePortAclState(ctx, minState, utils.MergeMissingPlanScalars(portAclData, plan, portAclResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -794,7 +744,6 @@ func (r *verityPortAclResource) Update(ctx context.Context, req resource.UpdateR
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -850,10 +799,8 @@ func populatePortAclState(ctx context.Context, state verityPortAclResourceModel,
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// Helper function to parse filter arrays with mode awareness
 	parseFilters := func(apiFilters []interface{}, blockName string) []verityPortAclFilterModel {
 		var filters []verityPortAclFilterModel
 		for _, f := range apiFilters {
@@ -872,7 +819,6 @@ func populatePortAclState(ctx context.Context, state verityPortAclResourceModel,
 		return filters
 	}
 
-	// Handle filter arrays with mode awareness
 	if utils.FieldAppliesToMode(resourceType, "ipv4_permit", mode) {
 		if ipv4Permit, ok := data["ipv4_permit"].([]interface{}); ok && len(ipv4Permit) > 0 {
 			state.Ipv4Permit = parseFilters(ipv4Permit, "ipv4_permit")
@@ -917,9 +863,7 @@ func populatePortAclState(ctx context.Context, state verityPortAclResourceModel,
 }
 
 func (r *verityPortAclResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -930,11 +874,6 @@ func (r *verityPortAclResource) ModifyPlan(ctx context.Context, req resource.Mod
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := portAclResourceType
 	mode := r.provCtx.mode
 

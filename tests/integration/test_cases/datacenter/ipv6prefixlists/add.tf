@@ -1,5 +1,3 @@
-# Test case: Add new resources
-# Define resources to be injected into the corresponding .tf file for testing
 
 resource "verity_ipv6_prefix_list" "ipv6_prefix_list_test_script1" {
     name = "ipv6_prefix_list_test_script1"

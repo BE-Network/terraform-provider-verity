@@ -14,11 +14,6 @@ import (
 	"terraform-provider-verity/internal/spec"
 )
 
-// TestGeneratedResourceKeysCoverEveryResource checks that the generated key table
-// serves every resource the provider registers. The resource implementations now
-// take their endpoint name and cache key from it rather than declaring their own
-// constants, so a missing entry would leave a resource addressing an empty
-// endpoint rather than failing to compile.
 func TestGeneratedResourceKeysCoverEveryResource(t *testing.T) {
 	registry := generatedRegistry(t)
 	if len(generatedResourceKeys) != len(registry) {
@@ -42,12 +37,6 @@ func TestGeneratedResourceKeysCoverEveryResource(t *testing.T) {
 	}
 }
 
-// TestRegistrationFollowsTheRegistry checks that registration is driven by the
-// registry rather than by a handwritten list. Every registry resource needs a
-// constructor, every constructor must belong to a registry resource, and each one
-// must report the Terraform type it is registered under. A drift in any direction
-// would either drop a resource from the provider or register one the registry does
-// not describe.
 func TestRegistrationFollowsTheRegistry(t *testing.T) {
 	registry := generatedRegistry(t)
 	if len(generatedResourceOrder) != len(registry) {
@@ -74,14 +63,10 @@ func TestRegistrationFollowsTheRegistry(t *testing.T) {
 		}
 	}
 
-	// The order the provider registers in must be canonical, so the list is
-	// reproducible from the registry rather than from edit history.
 	if !sort.StringsAreSorted(generatedResourceOrder) {
 		t.Error("registration order is not in canonical Terraform-name order")
 	}
 
-	// Every registered resource must appear exactly once, including the non-API
-	// ones the plan keeps bespoke.
 	seen := map[string]int{}
 	for _, constructor := range getAllResources() {
 		var metadata resource.MetadataResponse
@@ -98,16 +83,6 @@ func TestRegistrationFollowsTheRegistry(t *testing.T) {
 	}
 }
 
-// TestModeRestrictedFieldsReachThePlanNullifier checks that every field the
-// registry marks as narrower than its resource is handed to the ModifyPlan
-// nullifier.
-//
-// A field that does not apply to the running mode is set to null in the plan so
-// Terraform does not show "known after apply" for something the API will never
-// return. The nullifier decides per field by asking FieldAppliesToMode, but the
-// list of fields it is given is handwritten in each resource, so a mode-restricted
-// field omitted from that list silently keeps showing as unknown. The registry
-// knows which fields those are, so the omission is checkable.
 func TestModeRestrictedFieldsReachThePlanNullifier(t *testing.T) {
 	sources, err := filepath.Glob(filepath.Join("resource_verity_*.go"))
 	if err != nil {
@@ -135,7 +110,7 @@ func TestModeRestrictedFieldsReachThePlanNullifier(t *testing.T) {
 			listed[match[1]] = true
 		}
 		for _, name := range names {
-			// ACL builds its type name from the ip_version it was constructed with.
+
 			if name[1] == "_acl_v" {
 				listedByType["verity_acl_v4"], listedByType["verity_acl_v6"] = listed, listed
 				continue
@@ -159,7 +134,7 @@ func TestModeRestrictedFieldsReachThePlanNullifier(t *testing.T) {
 				continue
 			}
 			if len(field.Modes) == len(resourceModes) {
-				continue // applies wherever the resource does, so nothing to nullify
+				continue
 			}
 			checked++
 			if !listed[field.TerraformName] {

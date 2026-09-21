@@ -14,12 +14,6 @@ import (
 	"terraform-provider-verity/internal/spec"
 )
 
-// CompileSchema turns a reviewed ResourceSpec into the Terraform schema the
-// provider serves. It is the first half of the generic engine: the half that
-// decides what a configuration may say, before anything decides what to send.
-//
-// It compiles what Supported accepts and refuses the rest rather than emitting
-// an approximation: scalar attributes, and singleton objects as blocks.
 func CompileSchema(resource spec.ResourceSpec) (schema.Schema, error) {
 	if err := Supported(resource); err != nil {
 		return schema.Schema{}, fmt.Errorf("%s: %w", resource.TerraformType, err)
@@ -28,8 +22,7 @@ func CompileSchema(resource spec.ResourceSpec) (schema.Schema, error) {
 	blocks := make(map[string]schema.Block)
 	for _, field := range resource.Fields {
 		if field.Unmanaged {
-			// An unmanaged field is recorded so the registry accounts for it, but
-			// the shipped schema does not expose it.
+
 			continue
 		}
 		if _, duplicate := attributes[field.TerraformName]; duplicate {
@@ -66,11 +59,6 @@ func CompileSchema(resource spec.ResourceSpec) (schema.Schema, error) {
 	return compiled, nil
 }
 
-// compileSingletonBlock exposes a singleton object the way every handwritten
-// resource does: as a list block holding at most one entry. An indexed list is
-// the same block holding any number of entries, so it compiles here too. The API sends an
-// object, but the shipped state records a list, and changing that shape would
-// break every existing state file; the version-zero contract is what keeps it.
 func compileSingletonBlock(field spec.FieldSpec) (schema.Block, error) {
 	members := make(map[string]schema.Attribute, len(field.Fields))
 	var blocks map[string]schema.Block
@@ -79,8 +67,7 @@ func compileSingletonBlock(field spec.FieldSpec) (schema.Block, error) {
 			continue
 		}
 		if member.Kind == spec.FieldKindList {
-			// A list inside a singleton is a block nested in the block, as
-			// verity_fabric declares object_properties.system_graphs.
+
 			block, err := compileSingletonBlock(member)
 			if err != nil {
 				return nil, fmt.Errorf("%s: %w", member.TerraformName, err)
@@ -103,9 +90,6 @@ func compileSingletonBlock(field spec.FieldSpec) (schema.Block, error) {
 	}, nil
 }
 
-// compileAttribute maps one field's declared access, kind, and replacement rule
-// onto a Framework attribute. Every branch is driven by the spec; nothing here
-// consults the field's name.
 func compileAttribute(field spec.FieldSpec) (schema.Attribute, error) {
 	if field.Unmanaged {
 		return nil, fmt.Errorf("unmanaged fields have no schema attribute")
@@ -114,10 +98,7 @@ func compileAttribute(field spec.FieldSpec) (schema.Attribute, error) {
 	if err != nil {
 		return nil, err
 	}
-	// A Required attribute is always supplied by the configuration, so a plan
-	// modifier that fills it in would never fire and a default would contradict
-	// it. Catching it here keeps an override that sets both from producing a
-	// schema Terraform would reject at a less obvious moment.
+
 	if required && field.Default != nil {
 		return nil, fmt.Errorf("a required attribute cannot carry a default")
 	}
@@ -183,8 +164,7 @@ func compileAttribute(field spec.FieldSpec) (schema.Attribute, error) {
 		return attribute, nil
 
 	case spec.FieldKindObject, spec.FieldKindList:
-		// A collection is compiled as a block, not as an attribute, and one
-		// nested inside a block is refused by Supported before reaching here.
+
 		return nil, fmt.Errorf("kind %q is a collection, which is compiled as a block rather than an attribute", field.Kind)
 
 	default:

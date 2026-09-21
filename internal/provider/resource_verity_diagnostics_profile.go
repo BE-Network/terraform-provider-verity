@@ -195,7 +195,6 @@ func (r *verityDiagnosticsProfileResource) Create(ctx context.Context, req resou
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "FlowCollector", APIField: &diagnosticsProfileProps.FlowCollector, TFValue: plan.FlowCollector},
 		{FieldName: "FlowCollectorRefType", APIField: &diagnosticsProfileProps.FlowCollectorRefType, TFValue: plan.FlowCollectorRefType},
@@ -206,14 +205,12 @@ func (r *verityDiagnosticsProfileResource) Create(ctx context.Context, req resou
 		{FieldName: "ErspanGreType", APIField: &diagnosticsProfileProps.ErspanGreType, TFValue: plan.ErspanGreType},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &diagnosticsProfileProps.Enable, TFValue: plan.Enable},
 		{FieldName: "EnableSflow", APIField: &diagnosticsProfileProps.EnableSflow, TFValue: plan.EnableSflow},
 		{FieldName: "UseInternalCollector", APIField: &diagnosticsProfileProps.UseInternalCollector, TFValue: plan.UseInternalCollector},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, diagnosticsProfileTerraformType, name)
 
@@ -248,7 +245,6 @@ func (r *verityDiagnosticsProfileResource) Create(ctx context.Context, req resou
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -285,7 +281,6 @@ func (r *verityDiagnosticsProfileResource) Read(ctx context.Context, req resourc
 
 	diagnosticsProfileName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if diagnosticsProfileData, exists := r.bulkOpsMgr.GetResourceResponse("diagnostics_profile", diagnosticsProfileName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached diagnostics profile data for %s from recent operation", diagnosticsProfileName))
@@ -386,7 +381,6 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityDiagnosticsProfileResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -406,28 +400,23 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 	diagnosticsProfileProps := openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, diagnosticsProfileTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { diagnosticsProfileProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.VrfType, state.VrfType, func(v *string) { diagnosticsProfileProps.VrfType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.ErspanDestinationIp, state.ErspanDestinationIp, func(v *string) { diagnosticsProfileProps.ErspanDestinationIp = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.ErspanGreType, state.ErspanGreType, func(v *string) { diagnosticsProfileProps.ErspanGreType = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { diagnosticsProfileProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.EnableSflow, state.EnableSflow, func(v *bool) { diagnosticsProfileProps.EnableSflow = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.UseInternalCollector, state.UseInternalCollector, func(v *bool) { diagnosticsProfileProps.UseInternalCollector = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.PollInterval, state.PollInterval, configuredAttrs.IsConfigured("poll_interval"), func(v *openapi.NullableInt64) { diagnosticsProfileProps.PollInterval = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.ErspanDscp, state.ErspanDscp, configuredAttrs.IsConfigured("erspan_dscp"), func(v *openapi.NullableInt64) { diagnosticsProfileProps.ErspanDscp = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.ErspanTtl, state.ErspanTtl, configuredAttrs.IsConfigured("erspan_ttl"), func(v *openapi.NullableInt64) { diagnosticsProfileProps.ErspanTtl = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.ErspanQueue, state.ErspanQueue, configuredAttrs.IsConfigured("erspan_queue"), func(v *openapi.NullableInt64) { diagnosticsProfileProps.ErspanQueue = *v }, &hasChanges)
 
-	// Handle FlowCollector and FlowCollectorRefType fields using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.FlowCollector, state.FlowCollector, plan.FlowCollectorRefType, state.FlowCollectorRefType,
 		func(v *string) { diagnosticsProfileProps.FlowCollector = v },
@@ -439,7 +428,6 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	// Handle MonitoringAcl and MonitoringAclRefType fields using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.MonitoringAcl, state.MonitoringAcl, plan.MonitoringAclRefType, state.MonitoringAclRefType,
 		func(v *string) { diagnosticsProfileProps.MonitoringAcl = v },
@@ -472,7 +460,6 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if diagnosticsProfileData, exists := bulkMgr.GetResourceResponse("diagnostics_profile", name); exists {
 			newState := populateDiagnosticsProfileState(ctx, minState, utils.MergeMissingPlanScalars(diagnosticsProfileData, plan, diagnosticsProfileResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -481,7 +468,6 @@ func (r *verityDiagnosticsProfileResource) Update(ctx context.Context, req resou
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -537,12 +523,10 @@ func populateDiagnosticsProfileState(ctx context.Context, state verityDiagnostic
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.EnableSflow = utils.MapBoolWithMode(data, "enable_sflow", resourceType, mode)
 	state.UseInternalCollector = utils.MapBoolWithMode(data, "use_internal_collector", resourceType, mode)
 
-	// String fields
 	state.FlowCollector = utils.MapStringWithMode(data, "flow_collector", resourceType, mode)
 	state.FlowCollectorRefType = utils.MapStringWithMode(data, "flow_collector_ref_type_", resourceType, mode)
 	state.VrfType = utils.MapStringWithMode(data, "vrf_type", resourceType, mode)
@@ -551,7 +535,6 @@ func populateDiagnosticsProfileState(ctx context.Context, state verityDiagnostic
 	state.ErspanDestinationIp = utils.MapStringWithMode(data, "erspan_destination_ip", resourceType, mode)
 	state.ErspanGreType = utils.MapStringWithMode(data, "erspan_gre_type", resourceType, mode)
 
-	// Int64 fields
 	state.PollInterval = utils.MapInt64WithMode(data, "poll_interval", resourceType, mode)
 	state.ErspanDscp = utils.MapInt64WithMode(data, "erspan_dscp", resourceType, mode)
 	state.ErspanTtl = utils.MapInt64WithMode(data, "erspan_ttl", resourceType, mode)
@@ -561,9 +544,7 @@ func populateDiagnosticsProfileState(ctx context.Context, state verityDiagnostic
 }
 
 func (r *verityDiagnosticsProfileResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -574,11 +555,6 @@ func (r *verityDiagnosticsProfileResource) ModifyPlan(ctx context.Context, req r
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := diagnosticsProfileResourceType
 	mode := r.provCtx.mode
 
@@ -603,16 +579,10 @@ func (r *verityDiagnosticsProfileResource) ModifyPlan(ctx context.Context, req r
 		"poll_interval", "erspan_dscp", "erspan_ttl", "erspan_queue",
 	)
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityDiagnosticsProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -625,11 +595,6 @@ func (r *verityDiagnosticsProfileResource) ModifyPlan(ctx context.Context, req r
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, diagnosticsProfileTerraformType, name)

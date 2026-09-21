@@ -8,7 +8,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
-// FetchResourceWithRetry implements the universal 3-retry pattern for fetching resources with caching
 func FetchResourceWithRetry[T any](
 	ctx context.Context,
 	provCtx interface{},
@@ -45,8 +44,6 @@ func FetchResourceWithRetry[T any](
 	return result, err
 }
 
-// FindResourceByAPIName searches for a resource by its API name only (not by resource ID)
-// This addresses the issue where resource IDs get sanitized for HCL compatibility
 func FindResourceByAPIName[T any](
 	resources map[string]T,
 	targetName string,
@@ -60,8 +57,6 @@ func FindResourceByAPIName[T any](
 	return resource, "", false
 }
 
-// FindResourceByKey searches for a resource where the map key is the resource name
-// This is used by resources like ACL where the map key directly represents the resource name
 func FindResourceByKey[T any](
 	resources map[string]T,
 	targetName string,

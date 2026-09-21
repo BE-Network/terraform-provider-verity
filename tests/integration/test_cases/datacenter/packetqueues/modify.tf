@@ -1,5 +1,3 @@
-# Test case: Modify existing resources
-# Define modified versions of the resources from add.tf
 
 resource "verity_packet_queue" "packet_queue_test_script1" {
 	object_properties {

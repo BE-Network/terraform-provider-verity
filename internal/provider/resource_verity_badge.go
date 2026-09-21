@@ -148,17 +148,14 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Color", APIField: &badgeProps.Color, TFValue: plan.Color},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &badgeProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, badgeTerraformType, name)
 
@@ -166,7 +163,6 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 		{FieldName: "Number", APIField: &badgeProps.Number, TFValue: config.Number, IsConfigured: configuredAttrs.IsConfigured("number")},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
@@ -200,7 +196,6 @@ func (r *verityBadgeResource) Create(ctx context.Context, req resource.CreateReq
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -237,7 +232,6 @@ func (r *verityBadgeResource) Read(ctx context.Context, req resource.ReadRequest
 
 	badgeName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if badgeData, exists := r.bulkOpsMgr.GetResourceResponse("badge", badgeName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached badge data for %s from recent operation", badgeName))
@@ -337,7 +331,6 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityBadgeResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -357,21 +350,16 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 	badgeProps := openapi.BadgesPutRequestBadgeValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, badgeTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { badgeProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Color, state.Color, func(v *string) { badgeProps.Color = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { badgeProps.Enable = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.Number, state.Number, configuredAttrs.IsConfigured("number"), func(v *openapi.NullableInt64) { badgeProps.Number = *v }, &hasChanges)
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -409,7 +397,6 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if badgeData, exists := bulkMgr.GetResourceResponse("badge", name); exists {
 			newState := populateBadgeState(ctx, minState, utils.MergeMissingPlanScalars(badgeData, plan, badgeResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -418,7 +405,6 @@ func (r *verityBadgeResource) Update(ctx context.Context, req resource.UpdateReq
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -474,16 +460,12 @@ func populateBadgeState(ctx context.Context, state verityBadgeResourceModel, dat
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// String fields
 	state.Color = utils.MapStringWithMode(data, "color", resourceType, mode)
 
-	// Int64 fields
 	state.Number = utils.MapInt64WithMode(data, "number", resourceType, mode)
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityBadgeObjectPropertiesModel{
@@ -501,9 +483,7 @@ func populateBadgeState(ctx context.Context, state verityBadgeResourceModel, dat
 }
 
 func (r *verityBadgeResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -514,11 +494,6 @@ func (r *verityBadgeResource) ModifyPlan(ctx context.Context, req resource.Modif
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := badgeResourceType
 	mode := r.provCtx.mode
 
@@ -547,16 +522,10 @@ func (r *verityBadgeResource) ModifyPlan(ctx context.Context, req resource.Modif
 		StringFields: []string{"notes"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityBadgeResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -569,11 +538,6 @@ func (r *verityBadgeResource) ModifyPlan(ctx context.Context, req resource.Modif
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, badgeTerraformType, name)

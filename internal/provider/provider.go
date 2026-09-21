@@ -370,10 +370,6 @@ func (p *verityProvider) Resources(_ context.Context) []func() resource.Resource
 	return getAllResources()
 }
 
-// resourceConstructors maps each Terraform type to the function that builds it.
-// The constructors stay handwritten because they bind typed SDK calls, but which
-// resources the provider registers, and in what order, comes from the generated
-// registry rather than from this map.
 var resourceConstructors = map[string]func() resource.Resource{
 	"verity_tenant":                   NewVerityTenantResource,
 	"verity_gateway":                  NewVerityGatewayResource,
@@ -427,15 +423,9 @@ var resourceConstructors = map[string]func() resource.Resource{
 	"verity_threshold":                NewVerityThresholdResource,
 }
 
-// getAllResources enumerates every API-backed resource in the registry, in
-// canonical Terraform-name order, followed by the resources that have no API
-// endpoint. Registration no longer depends on a handwritten list that can drift
-// from the registry.
 func getAllResources() []func() resource.Resource {
 	all := make([]func() resource.Resource, 0, len(generatedResourceOrder)+len(nonAPIResources))
-	// The registration order is the registry's, whichever engine serves a
-	// resource, so turning the switch on moves an implementation without moving
-	// the resource's place in the provider.
+
 	selected := genericSelection()
 	for _, terraformType := range generatedResourceOrder {
 		generic, err := genericConstructor(terraformType, selected)
@@ -455,8 +445,6 @@ func getAllResources() []func() resource.Resource {
 	return append(all, nonAPIResources...)
 }
 
-// nonAPIResources are registered but absent from the registry because they are
-// not API-backed. The refactor plan keeps the operation-stage barrier bespoke.
 var nonAPIResources = []func() resource.Resource{
 	NewVerityOperationStageResource,
 }
@@ -477,7 +465,6 @@ func (p *providerContext) initBulkOpsTicker(ctx context.Context) {
 				p.debounceTimer.Stop()
 			}
 
-			// when no new ticks arrive, execute operations
 			p.debounceTimer = time.AfterFunc(bulkops.DebounceDelay, func() {
 				tflog.Debug(ctx, "Bulk operation debounce timer expired, executing pending operations")
 				if diags := p.bulkOpsMgr.ExecuteAllPendingOperations(ctx); diags != nil {

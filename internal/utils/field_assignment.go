@@ -6,48 +6,38 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// StringFieldMapping represents a mapping between a Terraform string field and an API field
 type StringFieldMapping struct {
 	FieldName string
 	APIField  **string
 	TFValue   types.String
 }
 
-// BoolFieldMapping represents a mapping between a Terraform bool field and an API field
 type BoolFieldMapping struct {
 	FieldName string
 	APIField  **bool
 	TFValue   types.Bool
 }
 
-// Int64FieldMapping represents a mapping between a Terraform int64 field and an API int64 field
 type Int64FieldMapping struct {
 	FieldName string
 	APIField  **int64
 	TFValue   types.Int64
 }
 
-// NullableInt64FieldMapping represents a mapping for nullable int64 fields.
-// IsConfigured should be set using ConfiguredAttributes.IsConfigured() from HCL parsing.
 type NullableInt64FieldMapping struct {
 	FieldName    string
 	APIField     *openapi.NullableInt64
-	TFValue      types.Int64 // From plan or config - used to get the actual value
-	IsConfigured bool        // From HCL parsing - true if key exists in .tf file
+	TFValue      types.Int64
+	IsConfigured bool
 }
 
-// NullableNumberFieldMapping represents a mapping for nullable number fields (using big.Float).
-// This avoids floating-point precision issues by using types.Number backed by big.Float.
-// IsConfigured should be set using ConfiguredAttributes.IsConfigured() from HCL parsing.
 type NullableNumberFieldMapping struct {
 	FieldName    string
 	APIField     *openapi.NullableFloat64
-	TFValue      types.Number // From plan or config - uses big.Float for precision
-	IsConfigured bool         // From HCL parsing - true if key exists in .tf file
+	TFValue      types.Number
+	IsConfigured bool
 }
 
-// SetStringFields processes a slice of string field mappings.
-// Skips fields that are null or unknown (known after apply) - these should not be sent to the API.
 func SetStringFields(fields []StringFieldMapping) {
 	for _, field := range fields {
 		if !field.TFValue.IsNull() && !field.TFValue.IsUnknown() {
@@ -56,8 +46,6 @@ func SetStringFields(fields []StringFieldMapping) {
 	}
 }
 
-// SetBoolFields processes a slice of boolean field mappings.
-// Skips fields that are null or unknown (known after apply) - these should not be sent to the API.
 func SetBoolFields(fields []BoolFieldMapping) {
 	for _, field := range fields {
 		if !field.TFValue.IsNull() && !field.TFValue.IsUnknown() {
@@ -66,8 +54,6 @@ func SetBoolFields(fields []BoolFieldMapping) {
 	}
 }
 
-// SetInt64Fields processes a slice of int64 field mappings (API uses int64).
-// Skips fields that are null or unknown (known after apply) - these should not be sent to the API.
 func SetInt64Fields(fields []Int64FieldMapping) {
 	for _, field := range fields {
 		if !field.TFValue.IsNull() && !field.TFValue.IsUnknown() {
@@ -77,61 +63,47 @@ func SetInt64Fields(fields []Int64FieldMapping) {
 	}
 }
 
-// SetNullableInt64Fields processes a slice of nullable int64 field mappings.
-// Fields where IsConfigured=false are skipped entirely (not included in API request).
-// Fields where IsConfigured=true AND TFValue.IsNull()=true → send explicit null to API.
-// Fields where IsConfigured=true AND TFValue.IsNull()=false → send the value to API.
 func SetNullableInt64Fields(fields []NullableInt64FieldMapping) {
 	for _, field := range fields {
-		// Skip fields not explicitly written in the .tf file
+
 		if !field.IsConfigured {
 			continue
 		}
 
-		// An unknown value is omitted, not sent. ValueInt64 reports zero for an
-		// unknown, so serializing one would store a zero the configuration never
-		// asked for; omitting leaves the field to the read that follows, which is
-		// what the guarded non-nullable setters above already do.
 		if field.TFValue.IsUnknown() {
 			continue
 		}
 
 		if !field.TFValue.IsNull() {
-			// Explicit value
+
 			val := field.TFValue.ValueInt64()
 			*field.APIField = *openapi.NewNullableInt64(&val)
 		} else {
-			// Explicit null
+
 			*field.APIField = *openapi.NewNullableInt64(nil)
 		}
 	}
 }
 
-// SetNullableNumberFields processes a slice of nullable number field mappings.
-// Uses types.Number (backed by big.Float) to avoid float precision issues.
-// Fields where IsConfigured=false are skipped entirely (not included in API request).
-// Fields where IsConfigured=true AND TFValue.IsNull()=true → send explicit null to API.
-// Fields where IsConfigured=true AND TFValue.IsNull()=false → send the value to API.
 func SetNullableNumberFields(fields []NullableNumberFieldMapping) {
 	for _, field := range fields {
-		// Skip fields not explicitly written in the .tf file
+
 		if !field.IsConfigured {
 			continue
 		}
 
-		// An unknown value is omitted, not sent; see SetNullableInt64Fields.
 		if field.TFValue.IsUnknown() {
 			continue
 		}
 
 		if !field.TFValue.IsNull() {
-			// Explicit value - convert big.Float to float64 for API
+
 			bigVal := field.TFValue.ValueBigFloat()
 			float64Val, _ := bigVal.Float64()
 			val := float64Val
 			*field.APIField = *openapi.NewNullableFloat64(&val)
 		} else {
-			// Explicit null
+
 			*field.APIField = *openapi.NewNullableFloat64(nil)
 		}
 	}

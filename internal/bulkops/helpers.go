@@ -65,7 +65,6 @@ func (m *Manager) getBatchSize(resourceType, operationType string) int {
 	return 0
 }
 
-// Dynamic function factories that create the appropriate behavior for each resource
 func (m *Manager) createExtractor(resourceType, operationType string) func() (map[string]interface{}, []string) {
 	return func() (map[string]interface{}, []string) {
 		m.mutex.Lock()
@@ -87,7 +86,7 @@ func (m *Manager) createExtractor(resourceType, operationType string) func() (ma
 				originalOperations[k] = v
 				names = append(names, k)
 			}
-			// Clear the unified structure
+
 			res.Put = make(map[string]interface{})
 			return originalOperations, names
 
@@ -101,7 +100,7 @@ func (m *Manager) createExtractor(resourceType, operationType string) func() (ma
 				originalOperations[k] = v
 				names = append(names, k)
 			}
-			// Clear the unified structure
+
 			res.Patch = make(map[string]interface{})
 			return originalOperations, names
 
@@ -115,7 +114,7 @@ func (m *Manager) createExtractor(resourceType, operationType string) func() (ma
 			for _, name := range names {
 				result[name] = true
 			}
-			// Clear the unified structure
+
 			res.Delete = res.Delete[:0]
 			return result, names
 		}
@@ -126,7 +125,7 @@ func (m *Manager) createExtractor(resourceType, operationType string) func() (ma
 
 func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType string) func(context.Context, []string, map[string]interface{}) ([]string, map[string]interface{}, error) {
 	if operationType != "PUT" {
-		return nil // Only PUT operations need pre-existence checking
+		return nil
 	}
 
 	return func(ctx context.Context, resourceNames []string, originalOperations map[string]interface{}) ([]string, map[string]interface{}, error) {
@@ -319,9 +318,7 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 					return result.Bundle, nil
 
 				case "acl":
-					// ACLs require IP version checking - need to check both IPv4 and IPv6
 
-					// Try IPv4
 					resp4, err4 := m.client.ACLsAPI.AclsGet(apiCtx).IpVersion("4").Execute()
 					existingResources := make(map[string]interface{})
 
@@ -337,7 +334,6 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 						}
 					}
 
-					// Try IPv6
 					resp6, err6 := m.client.ACLsAPI.AclsGet(apiCtx).IpVersion("6").Execute()
 					if err6 == nil {
 						defer resp6.Body.Close()
@@ -868,7 +864,7 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 					return result.Threshold, nil
 
 				default:
-					// For unknown resource types, assume no existing resources to avoid errors
+
 					return make(map[string]interface{}), nil
 				}
 			},
@@ -892,7 +888,7 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 
 func (m *Manager) createRequestPreparer(config ResourceConfig, operationType string) func(map[string]interface{}) interface{} {
 	return func(filteredData map[string]interface{}) interface{} {
-		// Handle DELETE operations
+
 		if operationType == "DELETE" {
 			names := make([]string, 0, len(filteredData))
 			for name := range filteredData {
@@ -901,7 +897,6 @@ func (m *Manager) createRequestPreparer(config ResourceConfig, operationType str
 			return names
 		}
 
-		// Handle PUT and PATCH operations
 		switch config.ResourceType {
 		case "gateway":
 			putRequest := openapi.NewGatewaysPutRequest()
@@ -1112,7 +1107,7 @@ func (m *Manager) createRequestPreparer(config ResourceConfig, operationType str
 			putRequest.SetRouteMap(routeMapMap)
 			return putRequest
 		case "sfp_breakout":
-			// SFP Breakouts only support PATCH operations
+
 			patchRequest := openapi.NewSfpbreakoutsPatchRequest()
 			sfpMap := make(map[string]openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue)
 			for name, props := range filteredData {
@@ -1318,19 +1313,14 @@ func (m *Manager) createRequestExecutor(config ResourceConfig, operationType str
 }
 
 func (m *Manager) createResponseProcessor(config ResourceConfig, operationType string) func(context.Context, *http.Response, map[string]interface{}) error {
-	// Unified processor with nil headers for standard resources
+
 	return m.createResponseProcessorWithHeaders(config, operationType, nil)
 }
 
-// createHeaderAwareResponseProcessor creates a response processor for header-split resources
-// (ACLs with ip_version header)
 func (m *Manager) createHeaderAwareResponseProcessor(config ResourceConfig, operationType string, headers map[string]string) func(context.Context, *http.Response, map[string]interface{}) error {
 	return m.createResponseProcessorWithHeaders(config, operationType, headers)
 }
 
-// createResponseProcessorWithHeaders is a unified response processor that handles both
-// standard resources and header-split resources (like ACLs with ip_version).
-// When headers is nil, it uses GetFunc; when headers is provided, it uses HeaderGetFunc.
 func (m *Manager) createResponseProcessorWithHeaders(config ResourceConfig, operationType string, headers map[string]string) func(context.Context, *http.Response, map[string]interface{}) error {
 	return func(ctx context.Context, resp *http.Response, operations map[string]interface{}) error {
 		delayTime := ResponseProcessorDelay
@@ -1355,9 +1345,6 @@ func (m *Manager) createResponseProcessorWithHeaders(config ResourceConfig, oper
 	}
 }
 
-// fetchVerifyAndCacheResourceResponse retries a successful-but-incomplete verification
-// response. This is deliberately separate from transport retries: it addresses backend
-// propagation, not an unsuccessful GET.
 func (m *Manager) fetchVerifyAndCacheResourceResponse(fetchCtx context.Context, logCtx context.Context, config ResourceConfig, res *ResourceOperations, headers map[string]string, operationType string, operations map[string]interface{}) error {
 	resourceData, err := m.fetchResourceResponse(fetchCtx, logCtx, config, headers)
 	if err != nil {
@@ -1387,20 +1374,19 @@ func (m *Manager) fetchVerifyAndCacheResourceResponse(fetchCtx context.Context, 
 	return nil
 }
 
-// fetchResourceResponse fetches and extracts resource data without modifying the cache.
 func (m *Manager) fetchResourceResponse(fetchCtx context.Context, logCtx context.Context, config ResourceConfig, headers map[string]string) (map[string]interface{}, error) {
 	var getResp *http.Response
 	var fetchErr error
 
 	if headers != nil {
-		// Header-aware fetch for resources like ACLs with ip_version
+
 		if config.HeaderGetFunc == nil {
 			tflog.Debug(logCtx, fmt.Sprintf("No HeaderGetFunc defined for %s, skipping response caching", config.ResourceType))
 			return nil, nil
 		}
 		getResp, fetchErr = config.HeaderGetFunc(m.client, fetchCtx, headers)
 	} else {
-		// Standard fetch for regular resources
+
 		if config.GetFunc == nil {
 			tflog.Debug(logCtx, fmt.Sprintf("No GetFunc defined for %s, skipping response caching", config.ResourceType))
 			return nil, nil
@@ -1418,7 +1404,6 @@ func (m *Manager) fetchResourceResponse(fetchCtx context.Context, logCtx context
 	}
 	defer getResp.Body.Close()
 
-	// Decode the response as raw JSON
 	var rawResponse map[string]interface{}
 	if respErr := json.NewDecoder(getResp.Body).Decode(&rawResponse); respErr != nil {
 		tflog.Error(logCtx, fmt.Sprintf("Failed to decode %s response", config.ResourceType), map[string]interface{}{
@@ -1427,7 +1412,6 @@ func (m *Manager) fetchResourceResponse(fetchCtx context.Context, logCtx context
 		return nil, respErr
 	}
 
-	// Extract resource data - use HeaderResponseExtractor if available and headers provided
 	var resourceData map[string]interface{}
 	if headers != nil && config.HeaderResponseExtractor != nil {
 		var err error
@@ -1439,7 +1423,7 @@ func (m *Manager) fetchResourceResponse(fetchCtx context.Context, logCtx context
 			return nil, err
 		}
 	} else {
-		// Standard JSON key lookup
+
 		jsonKey := utils.GetResourceJSONKey(config.ResourceType)
 		if jsonKey == "" {
 			tflog.Warn(logCtx, fmt.Sprintf("No JSON key mapping found for resource type: %s", config.ResourceType))
@@ -1455,14 +1439,13 @@ func (m *Manager) fetchResourceResponse(fetchCtx context.Context, logCtx context
 	return resourceData, nil
 }
 
-// cacheResourceResponse stores the final verification response.
 func (m *Manager) cacheResourceResponse(logCtx context.Context, config ResourceConfig, res *ResourceOperations, headers map[string]string, resourceData map[string]interface{}) {
-	// Cache the response data
+
 	res.ResponsesMutex.Lock()
 	for resourceName, data := range resourceData {
 		if resourceMap, ok := data.(map[string]interface{}); ok {
 			res.Responses[resourceName] = resourceMap
-			// Also cache by name field if different from key
+
 			if name, nameOk := resourceMap["name"].(string); nameOk && name != resourceName {
 				res.Responses[name] = resourceMap
 			}
@@ -1482,14 +1465,9 @@ func (m *Manager) cacheResourceResponse(logCtx context.Context, config ResourceC
 
 }
 
-// missingSubmittedResponseKeys compares the JSON shape actually sent to the API with
-// the raw verification response. A JSON null is intentionally not expected: it was
-// not a non-null submitted value and must not cause a readiness retry.
 func missingSubmittedResponseKeys(operations map[string]interface{}, resourceData map[string]interface{}) map[string][]string {
 	missing := make(map[string][]string)
-	// Responses are normally keyed by name, but some endpoints use an API map
-	// key that differs from the object's name. Match cacheResourceResponse's
-	// alias behavior so that does not cause pointless readiness retries.
+
 	responseByName := make(map[string]map[string]interface{}, len(resourceData))
 	for responseKey, data := range resourceData {
 		response, ok := data.(map[string]interface{})
@@ -1504,8 +1482,7 @@ func missingSubmittedResponseKeys(operations map[string]interface{}, resourceDat
 	for name, operation := range operations {
 		encoded, err := json.Marshal(operation)
 		if err != nil {
-			// The request was already successfully serialized and sent. Do not turn an
-			// unexpected diagnostic serialization failure into a post-operation failure.
+
 			continue
 		}
 
@@ -1542,7 +1519,6 @@ func (m *Manager) createRecentOpsUpdater(resourceType string) func() {
 	}
 }
 
-// FilterPreExistingResources filters out resources that already exist in the system.
 func (m *Manager) FilterPreExistingResources(
 	ctx context.Context,
 	resourceNames []string,
@@ -1560,17 +1536,16 @@ func (m *Manager) FilterPreExistingResources(
 
 	for _, name := range resourceNames {
 		if _, exists := existingResources[name]; exists {
-			// Resource already exists
+
 			alreadyExistingResources[name] = true
 			tflog.Info(ctx, fmt.Sprintf("Skipping creation of %s '%s' as it already exists",
 				checker.ResourceType, name))
 		} else {
-			// Resource doesn't exist - add to filtered list
+
 			notExistingResources = append(notExistingResources, name)
 		}
 	}
 
-	// Update operation tracking for already existing resources
 	if len(alreadyExistingResources) > 0 {
 		m.operationMutex.Lock()
 		defer m.operationMutex.Unlock()
@@ -1579,7 +1554,7 @@ func (m *Manager) FilterPreExistingResources(
 			if op.ResourceType == checker.ResourceType &&
 				op.OperationType == checker.OperationType &&
 				alreadyExistingResources[op.ResourceName] {
-				// Mark operation as successful
+
 				updatedOp := *op
 				updatedOp.Status = OperationSucceeded
 				m.pendingOperations[opID] = &updatedOp

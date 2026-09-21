@@ -154,18 +154,15 @@ func (r *verityRackResource) Create(ctx context.Context, req resource.CreateRequ
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Su", APIField: &rackReq.Su, TFValue: plan.Su},
 		{FieldName: "SuRefType", APIField: &rackReq.SuRefType, TFValue: plan.SuRefType},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &rackReq.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle nullable number fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, rackTerraformType, name)
 
@@ -173,7 +170,6 @@ func (r *verityRackResource) Create(ctx context.Context, req resource.CreateRequ
 		{FieldName: "Position", APIField: &rackReq.Position, TFValue: config.Position, IsConfigured: configuredAttrs.IsConfigured("position")},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 		utils.SetObjectPropertiesFields([]utils.ObjectPropertiesField{
@@ -206,7 +202,6 @@ func (r *verityRackResource) Create(ctx context.Context, req resource.CreateRequ
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -243,7 +238,6 @@ func (r *verityRackResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	rackName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if rackData, exists := r.bulkOpsMgr.GetResourceResponse("rack", rackName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached rack data for %s from recent operation", rackName))
@@ -344,7 +338,6 @@ func (r *verityRackResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityRackResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -364,20 +357,15 @@ func (r *verityRackResource) Update(ctx context.Context, req resource.UpdateRequ
 	rackReq := openapi.RacksPutRequestRackValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, rackTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { rackReq.Name = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { rackReq.Enable = v }, &hasChanges)
 
-	// Handle nullable number field changes
 	utils.CompareAndSetNullableNumberField(config.Position, state.Position, configuredAttrs.IsConfigured("position"), func(v *openapi.NullableFloat64) { rackReq.Position = *v }, &hasChanges)
 
-	// Handle Su and SuRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.Su, state.Su, plan.SuRefType, state.SuRefType,
 		func(v *string) { rackReq.Su = v },
@@ -389,7 +377,6 @@ func (r *verityRackResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		props := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 		propsChanged := false
@@ -423,7 +410,6 @@ func (r *verityRackResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if rackData, exists := bulkMgr.GetResourceResponse("rack", name); exists {
 			newState := populateRackState(ctx, minState, utils.MergeMissingPlanScalars(rackData, plan, rackResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -432,7 +418,6 @@ func (r *verityRackResource) Update(ctx context.Context, req resource.UpdateRequ
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -488,17 +473,13 @@ func populateRackState(ctx context.Context, state verityRackResourceModel, data 
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Number fields
 	state.Position = utils.MapNumberWithMode(data, "position", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// String fields
 	state.Su = utils.MapStringWithMode(data, "su", resourceType, mode)
 	state.SuRefType = utils.MapStringWithMode(data, "su_ref_type_", resourceType, mode)
 
-	// Handle object_properties list block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if props, ok := data["object_properties"].(map[string]interface{}); ok {
 			state.ObjectProperties = []verityRackObjectPropertiesModel{
@@ -522,9 +503,7 @@ func populateRackState(ctx context.Context, state verityRackResourceModel, data 
 }
 
 func (r *verityRackResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -535,11 +514,6 @@ func (r *verityRackResource) ModifyPlan(ctx context.Context, req resource.Modify
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := rackResourceType
 	mode := r.provCtx.mode
 
@@ -559,16 +533,10 @@ func (r *verityRackResource) ModifyPlan(ctx context.Context, req resource.Modify
 		StringFields: []string{"notes"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityRackResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -581,11 +549,6 @@ func (r *verityRackResource) ModifyPlan(ctx context.Context, req resource.Modify
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable number fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, rackTerraformType, name)

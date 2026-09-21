@@ -161,12 +161,10 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &profileProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle external gateways
 	if len(plan.ExternalGateways) > 0 {
 		gateways := make([]openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner, len(plan.ExternalGateways))
 		for i, item := range plan.ExternalGateways {
@@ -212,7 +210,6 @@ func (r *verityGatewayProfileResource) Create(ctx context.Context, req resource.
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -249,7 +246,6 @@ func (r *verityGatewayProfileResource) Read(ctx context.Context, req resource.Re
 
 	profileName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if gatewayProfileData, exists := r.bulkOpsMgr.GetResourceResponse("gateway_profile", profileName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached gateway profile data for %s from recent operation", profileName))
@@ -362,13 +358,10 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 	profileProps := openapi.GatewayprofilesPutRequestGatewayProfileValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { profileProps.Name = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { profileProps.Enable = v }, &hasChanges)
 
-	// Handle external gateways
 	externalGatewaysHandler := utils.IndexedItemHandler[verityGatewayProfileExternalGatewaysModel, openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner]{
 		CreateNew: func(planItem verityGatewayProfileExternalGatewaysModel) openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner {
 			gateway := openapi.GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner{}
@@ -399,10 +392,8 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { gateway.Enable = v }, &fieldChanged)
 
-			// Handle gateway and gateway_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.Gateway, stateItem.Gateway, planItem.GatewayRefType, stateItem.GatewayRefType,
 				func(v *string) { gateway.Gateway = v },
@@ -413,10 +404,8 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 				return gateway, false
 			}
 
-			// Handle non-ref-type string fields
 			utils.CompareAndSetStringField(planItem.SourceIpMask, stateItem.SourceIpMask, func(v *string) { gateway.SourceIpMask = v }, &fieldChanged)
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.PeerGw, stateItem.PeerGw, func(v *bool) { gateway.PeerGw = v }, &fieldChanged)
 
 			return gateway, fieldChanged
@@ -457,7 +446,6 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if gatewayProfileData, exists := bulkMgr.GetResourceResponse("gateway_profile", name); exists {
 			newState := populateGatewayProfileState(ctx, minState, utils.MergeMissingPlanScalars(gatewayProfileData, plan, gatewayProfileResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -466,7 +454,6 @@ func (r *verityGatewayProfileResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -517,16 +504,13 @@ func (r *verityGatewayProfileResource) ImportState(ctx context.Context, req reso
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
 }
 
-// populateGatewayProfileState populates the state from API response data with mode-aware field mapping
 func populateGatewayProfileState(ctx context.Context, state verityGatewayProfileResourceModel, data map[string]interface{}, mode string) verityGatewayProfileResourceModel {
 	resourceType := gatewayProfileResourceType
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// Handle external gateways
 	if utils.FieldAppliesToMode(resourceType, "external_gateways", mode) {
 		if ext, ok := data["external_gateways"].([]interface{}); ok && len(ext) > 0 {
 			var egList []verityGatewayProfileExternalGatewaysModel
@@ -561,9 +545,7 @@ func populateGatewayProfileState(ctx context.Context, state verityGatewayProfile
 }
 
 func (r *verityGatewayProfileResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -575,11 +557,6 @@ func (r *verityGatewayProfileResource) ModifyPlan(ctx context.Context, req resou
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := gatewayProfileResourceType
 	mode := r.provCtx.mode
 

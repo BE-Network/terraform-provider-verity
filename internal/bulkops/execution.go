@@ -155,21 +155,18 @@ var campusPutOrder = []string{
 var campusPatchOrder = joinOperationOrders([]string{"sfp_breakout"}, campusPutOrder)
 var campusDeleteOrder = reverseOperationOrder(campusPutOrder)
 
-// GetResourceOperationData returns operation data for a resource type
 func (m *Manager) GetResourceOperationData(resourceType string) *ResourceOperationData {
-	// Handle special cases and aliases
+
 	switch resourceType {
 	case "acl_v4", "acl_v6":
 		resourceType = "acl"
 	}
 
-	// Get the resource operations from the unified map
 	res, exists := m.resources[resourceType]
 	if !exists {
 		return nil
 	}
 
-	// Return a ResourceOperationData that points to the unified structure fields
 	return &ResourceOperationData{
 		PutOperations:    res.Put,
 		PatchOperations:  res.Patch,
@@ -191,7 +188,6 @@ func (m *Manager) hasPendingOrRecentOperations(
 		return false
 	}
 
-	// Check if any operations are pending
 	var hasPending bool
 	if putMap, ok := data.PutOperations.(map[string]interface{}); ok {
 		hasPending = hasPending || len(putMap) > 0
@@ -211,7 +207,6 @@ func (m *Manager) hasPendingOrRecentOperations(
 
 	hasPending = hasPending || (data.DeleteOperations != nil && len(*data.DeleteOperations) > 0)
 
-	// Check if we've recently had operations (within the last 5 seconds)
 	hasRecent := *data.RecentOps && time.Since(*data.RecentOpTime) < 5*time.Second
 
 	return hasPending || hasRecent
@@ -263,13 +258,10 @@ func (m *Manager) executeBulkOperation(ctx context.Context, config BulkOperation
 		return diagnostics
 	}
 
-	// For DELETE operations with many resources, batch them to avoid URL length limits
-	// DELETE operations use query parameters which can exceed server URL limits (~8KB for Apache)
 	if config.OperationType == "DELETE" && len(resourceNames) > MaxDeleteBatchSize {
 		return m.executeBatchedDeleteOperation(ctx, config, operations, resourceNames)
 	}
 
-	// For PUT operations, filter out resources that already exist
 	var filteredOperations map[string]interface{}
 	var filteredResourceNames []string
 
@@ -319,8 +311,6 @@ func (m *Manager) executeBulkOperation(ctx context.Context, config BulkOperation
 		return diagnostics
 	}
 
-	// Mark all operations as executing - this sets the ExecutionStartTime so that
-	// WaitForOperation can track timeout from when the API call actually starts
 	m.markOperationsAsExecuting(config.ResourceType, config.OperationType, filteredResourceNames)
 
 	retryConfig := utils.DefaultRetryConfig()
@@ -379,8 +369,6 @@ func (m *Manager) executeBulkOperation(ctx context.Context, config BulkOperation
 	return diagnostics
 }
 
-// executeBatchedDeleteOperation handles DELETE operations that exceed MaxDeleteBatchSize
-// by splitting them into smaller batches to avoid URL length limits.
 func (m *Manager) executeBatchedDeleteOperation(ctx context.Context, config BulkOperationConfig, operations map[string]interface{}, resourceNames []string) diag.Diagnostics {
 	var diagnostics diag.Diagnostics
 
@@ -390,7 +378,6 @@ func (m *Manager) executeBatchedDeleteOperation(ctx context.Context, config Bulk
 	tflog.Info(ctx, fmt.Sprintf("Splitting bulk %s DELETE into %d batches of max %d resources each (total: %d)",
 		config.ResourceType, batchCount, MaxDeleteBatchSize, totalResources))
 
-	// Process each batch
 	for batchNum := 0; batchNum < batchCount; batchNum++ {
 		start := batchNum * MaxDeleteBatchSize
 		end := start + MaxDeleteBatchSize
@@ -412,7 +399,6 @@ func (m *Manager) executeBatchedDeleteOperation(ctx context.Context, config Bulk
 				"resource_names": batchNames,
 			})
 
-		// Create a batch-specific config that returns only this batch's operations
 		batchConfig := BulkOperationConfig{
 			ResourceType:  config.ResourceType,
 			OperationType: config.OperationType,
@@ -424,10 +410,9 @@ func (m *Manager) executeBatchedDeleteOperation(ctx context.Context, config Bulk
 			PrepareRequestWithError: config.PrepareRequestWithError,
 			ExecuteRequest:          config.ExecuteRequest,
 			ProcessResponse:         config.ProcessResponse,
-			UpdateRecentOps:         func() {}, // Don't update until all batches complete
+			UpdateRecentOps:         func() {},
 		}
 
-		// Execute this batch using the standard execution path (won't recurse since batch size <= MaxDeleteBatchSize)
 		batchDiags := m.executeSingleDeleteBatch(ctx, batchConfig, batchOperations, batchNames)
 		diagnostics.Append(batchDiags...)
 
@@ -437,20 +422,17 @@ func (m *Manager) executeBatchedDeleteOperation(ctx context.Context, config Bulk
 			return diagnostics
 		}
 
-		// Small delay between batches to avoid overwhelming the server
 		if batchNum < batchCount-1 {
 			time.Sleep(100 * time.Millisecond)
 		}
 	}
 
-	// Update recent ops after all batches complete successfully
 	config.UpdateRecentOps()
 
 	tflog.Info(ctx, fmt.Sprintf("Successfully completed all %d DELETE batches for %s", batchCount, config.ResourceType))
 	return diagnostics
 }
 
-// executeSingleDeleteBatch executes a single batch of DELETE operations
 func (m *Manager) executeSingleDeleteBatch(ctx context.Context, config BulkOperationConfig, operations map[string]interface{}, resourceNames []string) diag.Diagnostics {
 	var diagnostics diag.Diagnostics
 
@@ -470,8 +452,6 @@ func (m *Manager) executeSingleDeleteBatch(ctx context.Context, config BulkOpera
 		return diagnostics
 	}
 
-	// Mark all operations as executing - this sets the ExecutionStartTime so that
-	// WaitForOperation can track timeout from when the API call actually starts
 	m.markOperationsAsExecuting(config.ResourceType, config.OperationType, resourceNames)
 
 	retryConfig := utils.DefaultRetryConfig()
@@ -556,7 +536,7 @@ func (m *Manager) WaitForOperation(ctx context.Context, operationID string, time
 	for {
 		select {
 		case <-waitCh:
-			// Operation completed
+
 			m.operationMutex.Lock()
 			defer m.operationMutex.Unlock()
 
@@ -566,11 +546,11 @@ func (m *Manager) WaitForOperation(ctx context.Context, operationID string, time
 			return nil
 
 		case <-ticker.C:
-			// Check if operation has started executing and if timeout has elapsed
+
 			m.operationMutex.Lock()
 			op, opExists := m.pendingOperations[operationID]
 			if opExists && op != nil && !op.ExecutionStartTime.IsZero() {
-				// Operation has started executing - check if timeout elapsed from start time
+
 				elapsed := time.Since(op.ExecutionStartTime)
 				if elapsed >= timeout {
 					m.operationMutex.Unlock()
@@ -585,7 +565,6 @@ func (m *Manager) WaitForOperation(ctx context.Context, operationID string, time
 	}
 }
 
-// updateOperationStatuses updates the status of pending operations based on the bulk operation result
 func (m *Manager) updateOperationStatuses(ctx context.Context, resourceType, operationType string, resourceNames []string, opErr error) {
 	var idsToClose []string
 
@@ -599,28 +578,27 @@ func (m *Manager) updateOperationStatuses(ctx context.Context, resourceType, ope
 	for opID, op := range m.pendingOperations {
 		matchesResourceType := false
 		if resourceType == "acl_v4" || resourceType == "acl_v6" {
-			// For ACL operations, match if the stored type is "acl"
+
 			matchesResourceType = op.ResourceType == "acl"
 		} else {
 			matchesResourceType = op.ResourceType == resourceType
 		}
 
 		if matchesResourceType && op.OperationType == operationType {
-			// For PUT, we need to check that operation is pending or executing
+
 			if operationType == "PUT" && op.Status != OperationPending && op.Status != OperationExecuting {
 				continue
 			}
 
-			// Check if this operation's resource name is in our filtered batch
 			if resourceMap[op.ResourceName] {
 				updatedOp := op
 				if opErr == nil {
-					// Mark operation as successful
+
 					updatedOp.Status = OperationSucceeded
 					m.pendingOperations[opID] = updatedOp
 					m.operationResults[opID] = true
 				} else {
-					// Mark operation as failed
+
 					updatedOp.Status = OperationFailed
 					updatedOp.Error = opErr
 					m.pendingOperations[opID] = updatedOp
@@ -639,9 +617,6 @@ func (m *Manager) updateOperationStatuses(ctx context.Context, resourceType, ope
 	}
 }
 
-// markOperationsAsExecuting sets the ExecutionStartTime for all operations in the batch.
-// This allows WaitForOperation to track timeout from when the API call actually begins,
-// not from when the operation was queued.
 func (m *Manager) markOperationsAsExecuting(resourceType, operationType string, resourceNames []string) {
 	m.operationMutex.Lock()
 	defer m.operationMutex.Unlock()
@@ -670,13 +645,9 @@ func (m *Manager) markOperationsAsExecuting(resourceType, operationType string, 
 	}
 }
 
-// WaitAndFlushAllOperations is called from stage resources acting as barriers between
-// resource type groups. Waits for sibling resources to queue ops, flushes them, and
-// returns only after consecutive quiet periods confirm no more ops will arrive.
 func (m *Manager) WaitAndFlushAllOperations(ctx context.Context) diag.Diagnostics {
 	var allDiags diag.Diagnostics
 
-	// Phase 1: Wait for operations to arrive from concurrent sibling resources.
 	initialWaitDeadline := MaxBatchDelay
 	checkInterval := 500 * time.Millisecond
 	elapsed := time.Duration(0)
@@ -697,7 +668,6 @@ func (m *Manager) WaitAndFlushAllOperations(ctx context.Context) diag.Diagnostic
 		return allDiags
 	}
 
-	// Phase 2: Repeatedly flush until quiet (requires consecutive quiet periods).
 	const maxFlushCycles = 200
 	const requiredQuietPeriods = 3
 	consecutiveQuiet := 0
@@ -711,7 +681,6 @@ func (m *Manager) WaitAndFlushAllOperations(ctx context.Context) diag.Diagnostic
 			return allDiags
 		}
 
-		// Wait to let concurrent resources queue more operations
 		time.Sleep(BatchCollectionWindow)
 
 		if m.hasPendingOperations() {
@@ -739,16 +708,13 @@ func (m *Manager) refreshAllResourceCaches(ctx context.Context) {
 }
 
 func (m *Manager) ExecuteAllPendingOperations(ctx context.Context) diag.Diagnostics {
-	// Ensure only one execution runs at a time - prevents race conditions when multiple
-	// timer callbacks fire due to low parallelism causing resource waves
+
 	m.executionMutex.Lock()
 	defer m.executionMutex.Unlock()
 
 	var diagnostics diag.Diagnostics
 	anyOperationsPerformed := false
 
-	// After executing all types in order, check if more operations arrived
-	// during execution (due to low parallelism releasing Terraform goroutines in waves).
 	const maxPasses = 100
 	for pass := 0; pass < maxPasses; pass++ {
 		tflog.Info(ctx, fmt.Sprintf("[BULK-OPS] ExecuteAllPendingOperations pass %d — checking for queued operations", pass))
@@ -790,10 +756,8 @@ func (m *Manager) ExecuteAllPendingOperations(ctx context.Context) diag.Diagnost
 			break
 		}
 
-		// Wait briefly to let in-flight Terraform goroutines submit new operations
 		time.Sleep(BatchCollectionWindow)
 
-		// Check if more operations arrived during execution
 		if !m.hasPendingOperations() {
 			tflog.Debug(ctx, fmt.Sprintf("Pass %d: No more pending operations, done", pass))
 			break
@@ -869,19 +833,15 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	var diagnostics diag.Diagnostics
 	operationsPerformed := false
 	execution := orderedExecutionState{m, ctx, &diagnostics, &operationsPerformed}
-	// PUT operations - DC Order
-	// sfp_breakout is intentionally omitted because it only supports PATCH.
+
 	if !execution.executeSequence("PUT", datacenterPutOrder) {
 		return diagnostics, operationsPerformed
 	}
 
-	// PATCH operations - DC Order
 	if !execution.executeSequence("PATCH", datacenterPatchOrder) {
 		return diagnostics, operationsPerformed
 	}
 
-	// DELETE operations - reverse normal Data Center staging order.
-	// sfp_breakout is intentionally omitted because it only supports PATCH.
 	if !execution.executeSequence("DELETE", datacenterDeleteOrder) {
 		return diagnostics, operationsPerformed
 	}
@@ -894,17 +854,14 @@ func (m *Manager) ExecuteCampusOperations(ctx context.Context) (diag.Diagnostics
 	operationsPerformed := false
 	execution := orderedExecutionState{m, ctx, &diagnostics, &operationsPerformed}
 
-	// PUT operations - Campus Order
 	if !execution.executeSequence("PUT", campusPutOrder) {
 		return diagnostics, operationsPerformed
 	}
 
-	// PATCH operations - Campus Order
 	if !execution.executeSequence("PATCH", campusPatchOrder) {
 		return diagnostics, operationsPerformed
 	}
 
-	// DELETE operations - Reverse Campus Order
 	if !execution.executeSequence("DELETE", campusDeleteOrder) {
 		return diagnostics, operationsPerformed
 	}
@@ -916,7 +873,6 @@ func (m *Manager) ShouldExecuteOperations(ctx context.Context) bool {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 
-	// If there are no pending operations, no need to execute
 	if !m.hasPendingOperationsLocked() {
 		return false
 	}
@@ -924,8 +880,6 @@ func (m *Manager) ShouldExecuteOperations(ctx context.Context) bool {
 	elapsedSinceLast := time.Since(m.lastOperationTime)
 	elapsedSinceBatchStart := time.Since(m.batchStartTime)
 
-	// Only flush if either sufficient time has passed since the last operation
-	// OR the batch has been open for too long
 	if elapsedSinceLast < BatchCollectionWindow && elapsedSinceBatchStart < MaxBatchDelay {
 		return false
 	}

@@ -13,24 +13,11 @@ import (
 	"terraform-provider-verity/internal/transport"
 )
 
-// An auto-assignment pair is a value the server can choose and a boolean flag
-// that asks it to. While the flag is on, the value belongs to the server: the
-// configuration may not set it, the plan cannot know it in advance, and the
-// request carries the flag instead of the value.
-//
-// The rules below are the ones verity_service, verity_tenant, verity_fabric,
-// and all ten verity_switchpoint pairs implement, surveyed from their
-// handwritten code rather than designed here. Where a handwritten resend reads
-// an unknown plan value as zero, the engine resends state's value instead; the
-// differential tests pin each such case.
-
 type autoAssignedPair struct {
 	value spec.FieldSpec
 	flag  spec.FieldSpec
 }
 
-// autoAssignmentPairs indexes each auto-assigned value with its flag, and every
-// field that belongs to a pair so the ordinary loops can skip both halves.
 func autoAssignmentPairs(fields []spec.FieldSpec) ([]autoAssignedPair, map[string]bool, error) {
 	byName := make(map[string]spec.FieldSpec, len(fields))
 	for _, field := range fields {
@@ -63,8 +50,6 @@ func isKnown(value attr.Value) bool {
 	return value != nil && !value.IsNull() && !value.IsUnknown()
 }
 
-// isSet reports whether a configuration names a value. An empty string counts as
-// not set, as the handwritten validation treats it.
 func isSet(value attr.Value) bool {
 	if !isKnown(value) {
 		return false
@@ -75,10 +60,6 @@ func isSet(value attr.Value) bool {
 	return true
 }
 
-// createAutoAssigned decides what a create sends for one pair. With the flag on,
-// the flag is sent and the value left to the server. Otherwise the value follows
-// its own policies — including the configuration scan for a nullable value — and
-// the flag is sent when the plan knows it.
 func createAutoAssigned(pair autoAssignedPair, plan map[string]attr.Value, nullables nullableSource, object transport.WireObject) error {
 	flag := plan[pair.flag.TerraformName]
 	if isTrue(flag) {
@@ -110,13 +91,6 @@ func createAutoAssigned(pair autoAssignedPair, plan map[string]attr.Value, nulla
 	return nil
 }
 
-// updateAutoAssigned decides what an update sends for one pair, and reports
-// whether anything changed.
-//
-// Two API behaviors shape it. A flag is sent only when the configuration states
-// it, so a flag the server set is not echoed back as a user decision. And turning
-// assignment off is ignored by the API unless the value travels with it, so the
-// value is resent — the planned one, or failing that the one in state.
 func updateAutoAssigned(pair autoAssignedPair, plan, state, config map[string]attr.Value, object transport.WireObject) (bool, error) {
 	planValue, stateValue := plan[pair.value.TerraformName], state[pair.value.TerraformName]
 	planFlag, stateFlag := plan[pair.flag.TerraformName], state[pair.flag.TerraformName]
@@ -158,8 +132,7 @@ func updateAutoAssigned(pair autoAssignedPair, plan, state, config map[string]at
 			}
 		}
 	case valueChanged:
-		// The flag travels with a changed value so the server does not keep a
-		// stale assignment decision alongside it.
+
 		switch {
 		case isKnown(planFlag):
 			object[pair.flag.APIName] = transport.Bool(planFlag.(types.Bool).ValueBool())
@@ -172,12 +145,6 @@ func updateAutoAssigned(pair autoAssignedPair, plan, state, config map[string]at
 	return true, nil
 }
 
-// planAutoAssignment applies the pair rules to the plan: refuse a value written
-// while the flag is on, mark the value unknown whenever the server is about to
-// choose it, and keep the state value when a change to it would be ignored.
-//
-// It reads the plan as it arrived rather than as ModifyPlan has already changed
-// it, which is what the handwritten resources compare against.
 func (r *Resource) planAutoAssignment(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	pairs, _, err := autoAssignmentPairs(r.spec.Fields)
 	if err != nil {
@@ -260,16 +227,12 @@ func (r *Resource) planAutoAssignment(ctx context.Context, req resource.ModifyPl
 			continue
 		}
 
-		// With assignment off, a change to a field the value is derived from still
-		// makes the server recompute it — unless the configuration pins the value.
 		if trigger != "" && planValue.Equal(stateValue) && !isSet(config[pair.value.TerraformName]) {
 			resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, valuePath(pair), unknownOf(pair.value.Kind))...)
 		}
 	}
 }
 
-// changedTrigger returns the first field the value is recomputed from whose plan
-// differs from state, or "" when none does.
 func changedTrigger(pair autoAssignedPair, plan, state map[string]attr.Value) string {
 	for _, name := range pair.value.AutoAssignment.RecomputedWhen {
 		planned, before := plan[name], state[name]

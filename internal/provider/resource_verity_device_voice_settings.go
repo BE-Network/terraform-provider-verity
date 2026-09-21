@@ -512,7 +512,6 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "DtmfMethod", APIField: &dvsProps.DtmfMethod, TFValue: plan.DtmfMethod},
 		{FieldName: "Region", APIField: &dvsProps.Region, TFValue: plan.Region},
@@ -552,14 +551,12 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 		{FieldName: "Intercom3", APIField: &dvsProps.Intercom3, TFValue: plan.Intercom3},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &dvsProps.Enable, TFValue: plan.Enable},
 		{FieldName: "Rtcp", APIField: &dvsProps.Rtcp, TFValue: plan.Rtcp},
 		{FieldName: "FaxT38", APIField: &dvsProps.FaxT38, TFValue: plan.FaxT38},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, deviceVoiceSettingsTerraformType, name)
 
@@ -586,7 +583,6 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 		{FieldName: "DscpMark", APIField: &dvsProps.DscpMark, TFValue: config.DscpMark, IsConfigured: configuredAttrs.IsConfigured("dscp_mark")},
 	})
 
-	// Handle codecs
 	if len(plan.Codecs) > 0 {
 		codecs := make([]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner, len(plan.Codecs))
 		for i, item := range plan.Codecs {
@@ -631,7 +627,6 @@ func (r *verityDeviceVoiceSettingsResource) Create(ctx context.Context, req reso
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -668,7 +663,6 @@ func (r *verityDeviceVoiceSettingsResource) Read(ctx context.Context, req resour
 
 	dvsName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if dvsData, exists := r.bulkOpsMgr.GetResourceResponse("device_voice_settings", dvsName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached device voice settings data for %s from recent operation", dvsName))
@@ -769,7 +763,6 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityDeviceVoiceSettingsResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -789,11 +782,9 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	dvsProps := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, deviceVoiceSettingsTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { dvsProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.DtmfMethod, state.DtmfMethod, func(v *string) { dvsProps.DtmfMethod = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Region, state.Region, func(v *string) { dvsProps.Region = v }, &hasChanges)
@@ -832,12 +823,10 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	utils.CompareAndSetStringField(plan.Intercom2, state.Intercom2, func(v *string) { dvsProps.Intercom2 = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Intercom3, state.Intercom3, func(v *string) { dvsProps.Intercom3 = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { dvsProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.Rtcp, state.Rtcp, func(v *bool) { dvsProps.Rtcp = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.FaxT38, state.FaxT38, func(v *bool) { dvsProps.FaxT38 = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.ProxyServerPort, state.ProxyServerPort, configuredAttrs.IsConfigured("proxy_server_port"), func(v *openapi.NullableInt64) { dvsProps.ProxyServerPort = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.ProxyServerSecondaryPort, state.ProxyServerSecondaryPort, configuredAttrs.IsConfigured("proxy_server_secondary_port"), func(v *openapi.NullableInt64) { dvsProps.ProxyServerSecondaryPort = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.RegistrarServerPort, state.RegistrarServerPort, configuredAttrs.IsConfigured("registrar_server_port"), func(v *openapi.NullableInt64) { dvsProps.RegistrarServerPort = *v }, &hasChanges)
@@ -859,7 +848,6 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 	utils.CompareAndSetNullableInt64Field(config.CasEvents, state.CasEvents, configuredAttrs.IsConfigured("cas_events"), func(v *openapi.NullableInt64) { dvsProps.CasEvents = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.DscpMark, state.DscpMark, configuredAttrs.IsConfigured("dscp_mark"), func(v *openapi.NullableInt64) { dvsProps.DscpMark = *v }, &hasChanges)
 
-	// Handle codecs
 	codecsHandler := utils.IndexedItemHandler[verityDeviceVoiceSettingsCodecModel, openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner]{
 		CreateNew: func(planItem verityDeviceVoiceSettingsCodecModel) openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner {
 			codec := openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{}
@@ -889,11 +877,9 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 
 			fieldChanged := false
 
-			// Handle string fields
 			utils.CompareAndSetStringField(planItem.CodecNumName, stateItem.CodecNumName, func(v *string) { codec.CodecNumName = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.CodecNumPacketizationPeriod, stateItem.CodecNumPacketizationPeriod, func(v *string) { codec.CodecNumPacketizationPeriod = v }, &fieldChanged)
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.CodecNumEnable, stateItem.CodecNumEnable, func(v *bool) { codec.CodecNumEnable = v }, &fieldChanged)
 			utils.CompareAndSetBoolField(planItem.CodecNumSilenceSuppression, stateItem.CodecNumSilenceSuppression, func(v *bool) { codec.CodecNumSilenceSuppression = v }, &fieldChanged)
 
@@ -935,7 +921,6 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if dvsData, exists := bulkMgr.GetResourceResponse("device_voice_settings", name); exists {
 			newState := populateDeviceVoiceSettingsState(ctx, minState, utils.MergeMissingPlanScalars(dvsData, plan, deviceVoiceSettingsResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -944,7 +929,6 @@ func (r *verityDeviceVoiceSettingsResource) Update(ctx context.Context, req reso
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -1000,12 +984,10 @@ func populateDeviceVoiceSettingsState(ctx context.Context, state verityDeviceVoi
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.Rtcp = utils.MapBoolWithMode(data, "rtcp", resourceType, mode)
 	state.FaxT38 = utils.MapBoolWithMode(data, "fax_t38", resourceType, mode)
 
-	// String fields
 	state.DtmfMethod = utils.MapStringWithMode(data, "dtmf_method", resourceType, mode)
 	state.Region = utils.MapStringWithMode(data, "region", resourceType, mode)
 	state.Protocol = utils.MapStringWithMode(data, "protocol", resourceType, mode)
@@ -1043,7 +1025,6 @@ func populateDeviceVoiceSettingsState(ctx context.Context, state verityDeviceVoi
 	state.Intercom2 = utils.MapStringWithMode(data, "intercom_2", resourceType, mode)
 	state.Intercom3 = utils.MapStringWithMode(data, "intercom_3", resourceType, mode)
 
-	// Int64 fields
 	state.ProxyServerPort = utils.MapInt64WithMode(data, "proxy_server_port", resourceType, mode)
 	state.ProxyServerSecondaryPort = utils.MapInt64WithMode(data, "proxy_server_secondary_port", resourceType, mode)
 	state.RegistrarServerPort = utils.MapInt64WithMode(data, "registrar_server_port", resourceType, mode)
@@ -1065,7 +1046,6 @@ func populateDeviceVoiceSettingsState(ctx context.Context, state verityDeviceVoi
 	state.CasEvents = utils.MapInt64WithMode(data, "cas_events", resourceType, mode)
 	state.DscpMark = utils.MapInt64WithMode(data, "dscp_mark", resourceType, mode)
 
-	// Handle codecs array
 	if utils.FieldAppliesToMode(resourceType, "codecs", mode) {
 		if codecsArray, ok := data["codecs"].([]interface{}); ok && len(codecsArray) > 0 {
 			var codecs []verityDeviceVoiceSettingsCodecModel
@@ -1095,9 +1075,7 @@ func populateDeviceVoiceSettingsState(ctx context.Context, state verityDeviceVoi
 }
 
 func (r *verityDeviceVoiceSettingsResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -1108,11 +1086,6 @@ func (r *verityDeviceVoiceSettingsResource) ModifyPlan(ctx context.Context, req 
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := deviceVoiceSettingsResourceType
 	mode := r.provCtx.mode
 
@@ -1158,16 +1131,10 @@ func (r *verityDeviceVoiceSettingsResource) ModifyPlan(ctx context.Context, req 
 		BoolFields:   []string{"codec_num_enable", "codec_num_silence_suppression"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityDeviceVoiceSettingsResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -1180,11 +1147,6 @@ func (r *verityDeviceVoiceSettingsResource) ModifyPlan(ctx context.Context, req 
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, deviceVoiceSettingsTerraformType, name)

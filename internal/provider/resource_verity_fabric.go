@@ -681,15 +681,15 @@ func (r *verityFabricResource) Create(ctx context.Context, req resource.CreateRe
 
 	if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() {
 		fabricReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(true)
-		// Don't include the specific MAC in the request
+
 	} else if configuredAttrs.IsConfigured("anycast_mac_address") && !plan.AnycastMacAddress.IsNull() && !plan.AnycastMacAddress.IsUnknown() {
-		// Preserve an explicitly configured value, including an explicit empty string.
+
 		fabricReq.AnycastMacAddress = openapi.PtrString(plan.AnycastMacAddress.ValueString())
 		if !plan.AnycastMacAddressAutoAssigned.IsNull() {
 			fabricReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(plan.AnycastMacAddressAutoAssigned.ValueBool())
 		}
 	} else if !plan.AnycastMacAddressAutoAssigned.IsNull() {
-		// No MAC value was provided, but preserve the user's explicit flag setting
+
 		fabricReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(plan.AnycastMacAddressAutoAssigned.ValueBool())
 	}
 
@@ -755,7 +755,6 @@ func (r *verityFabricResource) Read(ctx context.Context, req resource.ReadReques
 	fabricName := state.Name.ValueString()
 	priorState := state
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if fabricData, exists := r.bulkOpsMgr.GetResourceResponse("fabric", fabricName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached fabric data for %s from recent operation", fabricName))
@@ -857,7 +856,6 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityFabricResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -865,10 +863,6 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	// Validate auto-assigned fields - this check prevents ineffective API calls
-	// Only error if the auto-assigned flag is enabled AND the user is explicitly setting a value
-	// AND the auto-assigned flag itself is not changing (which would be a valid operation)
-	// Don't error if the field is unknown (computed during plan recalculation)
 	if !plan.AnycastMacAddress.Equal(state.AnycastMacAddress) &&
 		!plan.AnycastMacAddress.IsNull() && !plan.AnycastMacAddress.IsUnknown() &&
 		!plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() &&
@@ -892,11 +886,9 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 	fabricReq := openapi.FabricsPutRequestFabricValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, fabricTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { fabricReq.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.PlaneCount, state.PlaneCount, func(v *string) { fabricReq.PlaneCount = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SuSize, state.SuSize, func(v *string) { fabricReq.SuSize = v }, &hasChanges)
@@ -923,7 +915,6 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 	utils.CompareAndSetStringField(plan.MaxSwitches, state.MaxSwitches, func(v *string) { fabricReq.MaxSwitches = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RouteAggregation, state.RouteAggregation, func(v *string) { fabricReq.RouteAggregation = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { fabricReq.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.ServerManagement, state.ServerManagement, func(v *bool) { fabricReq.ServerManagement = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.SuSupport, state.SuSupport, func(v *bool) { fabricReq.SuSupport = v }, &hasChanges)
@@ -938,7 +929,6 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 	utils.CompareAndSetBoolField(plan.IpSourceGuard, state.IpSourceGuard, func(v *bool) { fabricReq.IpSourceGuard = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.SetLeafRouterIdOnBgp, state.SetLeafRouterIdOnBgp, func(v *bool) { fabricReq.SetLeafRouterIdOnBgp = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.PortAdminPollingInterval, state.PortAdminPollingInterval, configuredAttrs.IsConfigured("port_admin_polling_interval"), func(v *openapi.NullableInt64) { fabricReq.PortAdminPollingInterval = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.PortStatusPollingInterval, state.PortStatusPollingInterval, configuredAttrs.IsConfigured("port_status_polling_interval"), func(v *openapi.NullableInt64) { fabricReq.PortStatusPollingInterval = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MacAddressAgingTime, state.MacAddressAgingTime, configuredAttrs.IsConfigured("mac_address_aging_time"), func(v *openapi.NullableInt64) { fabricReq.MacAddressAgingTime = *v }, &hasChanges)
@@ -962,7 +952,6 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 	utils.CompareAndSetNullableInt64Field(config.DuplicateAddressDetectionMaxNumberOfMoves, state.DuplicateAddressDetectionMaxNumberOfMoves, configuredAttrs.IsConfigured("duplicate_address_detection_max_number_of_moves"), func(v *openapi.NullableInt64) { fabricReq.DuplicateAddressDetectionMaxNumberOfMoves = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.DuplicateAddressDetectionTime, state.DuplicateAddressDetectionTime, configuredAttrs.IsConfigured("duplicate_address_detection_time"), func(v *openapi.NullableInt64) { fabricReq.DuplicateAddressDetectionTime = *v }, &hasChanges)
 
-	// Handle object properties with nested system_graphs
 	if len(plan.ObjectProperties) > 0 || len(state.ObjectProperties) > 0 {
 		var op verityFabricObjectPropertiesModel
 		var st verityFabricObjectPropertiesModel
@@ -984,7 +973,7 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 				},
 				UpdateExisting: func(planItem verityFabricSystemGraphsModel, stateItem verityFabricSystemGraphsModel) (openapi.FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner, bool) {
 					graphProps := openapi.FabricsPutRequestFabricValueObjectPropertiesSystemGraphsInner{}
-					// Always include index — API requires it to identify which array element to modify
+
 					utils.SetInt64Fields([]utils.Int64FieldMapping{
 						{FieldName: "Index", APIField: &graphProps.Index, TFValue: planItem.Index},
 					})
@@ -1040,7 +1029,6 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	// Handle service_for_fabric and service_for_fabric_ref_type_ fields using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.ServiceForFabric, state.ServiceForFabric, plan.ServiceForFabricRefType, state.ServiceForFabricRefType,
 		func(v *string) { fabricReq.ServiceForFabric = v },
@@ -1061,12 +1049,11 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	// Handle AnycastMacAddress and AnycastMacAddressAutoAssigned changes
 	anycastMacAddressChanged := !plan.AnycastMacAddress.IsUnknown() && !plan.AnycastMacAddress.Equal(state.AnycastMacAddress)
 	anycastMacAddressAutoAssignedChanged := !plan.AnycastMacAddressAutoAssigned.Equal(state.AnycastMacAddressAutoAssigned)
 
 	if anycastMacAddressChanged || anycastMacAddressAutoAssignedChanged {
-		// Handle AnycastMacAddress field changes
+
 		if anycastMacAddressChanged {
 			if !plan.AnycastMacAddress.IsNull() && plan.AnycastMacAddress.ValueString() != "" {
 				fabricReq.AnycastMacAddress = openapi.PtrString(plan.AnycastMacAddress.ValueString())
@@ -1075,9 +1062,8 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 			}
 		}
 
-		// Handle AnycastMacAddressAutoAssigned field changes
 		if anycastMacAddressAutoAssignedChanged {
-			// Only send anycast_mac_address_auto_assigned_ if the user has explicitly specified it in their configuration
+
 			var config verityFabricResourceModel
 			userSpecifiedAnycastMacAddressAutoAssigned := false
 			if !req.Config.Raw.IsNull() {
@@ -1089,23 +1075,19 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 			if userSpecifiedAnycastMacAddressAutoAssigned {
 				fabricReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(plan.AnycastMacAddressAutoAssigned.ValueBool())
 
-				// Special case: When changing from auto-assigned (true) to manual (false),
-				// the API requires both anycast_mac_address_auto_assigned_ and anycast_mac_address fields to be sent.
 				if !state.AnycastMacAddressAutoAssigned.IsNull() && state.AnycastMacAddressAutoAssigned.ValueBool() &&
 					!plan.AnycastMacAddressAutoAssigned.ValueBool() {
-					// Changing from auto-assigned=true to auto-assigned=false
-					// Must include AnycastMacAddress value in the request for the change to take effect
+
 					if !plan.AnycastMacAddress.IsNull() && plan.AnycastMacAddress.ValueString() != "" {
 						fabricReq.AnycastMacAddress = openapi.PtrString(plan.AnycastMacAddress.ValueString())
 					} else if !state.AnycastMacAddress.IsNull() && state.AnycastMacAddress.ValueString() != "" {
-						// Use current state AnycastMacAddress if plan doesn't specify one
+
 						fabricReq.AnycastMacAddress = openapi.PtrString(state.AnycastMacAddress.ValueString())
 					}
 				}
 			}
 		} else if anycastMacAddressChanged {
-			// AnycastMacAddress changed but AnycastMacAddressAutoAssigned didn't change
-			// Send the auto-assigned flag to maintain consistency with API
+
 			if !plan.AnycastMacAddressAutoAssigned.IsNull() {
 				fabricReq.AnycastMacAddressAutoAssigned = openapi.PtrBool(plan.AnycastMacAddressAutoAssigned.ValueBool())
 			} else if !state.AnycastMacAddressAutoAssigned.IsNull() {
@@ -1148,7 +1130,6 @@ func (r *verityFabricResource) Update(ctx context.Context, req resource.UpdateRe
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -1211,7 +1192,6 @@ func populateFabricState(ctx context.Context, state verityFabricResourceModel, f
 
 	state.Name = utils.MapStringFromAPI(fabricData["name"])
 
-	// Int fields
 	state.Revision = utils.MapInt64WithMode(fabricData, "revision", resourceType, mode)
 	state.PortAdminPollingInterval = utils.MapInt64WithMode(fabricData, "port_admin_polling_interval", resourceType, mode)
 	state.PortStatusPollingInterval = utils.MapInt64WithMode(fabricData, "port_status_polling_interval", resourceType, mode)
@@ -1235,7 +1215,6 @@ func populateFabricState(ctx context.Context, state verityFabricResourceModel, f
 	state.DuplicateAddressDetectionMaxNumberOfMoves = utils.MapInt64WithMode(fabricData, "duplicate_address_detection_max_number_of_moves", resourceType, mode)
 	state.DuplicateAddressDetectionTime = utils.MapInt64WithMode(fabricData, "duplicate_address_detection_time", resourceType, mode)
 
-	// Bool fields
 	state.Enable = utils.MapBoolWithMode(fabricData, "enable", resourceType, mode)
 	state.ServerManagement = utils.MapBoolWithMode(fabricData, "server_management", resourceType, mode)
 	state.SuSupport = utils.MapBoolWithMode(fabricData, "su_support", resourceType, mode)
@@ -1251,7 +1230,6 @@ func populateFabricState(ctx context.Context, state verityFabricResourceModel, f
 	state.SetLeafRouterIdOnBgp = utils.MapBoolWithMode(fabricData, "set_leaf_router_id_on_bgp", resourceType, mode)
 	state.AnycastMacAddressAutoAssigned = utils.MapBoolWithMode(fabricData, "anycast_mac_address_auto_assigned_", resourceType, mode)
 
-	// String fields
 	state.FabricType = utils.MapStringWithMode(fabricData, "fabric_type", resourceType, mode)
 	state.PlaneCount = utils.MapStringWithMode(fabricData, "plane_count", resourceType, mode)
 	state.SuSize = utils.MapStringWithMode(fabricData, "su_size", resourceType, mode)
@@ -1302,12 +1280,10 @@ func populateFabricState(ctx context.Context, state verityFabricResourceModel, f
 		state.RouteAggregators = nil
 	}
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if op, ok := fabricData["object_properties"].(map[string]interface{}); ok {
 			objProps := verityFabricObjectPropertiesModel{}
 
-			// Handle nested system_graphs array
 			if systemGraphs, exists := op["system_graphs"].([]interface{}); exists && len(systemGraphs) > 0 {
 				var graphsList []verityFabricSystemGraphsModel
 				for _, graph := range systemGraphs {
@@ -1337,9 +1313,7 @@ func populateFabricState(ctx context.Context, state verityFabricResourceModel, f
 }
 
 func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -1350,11 +1324,6 @@ func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.Modi
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := fabricResourceType
 	mode := r.provCtx.mode
 
@@ -1404,8 +1373,6 @@ func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.Modi
 		"duplicate_address_detection_time",
 	)
 
-	// Handle object_properties with nested system_graphs sub-block
-	// Build item counts for system_graphs within each object_properties item
 	systemGraphsCounts := make([]int, len(plan.ObjectProperties))
 	for i, op := range plan.ObjectProperties {
 		systemGraphsCounts[i] = len(op.SystemGraphs)
@@ -1429,9 +1396,6 @@ func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.Modi
 		},
 	})
 
-	// =========================================================================
-	// CREATE operation - handle auto-assigned fields
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() {
 			if !plan.AnycastMacAddress.IsNull() && !plan.AnycastMacAddress.IsUnknown() && plan.AnycastMacAddress.ValueString() != "" {
@@ -1443,16 +1407,12 @@ func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.Modi
 			}
 		}
 
-		// Fabric-specific: AnycastMacAddress auto-assignment on create
 		if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() {
 			resp.Plan.SetAttribute(ctx, path.Root("anycast_mac_address"), types.StringUnknown())
 		}
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityFabricResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -1465,11 +1425,6 @@ func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.Modi
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, fabricTerraformType, name)
@@ -1504,9 +1459,6 @@ func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.Modi
 		},
 	})
 
-	// =========================================================================
-	// Validate auto-assigned field specifications
-	// =========================================================================
 	if !config.AnycastMacAddressAutoAssigned.IsNull() && config.AnycastMacAddressAutoAssigned.ValueBool() {
 		if !config.AnycastMacAddress.IsNull() && !config.AnycastMacAddress.IsUnknown() && config.AnycastMacAddress.ValueString() != "" {
 			resp.Diagnostics.AddError(
@@ -1517,19 +1469,16 @@ func (r *verityFabricResource) ModifyPlan(ctx context.Context, req resource.Modi
 		}
 	}
 
-	// =========================================================================
-	// Resource-specific auto-assigned field logic (AnycastMacAddress)
-	// =========================================================================
 	if !plan.AnycastMacAddressAutoAssigned.IsNull() && plan.AnycastMacAddressAutoAssigned.ValueBool() {
 		if !plan.AnycastMacAddressAutoAssigned.Equal(state.AnycastMacAddressAutoAssigned) {
-			// anycast_mac_address_auto_assigned_ is changing to true - API will assign value
+
 			resp.Plan.SetAttribute(ctx, path.Root("anycast_mac_address"), types.StringUnknown())
 			resp.Diagnostics.AddWarning(
 				"Anycast MAC Address will be assigned by the API",
 				"The 'anycast_mac_address' field will be automatically assigned by the API because 'anycast_mac_address_auto_assigned_' is being set to true.",
 			)
 		} else if !plan.AnycastMacAddress.Equal(state.AnycastMacAddress) {
-			// User tried to change AnycastMacAddress but it's auto-assigned - suppress diff
+
 			resp.Diagnostics.AddWarning(
 				"Ignoring anycast_mac_address changes with auto-assignment enabled",
 				"The 'anycast_mac_address' field changes will be ignored because 'anycast_mac_address_auto_assigned_' is set to true.",

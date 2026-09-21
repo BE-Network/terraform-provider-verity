@@ -15,16 +15,6 @@ import (
 	"terraform-provider-verity/internal/transport"
 )
 
-// The generic engine's update request for an update-only resource must match the
-// one the handwritten resource sends.
-//
-// TestUpdateOnlyResourceGoldenPatch recorded verity_sfp_breakout's PATCH from a
-// value built the way the handwritten resource builds it. The acceptance harness
-// cannot hold this resource across an update, so the generic path is checked at
-// the same layer: the canonical object the codec would produce for the same entry
-// goes through the generated adapter and the bulk manager, and the request has to
-// equal the committed fixture. It never regenerates the fixture, so it cannot
-// agree with itself.
 func TestGenericUpdateOnlyAdapterMatchesGoldenPatch(t *testing.T) {
 	t.Parallel()
 
@@ -52,8 +42,6 @@ func TestGenericUpdateOnlyAdapterMatchesGoldenPatch(t *testing.T) {
 	}))
 	defer server.Close()
 
-	// The entry TestUpdateOnlyResourceGoldenPatch builds by hand, as the codec
-	// represents it.
 	object := transport.WireObject{
 		"breakout": transport.List([]transport.WireValue{
 			transport.Object(transport.WireObject{

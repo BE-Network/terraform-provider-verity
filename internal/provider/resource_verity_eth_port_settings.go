@@ -438,7 +438,6 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "MaxBitRate", APIField: &ethPortSettingsProps.MaxBitRate, TFValue: plan.MaxBitRate},
 		{FieldName: "DuplexMode", APIField: &ethPortSettingsProps.DuplexMode, TFValue: plan.DuplexMode},
@@ -457,7 +456,6 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 		{FieldName: "LldpMode", APIField: &ethPortSettingsProps.LldpMode, TFValue: plan.LldpMode},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &ethPortSettingsProps.Enable, TFValue: plan.Enable},
 		{FieldName: "AutoNegotiation", APIField: &ethPortSettingsProps.AutoNegotiation, TFValue: plan.AutoNegotiation},
@@ -482,7 +480,6 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 		{FieldName: "LldpMedEnable", APIField: &ethPortSettingsProps.LldpMedEnable, TFValue: plan.LldpMedEnable},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortSettingsTerraformType, name)
 
@@ -498,7 +495,6 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 		{FieldName: "AgingTime", APIField: &ethPortSettingsProps.AgingTime, TFValue: config.AgingTime, IsConfigured: configuredAttrs.IsConfigured("aging_time")},
 	})
 
-	// Handle LLDP Med
 	if len(plan.LldpMed) > 0 {
 		lldpMedItems := make([]openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner, len(plan.LldpMed))
 		lldpMedConfigMap := utils.BuildIndexedConfigMap(config.LldpMed)
@@ -514,7 +510,6 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 				{FieldName: "LldpMedRowNumServiceRefType", APIField: &lldpMedItem.LldpMedRowNumServiceRefType, TFValue: item.LldpMedRowNumServiceRefType},
 			})
 
-			// Get per-block configured info for nullable Int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(item, lldpMedConfigMap, "lldp_med", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "LldpMedRowNumDscpMark", APIField: &lldpMedItem.LldpMedRowNumDscpMark, TFValue: configItem.LldpMedRowNumDscpMark, IsConfigured: cfg.IsFieldConfigured("lldp_med_row_num_dscp_mark")},
@@ -553,7 +548,6 @@ func (r *verityEthPortSettingsResource) Create(ctx context.Context, req resource
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -590,7 +584,6 @@ func (r *verityEthPortSettingsResource) Read(ctx context.Context, req resource.R
 
 	ethPortSettingsName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if ethPortSettingsData, exists := r.bulkOpsMgr.GetResourceResponse("eth_port_settings", ethPortSettingsName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached eth port settings data for %s from recent operation", ethPortSettingsName))
@@ -691,7 +684,6 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityEthPortSettingsResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -711,11 +703,9 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	ethPortSettingsProps := openapi.EthportsettingsPutRequestEthPortSettingsValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortSettingsTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { ethPortSettingsProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.MaxBitRate, state.MaxBitRate, func(v *string) { ethPortSettingsProps.MaxBitRate = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.DuplexMode, state.DuplexMode, func(v *string) { ethPortSettingsProps.DuplexMode = v }, &hasChanges)
@@ -731,7 +721,6 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	utils.CompareAndSetStringField(plan.AgingType, state.AgingType, func(v *string) { ethPortSettingsProps.AgingType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.LldpMode, state.LldpMode, func(v *string) { ethPortSettingsProps.LldpMode = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ethPortSettingsProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.AutoNegotiation, state.AutoNegotiation, func(v *bool) { ethPortSettingsProps.AutoNegotiation = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.StandaloneLinkTraining, state.StandaloneLinkTraining, func(v *bool) { ethPortSettingsProps.StandaloneLinkTraining = v }, &hasChanges)
@@ -754,7 +743,6 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	utils.CompareAndSetBoolField(plan.LldpEnable, state.LldpEnable, func(v *bool) { ethPortSettingsProps.LldpEnable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.LldpMedEnable, state.LldpMedEnable, func(v *bool) { ethPortSettingsProps.LldpMedEnable = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.MaxAllowedValue, state.MaxAllowedValue, configuredAttrs.IsConfigured("max_allowed_value"), func(v *openapi.NullableInt64) { ethPortSettingsProps.MaxAllowedValue = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MinimumWredThreshold, state.MinimumWredThreshold, configuredAttrs.IsConfigured("minimum_wred_threshold"), func(v *openapi.NullableInt64) { ethPortSettingsProps.MinimumWredThreshold = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MaximumWredThreshold, state.MaximumWredThreshold, configuredAttrs.IsConfigured("maximum_wred_threshold"), func(v *openapi.NullableInt64) { ethPortSettingsProps.MaximumWredThreshold = *v }, &hasChanges)
@@ -765,7 +753,6 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 	utils.CompareAndSetNullableInt64Field(config.MacLimit, state.MacLimit, configuredAttrs.IsConfigured("mac_limit"), func(v *openapi.NullableInt64) { ethPortSettingsProps.MacLimit = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.AgingTime, state.AgingTime, configuredAttrs.IsConfigured("aging_time"), func(v *openapi.NullableInt64) { ethPortSettingsProps.AgingTime = *v }, &hasChanges)
 
-	// Handle packet_queue and packet_queue_ref_type_ using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.PacketQueue, state.PacketQueue, plan.PacketQueueRefType, state.PacketQueueRefType,
 		func(v *string) { ethPortSettingsProps.PacketQueue = v },
@@ -777,7 +764,6 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 		return
 	}
 
-	// Handle LLDP Med
 	lldpMedConfigMap := utils.BuildIndexedConfigMap(config.LldpMed)
 
 	lldpMedHandler := utils.IndexedItemHandler[verityEthPortSettingsLldpMedModel, openapi.EthportsettingsPutRequestEthPortSettingsValueLldpMedInner]{
@@ -788,7 +774,6 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 				{FieldName: "Index", APIField: &lldpMedItem.Index, TFValue: item.Index},
 			})
 
-			// Get per-block configured info for nullable Int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(item, lldpMedConfigMap, "lldp_med", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "LldpMedRowNumDscpMark", APIField: &lldpMedItem.LldpMedRowNumDscpMark, TFValue: configItem.LldpMedRowNumDscpMark, IsConfigured: cfg.IsFieldConfigured("lldp_med_row_num_dscp_mark")},
@@ -816,18 +801,14 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 
 			hasChanges := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.LldpMedRowNumEnable, stateItem.LldpMedRowNumEnable, func(v *bool) { lldpMedItem.LldpMedRowNumEnable = v }, &hasChanges)
 
-			// Handle string fields (non-ref-type)
 			utils.CompareAndSetStringField(planItem.LldpMedRowNumAdvertisedApplication, stateItem.LldpMedRowNumAdvertisedApplication, func(v *string) { lldpMedItem.LldpMedRowNumAdvertisedApplicatio = v }, &hasChanges)
 
-			// Handle nullable int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(planItem, lldpMedConfigMap, "lldp_med", configuredAttrs)
 			utils.CompareAndSetNullableInt64Field(configItem.LldpMedRowNumDscpMark, stateItem.LldpMedRowNumDscpMark, cfg.IsFieldConfigured("lldp_med_row_num_dscp_mark"), func(v *openapi.NullableInt64) { lldpMedItem.LldpMedRowNumDscpMark = *v }, &hasChanges)
 			utils.CompareAndSetNullableInt64Field(configItem.LldpMedRowNumPriority, stateItem.LldpMedRowNumPriority, cfg.IsFieldConfigured("lldp_med_row_num_priority"), func(v *openapi.NullableInt64) { lldpMedItem.LldpMedRowNumPriority = *v }, &hasChanges)
 
-			// Handle lldp_med_row_num_service and lldp_med_row_num_service_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.LldpMedRowNumService, stateItem.LldpMedRowNumService, planItem.LldpMedRowNumServiceRefType, stateItem.LldpMedRowNumServiceRefType,
 				func(v *string) { lldpMedItem.LldpMedRowNumService = v },
@@ -878,7 +859,6 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if ethPortSettingsData, exists := bulkMgr.GetResourceResponse("eth_port_settings", name); exists {
 			newState := populateEthPortSettingsState(ctx, minState, utils.MergeMissingPlanScalars(ethPortSettingsData, plan, ethPortSettingsResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -887,7 +867,6 @@ func (r *verityEthPortSettingsResource) Update(ctx context.Context, req resource
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -943,7 +922,6 @@ func populateEthPortSettingsState(ctx context.Context, state verityEthPortSettin
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Int fields
 	state.MaxAllowedValue = utils.MapInt64WithMode(data, "max_allowed_value", resourceType, mode)
 	state.MinimumWredThreshold = utils.MapInt64WithMode(data, "minimum_wred_threshold", resourceType, mode)
 	state.MaximumWredThreshold = utils.MapInt64WithMode(data, "maximum_wred_threshold", resourceType, mode)
@@ -954,7 +932,6 @@ func populateEthPortSettingsState(ctx context.Context, state verityEthPortSettin
 	state.MacLimit = utils.MapInt64WithMode(data, "mac_limit", resourceType, mode)
 	state.AgingTime = utils.MapInt64WithMode(data, "aging_time", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.AutoNegotiation = utils.MapBoolWithMode(data, "auto_negotiation", resourceType, mode)
 	state.StandaloneLinkTraining = utils.MapBoolWithMode(data, "standalone_link_training", resourceType, mode)
@@ -977,7 +954,6 @@ func populateEthPortSettingsState(ctx context.Context, state verityEthPortSettin
 	state.LldpEnable = utils.MapBoolWithMode(data, "lldp_enable", resourceType, mode)
 	state.LldpMedEnable = utils.MapBoolWithMode(data, "lldp_med_enable", resourceType, mode)
 
-	// String fields
 	state.MaxBitRate = utils.MapStringWithMode(data, "max_bit_rate", resourceType, mode)
 	state.DuplexMode = utils.MapStringWithMode(data, "duplex_mode", resourceType, mode)
 	state.Priority = utils.MapStringWithMode(data, "priority", resourceType, mode)
@@ -994,7 +970,6 @@ func populateEthPortSettingsState(ctx context.Context, state verityEthPortSettin
 	state.AgingType = utils.MapStringWithMode(data, "aging_type", resourceType, mode)
 	state.LldpMode = utils.MapStringWithMode(data, "lldp_mode", resourceType, mode)
 
-	// Handle lldp_med list block
 	if utils.FieldAppliesToMode(resourceType, "lldp_med", mode) {
 		if lldpMedData, ok := data["lldp_med"].([]interface{}); ok && len(lldpMedData) > 0 {
 			var lldpMedList []verityEthPortSettingsLldpMedModel
@@ -1030,9 +1005,7 @@ func populateEthPortSettingsState(ctx context.Context, state verityEthPortSettin
 }
 
 func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -1043,11 +1016,6 @@ func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req reso
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := ethPortSettingsResourceType
 	mode := r.provCtx.mode
 
@@ -1092,16 +1060,10 @@ func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req reso
 		Int64Fields:  []string{"index", "lldp_med_row_num_dscp_mark", "lldp_med_row_num_priority"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityEthPortSettingsResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -1114,11 +1076,6 @@ func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req reso
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortSettingsTerraformType, name)
@@ -1140,9 +1097,6 @@ func (r *verityEthPortSettingsResource) ModifyPlan(ctx context.Context, req reso
 		},
 	})
 
-	// =========================================================================
-	// Handle nullable fields in nested blocks
-	// =========================================================================
 	for i, configItem := range config.LldpMed {
 		itemIndex := configItem.Index.ValueInt64()
 		var stateItem *verityEthPortSettingsLldpMedModel

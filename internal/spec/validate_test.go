@@ -28,8 +28,7 @@ func TestResourceSpecValidateRejectsIncompleteAndContradictoryFields(t *testing.
 		{"missing nested identity field", func(spec *ResourceSpec) {
 			spec.Fields = append(spec.Fields, nestedField(&CollectionSpec{Strategy: CollectionReplace, Ordering: CollectionOrdered, IdentityField: "missing"}))
 		}, "does not name a nested field"},
-		// An unmanaged field carries no Terraform behavior, but it still records
-		// API shape and applicability, so those must be validated like any other.
+
 		{"unmanaged field without a kind", func(spec *ResourceSpec) {
 			spec.Fields = append(spec.Fields, unmanagedField(func(f *FieldSpec) { f.Kind = "" }))
 		}, "field kind is required"},
@@ -179,8 +178,6 @@ func nestedField(collection *CollectionSpec) FieldSpec {
 	}
 }
 
-// unmanagedField builds a valid unmanaged field that the caller then breaks in
-// exactly one way, so each table case isolates a single validation rule.
 func unmanagedField(breakIt func(*FieldSpec)) FieldSpec {
 	field := FieldSpec{
 		APIName:   "object_properties",
@@ -193,10 +190,6 @@ func unmanagedField(breakIt func(*FieldSpec)) FieldSpec {
 	return field
 }
 
-// Only numerics carry an explicit null on this API. A cleared string is an empty
-// string and a cleared bool is false; neither is a null, and a container is
-// cleared by omission or by its collection strategy. Declaring api_null on any of
-// them would make the generic engine send a null the API does not accept there.
 func TestOnlyNumericFieldsMayDeclareAnExplicitNull(t *testing.T) {
 	for _, tc := range []struct {
 		name   string
@@ -217,7 +210,6 @@ func TestOnlyNumericFieldsMayDeclareAnExplicitNull(t *testing.T) {
 		})
 	}
 
-	// A numeric may, and the registry relies on it.
 	spec := validIPv4ListSpec()
 	spec.Fields[1].Kind = FieldKindInt64
 	spec.Fields[1].UpdateClear = UpdateClearAPINull
@@ -228,15 +220,10 @@ func TestOnlyNumericFieldsMayDeclareAnExplicitNull(t *testing.T) {
 	}
 }
 
-// recomputed_when names the fields the server derives an auto-assigned value
-// from. A name that is not a sibling scalar, or that is the pair itself, would
-// make the plan rule watch something that cannot change the value, so each is
-// refused.
 func TestAutoAssignmentRecomputedWhenMustNameASiblingScalar(t *testing.T) {
 	withPair := func(recomputedWhen ...string) ResourceSpec {
 		spec := validIPv4ListSpec()
-		// ipv4_list is the auto-assigned value, enable its flag, and name the only
-		// other scalar in scope.
+
 		spec.Fields[2].AutoAssignment = &AutoAssignmentSpec{FlagField: "enable", RecomputedWhen: recomputedWhen}
 		return spec
 	}
@@ -245,8 +232,6 @@ func TestAutoAssignmentRecomputedWhenMustNameASiblingScalar(t *testing.T) {
 		t.Fatalf("a sibling scalar trigger was rejected: %v", err)
 	}
 
-	// A trigger must exist wherever the value does. name is narrowed here while
-	// ipv4_list keeps the resource's full mode set and version range.
 	narrowModes := withPair("name")
 	narrowModes.Modes = []Mode{ModeDatacenter, ModeCampus}
 	for i := range narrowModes.Fields {

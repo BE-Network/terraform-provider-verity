@@ -1,5 +1,3 @@
-# Test case: Modify existing resources
-# Define modified versions of the resources from add.tf
 
 resource "verity_authenticated_eth_port" "authenticated_eth_port_test_script1" {
 	object_properties {

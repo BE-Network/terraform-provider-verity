@@ -8,7 +8,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 
-// FormatOpenAPIError formats OpenAPI errors for better diagnostics
 func FormatOpenAPIError(err error, message string) diag.Diagnostics {
 	var diagnostics diag.Diagnostics
 

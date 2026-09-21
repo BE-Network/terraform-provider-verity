@@ -1,5 +1,3 @@
-# Test case: Modify existing resources
-# Define modified versions of the resources from add.tf
 
 resource "verity_ipv6_prefix_list" "ipv6_prefix_list_test_script1" {
 	object_properties {

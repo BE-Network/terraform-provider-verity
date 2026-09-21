@@ -303,9 +303,6 @@ func TestMergeFieldOverridesSupportsScalarLists(t *testing.T) {
 	}
 }
 
-// The merge's core safety property is that a reviewed override must account for
-// every extracted field, so a field added to the API cannot enter the registry
-// without review.
 func TestRegistryRejectsUnreviewedExtractedField(t *testing.T) {
 	repositoryRoot := filepath.Clean(filepath.Join("..", ".."))
 	raw, err := os.ReadFile(filepath.Join(repositoryRoot, "specs", "overrides.yaml"))
@@ -348,8 +345,7 @@ func TestRegistryRejectsModeMismatch(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	// verity_ipv4_list is datacenter-only in both OpenAPI documents, so claiming
-	// campus support must fail rather than silently widen the resource.
+
 	widened := strings.Replace(string(raw), "modes: [datacenter]", "modes: [campus, datacenter]", 1)
 	if widened == string(raw) {
 		t.Fatal("overrides no longer contain a datacenter-only resource to widen")
@@ -423,8 +419,6 @@ func TestRegistryRejectsUnknownProfile(t *testing.T) {
 	}
 }
 
-// A profile supplies policies but must never mask an explicit decision, and a
-// field that states a policy itself has to win over the profile it references.
 func TestResolveFieldOverridePrefersExplicitValues(t *testing.T) {
 	profiles := map[string]policyProfile{"server_managed": {
 		Access: "optional_computed", ResponseAbsence: "terraform_null", CreateNull: "omit",
@@ -456,8 +450,6 @@ func TestResolveFieldOverridePrefersExplicitValues(t *testing.T) {
 	}
 }
 
-// The default profile must apply only where a field says nothing about policy.
-// A field that names a different profile, or states a policy outright, keeps it.
 func TestResolveFieldOverrideAppliesDefaultProfile(t *testing.T) {
 	profiles := map[string]policyProfile{
 		"server_managed": {Access: "optional_computed", UpdateClear: "api_null"},
@@ -477,7 +469,7 @@ func TestResolveFieldOverrideAppliesDefaultProfile(t *testing.T) {
 	if resolved.Access != "required" || !resolved.Replace {
 		t.Fatalf("named profile lost to the default: %#v", resolved)
 	}
-	// An unmanaged field records API shape only and must not pick up the default.
+
 	resolved, err = resolveFieldOverride(fieldOverride{APIName: "object_properties", Unmanaged: true}, profiles, "server_managed", false, false, "", nil, versionRangeOverride{})
 	if err != nil {
 		t.Fatalf("resolveFieldOverride() error = %v", err)
@@ -487,10 +479,6 @@ func TestResolveFieldOverrideAppliesDefaultProfile(t *testing.T) {
 	}
 }
 
-// How a cleared value reaches the API follows the wire type, so the derivation
-// must distinguish nullable numerics from everything else. Getting this wrong is
-// invisible in the Terraform schema, which is why it went unnoticed when every
-// field was assigned api_null.
 func TestDefaultUpdateClearFollowsTheWireType(t *testing.T) {
 	cases := []struct {
 		kind     string
@@ -513,8 +501,6 @@ func TestDefaultUpdateClearFollowsTheWireType(t *testing.T) {
 	}
 }
 
-// A field must be able to disagree with the derivation, because the committed
-// documents and the provider do not always agree on numeric nullability.
 func TestExplicitUpdateClearOverridesTheDerivedDefault(t *testing.T) {
 	profiles := map[string]policyProfile{"server_managed": {Access: "optional_computed"}}
 	derived, err := resolveFieldOverride(fieldOverride{APIName: "poll_interval", APIKind: "integer"}, profiles, "server_managed", false, false, "", nil, versionRangeOverride{})
@@ -533,10 +519,6 @@ func TestExplicitUpdateClearOverridesTheDerivedDefault(t *testing.T) {
 	}
 }
 
-// Only numerics are nullable in this API, and tools/process_swagger.py applies
-// that to the SDK input by marking every number and integer nullable except one
-// named "index". The committed documents are the raw export and predate that
-// transform, so nullability must come from the rule rather than from their flag.
 func TestAPINullableFollowsTheSwaggerTransform(t *testing.T) {
 	cases := []struct {
 		kind, name string
@@ -559,9 +541,6 @@ func TestAPINullableFollowsTheSwaggerTransform(t *testing.T) {
 	}
 }
 
-// The bulk transport carries one split key, so a resource declaring several
-// discriminators must be refused. Ranging over the map to choose one would pick
-// an arbitrary key and produce a different file on different runs.
 func TestBulkMetadataRejectsMultipleFixedHeaders(t *testing.T) {
 	resource := spec.ResourceSpec{
 		TerraformType: "verity_example",
@@ -579,10 +558,6 @@ func TestBulkMetadataRejectsMultipleFixedHeaders(t *testing.T) {
 	}
 }
 
-// A null member of a singleton is dropped from the request rather than sent as a
-// zero value, as the handwritten resources do; the API, merging the object member
-// by member, leaves it unchanged. That depends on the enclosing collection, not on
-// the member's own type.
 func TestDefaultUpdateClearOmitsInsideASingleton(t *testing.T) {
 	for _, kind := range []string{"string", "boolean", "integer", "number"} {
 		if got := defaultUpdateClear(kind, false, string(spec.CollectionSingleton), false); got != "omit" {
@@ -594,9 +569,6 @@ func TestDefaultUpdateClearOmitsInsideASingleton(t *testing.T) {
 	}
 }
 
-// A reference pair inside a singleton clears to the wire type's zero, not by
-// omission: both halves move together through their own helper, which writes the
-// value directly. Lag and Switchpoint both carry one inside object_properties.
 func TestDefaultUpdateClearPrefersThePairRuleInsideASingleton(t *testing.T) {
 	singleton := string(spec.CollectionSingleton)
 	if got := defaultUpdateClear("string", false, singleton, false); got != "omit" {

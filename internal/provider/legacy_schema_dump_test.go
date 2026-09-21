@@ -26,8 +26,6 @@ type dumpBlock struct {
 	Blocks      map[string]dumpBlock `json:"blocks,omitempty"`
 }
 
-// blocksOf recurses: a nested block may itself contain blocks, as Fabric does
-// with object_properties.system_graphs.
 func blocksOf(blocks map[string]schema.Block) map[string]dumpBlock {
 	out := map[string]dumpBlock{}
 	for name, block := range blocks {
@@ -73,10 +71,6 @@ func attrOf(a schema.Attribute) dumpAttr {
 	return d
 }
 
-// TestDumpLegacySchemas is an authoring aid rather than an assertion. Reviewed
-// overrides must carry each field's legacy description, access, and replacement
-// behavior exactly, and transcribing those by hand is error prone, so this dumps
-// the shipped schemas for comparison. It is inert unless DUMP_OUT is set.
 func TestDumpLegacySchemas(t *testing.T) {
 	if os.Getenv("DUMP_OUT") == "" {
 		t.Skip("set DUMP_OUT to dump legacy schemas for override authoring")

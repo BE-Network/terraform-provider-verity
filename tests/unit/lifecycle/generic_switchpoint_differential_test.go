@@ -10,8 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
-// switchpointPair is one of verity_switchpoint's ten auto-assignment pairs, with
-// two distinct values for it.
 type switchpointPair struct {
 	value, first, second string
 }
@@ -31,8 +29,6 @@ var switchpointPairs = []switchpointPair{
 
 func (p switchpointPair) flag() string { return p.value + "_auto_assigned_" }
 
-// switchpointBase is the harness configuration with every pair attribute taken
-// out, so each case writes exactly the pair lines it means to.
 func switchpointBase(t *testing.T) string {
 	t.Helper()
 	entry := coverageEntry(t, "verity_switchpoint")
@@ -51,7 +47,6 @@ func switchpointBase(t *testing.T) string {
 	return base
 }
 
-// withPairs writes the lines every pair gets into the base configuration.
 func withPairs(base string, lines func(switchpointPair) string) string {
 	var body strings.Builder
 	for _, pair := range switchpointPairs {
@@ -60,31 +55,6 @@ func withPairs(base string, lines func(switchpointPair) string) string {
 	return strings.Replace(base, "  name = \"diffsp\"\n", "  name = \"diffsp\"\n"+body.String(), 1)
 }
 
-// The handwritten verity_switchpoint writes its ten auto-assignment pairs in two
-// code shapes — three read the configuration locally, seven reuse an earlier
-// read — which is structure, not policy. An audit read all ten as the one
-// effective contract the engine implements for every pair:
-//
-//   - the flag is sent only when the configuration states it;
-//   - turning assignment off resends the value, from the plan when it is known
-//     and from state otherwise;
-//   - a value change with the flag unchanged includes the flag.
-//
-// These cases write every pair the same way in one configuration, run both
-// implementations, and compare each pair's keys as well as the whole body, so a
-// pair that departs from the contract is named rather than lost in a large diff.
-//
-// One transition departs, and only for five pairs: turning assignment off
-// without writing the value. The value is unwritten, Optional and Computed, so
-// it plans as unknown. For bgp_as_number, switch_vtep_id_ip_mask,
-// switch_router_id_ip_mask, controller_ip_and_mask, and switch_ip_and_mask the
-// handwritten resend tests only !plan.X.IsNull(), which an unknown passes, and
-// ValueInt64 or ValueString reports the zero value for it, so the PATCH clears
-// the value it means to keep: "bgp_as_number": 0, "controller_ip_and_mask": "".
-// The other five also test !plan.X.IsUnknown() and fall back to state, as the
-// engine does for all ten. It is the unknown-as-zero defect recorded for the
-// service's vni. The engine's behavior is accepted as a bug fix, and no registry
-// exception models the defect. The case pins both exact bodies, pair by pair.
 func TestGenericMatchesLegacyOnSwitchpointAutoAssignment(t *testing.T) {
 	base := switchpointBase(t)
 	manual := func(value func(switchpointPair) string) string {
@@ -104,20 +74,18 @@ func TestGenericMatchesLegacyOnSwitchpointAutoAssignment(t *testing.T) {
 		name           string
 		create, update string
 		outcome        lifecycleOutcome
-		// legacyZeroes names the pairs whose PATCH the handwritten resource sends
-		// with the value's zero where the engine resends state's value.
+
 		legacyZeroes map[string]interface{}
 	}{
-		// The flag is sent only when configured.
+
 		{name: "values written without flags", create: valuesOnly(first), update: valuesOnly(second)},
 		{name: "flags removed while values change", create: manual(first), update: valuesOnly(second)},
-		// A value change with the flag unchanged includes the flag.
+
 		{name: "values change with assignment off", create: manual(first), update: manual(second)},
 		{name: "assignment is turned on", create: manual(first), update: assigned},
-		// Turning assignment off resends the value: from the plan when written…
+
 		{name: "assignment is turned off with new values", create: assigned, update: manual(second)},
-		// …and otherwise from what state holds. Assignment is turned on in between
-		// so the mock keeps the values the create stored.
+
 		{name: "assignment is turned off without values", create: manual(first), update: offWithoutValue,
 			outcome: lifecycleOutcome{intermediate: []string{assigned}, updatePlanChecks: unknownPairValues()},
 			legacyZeroes: map[string]interface{}{
@@ -160,11 +128,6 @@ func TestGenericMatchesLegacyOnSwitchpointAutoAssignment(t *testing.T) {
 	}
 }
 
-// object_properties.number_of_multipoints is the provider's one nullable member
-// of a singleton block. The handwritten resource sends it only when the .tf
-// files write it, a written null included, updates it only when both the plan
-// and state hold the block, and plans a written null over a state value as null
-// so the update sends it.
 func TestGenericMatchesLegacyOnSwitchpointNullableMember(t *testing.T) {
 	base := switchpointBase(t)
 	member := regexp.MustCompile(`(?m)^    number_of_multipoints = 42\n`)
@@ -205,8 +168,6 @@ func TestGenericMatchesLegacyOnSwitchpointNullableMember(t *testing.T) {
 	}
 }
 
-// switchpointKey returns one top-level key of the diffsp object in a captured
-// body, and whether the body holds it.
 func switchpointKey(body map[string]interface{}, key string) (interface{}, bool) {
 	wrapper, _ := body["switchpoint"].(map[string]interface{})
 	object, _ := wrapper["diffsp"].(map[string]interface{})
@@ -221,8 +182,6 @@ func describeKey(value interface{}, held bool) string {
 	return fmt.Sprintf("%#v", value)
 }
 
-// unknownPairValues requires every pair's value to plan as unknown: unwritten,
-// Optional and Computed, on a resource that changes.
 func unknownPairValues() []plancheck.PlanCheck {
 	checks := make([]plancheck.PlanCheck, 0, len(switchpointPairs))
 	for _, pair := range switchpointPairs {
@@ -231,8 +190,6 @@ func unknownPairValues() []plancheck.PlanCheck {
 	return checks
 }
 
-// withoutKeys returns a copy of a captured body with the given keys of the
-// diffsp object removed, so the rest of the body is still compared exactly.
 func withoutKeys(body map[string]interface{}, keys map[string]bool) map[string]interface{} {
 	if len(keys) == 0 || body == nil {
 		return body

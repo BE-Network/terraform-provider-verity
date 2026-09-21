@@ -179,18 +179,15 @@ func (r *verityGroupingRuleResource) Create(ctx context.Context, req resource.Cr
 		Name: openapi.PtrString(name),
 	}
 
-	// Set string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Type", APIField: &groupingRuleProps.Type, TFValue: plan.Type},
 		{FieldName: "Operation", APIField: &groupingRuleProps.Operation, TFValue: plan.Operation},
 	})
 
-	// Set boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &groupingRuleProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle rules
 	if len(plan.Rules) > 0 {
 		rules := make([]openapi.GroupingrulesPutRequestGroupingRulesValueRulesInner, len(plan.Rules))
 		for i, ruleItem := range plan.Rules {
@@ -241,7 +238,6 @@ func (r *verityGroupingRuleResource) Create(ctx context.Context, req resource.Cr
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -278,7 +274,6 @@ func (r *verityGroupingRuleResource) Read(ctx context.Context, req resource.Read
 
 	groupingRuleName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if groupingRuleData, exists := r.bulkOpsMgr.GetResourceResponse("grouping_rule", groupingRuleName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached grouping rule data for %s from recent operation", groupingRuleName))
@@ -391,15 +386,12 @@ func (r *verityGroupingRuleResource) Update(ctx context.Context, req resource.Up
 	groupingRuleProps := openapi.GroupingrulesPutRequestGroupingRulesValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { groupingRuleProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Type, state.Type, func(v *string) { groupingRuleProps.Type = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Operation, state.Operation, func(v *string) { groupingRuleProps.Operation = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { groupingRuleProps.Enable = v }, &hasChanges)
 
-	// Handle rules
 	rulesHandler := utils.IndexedItemHandler[verityGroupingRuleRulesModel, openapi.GroupingrulesPutRequestGroupingRulesValueRulesInner]{
 		CreateNew: func(planItem verityGroupingRuleRulesModel) openapi.GroupingrulesPutRequestGroupingRulesValueRulesInner {
 			rule := openapi.GroupingrulesPutRequestGroupingRulesValueRulesInner{}
@@ -431,15 +423,12 @@ func (r *verityGroupingRuleResource) Update(ctx context.Context, req resource.Up
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { rule.Enable = v }, &fieldChanged)
 			utils.CompareAndSetBoolField(planItem.RuleInvert, stateItem.RuleInvert, func(v *bool) { rule.RuleInvert = v }, &fieldChanged)
 
-			// Handle string fields
 			utils.CompareAndSetStringField(planItem.RuleType, stateItem.RuleType, func(v *string) { rule.RuleType = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.RuleValue, stateItem.RuleValue, func(v *string) { rule.RuleValue = v }, &fieldChanged)
 
-			// Handle rule_value_path and rule_value_path_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.RuleValuePath, stateItem.RuleValuePath, planItem.RuleValuePathRefType, stateItem.RuleValuePathRefType,
 				func(v *string) { rule.RuleValuePath = v },
@@ -488,7 +477,6 @@ func (r *verityGroupingRuleResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if groupingRuleData, exists := bulkMgr.GetResourceResponse("grouping_rule", name); exists {
 			newState := populateGroupingRuleState(ctx, minState, utils.MergeMissingPlanScalars(groupingRuleData, plan, groupingRuleResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -497,7 +485,6 @@ func (r *verityGroupingRuleResource) Update(ctx context.Context, req resource.Up
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -553,14 +540,11 @@ func populateGroupingRuleState(ctx context.Context, state verityGroupingRuleReso
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// String fields
 	state.Type = utils.MapStringWithMode(data, "type", resourceType, mode)
 	state.Operation = utils.MapStringWithMode(data, "operation", resourceType, mode)
 
-	// Handle rules list block
 	if utils.FieldAppliesToMode(resourceType, "rules", mode) {
 		if rulesData, ok := data["rules"].([]interface{}); ok && len(rulesData) > 0 {
 			var rulesList []verityGroupingRuleRulesModel
@@ -596,9 +580,7 @@ func populateGroupingRuleState(ctx context.Context, state verityGroupingRuleReso
 }
 
 func (r *verityGroupingRuleResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -609,11 +591,6 @@ func (r *verityGroupingRuleResource) ModifyPlan(ctx context.Context, req resourc
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := groupingRuleResourceType
 	mode := r.provCtx.mode
 

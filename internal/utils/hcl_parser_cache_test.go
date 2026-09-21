@@ -7,10 +7,6 @@ import (
 	"testing"
 )
 
-// These assertions reach into the cache itself, so they live beside the code.
-// The behavioural coverage of ParseResourceConfiguredAttributes is black-box and
-// lives in tests/unit/utils.
-
 func writeIndexTF(t *testing.T, dir, body string) {
 	t.Helper()
 	if err := os.WriteFile(filepath.Join(dir, "a.tf"), []byte(body), 0o600); err != nil {
@@ -18,9 +14,6 @@ func writeIndexTF(t *testing.T, dir, body string) {
 	}
 }
 
-// The whole point of the index is that repeated lookups reuse one parse. Without
-// this, a regression that rebuilt on every call would still satisfy every
-// behavioural test.
 func TestWorkDirIndexIsReused(t *testing.T) {
 	dir := t.TempDir()
 	ctx := context.Background()
@@ -41,7 +34,6 @@ func TestWorkDirIndexIsReused(t *testing.T) {
 		t.Errorf("expected one cached directory, got %d", len(configIndexCache))
 	}
 
-	// A changed file must produce a genuinely different index, not a stale hit.
 	writeIndexTF(t, dir, "resource \"verity_service\" \"svc\" {\n  name = \"svc\"\n  tenant = \"t1\"\n}\n")
 	second := getWorkDirIndex(ctx, dir)
 	if second == first {
@@ -52,7 +44,6 @@ func TestWorkDirIndexIsReused(t *testing.T) {
 	}
 }
 
-// Each working directory gets its own index; they must not collide.
 func TestWorkDirIndexIsPerDirectory(t *testing.T) {
 	ctx := context.Background()
 	ClearConfigIndexCache()
@@ -78,7 +69,6 @@ func TestWorkDirIndexIsPerDirectory(t *testing.T) {
 	}
 }
 
-// An unreadable directory must degrade to "nothing configured" rather than fail.
 func TestWorkDirIndexMissingDirectory(t *testing.T) {
 	ctx := context.Background()
 	ClearConfigIndexCache()

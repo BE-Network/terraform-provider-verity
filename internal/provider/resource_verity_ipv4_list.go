@@ -115,12 +115,10 @@ func (r *verityIpv4ListResource) Create(ctx context.Context, req resource.Create
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Ipv4List", APIField: &ipv4ListProps.Ipv4List, TFValue: plan.Ipv4List},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &ipv4ListProps.Enable, TFValue: plan.Enable},
 	})
@@ -149,7 +147,6 @@ func (r *verityIpv4ListResource) Create(ctx context.Context, req resource.Create
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -186,7 +183,6 @@ func (r *verityIpv4ListResource) Read(ctx context.Context, req resource.ReadRequ
 
 	name := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if ipv4ListData, exists := r.bulkOpsMgr.GetResourceResponse("ipv4_list", name); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached IPv4 List data for %s from recent operation", name))
@@ -299,11 +295,9 @@ func (r *verityIpv4ListResource) Update(ctx context.Context, req resource.Update
 	ipv4ListProps := openapi.Ipv4listsPutRequestIpv4ListFilterValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { ipv4ListProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Ipv4List, state.Ipv4List, func(v *string) { ipv4ListProps.Ipv4List = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ipv4ListProps.Enable = v }, &hasChanges)
 
 	if !hasChanges {
@@ -327,7 +321,6 @@ func (r *verityIpv4ListResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if ipv4ListData, exists := bulkMgr.GetResourceResponse("ipv4_list", name); exists {
 			newState := populateIpv4ListState(ctx, minState, utils.MergeMissingPlanScalars(ipv4ListData, plan, ipv4ListResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -336,7 +329,6 @@ func (r *verityIpv4ListResource) Update(ctx context.Context, req resource.Update
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -392,19 +384,15 @@ func populateIpv4ListState(ctx context.Context, state verityIpv4ListResourceMode
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// String fields
 	state.Ipv4List = utils.MapStringWithMode(data, "ipv4_list", resourceType, mode)
 
 	return state
 }
 
 func (r *verityIpv4ListResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -415,11 +403,6 @@ func (r *verityIpv4ListResource) ModifyPlan(ctx context.Context, req resource.Mo
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := ipv4ListResourceType
 	mode := r.provCtx.mode
 

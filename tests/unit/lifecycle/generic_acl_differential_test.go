@@ -5,15 +5,6 @@ import (
 	"testing"
 )
 
-// The ACLs are the one pair of resources that share an endpoint. Both write to
-// /acls, and ip_version in the query string decides which objects a request
-// touches. The golden fixtures pin each version's create in isolation, so they
-// cannot show that an update or a delete still carries the right version, nor
-// that the nullable port fields behave as they do in the handwritten resource.
-//
-// Each case runs both implementations and compares the PUT and PATCH bodies and
-// the query of every write, including the DELETE the harness issues when it
-// tears the case down.
 func TestGenericMatchesLegacyOnACLUpdates(t *testing.T) {
 	acl := func(version, body string) string {
 		return fmt.Sprintf(`resource "verity_acl_v%s" "test" {

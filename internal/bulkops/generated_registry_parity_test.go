@@ -32,10 +32,6 @@ func TestGeneratedSpecsMatchLegacyBulkRegistry(t *testing.T) {
 	}
 }
 
-// assertFixedHeadersMatchLegacySplitKey ties a generated discriminator to the
-// legacy bulk configuration. Resources that share a bulk key are separated by a
-// fixed header, and the legacy manager splits batches on exactly that key, so
-// the two representations must name the same parameter.
 func assertFixedHeadersMatchLegacySplitKey(t *testing.T, resourceSpec spec.ResourceSpec, config ResourceConfig) {
 	t.Helper()
 	if config.HeaderSplitKey == "" {
@@ -56,11 +52,6 @@ func assertFixedHeadersMatchLegacySplitKey(t *testing.T, resourceSpec spec.Resou
 	}
 }
 
-// TestBulkMetadataMatchesGolden pins the transport facts now filled from
-// the spec registry to the values the bulk registry carried as literals. The
-// resource type keys every operation's logging and status tracking, and the
-// header split key decides how ACL batches are divided, so deriving them had to
-// change nothing.
 func TestBulkMetadataMatchesGolden(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join("testdata", "bulk_metadata_golden.json"))
 	if err != nil {

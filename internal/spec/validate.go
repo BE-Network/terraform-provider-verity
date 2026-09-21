@@ -52,9 +52,7 @@ func (a APIResourceSpec) validate(operations OperationSpec) error {
 			return fmt.Errorf("%s is required", label)
 		}
 	}
-	// A delete parameter identifies the objects a DELETE removes, so it is
-	// required exactly when the endpoint supports delete and must be absent
-	// otherwise rather than carrying an unused reviewed value.
+
 	if operations.Delete && a.DeleteParameter == "" {
 		return fmt.Errorf("delete parameter is required when the endpoint supports delete")
 	}
@@ -133,9 +131,7 @@ func validateFields(fields []FieldSpec, path string, parentRange VersionRange, p
 				if source.Kind == FieldKindObject || source.Kind == FieldKindList {
 					return fmt.Errorf("%s: auto-assignment is recomputed when %q changes, which must be a scalar", fieldPath, trigger)
 				}
-				// A trigger missing from one of the value's modes or API versions
-				// would silently stop recomputing the value there, so it must be
-				// available everywhere the value is, as the flag must.
+
 				if !modesSubset(field.Modes, source.Modes) {
 					return fmt.Errorf("%s: auto-assignment trigger %q is unavailable in one or more field modes", fieldPath, trigger)
 				}
@@ -148,8 +144,6 @@ func validateFields(fields []FieldSpec, path string, parentRange VersionRange, p
 	return nil
 }
 
-// validateUnmanagedField keeps an unsurfaced API field honest: it records the
-// API shape and nothing else, so it cannot smuggle in Terraform behavior.
 func validateUnmanagedField(field FieldSpec, path string, parentRange VersionRange, parentModes []Mode) error {
 	if field.APIName == "" {
 		return fmt.Errorf("%s: API name is required", path)
@@ -165,9 +159,7 @@ func validateUnmanagedField(field FieldSpec, path string, parentRange VersionRan
 		field.AutoAssignment != nil || field.Default != nil || len(field.Validators) != 0 {
 		return fmt.Errorf("%s: unmanaged fields cannot declare nested structure or behavior", path)
 	}
-	// An unmanaged field still records API shape and applicability, so its kind,
-	// modes, and version range are validated exactly as a managed field's are.
-	// Only Terraform behavior is absent.
+
 	if !validKind(field.Kind) {
 		return fmt.Errorf("%s: field kind is required", path)
 	}
@@ -205,10 +197,7 @@ func validateField(field FieldSpec, path string, parentRange VersionRange, paren
 	if !validPolicies(field) {
 		return fmt.Errorf("%s: all lifecycle policies are required", path)
 	}
-	// Only numerics carry an explicit null on this API: a cleared string is an
-	// empty string and a cleared bool is false, neither of which is null. A
-	// non-numeric claiming api_null would make the generic engine send a null the
-	// API does not accept for that field.
+
 	if field.Kind != FieldKindInt64 && field.Kind != FieldKindNumber {
 		if field.CreateNull == CreateNullAPINull || field.UpdateClear == UpdateClearAPINull {
 			return fmt.Errorf("%s: only numeric fields support an explicit null, but kind %q declares api_null", path, field.Kind)
@@ -238,9 +227,7 @@ func validateField(field FieldSpec, path string, parentRange VersionRange, paren
 		if err := validateCollection(*field.Collection, field.Fields, field.ElementKind, path); err != nil {
 			return err
 		}
-		// The API declares some objects with no properties, and the resources that
-		// expose them ship an empty block. Representing that faithfully needs a
-		// singleton object with no fields; every other object still requires them.
+
 		if len(field.Fields) == 0 {
 			if field.Collection.Strategy != CollectionSingleton {
 				return fmt.Errorf("%s: only a singleton object may have no fields", path)

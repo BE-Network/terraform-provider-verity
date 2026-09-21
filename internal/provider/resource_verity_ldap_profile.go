@@ -377,7 +377,6 @@ func (r *verityLdapProfileResource) Create(ctx context.Context, req resource.Cre
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "BaseDn", APIField: &ldapProfileProps.BaseDn, TFValue: plan.BaseDn},
 		{FieldName: "BindDn", APIField: &ldapProfileProps.BindDn, TFValue: plan.BindDn},
@@ -400,13 +399,11 @@ func (r *verityLdapProfileResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "SudoersSearchFilter", APIField: &ldapProfileProps.SudoersSearchFilter, TFValue: plan.SudoersSearchFilter},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &ldapProfileProps.Enable, TFValue: plan.Enable},
 		{FieldName: "NssSkipMembers", APIField: &ldapProfileProps.NssSkipMembers, TFValue: plan.NssSkipMembers},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ldapProfileTerraformType, name)
 
@@ -418,7 +415,6 @@ func (r *verityLdapProfileResource) Create(ctx context.Context, req resource.Cre
 		{FieldName: "RetransmitAttempts", APIField: &ldapProfileProps.RetransmitAttempts, TFValue: config.RetransmitAttempts, IsConfigured: configuredAttrs.IsConfigured("retransmit_attempts")},
 	})
 
-	// Handle LDAP servers
 	if len(plan.LdapServers) > 0 {
 		ldapServersConfigMap := utils.BuildIndexedConfigMap(config.LdapServers)
 		ldapServers := make([]openapi.LdapprofilesPutRequestLdapProfileValueLdapServersInner, len(plan.LdapServers))
@@ -433,7 +429,6 @@ func (r *verityLdapProfileResource) Create(ctx context.Context, req resource.Cre
 				{FieldName: "SslTlsMode", APIField: &server.SslTlsMode, TFValue: item.SslTlsMode},
 			})
 
-			// Get per-block configured info for nullable Int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(item, ldapServersConfigMap, "ldap_servers", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "Port", APIField: &server.Port, TFValue: configItem.Port, IsConfigured: cfg.IsFieldConfigured("port")},
@@ -448,7 +443,6 @@ func (r *verityLdapProfileResource) Create(ctx context.Context, req resource.Cre
 		ldapProfileProps.LdapServers = ldapServers
 	}
 
-	// Handle attribute maps
 	if len(plan.AttributeMaps) > 0 {
 		attributeMaps := make([]openapi.LdapprofilesPutRequestLdapProfileValueAttributeMapsInner, len(plan.AttributeMaps))
 		for i, item := range plan.AttributeMaps {
@@ -493,7 +487,6 @@ func (r *verityLdapProfileResource) Create(ctx context.Context, req resource.Cre
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -530,7 +523,6 @@ func (r *verityLdapProfileResource) Read(ctx context.Context, req resource.ReadR
 
 	profileName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if profileData, exists := r.bulkOpsMgr.GetResourceResponse("ldap_profile", profileName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached LDAP profile data for %s from recent operation", profileName))
@@ -631,7 +623,6 @@ func (r *verityLdapProfileResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityLdapProfileResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -651,11 +642,9 @@ func (r *verityLdapProfileResource) Update(ctx context.Context, req resource.Upd
 	ldapProfileProps := openapi.LdapprofilesPutRequestLdapProfileValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ldapProfileTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { ldapProfileProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.BaseDn, state.BaseDn, func(v *string) { ldapProfileProps.BaseDn = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.BindDn, state.BindDn, func(v *string) { ldapProfileProps.BindDn = v }, &hasChanges)
@@ -677,18 +666,15 @@ func (r *verityLdapProfileResource) Update(ctx context.Context, req resource.Upd
 	utils.CompareAndSetStringField(plan.SudoersBase, state.SudoersBase, func(v *string) { ldapProfileProps.SudoersBase = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SudoersSearchFilter, state.SudoersSearchFilter, func(v *string) { ldapProfileProps.SudoersSearchFilter = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ldapProfileProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.NssSkipMembers, state.NssSkipMembers, func(v *bool) { ldapProfileProps.NssSkipMembers = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.DefaultPort, state.DefaultPort, configuredAttrs.IsConfigured("default_port"), func(v *openapi.NullableInt64) { ldapProfileProps.DefaultPort = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.SearchTimeLimit, state.SearchTimeLimit, configuredAttrs.IsConfigured("search_time_limit"), func(v *openapi.NullableInt64) { ldapProfileProps.SearchTimeLimit = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.BindTimeLimit, state.BindTimeLimit, configuredAttrs.IsConfigured("bind_time_limit"), func(v *openapi.NullableInt64) { ldapProfileProps.BindTimeLimit = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.IdleTimeLimit, state.IdleTimeLimit, configuredAttrs.IsConfigured("idle_time_limit"), func(v *openapi.NullableInt64) { ldapProfileProps.IdleTimeLimit = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.RetransmitAttempts, state.RetransmitAttempts, configuredAttrs.IsConfigured("retransmit_attempts"), func(v *openapi.NullableInt64) { ldapProfileProps.RetransmitAttempts = *v }, &hasChanges)
 
-	// Handle LDAP servers
 	ldapServersConfigMap := utils.BuildIndexedConfigMap(config.LdapServers)
 
 	ldapServersHandler := utils.IndexedItemHandler[verityLdapProfileLdapServerModel, openapi.LdapprofilesPutRequestLdapProfileValueLdapServersInner]{
@@ -709,7 +695,6 @@ func (r *verityLdapProfileResource) Update(ctx context.Context, req resource.Upd
 				{FieldName: "SslTlsMode", APIField: &server.SslTlsMode, TFValue: planItem.SslTlsMode},
 			})
 
-			// Get per-block configured info for nullable Int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(planItem, ldapServersConfigMap, "ldap_servers", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "Port", APIField: &server.Port, TFValue: configItem.Port, IsConfigured: cfg.IsFieldConfigured("port")},
@@ -728,15 +713,12 @@ func (r *verityLdapProfileResource) Update(ctx context.Context, req resource.Upd
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.Enabled, stateItem.Enabled, func(v *bool) { server.Enabled = v }, &fieldChanged)
 
-			// Handle string fields
 			utils.CompareAndSetStringField(planItem.Server, stateItem.Server, func(v *string) { server.Server = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.UseType, stateItem.UseType, func(v *string) { server.UseType = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.SslTlsMode, stateItem.SslTlsMode, func(v *string) { server.SslTlsMode = v }, &fieldChanged)
 
-			// Handle nullable int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(planItem, ldapServersConfigMap, "ldap_servers", configuredAttrs)
 			utils.CompareAndSetNullableInt64Field(configItem.Port, stateItem.Port, cfg.IsFieldConfigured("port"), func(v *openapi.NullableInt64) { server.Port = *v }, &fieldChanged)
 			utils.CompareAndSetNullableInt64Field(configItem.Priority, stateItem.Priority, cfg.IsFieldConfigured("priority"), func(v *openapi.NullableInt64) { server.Priority = *v }, &fieldChanged)
@@ -759,7 +741,6 @@ func (r *verityLdapProfileResource) Update(ctx context.Context, req resource.Upd
 		hasChanges = true
 	}
 
-	// Handle attribute maps
 	attributeMapsHandler := utils.IndexedItemHandler[verityLdapProfileAttributeMapModel, openapi.LdapprofilesPutRequestLdapProfileValueAttributeMapsInner]{
 		CreateNew: func(planItem verityLdapProfileAttributeMapModel) openapi.LdapprofilesPutRequestLdapProfileValueAttributeMapsInner {
 			attributeMap := openapi.LdapprofilesPutRequestLdapProfileValueAttributeMapsInner{}
@@ -789,10 +770,8 @@ func (r *verityLdapProfileResource) Update(ctx context.Context, req resource.Upd
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.Enabled, stateItem.Enabled, func(v *bool) { attributeMap.Enabled = v }, &fieldChanged)
 
-			// Handle string fields
 			utils.CompareAndSetStringField(planItem.MapName, stateItem.MapName, func(v *string) { attributeMap.MapName = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.From, stateItem.From, func(v *string) { attributeMap.From = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.To, stateItem.To, func(v *string) { attributeMap.To = v }, &fieldChanged)
@@ -835,7 +814,6 @@ func (r *verityLdapProfileResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if profileData, exists := bulkMgr.GetResourceResponse("ldap_profile", name); exists {
 			newState := populateLdapProfileState(ctx, minState, utils.MergeMissingPlanScalars(profileData, plan, ldapProfileResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -844,7 +822,6 @@ func (r *verityLdapProfileResource) Update(ctx context.Context, req resource.Upd
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -900,18 +877,15 @@ func populateLdapProfileState(ctx context.Context, state verityLdapProfileResour
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Int fields
 	state.DefaultPort = utils.MapInt64WithMode(data, "default_port", resourceType, mode)
 	state.SearchTimeLimit = utils.MapInt64WithMode(data, "search_time_limit", resourceType, mode)
 	state.BindTimeLimit = utils.MapInt64WithMode(data, "bind_time_limit", resourceType, mode)
 	state.IdleTimeLimit = utils.MapInt64WithMode(data, "idle_time_limit", resourceType, mode)
 	state.RetransmitAttempts = utils.MapInt64WithMode(data, "retransmit_attempts", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.NssSkipMembers = utils.MapBoolWithMode(data, "nss_skip_members", resourceType, mode)
 
-	// String fields
 	state.BaseDn = utils.MapStringWithMode(data, "base_dn", resourceType, mode)
 	state.BindDn = utils.MapStringWithMode(data, "bind_dn", resourceType, mode)
 	state.BindPassword = utils.MapStringWithMode(data, "bind_password", resourceType, mode)
@@ -932,7 +906,6 @@ func populateLdapProfileState(ctx context.Context, state verityLdapProfileResour
 	state.SudoersBase = utils.MapStringWithMode(data, "sudoers_base", resourceType, mode)
 	state.SudoersSearchFilter = utils.MapStringWithMode(data, "sudoers_search_filter", resourceType, mode)
 
-	// Handle ldap_servers list block
 	if utils.FieldAppliesToMode(resourceType, "ldap_servers", mode) {
 		if entries, ok := data["ldap_servers"].([]interface{}); ok && len(entries) > 0 {
 			var ldapServers []verityLdapProfileLdapServerModel
@@ -965,7 +938,6 @@ func populateLdapProfileState(ctx context.Context, state verityLdapProfileResour
 		state.LdapServers = nil
 	}
 
-	// Handle attribute_maps list block
 	if utils.FieldAppliesToMode(resourceType, "attribute_maps", mode) {
 		if entries, ok := data["attribute_maps"].([]interface{}); ok && len(entries) > 0 {
 			var attributeMaps []verityLdapProfileAttributeMapModel
@@ -999,9 +971,7 @@ func populateLdapProfileState(ctx context.Context, state verityLdapProfileResour
 }
 
 func (r *verityLdapProfileResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -1012,11 +982,6 @@ func (r *verityLdapProfileResource) ModifyPlan(ctx context.Context, req resource
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := ldapProfileResourceType
 	mode := r.provCtx.mode
 
@@ -1053,16 +1018,10 @@ func (r *verityLdapProfileResource) ModifyPlan(ctx context.Context, req resource
 		Int64Fields:  []string{"index"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityLdapProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -1075,11 +1034,6 @@ func (r *verityLdapProfileResource) ModifyPlan(ctx context.Context, req resource
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ldapProfileTerraformType, name)
@@ -1097,9 +1051,6 @@ func (r *verityLdapProfileResource) ModifyPlan(ctx context.Context, req resource
 		},
 	})
 
-	// =========================================================================
-	// Handle nullable fields in nested blocks
-	// =========================================================================
 	for i, configServer := range config.LdapServers {
 		serverIndex := configServer.Index.ValueInt64()
 		var stateServer *verityLdapProfileLdapServerModel

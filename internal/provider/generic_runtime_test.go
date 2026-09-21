@@ -42,15 +42,6 @@ func TestGenericRuntimeGetDecodesResponseBody(t *testing.T) {
 	}
 }
 
-// A resource selected by a fixed parameter must read only its own objects.
-//
-// The ACLs share /acls and are told apart by ip_version, which the OpenAPI
-// documents declare `in: query` for every operation. The registry records it as
-// fixed_headers, a name taken from the bulk manager's HeaderParams, and sending
-// it as an HTTP header would reach a server that ignores it and returns an
-// unfiltered or default collection. The server here answers by the query
-// parameter alone, the way the API and the mock do, so a header-borne value
-// reads the wrong version's objects.
 func TestGenericRuntimeSendsFixedParametersInTheQuery(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, request *http.Request) {
 		if request.Method != http.MethodGet || request.URL.Path != "/api/acls" {

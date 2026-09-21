@@ -102,11 +102,7 @@ const (
 	UpdateClearZero        UpdateClearPolicy = "zero"
 	UpdateClearFalse       UpdateClearPolicy = "false"
 	UpdateClearDefault     UpdateClearPolicy = "default"
-	// UpdateClearOmit drops the key from the request entirely. It is what the
-	// handwritten resources send for a null member of object_properties. The API
-	// merges a PATCHed object member by member, so an omitted member is left
-	// unchanged rather than cleared; a member is cleared by sending its empty
-	// value, which a configuration writes as "" and which is sent as written.
+
 	UpdateClearOmit          UpdateClearPolicy = "omit"
 	UpdateClearOmitUnmanaged UpdateClearPolicy = "omit_unmanaged"
 	UpdateClearReject        UpdateClearPolicy = "reject"
@@ -158,10 +154,7 @@ type ReferenceSpec struct {
 
 type AutoAssignmentSpec struct {
 	FlagField string `json:"flag_field"`
-	// RecomputedWhen names sibling fields whose change makes the server derive the
-	// value again, so the plan cannot keep the value it has in state. Service's
-	// vni is the case: the API assigns it from the VLAN, so a VLAN change leaves
-	// vni unknown until the read that follows.
+
 	RecomputedWhen []string `json:"recomputed_when,omitempty"`
 }
 
@@ -177,12 +170,12 @@ const (
 
 type ValidatorSpec struct {
 	Kind     ValidatorKind `json:"kind"`
-	Values   []LiteralSpec `json:"values,omitempty"`    // one_of
-	Min      *int64        `json:"min,omitempty"`       // string_length, int64_range
-	Max      *int64        `json:"max,omitempty"`       // string_length, int64_range
-	MinValue *LiteralSpec  `json:"min_value,omitempty"` // number_range
-	MaxValue *LiteralSpec  `json:"max_value,omitempty"` // number_range
-	Pattern  string        `json:"pattern,omitempty"`   // string_regex
+	Values   []LiteralSpec `json:"values,omitempty"`
+	Min      *int64        `json:"min,omitempty"`
+	Max      *int64        `json:"max,omitempty"`
+	MinValue *LiteralSpec  `json:"min_value,omitempty"`
+	MaxValue *LiteralSpec  `json:"max_value,omitempty"`
+	Pattern  string        `json:"pattern,omitempty"`
 }
 
 type FieldSpec struct {
@@ -190,10 +183,7 @@ type FieldSpec struct {
 	APIName       string    `json:"api_name"`
 	Kind          FieldKind `json:"kind"`
 	ElementKind   FieldKind `json:"element_kind,omitempty"`
-	// Unmanaged records an API field that Terraform deliberately does not
-	// surface, such as an object the API declares with no properties. The field
-	// stays in the registry so coverage remains complete and the decision is
-	// reviewable, but it carries no Terraform name, access, or lifecycle policy.
+
 	Unmanaged   bool            `json:"unmanaged,omitempty"`
 	Access      Access          `json:"access"`
 	Description string          `json:"description"`

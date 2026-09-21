@@ -40,9 +40,6 @@ type postGetOmission struct {
 	remaining int
 }
 
-// SetPostGetOmissions removes selected fields from every GET response for one
-// resource. It simulates an eventually consistent API that accepted a PUT but
-// has not yet serialized all fields back to a verification read.
 func (ms *MockServer) SetPostGetOmissions(path, wrapperKey, resourceName string, fields []string, responseCount int) {
 	ms.mu.Lock()
 	defer ms.mu.Unlock()
@@ -276,7 +273,6 @@ func (ms *MockServer) applyPutState(path string, body map[string]interface{}, qu
 			ms.resourceState[path][wrapperKey][resourceName] = deepCopy(data)
 		}
 
-		// ACL special case
 		if path == "/api/acls" && wrapperKey == "ip_filter" {
 			versionKey := aclVersionKey(queryParams)
 			if ms.resourceState[path][versionKey] == nil {
@@ -288,7 +284,6 @@ func (ms *MockServer) applyPutState(path string, body map[string]interface{}, qu
 		}
 	}
 
-	// Merge post-PUT enrichment fields (simulates auto-assigned values)
 	if ms.postPutEnrichment != nil {
 		if pathEnrich, ok := ms.postPutEnrichment[path]; ok {
 			for wk, resources := range pathEnrich {
@@ -313,7 +308,6 @@ func (ms *MockServer) applyPatchState(path string, body map[string]interface{}, 
 			continue
 		}
 
-		// For ACLs, also merge into the version-specific key so GET returns updated state
 		keysToMerge := []string{wrapperKey}
 		if path == "/api/acls" && wrapperKey == "ip_filter" {
 			keysToMerge = append(keysToMerge, aclVersionKey(queryParams))
@@ -325,9 +319,9 @@ func (ms *MockServer) applyPatchState(path string, body map[string]interface{}, 
 				continue
 			}
 			for _, key := range keysToMerge {
-				// Get existing state or create new
+
 				if ms.resourceState[path] == nil || ms.resourceState[path][key] == nil {
-					// No existing state to patch — treat as full set
+
 					ms.applyPutState(path, body, queryParams)
 					return
 				}
@@ -335,18 +329,14 @@ func (ms *MockServer) applyPatchState(path string, body map[string]interface{}, 
 				if !ok {
 					existing = make(map[string]interface{})
 				}
-				// Merge patch fields into existing
+
 				for k, v := range patchFields {
 					if patchArr, ok := v.([]interface{}); ok && isIndexedArray(patchArr) {
 						existingArr, _ := existing[k].([]interface{})
 						existing[k] = mergeIndexedArray(existingArr, patchArr)
 						continue
 					}
-					// An object is merged member by member, as the API merges
-					// object_properties: a PATCH carries only the members that
-					// changed, and every other member keeps its value.
-					// Replacing the object wholesale here would drop them and
-					// report a defect the API does not have.
+
 					if patchObject, ok := v.(map[string]interface{}); ok {
 						if existingObject, ok := existing[k].(map[string]interface{}); ok {
 							merged := make(map[string]interface{}, len(existingObject)+len(patchObject))
@@ -354,10 +344,7 @@ func (ms *MockServer) applyPatchState(path string, body map[string]interface{}, 
 								merged[member] = value
 							}
 							for member, value := range patchObject {
-								// An indexed array inside the object is patched
-								// by index, as the same array is at the top
-								// level: verity_fabric's system_graphs arrives
-								// carrying only the entries that changed.
+
 								if patchArr, ok := value.([]interface{}); ok && isIndexedArray(patchArr) {
 									existingArr, _ := existingObject[member].([]interface{})
 									merged[member] = mergeIndexedArray(existingArr, patchArr)
@@ -410,26 +397,18 @@ func mergeIndexedArray(existing, patch []interface{}) []interface{} {
 
 		existingItem, exists := indexMap[idx]
 		if len(m) == 1 && exists {
-			// Delete: an entry carrying only the index of one that exists.
+
 			delete(indexMap, idx)
 		} else if len(m) == 1 && idx != 0 {
-			// Add: an entry carrying only a new index. verity_fabric's
-			// system_graphs entries have no member but the index, so creating one
-			// is indistinguishable from a deletion marker except by whether the
-			// index already exists. Reading every index-only entry as a deletion
-			// dropped such creates; the handwritten provider sends the same bytes.
+
 			indexMap[idx] = m
 		} else if exists {
-			// Update: merge fields into existing item
+
 			for k, v := range m {
 				existingItem[k] = v
 			}
 		} else if idx == 0 {
-			// Add with a server-assigned index. The API documents index zero as
-			// "add an object to the list", so several new entries can arrive in one
-			// request all carrying zero; the server is what tells them apart by
-			// giving each the next free index. Keying them all at zero here would
-			// collapse them into one and hide exactly that.
+
 			next := float64(1)
 			for {
 				if _, taken := indexMap[next]; !taken {
@@ -440,7 +419,7 @@ func mergeIndexedArray(existing, patch []interface{}) []interface{} {
 			m["index"] = next
 			indexMap[next] = m
 		} else {
-			// Add: new item
+
 			indexMap[idx] = m
 		}
 	}
@@ -502,7 +481,6 @@ func (ms *MockServer) buildGetResponse(path string, queryParams map[string][]str
 		baseResponse = make(map[string]interface{})
 	}
 
-	// Merge live state on top (field-level deep merge preserves canned data for fields not in PUT)
 	if pathState, exists := ms.resourceState[path]; exists {
 		for wrapperKey, resources := range pathState {
 			existing, ok := baseResponse[wrapperKey].(map[string]interface{})
@@ -510,7 +488,7 @@ func (ms *MockServer) buildGetResponse(path string, queryParams map[string][]str
 				existing = make(map[string]interface{})
 			}
 			for name, data := range resources {
-				// Deep merge: merge fields from live state into canned resource data
+
 				if existingResource, ok := existing[name].(map[string]interface{}); ok {
 					if newFields, ok := data.(map[string]interface{}); ok {
 						for k, v := range newFields {

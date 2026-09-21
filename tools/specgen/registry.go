@@ -32,17 +32,12 @@ type overridesDocument struct {
 	Resources     []resourceOverride `yaml:"resources"`
 }
 
-// defaultsOverride carries the values shared by most of the registry. Repeating
-// them per field made the reviewed file overwhelmingly boilerplate, which hid
-// the entries that actually differ; naming them here keeps every decision
-// explicit while leaving only genuine deviations in each resource.
 type defaultsOverride struct {
 	Versions versionRangeOverride     `yaml:"versions"`
 	Profile  string                   `yaml:"profile"`
 	Profiles map[string]policyProfile `yaml:"profiles"`
 }
 
-// policyProfile is a reviewed bundle of lifecycle policies referenced by name.
 type policyProfile struct {
 	Access          string `yaml:"access"`
 	Replace         bool   `yaml:"replace"`
@@ -159,9 +154,7 @@ func generateRegistry(opts registryOptions) error {
 	for _, resource := range report.Resources {
 		coverageByPath[resource.Path] = resource
 	}
-	// A single endpoint can back more than one Terraform resource when a required
-	// discriminator selects between them, as /acls does with ip_version. Uniqueness
-	// therefore belongs to the Terraform type; paths may legitimately repeat.
+
 	overridden := make(map[string]bool, len(overrides.Resources))
 	byType := make(map[string]bool, len(overrides.Resources))
 	resources := make(spec.Registry, 0, len(overrides.Resources))
@@ -204,11 +197,7 @@ func generateRegistry(opts registryOptions) error {
 	if err != nil {
 		return fmt.Errorf("encode generated registry: %w", err)
 	}
-	// The registry is written twice from one generation. The copy under specs/ is
-	// the reviewable artifact; the copy under internal/registry/ is the one the
-	// provider embeds, because go:embed cannot reach outside its own package
-	// directory. Writing both here is what keeps them from drifting: there is one
-	// generation and two destinations, not two sources.
+
 	destinations := []string{opts.Output}
 	if opts.EmbedOutput != "" {
 		destinations = append(destinations, opts.EmbedOutput)
@@ -277,7 +266,7 @@ func mergeResourceOverride(coverage coverageResource, override resourceOverride,
 	if err != nil {
 		return spec.ResourceSpec{}, err
 	}
-	// A resource inherits the reviewed default range unless it states its own.
+
 	declaredVersions := override.Versions
 	if declaredVersions.MinInclusive == "" && declaredVersions.MaxExclusive == "" {
 		declaredVersions = defaults.Versions
@@ -344,8 +333,7 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 		sort.Strings(missing)
 		return nil, fmt.Errorf("every extracted field needs an explicit override; missing %s", strings.Join(missing, ", "))
 	}
-	// Both halves of a reference or auto-assignment pair are recognised from the
-	// API's own suffixes, the same way referenceSpec and autoAssignmentSpec do.
+
 	pairedNames := make(map[string]bool, len(coverageByName))
 	for name := range coverageByName {
 		for _, suffix := range []string{"_ref_type_", "_auto_assigned_"} {
@@ -392,15 +380,12 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 			})
 			continue
 		}
-		// A description is user-facing documentation. Most match the API text, so
-		// the override states only the wording the provider deliberately changes.
+
 		description := override.Description
 		if description == "" {
 			description = source.Description
 		}
-		// The API ships a few fields with an empty description. Recording that as a
-		// reviewed fact keeps the registry faithful without inventing user-facing
-		// documentation, and keeps the gap visible so it can be fixed upstream.
+
 		if override.Undocumented {
 			if description != "" {
 				return nil, fmt.Errorf("field %q is marked undocumented but a description is available", source.APIName)
@@ -477,12 +462,6 @@ func fieldElementKind(source coverageField, override fieldOverride) (spec.FieldK
 	return kind, nil
 }
 
-// rejectManagedOverrideFields keeps an unmanaged declaration minimal, so marking
-// a field unmanaged cannot quietly carry Terraform behavior alongside it.
-// resolveFieldOverride applies the reviewed defaults to one field: a named
-// profile supplies lifecycle policies, the Terraform name follows the API name,
-// and modes and versions inherit from the resource. Anything stated explicitly
-// on the field wins, so a deviation is always visible in the file.
 func resolveFieldOverride(override fieldOverride, profiles map[string]policyProfile, defaultProfile string, nullable, paired bool, enclosing string, modes []string, versions versionRangeOverride) (fieldOverride, error) {
 	resolved := override
 	if resolved.Profile == "" && !resolved.Unmanaged && resolved.Access == "" {
@@ -521,17 +500,11 @@ func resolveFieldOverride(override fieldOverride, profiles map[string]policyProf
 	if !resolved.Unmanaged && resolved.TerraformName == "" {
 		resolved.TerraformName = resolved.APIName
 	}
-	// How a cleared value reaches the API is a property of the wire type, not of
-	// the reviewed policy set: only a nullable field can carry an explicit null,
-	// so everything else clears to its zero value. Stating this once keeps the
-	// per-field overrides to the cases where the provider disagrees with the
-	// document, and those are individually reviewed.
+
 	if !resolved.Unmanaged && resolved.UpdateClear == "" {
 		resolved.UpdateClear = defaultUpdateClear(resolved.APIKind, nullable, enclosing, paired)
 	}
-	// Creating and clearing use the same wire capability: a field that can carry
-	// an explicit null on update carries one on create, and one that cannot is
-	// omitted from the create request entirely.
+
 	if !resolved.Unmanaged && resolved.CreateNull == "" && resolved.UpdateClear != "" {
 		if resolved.UpdateClear == string(spec.UpdateClearAPINull) {
 			resolved.CreateNull = string(spec.CreateNullAPINull)
@@ -539,15 +512,7 @@ func resolveFieldOverride(override fieldOverride, profiles map[string]policyProf
 			resolved.CreateNull = string(spec.CreateNullOmit)
 		}
 	}
-	// A field the request omits is omitted when unknown too, and the read that
-	// follows the operation supplies the server's value.
-	//
-	// Nullable numerics reach the same place by a different route. Their path is
-	// gated on whether the attribute was written in configuration at all, read
-	// from the .tf file by ParseResourceConfiguredAttributes, so an unwritten
-	// field is skipped and read back exactly like any other omission. A written
-	// one resolves to a known value before apply, which is the ordinary case.
-	// Either way there is no separate unknown behavior to express.
+
 	if !resolved.Unmanaged && resolved.UnknownPlan == "" && resolved.CreateNull != "" {
 		resolved.UnknownPlan = string(spec.UnknownPlanOmitAndRead)
 	}
@@ -560,28 +525,12 @@ func resolveFieldOverride(override fieldOverride, profiles map[string]policyProf
 	return resolved, nil
 }
 
-// apiNullable reports whether the API can carry an explicit null for a field.
-// By design only numerics are nullable, and tools/process_swagger.py applies that
-// rule to the SDK input by marking every number and integer nullable except one
-// named "index", which identifies a collection entry and must always be present.
-// The committed documents are the raw export, so they predate that transform and
-// cannot be read for nullability directly; the plan notes the same at line 238.
 func apiNullable(apiKind, apiName string) bool {
 	return (apiKind == "integer" || apiKind == "number") && apiName != "index"
 }
 
-// defaultUpdateClear mirrors the legacy transport helpers: a nullable numeric is
-// cleared with an explicit JSON null, a string with "", a bool with false, and a
-// number with zero.
 func defaultUpdateClear(apiKind string, nullable bool, enclosing string, paired bool) string {
-	// A null member of a singleton is dropped from the request rather than sent as
-	// a zero value, which is what the handwritten resources do. The API merges a
-	// PATCHed object member by member, so the dropped member keeps its value.
-	//
-	// A paired field is the exception: both halves of a reference or
-	// auto-assignment move together through their own helper, which writes the
-	// value directly and so clears it to the wire type's zero. Lag and Switchpoint
-	// both carry a reference pair inside object_properties and clear it that way.
+
 	if enclosing == string(spec.CollectionSingleton) && !paired {
 		return string(spec.UpdateClearOmit)
 	}
@@ -596,8 +545,7 @@ func defaultUpdateClear(apiKind string, nullable bool, enclosing string, paired 
 	case "integer", "number":
 		return string(spec.UpdateClearZero)
 	default:
-		// Objects and arrays are cleared by the collection strategy, so leave the
-		// policy to the reviewed override rather than inventing one here.
+
 		return ""
 	}
 }
@@ -626,10 +574,6 @@ func collectionSpec(value *collectionOverride) *spec.CollectionSpec {
 	return &spec.CollectionSpec{Strategy: spec.CollectionStrategy(value.Strategy), Ordering: spec.CollectionOrdering(value.Ordering), IdentityField: value.IdentityField}
 }
 
-// referenceSpec pairs a value field with the companion that names the object type
-// it points at. The API spells the pair with a "_ref_type_" suffix and lists the
-// permitted types in that companion's enum, so both halves of the relationship
-// are read from the document instead of being restated per field.
 func referenceSpec(value *referenceOverride, apiName string, siblings map[string]coverageField) *spec.ReferenceSpec {
 	if value != nil {
 		return &spec.ReferenceSpec{TypeField: value.TypeField, AllowedTypes: value.AllowedTypes}
@@ -642,12 +586,8 @@ func referenceSpec(value *referenceOverride, apiName string, siblings map[string
 	return &spec.ReferenceSpec{TypeField: companionName, AllowedTypes: companion.Enum}
 }
 
-// autoAssignmentSpec pairs a value field with the boolean that tells the server to
-// choose the value. The API spells that pair with an "_auto_assigned_" suffix.
 func autoAssignmentSpec(value *autoAssignmentOverride, apiName string, siblings map[string]coverageField) *spec.AutoAssignmentSpec {
-	// The flag is derived from the API's own suffix convention, and an override
-	// only states what the convention cannot: a differently named flag, or the
-	// fields the server recomputes the value from.
+
 	flag := apiName + "_auto_assigned_"
 	if value != nil && value.FlagField != "" {
 		flag = value.FlagField
@@ -663,14 +603,6 @@ func autoAssignmentSpec(value *autoAssignmentOverride, apiName string, siblings 
 	return result
 }
 
-// validateDeleteParameter ties delete_parameter to the endpoint's DELETE support
-// and to a required query parameter. Optional parameters such as the API-wide
-// changeset_name identify a transaction rather than the objects being deleted,
-// so accepting one by name alone would silently produce a resource that deletes
-// the wrong thing.
-// validateFixedHeaders checks that every declared discriminator is a required
-// parameter the API actually exposes, so a resource cannot pin a header the
-// endpoint ignores.
 func validateFixedHeaders(parameters []coverageQueryParameter, headers map[string]string) error {
 	names := make([]string, 0, len(headers))
 	for name := range headers {
@@ -708,8 +640,7 @@ func validateDeleteParameter(parameters []coverageQueryParameter, name string, o
 	if name == "" {
 		return errors.New("delete_parameter is required because the endpoint supports delete")
 	}
-	// A discriminator is required but selects which resources a call addresses
-	// rather than naming them, so it can never be the delete identity.
+
 	if _, pinned := headers[name]; pinned {
 		return fmt.Errorf("delete_parameter %q is a fixed header and discriminates resources rather than identifying them", name)
 	}

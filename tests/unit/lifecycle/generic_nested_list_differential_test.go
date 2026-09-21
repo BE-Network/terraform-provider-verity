@@ -7,12 +7,6 @@ import (
 	"testing"
 )
 
-// verity_fabric's object_properties.system_graphs is the provider's only list
-// nested inside a singleton, and the plan asks for dedicated tests of that path
-// before the resource migrates. Its handwritten update reconciles the nested list
-// whenever either side holds the block — unlike a singleton's scalar members — so
-// adding or removing the block creates or deletes its entries. These cases run
-// both implementations over each transition and compare what they send.
 func TestGenericMatchesLegacyOnListInsideSingleton(t *testing.T) {
 	entry := coverageEntry(t, "verity_fabric")
 	rs := inspectSchema(entry.Factory)
@@ -35,10 +29,7 @@ func TestGenericMatchesLegacyOnListInsideSingleton(t *testing.T) {
 		{name: "a graph is removed", create: fabric(1, 2), update: fabric(1)},
 		{name: "the block is written with no graphs", create: fabric(), update: fabric()},
 		{name: "the block is added with a graph", create: noBlock, update: fabric(1)},
-		// Removing the block deletes its graphs, but the object itself stays on
-		// the server, so the read restores the block and Terraform rejects the
-		// apply. The handwritten resource fails this way, as it does for an empty
-		// block, and the engine reproduces it.
+
 		{name: "the block is removed with its graph", create: fabric(1), update: noBlock,
 			outcome: lifecycleOutcome{applyError: regexp.MustCompile(`(?s)inconsistent result after apply.*object_properties: block count changed from 0 to 1`)}},
 		{name: "graphs are untouched while another field changes", create: fabric(1),
@@ -59,8 +50,6 @@ func TestGenericMatchesLegacyOnListInsideSingleton(t *testing.T) {
 	}
 }
 
-// fabricWithBlock replaces the harness's object_properties block with one
-// holding the given system_graphs indexes, or removes it.
 func fabricWithBlock(t *testing.T, base string, block *regexp.Regexp, present bool, graphs ...int) string {
 	t.Helper()
 	if !present {

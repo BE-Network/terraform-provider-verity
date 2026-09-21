@@ -36,8 +36,6 @@ type RefTypeFieldWithComparison struct {
 	SupportMode       RefTypeSupportMode
 }
 
-// SetRefTypeFields sets reference field pairs without change detection.
-// This is generic and can be used for top-level fields, object_properties, or indexed nested items.
 func SetRefTypeFields(fields []RefTypeFieldMapping) {
 	for _, field := range fields {
 		SetStringFields([]StringFieldMapping{
@@ -47,8 +45,6 @@ func SetRefTypeFields(fields []RefTypeFieldMapping) {
 	}
 }
 
-// CompareAndSetRefTypeFields applies shared ref-pair change detection and validation.
-// This is generic and can be used for top-level fields, object_properties, or indexed nested items.
 func CompareAndSetRefTypeFields(fields []RefTypeFieldWithComparison, hasChanges *bool, diags *diag.Diagnostics) bool {
 	for _, field := range fields {
 		if !applyRefTypeFieldChange(
@@ -140,7 +136,6 @@ func applyRefTypeFieldChange(
 	}
 }
 
-// CompareAndSetStringField compares plan vs state and sets API field if changed
 func CompareAndSetStringField(plan, state types.String, setter func(*string), hasChanges *bool) {
 	if !plan.Equal(state) {
 		if !plan.IsNull() {
@@ -152,7 +147,6 @@ func CompareAndSetStringField(plan, state types.String, setter func(*string), ha
 	}
 }
 
-// CompareAndSetBoolField compares plan vs state and sets API field if changed
 func CompareAndSetBoolField(plan, state types.Bool, setter func(*bool), hasChanges *bool) {
 	if !plan.Equal(state) {
 		setter(openapi.PtrBool(plan.ValueBool()))
@@ -160,7 +154,6 @@ func CompareAndSetBoolField(plan, state types.Bool, setter func(*bool), hasChang
 	}
 }
 
-// CompareAndSetInt64Field compares plan vs state and sets API field if changed (converts to int64)
 func CompareAndSetInt64Field(plan, state types.Int64, setter func(*int64), hasChanges *bool) {
 	if !plan.Equal(state) {
 		val := plan.ValueInt64()
@@ -169,16 +162,12 @@ func CompareAndSetInt64Field(plan, state types.Int64, setter func(*int64), hasCh
 	}
 }
 
-// CompareAndSetNullableInt64Field compares config vs state and sets API nullable field if changed.
-// Only processes the field if isConfigured is true (field is explicitly written in HCL).
-// If isConfigured is false, the field is omitted from HCL and should not be sent in the PATCH request.
 func CompareAndSetNullableInt64Field(configVal, stateVal types.Int64, isConfigured bool, setter func(*openapi.NullableInt64), hasChanges *bool) {
-	// Skip if field is not configured in HCL
+
 	if !isConfigured {
 		return
 	}
 
-	// Only send if value differs from state
 	if !configVal.Equal(stateVal) {
 		if !configVal.IsNull() {
 			val := configVal.ValueInt64()
@@ -192,17 +181,12 @@ func CompareAndSetNullableInt64Field(configVal, stateVal types.Int64, isConfigur
 	}
 }
 
-// CompareAndSetNullableNumberField compares config vs state and sets API nullable field if changed.
-// Uses types.Number (backed by big.Float) to avoid float precision issues.
-// Only processes the field if isConfigured is true (field is explicitly written in HCL).
-// If isConfigured is false, the field is omitted from HCL and should not be sent in the PATCH request.
 func CompareAndSetNullableNumberField(configVal, stateVal types.Number, isConfigured bool, setter func(*openapi.NullableFloat64), hasChanges *bool) {
-	// Skip if field is not configured in HCL
+
 	if !isConfigured {
 		return
 	}
 
-	// Only send if value differs from state
 	if !configVal.Equal(stateVal) {
 		if !configVal.IsNull() {
 			bigVal := configVal.ValueBigFloat()
@@ -218,8 +202,6 @@ func CompareAndSetNullableNumberField(configVal, stateVal types.Number, isConfig
 	}
 }
 
-// HandleMultipleRefTypesSupported handles ref type logic for "many ref types supported" pattern
-// Always sends both fields when either changes
 func HandleMultipleRefTypesSupported(
 	planBase, stateBase, planRefType, stateRefType types.String,
 	baseSetter, refTypeSetter func(*string),
@@ -236,8 +218,6 @@ func HandleMultipleRefTypesSupported(
 	)
 }
 
-// HandleOneRefTypeSupported handles ref type logic for "one ref type supported" pattern
-// Behavior differs based on which field changed
 func HandleOneRefTypeSupported(
 	planBase, stateBase, planRefType, stateRefType types.String,
 	baseSetter, refTypeSetter func(*string),
@@ -254,8 +234,6 @@ func HandleOneRefTypeSupported(
 	)
 }
 
-// ValidateMissingReferenceType checks if a base field is non-empty but the reference type is empty
-// Returns true if validation passes, false if an error was added to diagnostics
 func ValidateMissingReferenceType(diags *diag.Diagnostics, baseField types.String, refTypeField types.String, baseFieldName, refTypeFieldName string) bool {
 	if !baseField.IsNull() && baseField.ValueString() != "" &&
 		(refTypeField.IsNull() || refTypeField.ValueString() == "") {
@@ -268,8 +246,6 @@ func ValidateMissingReferenceType(diags *diag.Diagnostics, baseField types.Strin
 	return true
 }
 
-// ValidateMissingBaseField checks if a reference type field is non-empty but the base field is empty
-// Returns true if validation passes, false if an error was added to diagnostics
 func ValidateMissingBaseField(diags *diag.Diagnostics, baseField types.String, refTypeField types.String, baseFieldName, refTypeFieldName string) bool {
 	if !refTypeField.IsNull() && refTypeField.ValueString() != "" &&
 		(baseField.IsNull() || baseField.ValueString() == "") {
@@ -282,10 +258,8 @@ func ValidateMissingBaseField(diags *diag.Diagnostics, baseField types.String, r
 	return true
 }
 
-// ValidateInconsistentFields checks if one field is changing to empty while the other remains non-empty
-// Returns true if validation passes, false if an error was added to diagnostics
 func ValidateInconsistentFields(diags *diag.Diagnostics, baseField types.String, refTypeField types.String, baseFieldName, refTypeFieldName string) bool {
-	// Check if base field is null but ref type has value
+
 	if baseField.IsNull() && !refTypeField.IsNull() && refTypeField.ValueString() != "" {
 		diags.AddError(
 			"Inconsistent fields",
@@ -294,7 +268,6 @@ func ValidateInconsistentFields(diags *diag.Diagnostics, baseField types.String,
 		return false
 	}
 
-	// Check if ref type is null but base field has value
 	if refTypeField.IsNull() && !baseField.IsNull() && baseField.ValueString() != "" {
 		diags.AddError(
 			"Inconsistent fields",
@@ -306,9 +279,8 @@ func ValidateInconsistentFields(diags *diag.Diagnostics, baseField types.String,
 	return true
 }
 
-// AddIneffectiveChangeWarning adds warnings for ineffective changes in reference fields
 func AddIneffectiveChangeWarning(diags *diag.Diagnostics, baseField types.String, refTypeField types.String, baseFieldName, refTypeFieldName string) {
-	// Case 1: Base field is empty but ref type has a value
+
 	if (baseField.IsNull() || baseField.ValueString() == "") &&
 		!refTypeField.IsNull() && refTypeField.ValueString() != "" {
 		diags.AddWarning(
@@ -317,7 +289,6 @@ func AddIneffectiveChangeWarning(diags *diag.Diagnostics, baseField types.String
 		)
 	}
 
-	// Case 2: Base field has a value but ref type is empty
 	if !baseField.IsNull() && baseField.ValueString() != "" &&
 		(refTypeField.IsNull() || refTypeField.ValueString() == "") {
 		diags.AddWarning(
@@ -327,8 +298,6 @@ func AddIneffectiveChangeWarning(diags *diag.Diagnostics, baseField types.String
 	}
 }
 
-// ValidateReferenceFields performs all reference field validations in one call
-// Returns true if all validations pass, false if any validation failed
 func ValidateReferenceFields(diags *diag.Diagnostics, baseField types.String, refTypeField types.String, baseFieldName, refTypeFieldName string) bool {
 	if !ValidateMissingReferenceType(diags, baseField, refTypeField, baseFieldName, refTypeFieldName) {
 		return false
@@ -347,25 +316,18 @@ func ValidateReferenceFields(diags *diag.Diagnostics, baseField types.String, re
 	return true
 }
 
-// ValidateMultipleRefTypesSupported performs validation for fields that support multiple ref types
-// Always sends both fields when either changes
-// Returns true if validation passes, false if there are errors
 func ValidateMultipleRefTypesSupported(diags *diag.Diagnostics, baseField, refTypeField types.String, baseFieldName, refTypeFieldName string) bool {
-	// Run all validations
+
 	return ValidateReferenceFields(diags, baseField, refTypeField, baseFieldName, refTypeFieldName)
 }
 
-// ValidateOneRefTypeSupported performs validation for fields that support only one ref type
-// Behavior differs based on which field changed
-// Returns true if validation passes, false if there are errors
 func ValidateOneRefTypeSupported(diags *diag.Diagnostics, baseField, refTypeField types.String, baseFieldName, refTypeFieldName string, baseChanged, refTypeChanged bool) bool {
 	if baseChanged && !refTypeChanged {
-		// When base field changes but ref_type doesn't, validate that ref_type is set when base is non-empty
+
 		if !ValidateMissingReferenceType(diags, baseField, refTypeField, baseFieldName, refTypeFieldName) {
 			return false
 		}
 
-		// Validate consistency when base field is being set to empty
 		if baseField.IsNull() && !refTypeField.IsNull() && refTypeField.ValueString() != "" {
 			diags.AddError(
 				"Inconsistent fields",
@@ -374,14 +336,11 @@ func ValidateOneRefTypeSupported(diags *diag.Diagnostics, baseField, refTypeFiel
 			return false
 		}
 	} else if refTypeChanged {
-		// When ref_type changes (or both change)
 
-		// Validate base field is set when ref_type is non-empty
 		if !ValidateMissingBaseField(diags, baseField, refTypeField, baseFieldName, refTypeFieldName) {
 			return false
 		}
 
-		// Validate ref_type is not being set to empty while base has a value
 		if refTypeField.IsNull() && !baseField.IsNull() && baseField.ValueString() != "" {
 			diags.AddError(
 				"Inconsistent fields",

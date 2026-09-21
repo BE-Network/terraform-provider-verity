@@ -245,18 +245,15 @@ func (r *verityPBRoutingACLResource) Create(ctx context.Context, req resource.Cr
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &pbRoutingACLProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "IpVersion", APIField: &pbRoutingACLProps.IpVersion, TFValue: plan.IpVersion},
 		{FieldName: "NextHopIps", APIField: &pbRoutingACLProps.NextHopIps, TFValue: plan.NextHopIps},
 	})
 
-	// Handle ipv4_permit
 	if len(plan.Ipv4Permit) > 0 {
 		filters := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, len(plan.Ipv4Permit))
 		for i, filterItem := range plan.Ipv4Permit {
@@ -276,7 +273,6 @@ func (r *verityPBRoutingACLResource) Create(ctx context.Context, req resource.Cr
 		pbRoutingACLProps.Ipv4Permit = filters
 	}
 
-	// Handle ipv4_deny
 	if len(plan.Ipv4Deny) > 0 {
 		filters := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, len(plan.Ipv4Deny))
 		for i, filterItem := range plan.Ipv4Deny {
@@ -296,7 +292,6 @@ func (r *verityPBRoutingACLResource) Create(ctx context.Context, req resource.Cr
 		pbRoutingACLProps.Ipv4Deny = filters
 	}
 
-	// Handle ipv6_permit
 	if len(plan.Ipv6Permit) > 0 {
 		filters := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, len(plan.Ipv6Permit))
 		for i, filterItem := range plan.Ipv6Permit {
@@ -316,7 +311,6 @@ func (r *verityPBRoutingACLResource) Create(ctx context.Context, req resource.Cr
 		pbRoutingACLProps.Ipv6Permit = filters
 	}
 
-	// Handle ipv6_deny
 	if len(plan.Ipv6Deny) > 0 {
 		filters := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, len(plan.Ipv6Deny))
 		for i, filterItem := range plan.Ipv6Deny {
@@ -360,7 +354,6 @@ func (r *verityPBRoutingACLResource) Create(ctx context.Context, req resource.Cr
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -397,7 +390,6 @@ func (r *verityPBRoutingACLResource) Read(ctx context.Context, req resource.Read
 
 	pbRoutingACLName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if pbRoutingACLData, exists := r.bulkOpsMgr.GetResourceResponse("pb_routing_acl", pbRoutingACLName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached pb routing acl data for %s from recent operation", pbRoutingACLName))
@@ -510,15 +502,12 @@ func (r *verityPBRoutingACLResource) Update(ctx context.Context, req resource.Up
 	pbRoutingACLProps := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { pbRoutingACLProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.IpVersion, state.IpVersion, func(v *string) { pbRoutingACLProps.IpVersion = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.NextHopIps, state.NextHopIps, func(v *string) { pbRoutingACLProps.NextHopIps = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { pbRoutingACLProps.Enable = v }, &hasChanges)
 
-	// Handle ipv4_permit
 	ipv4PermitHandler := utils.IndexedItemHandler[verityPBRoutingACLFilterModel, openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner]{
 		CreateNew: func(planItem verityPBRoutingACLFilterModel) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner {
 			filter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{}
@@ -547,10 +536,8 @@ func (r *verityPBRoutingACLResource) Update(ctx context.Context, req resource.Up
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { filter.Enable = v }, &fieldChanged)
 
-			// Handle filter and filter_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
 				func(v *string) { filter.Filter = v },
@@ -579,7 +566,6 @@ func (r *verityPBRoutingACLResource) Update(ctx context.Context, req resource.Up
 		hasChanges = true
 	}
 
-	// Handle ipv4_deny
 	ipv4DenyHandler := utils.IndexedItemHandler[verityPBRoutingACLFilterModel, openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner]{
 		CreateNew: func(planItem verityPBRoutingACLFilterModel) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner {
 			filter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner{}
@@ -608,10 +594,8 @@ func (r *verityPBRoutingACLResource) Update(ctx context.Context, req resource.Up
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { filter.Enable = v }, &fieldChanged)
 
-			// Handle filter and filter_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
 				func(v *string) { filter.Filter = v },
@@ -640,7 +624,6 @@ func (r *verityPBRoutingACLResource) Update(ctx context.Context, req resource.Up
 		hasChanges = true
 	}
 
-	// Handle ipv6_permit
 	ipv6PermitHandler := utils.IndexedItemHandler[verityPBRoutingACLFilterModel, openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner]{
 		CreateNew: func(planItem verityPBRoutingACLFilterModel) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
 			filter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
@@ -669,10 +652,8 @@ func (r *verityPBRoutingACLResource) Update(ctx context.Context, req resource.Up
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { filter.Enable = v }, &fieldChanged)
 
-			// Handle filter and filter_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
 				func(v *string) { filter.Filter = v },
@@ -701,7 +682,6 @@ func (r *verityPBRoutingACLResource) Update(ctx context.Context, req resource.Up
 		hasChanges = true
 	}
 
-	// Handle ipv6_deny
 	ipv6DenyHandler := utils.IndexedItemHandler[verityPBRoutingACLFilterModel, openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner]{
 		CreateNew: func(planItem verityPBRoutingACLFilterModel) openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
 			filter := openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner{}
@@ -730,10 +710,8 @@ func (r *verityPBRoutingACLResource) Update(ctx context.Context, req resource.Up
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { filter.Enable = v }, &fieldChanged)
 
-			// Handle filter and filter_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.Filter, stateItem.Filter, planItem.FilterRefType, stateItem.FilterRefType,
 				func(v *string) { filter.Filter = v },
@@ -783,7 +761,6 @@ func (r *verityPBRoutingACLResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if pbRoutingACLData, exists := bulkMgr.GetResourceResponse("pb_routing_acl", name); exists {
 			newState := populatePBRoutingACLState(ctx, minState, utils.MergeMissingPlanScalars(pbRoutingACLData, plan, pbRoutingAclResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -792,7 +769,6 @@ func (r *verityPBRoutingACLResource) Update(ctx context.Context, req resource.Up
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -848,14 +824,11 @@ func populatePBRoutingACLState(ctx context.Context, state verityPBRoutingACLReso
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// String fields
 	state.IpVersion = utils.MapStringWithMode(data, "ip_version", resourceType, mode)
 	state.NextHopIps = utils.MapStringWithMode(data, "next_hop_ips", resourceType, mode)
 
-	// Helper function to parse filter arrays with mode awareness
 	parseFilters := func(apiFilters []interface{}, blockName string) []verityPBRoutingACLFilterModel {
 		var filters []verityPBRoutingACLFilterModel
 		for _, f := range apiFilters {
@@ -874,7 +847,6 @@ func populatePBRoutingACLState(ctx context.Context, state verityPBRoutingACLReso
 		return filters
 	}
 
-	// Handle filter arrays with mode awareness
 	if utils.FieldAppliesToMode(resourceType, "ipv4_permit", mode) {
 		if ipv4Permit, ok := data["ipv4_permit"].([]interface{}); ok && len(ipv4Permit) > 0 {
 			state.Ipv4Permit = parseFilters(ipv4Permit, "ipv4_permit")
@@ -919,9 +891,7 @@ func populatePBRoutingACLState(ctx context.Context, state verityPBRoutingACLReso
 }
 
 func (r *verityPBRoutingACLResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -932,11 +902,6 @@ func (r *verityPBRoutingACLResource) ModifyPlan(ctx context.Context, req resourc
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := pbRoutingAclResourceType
 	mode := r.provCtx.mode
 

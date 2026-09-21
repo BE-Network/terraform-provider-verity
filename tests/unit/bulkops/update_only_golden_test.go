@@ -15,15 +15,6 @@ import (
 	"terraform-provider-verity/openapi"
 )
 
-// TestUpdateOnlyResourceGoldenPatch records what an update-only resource sends.
-//
-// verity_sfp_breakout refuses both create and delete: it represents existing
-// hardware that can only be read and updated. The acceptance harness destroys
-// whatever a test case holds in state, so it cannot carry the resource across an
-// update, and the golden fixtures in tests/unit/lifecycle therefore record only
-// its read state. Its update path is still reachable, and it is the half that
-// matters for a migration, so it is pinned here instead — at the layer that
-// actually forms the request, with no Terraform lifecycle involved.
 func TestUpdateOnlyResourceGoldenPatch(t *testing.T) {
 	t.Parallel()
 
@@ -48,11 +39,6 @@ func TestUpdateOnlyResourceGoldenPatch(t *testing.T) {
 
 	manager := bulkops.GetManager(newTestClient(server.URL), nopClearCache, nil, "datacenter")
 
-	// A breakout entry as the provider builds one: the object is addressed by
-	// name, and the entry inside it by index. The values are struct literals, as
-	// in resource_verity_sfp_breakout.go. The SDK's New... constructors would
-	// fill in OpenAPI defaults — an empty name, vendor, and part number — that
-	// the resource never sends, and this fixture was first recorded that way.
 	breakout := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{}
 	breakout.SetIndex(1)
 	breakout.SetBreakout("1x100G")
@@ -83,8 +69,6 @@ func TestUpdateOnlyResourceGoldenPatch(t *testing.T) {
 	}
 	encoded = append(encoded, '\n')
 
-	// The fixture lives beside the other golden files so both halves of this
-	// resource's baseline are found together.
 	path := filepath.Join("..", "lifecycle", "testdata", "golden", "verity_sfp_breakout", "patch.json")
 	if os.Getenv("UPDATE_GOLDEN") != "" {
 		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {

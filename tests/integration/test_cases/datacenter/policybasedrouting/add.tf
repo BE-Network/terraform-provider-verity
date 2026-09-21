@@ -1,5 +1,3 @@
-# Test case: Add new resources
-# Define resources to be injected into the corresponding .tf file for testing
 
 resource "verity_pb_routing" "pb_routing_test_script1" {
     name = "pb_routing_test_script1"

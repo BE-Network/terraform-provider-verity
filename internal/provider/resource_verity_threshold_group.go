@@ -230,17 +230,14 @@ func (r *verityThresholdGroupResource) Create(ctx context.Context, req resource.
 		Name: openapi.PtrString(name),
 	}
 
-	// Set string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Type", APIField: &thresholdGroupProps.Type, TFValue: plan.Type},
 	})
 
-	// Set boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &thresholdGroupProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle targets
 	if len(plan.Targets) > 0 {
 		targets := make([]openapi.ThresholdgroupsPutRequestThresholdGroupValueTargetsInner, len(plan.Targets))
 		for i, targetItem := range plan.Targets {
@@ -269,7 +266,6 @@ func (r *verityThresholdGroupResource) Create(ctx context.Context, req resource.
 		thresholdGroupProps.Targets = targets
 	}
 
-	// Handle thresholds
 	if len(plan.Thresholds) > 0 {
 		thresholds := make([]openapi.ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner, len(plan.Thresholds))
 		for i, thresholdItem := range plan.Thresholds {
@@ -302,7 +298,6 @@ func (r *verityThresholdGroupResource) Create(ctx context.Context, req resource.
 	tflog.Info(ctx, fmt.Sprintf("Threshold group %s creation operation completed successfully", name))
 	clearCache(ctx, r.provCtx, "threshold_groups")
 
-	// Set minimal state first (just the identifier)
 	var minState verityThresholdGroupResourceModel
 	minState.Name = types.StringValue(name)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &minState)...)
@@ -311,7 +306,6 @@ func (r *verityThresholdGroupResource) Create(ctx context.Context, req resource.
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if thresholdGroupData, exists := bulkMgr.GetResourceResponse("threshold_group", name); exists {
 			newState := populateThresholdGroupState(ctx, minState, utils.MergeMissingPlanScalars(thresholdGroupData, plan, thresholdGroupResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -320,7 +314,6 @@ func (r *verityThresholdGroupResource) Create(ctx context.Context, req resource.
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -357,7 +350,6 @@ func (r *verityThresholdGroupResource) Read(ctx context.Context, req resource.Re
 
 	thresholdGroupName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if thresholdGroupData, exists := r.bulkOpsMgr.GetResourceResponse("threshold_group", thresholdGroupName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached threshold_group data for %s from recent operation", thresholdGroupName))
@@ -470,14 +462,11 @@ func (r *verityThresholdGroupResource) Update(ctx context.Context, req resource.
 	thresholdGroupProps := openapi.ThresholdgroupsPutRequestThresholdGroupValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { thresholdGroupProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Type, state.Type, func(v *string) { thresholdGroupProps.Type = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { thresholdGroupProps.Enable = v }, &hasChanges)
 
-	// Handle targets
 	targetsHandler := utils.IndexedItemHandler[verityThresholdGroupTargetsModel, openapi.ThresholdgroupsPutRequestThresholdGroupValueTargetsInner]{
 		CreateNew: func(planItem verityThresholdGroupTargetsModel) openapi.ThresholdgroupsPutRequestThresholdGroupValueTargetsInner {
 			target := openapi.ThresholdgroupsPutRequestThresholdGroupValueTargetsInner{}
@@ -511,15 +500,12 @@ func (r *verityThresholdGroupResource) Update(ctx context.Context, req resource.
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { target.Enable = v }, &fieldChanged)
 
-			// Handle string fields
 			utils.CompareAndSetStringField(planItem.Type, stateItem.Type, func(v *string) { target.Type = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.Port, stateItem.Port, func(v *string) { target.Port = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.Sdlc, stateItem.Sdlc, func(v *string) { target.Sdlc = v }, &fieldChanged)
 
-			// Handle grouping_rules and grouping_rules_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.GroupingRules, stateItem.GroupingRules, planItem.GroupingRulesRefType, stateItem.GroupingRulesRefType,
 				func(v *string) { target.GroupingRules = v },
@@ -530,7 +516,6 @@ func (r *verityThresholdGroupResource) Update(ctx context.Context, req resource.
 				return target, false
 			}
 
-			// Handle element and element_ref_type_ using "Many ref types supported" pattern
 			if !utils.HandleMultipleRefTypesSupported(
 				planItem.Element, stateItem.Element, planItem.ElementRefType, stateItem.ElementRefType,
 				func(v *string) { target.Element = v },
@@ -558,7 +543,6 @@ func (r *verityThresholdGroupResource) Update(ctx context.Context, req resource.
 		hasChanges = true
 	}
 
-	// Handle thresholds
 	thresholdsHandler := utils.IndexedItemHandler[verityThresholdGroupThresholdsModel, openapi.ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner]{
 		CreateNew: func(planItem verityThresholdGroupThresholdsModel) openapi.ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner {
 			threshold := openapi.ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner{}
@@ -588,13 +572,10 @@ func (r *verityThresholdGroupResource) Update(ctx context.Context, req resource.
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { threshold.Enable = v }, &fieldChanged)
 
-			// Handle string fields
 			utils.CompareAndSetStringField(planItem.SeverityOverride, stateItem.SeverityOverride, func(v *string) { threshold.SeverityOverride = v }, &fieldChanged)
 
-			// Handle threshold and threshold_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.Threshold, stateItem.Threshold, planItem.ThresholdRefType, stateItem.ThresholdRefType,
 				func(v *string) { threshold.Threshold = v },
@@ -643,7 +624,6 @@ func (r *verityThresholdGroupResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if thresholdGroupData, exists := bulkMgr.GetResourceResponse("threshold_group", name); exists {
 			newState := populateThresholdGroupState(ctx, minState, utils.MergeMissingPlanScalars(thresholdGroupData, plan, thresholdGroupResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -652,7 +632,6 @@ func (r *verityThresholdGroupResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -708,13 +687,10 @@ func populateThresholdGroupState(ctx context.Context, state verityThresholdGroup
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// String fields
 	state.Type = utils.MapStringWithMode(data, "type", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// Handle targets block
 	if utils.FieldAppliesToMode(resourceType, "targets", mode) {
 		if targets, ok := data["targets"].([]interface{}); ok && len(targets) > 0 {
 			var targetsList []verityThresholdGroupTargetsModel
@@ -748,7 +724,6 @@ func populateThresholdGroupState(ctx context.Context, state verityThresholdGroup
 		state.Targets = nil
 	}
 
-	// Handle thresholds block
 	if utils.FieldAppliesToMode(resourceType, "thresholds", mode) {
 		if thresholds, ok := data["thresholds"].([]interface{}); ok && len(thresholds) > 0 {
 			var thresholdsList []verityThresholdGroupThresholdsModel
@@ -782,9 +757,7 @@ func populateThresholdGroupState(ctx context.Context, state verityThresholdGroup
 }
 
 func (r *verityThresholdGroupResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -795,11 +768,6 @@ func (r *verityThresholdGroupResource) ModifyPlan(ctx context.Context, req resou
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := thresholdGroupResourceType
 	mode := r.provCtx.mode
 

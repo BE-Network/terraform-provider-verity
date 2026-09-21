@@ -27,11 +27,9 @@ type generatedRegistryArtifact struct {
 
 func TestGeneratedSpecsMatchLegacySchemas(t *testing.T) {
 	registry := generatedRegistry(t)
-	// Constructors come from the provider's own registration list so the mapping
-	// cannot drift: every generated resource must correspond to a shipped one.
+
 	constructors := legacyConstructorsByType(t)
-	// Cache keys pin the generated alias to the value each legacy resource uses
-	// today. ACL derives its key from the ip_version it was constructed with.
+
 	cacheKeys := map[string]string{
 		"verity_acl_v4":                   NewVerityACLV4Resource().(*verityACLUnifiedResource).getCacheKey(),
 		"verity_acl_v6":                   NewVerityACLV6Resource().(*verityACLUnifiedResource).getCacheKey(),
@@ -100,8 +98,6 @@ func TestGeneratedSpecsMatchLegacySchemas(t *testing.T) {
 	}
 }
 
-// legacyConstructorsByType indexes every resource the provider registers by its
-// Terraform type name.
 func legacyConstructorsByType(t *testing.T) map[string]func() resource.Resource {
 	t.Helper()
 	ctx := context.Background()
@@ -114,9 +110,6 @@ func legacyConstructorsByType(t *testing.T) map[string]func() resource.Resource 
 	return byType
 }
 
-// assertGeneratedModes pins generated resource modes to the legacy compatibility
-// map. Extraction derives modes from datacenter/campus OpenAPI presence, so this
-// is the only check that ties that derivation to the behavior the provider ships.
 func assertGeneratedModes(t *testing.T, resourceSpec spec.ResourceSpec) {
 	t.Helper()
 	legacyMode, exists := utils.ResourceCompatibility[resourceSpec.TerraformType]
@@ -154,15 +147,9 @@ func assertGeneratedSchemaMatchesLegacy(t *testing.T, resourceSpec spec.Resource
 	assertGeneratedFieldsMatchSchema(t, resourceSpec.Fields, response.Schema.Attributes, response.Schema.Blocks, resourceSpec.TerraformType)
 }
 
-// assertGeneratedFieldsMatchSchema compares one level of generated fields against
-// the legacy attributes and blocks at the same level, then recurses. Nested
-// blocks can themselves contain blocks, as Fabric does with
-// object_properties.system_graphs, so a flat comparison would miss a whole
-// subtree.
 func assertGeneratedFieldsMatchSchema(t *testing.T, fields []spec.FieldSpec, attributes map[string]schema.Attribute, blocks map[string]schema.Block, path string) {
 	t.Helper()
-	// Unmanaged fields record API shape the provider deliberately does not
-	// surface, so they are excluded from the count the legacy schema must match.
+
 	managed := make([]spec.FieldSpec, 0, len(fields))
 	for _, field := range fields {
 		if !field.Unmanaged {
@@ -173,10 +160,7 @@ func assertGeneratedFieldsMatchSchema(t *testing.T, fields []spec.FieldSpec, att
 		t.Fatalf("%s has %d legacy attributes and %d blocks for %d managed generated fields", path, len(attributes), len(blocks), len(managed))
 	}
 	for _, field := range managed {
-		// OpenAPI models a singleton like object_properties as an object, while
-		// every legacy resource models it as a single-entry ListNestedBlock. Both
-		// generated kinds therefore resolve to a legacy block, and the collection
-		// strategy carries the cardinality difference.
+
 		if field.Kind != spec.FieldKindList && field.Kind != spec.FieldKindObject {
 			attribute, exists := attributes[field.TerraformName]
 			if !exists {
@@ -265,10 +249,6 @@ func assertGeneratedAccess(t *testing.T, field spec.FieldSpec, required, optiona
 	}
 }
 
-// requiresReplaceTypes holds the concrete type of each kind's RequiresReplace
-// plan modifier. Counting modifiers instead would equate "has one modifier" with
-// "replaces on change", so an unrelated modifier would read as replacement and a
-// genuine one paired with another would read as none.
 var requiresReplaceTypes = map[reflect.Type]bool{
 	reflect.TypeOf(stringplanmodifier.RequiresReplace()): true,
 	reflect.TypeOf(boolplanmodifier.RequiresReplace()):   true,
@@ -293,9 +273,6 @@ func assertGeneratedReplace(t *testing.T, field spec.FieldSpec, requiresReplaceC
 	}
 }
 
-// countRequiresReplace must identify the modifier rather than count modifiers.
-// Both cases below are ones a bare count gets wrong: an unrelated modifier is not
-// replacement, and replacement paired with another modifier still is.
 func TestCountRequiresReplaceIdentifiesTheModifier(t *testing.T) {
 	onlyUseState := []planmodifier.String{stringplanmodifier.UseStateForUnknown()}
 	if got := countRequiresReplace(onlyUseState); got != 0 {
@@ -316,16 +293,6 @@ func TestCountRequiresReplaceIdentifiesTheModifier(t *testing.T) {
 	}
 }
 
-// TestGeneratedPoliciesMatchLegacyBehavior pins each field's lifecycle policies
-// to what the legacy implementation actually does. None of these are visible in
-// the Terraform schema, so schema parity cannot catch them: the registry once
-// claimed every field sent an explicit API null on clear and omitted nulls on
-// create, when only nullable numerics do either.
-//
-// Coverage is exact rather than best-effort. Every registry resource must appear
-// in the evidence, and every field must either carry evidence or fall into a
-// category listed below, so a resource cannot lose verification silently the way
-// ACL did when the fixture keyed it under a name no resource used.
 func TestGeneratedPoliciesMatchLegacyBehavior(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join("testdata", "legacy_field_policies.json"))
 	if err != nil {
@@ -348,8 +315,7 @@ func TestGeneratedPoliciesMatchLegacyBehavior(t *testing.T) {
 				continue
 			}
 			path := prefix + field.TerraformName
-			// Objects and arrays are cleared by their collection strategy rather
-			// than by a wire value, so no create/update helper records a policy.
+
 			if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
 				excluded++
 				nestedIdentity := ""
@@ -359,17 +325,14 @@ func TestGeneratedPoliciesMatchLegacyBehavior(t *testing.T) {
 				walk(field.Fields, evidence, path+".", resourceType, identity, nestedIdentity)
 				continue
 			}
-			// A collection's identity field names the entry and is always sent, so
-			// it is never compared or cleared and no helper records a policy for it.
+
 			if collectionIdentity != "" && field.TerraformName == collectionIdentity {
 				excluded++
 				continue
 			}
 			policies, recorded := evidence[path]
 			if !recorded {
-				// A paired field is driven by the reference or auto-assignment
-				// helpers rather than the shared ones. Those are read in the
-				// evidence too, so a pair reaching here means one was missed.
+
 				if paired[field.TerraformName] {
 					t.Errorf("no legacy policy evidence for paired field %s.%s", resourceType, path)
 					continue
@@ -387,9 +350,7 @@ func TestGeneratedPoliciesMatchLegacyBehavior(t *testing.T) {
 				if policy == "driver" {
 					continue
 				}
-				// The identity field is Required and replaces on change, so
-				// Terraform never sends it null and never updates it in place.
-				// Only its read behavior is reachable, and so comparable.
+
 				if path == identity && policy != "response_absence" {
 					continue
 				}
@@ -412,19 +373,6 @@ func TestGeneratedPoliciesMatchLegacyBehavior(t *testing.T) {
 	t.Logf("%d policy assertions checked, %d fields excluded by category", checked, excluded)
 }
 
-// pairedFields returns the fields at one level that are half of a reference or
-// auto-assignment pair. Each resource drives those with the reference and
-// auto-assignment helpers rather than the shared create and update ones, so the
-// policy evidence records them under those helpers instead. They are verified
-// like any other field; naming them here only lets a missing pair be reported as
-// the specific failure it is, since a pair with no evidence means the extractor
-// stopped recognising one of those helpers rather than that the field is exempt.
-//
-// The pairing comes from the registry, not from the field names: a base field
-// records the relationship, and its companion is whichever field the relationship
-// points at. Re-deriving it from "_ref_type_" and "_auto_assigned_" suffixes here
-// would reinstate the implicit convention the registry exists to replace, and
-// would keep passing if the registry stopped recording a pair at all.
 func pairedFields(fields []spec.FieldSpec) map[string]bool {
 	paired := make(map[string]bool)
 	for _, field := range fields {
@@ -440,11 +388,6 @@ func pairedFields(fields []spec.FieldSpec) map[string]bool {
 	return paired
 }
 
-// TestGeneratedPairsAreModelled checks that the registry records every reference
-// and auto-assignment relationship the API spells out, rather than leaving the
-// pairing implicit in the field names. The plan lists both among the things a
-// plain schema cannot express, and the generic engine needs them to know that
-// writing one half without the other is meaningless.
 func TestGeneratedPairsAreModelled(t *testing.T) {
 	references, assignments := 0, 0
 	var walk func(fields []spec.FieldSpec, path string)

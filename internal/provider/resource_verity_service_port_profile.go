@@ -235,7 +235,6 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "PortType", APIField: &sppProps.PortType, TFValue: plan.PortType},
 		{FieldName: "TlsService", APIField: &sppProps.TlsService, TFValue: plan.TlsService},
@@ -243,13 +242,11 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 		{FieldName: "IpMask", APIField: &sppProps.IpMask, TFValue: plan.IpMask},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &sppProps.Enable, TFValue: plan.Enable},
 		{FieldName: "TrustedPort", APIField: &sppProps.TrustedPort, TFValue: plan.TrustedPort},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, servicePortProfileTerraformType, name)
 
@@ -257,7 +254,6 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 		{FieldName: "TlsLimitIn", APIField: &sppProps.TlsLimitIn, TFValue: config.TlsLimitIn, IsConfigured: configuredAttrs.IsConfigured("tls_limit_in")},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.ServiceportprofilesPutRequestServicePortProfileValueObjectProperties{}
@@ -268,30 +264,25 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 		sppProps.ObjectProperties = &objProps
 	}
 
-	// Handle services
 	if len(plan.Services) > 0 {
 		services := make([]openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner, len(plan.Services))
 		servicesConfigMap := utils.BuildIndexedConfigMap(config.Services)
 		for i, service := range plan.Services {
 			serviceItem := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{}
 
-			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "RowNumEnable", APIField: &serviceItem.RowNumEnable, TFValue: service.RowNumEnable},
 			})
 
-			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "RowNumService", APIField: &serviceItem.RowNumService, TFValue: service.RowNumService},
 				{FieldName: "RowNumServiceRefType", APIField: &serviceItem.RowNumServiceRefType, TFValue: service.RowNumServiceRefType},
 			})
 
-			// Handle int64 fields
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &serviceItem.Index, TFValue: service.Index},
 			})
 
-			// Get per-block configured info for nullable Int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(service, servicesConfigMap, "services", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "RowNumExternalVlan", APIField: &serviceItem.RowNumExternalVlan, TFValue: configItem.RowNumExternalVlan, IsConfigured: cfg.IsFieldConfigured("row_num_external_vlan")},
@@ -328,7 +319,6 @@ func (r *verityServicePortProfileResource) Create(ctx context.Context, req resou
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -365,7 +355,6 @@ func (r *verityServicePortProfileResource) Read(ctx context.Context, req resourc
 
 	sppName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if sppData, exists := r.bulkOpsMgr.GetResourceResponse("service_port_profile", sppName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached service_port_profile data for %s from recent operation", sppName))
@@ -466,7 +455,6 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityServicePortProfileResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -486,25 +474,20 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 	sppProps := openapi.ServiceportprofilesPutRequestServicePortProfileValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, servicePortProfileTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { sppProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.PortType, state.PortType, func(v *string) { sppProps.PortType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.TlsService, state.TlsService, func(v *string) { sppProps.TlsService = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.TlsServiceRefType, state.TlsServiceRefType, func(v *string) { sppProps.TlsServiceRefType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.IpMask, state.IpMask, func(v *string) { sppProps.IpMask = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { sppProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.TrustedPort, state.TrustedPort, func(v *bool) { sppProps.TrustedPort = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.TlsLimitIn, state.TlsLimitIn, configuredAttrs.IsConfigured("tls_limit_in"), func(v *openapi.NullableInt64) { sppProps.TlsLimitIn = *v }, &hasChanges)
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.ServiceportprofilesPutRequestServicePortProfileValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -522,7 +505,6 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 		}
 	}
 
-	// Handle TlsService and TlsServiceRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.TlsService, state.TlsService, plan.TlsServiceRefType, state.TlsServiceRefType,
 		func(v *string) { sppProps.TlsService = v },
@@ -534,7 +516,6 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	// Handle services
 	servicesConfigMap := utils.BuildIndexedConfigMap(config.Services)
 
 	changedServices, servicesChanged := utils.ProcessIndexedArrayUpdates(plan.Services, state.Services,
@@ -542,23 +523,19 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 			CreateNew: func(planItem verityServicePortProfileServiceModel) openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner {
 				newService := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "RowNumEnable", APIField: &newService.RowNumEnable, TFValue: planItem.RowNumEnable},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "RowNumService", APIField: &newService.RowNumService, TFValue: planItem.RowNumService},
 					{FieldName: "RowNumServiceRefType", APIField: &newService.RowNumServiceRefType, TFValue: planItem.RowNumServiceRefType},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newService.Index, TFValue: planItem.Index},
 				})
 
-				// Get per-block configured info for nullable Int64 fields
 				configItem, cfg := utils.GetIndexedBlockConfig(planItem, servicesConfigMap, "services", configuredAttrs)
 				utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 					{FieldName: "RowNumExternalVlan", APIField: &newService.RowNumExternalVlan, TFValue: configItem.RowNumExternalVlan, IsConfigured: cfg.IsFieldConfigured("row_num_external_vlan")},
@@ -572,10 +549,8 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 				updateService := openapi.ServiceportprofilesPutRequestServicePortProfileValueServicesInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.RowNumEnable, stateItem.RowNumEnable, func(v *bool) { updateService.RowNumEnable = v }, &fieldChanged)
 
-				// Handle row_num_service and row_num_service_ref_type_ using one ref type supported pattern
 				if !utils.HandleOneRefTypeSupported(
 					planItem.RowNumService, stateItem.RowNumService, planItem.RowNumServiceRefType, stateItem.RowNumServiceRefType,
 					func(v *string) { updateService.RowNumService = v },
@@ -586,12 +561,10 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 					return updateService, false
 				}
 
-				// Always include index — API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateService.Index, TFValue: planItem.Index},
 				})
 
-				// Handle nullable int64 field changes
 				configItem, cfg := utils.GetIndexedBlockConfig(planItem, servicesConfigMap, "services", configuredAttrs)
 				utils.CompareAndSetNullableInt64Field(configItem.RowNumExternalVlan, stateItem.RowNumExternalVlan, cfg.IsFieldConfigured("row_num_external_vlan"), func(v *openapi.NullableInt64) { updateService.RowNumExternalVlan = *v }, &fieldChanged)
 				utils.CompareAndSetNullableInt64Field(configItem.RowNumLimitIn, stateItem.RowNumLimitIn, cfg.IsFieldConfigured("row_num_limit_in"), func(v *openapi.NullableInt64) { updateService.RowNumLimitIn = *v }, &fieldChanged)
@@ -631,7 +604,6 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if sppData, exists := bulkMgr.GetResourceResponse("service_port_profile", name); exists {
 			newState := populateServicePortProfileState(ctx, minState, utils.MergeMissingPlanScalars(sppData, plan, servicePortProfileResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -640,7 +612,6 @@ func (r *verityServicePortProfileResource) Update(ctx context.Context, req resou
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -696,20 +667,16 @@ func populateServicePortProfileState(ctx context.Context, state verityServicePor
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// String fields
 	state.PortType = utils.MapStringWithMode(data, "port_type", resourceType, mode)
 	state.TlsService = utils.MapStringWithMode(data, "tls_service", resourceType, mode)
 	state.TlsServiceRefType = utils.MapStringWithMode(data, "tls_service_ref_type_", resourceType, mode)
 	state.IpMask = utils.MapStringWithMode(data, "ip_mask", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.TrustedPort = utils.MapBoolWithMode(data, "trusted_port", resourceType, mode)
 
-	// Int64 fields
 	state.TlsLimitIn = utils.MapInt64WithMode(data, "tls_limit_in", resourceType, mode)
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityServicePortProfileObjectPropertiesModel{
@@ -724,7 +691,6 @@ func populateServicePortProfileState(ctx context.Context, state verityServicePor
 		state.ObjectProperties = nil
 	}
 
-	// Handle services block
 	if utils.FieldAppliesToMode(resourceType, "services", mode) {
 		if servicesArray, ok := data["services"].([]interface{}); ok && len(servicesArray) > 0 {
 			var services []verityServicePortProfileServiceModel
@@ -758,9 +724,7 @@ func populateServicePortProfileState(ctx context.Context, state verityServicePor
 }
 
 func (r *verityServicePortProfileResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -771,11 +735,6 @@ func (r *verityServicePortProfileResource) ModifyPlan(ctx context.Context, req r
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := servicePortProfileResourceType
 	mode := r.provCtx.mode
 
@@ -817,16 +776,10 @@ func (r *verityServicePortProfileResource) ModifyPlan(ctx context.Context, req r
 		BoolFields:   []string{"on_summary"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityServicePortProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -839,11 +792,6 @@ func (r *verityServicePortProfileResource) ModifyPlan(ctx context.Context, req r
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, servicePortProfileTerraformType, name)
@@ -857,9 +805,6 @@ func (r *verityServicePortProfileResource) ModifyPlan(ctx context.Context, req r
 		},
 	})
 
-	// =========================================================================
-	// Handle nullable fields in nested blocks
-	// =========================================================================
 	for i, configItem := range config.Services {
 		itemIndex := configItem.Index.ValueInt64()
 		var stateItem *verityServicePortProfileServiceModel

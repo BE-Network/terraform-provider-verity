@@ -1,5 +1,3 @@
-# Test case: Add new resources
-# Define resources to be injected into the corresponding .tf file for testing
 
 resource "verity_gateway" "gateway_test_script1" {
     name = "gateway_test_script1"

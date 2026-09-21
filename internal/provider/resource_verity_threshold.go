@@ -239,7 +239,6 @@ func (r *verityThresholdResource) Create(ctx context.Context, req resource.Creat
 		Name: openapi.PtrString(name),
 	}
 
-	// Set string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Type", APIField: &thresholdProps.Type, TFValue: plan.Type},
 		{FieldName: "Operation", APIField: &thresholdProps.Operation, TFValue: plan.Operation},
@@ -254,12 +253,10 @@ func (r *verityThresholdResource) Create(ctx context.Context, req resource.Creat
 		{FieldName: "NoticeEscalationValue", APIField: &thresholdProps.NoticeEscalationValue, TFValue: plan.NoticeEscalationValue},
 	})
 
-	// Set boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &thresholdProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle rules
 	if len(plan.Rules) > 0 {
 		rules := make([]openapi.ThresholdsPutRequestThresholdValueRulesInner, len(plan.Rules))
 		for i, ruleItem := range plan.Rules {
@@ -311,7 +308,6 @@ func (r *verityThresholdResource) Create(ctx context.Context, req resource.Creat
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -348,7 +344,6 @@ func (r *verityThresholdResource) Read(ctx context.Context, req resource.ReadReq
 
 	thresholdName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if thresholdData, exists := r.bulkOpsMgr.GetResourceResponse("threshold", thresholdName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached threshold data for %s from recent operation", thresholdName))
@@ -461,7 +456,6 @@ func (r *verityThresholdResource) Update(ctx context.Context, req resource.Updat
 	thresholdProps := openapi.ThresholdsPutRequestThresholdValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { thresholdProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Type, state.Type, func(v *string) { thresholdProps.Type = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Operation, state.Operation, func(v *string) { thresholdProps.Operation = v }, &hasChanges)
@@ -475,10 +469,8 @@ func (r *verityThresholdResource) Update(ctx context.Context, req resource.Updat
 	utils.CompareAndSetStringField(plan.WarningEscalationValue, state.WarningEscalationValue, func(v *string) { thresholdProps.WarningEscalationValue = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.NoticeEscalationValue, state.NoticeEscalationValue, func(v *string) { thresholdProps.NoticeEscalationValue = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { thresholdProps.Enable = v }, &hasChanges)
 
-	// Handle rules
 	rulesHandler := utils.IndexedItemHandler[verityThresholdRulesModel, openapi.ThresholdsPutRequestThresholdValueRulesInner]{
 		CreateNew: func(planItem verityThresholdRulesModel) openapi.ThresholdsPutRequestThresholdValueRulesInner {
 			rule := openapi.ThresholdsPutRequestThresholdValueRulesInner{}
@@ -511,16 +503,13 @@ func (r *verityThresholdResource) Update(ctx context.Context, req resource.Updat
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { rule.Enable = v }, &fieldChanged)
 
-			// Handle string fields
 			utils.CompareAndSetStringField(planItem.Type, stateItem.Type, func(v *string) { rule.Type = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.Metric, stateItem.Metric, func(v *string) { rule.Metric = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.Operation, stateItem.Operation, func(v *string) { rule.Operation = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.Value, stateItem.Value, func(v *string) { rule.Value = v }, &fieldChanged)
 
-			// Handle threshold and threshold_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.Threshold, stateItem.Threshold, planItem.ThresholdRefType, stateItem.ThresholdRefType,
 				func(v *string) { rule.Threshold = v },
@@ -569,7 +558,6 @@ func (r *verityThresholdResource) Update(ctx context.Context, req resource.Updat
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if thresholdData, exists := bulkMgr.GetResourceResponse("threshold", name); exists {
 			newState := populateThresholdState(ctx, minState, utils.MergeMissingPlanScalars(thresholdData, plan, thresholdResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -578,7 +566,6 @@ func (r *verityThresholdResource) Update(ctx context.Context, req resource.Updat
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -634,7 +621,6 @@ func populateThresholdState(ctx context.Context, state verityThresholdResourceMo
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// String fields
 	state.Type = utils.MapStringWithMode(data, "type", resourceType, mode)
 	state.Operation = utils.MapStringWithMode(data, "operation", resourceType, mode)
 	state.Severity = utils.MapStringWithMode(data, "severity", resourceType, mode)
@@ -647,10 +633,8 @@ func populateThresholdState(ctx context.Context, state verityThresholdResourceMo
 	state.WarningEscalationValue = utils.MapStringWithMode(data, "warning_escalation_value", resourceType, mode)
 	state.NoticeEscalationValue = utils.MapStringWithMode(data, "notice_escalation_value", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// Handle rules block
 	if utils.FieldAppliesToMode(resourceType, "rules", mode) {
 		if rules, ok := data["rules"].([]interface{}); ok && len(rules) > 0 {
 			var rulesList []verityThresholdRulesModel
@@ -687,9 +671,7 @@ func populateThresholdState(ctx context.Context, state verityThresholdResourceMo
 }
 
 func (r *verityThresholdResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -700,11 +682,6 @@ func (r *verityThresholdResource) ModifyPlan(ctx context.Context, req resource.M
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := thresholdResourceType
 	mode := r.provCtx.mode
 

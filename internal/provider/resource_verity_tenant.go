@@ -271,7 +271,6 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
-	// Validate auto-assigned field specifications
 	if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
 		if !plan.Layer3Vni.IsNull() && !plan.Layer3Vni.IsUnknown() {
 			resp.Diagnostics.AddError(
@@ -315,7 +314,6 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "DhcpRelaySourceIpv4sSubnet", APIField: &tenantReq.DhcpRelaySourceIpv4sSubnet, TFValue: plan.DhcpRelaySourceIpv4sSubnet},
 		{FieldName: "DhcpRelaySourceIpv6sSubnet", APIField: &tenantReq.DhcpRelaySourceIpv6sSubnet, TFValue: plan.DhcpRelaySourceIpv6sSubnet},
@@ -330,7 +328,6 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 		{FieldName: "RouteAggregation", APIField: &tenantReq.RouteAggregation, TFValue: plan.RouteAggregation},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &tenantReq.Enable, TFValue: plan.Enable},
 		{FieldName: "DefaultOriginate", APIField: &tenantReq.DefaultOriginate, TFValue: plan.DefaultOriginate},
@@ -338,9 +335,9 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 
 	if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
 		tenantReq.Layer3VniAutoAssigned = openapi.PtrBool(true)
-		// Don't include the specific VNI in the request
+
 	} else if !plan.Layer3Vni.IsNull() {
-		// User explicitly specified a value
+
 		val := plan.Layer3Vni.ValueInt64()
 		tenantReq.Layer3Vni = *openapi.NewNullableInt64(&val)
 		if !plan.Layer3VniAutoAssigned.IsNull() {
@@ -354,9 +351,9 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 	}
 	if !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() {
 		tenantReq.Layer3VlanAutoAssigned = openapi.PtrBool(true)
-		// Don't include the specific VLAN in the request
+
 	} else if !plan.Layer3Vlan.IsNull() {
-		// User explicitly specified a value
+
 		val := plan.Layer3Vlan.ValueInt64()
 		tenantReq.Layer3Vlan = *openapi.NewNullableInt64(&val)
 		if !plan.Layer3VlanAutoAssigned.IsNull() {
@@ -370,9 +367,9 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 	}
 	if !plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() {
 		tenantReq.VrfNameAutoAssigned = openapi.PtrBool(true)
-		// Don't include the specific VRF name in the request
+
 	} else if !plan.VrfName.IsNull() {
-		// User explicitly specified a value
+
 		tenantReq.VrfName = openapi.PtrString(plan.VrfName.ValueString())
 		if !plan.VrfNameAutoAssigned.IsNull() {
 			tenantReq.VrfNameAutoAssigned = openapi.PtrBool(plan.VrfNameAutoAssigned.ValueBool())
@@ -383,23 +380,19 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 		}
 	}
 
-	// Handle route tenants
 	if len(plan.RouteTenants) > 0 {
 		routeTenants := make([]openapi.TenantsPutRequestTenantValueRouteTenantsInner, len(plan.RouteTenants))
 		for i, rt := range plan.RouteTenants {
 			rItem := openapi.TenantsPutRequestTenantValueRouteTenantsInner{}
 
-			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &rItem.Enable, TFValue: rt.Enable},
 			})
 
-			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "Tenant", APIField: &rItem.Tenant, TFValue: rt.Tenant},
 			})
 
-			// Handle int64 fields
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &rItem.Index, TFValue: rt.Index},
 			})
@@ -451,7 +444,6 @@ func (r *verityTenantResource) Create(ctx context.Context, req resource.CreateRe
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -488,7 +480,6 @@ func (r *verityTenantResource) Read(ctx context.Context, req resource.ReadReques
 
 	tenantName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if tenantData, exists := r.bulkOpsMgr.GetResourceResponse("tenant", tenantName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached tenant data for %s from recent operation", tenantName))
@@ -589,12 +580,8 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	// Validate auto-assigned fields - these checks prevent ineffective API calls
-	// Only error if the auto-assigned flag is enabled AND the user is explicitly setting a value
-	// AND the auto-assigned flag itself is not changing (which would be a valid operation)
-	// Don't error if the field is unknown (computed during plan recalculation)
 	if !plan.Layer3Vni.Equal(state.Layer3Vni) &&
-		!plan.Layer3Vni.IsNull() && !plan.Layer3Vni.IsUnknown() && // User is explicitly setting a value
+		!plan.Layer3Vni.IsNull() && !plan.Layer3Vni.IsUnknown() &&
 		!plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() &&
 		plan.Layer3VniAutoAssigned.Equal(state.Layer3VniAutoAssigned) {
 		resp.Diagnostics.AddError(
@@ -605,7 +592,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	if !plan.Layer3Vlan.Equal(state.Layer3Vlan) &&
-		!plan.Layer3Vlan.IsNull() && !plan.Layer3Vlan.IsUnknown() && // User is explicitly setting a value
+		!plan.Layer3Vlan.IsNull() && !plan.Layer3Vlan.IsUnknown() &&
 		!plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() &&
 		plan.Layer3VlanAutoAssigned.Equal(state.Layer3VlanAutoAssigned) {
 		resp.Diagnostics.AddError(
@@ -616,7 +603,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 
 	if !plan.VrfName.Equal(state.VrfName) &&
-		!plan.VrfName.IsNull() && !plan.VrfName.IsUnknown() && // User is explicitly setting a value
+		!plan.VrfName.IsNull() && !plan.VrfName.IsUnknown() &&
 		!plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() &&
 		plan.VrfNameAutoAssigned.Equal(state.VrfNameAutoAssigned) {
 		resp.Diagnostics.AddError(
@@ -638,7 +625,6 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 	tenantReq := openapi.TenantsPutRequestTenantValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { tenantReq.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.DhcpRelaySourceIpv4sSubnet, state.DhcpRelaySourceIpv4sSubnet, func(v *string) { tenantReq.DhcpRelaySourceIpv4sSubnet = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.DhcpRelaySourceIpv6sSubnet, state.DhcpRelaySourceIpv6sSubnet, func(v *string) { tenantReq.DhcpRelaySourceIpv6sSubnet = v }, &hasChanges)
@@ -648,11 +634,9 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 	utils.CompareAndSetStringField(plan.TenantType, state.TenantType, func(v *string) { tenantReq.TenantType = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.RouteAggregation, state.RouteAggregation, func(v *string) { tenantReq.RouteAggregation = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { tenantReq.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.DefaultOriginate, state.DefaultOriginate, func(v *bool) { tenantReq.DefaultOriginate = v }, &hasChanges)
 
-	// Handle Layer3Vni and Layer3VniAutoAssigned changes
 	layer3VniChanged := !plan.Layer3Vni.IsUnknown() && !plan.Layer3Vni.Equal(state.Layer3Vni)
 	layer3VniAutoAssignedChanged := !plan.Layer3VniAutoAssigned.Equal(state.Layer3VniAutoAssigned)
 
@@ -667,7 +651,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		}
 
 		if layer3VniAutoAssignedChanged {
-			// Only send layer_3_vni_auto_assigned_ if the user has explicitly specified it in their configuration
+
 			var config verityTenantResourceModel
 			userSpecifiedLayer3VniAutoAssigned := false
 			if !req.Config.Raw.IsNull() {
@@ -679,26 +663,21 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 			if userSpecifiedLayer3VniAutoAssigned {
 				tenantReq.Layer3VniAutoAssigned = openapi.PtrBool(plan.Layer3VniAutoAssigned.ValueBool())
 
-				// Special case: When changing from auto-assigned (true) to manual (false),
-				// the API requires both layer_3_vni_auto_assigned_ and layer_3_vni fields to be sent.
-				// Otherwise, the layer_3_vni_auto_assigned_ change will be ignored by the API.
 				if !state.Layer3VniAutoAssigned.IsNull() && state.Layer3VniAutoAssigned.ValueBool() &&
 					!plan.Layer3VniAutoAssigned.ValueBool() {
-					// Changing from auto-assigned=true to auto-assigned=false
-					// Must include Layer3Vni value in the request for the change to take effect
+
 					if !plan.Layer3Vni.IsNull() {
 						vniVal := plan.Layer3Vni.ValueInt64()
 						tenantReq.Layer3Vni = *openapi.NewNullableInt64(&vniVal)
 					} else if !state.Layer3Vni.IsNull() {
-						// Use current state Layer3Vni if plan doesn't specify one
+
 						vniVal := state.Layer3Vni.ValueInt64()
 						tenantReq.Layer3Vni = *openapi.NewNullableInt64(&vniVal)
 					}
 				}
 			}
 		} else if layer3VniChanged {
-			// Layer3Vni changed but Layer3VniAutoAssigned didn't change
-			// Send the auto-assigned flag to maintain consistency with API
+
 			if !plan.Layer3VniAutoAssigned.IsNull() {
 				tenantReq.Layer3VniAutoAssigned = openapi.PtrBool(plan.Layer3VniAutoAssigned.ValueBool())
 			} else if !state.Layer3VniAutoAssigned.IsNull() {
@@ -711,7 +690,6 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	// Handle Layer3Vlan and Layer3VlanAutoAssigned changes
 	layer3VlanChanged := !plan.Layer3Vlan.IsUnknown() && !plan.Layer3Vlan.Equal(state.Layer3Vlan)
 	layer3VlanAutoAssignedChanged := !plan.Layer3VlanAutoAssigned.Equal(state.Layer3VlanAutoAssigned)
 
@@ -726,7 +704,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		}
 
 		if layer3VlanAutoAssignedChanged {
-			// Only send layer_3_vlan_auto_assigned_ if the user has explicitly specified it in their configuration
+
 			var config verityTenantResourceModel
 			userSpecifiedLayer3VlanAutoAssigned := false
 			if !req.Config.Raw.IsNull() {
@@ -738,26 +716,21 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 			if userSpecifiedLayer3VlanAutoAssigned {
 				tenantReq.Layer3VlanAutoAssigned = openapi.PtrBool(plan.Layer3VlanAutoAssigned.ValueBool())
 
-				// Special case: When changing from auto-assigned (true) to manual (false),
-				// the API requires both layer_3_vlan_auto_assigned_ and layer_3_vlan fields to be sent.
-				// Otherwise, the layer_3_vlan_auto_assigned_ change will be ignored by the API.
 				if !state.Layer3VlanAutoAssigned.IsNull() && state.Layer3VlanAutoAssigned.ValueBool() &&
 					!plan.Layer3VlanAutoAssigned.ValueBool() {
-					// Changing from auto-assigned=true to auto-assigned=false
-					// Must include Layer3Vlan value in the request for the change to take effect
+
 					if !plan.Layer3Vlan.IsNull() {
 						vlanVal := plan.Layer3Vlan.ValueInt64()
 						tenantReq.Layer3Vlan = *openapi.NewNullableInt64(&vlanVal)
 					} else if !state.Layer3Vlan.IsNull() {
-						// Use current state Layer3Vlan if plan doesn't specify one
+
 						vlanVal := state.Layer3Vlan.ValueInt64()
 						tenantReq.Layer3Vlan = *openapi.NewNullableInt64(&vlanVal)
 					}
 				}
 			}
 		} else if layer3VlanChanged {
-			// Layer3Vlan changed but Layer3VlanAutoAssigned didn't change
-			// Send the auto-assigned flag to maintain consistency with API
+
 			if !plan.Layer3VlanAutoAssigned.IsNull() {
 				tenantReq.Layer3VlanAutoAssigned = openapi.PtrBool(plan.Layer3VlanAutoAssigned.ValueBool())
 			} else if !state.Layer3VlanAutoAssigned.IsNull() {
@@ -770,7 +743,6 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	// Handle VrfName and VrfNameAutoAssigned changes
 	vrfNameChanged := !plan.VrfName.IsUnknown() && !plan.VrfName.Equal(state.VrfName)
 	vrfNameAutoAssignedChanged := !plan.VrfNameAutoAssigned.Equal(state.VrfNameAutoAssigned)
 
@@ -784,7 +756,7 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		}
 
 		if vrfNameAutoAssignedChanged {
-			// Only send vrf_name_auto_assigned_ if the user has explicitly specified it in their configuration
+
 			var config verityTenantResourceModel
 			userSpecifiedVrfNameAutoAssigned := false
 			if !req.Config.Raw.IsNull() {
@@ -796,24 +768,19 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 			if userSpecifiedVrfNameAutoAssigned {
 				tenantReq.VrfNameAutoAssigned = openapi.PtrBool(plan.VrfNameAutoAssigned.ValueBool())
 
-				// Special case: When changing from auto-assigned (true) to manual (false),
-				// the API requires both vrf_name_auto_assigned_ and vrf_name fields to be sent.
-				// Otherwise, the vrf_name_auto_assigned_ change will be ignored by the API.
 				if !state.VrfNameAutoAssigned.IsNull() && state.VrfNameAutoAssigned.ValueBool() &&
 					!plan.VrfNameAutoAssigned.ValueBool() {
-					// Changing from auto-assigned=true to auto-assigned=false
-					// Must include VrfName value in the request for the change to take effect
+
 					if !plan.VrfName.IsNull() && plan.VrfName.ValueString() != "" {
 						tenantReq.VrfName = openapi.PtrString(plan.VrfName.ValueString())
 					} else if !state.VrfName.IsNull() && state.VrfName.ValueString() != "" {
-						// Use current state VrfName if plan doesn't specify one
+
 						tenantReq.VrfName = openapi.PtrString(state.VrfName.ValueString())
 					}
 				}
 			}
 		} else if vrfNameChanged {
-			// VrfName changed but VrfNameAutoAssigned didn't change
-			// Send the auto-assigned flag to maintain consistency with API
+
 			if !plan.VrfNameAutoAssigned.IsNull() {
 				tenantReq.VrfNameAutoAssigned = openapi.PtrBool(plan.VrfNameAutoAssigned.ValueBool())
 			} else if !state.VrfNameAutoAssigned.IsNull() {
@@ -826,7 +793,6 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	// Handle import_route_map and import_route_map_ref_type_ fields using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.ImportRouteMap, state.ImportRouteMap, plan.ImportRouteMapRefType, state.ImportRouteMapRefType,
 		func(v *string) { tenantReq.ImportRouteMap = v },
@@ -838,7 +804,6 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	// Handle export_route_map and export_route_map_ref_type_ fields using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.ExportRouteMap, state.ExportRouteMap, plan.ExportRouteMapRefType, state.ExportRouteMapRefType,
 		func(v *string) { tenantReq.ExportRouteMap = v },
@@ -850,23 +815,19 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	// Handle route tenants
 	changedRouteTenants, routeTenantsChanged := utils.ProcessIndexedArrayUpdates(plan.RouteTenants, state.RouteTenants,
 		utils.IndexedItemHandler[verityTenantRouteTenantModel, openapi.TenantsPutRequestTenantValueRouteTenantsInner]{
 			CreateNew: func(planItem verityTenantRouteTenantModel) openapi.TenantsPutRequestTenantValueRouteTenantsInner {
 				newRouteTenant := openapi.TenantsPutRequestTenantValueRouteTenantsInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "Enable", APIField: &newRouteTenant.Enable, TFValue: planItem.Enable},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Tenant", APIField: &newRouteTenant.Tenant, TFValue: planItem.Tenant},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newRouteTenant.Index, TFValue: planItem.Index},
 				})
@@ -877,13 +838,10 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 				updateRouteTenant := openapi.TenantsPutRequestTenantValueRouteTenantsInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateRouteTenant.Enable = v }, &fieldChanged)
 
-				// Handle string field changes
 				utils.CompareAndSetStringField(planItem.Tenant, stateItem.Tenant, func(v *string) { updateRouteTenant.Tenant = v }, &fieldChanged)
 
-				// Always include index — API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateRouteTenant.Index, TFValue: planItem.Index},
 				})
@@ -964,7 +922,6 @@ func (r *verityTenantResource) Update(ctx context.Context, req resource.UpdateRe
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -1020,18 +977,15 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 
 	state.Name = utils.MapStringFromAPI(tenantData["name"])
 
-	// Int fields
 	state.Layer3Vni = utils.MapInt64WithMode(tenantData, "layer_3_vni", resourceType, mode)
 	state.Layer3Vlan = utils.MapInt64WithMode(tenantData, "layer_3_vlan", resourceType, mode)
 
-	// Bool fields
 	state.Enable = utils.MapBoolWithMode(tenantData, "enable", resourceType, mode)
 	state.DefaultOriginate = utils.MapBoolWithMode(tenantData, "default_originate", resourceType, mode)
 	state.Layer3VniAutoAssigned = utils.MapBoolWithMode(tenantData, "layer_3_vni_auto_assigned_", resourceType, mode)
 	state.Layer3VlanAutoAssigned = utils.MapBoolWithMode(tenantData, "layer_3_vlan_auto_assigned_", resourceType, mode)
 	state.VrfNameAutoAssigned = utils.MapBoolWithMode(tenantData, "vrf_name_auto_assigned_", resourceType, mode)
 
-	// String fields
 	state.DhcpRelaySourceIpv4sSubnet = utils.MapStringWithMode(tenantData, "dhcp_relay_source_ipv4s_subnet", resourceType, mode)
 	state.DhcpRelaySourceIpv6sSubnet = utils.MapStringWithMode(tenantData, "dhcp_relay_source_ipv6s_subnet", resourceType, mode)
 	state.RouteDistinguisher = utils.MapStringWithMode(tenantData, "route_distinguisher", resourceType, mode)
@@ -1066,7 +1020,6 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 		state.RouteAggregators = nil
 	}
 
-	// Handle route_tenants block
 	if utils.FieldAppliesToMode(resourceType, "route_tenants", mode) {
 		if rtVal, ok := tenantData["route_tenants"].([]interface{}); ok {
 			var routeTenants []verityTenantRouteTenantModel
@@ -1094,9 +1047,7 @@ func populateTenantState(ctx context.Context, state verityTenantResourceModel, t
 }
 
 func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -1107,11 +1058,6 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := tenantResourceType
 	mode := r.provCtx.mode
 
@@ -1156,11 +1102,8 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		Int64Fields:  []string{"index"},
 	})
 
-	// =========================================================================
-	// CREATE operation - handle auto-assigned fields
-	// =========================================================================
 	if req.State.Raw.IsNull() {
-		// Tenant-specific: auto-assignment on create
+
 		if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
 			resp.Plan.SetAttribute(ctx, path.Root("layer_3_vni"), types.Int64Unknown())
 		}
@@ -1175,9 +1118,6 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityTenantResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -1190,11 +1130,6 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, tenantTerraformType, name)
@@ -1209,9 +1144,6 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		},
 	})
 
-	// =========================================================================
-	// Validate auto-assigned field specifications
-	// =========================================================================
 	if !config.Layer3VniAutoAssigned.IsNull() && config.Layer3VniAutoAssigned.ValueBool() {
 		if !config.Layer3Vni.IsNull() && !config.Layer3Vni.IsUnknown() {
 			resp.Diagnostics.AddError(
@@ -1242,19 +1174,16 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		}
 	}
 
-	// =========================================================================
-	// Resource-specific auto-assigned field logic (Layer3Vni)
-	// =========================================================================
 	if !plan.Layer3VniAutoAssigned.IsNull() && plan.Layer3VniAutoAssigned.ValueBool() {
 		if !plan.Layer3VniAutoAssigned.Equal(state.Layer3VniAutoAssigned) {
-			// layer_3_vni_auto_assigned_ is changing to true - API will assign value
+
 			resp.Plan.SetAttribute(ctx, path.Root("layer_3_vni"), types.Int64Unknown())
 			resp.Diagnostics.AddWarning(
 				"Layer 3 VNI will be assigned by the API",
 				"The 'layer_3_vni' field will be automatically assigned by the API because 'layer_3_vni_auto_assigned_' is being set to true.",
 			)
 		} else if !plan.Layer3Vni.Equal(state.Layer3Vni) {
-			// User tried to change Layer3Vni but it's auto-assigned - suppress diff
+
 			resp.Diagnostics.AddWarning(
 				"Ignoring layer_3_vni changes with auto-assignment enabled",
 				"The 'layer_3_vni' field changes will be ignored because 'layer_3_vni_auto_assigned_' is set to true.",
@@ -1265,19 +1194,16 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		}
 	}
 
-	// =========================================================================
-	// Resource-specific auto-assigned field logic (Layer3Vlan)
-	// =========================================================================
 	if !plan.Layer3VlanAutoAssigned.IsNull() && plan.Layer3VlanAutoAssigned.ValueBool() {
 		if !plan.Layer3VlanAutoAssigned.Equal(state.Layer3VlanAutoAssigned) {
-			// layer_3_vlan_auto_assigned_ is changing to true - API will assign value
+
 			resp.Plan.SetAttribute(ctx, path.Root("layer_3_vlan"), types.Int64Unknown())
 			resp.Diagnostics.AddWarning(
 				"Layer 3 VLAN will be assigned by the API",
 				"The 'layer_3_vlan' field will be automatically assigned by the API because 'layer_3_vlan_auto_assigned_' is being set to true.",
 			)
 		} else if !plan.Layer3Vlan.Equal(state.Layer3Vlan) {
-			// User tried to change Layer3Vlan but it's auto-assigned - suppress diff
+
 			resp.Diagnostics.AddWarning(
 				"Ignoring layer_3_vlan changes with auto-assignment enabled",
 				"The 'layer_3_vlan' field changes will be ignored because 'layer_3_vlan_auto_assigned_' is set to true.",
@@ -1288,19 +1214,16 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		}
 	}
 
-	// =========================================================================
-	// Resource-specific auto-assigned field logic (VrfName)
-	// =========================================================================
 	if !plan.VrfNameAutoAssigned.IsNull() && plan.VrfNameAutoAssigned.ValueBool() {
 		if !plan.VrfNameAutoAssigned.Equal(state.VrfNameAutoAssigned) {
-			// vrf_name_auto_assigned_ is changing to true - API will assign value
+
 			resp.Plan.SetAttribute(ctx, path.Root("vrf_name"), types.StringUnknown())
 			resp.Diagnostics.AddWarning(
 				"VRF name will be assigned by the API",
 				"The 'vrf_name' field will be automatically assigned by the API because 'vrf_name_auto_assigned_' is being set to true.",
 			)
 		} else if !plan.VrfName.Equal(state.VrfName) {
-			// User tried to change VrfName but it's auto-assigned - suppress diff
+
 			resp.Diagnostics.AddWarning(
 				"Ignoring vrf_name changes with auto-assignment enabled",
 				"The 'vrf_name' field changes will be ignored because 'vrf_name_auto_assigned_' is set to true.",
@@ -1311,8 +1234,6 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		}
 	}
 
-	// Check for ineffective changes to import_route_map_ref_type_
-	// Warn if import_route_map_ref_type_ is changing BUT import_route_map is empty and NOT changing.
 	if !plan.ImportRouteMapRefType.Equal(state.ImportRouteMapRefType) &&
 		(plan.ImportRouteMap.IsNull() || plan.ImportRouteMap.ValueString() == "") &&
 		plan.ImportRouteMap.Equal(state.ImportRouteMap) {
@@ -1322,8 +1243,6 @@ func (r *verityTenantResource) ModifyPlan(ctx context.Context, req resource.Modi
 		)
 	}
 
-	// Check for ineffective changes to export_route_map_ref_type_
-	// Warn if export_route_map_ref_type_ is changing BUT export_route_map is empty and NOT changing.
 	if !plan.ExportRouteMapRefType.Equal(state.ExportRouteMapRefType) &&
 		(plan.ExportRouteMap.IsNull() || plan.ExportRouteMap.ValueString() == "") &&
 		plan.ExportRouteMap.Equal(state.ExportRouteMap) {

@@ -1,5 +1,3 @@
-# Test case: Add new resources
-# Define resources to be injected into the corresponding .tf file for testing
 
 resource "verity_port_acl" "port_acl_test_script1" {
     name = "port_acl_test_script1"

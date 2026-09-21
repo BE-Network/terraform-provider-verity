@@ -391,7 +391,6 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "DeviceSettings", APIField: &bundleProps.DeviceSettings, TFValue: plan.DeviceSettings},
 		{FieldName: "DeviceSettingsRefType", APIField: &bundleProps.DeviceSettingsRefType, TFValue: plan.DeviceSettingsRefType},
@@ -403,12 +402,10 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 		{FieldName: "DeviceVoiceSettingsRefType", APIField: &bundleProps.DeviceVoiceSettingsRefType, TFValue: plan.DeviceVoiceSettingsRefType},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &bundleProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.BundlesPutRequestEndpointBundleValueObjectProperties{}
@@ -419,7 +416,6 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 		bundleProps.ObjectProperties = &objProps
 	}
 
-	// Handle eth port paths
 	if len(plan.EthPortPaths) > 0 {
 		ethPortPaths := make([]openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner, len(plan.EthPortPaths))
 		for i, item := range plan.EthPortPaths {
@@ -443,7 +439,6 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 		bundleProps.EthPortPaths = ethPortPaths
 	}
 
-	// Handle user services
 	if len(plan.UserServices) > 0 {
 		userServices := make([]openapi.BundlesPutRequestEndpointBundleValueUserServicesInner, len(plan.UserServices))
 		for i, item := range plan.UserServices {
@@ -465,7 +460,6 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 		bundleProps.UserServices = userServices
 	}
 
-	// Handle voice port profile paths
 	if len(plan.VoicePortProfilePaths) > 0 {
 		voicePortProfilePaths := make([]openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner, len(plan.VoicePortProfilePaths))
 		for i, item := range plan.VoicePortProfilePaths {
@@ -482,7 +476,6 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 		bundleProps.VoicePortProfilePaths = voicePortProfilePaths
 	}
 
-	// Handle rg services
 	if len(plan.RgServices) > 0 {
 		rgServices := make([]openapi.BundlesPutRequestEndpointBundleValueRgServicesInner, len(plan.RgServices))
 		for i, item := range plan.RgServices {
@@ -529,7 +522,6 @@ func (r *verityBundleResource) Create(ctx context.Context, req resource.CreateRe
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -572,9 +564,8 @@ func (r *verityBundleResource) Read(ctx context.Context, req resource.ReadReques
 	}
 
 	bundleName := state.Name.ValueString()
-	priorState := state // save prior state to preserve reference-only fields
+	priorState := state
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if bundleData, exists := r.bulkOpsMgr.GetResourceResponse("bundle", bundleName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached bundle data for %s from recent operation", bundleName))
@@ -688,15 +679,12 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 	bundleProps := openapi.BundlesPutRequestEndpointBundleValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { bundleProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.CliCommands, state.CliCommands, func(v *string) { bundleProps.CliCommands = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Protocol, state.Protocol, func(v *string) { bundleProps.Protocol = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { bundleProps.Enable = v }, &hasChanges)
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.BundlesPutRequestEndpointBundleValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -714,7 +702,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		}
 	}
 
-	// Handle device settings reference type using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.DeviceSettings, state.DeviceSettings, plan.DeviceSettingsRefType, state.DeviceSettingsRefType,
 		func(v *string) { bundleProps.DeviceSettings = v },
@@ -726,7 +713,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	// Handle diagnostics profile reference type using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.DiagnosticsProfile, state.DiagnosticsProfile, plan.DiagnosticsProfileRefType, state.DiagnosticsProfileRefType,
 		func(v *string) { bundleProps.DiagnosticsProfile = v },
@@ -738,7 +724,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	// Handle device voice settings reference type using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.DeviceVoiceSettings, state.DeviceVoiceSettings, plan.DeviceVoiceSettingsRefType, state.DeviceVoiceSettingsRefType,
 		func(v *string) { bundleProps.DeviceVoiceSettings = v },
@@ -750,7 +735,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	// Handle eth port paths
 	ethPortPathsHandler := utils.IndexedItemHandler[ethPortPathsModel, openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner]{
 		CreateNew: func(planItem ethPortPathsModel) openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner {
 			ethPortPath := openapi.BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
@@ -782,10 +766,8 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 			fieldChanged := false
 
-			// Handle non-ref-type string fields
 			utils.CompareAndSetStringField(planItem.PortName, stateItem.PortName, func(v *string) { ethPortPath.PortName = v }, &fieldChanged)
 
-			// Handle eth_port_num_eth_port_settings and eth_port_num_eth_port_settings_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.EthPortNumEthPortSettings, stateItem.EthPortNumEthPortSettings, planItem.EthPortNumEthPortSettingsRefType, stateItem.EthPortNumEthPortSettingsRefType,
 				func(v *string) { ethPortPath.EthPortNumEthPortSettings = v },
@@ -797,7 +779,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				return ethPortPath, false
 			}
 
-			// Handle eth_port_num_eth_port_profile and eth_port_num_eth_port_profile_ref_type_ using "Many ref types supported" pattern
 			if !utils.HandleMultipleRefTypesSupported(
 				planItem.EthPortNumEthPortProfile, stateItem.EthPortNumEthPortProfile, planItem.EthPortNumEthPortProfileRefType, stateItem.EthPortNumEthPortProfileRefType,
 				func(v *string) { ethPortPath.EthPortNumEthPortProfile = v },
@@ -809,7 +790,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				return ethPortPath, false
 			}
 
-			// Handle eth_port_num_gateway_profile and eth_port_num_gateway_profile_ref_type_ using "Many ref types supported" pattern
 			if !utils.HandleMultipleRefTypesSupported(
 				planItem.EthPortNumGatewayProfile, stateItem.EthPortNumGatewayProfile, planItem.EthPortNumGatewayProfileRefType, stateItem.EthPortNumGatewayProfileRefType,
 				func(v *string) { ethPortPath.EthPortNumGatewayProfile = v },
@@ -821,7 +801,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				return ethPortPath, false
 			}
 
-			// Handle diagnostics_port_profile and diagnostics_port_profile_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.EthPortNumDiagnosticsPortProfile, stateItem.EthPortNumDiagnosticsPortProfile, planItem.EthPortNumDiagnosticsPortProfileRefType, stateItem.EthPortNumDiagnosticsPortProfileRefType,
 				func(v *string) { ethPortPath.EthPortNumDiagnosticsPortProfile = v },
@@ -850,7 +829,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	// Handle user services
 	userServicesHandler := utils.IndexedItemHandler[userServicesModel, openapi.BundlesPutRequestEndpointBundleValueUserServicesInner]{
 		CreateNew: func(planItem userServicesModel) openapi.BundlesPutRequestEndpointBundleValueUserServicesInner {
 			userService := openapi.BundlesPutRequestEndpointBundleValueUserServicesInner{}
@@ -881,10 +859,8 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.RowAppEnable, stateItem.RowAppEnable, func(v *bool) { userService.RowAppEnable = v }, &fieldChanged)
 
-			// Handle row_app_connected_service and row_app_connected_service_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.RowAppConnectedService, stateItem.RowAppConnectedService, planItem.RowAppConnectedServiceRefType, stateItem.RowAppConnectedServiceRefType,
 				func(v *string) { userService.RowAppConnectedService = v },
@@ -896,7 +872,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				return userService, false
 			}
 
-			// Handle non-ref-type string fields
 			utils.CompareAndSetStringField(planItem.RowAppCliCommands, stateItem.RowAppCliCommands, func(v *string) { userService.RowAppCliCommands = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.RowIpMask, stateItem.RowIpMask, func(v *string) { userService.RowIpMask = v }, &fieldChanged)
 
@@ -917,7 +892,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	// Handle voice port profile paths
 	voicePortProfilePathsHandler := utils.IndexedItemHandler[voicePortProfilePathsModel, openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner]{
 		CreateNew: func(planItem voicePortProfilePathsModel) openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner {
 			voicePortPath := openapi.BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner{}
@@ -942,7 +916,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 			fieldChanged := false
 
-			// Handle voice_port_num_voice_port_profiles and voice_port_num_voice_port_profiles_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.VoicePortNumVoicePortProfiles, stateItem.VoicePortNumVoicePortProfiles, planItem.VoicePortNumVoicePortProfilesRefType, stateItem.VoicePortNumVoicePortProfilesRefType,
 				func(v *string) { voicePortPath.VoicePortNumVoicePortProfiles = v },
@@ -971,7 +944,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		hasChanges = true
 	}
 
-	// Handle rg services
 	rgServicesHandler := utils.IndexedItemHandler[rgServicesModel, openapi.BundlesPutRequestEndpointBundleValueRgServicesInner]{
 		CreateNew: func(planItem rgServicesModel) openapi.BundlesPutRequestEndpointBundleValueRgServicesInner {
 			rgService := openapi.BundlesPutRequestEndpointBundleValueRgServicesInner{}
@@ -1002,10 +974,8 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.RowAppEnable, stateItem.RowAppEnable, func(v *bool) { rgService.RowAppEnable = v }, &fieldChanged)
 
-			// Handle row_app_connected_service and row_app_connected_service_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.RowAppConnectedService, stateItem.RowAppConnectedService, planItem.RowAppConnectedServiceRefType, stateItem.RowAppConnectedServiceRefType,
 				func(v *string) { rgService.RowAppConnectedService = v },
@@ -1017,7 +987,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 				return rgService, false
 			}
 
-			// Handle non-ref-type string fields
 			utils.CompareAndSetStringField(planItem.RowAppType, stateItem.RowAppType, func(v *string) { rgService.RowAppType = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.RowIpMask, stateItem.RowIpMask, func(v *string) { rgService.RowIpMask = v }, &fieldChanged)
 
@@ -1059,7 +1028,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if bundleData, exists := bulkMgr.GetResourceResponse("bundle", name); exists {
 			newState := populateBundleState(ctx, minState, utils.MergeMissingPlanScalars(bundleData, plan, bundleResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -1069,7 +1037,6 @@ func (r *verityBundleResource) Update(ctx context.Context, req resource.UpdateRe
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -1132,10 +1099,8 @@ func populateBundleState(ctx context.Context, state verityBundleResourceModel, d
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// String fields
 	state.DeviceSettings = utils.MapStringWithMode(data, "device_settings", resourceType, mode)
 	state.DeviceSettingsRefType = utils.MapStringWithMode(data, "device_settings_ref_type_", resourceType, mode)
 	state.CliCommands = utils.MapStringWithMode(data, "cli_commands", resourceType, mode)
@@ -1145,7 +1110,6 @@ func populateBundleState(ctx context.Context, state verityBundleResourceModel, d
 	state.DeviceVoiceSettings = utils.MapStringWithMode(data, "device_voice_settings", resourceType, mode)
 	state.DeviceVoiceSettingsRefType = utils.MapStringWithMode(data, "device_voice_settings_ref_type_", resourceType, mode)
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityBundleObjectPropertiesModel{
@@ -1160,7 +1124,6 @@ func populateBundleState(ctx context.Context, state verityBundleResourceModel, d
 		state.ObjectProperties = nil
 	}
 
-	// Handle eth_port_paths array
 	if utils.FieldAppliesToMode(resourceType, "eth_port_paths", mode) {
 		if pathsData, ok := data["eth_port_paths"].([]interface{}); ok && len(pathsData) > 0 {
 			var ethPortPaths []ethPortPathsModel
@@ -1191,7 +1154,6 @@ func populateBundleState(ctx context.Context, state verityBundleResourceModel, d
 		state.EthPortPaths = nil
 	}
 
-	// Handle user_services array
 	if utils.FieldAppliesToMode(resourceType, "user_services", mode) {
 		if servicesData, ok := data["user_services"].([]interface{}); ok && len(servicesData) > 0 {
 			var userServices []userServicesModel
@@ -1218,7 +1180,6 @@ func populateBundleState(ctx context.Context, state verityBundleResourceModel, d
 		state.UserServices = nil
 	}
 
-	// Handle voice_port_profile_paths array
 	if utils.FieldAppliesToMode(resourceType, "voice_port_profile_paths", mode) {
 		if pathsData, ok := data["voice_port_profile_paths"].([]interface{}); ok && len(pathsData) > 0 {
 			var voicePortProfilePaths []voicePortProfilePathsModel
@@ -1242,7 +1203,6 @@ func populateBundleState(ctx context.Context, state verityBundleResourceModel, d
 		state.VoicePortProfilePaths = nil
 	}
 
-	// Handle rg_services array
 	if utils.FieldAppliesToMode(resourceType, "rg_services", mode) {
 		if servicesData, ok := data["rg_services"].([]interface{}); ok && len(servicesData) > 0 {
 			var rgServices []rgServicesModel
@@ -1273,9 +1233,7 @@ func populateBundleState(ctx context.Context, state verityBundleResourceModel, d
 }
 
 func (r *verityBundleResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -1286,11 +1244,6 @@ func (r *verityBundleResource) ModifyPlan(ctx context.Context, req resource.Modi
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := bundleResourceType
 	mode := r.provCtx.mode
 
@@ -1351,9 +1304,6 @@ func (r *verityBundleResource) ModifyPlan(ctx context.Context, req resource.Modi
 	})
 }
 
-// preserveBundlePortNames copies port_name values from a reference source (plan or prior state)
-// into the populated state. The API documents port_name as "reference only" – it accepts the value on PUT
-// but never persists or returns it, so GET always gives back "".
 func preserveBundlePortNames(state *verityBundleResourceModel, ref *verityBundleResourceModel) {
 	if ref == nil || len(ref.EthPortPaths) == 0 || len(state.EthPortPaths) == 0 {
 		return

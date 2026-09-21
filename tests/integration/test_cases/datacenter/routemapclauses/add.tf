@@ -1,5 +1,3 @@
-# Test case: Add new resources
-# Define resources to be injected into the corresponding .tf file for testing
 
 resource "verity_route_map_clause" "route_map_clause_test_script1" {
     name = "route_map_clause_test_script1"

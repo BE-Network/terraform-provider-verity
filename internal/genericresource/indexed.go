@@ -12,30 +12,6 @@ import (
 	"terraform-provider-verity/internal/transport"
 )
 
-// An indexed collection is a list of objects the API identifies by an index it
-// assigns. Terraform holds it as a list block; the API receives, on update, only
-// the entries that changed, each named by its index.
-//
-// Every handwritten resource with a list reconciles it through
-// ProcessIndexedArrayUpdates, with per-resource closures deciding what a new,
-// changed, or removed entry sends. The rules below are that function's, and the
-// closures become the members' declared policies:
-//
-//   - create sends every entry, each member by its create policies;
-//   - update matches plan entries to state entries by index. An index state does
-//     not hold is a new entry, sent whole. An index it does hold sends the index
-//     and the members that changed, and only when one did. A state index the
-//     plan no longer holds is sent as the index alone, which deletes it;
-//   - a response array becomes the list, in the order the API returns it, and an
-//     empty or missing one an absent block.
-//
-// Two handwritten details are kept deliberately. An entry whose index is null is
-// ignored, and one whose index is unknown is treated as index zero: that is what
-// makes an entry written without an index reach the wire as a create with no
-// index at all, the behavior tests/unit/lifecycle/index_zero_test.go pins.
-
-// listEntries returns a list block's entries as member maps, and whether the
-// block holds any.
 func listEntries(field spec.FieldSpec, value attr.Value) ([]map[string]attr.Value, bool, error) {
 	if value == nil || value.IsNull() || value.IsUnknown() {
 		return nil, false, nil
@@ -58,7 +34,6 @@ func listEntries(field spec.FieldSpec, value attr.Value) ([]map[string]attr.Valu
 	return entries, len(entries) != 0, nil
 }
 
-// createEntry builds one entry as a create sends it.
 func createEntry(field spec.FieldSpec, entry map[string]attr.Value, nullables nullableSource) (transport.WireValue, error) {
 	object := make(transport.WireObject, len(field.Fields))
 	for _, member := range field.Fields {
@@ -67,9 +42,7 @@ func createEntry(field spec.FieldSpec, entry map[string]attr.Value, nullables nu
 		}
 		value, held := entry[member.TerraformName]
 		if member.Nullable {
-			// As at the top level, only the configuration shows whether a null
-			// was written, and a member that is not written is left to the
-			// server.
+
 			value, held = nullables.entryMember(field, member, entry)
 		}
 		if !held {
@@ -86,7 +59,6 @@ func createEntry(field spec.FieldSpec, entry map[string]attr.Value, nullables nu
 	return transport.Object(object), nil
 }
 
-// createList decides what a create sends for a list block.
 func createList(field spec.FieldSpec, value attr.Value, nullables nullableSource) (transport.WireValue, bool, error) {
 	entries, present, err := listEntries(field, value)
 	if err != nil {
@@ -106,8 +78,6 @@ func createList(field spec.FieldSpec, value attr.Value, nullables nullableSource
 	return transport.List(wires), true, nil
 }
 
-// entryIndex reads an entry's identity: whether it has one at all, and its value.
-// An unknown index reads as zero, as the handwritten reconciliation reads it.
 func entryIndex(field spec.FieldSpec, entry map[string]attr.Value) (int64, bool) {
 	value, held := entry[field.Collection.IdentityField]
 	index, ok := value.(types.Int64)
@@ -117,8 +87,6 @@ func entryIndex(field spec.FieldSpec, entry map[string]attr.Value) (int64, bool)
 	return index.ValueInt64(), true
 }
 
-// updateList decides what an update sends for a list block that differs from
-// state, and whether anything changed.
 func updateList(field spec.FieldSpec, plan, state attr.Value, nullables nullableSource, diagnostics *diag.Diagnostics) (transport.WireValue, bool, error) {
 	planned, _, err := listEntries(field, plan)
 	if err != nil {
@@ -207,10 +175,6 @@ func updateList(field spec.FieldSpec, plan, state attr.Value, nullables nullable
 		}
 	}
 
-	// Removed entries are sent as their index alone. The handwritten
-	// reconciliation emits them in map iteration order, which differs from run to
-	// run; sorting them changes nothing the API can observe and makes the request
-	// reproducible.
 	var removed []int64
 	for index := range byIndex {
 		if !kept[index] {
@@ -228,9 +192,6 @@ func updateList(field spec.FieldSpec, plan, state attr.Value, nullables nullable
 	return transport.List(sent), true, nil
 }
 
-// listFromAPI decodes a response array into a list block, entries in the order
-// the API returns them. An entry that is not an object is skipped, and an empty
-// or missing array is an absent block, as the handwritten resources record it.
 func listFromAPI(field spec.FieldSpec, raw interface{}, mode string) (attr.Value, error) {
 	items, ok := raw.([]interface{})
 	if !ok || len(items) == 0 {
@@ -270,8 +231,6 @@ func listValue(field spec.FieldSpec, entries []map[string]attr.Value) (attr.Valu
 	return list, nil
 }
 
-// settleList replaces unknown members with nulls in every entry, so a planned
-// list can be written to state.
 func settleList(field spec.FieldSpec, value attr.Value) attr.Value {
 	entries, present, err := listEntries(field, value)
 	if err != nil || !present {

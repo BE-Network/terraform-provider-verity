@@ -289,7 +289,6 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "IngressAcl", APIField: &ethPortProfileProps.IngressAcl, TFValue: plan.IngressAcl},
 		{FieldName: "IngressAclRefType", APIField: &ethPortProfileProps.IngressAclRefType, TFValue: plan.IngressAclRefType},
@@ -299,14 +298,12 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 		{FieldName: "TlsServiceRefType", APIField: &ethPortProfileProps.TlsServiceRefType, TFValue: plan.TlsServiceRefType},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &ethPortProfileProps.Enable, TFValue: plan.Enable},
 		{FieldName: "Tls", APIField: &ethPortProfileProps.Tls, TFValue: plan.Tls},
 		{FieldName: "TrustedPort", APIField: &ethPortProfileProps.TrustedPort, TFValue: plan.TrustedPort},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
@@ -319,11 +316,9 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 		ethPortProfileProps.ObjectProperties = &objProps
 	}
 
-	// Parse HCL to detect explicitly configured attributes
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortProfileTerraformType, name)
 
-	// Handle Services
 	if len(plan.Services) > 0 {
 		servicesItems := make([]openapi.EthportprofilesPutRequestEthPortProfileValueServicesInner, len(plan.Services))
 		servicesConfigMap := utils.BuildIndexedConfigMap(config.Services)
@@ -345,7 +340,6 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 				{FieldName: "RowNumLanIptv", APIField: &serviceItem.RowNumLanIptv, TFValue: item.RowNumLanIptv},
 			})
 
-			// Get per-block configured info for nullable Int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(item, servicesConfigMap, "services", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "RowNumExternalVlan", APIField: &serviceItem.RowNumExternalVlan, TFValue: configItem.RowNumExternalVlan, IsConfigured: cfg.IsFieldConfigured("row_num_external_vlan")},
@@ -383,7 +377,6 @@ func (r *verityEthPortProfileResource) Create(ctx context.Context, req resource.
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -420,7 +413,6 @@ func (r *verityEthPortProfileResource) Read(ctx context.Context, req resource.Re
 
 	ethPortProfileName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if ethPortProfileData, exists := r.bulkOpsMgr.GetResourceResponse("eth_port_profile", ethPortProfileName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached eth port profile data for %s from recent operation", ethPortProfileName))
@@ -533,15 +525,12 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 	ethPortProfileProps := openapi.EthportprofilesPutRequestEthPortProfileValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { ethPortProfileProps.Name = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ethPortProfileProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.Tls, state.Tls, func(v *bool) { ethPortProfileProps.Tls = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.TrustedPort, state.TrustedPort, func(v *bool) { ethPortProfileProps.TrustedPort = v }, &hasChanges)
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -561,7 +550,6 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	// Handle ingress_acl and ingress_acl_ref_type_ using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.IngressAcl, state.IngressAcl, plan.IngressAclRefType, state.IngressAclRefType,
 		func(v *string) { ethPortProfileProps.IngressAcl = v },
@@ -573,7 +561,6 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Handle egress_acl and egress_acl_ref_type_ using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.EgressAcl, state.EgressAcl, plan.EgressAclRefType, state.EgressAclRefType,
 		func(v *string) { ethPortProfileProps.EgressAcl = v },
@@ -585,7 +572,6 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Handle tls_service and tls_service_ref_type_ using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.TlsService, state.TlsService, plan.TlsServiceRefType, state.TlsServiceRefType,
 		func(v *string) { ethPortProfileProps.TlsService = v },
@@ -597,7 +583,6 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Handle services
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortProfileTerraformType, name)
 	var config verityEthPortProfileResourceModel
@@ -628,7 +613,6 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 				{FieldName: "RowNumLanIptv", APIField: &service.RowNumLanIptv, TFValue: planItem.RowNumLanIptv},
 			})
 
-			// Get per-block configured info for nullable Int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(planItem, servicesConfigMap, "services", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "RowNumExternalVlan", APIField: &service.RowNumExternalVlan, TFValue: configItem.RowNumExternalVlan, IsConfigured: cfg.IsFieldConfigured("row_num_external_vlan")},
@@ -645,14 +629,11 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.RowNumEnable, stateItem.RowNumEnable, func(v *bool) { service.RowNumEnable = v }, &fieldChanged)
 
-			// Handle nullable int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(planItem, servicesConfigMap, "services", configuredAttrs)
 			utils.CompareAndSetNullableInt64Field(configItem.RowNumExternalVlan, stateItem.RowNumExternalVlan, cfg.IsFieldConfigured("row_num_external_vlan"), func(v *openapi.NullableInt64) { service.RowNumExternalVlan = *v }, &fieldChanged)
 
-			// Handle row_num_service and row_num_service_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.RowNumService, stateItem.RowNumService, planItem.RowNumServiceRefType, stateItem.RowNumServiceRefType,
 				func(v *string) { service.RowNumService = v },
@@ -664,10 +645,8 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 				return service, false
 			}
 
-			// Handle non-ref-type string fields
 			utils.CompareAndSetStringField(planItem.RowNumLanIptv, stateItem.RowNumLanIptv, func(v *string) { service.RowNumLanIptv = v }, &fieldChanged)
 
-			// Handle row_num_ingress_acl and row_num_ingress_acl_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.RowNumIngressAcl, stateItem.RowNumIngressAcl, planItem.RowNumIngressAclRefType, stateItem.RowNumIngressAclRefType,
 				func(v *string) { service.RowNumIngressAcl = v },
@@ -679,7 +658,6 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 				return service, false
 			}
 
-			// Handle row_num_egress_acl and row_num_egress_acl_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.RowNumEgressAcl, stateItem.RowNumEgressAcl, planItem.RowNumEgressAclRefType, stateItem.RowNumEgressAclRefType,
 				func(v *string) { service.RowNumEgressAcl = v },
@@ -691,7 +669,6 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 				return service, false
 			}
 
-			// Handle row_num_mac_filter and row_num_mac_filter_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.RowNumMacFilter, stateItem.RowNumMacFilter, planItem.RowNumMacFilterRefType, stateItem.RowNumMacFilterRefType,
 				func(v *string) { service.RowNumMacFilter = v },
@@ -741,7 +718,6 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if ethPortProfileData, exists := bulkMgr.GetResourceResponse("eth_port_profile", name); exists {
 			newState := populateEthPortProfileState(ctx, minState, utils.MergeMissingPlanScalars(ethPortProfileData, plan, ethPortProfileResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -750,7 +726,6 @@ func (r *verityEthPortProfileResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -806,12 +781,10 @@ func populateEthPortProfileState(ctx context.Context, state verityEthPortProfile
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.Tls = utils.MapBoolWithMode(data, "tls", resourceType, mode)
 	state.TrustedPort = utils.MapBoolWithMode(data, "trusted_port", resourceType, mode)
 
-	// String fields
 	state.IngressAcl = utils.MapStringWithMode(data, "ingress_acl", resourceType, mode)
 	state.IngressAclRefType = utils.MapStringWithMode(data, "ingress_acl_ref_type_", resourceType, mode)
 	state.EgressAcl = utils.MapStringWithMode(data, "egress_acl", resourceType, mode)
@@ -819,7 +792,6 @@ func populateEthPortProfileState(ctx context.Context, state verityEthPortProfile
 	state.TlsService = utils.MapStringWithMode(data, "tls_service", resourceType, mode)
 	state.TlsServiceRefType = utils.MapStringWithMode(data, "tls_service_ref_type_", resourceType, mode)
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityEthPortProfileObjectPropertiesModel{
@@ -836,7 +808,6 @@ func populateEthPortProfileState(ctx context.Context, state verityEthPortProfile
 		state.ObjectProperties = nil
 	}
 
-	// Handle services list block
 	if utils.FieldAppliesToMode(resourceType, "services", mode) {
 		if servicesData, ok := data["services"].([]interface{}); ok && len(servicesData) > 0 {
 			var servicesList []servicesModel
@@ -877,9 +848,7 @@ func populateEthPortProfileState(ctx context.Context, state verityEthPortProfile
 }
 
 func (r *verityEthPortProfileResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -890,11 +859,6 @@ func (r *verityEthPortProfileResource) ModifyPlan(ctx context.Context, req resou
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := ethPortProfileResourceType
 	mode := r.provCtx.mode
 
@@ -932,16 +896,10 @@ func (r *verityEthPortProfileResource) ModifyPlan(ctx context.Context, req resou
 		Int64Fields: []string{"index", "row_num_external_vlan"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityEthPortProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -954,9 +912,6 @@ func (r *verityEthPortProfileResource) ModifyPlan(ctx context.Context, req resou
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable fields in services nested blocks
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ethPortProfileTerraformType, name)

@@ -5,15 +5,6 @@ import (
 	"testing"
 )
 
-// The golden fixtures record a create and an enable flip, so they cover a
-// singleton only as it is first sent. Every rule that decides what an update
-// does with the object is invisible to them: which members travel, what a clear
-// looks like, and what adding or removing the block sends. The handwritten
-// resources are the definition of those rules, so each case here runs both
-// implementations over the same configuration and requires the same requests.
-//
-// Every attribute outside the block is written in full, so nothing plans as
-// unknown except where a case means it to.
 func TestGenericMatchesLegacyOnSingletonUpdates(t *testing.T) {
 	const badgeFixed = `  color = "red"
   enable = true
@@ -43,9 +34,7 @@ func TestGenericMatchesLegacyOnSingletonUpdates(t *testing.T) {
 		name           string
 		terraformType  string
 		create, update string
-		// outcome is set where the handwritten resource itself does not converge.
-		// The engine is held to the same requests and the same failure; see
-		// "Singleton defects carried for parity" in status.md.
+
 		outcome lifecycleOutcome
 	}{
 		{
@@ -67,8 +56,7 @@ func TestGenericMatchesLegacyOnSingletonUpdates(t *testing.T) {
 			update:        badge("  object_properties {\n  }\n"),
 		},
 		{
-			// Removing the block sends nothing, the read restores the server's
-			// object, and every later plan proposes the removal again.
+
 			name:          "block is removed",
 			terraformType: "verity_badge",
 			create:        badge("  object_properties {\n    notes = \"first\"\n  }\n"),
@@ -76,8 +64,7 @@ func TestGenericMatchesLegacyOnSingletonUpdates(t *testing.T) {
 			outcome:       lifecycleOutcome{driftAfterApply: true},
 		},
 		{
-			// Adding the block to a resource whose state holds none sends nothing,
-			// because an update considers the object only when state has one.
+
 			name:          "block is added",
 			terraformType: "verity_badge",
 			create:        badge(""),
@@ -92,9 +79,7 @@ func TestGenericMatchesLegacyOnSingletonUpdates(t *testing.T) {
 				"  color = \"blue\"\n  enable = true\n  number = 42\n  object_properties {\n    notes = \"kept\"\n  }\n"),
 		},
 		{
-			// With one permitted type a value-only change sends the value alone.
-			// The API merges object_properties, so the type the PATCH does not
-			// carry keeps its value.
+
 			name:          "reference pair inside the block changes its value",
 			terraformType: "verity_lag",
 			create:        lag("  object_properties {\n    fabric = \"fabric-a\"\n    fabric_ref_type_ = \"fabric\"\n  }\n"),
@@ -123,16 +108,6 @@ func TestGenericMatchesLegacyOnSingletonUpdates(t *testing.T) {
 	}
 }
 
-// An empty block on create is the one singleton case where the engine
-// deliberately differs.
-//
-// A member left out of a written block plans as unknown. The handwritten
-// resources build the object with SetObjectPropertiesFields, which checks only
-// for null, so an unknown string reaches the request as its zero value and
-// clears the server's value to "". The engine applies the member's declared
-// unknown_plan, omit_and_read, and leaves it out. That is the same difference the
-// engine already has on the update path, recorded under "Intended behavior
-// changes" in status.md; this pins its exact shape so neither side can drift.
 func TestSingletonEmptyBlockOnCreateOmitsUnknownMembers(t *testing.T) {
 	create := fmt.Sprintf("resource \"verity_badge\" \"test\" {\n  name = \"diffbadge\"\n%s}\n",
 		"  color = \"red\"\n  enable = true\n  number = 42\n  object_properties {\n  }\n")

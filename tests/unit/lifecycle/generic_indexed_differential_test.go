@@ -9,12 +9,6 @@ import (
 	"testing"
 )
 
-// The golden fixtures create each list with one entry and flip enable, so every
-// rule that reconciles a list on update is invisible to them: which entries
-// travel, what a changed entry carries, and how an entry is removed. Every
-// handwritten list goes through ProcessIndexedArrayUpdates, so these cases run
-// both implementations over the same configuration and require the same
-// requests.
 func TestGenericMatchesLegacyOnIndexedCollections(t *testing.T) {
 	macFilter := func(topType string, entries ...string) string {
 		return fmt.Sprintf(`resource "verity_mac_filter" "test" {
@@ -48,9 +42,7 @@ func TestGenericMatchesLegacyOnIndexedCollections(t *testing.T) {
 		terraformType  string
 		create, update string
 		outcome        lifecycleOutcome
-		// unordered compares arrays as sets. Only the case that removes several
-		// entries needs it: the handwritten reconciliation emits removals in map
-		// iteration order, which varies between runs.
+
 		unordered bool
 	}{
 		{
@@ -90,18 +82,14 @@ func TestGenericMatchesLegacyOnIndexedCollections(t *testing.T) {
 			update: macFilter("white", filter("1", "00:11:22:33:44:55", true)),
 		},
 		{
-			// Entries are matched by index, not position, so writing the same
-			// entries in another order sends nothing; the read returns them in
-			// the API's order.
+
 			name: "entries are reordered", terraformType: "verity_mac_filter",
 			create:  macFilter("", filter("1", "00:11:22:33:44:55", true), filter("2", "66:77:88:99:aa:bb", false)),
 			update:  macFilter("", filter("2", "66:77:88:99:aa:bb", false), filter("1", "00:11:22:33:44:55", true)),
 			outcome: lifecycleOutcome{driftAfterApply: true},
 		},
 		{
-			// An entry written without an index plans its index as unknown, which
-			// is read as zero, sent as a create with no index, and never
-			// reconciled; index_zero_test.go characterizes the same thing.
+
 			name: "an entry is added without an index", terraformType: "verity_mac_filter",
 			create:  macFilter("", filter("1", "00:11:22:33:44:55", true)),
 			update:  macFilter("", filter("1", "00:11:22:33:44:55", true), filter("", "66:77:88:99:aa:bb", false)),
@@ -143,9 +131,6 @@ func TestGenericMatchesLegacyOnIndexedCollections(t *testing.T) {
 	}
 }
 
-// canonicalUnordered renders a body with every array sorted by its elements'
-// encodings, so two requests that carry the same entries in a different order
-// compare equal.
 func canonicalUnordered(t *testing.T, body map[string]interface{}) string {
 	t.Helper()
 	if body == nil {

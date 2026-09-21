@@ -16,10 +16,6 @@ import (
 	"terraform-provider-verity/internal/importer"
 )
 
-// importerSupportedFields returns the schema of every resource the provider
-// registers, in the shape the importer checks generated configuration against.
-// It reads the schemas the provider actually serves, so the check always agrees
-// with what Terraform will accept.
 func importerSupportedFields(ctx context.Context) map[string]*importer.SchemaFields {
 	fields := make(map[string]*importer.SchemaFields)
 	for _, factory := range getAllResources() {
@@ -53,16 +49,13 @@ func schemaFields(attributes map[string]schema.Attribute, blocks map[string]sche
 		case schema.SingleNestedBlock:
 			fields.Blocks[name] = schemaFields(b.Attributes, b.Blocks)
 		default:
-			// A block kind the provider does not use: accept it whole rather
-			// than strip arguments that may be valid.
+
 			fields.Attributes[name] = true
 		}
 	}
 	return fields
 }
 
-// unsupportedFieldsWarning describes what the importer left out, or returns ""
-// when it left out nothing.
 func unsupportedFieldsWarning(unsupported map[string][]string) string {
 	if len(unsupported) == 0 {
 		return ""
@@ -83,15 +76,8 @@ func unsupportedFieldsWarning(unsupported map[string][]string) string {
 	return detail.String()
 }
 
-// unsupportedArgumentsFile holds the warning beside the generated configuration.
-// Terraform prints the warning when the importer runs, but the import scripts go
-// on to a second apply whose output buries it; they print this file at the end
-// instead.
 const unsupportedArgumentsFile = "unsupported_arguments.txt"
 
-// writeUnsupportedArgumentsFile writes the warning to the output directory, or,
-// when nothing was left out, removes the file an earlier import left, so it
-// never describes a different system or provider version.
 func writeUnsupportedArgumentsFile(dir, warning string) error {
 	path := filepath.Join(dir, unsupportedArgumentsFile)
 	if warning == "" {

@@ -1,17 +1,10 @@
 format_version: 1
 api_version: "6.6"
 
-# Values shared by most of the registry. Below a resource, only genuine
-# deviations appear: fields inherit the default profile, the resource modes and
-# version range, and the API description from the committed OpenAPI documents.
 defaults:
   versions: {min_inclusive: "6.6", max_exclusive: "6.7"}
   profile: server_managed
   profiles:
-    # The object key: required, and replaced rather than updated. response_absence
-    # is terraform_null because that is what every read helper does today; whether
-    # a missing identity should instead be a hard error is part of the open
-    # nullable/reset decision, not something this registry assumes.
     identity:
       access: required
       response_absence: terraform_null
@@ -20,18 +13,10 @@ defaults:
       unknown_plan: reject
       state_ownership: configuration
       replace: true
-    # The default. Optional in config, computed from the server when absent.
-    # update_clear and create_null are omitted deliberately: both follow the wire
-    # type. Only numerics are nullable, so they carry an explicit null while every
-    # other kind is omitted on create and cleared to its zero value on update.
     server_managed:
       access: optional_computed
       response_absence: terraform_null
       state_ownership: configuration_or_server
-    # A nested block the configuration owns outright. Only numerics are nullable,
-    # so a container never carries an explicit null: removing a singleton omits
-    # the key, and removing a collection entry is expressed by the collection
-    # strategy rather than by a wire value.
     container:
       access: optional
       response_absence: terraform_null
@@ -2033,8 +2018,6 @@ resources:
       - api_name: vni
         api_kind: integer
         modes: [datacenter]
-        # The API assigns vni from the VLAN, so a VLAN change leaves vni unknown
-        # until the read that follows, whether or not assignment is on.
         auto_assignment:
           recomputed_when: [vlan]
       - api_name: vni_auto_assigned_

@@ -12,13 +12,6 @@ import (
 	"terraform-provider-verity/tests/unit/mock"
 )
 
-// A Verity system newer than the provider's API version returns arguments the
-// schema does not have, and one of them in a generated file makes Terraform
-// reject the whole import. The importer leaves them out; this runs the importer
-// data source against a system whose tenants carry two such arguments and
-// requires the generated tenants.tf to hold the tenant without them, and
-// unsupported_arguments.txt, which the import scripts print at the end, to name
-// them.
 func TestImporterLeavesOutUnsupportedArguments(t *testing.T) {
 	ms := mock.NewMockServer("datacenter")
 	defer ms.Close()

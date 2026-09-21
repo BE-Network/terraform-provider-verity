@@ -24,10 +24,6 @@ type adapterOptions struct {
 	Check      bool
 }
 
-// goStruct is one generated OpenAPI struct as the generator sees it: its fields
-// indexed by the JSON name the API uses, which is the name the registry also
-// speaks. Matching on the tag rather than on a transformed identifier is what
-// keeps the generator independent of the SDK generator's naming rules.
 type goStruct struct {
 	Name   string
 	Fields map[string]goField
@@ -38,10 +34,6 @@ type goField struct {
 	GoType string
 }
 
-// discoverStructs reads the generated SDK package and indexes every struct in
-// it. This runs at generation time, so a type or tag that moves is a build
-// failure in regenerated code rather than a runtime surprise — which is the
-// objection the plan raises against reflecting over these structs live.
 func discoverStructs(dir string) (map[string]goStruct, error) {
 	fileSet := token.NewFileSet()
 	packages, err := parser.ParseDir(fileSet, dir, nil, 0)
@@ -103,7 +95,6 @@ func typeString(expr ast.Expr) string {
 	return buf.String()
 }
 
-// resourceAdapter is one resource the generator can emit an adapter for.
 type resourceAdapter struct {
 	TerraformType string
 	GoTypeName    string
@@ -114,24 +105,17 @@ type adapterField struct {
 	APIName string
 	GoName  string
 	Setter  string
-	// Nested is set for a singleton object or an indexed list. Its members are
-	// converted by a generated function named by Setter, into the struct the SDK
-	// declares for the object or for each list entry.
+
 	Nested *nestedAdapter
 }
 
 type nestedAdapter struct {
 	GoTypeName string
 	Fields     []adapterField
-	// List is true for an indexed collection, whose Go type is a slice of the
-	// entry struct rather than a pointer to it.
+
 	List bool
 }
 
-// putRequestTypeName derives the request type from the endpoint the way the SDK
-// generator names it. The derivation is checked rather than trusted: the
-// resulting struct's wrapper tag must equal the registry's request wrapper key,
-// and a resource whose does not is reported and skipped.
 func putRequestTypeName(endpointPath string) string {
 	trimmed := strings.TrimPrefix(endpointPath, "/")
 	if trimmed == "" {
@@ -140,9 +124,6 @@ func putRequestTypeName(endpointPath string) string {
 	return strings.ToUpper(trimmed[:1]) + trimmed[1:] + "PutRequest"
 }
 
-// setterFor maps a generated field's Go type onto the transport helper that
-// fills it. An unrecognised type is refused: guessing at a wrapper would
-// produce an adapter that compiles and sends the wrong shape.
 func setterFor(goType string) (string, bool) {
 	switch goType {
 	case "*string":
@@ -172,9 +153,6 @@ func setterFor(goType string) (string, bool) {
 	}
 }
 
-// planAdapters decides which resources can have an adapter generated and why the
-// rest cannot. A skip is reported rather than silently dropped, so the set the
-// engine can serve is visible instead of inferred.
 func planAdapters(registry spec.Registry, structs map[string]goStruct) (adapters []resourceAdapter, skipped []string) {
 	for _, resource := range registry {
 		adapter, reason := planOne(resource, structs)
@@ -190,15 +168,13 @@ func planAdapters(registry spec.Registry, structs map[string]goStruct) (adapters
 }
 
 func planOne(resource spec.ResourceSpec, structs map[string]goStruct) (resourceAdapter, string) {
-	// The engine's own support rule decides servability, so the adapters and the
-	// engine cannot disagree about which resources can be migrated.
+
 	if err := genericresource.Supported(resource); err != nil {
 		return resourceAdapter{}, err.Error()
 	}
 	requestName := putRequestTypeName(resource.API.EndpointPath)
 	if !resource.Operations.Create {
-		// A resource that is only ever updated has no PUT; the SDK declares its
-		// body under PATCH, and that is the type the bulk manager asserts.
+
 		requestName = strings.TrimSuffix(requestName, "PutRequest") + "PatchRequest"
 	}
 	request, found := structs[requestName]
@@ -225,10 +201,6 @@ func planOne(resource spec.ResourceSpec, structs map[string]goStruct) (resourceA
 	return resourceAdapter{TerraformType: resource.TerraformType, GoTypeName: valueTypeName, Fields: fields}, ""
 }
 
-// planFields maps a level of spec fields onto the struct the SDK declares for
-// it, recursing into a singleton's own struct. The engine's support rule has
-// already decided what can appear here, so an unexpected shape is reported as a
-// mismatch between the SDK and the registry rather than accommodated.
 func planFields(terraformType string, fields []spec.FieldSpec, value goStruct, structs map[string]goStruct) ([]adapterField, string) {
 	planned := make([]adapterField, 0, len(fields))
 	for _, field := range fields {
@@ -240,9 +212,7 @@ func planFields(terraformType string, fields []spec.FieldSpec, value goStruct, s
 			return nil, fmt.Sprintf("%s carries no %q field", value.Name, field.APIName)
 		}
 		if field.Kind == spec.FieldKindObject && managedMembers(field) == 0 {
-			// The API declares this object with no properties, and the SDK types
-			// it as a plain map rather than a struct; it has nothing to convert
-			// but its presence.
+
 			if target.GoType != "map[string]interface{}" {
 				return nil, fmt.Sprintf("%s.%s is %s, not the map the SDK uses for an object with no properties", value.Name, target.GoName, target.GoType)
 			}
@@ -298,15 +268,6 @@ func readRegistry(path string) (spec.Registry, error) {
 	return artifact.Resources, nil
 }
 
-// generateAdapters emits one transport adapter per resource the generic engine
-// can serve.
-//
-// The plan puts a generated adapter at the boundary between the codec and the
-// bulk manager: the codec owns field names and values, the adapter owns the
-// generated SDK types. Writing them by hand would reinstate the per-resource
-// duplication the registry exists to remove, and reflecting over the SDK structs
-// at runtime would move the mistakes to runtime. Generating from the structs'
-// own JSON tags does neither.
 func generateAdapters(opts adapterOptions) error {
 	if opts.Registry == "" || opts.OpenAPIDir == "" || opts.Output == "" {
 		return fmt.Errorf("--registry, --openapi-dir and --output are required")
@@ -325,22 +286,9 @@ func generateAdapters(opts adapterOptions) error {
 	}
 
 	var buf bytes.Buffer
-	buf.WriteString("// Code generated by tools/specgen adapters. DO NOT EDIT.\n")
-	buf.WriteString("//\n")
-	buf.WriteString("// Source: specs/generated_registry.json and the generated SDK's own JSON tags.\n")
-	buf.WriteString("//\n")
-	buf.WriteString("// One adapter per resource the generic engine can serve. Each converts the\n")
-	buf.WriteString("// codec's canonical object into the typed value the bulk manager asserts, which\n")
-	buf.WriteString("// is the boundary the plan puts between the two.\n")
-	buf.WriteString("//\n")
-	buf.WriteString("// Resources without an adapter, and why:\n")
-	for _, reason := range skipped {
-		fmt.Fprintf(&buf, "//   %s\n", reason)
-	}
 	buf.WriteString("\npackage transport\n\n")
 	buf.WriteString("import (\n\t\"fmt\"\n\n\t\"terraform-provider-verity/openapi\"\n)\n\n")
 
-	buf.WriteString("// GeneratedAdapters holds every generated adapter by Terraform type.\n")
 	buf.WriteString("var GeneratedAdapters = map[string]ResourceValueAdapter{\n")
 	for _, adapter := range adapters {
 		fmt.Fprintf(&buf, "\t%q: %s{},\n", adapter.TerraformType, adapterTypeName(adapter.TerraformType))
@@ -359,8 +307,6 @@ func generateAdapters(opts adapterOptions) error {
 			fmt.Fprintf(&buf, "\t\t\t\treturn nil, fmt.Errorf(\"%%s: %%w\", name, err)\n\t\t\t}\n")
 		}
 		buf.WriteString("\t\tdefault:\n")
-		buf.WriteString("\t\t\t// The codec only emits fields the spec declares, so an unknown one\n")
-		buf.WriteString("\t\t\t// means the registry and this adapter were generated apart.\n")
 		fmt.Fprintf(&buf, "\t\t\treturn nil, fmt.Errorf(\"%s has no field %%q\", name)\n", adapter.GoTypeName)
 		buf.WriteString("\t\t}\n\t}\n\treturn value, nil\n}\n")
 		for _, field := range adapter.Fields {
@@ -387,9 +333,6 @@ func generateAdapters(opts adapterOptions) error {
 	return writeFile(opts.Output, formatted)
 }
 
-// writeNestedAdapter emits the conversion for one singleton object: the codec's
-// canonical object into the struct the SDK declares for it, set through a
-// pointer because the SDK omits an absent object rather than sending it empty.
 func writeNestedAdapter(buf *bytes.Buffer, field adapterField) {
 	nested := field.Nested
 	if nested.List {
@@ -411,9 +354,6 @@ func writeNestedAdapter(buf *bytes.Buffer, field adapterField) {
 	writeNestedMembers(buf, nested)
 }
 
-// writeNestedMembers emits the conversions a nested struct's own members need,
-// which is how verity_fabric's system_graphs list inside object_properties gets
-// its adapter.
 func writeNestedMembers(buf *bytes.Buffer, nested *nestedAdapter) {
 	for _, member := range nested.Fields {
 		if member.Nested != nil {
@@ -422,9 +362,6 @@ func writeNestedMembers(buf *bytes.Buffer, nested *nestedAdapter) {
 	}
 }
 
-// writeListAdapter emits the conversion for one indexed collection: each entry of
-// the codec's canonical list into the struct the SDK declares for an entry, in
-// the order the codec produced them.
 func writeListAdapter(buf *bytes.Buffer, field adapterField) {
 	nested := field.Nested
 	fmt.Fprintf(buf, "\nfunc %s(wire WireValue, target *[]openapi.%s) error {\n", field.Setter, nested.GoTypeName)
@@ -445,7 +382,6 @@ func writeListAdapter(buf *bytes.Buffer, field adapterField) {
 	writeNestedMembers(buf, nested)
 }
 
-// adapterTypeName turns verity_ipv4_list into ipv4ListAdapter.
 func adapterTypeName(terraformType string) string {
 	parts := strings.Split(strings.TrimPrefix(terraformType, "verity_"), "_")
 	name := parts[0]

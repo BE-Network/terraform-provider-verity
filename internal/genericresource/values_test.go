@@ -12,9 +12,6 @@ import (
 	"terraform-provider-verity/internal/transport"
 )
 
-// scalarFields mirrors the reviewed spec for verity_ipv4_list: a Required
-// identity that refuses null and unknown, and two optional-computed fields that
-// omit a null on create and clear by wire type on update.
 func scalarFields() []spec.FieldSpec {
 	return []spec.FieldSpec{
 		{
@@ -47,9 +44,6 @@ func encode(t *testing.T, object transport.WireObject) string {
 	return string(encoded)
 }
 
-// A create sends what the configuration says and leaves out what it does not.
-// The omitted field is Computed, so the read that follows supplies it; sending a
-// zero value instead would store a value nobody asked for.
 func TestBuildCreateOmitsNullAndUnknown(t *testing.T) {
 	t.Parallel()
 
@@ -82,8 +76,6 @@ func TestBuildCreateSendsKnownValues(t *testing.T) {
 	}
 }
 
-// The identity refuses both null and unknown rather than sending something the
-// server would store under the wrong name.
 func TestBuildCreateRejectsUnknownIdentity(t *testing.T) {
 	t.Parallel()
 
@@ -99,8 +91,6 @@ func TestBuildCreateRejectsUnknownIdentity(t *testing.T) {
 	}
 }
 
-// An update carries only what differs. A field equal to its state is not a
-// change, and when nothing differs there is no request to make at all.
 func TestBuildUpdateSendsOnlyChangedFields(t *testing.T) {
 	t.Parallel()
 
@@ -135,8 +125,6 @@ func TestBuildUpdateSendsOnlyChangedFields(t *testing.T) {
 	}
 }
 
-// Clearing is per field, and the wire type is what decides it: a string clears
-// to empty and a bool to false. Neither is a null on this API.
 func TestBuildUpdateClearsByDeclaredPolicy(t *testing.T) {
 	t.Parallel()
 
@@ -163,10 +151,6 @@ func TestBuildUpdateClearsByDeclaredPolicy(t *testing.T) {
 	}
 }
 
-// An unknown on update is left out, the same as on create, rather than
-// serialized as the zero its Go type would produce. This is the policy the
-// registry records for these fields, and the legacy compare helpers do not
-// implement it; see the Phase 2 notes in status.md.
 func TestBuildUpdateOmitsUnknown(t *testing.T) {
 	t.Parallel()
 
@@ -193,7 +177,6 @@ func TestBuildUpdateOmitsUnknown(t *testing.T) {
 	}
 }
 
-// A clear that must not happen is refused rather than sent as something else.
 func TestBuildUpdateRefusesToClearTheIdentity(t *testing.T) {
 	t.Parallel()
 
@@ -205,8 +188,6 @@ func TestBuildUpdateRefusesToClearTheIdentity(t *testing.T) {
 	}
 }
 
-// Decoding a response is the other direction, and an absent member is the case
-// worth pinning: it reads as a Terraform null rather than a zero value.
 func TestStateFromAPIDecodesPresentAndAbsent(t *testing.T) {
 	t.Parallel()
 

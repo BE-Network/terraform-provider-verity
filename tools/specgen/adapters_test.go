@@ -2,10 +2,6 @@ package main
 
 import "testing"
 
-// Every type setterFor accepts must name a transport helper with the matching
-// generated-SDK target type. This table is deliberately exhaustive: adding a
-// supported type without its width-specific helper otherwise first fails when a
-// future OpenAPI document happens to use it.
 func TestSetterForSupportsEverySDKScalarType(t *testing.T) {
 	t.Parallel()
 

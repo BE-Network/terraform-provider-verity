@@ -10,8 +10,6 @@ import (
 	"terraform-provider-verity/internal/spec"
 )
 
-// pairFields models one reference: a value naming an object and a companion
-// naming its type, as verity_pair carries three of.
 func pairFields(allowed ...string) []spec.FieldSpec {
 	if len(allowed) == 0 {
 		allowed = []string{"lag"}
@@ -60,8 +58,6 @@ func updatePair(t *testing.T, fields []spec.FieldSpec, plan, state map[string]at
 	return encode(t, object), changed, diagnostics
 }
 
-// An untouched pair is not a change, so an update that only alters something
-// else does not restate it.
 func TestReferencePairUnchangedSendsNothing(t *testing.T) {
 	t.Parallel()
 
@@ -72,8 +68,6 @@ func TestReferencePairUnchangedSendsNothing(t *testing.T) {
 	}
 }
 
-// With one permitted type the companion is implied by the value, so changing
-// the value alone does not restate it. This is the handwritten behavior.
 func TestReferencePairValueOnlyChangeSendsValueOnly(t *testing.T) {
 	t.Parallel()
 
@@ -89,8 +83,6 @@ func TestReferencePairValueOnlyChangeSendsValueOnly(t *testing.T) {
 	}
 }
 
-// When the type changes both halves go, because the server resolves them
-// together and a type without its value names nothing.
 func TestReferencePairTypeChangeSendsBothHalves(t *testing.T) {
 	t.Parallel()
 
@@ -107,8 +99,6 @@ func TestReferencePairTypeChangeSendsBothHalves(t *testing.T) {
 	}
 }
 
-// Both halves clear to an empty string. A reference is never cleared by
-// omission and never by a null, whichever half it is.
 func TestReferencePairClearsToEmptyStrings(t *testing.T) {
 	t.Parallel()
 
@@ -128,14 +118,9 @@ func TestReferencePairClearsToEmptyStrings(t *testing.T) {
 	}
 }
 
-// A value with no type is refused rather than sent, because the server could not
-// resolve what it names. Which refusal it is depends on whether the companion
-// also changed, and both wordings are the handwritten helpers' own.
 func TestReferencePairRefusesAValueWithNoType(t *testing.T) {
 	t.Parallel()
 
-	// The value alone changes and the companion stays absent: the pair is
-	// incomplete, and the complaint names what is missing.
 	valueOnlyState := map[string]attr.Value{
 		"name":          types.StringValue("p"),
 		"lag":           types.StringValue(""),
@@ -154,8 +139,6 @@ func TestReferencePairRefusesAValueWithNoType(t *testing.T) {
 		t.Fatalf("diagnostic summary = %q, want %q", summary, "Missing reference type")
 	}
 
-	// Both halves change, the companion to nothing: the complaint is that the
-	// two disagree, not that one is missing.
 	_, _, both := updatePair(t, pairFields(), valueOnlyPlan, pairState("", ""))
 	if !both.HasError() {
 		t.Fatal("clearing the type while setting the value was accepted")
@@ -165,8 +148,6 @@ func TestReferencePairRefusesAValueWithNoType(t *testing.T) {
 	}
 }
 
-// With several permitted types the companion is never implied, so both halves
-// are always sent and the unchanged half comes from state.
 func TestReferencePairWithSeveralTypesAlwaysSendsBoth(t *testing.T) {
 	t.Parallel()
 
@@ -183,14 +164,11 @@ func TestReferencePairWithSeveralTypesAlwaysSendsBoth(t *testing.T) {
 	}
 }
 
-// A companion the spec names but the resource does not carry would mean sending
-// one half of a pair the API requires whole, so it is refused rather than
-// silently treated as an ordinary string.
 func TestReferencePairRefusesAMissingCompanion(t *testing.T) {
 	t.Parallel()
 
 	fields := pairFields()
-	fields = fields[:2] // drop lag_ref_type_
+	fields = fields[:2]
 
 	var diagnostics diag.Diagnostics
 	if _, _, err := buildUpdate(fields, pairState("a", "lag"), pairState("b", "lag"), nullableSource{}, &diagnostics); err == nil {

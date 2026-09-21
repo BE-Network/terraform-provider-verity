@@ -409,7 +409,6 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Tenant", APIField: &gatewayProps.Tenant, TFValue: plan.Tenant},
 		{FieldName: "TenantRefType", APIField: &gatewayProps.TenantRefType, TFValue: plan.TenantRefType},
@@ -430,7 +429,6 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "Type", APIField: &gatewayProps.Type, TFValue: plan.Type},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &gatewayProps.Enable, TFValue: plan.Enable},
 		{FieldName: "FabricInterconnect", APIField: &gatewayProps.FabricInterconnect, TFValue: plan.FabricInterconnect},
@@ -445,7 +443,6 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "RemovePrivateAs", APIField: &gatewayProps.RemovePrivateAs, TFValue: plan.RemovePrivateAs},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, gatewayTerraformType, name)
 
@@ -466,7 +463,6 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		{FieldName: "BgpInstanceAsNumber", APIField: &gatewayProps.BgpInstanceAsNumber, TFValue: config.BgpInstanceAsNumber, IsConfigured: configuredAttrs.IsConfigured("bgp_instance_as_number")},
 	})
 
-	// Handle static routes
 	if len(plan.StaticRoutes) > 0 {
 		staticRoutesConfigMap := utils.BuildIndexedConfigMap(config.StaticRoutes)
 		routes := make([]openapi.GatewaysPutRequestGatewayValueStaticRoutesInner, len(plan.StaticRoutes))
@@ -480,7 +476,6 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 				{FieldName: "NextHopIpAddress", APIField: &rItem.NextHopIpAddress, TFValue: item.NextHopIpAddress},
 			})
 
-			// Get per-block configured info for nullable Int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(item, staticRoutesConfigMap, "static_routes", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "AdValue", APIField: &rItem.AdValue, TFValue: configItem.AdValue, IsConfigured: cfg.IsFieldConfigured("ad_value")},
@@ -517,7 +512,6 @@ func (r *verityGatewayResource) Create(ctx context.Context, req resource.CreateR
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -554,7 +548,6 @@ func (r *verityGatewayResource) Read(ctx context.Context, req resource.ReadReque
 
 	gatewayName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if gatewayData, exists := r.bulkOpsMgr.GetResourceResponse("gateway", gatewayName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached gateway data for %s from recent operation", gatewayName))
@@ -655,7 +648,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityGatewayResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -675,11 +667,9 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	gatewayProps := openapi.GatewaysPutRequestGatewayValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, gatewayTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { gatewayProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.NeighborIpAddress, state.NeighborIpAddress, func(v *string) { gatewayProps.NeighborIpAddress = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.SourceIpAddress, state.SourceIpAddress, func(v *string) { gatewayProps.SourceIpAddress = v }, &hasChanges)
@@ -690,7 +680,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetStringField(plan.DynamicBgpSubnet, state.DynamicBgpSubnet, func(v *string) { gatewayProps.DynamicBgpSubnet = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.HelperHopIpAddress, state.HelperHopIpAddress, func(v *string) { gatewayProps.HelperHopIpAddress = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { gatewayProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.FabricInterconnect, state.FabricInterconnect, func(v *bool) { gatewayProps.FabricInterconnect = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.LocalAsNoPrepend, state.LocalAsNoPrepend, func(v *bool) { gatewayProps.LocalAsNoPrepend = v }, &hasChanges)
@@ -704,7 +693,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetBoolField(plan.RemovePrivateAs, state.RemovePrivateAs, func(v *bool) { gatewayProps.RemovePrivateAs = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Type, state.Type, func(v *string) { gatewayProps.Type = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.NeighborAsNumber, state.NeighborAsNumber, configuredAttrs.IsConfigured("neighbor_as_number"), func(v *openapi.NullableInt64) { gatewayProps.NeighborAsNumber = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.KeepaliveTimer, state.KeepaliveTimer, configuredAttrs.IsConfigured("keepalive_timer"), func(v *openapi.NullableInt64) { gatewayProps.KeepaliveTimer = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.HoldTimer, state.HoldTimer, configuredAttrs.IsConfigured("hold_timer"), func(v *openapi.NullableInt64) { gatewayProps.HoldTimer = *v }, &hasChanges)
@@ -720,7 +708,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 	utils.CompareAndSetNullableInt64Field(config.BfdDetectMultiplier, state.BfdDetectMultiplier, configuredAttrs.IsConfigured("bfd_detect_multiplier"), func(v *openapi.NullableInt64) { gatewayProps.BfdDetectMultiplier = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.BgpInstanceAsNumber, state.BgpInstanceAsNumber, configuredAttrs.IsConfigured("bgp_instance_as_number"), func(v *openapi.NullableInt64) { gatewayProps.BgpInstanceAsNumber = *v }, &hasChanges)
 
-	// Handle tenant and tenant_ref_type_ fields using "Many ref types supported" pattern
 	if !utils.HandleMultipleRefTypesSupported(
 		plan.Tenant, state.Tenant, plan.TenantRefType, state.TenantRefType,
 		func(v *string) { gatewayProps.Tenant = v },
@@ -732,7 +719,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	// Handle Fabric and FabricRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.Fabric, state.Fabric, plan.FabricRefType, state.FabricRefType,
 		func(v *string) { gatewayProps.Fabric = v },
@@ -744,7 +730,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	// Handle ImportRouteMap and ImportRouteMapRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.ImportRouteMap, state.ImportRouteMap, plan.ImportRouteMapRefType, state.ImportRouteMapRefType,
 		func(v *string) { gatewayProps.ImportRouteMap = v },
@@ -756,7 +741,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	// Handle ExportRouteMap and ExportRouteMapRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.ExportRouteMap, state.ExportRouteMap, plan.ExportRouteMapRefType, state.ExportRouteMapRefType,
 		func(v *string) { gatewayProps.ExportRouteMap = v },
@@ -768,7 +752,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	// Handle static routes
 	staticRoutesConfigMap := utils.BuildIndexedConfigMap(config.StaticRoutes)
 
 	staticRoutesHandler := utils.IndexedItemHandler[verityGatewayStaticRoutesModel, openapi.GatewaysPutRequestGatewayValueStaticRoutesInner]{
@@ -788,7 +771,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 				{FieldName: "NextHopIpAddress", APIField: &route.NextHopIpAddress, TFValue: planItem.NextHopIpAddress},
 			})
 
-			// Get per-block configured info for nullable Int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(planItem, staticRoutesConfigMap, "static_routes", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "AdValue", APIField: &route.AdValue, TFValue: configItem.AdValue, IsConfigured: cfg.IsFieldConfigured("ad_value")},
@@ -805,14 +787,11 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { route.Enable = v }, &fieldChanged)
 
-			// Handle string fields
 			utils.CompareAndSetStringField(planItem.Ipv4RoutePrefix, stateItem.Ipv4RoutePrefix, func(v *string) { route.Ipv4RoutePrefix = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.NextHopIpAddress, stateItem.NextHopIpAddress, func(v *string) { route.NextHopIpAddress = v }, &fieldChanged)
 
-			// Handle nullable int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(planItem, staticRoutesConfigMap, "static_routes", configuredAttrs)
 			utils.CompareAndSetNullableInt64Field(configItem.AdValue, stateItem.AdValue, cfg.IsFieldConfigured("ad_value"), func(v *openapi.NullableInt64) { route.AdValue = *v }, &fieldChanged)
 
@@ -854,7 +833,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if gatewayData, exists := bulkMgr.GetResourceResponse("gateway", name); exists {
 			newState := populateGatewayState(ctx, minState, utils.MergeMissingPlanScalars(gatewayData, plan, gatewayResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -863,7 +841,6 @@ func (r *verityGatewayResource) Update(ctx context.Context, req resource.UpdateR
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -919,7 +896,6 @@ func populateGatewayState(ctx context.Context, state verityGatewayResourceModel,
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Int fields
 	state.NeighborAsNumber = utils.MapInt64WithMode(data, "neighbor_as_number", resourceType, mode)
 	state.KeepaliveTimer = utils.MapInt64WithMode(data, "keepalive_timer", resourceType, mode)
 	state.HoldTimer = utils.MapInt64WithMode(data, "hold_timer", resourceType, mode)
@@ -935,7 +911,6 @@ func populateGatewayState(ctx context.Context, state verityGatewayResourceModel,
 	state.BfdDetectMultiplier = utils.MapInt64WithMode(data, "bfd_detect_multiplier", resourceType, mode)
 	state.BgpInstanceAsNumber = utils.MapInt64WithMode(data, "bgp_instance_as_number", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.FabricInterconnect = utils.MapBoolWithMode(data, "fabric_interconnect", resourceType, mode)
 	state.LocalAsNoPrepend = utils.MapBoolWithMode(data, "local_as_no_prepend", resourceType, mode)
@@ -948,7 +923,6 @@ func populateGatewayState(ctx context.Context, state verityGatewayResourceModel,
 	state.AllowasInOrigin = utils.MapBoolWithMode(data, "allowas_in_origin", resourceType, mode)
 	state.RemovePrivateAs = utils.MapBoolWithMode(data, "remove_private_as", resourceType, mode)
 
-	// String fields
 	state.Tenant = utils.MapStringWithMode(data, "tenant", resourceType, mode)
 	state.TenantRefType = utils.MapStringWithMode(data, "tenant_ref_type_", resourceType, mode)
 	state.Fabric = utils.MapStringWithMode(data, "fabric", resourceType, mode)
@@ -967,7 +941,6 @@ func populateGatewayState(ctx context.Context, state verityGatewayResourceModel,
 	state.ImportRouteMapRefType = utils.MapStringWithMode(data, "import_route_map_ref_type_", resourceType, mode)
 	state.Type = utils.MapStringWithMode(data, "type", resourceType, mode)
 
-	// Handle static_routes list block
 	if utils.FieldAppliesToMode(resourceType, "static_routes", mode) {
 		if routesData, ok := data["static_routes"].([]interface{}); ok && len(routesData) > 0 {
 			var routesList []verityGatewayStaticRoutesModel
@@ -1001,9 +974,7 @@ func populateGatewayState(ctx context.Context, state verityGatewayResourceModel,
 }
 
 func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -1014,11 +985,6 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := gatewayResourceType
 	mode := r.provCtx.mode
 
@@ -1060,16 +1026,10 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 		Int64Fields:  []string{"index", "ad_value"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityGatewayResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -1082,11 +1042,6 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, gatewayTerraformType, name)
@@ -1113,9 +1068,6 @@ func (r *verityGatewayResource) ModifyPlan(ctx context.Context, req resource.Mod
 		},
 	})
 
-	// =========================================================================
-	// Handle nullable fields in nested blocks
-	// =========================================================================
 	for i, configRoute := range config.StaticRoutes {
 		routeIndex := configRoute.Index.ValueInt64()
 		var stateRoute *verityGatewayStaticRoutesModel

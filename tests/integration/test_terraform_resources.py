@@ -44,10 +44,10 @@ class TerraformTestRunner:
             raise ValueError(f"Invalid mode '{mode}'. Must be one of: {', '.join(self.VALID_MODES)}")
         self.mode = mode
 
-        # Use current directory if not specified
+
         self.tf_dir = Path(tf_dir) if tf_dir else Path.cwd()
 
-        # Find test_cases directory relative to script location, scoped by mode
+
         script_dir = Path(__file__).parent
         if test_cases_dir:
             self.test_cases_dir = Path(test_cases_dir)
@@ -63,7 +63,7 @@ class TerraformTestRunner:
         """Load valid resource names from importer.go."""
         valid_resources = set()
 
-        # Find importer.go relative to script location
+
         script_dir = Path(__file__).parent
         importer_file = script_dir.parent / "internal" / "importer" / "importer.go"
 
@@ -131,7 +131,7 @@ class TerraformTestRunner:
         cwd = cwd or str(self.tf_dir)
         print(f"  Running terraform apply in {cwd}...")
 
-        # Set up debug logging to capture API requests
+
         tmp = tempfile.NamedTemporaryFile(
             suffix='.log', prefix='tf_debug_', delete=False
         )
@@ -148,7 +148,7 @@ class TerraformTestRunner:
             env=env
         )
 
-        # Extract and log API requests from debug output
+
         if debug_log.exists():
             exchanges = self._extract_api_exchanges(debug_log)
             if exchanges:
@@ -248,7 +248,7 @@ class TerraformTestRunner:
             with open(target_file, 'r') as f:
                 content = f.read()
 
-            # Remove everything between markers
+
             start_marker = "# === TEST RESOURCES START ==="
             end_marker = "# === TEST RESOURCES END ==="
 
@@ -256,9 +256,9 @@ class TerraformTestRunner:
                 start_idx = content.find(start_marker)
                 end_idx = content.find(end_marker)
                 if end_idx != -1:
-                    # Remove including the end marker and trailing newline
+
                     new_content = content[:start_idx] + content[end_idx + len(end_marker) + 1:]
-                    # Clean up any trailing whitespace
+
                     new_content = new_content.rstrip() + "\n" if new_content.strip() else ""
 
                     with open(target_file, 'w') as f:
@@ -286,19 +286,19 @@ class TerraformTestRunner:
         - New override indexes: appended
         Result is sorted by index.
         """
-        # Build lookup by index
+
         merged = {item['index']: item.copy() for item in base_list}
 
         for override_item in override_list:
             idx = override_item['index']
             if idx in merged:
-                # Deep-merge the matched block
+
                 merged[idx] = self._merge_hcl_attributes(merged[idx], override_item)
             else:
-                # New block from override
+
                 merged[idx] = override_item.copy()
 
-        # Return sorted by index
+
         return [merged[k] for k in sorted(merged.keys())]
 
     def _merge_hcl_attributes(self, base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any]:
@@ -312,15 +312,15 @@ class TerraformTestRunner:
 
         for key, value in override.items():
             if key in merged and isinstance(merged[key], dict) and isinstance(value, dict):
-                # Recursively merge nested dictionaries
+
                 merged[key] = self._merge_hcl_attributes(merged[key], value)
             elif (key in merged
                   and self._is_indexed_block_list(merged[key])
                   and self._is_indexed_block_list(value)):
-                # Index-aware merge for nested blocks with 'index' field
+
                 merged[key] = self._merge_indexed_blocks(merged[key], value)
             else:
-                # Override the value
+
                 merged[key] = value
 
         return merged
@@ -334,34 +334,34 @@ class TerraformTestRunner:
         elif isinstance(value, bool):
             return "true" if value else "false"
         elif isinstance(value, str):
-            # Check if it's a terraform interpolation wrapped by hcl2 parser (${...})
-            # These should be unwrapped for HCL output (e.g., depends_on)
+
+
             if value.startswith('${') and value.endswith('}'):
-                # Strip the ${ } wrapper added by hcl2 parser
+
                 return value[2:-1]
-            # Check if it's a reference (e.g., verity_gateway.gateway_1.id)
+
             if re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)*$', value):
                 return value
-            # Regular string
+
             return f'"{value}"'
         elif isinstance(value, (int, float)):
             return str(value)
         elif isinstance(value, list):
             if not value:
                 return "[]"
-            # Format list items
+
             items = [self._format_hcl_value(item, indent) for item in value]
             if all(isinstance(item, (str, int, float, bool)) or item is None for item in value):
-                # Simple list on one line
+
                 return "[" + ", ".join(items) + "]"
             else:
-                # Complex list with line breaks
+
                 formatted_items = [f"\n{indent_str}  {item}" for item in items]
                 return "[" + ",".join(formatted_items) + f"\n{indent_str}]"
         elif isinstance(value, dict):
             if not value:
                 return "{}"
-            # Format dictionary as HCL block
+
             lines = ["{"]
             for k, v in value.items():
                 formatted_value = self._format_hcl_value(v, indent + 1)
@@ -376,9 +376,9 @@ class TerraformTestRunner:
         lines = [f'resource "{resource_type}" "{resource_name}" {{']
 
         for key, value in attributes.items():
-            # Check if value is a list of dicts (HCL blocks)
+
             if isinstance(value, list) and value and all(isinstance(item, dict) for item in value):
-                # Format as HCL blocks
+
                 for block in value:
                     lines.append(f"  {key} {{")
                     for k, v in block.items():
@@ -404,8 +404,8 @@ class TerraformTestRunner:
         if not match:
             return None
 
-        # Walk forward from the opening brace counting braces to find the matching close
-        brace_start = match.end() - 1  # Position of the opening {
+
+        brace_start = match.end() - 1
         depth = 1
         pos = brace_start + 1
         while pos < len(content) and depth > 0:
@@ -415,26 +415,26 @@ class TerraformTestRunner:
             elif ch == '}':
                 depth -= 1
             elif ch == '"':
-                # Skip string contents to avoid counting braces inside strings
+
                 pos += 1
                 while pos < len(content) and content[pos] != '"':
                     if content[pos] == '\\':
-                        pos += 1  # Skip escaped character
+                        pos += 1
                     pos += 1
             elif ch == '#':
-                # Skip single-line comments
+
                 while pos < len(content) and content[pos] != '\n':
                     pos += 1
             elif ch == '/' and pos + 1 < len(content) and content[pos + 1] == '/':
-                # Skip // line comments
+
                 while pos < len(content) and content[pos] != '\n':
                     pos += 1
             elif ch == '/' and pos + 1 < len(content) and content[pos + 1] == '*':
-                # Skip /* */ block comments
+
                 pos += 2
                 while pos + 1 < len(content) and not (content[pos] == '*' and content[pos + 1] == '/'):
                     pos += 1
-                pos += 1  # Skip past the closing /
+                pos += 1
             pos += 1
 
         if depth != 0:
@@ -463,7 +463,7 @@ class TerraformTestRunner:
         Returns True on success, False on failure.
         """
         try:
-            # Parse modify.tf to get override resources
+
             with open(modify_file, 'r') as f:
                 modify_content = hcl2.load(f)
 
@@ -471,15 +471,15 @@ class TerraformTestRunner:
                 print(f"  ⚠️  WARNING: modify.tf has no resources defined")
                 return False
 
-            # Read the existing .tf file text (for block replacement)
+
             with open(tf_file, 'r') as f:
                 tf_text = f.read()
 
-            # Parse the existing .tf file to get base resources
+
             with open(tf_file, 'r') as f:
                 tf_parsed = hcl2.load(f)
 
-            # Build lookup of existing resources
+
             existing_resources = {}
             if 'resource' in tf_parsed:
                 for resource_list in tf_parsed['resource']:
@@ -488,7 +488,7 @@ class TerraformTestRunner:
                             key = (resource_type, resource_name)
                             existing_resources[key] = attributes
 
-            # Process each resource in modify.tf
+
             modified_tf_text = tf_text
             modified_count = 0
             for resource_list in modify_content['resource']:
@@ -502,16 +502,16 @@ class TerraformTestRunner:
                             )
                             continue
 
-                        # Merge: existing base + modify overrides
+
                         merged_attrs = self._merge_hcl_attributes(
                             existing_resources[key],
                             attributes
                         )
 
-                        # Format as HCL
+
                         new_hcl = self._format_hcl_resource(resource_type, resource_name, merged_attrs)
 
-                        # Replace the resource block in-place
+
                         result = self._replace_resource_block_in_text(
                             modified_tf_text, resource_type, resource_name, new_hcl
                         )
@@ -529,7 +529,7 @@ class TerraformTestRunner:
                 print(f"  ⚠️  WARNING: No resources were modified in {tf_file.name}")
                 return False
 
-            # Write back the modified file
+
             with open(tf_file, 'w') as f:
                 f.write(modified_tf_text)
 
@@ -546,14 +546,14 @@ class TerraformTestRunner:
         Returns None if files are empty or parsing fails.
         """
         try:
-            # Parse both files
+
             with open(add_file, 'r') as f:
                 add_content = hcl2.load(f)
 
             with open(modify_file, 'r') as f:
                 modify_content = hcl2.load(f)
 
-            # Extract resources from add.tf
+
             add_resources = {}
             if 'resource' in add_content:
                 for resource_list in add_content['resource']:
@@ -562,12 +562,12 @@ class TerraformTestRunner:
                             key = (resource_type, resource_name)
                             add_resources[key] = attributes
 
-            # Check if add.tf is empty (no resources)
+
             if not add_resources:
                 print(f"  ⚠️  WARNING: add.tf has no resources defined (only comments)")
                 return None
 
-            # Extract resources from modify.tf and merge
+
             merged_resources = add_resources.copy()
             if 'resource' in modify_content:
                 for resource_list in modify_content['resource']:
@@ -575,25 +575,25 @@ class TerraformTestRunner:
                         for resource_name, attributes in resources.items():
                             key = (resource_type, resource_name)
                             if key in merged_resources:
-                                # Merge with existing resource
+
                                 merged_resources[key] = self._merge_hcl_attributes(
                                     merged_resources[key],
                                     attributes
                                 )
                             else:
-                                # New resource in modify.tf — not in add.tf
+
                                 print(
                                     f"  ⚠️  WARNING: {resource_type}.{resource_name}"
                                     f" exists in modify.tf but not in add.tf — adding as-is"
                                 )
                                 merged_resources[key] = attributes
 
-            # Format back to HCL
+
             output_lines = []
             for (resource_type, resource_name), attributes in merged_resources.items():
                 hcl_resource = self._format_hcl_resource(resource_type, resource_name, attributes)
                 output_lines.append(hcl_resource)
-                output_lines.append("")  # Empty line between resources
+                output_lines.append("")
 
             return "\n".join(output_lines)
 
@@ -614,16 +614,16 @@ class TerraformTestRunner:
         if not resource_test_dir.exists():
             return test_cases
 
-        # Look for add.tf and modify.tf
+
         add_file = resource_test_dir / "add.tf"
         if add_file.exists():
-            # Validate add.tf has actual resources
+
             if self._file_has_resources(add_file):
                 test_cases["add"] = add_file
 
         modify_file = resource_test_dir / "modify.tf"
         if modify_file.exists():
-            # Validate modify.tf has actual resources
+
             if self._file_has_resources(modify_file):
                 test_cases["modify"] = modify_file
 
@@ -640,13 +640,13 @@ class TerraformTestRunner:
             with open(file_path, 'r') as f:
                 content = hcl2.load(f)
 
-            # Check if file has any resources
+
             if 'resource' in content and content['resource']:
                 return True
 
             return False
         except Exception:
-            # If parsing fails, assume file is invalid/empty
+
             return False
 
     def discover_resources(self, verbose: bool = False) -> List[Tuple[str, Path, Dict[str, Path]]]:
@@ -825,7 +825,7 @@ def pytest_collection_modifyitems(config, items):
     if keyword_expr:
         return
 
-    # No -k flag: deselect all single_resource tests so only the batch test runs
+
     remaining = []
     deselected = []
     for item in items:
@@ -849,9 +849,9 @@ class TestTerraformResources:
         yield runner
         runner.cleanup()
 
-    # ==================================================================
-    # DEFAULT: Batch test — all resources in a single run
-    # ==================================================================
+
+
+
 
     def test_all_resources_lifecycle(self, runner: TerraformTestRunner):
         """
@@ -880,7 +880,7 @@ class TestTerraformResources:
         for resource_name, tf_file, test_cases in update_only_resources:
             print(f"  - {resource_name} ({tf_file.name}): {list(test_cases.keys())} [update-only]")
 
-        # Create backups for all files
+
         backups = {}
         print(f"\nCreating backups for all files...")
         for resource_name, tf_file, _ in resources_with_tests:
@@ -905,7 +905,7 @@ class TestTerraformResources:
             runner.cleanup_plan_file()
             print(f"  ✓ Clean state confirmed - no pending changes")
 
-            # Phase 1: Add ALL test resources (normal resources only)
+
             add_resources = [(name, tf_file, cases) for name, tf_file, cases in normal_resources if "add" in cases]
 
             if add_resources:
@@ -930,7 +930,7 @@ class TestTerraformResources:
             else:
                 print(f"\n  No normal resources with add.tf found, skipping Phase 1")
 
-            # Phase 2: Modify ALL test resources
+
             modify_normal = [(n, f, c) for n, f, c in normal_resources if "modify" in c]
 
             has_modifications = modify_normal or update_only_resources
@@ -939,7 +939,7 @@ class TestTerraformResources:
                 print(f"Phase 2: Modifying ALL test resources")
                 print(f"{'='*60}")
 
-                # Handle normal resources
+
                 successfully_merged = []
                 if modify_normal:
                     print(f"  Removing previously injected resources...")
@@ -966,7 +966,7 @@ class TestTerraformResources:
                             print(f"  ⚠️  WARNING: Skipping {resource_name} - test files are empty or invalid")
                             continue
 
-                # Handle update-only resources
+
                 successfully_updated = []
                 if update_only_resources:
                     print(f"\n  Processing update-only resources...")
@@ -996,7 +996,7 @@ class TestTerraformResources:
                             f" {', '.join(successfully_updated)})"
                         )
 
-            # Phase 3: Clean up ALL test resources + revert update-only
+
             print(f"\n{'='*60}")
             print(f"Phase 3: Cleaning up ALL test resources")
             print(f"{'='*60}")
@@ -1031,16 +1031,16 @@ class TestTerraformResources:
             print(f"\n❌ Test failed: {e}")
             raise
         finally:
-            # Always restore all original files regardless of success or failure
+
             print(f"\n  Final cleanup: Restoring all files from backup...")
             for tf_file, backup_path in backups.items():
                 if tf_file.exists() and backup_path.exists():
                     runner.restore_backup(tf_file, backup_path)
             print(f"  ✓ All files restored")
 
-    # ==================================================================
-    # SINGLE-RESOURCE: Parametrized test — runs only with -k flag
-    # ==================================================================
+
+
+
 
     def test_single_resource(self, runner: TerraformTestRunner, resource_info):
         """
@@ -1104,7 +1104,7 @@ class TestTerraformResources:
     ):
         """Add → Modify → Cleanup for one normal resource."""
 
-        # Phase 1: Add
+
         if "add" in test_cases:
             print(f"\n  --- Phase 1: Add ---")
             print(f"  Injecting resources from test_cases/{resource_name}/add.tf → {tf_file.name}")
@@ -1121,7 +1121,7 @@ class TestTerraformResources:
             assert state is not None, "Failed to retrieve terraform state"
             print(f"  ✓ Resources added successfully")
 
-        # Phase 2: Modify
+
         if "modify" in test_cases and "add" in test_cases:
             print(f"\n  --- Phase 2: Modify ---")
             runner.remove_injected_resources(tf_file)
@@ -1147,7 +1147,7 @@ class TestTerraformResources:
             else:
                 print(f"  ⚠️  modify.tf is empty or invalid — skipping Phase 2")
 
-        # Phase 3: Cleanup
+
         print(f"\n  --- Phase 3: Cleanup ---")
         runner.remove_injected_resources(tf_file)
 
@@ -1168,7 +1168,7 @@ class TestTerraformResources:
     ):
         """Modify → Revert for one update-only resource."""
 
-        # Phase 1: Modify existing resource in-place
+
         print(f"\n  --- Phase 1: Modify (update-only) ---")
         if not runner.merge_modify_with_existing_tf(tf_file, test_cases["modify"]):
             pytest.fail(f"Failed to merge modify.tf into {tf_file.name}")
@@ -1183,7 +1183,7 @@ class TestTerraformResources:
         assert state is not None, "Failed to retrieve terraform state"
         print(f"  ✓ Update-only resource modified successfully")
 
-        # Phase 2: Revert to original
+
         print(f"\n  --- Phase 2: Revert (update-only) ---")
         runner.restore_backup(tf_file, backup_path)
         print(f"  Restored {tf_file.name} from backup")

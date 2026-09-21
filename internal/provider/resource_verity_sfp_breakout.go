@@ -57,7 +57,6 @@ func (m veritySfpBreakoutBreakoutModel) GetIndex() types.Int64 {
 }
 
 type veritySfpBreakoutObjectPropertiesModel struct {
-	// Empty object properties according to schema
 }
 
 func (r *veritySfpBreakoutResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -132,9 +131,7 @@ func (r *veritySfpBreakoutResource) Schema(ctx context.Context, req resource.Sch
 			"object_properties": schema.ListNestedBlock{
 				Description: "Object properties.",
 				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						// No attributes defined - object_properties is an empty object in the schema
-					},
+					Attributes: map[string]schema.Attribute{},
 				},
 			},
 		},
@@ -167,7 +164,6 @@ func (r *veritySfpBreakoutResource) Read(ctx context.Context, req resource.ReadR
 	sfpBreakoutName := state.Name.ValueString()
 	priorState := state
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if sfpBreakoutData, exists := r.bulkOpsMgr.GetResourceResponse("sfp_breakout", sfpBreakoutName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached sfp_breakout data for %s from recent operation", sfpBreakoutName))
@@ -282,38 +278,32 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 	sfpBreakoutProps := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { sfpBreakoutProps.Name = v }, &hasChanges)
 
-	// Handle object properties
 	if (plan.ObjectProperties == nil) != (state.ObjectProperties == nil) {
 		if plan.ObjectProperties != nil {
-			// SFP Breakout object properties are empty according to schema
+
 			sfpBreakoutObjProps := map[string]interface{}{}
 			sfpBreakoutProps.ObjectProperties = sfpBreakoutObjProps
 		}
 		hasChanges = true
 	}
 
-	// Handle breakout
 	changedBreakouts, breakoutsChanged := utils.ProcessIndexedArrayUpdates(plan.Breakout, state.Breakout,
 		utils.IndexedItemHandler[veritySfpBreakoutBreakoutModel, openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner]{
 			CreateNew: func(planItem veritySfpBreakoutBreakoutModel) openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner {
 				newBreakout := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "Enable", APIField: &newBreakout.Enable, TFValue: planItem.Enable},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Vendor", APIField: &newBreakout.Vendor, TFValue: planItem.Vendor},
 					{FieldName: "PartNumber", APIField: &newBreakout.PartNumber, TFValue: planItem.PartNumber},
 					{FieldName: "Breakout", APIField: &newBreakout.Breakout, TFValue: planItem.Breakout},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newBreakout.Index, TFValue: planItem.Index},
 				})
@@ -324,15 +314,12 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 				updateBreakout := openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateBreakout.Enable = v }, &fieldChanged)
 
-				// Handle string field changes
 				utils.CompareAndSetStringField(planItem.Vendor, stateItem.Vendor, func(v *string) { updateBreakout.Vendor = v }, &fieldChanged)
 				utils.CompareAndSetStringField(planItem.PartNumber, stateItem.PartNumber, func(v *string) { updateBreakout.PartNumber = v }, &fieldChanged)
 				utils.CompareAndSetStringField(planItem.Breakout, stateItem.Breakout, func(v *string) { updateBreakout.Breakout = v }, &fieldChanged)
 
-				// Always include index — API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateBreakout.Index, TFValue: planItem.Index},
 				})
@@ -371,7 +358,6 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if sfpBreakoutData, exists := bulkMgr.GetResourceResponse("sfp_breakout", name); exists {
 			newState := populateSfpBreakoutState(ctx, minState, utils.MergeMissingPlanScalars(sfpBreakoutData, plan, sfpBreakoutResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -381,7 +367,6 @@ func (r *veritySfpBreakoutResource) Update(ctx context.Context, req resource.Upd
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -423,7 +408,6 @@ func populateSfpBreakoutState(ctx context.Context, state veritySfpBreakoutResour
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Handle breakout block
 	if utils.FieldAppliesToMode(resourceType, "breakout", mode) {
 		if breakoutData, ok := data["breakout"].([]interface{}); ok && len(breakoutData) > 0 {
 			var breakouts []veritySfpBreakoutBreakoutModel
@@ -457,9 +441,7 @@ func populateSfpBreakoutState(ctx context.Context, state veritySfpBreakoutResour
 }
 
 func (r *veritySfpBreakoutResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -470,11 +452,6 @@ func (r *veritySfpBreakoutResource) ModifyPlan(ctx context.Context, req resource
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := sfpBreakoutResourceType
 	mode := r.provCtx.mode
 

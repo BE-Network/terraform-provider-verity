@@ -2,23 +2,6 @@ package mock
 
 import "testing"
 
-// mergeIndexedArray models how the server places entries in an indexed
-// collection, and index zero is the part worth testing directly.
-//
-// The API documents zero as the request to append: "The index identifying the
-// object. Zero if you want to add an object to the list." Several new entries
-// can therefore arrive in one request all carrying zero, and it is the server
-// that tells them apart by giving each the next free index.
-//
-// This merge used to key every incoming entry by the index it carried, so two
-// arriving at zero landed on the same map key and the second overwrote the
-// first. That silently modelled a server which cannot accept more than one new
-// entry per request, and it is why the index-zero case in
-// tests/unit/lifecycle/index_zero_test.go could not be seen at all.
-//
-// That lifecycle test observes a Terraform error, and the same error would
-// appear if the entries were collapsed again, so it cannot pin this behavior on
-// its own. These assertions do.
 func TestMergeIndexedArrayAssignsAnIndexToEachZero(t *testing.T) {
 	t.Parallel()
 
@@ -55,17 +38,12 @@ func TestMergeIndexedArrayAssignsAnIndexToEachZero(t *testing.T) {
 		indexes[index] = true
 	}
 
-	// The entry that was already there keeps its index, and the two new ones take
-	// the next free ones after it.
 	for _, want := range []float64{1, 2, 3} {
 		if !indexes[want] {
 			t.Errorf("no entry at index %v; got %v", want, indexes)
 		}
 	}
 
-	// The assigned indexes must attach to the right entries, not merely exist:
-	// collapsing the two and then padding the result would satisfy the counts
-	// above but lose one of the bodies.
 	byIndex := make(map[float64]map[string]interface{}, len(merged))
 	for _, raw := range merged {
 		item := raw.(map[string]interface{})
@@ -78,9 +56,6 @@ func TestMergeIndexedArrayAssignsAnIndexToEachZero(t *testing.T) {
 	}
 }
 
-// An entry that names its index is placed at that index, and one that names an
-// index already present updates it rather than being added again. Without this,
-// assigning indexes to zeros could be widened into assigning them to everything.
 func TestMergeIndexedArrayKeepsNamedIndexes(t *testing.T) {
 	t.Parallel()
 
@@ -127,10 +102,6 @@ func keysOf(m map[float64]map[string]interface{}) []float64 {
 	return out
 }
 
-// A PATCH that carries some members of an object updates only those members.
-// The API merges object_properties this way; a mock that replaced the object
-// would drop every member the PATCH did not mention, and a test against it would
-// report that loss as a provider defect.
 func TestPatchMergesObjectMembers(t *testing.T) {
 	t.Parallel()
 
@@ -159,9 +130,6 @@ func TestPatchMergesObjectMembers(t *testing.T) {
 	}
 }
 
-// An indexed array inside an object is patched by index, not replaced: a PATCH
-// that adds one system_graphs entry must leave the others in place, exactly as a
-// top-level indexed array is patched.
 func TestPatchMergesIndexedArraysInsideObjects(t *testing.T) {
 	t.Parallel()
 
@@ -191,9 +159,6 @@ func TestPatchMergesIndexedArraysInsideObjects(t *testing.T) {
 	}
 }
 
-// An entry that carries only its index deletes that index when it exists and adds
-// it when it does not. The second case is verity_fabric's system_graphs create,
-// whose entries have no other member.
 func TestMergeIndexedArrayIndexOnlyEntries(t *testing.T) {
 	t.Parallel()
 

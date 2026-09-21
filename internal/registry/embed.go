@@ -1,10 +1,3 @@
-// Package registry holds the reviewed resource registry the provider binary
-// carries.
-//
-// The plan puts the validated registry in the binary so the generic engine reads
-// one embedded description rather than loading a file at runtime. go:embed
-// cannot reach outside its own package directory, so specgen writes the same
-// bytes here and to specs/, and CI drift-checks both.
 package registry
 
 import (
@@ -30,9 +23,6 @@ var (
 	loadError error
 )
 
-// Load returns the embedded registry, validated. It is parsed once: the bytes
-// never change for the life of the process, and every resource construction
-// would otherwise re-parse them.
 func Load() (spec.Registry, error) {
 	once.Do(func() {
 		var decoded artifact
@@ -49,7 +39,6 @@ func Load() (spec.Registry, error) {
 	return loaded, loadError
 }
 
-// Lookup returns one resource's reviewed spec by Terraform type.
 func Lookup(terraformType string) (spec.ResourceSpec, error) {
 	all, err := Load()
 	if err != nil {

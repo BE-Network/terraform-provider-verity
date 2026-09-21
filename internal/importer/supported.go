@@ -2,32 +2,16 @@ package importer
 
 import "sort"
 
-// SchemaFields is the part of a resource schema the importer checks generated
-// configuration against: the argument names at one level, and the blocks nested
-// in it.
-//
-// The importer writes whatever the API returns. A Verity system newer than the
-// API version this provider supports returns arguments the provider's schema
-// does not have, and a single one of them makes Terraform reject the whole
-// generated configuration. Checking against the schema keeps the configuration
-// importable; the arguments left out are reported so the user knows a newer
-// provider version would manage them.
 type SchemaFields struct {
 	Attributes map[string]bool
 	Blocks     map[string]*SchemaFields
 }
 
-// WithSupportedFields makes the importer leave out any argument the given
-// schemas, keyed by Terraform resource type, do not have. Without it every
-// argument the API returns is written, as before.
 func (i *Importer) WithSupportedFields(fields map[string]*SchemaFields) *Importer {
 	i.supported = fields
 	return i
 }
 
-// UnsupportedFields returns, per Terraform resource type, the argument paths the
-// importer left out because the schema does not have them. A nested argument is
-// written as "block.argument".
 func (i *Importer) UnsupportedFields() map[string][]string {
 	result := make(map[string][]string, len(i.unsupported))
 	for resourceType, paths := range i.unsupported {
@@ -41,18 +25,13 @@ func (i *Importer) UnsupportedFields() map[string][]string {
 	return result
 }
 
-// PruneUnsupported removes from every object of a Terraform resource type, as
-// the API returns them keyed by name, the arguments the resource's schema does
-// not have, and records what it removed. ImportAll calls it before writing each
-// file.
 func (i *Importer) PruneUnsupported(resourceType string, objects map[string]map[string]interface{}) {
 	fields, known := i.supported[resourceType]
 	if !known {
 		return
 	}
 	config := resourceConfigs[terraformTypeToResourceKey[resourceType]]
-	// These keys are never written as arguments, or are written by the header,
-	// so the schema has no say over them.
+
 	skip := map[string]bool{"name": true}
 	for _, key := range config.AdditionalTopLevelSkipKeys {
 		skip[key] = true

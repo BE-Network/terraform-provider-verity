@@ -131,17 +131,14 @@ func (r *veritySflowCollectorResource) Create(ctx context.Context, req resource.
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Ip", APIField: &sflowCollectorReq.Ip, TFValue: plan.Ip},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &sflowCollectorReq.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, sflowCollectorTerraformType, name)
 
@@ -173,7 +170,6 @@ func (r *veritySflowCollectorResource) Create(ctx context.Context, req resource.
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -210,7 +206,6 @@ func (r *veritySflowCollectorResource) Read(ctx context.Context, req resource.Re
 
 	sflowCollectorName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if sflowCollectorData, exists := r.bulkOpsMgr.GetResourceResponse("sflow_collector", sflowCollectorName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached sflow_collector data for %s from recent operation", sflowCollectorName))
@@ -311,7 +306,6 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Get config for nullable field handling
 	var config veritySflowCollectorResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -331,18 +325,14 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 	sflowCollectorProps := openapi.SflowcollectorsPutRequestSflowCollectorValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, sflowCollectorTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { sflowCollectorProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Ip, state.Ip, func(v *string) { sflowCollectorProps.Ip = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { sflowCollectorProps.Enable = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.Port, state.Port, configuredAttrs.IsConfigured("port"), func(v *openapi.NullableInt64) { sflowCollectorProps.Port = *v }, &hasChanges)
 
 	if !hasChanges {
@@ -366,7 +356,6 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if sflowCollectorData, exists := bulkMgr.GetResourceResponse("sflow_collector", name); exists {
 			newState := populateSflowCollectorState(ctx, minState, utils.MergeMissingPlanScalars(sflowCollectorData, plan, sflowCollectorResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -375,7 +364,6 @@ func (r *veritySflowCollectorResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -431,22 +419,17 @@ func populateSflowCollectorState(ctx context.Context, state veritySflowCollector
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// String fields
 	state.Ip = utils.MapStringWithMode(data, "ip", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// Int64 fields
 	state.Port = utils.MapInt64WithMode(data, "port", resourceType, mode)
 
 	return state
 }
 
 func (r *veritySflowCollectorResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -457,11 +440,6 @@ func (r *veritySflowCollectorResource) ModifyPlan(ctx context.Context, req resou
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := sflowCollectorResourceType
 	mode := r.provCtx.mode
 
@@ -484,16 +462,10 @@ func (r *veritySflowCollectorResource) ModifyPlan(ctx context.Context, req resou
 		"port",
 	)
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state veritySflowCollectorResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -506,11 +478,6 @@ func (r *veritySflowCollectorResource) ModifyPlan(ctx context.Context, req resou
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, sflowCollectorTerraformType, name)

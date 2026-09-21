@@ -149,12 +149,10 @@ func (r *verityPBRoutingResource) Create(ctx context.Context, req resource.Creat
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &pbRoutingProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle policy
 	if len(plan.Policy) > 0 {
 		policies := make([]openapi.PolicybasedroutingPutRequestPbRoutingValuePolicyInner, len(plan.Policy))
 		for i, policyItem := range plan.Policy {
@@ -198,7 +196,6 @@ func (r *verityPBRoutingResource) Create(ctx context.Context, req resource.Creat
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -235,7 +232,6 @@ func (r *verityPBRoutingResource) Read(ctx context.Context, req resource.ReadReq
 
 	pbRoutingName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if pbRoutingData, exists := r.bulkOpsMgr.GetResourceResponse("pb_routing", pbRoutingName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached pb routing data for %s from recent operation", pbRoutingName))
@@ -348,13 +344,10 @@ func (r *verityPBRoutingResource) Update(ctx context.Context, req resource.Updat
 	pbRoutingProps := openapi.PolicybasedroutingPutRequestPbRoutingValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { pbRoutingProps.Name = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { pbRoutingProps.Enable = v }, &hasChanges)
 
-	// Handle policy
 	policyHandler := utils.IndexedItemHandler[verityPBRoutingPolicyModel, openapi.PolicybasedroutingPutRequestPbRoutingValuePolicyInner]{
 		CreateNew: func(planItem verityPBRoutingPolicyModel) openapi.PolicybasedroutingPutRequestPbRoutingValuePolicyInner {
 			policy := openapi.PolicybasedroutingPutRequestPbRoutingValuePolicyInner{}
@@ -383,10 +376,8 @@ func (r *verityPBRoutingResource) Update(ctx context.Context, req resource.Updat
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { policy.Enable = v }, &fieldChanged)
 
-			// Handle pb_routing_acl and pb_routing_acl_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.PbRoutingAcl, stateItem.PbRoutingAcl, planItem.PbRoutingAclRefType, stateItem.PbRoutingAclRefType,
 				func(v *string) { policy.PbRoutingAcl = v },
@@ -436,7 +427,6 @@ func (r *verityPBRoutingResource) Update(ctx context.Context, req resource.Updat
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if pbRoutingData, exists := bulkMgr.GetResourceResponse("pb_routing", name); exists {
 			newState := populatePBRoutingState(ctx, minState, utils.MergeMissingPlanScalars(pbRoutingData, plan, pbRoutingResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -445,7 +435,6 @@ func (r *verityPBRoutingResource) Update(ctx context.Context, req resource.Updat
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -501,10 +490,8 @@ func populatePBRoutingState(ctx context.Context, state verityPBRoutingResourceMo
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// Handle policy array with mode awareness
 	if utils.FieldAppliesToMode(resourceType, "policy", mode) {
 		if policies, ok := data["policy"].([]interface{}); ok && len(policies) > 0 {
 			var policyList []verityPBRoutingPolicyModel
@@ -537,9 +524,7 @@ func populatePBRoutingState(ctx context.Context, state verityPBRoutingResourceMo
 }
 
 func (r *verityPBRoutingResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -550,11 +535,6 @@ func (r *verityPBRoutingResource) ModifyPlan(ctx context.Context, req resource.M
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := pbRoutingResourceType
 	mode := r.provCtx.mode
 

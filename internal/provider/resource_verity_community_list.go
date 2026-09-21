@@ -184,19 +184,16 @@ func (r *verityCommunityListResource) Create(ctx context.Context, req resource.C
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "PermitDeny", APIField: &communityListProps.PermitDeny, TFValue: plan.PermitDeny},
 		{FieldName: "AnyAll", APIField: &communityListProps.AnyAll, TFValue: plan.AnyAll},
 		{FieldName: "StandardExpanded", APIField: &communityListProps.StandardExpanded, TFValue: plan.StandardExpanded},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &communityListProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
@@ -206,7 +203,6 @@ func (r *verityCommunityListResource) Create(ctx context.Context, req resource.C
 		communityListProps.ObjectProperties = &objProps
 	}
 
-	// Handle lists
 	if len(plan.Lists) > 0 {
 		lists := make([]openapi.CommunitylistsPutRequestCommunityListValueListsInner, len(plan.Lists))
 		for i, item := range plan.Lists {
@@ -250,7 +246,6 @@ func (r *verityCommunityListResource) Create(ctx context.Context, req resource.C
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -287,7 +282,6 @@ func (r *verityCommunityListResource) Read(ctx context.Context, req resource.Rea
 
 	communityListName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if communityListData, exists := r.bulkOpsMgr.GetResourceResponse("community_list", communityListName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached community list data for %s from recent operation", communityListName))
@@ -400,16 +394,13 @@ func (r *verityCommunityListResource) Update(ctx context.Context, req resource.U
 	communityListProps := openapi.CommunitylistsPutRequestCommunityListValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { communityListProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.PermitDeny, state.PermitDeny, func(v *string) { communityListProps.PermitDeny = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.AnyAll, state.AnyAll, func(v *string) { communityListProps.AnyAll = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.StandardExpanded, state.StandardExpanded, func(v *string) { communityListProps.StandardExpanded = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { communityListProps.Enable = v }, &hasChanges)
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -426,7 +417,6 @@ func (r *verityCommunityListResource) Update(ctx context.Context, req resource.U
 		}
 	}
 
-	// Handle lists
 	listsHandler := utils.IndexedItemHandler[verityCommunityListListsModel, openapi.CommunitylistsPutRequestCommunityListValueListsInner]{
 		CreateNew: func(planItem verityCommunityListListsModel) openapi.CommunitylistsPutRequestCommunityListValueListsInner {
 			item := openapi.CommunitylistsPutRequestCommunityListValueListsInner{}
@@ -455,10 +445,8 @@ func (r *verityCommunityListResource) Update(ctx context.Context, req resource.U
 
 			fieldChanged := false
 
-			// Handle boolean fields
 			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { item.Enable = v }, &fieldChanged)
 
-			// Handle string fields
 			utils.CompareAndSetStringField(planItem.Mode, stateItem.Mode, func(v *string) { item.Mode = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.CommunityStringExpandedExpression, stateItem.CommunityStringExpandedExpression, func(v *string) { item.CommunityStringExpandedExpression = v }, &fieldChanged)
 
@@ -500,7 +488,6 @@ func (r *verityCommunityListResource) Update(ctx context.Context, req resource.U
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if communityListData, exists := bulkMgr.GetResourceResponse("community_list", name); exists {
 			newState := populateCommunityListState(ctx, minState, utils.MergeMissingPlanScalars(communityListData, plan, communityListResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -509,7 +496,6 @@ func (r *verityCommunityListResource) Update(ctx context.Context, req resource.U
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -565,15 +551,12 @@ func populateCommunityListState(ctx context.Context, state verityCommunityListRe
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// String fields
 	state.PermitDeny = utils.MapStringWithMode(data, "permit_deny", resourceType, mode)
 	state.AnyAll = utils.MapStringWithMode(data, "any_all", resourceType, mode)
 	state.StandardExpanded = utils.MapStringWithMode(data, "standard_expanded", resourceType, mode)
 
-	// Handle lists array
 	if utils.FieldAppliesToMode(resourceType, "lists", mode) {
 		if listsData, ok := data["lists"].([]interface{}); ok && len(listsData) > 0 {
 			var lists []verityCommunityListListsModel
@@ -598,7 +581,6 @@ func populateCommunityListState(ctx context.Context, state verityCommunityListRe
 		state.Lists = nil
 	}
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityCommunityListObjectPropertiesModel{
@@ -616,9 +598,7 @@ func populateCommunityListState(ctx context.Context, state verityCommunityListRe
 }
 
 func (r *verityCommunityListResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -629,11 +609,6 @@ func (r *verityCommunityListResource) ModifyPlan(ctx context.Context, req resour
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := communityListResourceType
 	mode := r.provCtx.mode
 

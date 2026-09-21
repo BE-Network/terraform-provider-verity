@@ -15,8 +15,6 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
-// workDirRegistry allows tests to register per-provider working directories,
-// keyed by provider URI, so parallel tests can each resolve their own .tf files.
 var workDirRegistry sync.Map
 
 func RegisterWorkDir(uri, dir string) {
@@ -27,8 +25,6 @@ func UnregisterWorkDir(uri string) {
 	workDirRegistry.Delete(uri)
 }
 
-// GetWorkDirForProvider returns the working directory for a provider URI.
-// Checks: registry → VERITY_TF_WORKDIR env var → os.Getwd().
 func GetWorkDirForProvider(uri string) string {
 	if dir, ok := workDirRegistry.Load(uri); ok {
 		return dir.(string)
@@ -43,22 +39,16 @@ func GetWorkDirForProvider(uri string) string {
 	return wd
 }
 
-// ConfiguredAttributes holds the set of attributes that were explicitly written
-// in the .tf file for a specific resource.
 type ConfiguredAttributes struct {
-	// Attributes contains top-level attribute names
 	Attributes map[string]bool
-	// BlockAttributes contains attributes within nested blocks, keyed by "blockName.attrName"
-	// For repeated blocks, uses "blockName.attrName" without index
+
 	BlockAttributes map[string]bool
-	// Blocks contains the names of blocks that are present
+
 	Blocks map[string]bool
-	// IndexedBlockAttributes maps: blockType -> indexValue -> attrName -> true
-	// Used to track which attributes are configured for each indexed block instance
+
 	IndexedBlockAttributes map[string]map[int64]map[string]bool
 }
 
-// IsConfigured returns true if the attribute was explicitly written in the .tf file.
 func (c *ConfiguredAttributes) IsConfigured(attrName string) bool {
 	if c == nil || c.Attributes == nil {
 		return false
@@ -66,7 +56,6 @@ func (c *ConfiguredAttributes) IsConfigured(attrName string) bool {
 	return c.Attributes[attrName]
 }
 
-// IsBlockConfigured returns true if the block was explicitly written in the .tf file.
 func (c *ConfiguredAttributes) IsBlockConfigured(blockName string) bool {
 	if c == nil || c.Blocks == nil {
 		return false
@@ -74,7 +63,6 @@ func (c *ConfiguredAttributes) IsBlockConfigured(blockName string) bool {
 	return c.Blocks[blockName]
 }
 
-// IsBlockAttributeConfigured returns true if an attribute within a nested block was configured.
 func (c *ConfiguredAttributes) IsBlockAttributeConfigured(path string) bool {
 	if c == nil || c.BlockAttributes == nil {
 		return false
@@ -82,8 +70,6 @@ func (c *ConfiguredAttributes) IsBlockAttributeConfigured(path string) bool {
 	return c.BlockAttributes[path]
 }
 
-// IsIndexedBlockAttributeConfigured returns true if an attribute within a specific
-// indexed block instance was configured. Used for blocks with an "index" field.
 func (c *ConfiguredAttributes) IsIndexedBlockAttributeConfigured(blockType string, indexValue int64, attrName string) bool {
 	if c == nil || c.IndexedBlockAttributes == nil {
 		return false
@@ -96,9 +82,6 @@ func (c *ConfiguredAttributes) IsIndexedBlockAttributeConfigured(blockType strin
 	return false
 }
 
-// ParseResourceConfiguredAttributes returns the set of attributes that were
-// explicitly configured in the .tf files of the given directory for the
-// specified resource type and name.
 func ParseResourceConfiguredAttributes(ctx context.Context, workDir string, resourceType string, resourceName string) *ConfiguredAttributes {
 	result := &ConfiguredAttributes{
 		Attributes:             make(map[string]bool),
@@ -126,14 +109,13 @@ func ParseResourceConfiguredAttributes(ctx context.Context, workDir string, reso
 
 			mergeConfiguredAttributes(result, block.attrs)
 			logMatchedResource(ctx, resourceType, resourceName, sanitizedName, block)
-			break // first match in this file wins
+			break
 		}
 	}
 
 	return result
 }
 
-// mergeConfiguredAttributes merges src into dst.
 func mergeConfiguredAttributes(dst, src *ConfiguredAttributes) {
 	for attr := range src.Attributes {
 		dst.Attributes[attr] = true
@@ -159,7 +141,6 @@ func mergeConfiguredAttributes(dst, src *ConfiguredAttributes) {
 	}
 }
 
-// logMatchedResource reproduces the per-match debug output of the original parser.
 func logMatchedResource(ctx context.Context, resourceType, resourceName, sanitizedName string, block *parsedResourceBlock) {
 	indexedAttrsStr := ""
 	for blockType, indexMap := range block.attrs.IndexedBlockAttributes {
@@ -190,8 +171,6 @@ func mapKeysToString(m map[string]bool) string {
 	return strings.Join(keys, ", ")
 }
 
-// parsedResourceBlock is a single `resource` block reduced to what matching and
-// lookup need. The HCL syntax tree it came from is released after extraction.
 type parsedResourceBlock struct {
 	label      string
 	nameAttr   string
@@ -199,13 +178,10 @@ type parsedResourceBlock struct {
 	attrs      *ConfiguredAttributes
 }
 
-// parsedFile holds the resource blocks of one .tf file, grouped by resource type
-// and kept in source order within each group.
 type parsedFile struct {
 	byType map[string][]*parsedResourceBlock
 }
 
-// workDirIndex is the parsed form of every .tf file in one working directory.
 type workDirIndex struct {
 	fingerprint string
 	files       []*parsedFile
@@ -216,24 +192,18 @@ var (
 	configIndexCache = make(map[string]*workDirIndex)
 )
 
-// ClearConfigIndexCache drops every parsed configuration index.
 func ClearConfigIndexCache() {
 	configIndexMutex.Lock()
 	defer configIndexMutex.Unlock()
 	configIndexCache = make(map[string]*workDirIndex)
 }
 
-// InvalidateConfigIndex drops the parsed configuration index for one working
-// directory. The fingerprint already covers ordinary edits; call this when .tf
-// files are rewritten in place faster than filesystem timestamp resolution can
-// distinguish, as tests do between steps.
 func InvalidateConfigIndex(workDir string) {
 	configIndexMutex.Lock()
 	defer configIndexMutex.Unlock()
 	delete(configIndexCache, workDir)
 }
 
-// fingerprintTfFiles builds a cheap change token for the .tf file set.
 func fingerprintTfFiles(tfFiles []string) string {
 	var b strings.Builder
 	for _, f := range tfFiles {
@@ -247,9 +217,6 @@ func fingerprintTfFiles(tfFiles []string) string {
 	return b.String()
 }
 
-// getWorkDirIndex returns the parsed index for workDir, building it if the .tf
-// files changed since it was last built. Returns nil if the directory cannot be
-// listed.
 func getWorkDirIndex(ctx context.Context, workDir string) *workDirIndex {
 	tfFiles, err := filepath.Glob(filepath.Join(workDir, "*.tf"))
 	if err != nil {
@@ -274,8 +241,6 @@ func getWorkDirIndex(ctx context.Context, workDir string) *workDirIndex {
 	return index
 }
 
-// buildWorkDirIndex parses every .tf file once and extracts the configured
-// attributes of every resource block it contains.
 func buildWorkDirIndex(ctx context.Context, tfFiles []string, fingerprint string) *workDirIndex {
 	index := &workDirIndex{
 		fingerprint: fingerprint,
@@ -313,7 +278,6 @@ func buildWorkDirIndex(ctx context.Context, tfFiles []string, fingerprint string
 	return index
 }
 
-// indexResourceBlocks reduces one parsed file to its resource blocks.
 func indexResourceBlocks(ctx context.Context, body hcl.Body) *parsedFile {
 	syntaxBody, ok := body.(*hclsyntax.Body)
 	if !ok {
@@ -348,8 +312,6 @@ func indexResourceBlocks(ctx context.Context, body hcl.Body) *parsedFile {
 	return parsed
 }
 
-// extractBlockAttributes collects the attributes and nested blocks written in a
-// single resource block.
 func extractBlockAttributes(body *hclsyntax.Body) *ConfiguredAttributes {
 	result := &ConfiguredAttributes{
 		Attributes:             make(map[string]bool),
@@ -367,9 +329,6 @@ func extractBlockAttributes(body *hclsyntax.Body) *ConfiguredAttributes {
 	return result
 }
 
-// extractNestedBlocks recursively extracts block names and their attributes.
-// For blocks with an "index" attribute, it also populates IndexedBlockAttributes
-// to track which attributes are configured per-block-index.
 func extractNestedBlocks(blocks []*hclsyntax.Block, result *ConfiguredAttributes, prefix string) {
 	for _, block := range blocks {
 		fullBlockPath := block.Type
@@ -377,18 +336,16 @@ func extractNestedBlocks(blocks []*hclsyntax.Block, result *ConfiguredAttributes
 			fullBlockPath = prefix + "." + block.Type
 		}
 
-		// Record block names
 		result.Blocks[block.Type] = true
 		result.Blocks[fullBlockPath] = true
 
-		// Try to extract the "index" attribute value for indexed blocks
 		var blockIndex int64 = -1
 		if indexAttr, hasIndex := block.Body.Attributes["index"]; hasIndex {
 			val, diags := indexAttr.Expr.Value(nil)
 			if diags.HasErrors() {
-				// Log the error but continue
+
 				for _, d := range diags {
-					_ = d // can't log without context
+					_ = d
 				}
 			} else if val.Type() == cty.Number && !val.IsNull() && val.IsKnown() {
 				bf := val.AsBigFloat()
@@ -398,7 +355,6 @@ func extractNestedBlocks(blocks []*hclsyntax.Block, result *ConfiguredAttributes
 			}
 		}
 
-		// If we have a valid index, populate IndexedBlockAttributes
 		if blockIndex >= 0 {
 			blockType := block.Type
 			if prefix != "" {
@@ -415,7 +371,6 @@ func extractNestedBlocks(blocks []*hclsyntax.Block, result *ConfiguredAttributes
 			}
 		}
 
-		// Extract attributes from this block (existing behavior)
 		for attrName := range block.Body.Attributes {
 			simplePath := block.Type + "." + attrName
 			result.BlockAttributes[simplePath] = true
@@ -426,7 +381,6 @@ func extractNestedBlocks(blocks []*hclsyntax.Block, result *ConfiguredAttributes
 			}
 		}
 
-		// Recursively process nested blocks
 		if len(block.Body.Blocks) > 0 {
 			extractNestedBlocks(block.Body.Blocks, result, fullBlockPath)
 		}

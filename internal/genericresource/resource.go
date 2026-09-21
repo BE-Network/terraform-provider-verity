@@ -26,15 +26,6 @@ var (
 	_ resource.ResourceWithModifyPlan  = &Resource{}
 )
 
-// Resource is the generic lifecycle engine: one implementation that serves any
-// resource the registry describes, for as much of the registry as it can yet
-// reach.
-//
-// Supported decides what it can serve, and a spec it rejects is refused at
-// construction rather than served partially. Everything this type does is
-// decided by the spec it holds — the schema, what a request carries, what a
-// response means, and which fields the plan nullifies — so migrating a resource
-// is a matter of the registry describing it, not of code being written for it.
 type Resource struct {
 	spec     spec.ResourceSpec
 	adapter  TransportAdapter
@@ -44,12 +35,8 @@ type Resource struct {
 	typeName string
 }
 
-// New returns a factory for one registry resource. bind turns the provider's own
-// data into a Runtime, which is how the engine stays independent of the package
-// that registers it.
 func New(resourceSpec spec.ResourceSpec, adapter TransportAdapter, bind func(providerData interface{}) (Runtime, error)) (func() resource.Resource, error) {
-	// CompileSchema applies Supported, so an unsupported spec never becomes a
-	// resource the provider registers.
+
 	compiled, err := CompileSchema(resourceSpec)
 	if err != nil {
 		return nil, err
@@ -107,15 +94,9 @@ func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequ
 	resource.ImportStatePassthroughID(ctx, path.Root(r.spec.IdentityPath), req, resp)
 }
 
-// ModifyPlan nullifies fields that do not apply to the running mode.
-//
-// Without it Terraform shows "known after apply" for a Computed attribute the
-// API will never return in this mode, which is noise on every plan. The legacy
-// resources each carry a handwritten list of which fields those are; here the
-// list is the spec's own Modes, so it cannot drift from what the registry says.
 func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	if req.Plan.Raw.IsNull() {
-		// The resource is being destroyed; there is no plan to modify.
+
 		return
 	}
 	if r.runtime == nil {
@@ -136,8 +117,7 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 	}
 
 	if req.State.Raw.IsNull() {
-		// Creating: there is no prior value for a cleared field to differ from,
-		// but a value the server will assign is still unknown until it does.
+
 		r.planAutoAssignment(ctx, req, resp)
 		return
 	}
@@ -145,10 +125,6 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 	r.planAutoAssignment(ctx, req, resp)
 }
 
-// nullifyOutOfModeMembers applies the mode rule inside a block: a
-// member the running mode does not expose is nulled in every entry the plan
-// holds, so it does not show as "known after apply" either. The handwritten
-// resources nullify every entry, not only the first, and so does this.
 func (r *Resource) nullifyOutOfModeMembers(ctx context.Context, field spec.FieldSpec, mode string, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	var block types.List
 	resp.Diagnostics.Append(req.Plan.GetAttribute(ctx, path.Root(field.TerraformName), &block)...)
@@ -158,10 +134,6 @@ func (r *Resource) nullifyOutOfModeMembers(ctx context.Context, field spec.Field
 	r.nullifyOutOfModeEntries(ctx, path.Root(field.TerraformName), block, field, mode, resp)
 }
 
-// nullifyOutOfModeEntries nulls the out-of-mode members of every entry of one
-// block, and descends into a list the block contains — verity_fabric's
-// object_properties.system_graphs — so a member nested two levels down follows
-// the same rule.
 func (r *Resource) nullifyOutOfModeEntries(ctx context.Context, blockPath path.Path, block types.List, field spec.FieldSpec, mode string, resp *resource.ModifyPlanResponse) {
 	for index, element := range block.Elements() {
 		entry := blockPath.AtListIndex(index)
@@ -189,16 +161,6 @@ func (r *Resource) nullifyOutOfModeEntries(ctx context.Context, blockPath path.P
 	}
 }
 
-// planExplicitNulls makes a cleared nullable field visible as a change.
-//
-// Terraform copies state into the plan for an Optional and Computed attribute
-// whose configuration is null, so writing `x = null` plans as no change at all
-// and Update is never called. The handwritten resources detect the explicit null
-// by parsing the .tf files and force the planned value to null; without the same
-// step the generic engine silently ignores a clear.
-//
-// Only a nullable field needs this. Every other kind is cleared by a zero value
-// the configuration can state outright, which plans as an ordinary change.
 func (r *Resource) planExplicitNulls(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	nullable := make([]spec.FieldSpec, 0, len(r.spec.Fields))
 	var lists []spec.FieldSpec
@@ -257,11 +219,6 @@ func (r *Resource) planExplicitNulls(ctx context.Context, req resource.ModifyPla
 	}
 }
 
-// planSingletonExplicitNulls applies the explicit-null rule to a singleton's
-// members: when the configuration and state both hold the block, a nullable
-// member written as null where state holds a value is planned as null in the
-// block's one entry. It is what verity_switchpoint's handwritten plan does for
-// object_properties.number_of_multipoints.
 func (r *Resource) planSingletonExplicitNulls(ctx context.Context, field spec.FieldSpec, config, state map[string]attr.Value, configured *utils.ConfiguredAttributes, resp *resource.ModifyPlanResponse) {
 	configMembers, configPresent, err := singletonMembers(field, config[field.TerraformName])
 	if err != nil || !configPresent {
@@ -291,11 +248,6 @@ func (r *Resource) planSingletonExplicitNulls(ctx context.Context, field spec.Fi
 	}
 }
 
-// planEntryExplicitNulls applies the same rule inside a list. Each configuration
-// entry is matched to the state entry with its index, and a nullable member
-// written as null where state holds a value is planned as null at that entry's
-// position. The handwritten resources read the index the same way: an unknown or
-// null one reads as zero.
 func (r *Resource) planEntryExplicitNulls(ctx context.Context, field spec.FieldSpec, config, state map[string]attr.Value, configured *utils.ConfiguredAttributes, resp *resource.ModifyPlanResponse) {
 	configEntries, present, err := listEntries(field, config[field.TerraformName])
 	if err != nil || !present {
@@ -351,8 +303,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 		return
 	}
 	if !r.spec.Operations.Create {
-		// Some objects exist only as hardware or configuration the API manages;
-		// they are imported and updated, never created.
+
 		resp.Diagnostics.AddError(
 			"Create Not Supported",
 			fmt.Sprintf("%s cannot be created through this API; import it instead", r.spec.TerraformType),
@@ -408,14 +359,12 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 		resp.Diagnostics.AddError("Invalid Configuration", fmt.Sprintf("%s %s: %s", r.spec.TerraformType, name, err))
 		return
 	}
-	// A reference pair reports a refused combination through diagnostics rather
-	// than an error, in the words the handwritten helpers use.
+
 	if resp.Diagnostics.HasError() {
 		return
 	}
 	if !changed {
-		// Nothing to send. The plan is already what the object is, so it becomes
-		// state unchanged rather than provoking an empty request.
+
 		resp.Diagnostics.Append(r.setState(ctx, &resp.State, plan)...)
 		return
 	}
@@ -435,12 +384,8 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 	r.settleAfterWrite(ctx, name, plan, &resp.State, &resp.Diagnostics)
 }
 
-// nullableSource reads the configuration and the .tf files, but only when the
-// resource actually has a nullable field. Parsing is not free, and a resource
-// with none has nothing to learn from it.
 func (r *Resource) nullableSource(ctx context.Context, config tfsdk.Config, name string, diagnostics *diag.Diagnostics) nullableSource {
-	// The configuration is needed for a nullable field, and for an
-	// auto-assignment flag, which is sent only when the configuration states it.
+
 	if !r.needsConfiguration() {
 		return nullableSource{}
 	}
@@ -455,9 +400,6 @@ func (r *Resource) nullableSource(ctx context.Context, config tfsdk.Config, name
 	}
 }
 
-// needsConfiguration reports whether any field's request depends on the
-// configuration itself: a nullable field, a nullable member of a list entry, or
-// an auto-assignment flag, which is sent only when the configuration states it.
 func (r *Resource) needsConfiguration() bool {
 	for _, field := range r.spec.Fields {
 		if field.Unmanaged {
@@ -530,9 +472,6 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	name := r.identityOf(state)
 	manager := r.runtime.BulkManager()
 
-	// A write this provider just made is authoritative, and re-reading it would
-	// race the server's own settling. Both branches below are why: the response
-	// the operation returned, then the knowledge that one is still in flight.
 	if manager != nil {
 		if data, exists := manager.GetResourceResponse(r.spec.API.BulkKey, name); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached %s data for %s from recent operation", r.spec.TerraformType, name))
@@ -580,13 +519,8 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	r.applyResponse(ctx, applyFallback(ctx, object), state, &resp.State, &resp.Diagnostics)
 }
 
-// settleAfterWrite turns a completed write into state. The operation's own
-// response is preferred, since it is what the server stored; otherwise the
-// resource is read back, and if even that yields nothing the plan stands in so
-// the apply does not end with no state at all.
 func (r *Resource) settleAfterWrite(ctx context.Context, name string, plan map[string]attr.Value, state *tfsdk.State, diagnostics *diag.Diagnostics) {
-	// State has to exist before it can be refined, and at this point the write
-	// has happened: losing the identity here would orphan the object.
+
 	minimal := map[string]attr.Value{}
 	for _, field := range r.spec.Fields {
 		if field.Unmanaged {
@@ -616,16 +550,13 @@ func (r *Resource) settleAfterWrite(ctx context.Context, name string, plan map[s
 	readResp := resource.ReadResponse{State: *state, Diagnostics: *diagnostics}
 	r.Read(r.withFallback(ctx, plan), resource.ReadRequest{State: *state}, &readResp)
 	if readResp.State.Raw.IsNull() {
-		// The read found nothing to write, so the plan is all that is left to
-		// record. Without this the apply ends having made a change it did not save.
+
 		readResp.Diagnostics.Append(r.setState(ctx, &readResp.State, nullifyUnknown(r.spec.Fields, plan))...)
 	}
 	*state = readResp.State
 	*diagnostics = readResp.Diagnostics
 }
 
-// applyResponse decodes an API object into state, keeping the prior state for
-// the fields whose absence policy asks for it.
 func (r *Resource) applyResponse(ctx context.Context, data map[string]interface{}, prior map[string]attr.Value, state *tfsdk.State, diagnostics *diag.Diagnostics) {
 	values, err := stateFromAPI(r.spec.Fields, data, r.runtime.Mode(), prior)
 	if err != nil {
@@ -635,9 +566,6 @@ func (r *Resource) applyResponse(ctx context.Context, data map[string]interface{
 	diagnostics.Append(r.setState(ctx, state, values)...)
 }
 
-// mergePlanScalars fills fields the response left out from the plan that was
-// just applied. The server echoes what it stored, and a field it omits is one it
-// accepted without comment, so the planned value is the better answer than null.
 func (r *Resource) mergePlanScalars(data map[string]interface{}, plan map[string]attr.Value) map[string]interface{} {
 	merged := make(map[string]interface{}, len(data))
 	for key, value := range data {
@@ -684,10 +612,6 @@ func (r *Resource) identityOf(values map[string]attr.Value) string {
 	return ""
 }
 
-// operationOptions carries the fixed parameters that select this resource on a
-// shared endpoint, which the bulk manager adds to every write and uses to keep
-// resources that share an endpoint in separate batches. The handwritten ACL
-// resources pass the same map.
 func (r *Resource) operationOptions() *bulkops.ResourceOperationOptions {
 	if len(r.spec.API.FixedHeaders) == 0 {
 		return nil
@@ -706,8 +630,6 @@ func (r *Resource) ready(diagnostics *diag.Diagnostics) bool {
 	return true
 }
 
-// goValue converts a known Framework value back to the Go value an API response
-// would have carried, so a planned value can stand in for an absent member.
 func goValue(kind spec.FieldKind, value attr.Value) (interface{}, bool) {
 	switch kind {
 	case spec.FieldKindString:
@@ -731,9 +653,6 @@ func goValue(kind spec.FieldKind, value attr.Value) (interface{}, bool) {
 	}
 }
 
-// nullifyUnknown replaces unknowns with nulls so a plan can be written to state.
-// An unknown cannot be stored, and the field is Computed, so null is what the
-// next read will fill in.
 func nullifyUnknown(fields []spec.FieldSpec, values map[string]attr.Value) map[string]attr.Value {
 	settled := make(map[string]attr.Value, len(values))
 	for _, field := range fields {

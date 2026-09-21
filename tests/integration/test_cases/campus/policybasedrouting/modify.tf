@@ -1,5 +1,3 @@
-# Test case: Modify existing resources
-# Define modified versions of the resources from add.tf
 
 resource "verity_pb_routing" "pb_routing_test_script1" {
 	enable = false

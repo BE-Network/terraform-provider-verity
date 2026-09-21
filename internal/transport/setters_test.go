@@ -6,9 +6,6 @@ import (
 	"terraform-provider-verity/openapi"
 )
 
-// These calls are also compile-time guards for the target types emitted by
-// setterFor. The generator maps each width to a distinct helper; passing a
-// **int64 helper a **int32 target, for example, cannot compile.
 func TestWidthSpecificSettersMatchSDKTargets(t *testing.T) {
 	t.Parallel()
 

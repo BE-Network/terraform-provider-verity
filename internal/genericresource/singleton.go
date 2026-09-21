@@ -11,30 +11,10 @@ import (
 	"terraform-provider-verity/internal/transport"
 )
 
-// A singleton is an object the API sends whole, which every handwritten resource
-// exposes as a list block holding at most one entry. The API shape and the state
-// shape differ on purpose: changing the block to an attribute would break every
-// existing state file, so the engine keeps the list and reads and writes its
-// first entry.
-//
-// The rules below are the handwritten resources' own, measured against them by
-// the differential tests rather than assumed:
-//
-//   - create sends the object when the block is written, carrying each member
-//     its create policies allow, and nothing when the block is absent;
-//   - update considers the object only when both the plan and the state hold an
-//     entry, sends only the members that changed, and sends nothing when the
-//     block is added or removed;
-//   - a response object becomes a one-entry list, and a missing one an absent
-//     block.
-
-// elementType is the object type of a singleton block's one entry.
 func elementType(field spec.FieldSpec) types.ObjectType {
 	return types.ObjectType{AttrTypes: attributeTypes(field.Fields)}
 }
 
-// nullFor is the null value of a field's state type, which for a singleton is a
-// null list of its entry type rather than a null scalar.
 func nullFor(field spec.FieldSpec) attr.Value {
 	if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
 		return types.ListNull(elementType(field))
@@ -42,8 +22,6 @@ func nullFor(field spec.FieldSpec) attr.Value {
 	return nullOf(field.Kind)
 }
 
-// singletonMembers returns the first entry of a singleton block, and whether the
-// block holds one at all. A null, unknown, or empty list is an absent block.
 func singletonMembers(field spec.FieldSpec, value attr.Value) (map[string]attr.Value, bool, error) {
 	if value == nil || value.IsNull() || value.IsUnknown() {
 		return nil, false, nil
@@ -66,10 +44,6 @@ func singletonMembers(field spec.FieldSpec, value attr.Value) (map[string]attr.V
 	return entry.Attributes(), true, nil
 }
 
-// createSingleton decides what a create sends for a singleton. A block that is
-// not written goes through the object's own create policy; one that is written
-// is sent as an object, each member decided by its own policies, and sent even
-// when no member survives, because the handwritten resources send it that way.
 func createSingleton(field spec.FieldSpec, value attr.Value, nullables nullableSource) (transport.WireValue, bool, error) {
 	members, present, err := singletonMembers(field, value)
 	if err != nil {
@@ -85,8 +59,7 @@ func createSingleton(field spec.FieldSpec, value attr.Value, nullables nullableS
 		}
 		memberValue, held := members[member.TerraformName]
 		if member.Nullable {
-			// Only the configuration shows whether a null was written; a member
-			// that is not written is left to the server.
+
 			memberValue, held = nullables.singletonMember(field, member, members)
 		}
 		if !held {
@@ -98,11 +71,7 @@ func createSingleton(field spec.FieldSpec, value attr.Value, nullables nullableS
 			err  error
 		)
 		if member.Kind == spec.FieldKindList {
-			// A list inside the singleton has no nullable members; Supported
-			// refuses them, so there is no configuration to consult. With no
-			// entries it is still sent, as an empty list: verity_fabric's
-			// handwritten create builds object_properties.system_graphs as a
-			// non-nil slice whenever the block is written, and the SDK sends it.
+
 			wire, send, err = createList(member, memberValue, nullableSource{})
 			if err == nil && !send {
 				wire, send = transport.List([]transport.WireValue{}), true
@@ -120,13 +89,6 @@ func createSingleton(field spec.FieldSpec, value attr.Value, nullables nullableS
 	return transport.Object(object), true, nil
 }
 
-// updateEmptySingleton handles an object the API declares with no properties.
-// Its presence is all that can change, and the handwritten resources treat a
-// change of presence as a change of the resource: adding the block sends an
-// empty object, and removing it counts as a change with nothing to send. The
-// removal case never converges — the server keeps the object, and the read that
-// follows restores the block — and the engine reproduces that rather than
-// quietly differing; see "Phase 4: indexed collections" in status.md.
 func updateEmptySingleton(field spec.FieldSpec, plan, state attr.Value) (wire transport.WireValue, send, changed bool, err error) {
 	_, plannedPresent, err := singletonMembers(field, plan)
 	if err != nil {
@@ -155,13 +117,6 @@ func hasManagedMembers(field spec.FieldSpec) bool {
 	return false
 }
 
-// updateSingleton decides what an update sends for a singleton that differs from
-// state. It reports whether anything changed; only then is the object sent, and
-// it carries only the members that changed.
-//
-// Adding or removing the block sends nothing, as it does in the handwritten
-// resources. Removal leaves the server's object alone, and an addition is picked
-// up on a later update once the read has put the server's object into state.
 func updateSingleton(field spec.FieldSpec, plan, state attr.Value, nullables nullableSource, diagnostics *diag.Diagnostics) (transport.WireValue, bool, error) {
 	planned, plannedPresent, err := singletonMembers(field, plan)
 	if err != nil {
@@ -178,11 +133,6 @@ func updateSingleton(field spec.FieldSpec, plan, state attr.Value, nullables nul
 	object := make(transport.WireObject, len(field.Fields))
 	changed := false
 
-	// A list inside the singleton is reconciled whenever either side holds the
-	// block, with an absent side read as an empty list: adding the block
-	// creates its entries and removing it deletes them. That is what
-	// verity_fabric's handwritten update does for object_properties.system_graphs,
-	// and it differs from the rule for the singleton's scalar members below.
 	for _, member := range field.Fields {
 		if member.Unmanaged || member.Kind != spec.FieldKindList {
 			continue
@@ -201,16 +151,13 @@ func updateSingleton(field spec.FieldSpec, plan, state attr.Value, nullables nul
 	}
 
 	if !plannedPresent || !previousPresent {
-		// Scalar members are considered only when both sides hold the block.
+
 		if !changed {
 			return transport.WireValue{}, false, nil
 		}
 		return transport.Object(object), true, nil
 	}
 
-	// A reference pair inside the object is decided together, exactly as at the
-	// top level, and both halves clear to an empty string rather than by the
-	// omission its siblings use.
 	companions, paired, err := referencePairs(field.Fields)
 	if err != nil {
 		return transport.WireValue{}, false, fmt.Errorf("%s: %w", field.TerraformName, err)
@@ -258,28 +205,20 @@ func updateSingleton(field spec.FieldSpec, plan, state attr.Value, nullables nul
 	return transport.Object(object), true, nil
 }
 
-// singletonFromAPI decodes a response object into a one-entry block. Each member
-// follows its own mode and absence policy, so a member the running mode does not
-// expose reads as null even when the response carries it.
 func singletonFromAPI(field spec.FieldSpec, raw interface{}, mode string) (attr.Value, error) {
 	object, ok := raw.(map[string]interface{})
 	if !ok {
-		// Not an object: the handwritten resources record no block in that case.
+
 		return nullFor(field), nil
 	}
 	members, err := stateFromAPI(field.Fields, object, mode, nil)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", field.TerraformName, err)
 	}
-	// verity_fabric's handwritten read records a missing system_graphs as an
-	// empty list rather than an absent one. Terraform treats the two the same
-	// for a nested block, and substituting one for the other changed nothing a
-	// plan, a request, or the differential tests could observe, so the list
-	// decodes here as any other list does.
+
 	return singletonValue(field, members)
 }
 
-// singletonValue builds the one-entry list a block's state holds.
 func singletonValue(field spec.FieldSpec, members map[string]attr.Value) (attr.Value, error) {
 	entry, diags := types.ObjectValue(attributeTypes(field.Fields), members)
 	if diags.HasError() {
@@ -292,9 +231,6 @@ func singletonValue(field spec.FieldSpec, members map[string]attr.Value) (attr.V
 	return list, nil
 }
 
-// settleSingleton replaces unknown members with nulls so a planned block can be
-// written to state. An unknown cannot be stored, and a Computed member is filled
-// in by the next read.
 func settleSingleton(field spec.FieldSpec, value attr.Value) attr.Value {
 	members, present, err := singletonMembers(field, value)
 	if err != nil || !present {

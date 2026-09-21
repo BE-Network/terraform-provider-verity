@@ -9,9 +9,6 @@ import (
 	"terraform-provider-verity/internal/utils"
 )
 
-// modeFields is a synthetic resource whose endpoint exists in no generated
-// table. That is the point: the engine must answer the mode question from the
-// spec it holds, and a lookup keyed by endpoint name would find nothing here.
 func modeFields() []spec.FieldSpec {
 	return []spec.FieldSpec{
 		{
@@ -35,14 +32,6 @@ func modeFields() []spec.FieldSpec {
 	}
 }
 
-// A field outside the running mode reads as null even when the response carries
-// a value for it.
-//
-// This is what keeps a campus-only attribute from showing up in a datacenter
-// plan. The engine decides it from FieldSpec.Modes; deciding it from the
-// generated lookup table instead would answer "applies" for every field here,
-// because that table fails open on an endpoint it does not know and this
-// resource is in no table at all.
 func TestStateFromAPIHonorsFieldModes(t *testing.T) {
 	t.Parallel()
 
@@ -72,9 +61,6 @@ func TestStateFromAPIHonorsFieldModes(t *testing.T) {
 	}
 }
 
-// The same decision drives ModifyPlan, which nullifies out-of-mode fields so a
-// plan does not show "known after apply" for something the API will never
-// return. Asserting the predicate directly covers both callers.
 func TestAppliesToModeReadsTheSpec(t *testing.T) {
 	t.Parallel()
 
@@ -91,19 +77,11 @@ func TestAppliesToModeReadsTheSpec(t *testing.T) {
 		t.Error("a field declared for both modes was reported as not applying to one")
 	}
 
-	// An unrecognised mode matches nothing, rather than everything. The lookup
-	// table this replaced returned true for an unknown mode, so a typo there
-	// silently exposed every field.
 	if appliesToMode(bothModes, "") || appliesToMode(bothModes, "datacentre") {
 		t.Error("an unrecognised mode was treated as matching")
 	}
 }
 
-// The distinction this turns on: the table the engine used to consult answers
-// "applies" for a resource it has never heard of. Recording that here is what
-// makes the choice above legible as a fix rather than a preference — if
-// FieldAppliesToMode ever fails closed instead, this test says so and the
-// comment above it can be revisited.
 func TestLegacyModeTableFailsOpenForUnknownResources(t *testing.T) {
 	t.Parallel()
 

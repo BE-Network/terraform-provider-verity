@@ -9,20 +9,6 @@ import (
 	"terraform-provider-verity/openapi"
 )
 
-// The nullable setters distinguish three states, and an unknown is the third.
-//
-// A nullable field carries an explicit null on this API, so its setter cannot use
-// the "is it null?" test the non-nullable setters use to mean "was it left out?" —
-// null is a value it has to send. It gates on IsConfigured instead, which reads
-// the .tf file. That leaves unknown unaccounted for: it is neither null nor
-// absent from configuration, so it fell through to the value branch, where
-// ValueInt64 reports zero for an unknown and ValueBigFloat reports zero likewise.
-// The request then stored a zero the configuration never asked for.
-//
-// SetStringFields, SetBoolFields and SetInt64Fields all skip an unknown. These
-// tests hold the nullable pair to the same contract: an unknown is omitted and
-// left to the read that follows the operation, which is what the registry records
-// for these fields as unknown_plan: omit_and_read.
 func TestSetNullableInt64FieldsOmitsUnknown(t *testing.T) {
 	t.Parallel()
 
@@ -55,10 +41,6 @@ func TestSetNullableNumberFieldsOmitsUnknown(t *testing.T) {
 	}
 }
 
-// The three states the unknown guard must not disturb: a known value still
-// serializes, and an explicit null still sends null rather than being omitted.
-// Without these, skipping unknown could be widened into skipping null and the
-// omission tests above would still pass.
 func TestSetNullableFieldsStillSendKnownValuesAndExplicitNull(t *testing.T) {
 	t.Parallel()
 

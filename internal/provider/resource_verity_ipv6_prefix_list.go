@@ -187,12 +187,10 @@ func (r *verityIpv6PrefixListResource) Create(ctx context.Context, req resource.
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &ipv6PrefixListProps.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objectProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
@@ -202,11 +200,9 @@ func (r *verityIpv6PrefixListResource) Create(ctx context.Context, req resource.
 		ipv6PrefixListProps.ObjectProperties = &objectProps
 	}
 
-	// Parse HCL to detect explicitly configured attributes
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ipv6PrefixListTerraformType, name)
 
-	// Handle lists
 	if len(plan.Lists) > 0 {
 		listsConfigMap := utils.BuildIndexedConfigMap(config.Lists)
 
@@ -221,7 +217,6 @@ func (r *verityIpv6PrefixListResource) Create(ctx context.Context, req resource.
 				{FieldName: "Ipv6Prefix", APIField: &item.Ipv6Prefix, TFValue: listItem.Ipv6Prefix},
 			})
 
-			// Get per-block configured info for nullable Int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(listItem, listsConfigMap, "lists", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "GreaterThanEqualValue", APIField: &item.GreaterThanEqualValue, TFValue: configItem.GreaterThanEqualValue, IsConfigured: cfg.IsFieldConfigured("greater_than_equal_value")},
@@ -260,7 +255,6 @@ func (r *verityIpv6PrefixListResource) Create(ctx context.Context, req resource.
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -297,7 +291,6 @@ func (r *verityIpv6PrefixListResource) Read(ctx context.Context, req resource.Re
 
 	name := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if ipv6PrefixListData, exists := r.bulkOpsMgr.GetResourceResponse("ipv6_prefix_list", name); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached IPv6 Prefix List data for %s from recent operation", name))
@@ -408,13 +401,10 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 	ipv6PrefixListProps := openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { ipv6PrefixListProps.Name = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { ipv6PrefixListProps.Enable = v }, &hasChanges)
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objectProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -437,30 +427,25 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 	req.Config.Get(ctx, &config)
 	listsConfigMap := utils.BuildIndexedConfigMap(config.Lists)
 
-	// Handle lists
 	listsHandler := utils.IndexedItemHandler[verityIpv6PrefixListListsModel, openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner]{
 		CreateNew: func(planItem verityIpv6PrefixListListsModel) openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner {
 			newItem := openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner{}
 
-			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enable", APIField: &newItem.Enable, TFValue: planItem.Enable},
 			})
 
-			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "PermitDeny", APIField: &newItem.PermitDeny, TFValue: planItem.PermitDeny},
 				{FieldName: "Ipv6Prefix", APIField: &newItem.Ipv6Prefix, TFValue: planItem.Ipv6Prefix},
 			})
 
-			// Get per-block configured info for nullable Int64 fields
 			configItem, cfg := utils.GetIndexedBlockConfig(planItem, listsConfigMap, "lists", configuredAttrs)
 			utils.SetNullableInt64Fields([]utils.NullableInt64FieldMapping{
 				{FieldName: "GreaterThanEqualValue", APIField: &newItem.GreaterThanEqualValue, TFValue: configItem.GreaterThanEqualValue, IsConfigured: cfg.IsFieldConfigured("greater_than_equal_value")},
 				{FieldName: "LessThanEqualValue", APIField: &newItem.LessThanEqualValue, TFValue: configItem.LessThanEqualValue, IsConfigured: cfg.IsFieldConfigured("less_than_equal_value")},
 			})
 
-			// Handle int64 fields
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &newItem.Index, TFValue: planItem.Index},
 			})
@@ -471,19 +456,15 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 			updateItem := openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValueListsInner{}
 			fieldChanged := false
 
-			// Handle boolean field changes
 			utils.CompareAndSetBoolField(planItem.Enable, stateItem.Enable, func(v *bool) { updateItem.Enable = v }, &fieldChanged)
 
-			// Handle string field changes
 			utils.CompareAndSetStringField(planItem.PermitDeny, stateItem.PermitDeny, func(v *string) { updateItem.PermitDeny = v }, &fieldChanged)
 			utils.CompareAndSetStringField(planItem.Ipv6Prefix, stateItem.Ipv6Prefix, func(v *string) { updateItem.Ipv6Prefix = v }, &fieldChanged)
 
-			// Handle nullable int64 field changes
 			configItem, cfg := utils.GetIndexedBlockConfig(planItem, listsConfigMap, "lists", configuredAttrs)
 			utils.CompareAndSetNullableInt64Field(configItem.GreaterThanEqualValue, stateItem.GreaterThanEqualValue, cfg.IsFieldConfigured("greater_than_equal_value"), func(v *openapi.NullableInt64) { updateItem.GreaterThanEqualValue = *v }, &fieldChanged)
 			utils.CompareAndSetNullableInt64Field(configItem.LessThanEqualValue, stateItem.LessThanEqualValue, cfg.IsFieldConfigured("less_than_equal_value"), func(v *openapi.NullableInt64) { updateItem.LessThanEqualValue = *v }, &fieldChanged)
 
-			// Always include index — API requires it to identify which array element to modify
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &updateItem.Index, TFValue: planItem.Index},
 			})
@@ -524,7 +505,6 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if ipv6PrefixListData, exists := bulkMgr.GetResourceResponse("ipv6_prefix_list", name); exists {
 			newState := populateIpv6PrefixListState(ctx, minState, utils.MergeMissingPlanScalars(ipv6PrefixListData, plan, ipv6PrefixListResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -533,7 +513,6 @@ func (r *verityIpv6PrefixListResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -589,10 +568,8 @@ func populateIpv6PrefixListState(ctx context.Context, state verityIpv6PrefixList
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityIpv6PrefixListObjectPropertiesModel{
@@ -606,7 +583,6 @@ func populateIpv6PrefixListState(ctx context.Context, state verityIpv6PrefixList
 		state.ObjectProperties = nil
 	}
 
-	// Handle lists block
 	if utils.FieldAppliesToMode(resourceType, "lists", mode) {
 		if listsData, ok := data["lists"].([]interface{}); ok && len(listsData) > 0 {
 			var listsList []verityIpv6PrefixListListsModel
@@ -641,9 +617,7 @@ func populateIpv6PrefixListState(ctx context.Context, state verityIpv6PrefixList
 }
 
 func (r *verityIpv6PrefixListResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -654,11 +628,6 @@ func (r *verityIpv6PrefixListResource) ModifyPlan(ctx context.Context, req resou
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := ipv6PrefixListResourceType
 	mode := r.provCtx.mode
 
@@ -687,16 +656,10 @@ func (r *verityIpv6PrefixListResource) ModifyPlan(ctx context.Context, req resou
 		StringFields: []string{"notes"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityIpv6PrefixListResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -709,9 +672,6 @@ func (r *verityIpv6PrefixListResource) ModifyPlan(ctx context.Context, req resou
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable fields in nested blocks
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, ipv6PrefixListTerraformType, name)

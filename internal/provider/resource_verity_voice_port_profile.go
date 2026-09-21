@@ -334,7 +334,6 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Protocol", APIField: &vppProps.Protocol, TFValue: plan.Protocol},
 		{FieldName: "DigitMap", APIField: &vppProps.DigitMap, TFValue: plan.DigitMap},
@@ -343,7 +342,6 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 		{FieldName: "CidNamePresentationStatus", APIField: &vppProps.CidNamePresentationStatus, TFValue: plan.CidNamePresentationStatus},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &vppProps.Enable, TFValue: plan.Enable},
 		{FieldName: "CallThreeWayEnable", APIField: &vppProps.CallThreeWayEnable, TFValue: plan.CallThreeWayEnable},
@@ -366,7 +364,6 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 		{FieldName: "EchoCancellationEnable", APIField: &vppProps.EchoCancellationEnable, TFValue: plan.EchoCancellationEnable},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, voicePortProfileTerraformType, name)
 
@@ -382,7 +379,6 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 		{FieldName: "RohTimer", APIField: &vppProps.RohTimer, TFValue: config.RohTimer, IsConfigured: configuredAttrs.IsConfigured("roh_timer")},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
@@ -417,7 +413,6 @@ func (r *verityVoicePortProfileResource) Create(ctx context.Context, req resourc
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -454,7 +449,6 @@ func (r *verityVoicePortProfileResource) Read(ctx context.Context, req resource.
 
 	vppName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if voicePortProfileData, exists := r.bulkOpsMgr.GetResourceResponse("voice_port_profile", vppName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached voice port profile data for %s from recent operation", vppName))
@@ -554,7 +548,6 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityVoicePortProfileResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -574,11 +567,9 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 	vppProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, voicePortProfileTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(val *string) { vppProps.Name = val }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Protocol, state.Protocol, func(val *string) { vppProps.Protocol = val }, &hasChanges)
 	utils.CompareAndSetStringField(plan.DigitMap, state.DigitMap, func(val *string) { vppProps.DigitMap = val }, &hasChanges)
@@ -586,7 +577,6 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 	utils.CompareAndSetStringField(plan.CidNumPresentationStatus, state.CidNumPresentationStatus, func(val *string) { vppProps.CidNumPresentationStatus = val }, &hasChanges)
 	utils.CompareAndSetStringField(plan.CidNamePresentationStatus, state.CidNamePresentationStatus, func(val *string) { vppProps.CidNamePresentationStatus = val }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(val *bool) { vppProps.Enable = val }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.CallThreeWayEnable, state.CallThreeWayEnable, func(val *bool) { vppProps.CallThreeWayEnable = val }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.CallerIdEnable, state.CallerIdEnable, func(val *bool) { vppProps.CallerIdEnable = val }, &hasChanges)
@@ -607,7 +597,6 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 	utils.CompareAndSetBoolField(plan.IntercomTransferEnable, state.IntercomTransferEnable, func(val *bool) { vppProps.IntercomTransferEnable = val }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.EchoCancellationEnable, state.EchoCancellationEnable, func(val *bool) { vppProps.EchoCancellationEnable = val }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.CallForwardOnNoAnswerRingCount, state.CallForwardOnNoAnswerRingCount, configuredAttrs.IsConfigured("call_forward_on_no_answer_ring_count"), func(val *openapi.NullableInt64) { vppProps.CallForwardOnNoAnswerRingCount = *val }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MwiRefreshTimer, state.MwiRefreshTimer, configuredAttrs.IsConfigured("mwi_refresh_timer"), func(val *openapi.NullableInt64) { vppProps.MwiRefreshTimer = *val }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.DialToneFeatureDelay, state.DialToneFeatureDelay, configuredAttrs.IsConfigured("dial_tone_feature_delay"), func(val *openapi.NullableInt64) { vppProps.DialToneFeatureDelay = *val }, &hasChanges)
@@ -618,7 +607,6 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 	utils.CompareAndSetNullableInt64Field(config.ReleaseTimer, state.ReleaseTimer, configuredAttrs.IsConfigured("release_timer"), func(val *openapi.NullableInt64) { vppProps.ReleaseTimer = *val }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.RohTimer, state.RohTimer, configuredAttrs.IsConfigured("roh_timer"), func(val *openapi.NullableInt64) { vppProps.RohTimer = *val }, &hasChanges)
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -657,7 +645,6 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if voicePortProfileData, exists := bulkMgr.GetResourceResponse("voice_port_profile", name); exists {
 			updatedState := populateVoicePortProfileState(ctx, minState, utils.MergeMissingPlanScalars(voicePortProfileData, plan, voicePortProfileResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -666,7 +653,6 @@ func (r *verityVoicePortProfileResource) Update(ctx context.Context, req resourc
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -722,14 +708,12 @@ func populateVoicePortProfileState(ctx context.Context, state verityVoicePortPro
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// String fields
 	state.Protocol = utils.MapStringWithMode(data, "protocol", resourceType, mode)
 	state.DigitMap = utils.MapStringWithMode(data, "digit_map", resourceType, mode)
 	state.SignalingCode = utils.MapStringWithMode(data, "signaling_code", resourceType, mode)
 	state.CidNumPresentationStatus = utils.MapStringWithMode(data, "cid_num_presentation_status", resourceType, mode)
 	state.CidNamePresentationStatus = utils.MapStringWithMode(data, "cid_name_presentation_status", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.CallThreeWayEnable = utils.MapBoolWithMode(data, "call_three_way_enable", resourceType, mode)
 	state.CallerIdEnable = utils.MapBoolWithMode(data, "caller_id_enable", resourceType, mode)
@@ -750,7 +734,6 @@ func populateVoicePortProfileState(ctx context.Context, state verityVoicePortPro
 	state.IntercomTransferEnable = utils.MapBoolWithMode(data, "intercom_transfer_enable", resourceType, mode)
 	state.EchoCancellationEnable = utils.MapBoolWithMode(data, "echo_cancellation_enable", resourceType, mode)
 
-	// Int fields
 	state.CallForwardOnNoAnswerRingCount = utils.MapInt64WithMode(data, "call_forward_on_no_answer_ring_count", resourceType, mode)
 	state.MwiRefreshTimer = utils.MapInt64WithMode(data, "mwi_refresh_timer", resourceType, mode)
 	state.DialToneFeatureDelay = utils.MapInt64WithMode(data, "dial_tone_feature_delay", resourceType, mode)
@@ -761,7 +744,6 @@ func populateVoicePortProfileState(ctx context.Context, state verityVoicePortPro
 	state.ReleaseTimer = utils.MapInt64WithMode(data, "release_timer", resourceType, mode)
 	state.RohTimer = utils.MapInt64WithMode(data, "roh_timer", resourceType, mode)
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityVoicePortProfileObjectPropertiesModel{
@@ -780,9 +762,7 @@ func populateVoicePortProfileState(ctx context.Context, state verityVoicePortPro
 }
 
 func (r *verityVoicePortProfileResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -793,11 +773,6 @@ func (r *verityVoicePortProfileResource) ModifyPlan(ctx context.Context, req res
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := voicePortProfileResourceType
 	mode := r.provCtx.mode
 
@@ -835,16 +810,10 @@ func (r *verityVoicePortProfileResource) ModifyPlan(ctx context.Context, req res
 		BoolFields:   []string{"format_dial_plan"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityVoicePortProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -857,11 +826,6 @@ func (r *verityVoicePortProfileResource) ModifyPlan(ctx context.Context, req res
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, voicePortProfileTerraformType, name)

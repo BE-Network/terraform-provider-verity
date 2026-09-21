@@ -29,9 +29,7 @@ type fieldInfo struct {
 type blockInfo struct {
 	Name   string
 	Fields []fieldInfo
-	// Blocks holds nested blocks. Only Fabric has them today
-	// (object_properties.system_graphs), but dropping them silently excluded the
-	// provider's only two-level nesting from every generated configuration.
+
 	Blocks []blockInfo
 }
 
@@ -52,10 +50,8 @@ type ResourceCoverageEntry struct {
 	RequiredQueryParams map[string]string
 }
 
-// Each entry specifies the resource metadata needed to auto-generate HCL
-// from schema introspection and verify PUT field coverage.
 var allResourceTests = []ResourceCoverageEntry{
-	// Resources available in both modes
+
 	{
 		TerraformType: "verity_badge",
 		Factory:       provider.NewVerityBadgeResource,
@@ -275,7 +271,6 @@ var allResourceTests = []ResourceCoverageEntry{
 		ResourceName:  "cov_th",
 	},
 
-	// Datacenter-only resources
 	{
 		TerraformType: "verity_tenant",
 		Factory:       provider.NewVerityTenantResource,
@@ -393,7 +388,6 @@ var allResourceTests = []ResourceCoverageEntry{
 		ResourceName:  "cov_pb",
 	},
 
-	// Campus-only resources
 	{
 		TerraformType: "verity_authenticated_eth_port",
 		Factory:       provider.NewVerityAuthenticatedEthPortResource,
@@ -426,9 +420,7 @@ var allResourceTests = []ResourceCoverageEntry{
 		Mode:          "campus",
 		ResourceName:  "cov_vpp",
 	},
-	// Added to close the gap against the reviewed registry: these five resources
-	// ship in the provider but had no coverage entry, so no PUT field coverage
-	// was checked for them. TestCoverageTableMatchesRegistry keeps the two in step.
+
 	{
 		TerraformType: "verity_mac_filter",
 		Factory:       provider.NewVerityMacFilterResource,
@@ -486,7 +478,6 @@ func attrFieldType(attr fwschema.Attribute) string {
 	}
 }
 
-// inspectBlock reads one nested block and recurses into any blocks it contains.
 func inspectBlock(name string, lb fwschema.ListNestedBlock) blockInfo {
 	bi := blockInfo{Name: name}
 	for attrName, attr := range lb.NestedObject.Attributes {
@@ -574,7 +565,7 @@ func generateCoverageHCL(rs resourceSchemaInfo, tfType, resourceName, mode, mode
 		if !utils.FieldAppliesToMode(modeFieldsKey, block.Name, mode) {
 			continue
 		}
-		// A block with neither fields nor nested blocks has nothing to write.
+
 		if len(block.Fields) == 0 && len(block.Blocks) == 0 {
 			continue
 		}
@@ -586,9 +577,6 @@ func generateCoverageHCL(rs resourceSchemaInfo, tfType, resourceName, mode, mode
 	return b.String()
 }
 
-// writeCoverageBlock emits one block and recurses into any it contains, keying
-// mode lookups and overrides on the dotted path so a nested block's fields are
-// addressed the same way the mode tables address them.
 func writeCoverageBlock(b *strings.Builder, block blockInfo, path, indent, mode, modeFieldsKey string, overrides map[string]string) {
 	fmt.Fprintf(b, "%s%s {\n", indent, block.Name)
 	for _, fi := range block.Fields {
@@ -709,7 +697,6 @@ func verifyPutFieldCoverage(t *testing.T, body map[string]interface{}, tc Resour
 
 	modeKey := tc.modeFieldsKey()
 
-	// Check top-level attributes
 	for _, fi := range rs.Attributes {
 		if !utils.FieldAppliesToMode(modeKey, fi.Name, tc.Mode) {
 			continue
@@ -719,9 +706,6 @@ func verifyPutFieldCoverage(t *testing.T, body map[string]interface{}, tc Resour
 		}
 	}
 
-	// Check nested blocks, recursively. A block may itself contain blocks, as
-	// Fabric does with object_properties.system_graphs, and a block with no
-	// immediate attributes is not empty if it holds one.
 	for _, block := range rs.Blocks {
 		verifyBlockFieldCoverage(t, res, block, block.Name, tc, modeKey)
 	}
@@ -729,8 +713,6 @@ func verifyPutFieldCoverage(t *testing.T, body map[string]interface{}, tc Resour
 	return nil
 }
 
-// verifyBlockFieldCoverage asserts one block's fields are present in the request
-// and then descends into any blocks it contains.
 func verifyBlockFieldCoverage(t *testing.T, parent map[string]interface{}, block blockInfo, path string, tc ResourceCoverageEntry, modeKey string) {
 	t.Helper()
 	if !utils.FieldAppliesToMode(modeKey, path, tc.Mode) {
@@ -740,8 +722,6 @@ func verifyBlockFieldCoverage(t *testing.T, parent map[string]interface{}, block
 		return
 	}
 
-	// A block appears as a JSON array (most blocks) or a JSON object
-	// (object_properties and other singletons).
 	var item map[string]interface{}
 	switch value := parent[block.Name].(type) {
 	case []interface{}:
@@ -785,12 +765,6 @@ func mapKeys(m map[string]interface{}) []string {
 	return keys
 }
 
-// TestCoverageTableMatchesRegistry keeps the lifecycle harness in step with the
-// reviewed registry. The table is handwritten because each entry carries
-// test-only knobs, so a resource added to the registry can silently go
-// unexercised: five had, until this check was added. Endpoint path and request
-// wrapper are compared too, since a wrong one would make the test assert against
-// requests the resource never sends.
 func TestCoverageTableMatchesRegistry(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join("..", "..", "..", "specs", "generated_registry.json"))
 	if err != nil {

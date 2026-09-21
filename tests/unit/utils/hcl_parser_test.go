@@ -20,7 +20,6 @@ func writeTF(t *testing.T, dir, name, body string) string {
 	return p
 }
 
-// The index must be rebuilt when a .tf file changes on disk.
 func TestConfigIndexPicksUpFileChanges(t *testing.T) {
 	dir := t.TempDir()
 	ctx := context.Background()
@@ -38,8 +37,6 @@ resource "verity_service" "svc" {
 		t.Fatalf("first parse: got %+v", got.Attributes)
 	}
 
-	// Rewrite with a different attribute set; the size/mtime fingerprint alone
-	// must invalidate the index.
 	writeTF(t, dir, "a.tf", `
 resource "verity_service" "svc" {
   name   = "svc"
@@ -52,8 +49,6 @@ resource "verity_service" "svc" {
 		t.Fatalf("after rewrite: got %+v", got.Attributes)
 	}
 
-	// A newly added file changes the file set, so the fingerprint alone must
-	// invalidate the index without an explicit call.
 	writeTF(t, dir, "b.tf", `
 resource "verity_service" "other" {
   name = "other"
@@ -67,9 +62,6 @@ resource "verity_service" "other" {
 	}
 }
 
-// A same-size in-place rewrite can land inside one timestamp tick, which the
-// fingerprint cannot see. InvalidateConfigIndex is the escape hatch for callers
-// that rewrite .tf files themselves, such as the unit-test mock provider.
 func TestInvalidateConfigIndexForcesReparse(t *testing.T) {
 	dir := t.TempDir()
 	ctx := context.Background()
@@ -80,7 +72,6 @@ func TestInvalidateConfigIndexForcesReparse(t *testing.T) {
 		t.Fatalf("first parse: %+v", got.Attributes)
 	}
 
-	// Same byte length, different attribute.
 	writeTF(t, dir, "a.tf", "resource \"verity_service\" \"svc\" {\n  name = \"svc\"\n  mtu1 = 100\n}\n")
 	providerutils.InvalidateConfigIndex(dir)
 
@@ -90,8 +81,6 @@ func TestInvalidateConfigIndexForcesReparse(t *testing.T) {
 	}
 }
 
-// Matching priority: the "name" attribute wins; the block label (raw or
-// sanitized) is only a fallback when "name" is absent.
 func TestConfigIndexMatching(t *testing.T) {
 	dir := t.TempDir()
 	ctx := context.Background()
@@ -112,30 +101,28 @@ resource "verity_gateway" "_Odd_Name_" {
 }
 `)
 
-	// Matched by the name attribute, not by the label.
 	if got := providerutils.ParseResourceConfiguredAttributes(ctx, dir, "verity_service", "By Name"); !got.IsConfigured("mtu") {
 		t.Errorf("name-attribute match failed: %+v", got.Attributes)
 	}
-	// The label must not match when a differing name attribute is present.
+
 	if got := providerutils.ParseResourceConfiguredAttributes(ctx, dir, "verity_service", "wrong_label"); len(got.Attributes) != 0 {
 		t.Errorf("label should not match a block with a differing name attribute: %+v", got.Attributes)
 	}
-	// Fallback to the raw label when no name attribute exists.
+
 	if got := providerutils.ParseResourceConfiguredAttributes(ctx, dir, "verity_service", "label_only"); !got.IsConfigured("vlan") {
 		t.Errorf("label fallback failed: %+v", got.Attributes)
 	}
-	// Fallback to the sanitized label for API names that are not valid labels.
+
 	if got := providerutils.ParseResourceConfiguredAttributes(ctx, dir, "verity_gateway", "(Odd Name)"); !got.IsConfigured("asn") {
 		t.Errorf("sanitized label fallback failed: %+v", got.Attributes)
 	}
-	// Unknown resources yield an empty, non-nil result.
+
 	got := providerutils.ParseResourceConfiguredAttributes(ctx, dir, "verity_service", "missing")
 	if got == nil || len(got.Attributes) != 0 || got.IsConfigured("vlan") {
 		t.Errorf("unknown resource: %+v", got)
 	}
 }
 
-// Results are merged across files, first match per file.
 func TestConfigIndexMergesAcrossFiles(t *testing.T) {
 	dir := t.TempDir()
 	ctx := context.Background()
@@ -160,7 +147,6 @@ resource "verity_service" "svc" {
 	}
 }
 
-// Nested and indexed blocks survive the index round-trip.
 func TestConfigIndexNestedAndIndexedBlocks(t *testing.T) {
 	dir := t.TempDir()
 	ctx := context.Background()
@@ -203,7 +189,6 @@ resource "verity_eth_port_profile" "epp" {
 	}
 }
 
-// Concurrent lookups mirror Terraform's parallel graph walk; run under -race.
 func TestConfigIndexConcurrentLookups(t *testing.T) {
 	dir := t.TempDir()
 	ctx := context.Background()

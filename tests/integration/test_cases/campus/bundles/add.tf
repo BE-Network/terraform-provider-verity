@@ -1,5 +1,3 @@
-# Test case: Add new resources
-# Define resources to be injected into the corresponding .tf file for testing
 
 resource "verity_bundle" "bundle_test_script1" {
     name = "bundle_test_script1"

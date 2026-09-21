@@ -330,9 +330,7 @@ func (r *verityDeviceSettingsResource) Schema(ctx context.Context, req resource.
 			"object_properties": schema.ListNestedBlock{
 				Description: "Object properties for the Device Settings",
 				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						// Empty object according to schema
-					},
+					Attributes: map[string]schema.Attribute{},
 				},
 			},
 		},
@@ -367,7 +365,6 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "CliCommands", APIField: &deviceSettingsProps.CliCommands, TFValue: plan.CliCommands},
 		{FieldName: "Mode", APIField: &deviceSettingsProps.Mode, TFValue: plan.Mode},
@@ -382,7 +379,6 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		{FieldName: "NtpVrfTenantRefType", APIField: &deviceSettingsProps.NtpVrfTenantRefType, TFValue: plan.NtpVrfTenantRefType},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &deviceSettingsProps.Enable, TFValue: plan.Enable},
 		{FieldName: "Rocev2", APIField: &deviceSettingsProps.Rocev2, TFValue: plan.Rocev2},
@@ -390,7 +386,6 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		{FieldName: "DisableTcpUdpLearnedPacketAcceleration", APIField: &deviceSettingsProps.DisableTcpUdpLearnedPacketAcceleration, TFValue: plan.DisableTcpUdpLearnedPacketAcceleration},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, deviceSettingsTerraformType, name)
 
@@ -403,28 +398,23 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		{FieldName: "MacAgingTimerOverride", APIField: &deviceSettingsProps.MacAgingTimerOverride, TFValue: config.MacAgingTimerOverride, IsConfigured: configuredAttrs.IsConfigured("mac_aging_timer_override")},
 	})
 
-	// Handle nullable float fields - parse HCL to detect explicit config
 	utils.SetNullableNumberFields([]utils.NullableNumberFieldMapping{
 		{FieldName: "UsageThreshold", APIField: &deviceSettingsProps.UsageThreshold, TFValue: config.UsageThreshold, IsConfigured: configuredAttrs.IsConfigured("usage_threshold")},
 	})
 
-	// Handle DNS servers
 	if len(plan.DnsServers) > 0 {
 		dnsServers := make([]openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner, len(plan.DnsServers))
 		for i, dns := range plan.DnsServers {
 			dnsServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner{}
 
-			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enabled", APIField: &dnsServer.Enabled, TFValue: dns.Enabled},
 			})
 
-			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "Server", APIField: &dnsServer.Server, TFValue: dns.Server},
 			})
 
-			// Handle int64 fields
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &dnsServer.Index, TFValue: dns.Index},
 			})
@@ -434,23 +424,19 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		deviceSettingsProps.DnsServers = dnsServers
 	}
 
-	// Handle NTP servers
 	if len(plan.NtpServers) > 0 {
 		ntpServers := make([]openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner, len(plan.NtpServers))
 		for i, ntp := range plan.NtpServers {
 			ntpServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner{}
 
-			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enabled", APIField: &ntpServer.Enabled, TFValue: ntp.Enabled},
 			})
 
-			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "Server", APIField: &ntpServer.Server, TFValue: ntp.Server},
 			})
 
-			// Handle int64 fields
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &ntpServer.Index, TFValue: ntp.Index},
 			})
@@ -460,25 +446,21 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		deviceSettingsProps.NtpServers = ntpServers
 	}
 
-	// Handle syslog servers
 	if len(plan.SyslogServers) > 0 {
 		syslogServers := make([]openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner, len(plan.SyslogServers))
 		for i, syslog := range plan.SyslogServers {
 			syslogServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner{}
 
-			// Handle boolean fields
 			utils.SetBoolFields([]utils.BoolFieldMapping{
 				{FieldName: "Enabled", APIField: &syslogServer.Enabled, TFValue: syslog.Enabled},
 			})
 
-			// Handle string fields
 			utils.SetStringFields([]utils.StringFieldMapping{
 				{FieldName: "Scheme", APIField: &syslogServer.Scheme, TFValue: syslog.Scheme},
 				{FieldName: "Server", APIField: &syslogServer.Server, TFValue: syslog.Server},
 				{FieldName: "Port", APIField: &syslogServer.Port, TFValue: syslog.Port},
 			})
 
-			// Handle int64 fields
 			utils.SetInt64Fields([]utils.Int64FieldMapping{
 				{FieldName: "Index", APIField: &syslogServer.Index, TFValue: syslog.Index},
 			})
@@ -488,7 +470,6 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		deviceSettingsProps.SyslogServers = syslogServers
 	}
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		deviceSettingsProps.SetObjectProperties(map[string]interface{}{})
 	}
@@ -517,7 +498,6 @@ func (r *verityDeviceSettingsResource) Create(ctx context.Context, req resource.
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -554,7 +534,6 @@ func (r *verityDeviceSettingsResource) Read(ctx context.Context, req resource.Re
 
 	deviceSettingsName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if deviceSettingsData, exists := r.bulkOpsMgr.GetResourceResponse("device_settings", deviceSettingsName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached device settings data for %s from recent operation", deviceSettingsName))
@@ -654,7 +633,6 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityDeviceSettingsResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -674,11 +652,9 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 	deviceSettingsProps := openapi.DevicesettingsPutRequestEthDeviceProfilesValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, deviceSettingsTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { deviceSettingsProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.CliCommands, state.CliCommands, func(v *string) { deviceSettingsProps.CliCommands = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Mode, state.Mode, func(v *string) { deviceSettingsProps.Mode = v }, &hasChanges)
@@ -686,13 +662,11 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetStringField(plan.SpanningTreePriority, state.SpanningTreePriority, func(v *string) { deviceSettingsProps.SpanningTreePriority = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.NtpVrf, state.NtpVrf, func(v *string) { deviceSettingsProps.NtpVrf = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { deviceSettingsProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.Rocev2, state.Rocev2, func(v *bool) { deviceSettingsProps.Rocev2 = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.CutThroughSwitching, state.CutThroughSwitching, func(v *bool) { deviceSettingsProps.CutThroughSwitching = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.DisableTcpUdpLearnedPacketAcceleration, state.DisableTcpUdpLearnedPacketAcceleration, func(v *bool) { deviceSettingsProps.DisableTcpUdpLearnedPacketAcceleration = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.ExternalBatteryPowerAvailable, state.ExternalBatteryPowerAvailable, configuredAttrs.IsConfigured("external_battery_power_available"), func(v *openapi.NullableInt64) { deviceSettingsProps.ExternalBatteryPowerAvailable = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.ExternalPowerAvailable, state.ExternalPowerAvailable, configuredAttrs.IsConfigured("external_power_available"), func(v *openapi.NullableInt64) { deviceSettingsProps.ExternalPowerAvailable = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.SecurityAuditInterval, state.SecurityAuditInterval, configuredAttrs.IsConfigured("security_audit_interval"), func(v *openapi.NullableInt64) { deviceSettingsProps.SecurityAuditInterval = *v }, &hasChanges)
@@ -700,10 +674,8 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 	utils.CompareAndSetNullableInt64Field(config.HoldTimer, state.HoldTimer, configuredAttrs.IsConfigured("hold_timer"), func(v *openapi.NullableInt64) { deviceSettingsProps.HoldTimer = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MacAgingTimerOverride, state.MacAgingTimerOverride, configuredAttrs.IsConfigured("mac_aging_timer_override"), func(v *openapi.NullableInt64) { deviceSettingsProps.MacAgingTimerOverride = *v }, &hasChanges)
 
-	// Handle nullable float field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableNumberField(config.UsageThreshold, state.UsageThreshold, configuredAttrs.IsConfigured("usage_threshold"), func(v *openapi.NullableFloat64) { deviceSettingsProps.UsageThreshold = *v }, &hasChanges)
 
-	// Handle object properties
 	if (len(plan.ObjectProperties) == 0) != (len(state.ObjectProperties) == 0) {
 		if len(plan.ObjectProperties) > 0 {
 			deviceSettingsProps.SetObjectProperties(map[string]interface{}{})
@@ -711,7 +683,6 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 		hasChanges = true
 	}
 
-	// Handle PacketQueue and PacketQueueRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.PacketQueue, state.PacketQueue, plan.PacketQueueRefType, state.PacketQueueRefType,
 		func(v *string) { deviceSettingsProps.PacketQueue = v },
@@ -723,7 +694,6 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Handle DeviceAaaProfile and DeviceAaaProfileRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.DeviceAaaProfile, state.DeviceAaaProfile, plan.DeviceAaaProfileRefType, state.DeviceAaaProfileRefType,
 		func(v *string) { deviceSettingsProps.DeviceAaaProfile = v },
@@ -735,7 +705,6 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Handle NtpVrfTenant and NtpVrfTenantRefType using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.NtpVrfTenant, state.NtpVrfTenant, plan.NtpVrfTenantRefType, state.NtpVrfTenantRefType,
 		func(v *string) { deviceSettingsProps.NtpVrfTenant = v },
@@ -752,17 +721,14 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 			CreateNew: func(planItem verityDeviceSettingsDnsServerModel) openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner {
 				newDnsServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "Enabled", APIField: &newDnsServer.Enabled, TFValue: planItem.Enabled},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Server", APIField: &newDnsServer.Server, TFValue: planItem.Server},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newDnsServer.Index, TFValue: planItem.Index},
 				})
@@ -773,13 +739,10 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 				updateDnsServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enabled, stateItem.Enabled, func(v *bool) { updateDnsServer.Enabled = v }, &fieldChanged)
 
-				// Handle string field changes
 				utils.CompareAndSetStringField(planItem.Server, stateItem.Server, func(v *string) { updateDnsServer.Server = v }, &fieldChanged)
 
-				// Always include index - API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateDnsServer.Index, TFValue: planItem.Index},
 				})
@@ -802,17 +765,14 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 			CreateNew: func(planItem verityDeviceSettingsNtpServerModel) openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner {
 				newNtpServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "Enabled", APIField: &newNtpServer.Enabled, TFValue: planItem.Enabled},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Server", APIField: &newNtpServer.Server, TFValue: planItem.Server},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newNtpServer.Index, TFValue: planItem.Index},
 				})
@@ -823,13 +783,10 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 				updateNtpServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enabled, stateItem.Enabled, func(v *bool) { updateNtpServer.Enabled = v }, &fieldChanged)
 
-				// Handle string field changes
 				utils.CompareAndSetStringField(planItem.Server, stateItem.Server, func(v *string) { updateNtpServer.Server = v }, &fieldChanged)
 
-				// Always include index - API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateNtpServer.Index, TFValue: planItem.Index},
 				})
@@ -852,19 +809,16 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 			CreateNew: func(planItem verityDeviceSettingsSyslogServerModel) openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner {
 				newSyslogServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner{}
 
-				// Handle boolean fields
 				utils.SetBoolFields([]utils.BoolFieldMapping{
 					{FieldName: "Enabled", APIField: &newSyslogServer.Enabled, TFValue: planItem.Enabled},
 				})
 
-				// Handle string fields
 				utils.SetStringFields([]utils.StringFieldMapping{
 					{FieldName: "Scheme", APIField: &newSyslogServer.Scheme, TFValue: planItem.Scheme},
 					{FieldName: "Server", APIField: &newSyslogServer.Server, TFValue: planItem.Server},
 					{FieldName: "Port", APIField: &newSyslogServer.Port, TFValue: planItem.Port},
 				})
 
-				// Handle int64 fields
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &newSyslogServer.Index, TFValue: planItem.Index},
 				})
@@ -875,15 +829,12 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 				updateSyslogServer := openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner{}
 				fieldChanged := false
 
-				// Handle boolean field changes
 				utils.CompareAndSetBoolField(planItem.Enabled, stateItem.Enabled, func(v *bool) { updateSyslogServer.Enabled = v }, &fieldChanged)
 
-				// Handle string field changes
 				utils.CompareAndSetStringField(planItem.Scheme, stateItem.Scheme, func(v *string) { updateSyslogServer.Scheme = v }, &fieldChanged)
 				utils.CompareAndSetStringField(planItem.Server, stateItem.Server, func(v *string) { updateSyslogServer.Server = v }, &fieldChanged)
 				utils.CompareAndSetStringField(planItem.Port, stateItem.Port, func(v *string) { updateSyslogServer.Port = v }, &fieldChanged)
 
-				// Always include index - API requires it to identify which array element to modify
 				utils.SetInt64Fields([]utils.Int64FieldMapping{
 					{FieldName: "Index", APIField: &updateSyslogServer.Index, TFValue: planItem.Index},
 				})
@@ -922,7 +873,6 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if deviceSettingsData, exists := bulkMgr.GetResourceResponse("device_settings", name); exists {
 			newState := populateDeviceSettingsState(ctx, minState, utils.MergeMissingPlanScalars(deviceSettingsData, plan, deviceSettingsResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -931,7 +881,6 @@ func (r *verityDeviceSettingsResource) Update(ctx context.Context, req resource.
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -987,13 +936,11 @@ func populateDeviceSettingsState(ctx context.Context, state verityDeviceSettings
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.Rocev2 = utils.MapBoolWithMode(data, "rocev2", resourceType, mode)
 	state.CutThroughSwitching = utils.MapBoolWithMode(data, "cut_through_switching", resourceType, mode)
 	state.DisableTcpUdpLearnedPacketAcceleration = utils.MapBoolWithMode(data, "disable_tcp_udp_learned_packet_acceleration", resourceType, mode)
 
-	// String fields
 	state.CliCommands = utils.MapStringWithMode(data, "cli_commands", resourceType, mode)
 	state.Mode = utils.MapStringWithMode(data, "mode", resourceType, mode)
 	state.LoginBanner = utils.MapStringWithMode(data, "login_banner", resourceType, mode)
@@ -1006,7 +953,6 @@ func populateDeviceSettingsState(ctx context.Context, state verityDeviceSettings
 	state.NtpVrfTenant = utils.MapStringWithMode(data, "ntp_vrf_tenant", resourceType, mode)
 	state.NtpVrfTenantRefType = utils.MapStringWithMode(data, "ntp_vrf_tenant_ref_type_", resourceType, mode)
 
-	// Int64 fields
 	state.ExternalBatteryPowerAvailable = utils.MapInt64WithMode(data, "external_battery_power_available", resourceType, mode)
 	state.ExternalPowerAvailable = utils.MapInt64WithMode(data, "external_power_available", resourceType, mode)
 	state.SecurityAuditInterval = utils.MapInt64WithMode(data, "security_audit_interval", resourceType, mode)
@@ -1014,10 +960,8 @@ func populateDeviceSettingsState(ctx context.Context, state verityDeviceSettings
 	state.HoldTimer = utils.MapInt64WithMode(data, "hold_timer", resourceType, mode)
 	state.MacAgingTimerOverride = utils.MapInt64WithMode(data, "mac_aging_timer_override", resourceType, mode)
 
-	// Float fields
 	state.UsageThreshold = utils.MapNumberWithMode(data, "usage_threshold", resourceType, mode)
 
-	// Handle dns_servers list block
 	if utils.FieldAppliesToMode(resourceType, "dns_servers", mode) {
 		if serversData, ok := data["dns_servers"].([]interface{}); ok && len(serversData) > 0 {
 			var servers []verityDeviceSettingsDnsServerModel
@@ -1040,7 +984,6 @@ func populateDeviceSettingsState(ctx context.Context, state verityDeviceSettings
 		state.DnsServers = nil
 	}
 
-	// Handle ntp_servers list block
 	if utils.FieldAppliesToMode(resourceType, "ntp_servers", mode) {
 		if serversData, ok := data["ntp_servers"].([]interface{}); ok && len(serversData) > 0 {
 			var servers []verityDeviceSettingsNtpServerModel
@@ -1063,7 +1006,6 @@ func populateDeviceSettingsState(ctx context.Context, state verityDeviceSettings
 		state.NtpServers = nil
 	}
 
-	// Handle syslog_servers list block
 	if utils.FieldAppliesToMode(resourceType, "syslog_servers", mode) {
 		if serversData, ok := data["syslog_servers"].([]interface{}); ok && len(serversData) > 0 {
 			var servers []verityDeviceSettingsSyslogServerModel
@@ -1088,7 +1030,6 @@ func populateDeviceSettingsState(ctx context.Context, state verityDeviceSettings
 		state.SyslogServers = nil
 	}
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			_ = objProps
@@ -1104,9 +1045,7 @@ func populateDeviceSettingsState(ctx context.Context, state verityDeviceSettings
 }
 
 func (r *verityDeviceSettingsResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -1117,11 +1056,6 @@ func (r *verityDeviceSettingsResource) ModifyPlan(ctx context.Context, req resou
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := deviceSettingsResourceType
 	mode := r.provCtx.mode
 
@@ -1147,7 +1081,6 @@ func (r *verityDeviceSettingsResource) ModifyPlan(ctx context.Context, req resou
 		"hold_timer", "mac_aging_timer_override",
 	)
 
-	// Float fields
 	nullifier.NullifyNumbers(
 		"usage_threshold",
 	)
@@ -1176,16 +1109,10 @@ func (r *verityDeviceSettingsResource) ModifyPlan(ctx context.Context, req resou
 		Int64Fields:  []string{"index"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityDeviceSettingsResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -1198,11 +1125,6 @@ func (r *verityDeviceSettingsResource) ModifyPlan(ctx context.Context, req resou
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, deviceSettingsTerraformType, name)

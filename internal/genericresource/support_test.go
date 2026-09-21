@@ -33,22 +33,17 @@ func notesMember() spec.FieldSpec {
 	}
 }
 
-// Each refusal is something the engine would otherwise get silently wrong, so
-// each is asserted with its reason rather than only as an error.
 func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 	t.Parallel()
 
 	if err := Supported(singletonSpec(notesMember())); err != nil {
 		t.Fatalf("a singleton with a scalar member was refused: %v", err)
 	}
-	// An object the API declares with no properties is served as an empty block.
+
 	if err := Supported(singletonSpec()); err != nil {
 		t.Fatalf("a singleton with no members was refused: %v", err)
 	}
 
-	// A fixed parameter selecting between resources on one endpoint is served: the
-	// write path passes it to the bulk manager and the read sends it as a query
-	// parameter.
 	withParameter := singletonSpec(notesMember())
 	withParameter.API.FixedHeaders = map[string]string{"ip_version": "4"}
 	if err := Supported(withParameter); err != nil {
@@ -83,27 +78,19 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 	nullableEntryMember := notesMember()
 	nullableEntryMember.Kind, nullableEntryMember.Nullable = spec.FieldKindInt64, true
 
-	// A list directly inside a singleton is served: verity_fabric's
-	// object_properties.system_graphs is the one resource that has one.
 	if err := Supported(singletonSpec(indexedList(indexMember, notesMember()))); err != nil {
 		t.Fatalf("a list inside a singleton was refused: %v", err)
 	}
-	// Nothing nests more deeply, and a nullable member of a nested list would need
-	// the scan's key for a doubly nested entry.
+
 	listInList := withList(indexedList(indexMember, indexedList(indexMember, notesMember())))
 	nestedNullable := notesMember()
 	nestedNullable.Kind, nestedNullable.Nullable = spec.FieldKindInt64, true
 	nullableInNestedList := singletonSpec(indexedList(indexMember, nestedNullable))
 
-	// A nullable member of a list entry is served; the configuration scan records
-	// each entry's attributes under its index.
 	if err := Supported(withList(indexedList(indexMember, nullableEntryMember))); err != nil {
 		t.Fatalf("a list with a nullable entry member was refused: %v", err)
 	}
 
-	// So is a nullable member of a singleton; the scan records it under
-	// "block.member". verity_switchpoint's object_properties.number_of_multipoints
-	// is the one resource that has one.
 	nullableMember := notesMember()
 	nullableMember.Kind, nullableMember.Nullable = spec.FieldKindInt64, true
 	if err := Supported(singletonSpec(nullableMember)); err != nil {

@@ -13,11 +13,7 @@ func (r Registry) Validate() error {
 		return fmt.Errorf("resource registry is empty")
 	}
 	terraformTypes := make(map[string]bool, len(r))
-	// A bulk key names the bulk transport configuration, which several resources
-	// may legitimately share when a fixed header selects between them: ACLs share
-	// one configuration and are separated by ip_version. What must stay unique is
-	// the bulk key together with its discriminator, so two resources can never
-	// address the same objects through the same call.
+
 	bulkRoutes := make(map[string]string, len(r))
 	for _, resource := range r {
 		if err := resource.Validate(); err != nil {

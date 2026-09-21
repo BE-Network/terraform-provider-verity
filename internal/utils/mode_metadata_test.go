@@ -7,11 +7,6 @@ import (
 	"testing"
 )
 
-// TestModeMetadataMatchesGolden pins the mode tables to the behavior the
-// provider shipped before they were derived from the spec registry. Mode data
-// decides which fields are sent for a datacenter or campus system, so moving its
-// source must not change a single entry. The golden file is the recorded "before";
-// regenerate it deliberately only when a mode change is itself the intent.
 func TestModeMetadataMatchesGolden(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join("testdata", "mode_metadata_golden.json"))
 	if err != nil {
@@ -54,9 +49,6 @@ func TestModeMetadataMatchesGolden(t *testing.T) {
 	}
 }
 
-// The generated and pending tables must stay disjoint, otherwise a resource could
-// be represented in the registry while a stale hand-maintained entry silently
-// overrode it.
 func TestPendingModeMetadataDoesNotShadowGenerated(t *testing.T) {
 	for name := range pendingResourceCompatibility {
 		if _, exists := generatedResourceCompatibility[name]; exists {

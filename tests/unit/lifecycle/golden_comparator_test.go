@@ -7,19 +7,6 @@ import (
 	"testing"
 )
 
-// The golden comparison is what the Phase 2 parity claim rests on, so its
-// ability to detect a difference is worth asserting rather than assuming.
-//
-// TestGenericIPv4ListMatchesLegacyGoldenFixtures passes when the generic engine
-// reproduces the recorded bytes. That is only evidence if the comparison would
-// have failed had it not. These tests exercise the comparator directly against
-// the committed fixtures: identical content reports no difference, and each way
-// the engine could plausibly diverge reports one.
-//
-// The two mutations below are the failure modes that matter. A dropped field is
-// the request going out incomplete; a changed value is the response being
-// decoded wrongly on the way back. Both were verified by hand against the live
-// engine during Phase 2; these keep that verification repeatable.
 func loadGolden(t *testing.T, terraformType, operation string) map[string]interface{} {
 	t.Helper()
 	path := filepath.Join("testdata", "golden", terraformType, operation+".json")
@@ -34,10 +21,6 @@ func loadGolden(t *testing.T, terraformType, operation string) map[string]interf
 	return decoded
 }
 
-// guardAgainstRegeneration keeps these tests from rewriting the fixtures they
-// are checking. compareGoldenValue writes instead of comparing when
-// UPDATE_GOLDEN is set, which would turn a deliberate mutation into a committed
-// one.
 func guardAgainstRegeneration(t *testing.T) {
 	t.Helper()
 	if os.Getenv("UPDATE_GOLDEN") != "" {
@@ -56,8 +39,6 @@ func TestGoldenComparatorAcceptsIdenticalContent(t *testing.T) {
 	}
 }
 
-// A field missing from the request must be reported. This is the shape of a
-// codec that stopped sending something the configuration set.
 func TestGoldenComparatorDetectsADroppedField(t *testing.T) {
 	guardAgainstRegeneration(t)
 
@@ -80,8 +61,6 @@ func TestGoldenComparatorDetectsADroppedField(t *testing.T) {
 	}
 }
 
-// A value decoded differently must be reported. This is the shape of a reader
-// that mapped a response member wrongly, which no request comparison would see.
 func TestGoldenComparatorDetectsAChangedStateValue(t *testing.T) {
 	guardAgainstRegeneration(t)
 

@@ -5,11 +5,6 @@ import (
 	"testing"
 )
 
-// A newer Verity system returns arguments the provider's schema does not have.
-// The importer leaves each one out, at the top level, in object_properties, in
-// list entries, and in a list inside object_properties, and records its path.
-// Everything the schema has is kept, including keys the importer never writes
-// as arguments and keys it renames.
 func TestPruneUnsupportedLeavesOutUnknownArguments(t *testing.T) {
 	leaf := func(names ...string) *SchemaFields {
 		fields := &SchemaFields{Attributes: map[string]bool{}, Blocks: map[string]*SchemaFields{}}
@@ -80,10 +75,8 @@ func TestPruneUnsupportedLeavesOutUnknownArguments(t *testing.T) {
 	}
 }
 
-// Keys the importer skips or renames are judged by what it writes, not by the
-// API's key.
 func TestPruneUnsupportedHonorsSkipKeysAndFieldMappings(t *testing.T) {
-	// device_voice_settings writes the API's "Codecs" as "codecs".
+
 	voice := &SchemaFields{Attributes: map[string]bool{"codecs": true}, Blocks: map[string]*SchemaFields{}}
 	imp := (&Importer{}).WithSupportedFields(map[string]*SchemaFields{"verity_device_voice_settings": voice})
 	objects := map[string]map[string]interface{}{"v": {"name": "v", "Codecs": []interface{}{}}}
@@ -96,7 +89,6 @@ func TestPruneUnsupportedHonorsSkipKeysAndFieldMappings(t *testing.T) {
 	}
 }
 
-// Without schemas the importer writes everything the API returns, as before.
 func TestPruneUnsupportedWithoutSchemasKeepsEverything(t *testing.T) {
 	imp := &Importer{}
 	objects := map[string]map[string]interface{}{"t": {"name": "t", "anything": true}}

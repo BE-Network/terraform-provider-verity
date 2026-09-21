@@ -217,19 +217,16 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "ConnectionMode", APIField: &aepProps.ConnectionMode, TFValue: plan.ConnectionMode},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &aepProps.Enable, TFValue: plan.Enable},
 		{FieldName: "AllowMacBasedAuthentication", APIField: &aepProps.AllowMacBasedAuthentication, TFValue: plan.AllowMacBasedAuthentication},
 		{FieldName: "TrustedPort", APIField: &aepProps.TrustedPort, TFValue: plan.TrustedPort},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, authenticatedEthPortTerraformType, name)
 
@@ -238,7 +235,6 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 		{FieldName: "MacAuthenticationHoldoffSec", APIField: &aepProps.MacAuthenticationHoldoffSec, TFValue: config.MacAuthenticationHoldoffSec, IsConfigured: configuredAttrs.IsConfigured("mac_authentication_holdoff_sec")},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties{}
@@ -248,7 +244,6 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 		aepProps.ObjectProperties = &objProps
 	}
 
-	// Handle eth ports
 	if len(plan.EthPorts) > 0 {
 		ethPorts := make([]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner, len(plan.EthPorts))
 		for i, item := range plan.EthPorts {
@@ -294,7 +289,6 @@ func (r *verityAuthenticatedEthPortResource) Create(ctx context.Context, req res
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -331,7 +325,6 @@ func (r *verityAuthenticatedEthPortResource) Read(ctx context.Context, req resou
 
 	aepName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if authenticatedEthPortData, exists := r.bulkOpsMgr.GetResourceResponse("authenticated_eth_port", aepName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached authenticated eth port data for %s from recent operation", aepName))
@@ -431,7 +424,6 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityAuthenticatedEthPortResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -451,24 +443,19 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 	aepProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, authenticatedEthPortTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { aepProps.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.ConnectionMode, state.ConnectionMode, func(v *string) { aepProps.ConnectionMode = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { aepProps.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.AllowMacBasedAuthentication, state.AllowMacBasedAuthentication, func(v *bool) { aepProps.AllowMacBasedAuthentication = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.TrustedPort, state.TrustedPort, func(v *bool) { aepProps.TrustedPort = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.ReauthorizationPeriodSec, state.ReauthorizationPeriodSec, configuredAttrs.IsConfigured("reauthorization_period_sec"), func(v *openapi.NullableInt64) { aepProps.ReauthorizationPeriodSec = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.MacAuthenticationHoldoffSec, state.MacAuthenticationHoldoffSec, configuredAttrs.IsConfigured("mac_authentication_holdoff_sec"), func(v *openapi.NullableInt64) { aepProps.MacAuthenticationHoldoffSec = *v }, &hasChanges)
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -485,7 +472,6 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 		}
 	}
 
-	// Handle eth ports
 	ethPortsHandler := utils.IndexedItemHandler[verityAuthenticatedEthPortEthPortModel, openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner]{
 		CreateNew: func(planItem verityAuthenticatedEthPortEthPortModel) openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner {
 			item := openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner{}
@@ -514,10 +500,8 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 
 			fieldChanged := false
 
-			// Handle boolean field changes
 			utils.CompareAndSetBoolField(planItem.EthPortProfileNumEnable, stateItem.EthPortProfileNumEnable, func(v *bool) { item.EthPortProfileNumEnable = v }, &fieldChanged)
 
-			// Handle eth_port_profile_num_eth_port and eth_port_profile_num_eth_port_ref_type_ using "One ref type supported" pattern
 			if !utils.HandleOneRefTypeSupported(
 				planItem.EthPortProfileNumEthPort, stateItem.EthPortProfileNumEthPort, planItem.EthPortProfileNumEthPortRefType, stateItem.EthPortProfileNumEthPortRefType,
 				func(v *string) { item.EthPortProfileNumEthPort = v },
@@ -531,7 +515,6 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 
 			utils.CompareAndSetBoolField(planItem.EthPortProfileNumWalledGardenSet, stateItem.EthPortProfileNumWalledGardenSet, func(v *bool) { item.EthPortProfileNumWalledGardenSet = v }, &fieldChanged)
 
-			// Handle string field changes
 			utils.CompareAndSetStringField(planItem.EthPortProfileNumRadiusFilterId, stateItem.EthPortProfileNumRadiusFilterId, func(v *string) { item.EthPortProfileNumRadiusFilterId = v }, &fieldChanged)
 
 			return item, fieldChanged
@@ -572,7 +555,6 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if aepData, exists := bulkMgr.GetResourceResponse("authenticated_eth_port", name); exists {
 			newState := populateAuthenticatedEthPortState(ctx, minState, utils.MergeMissingPlanScalars(aepData, plan, authenticatedEthPortResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -581,7 +563,6 @@ func (r *verityAuthenticatedEthPortResource) Update(ctx context.Context, req res
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -637,19 +618,15 @@ func populateAuthenticatedEthPortState(ctx context.Context, state verityAuthenti
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.AllowMacBasedAuthentication = utils.MapBoolWithMode(data, "allow_mac_based_authentication", resourceType, mode)
 	state.TrustedPort = utils.MapBoolWithMode(data, "trusted_port", resourceType, mode)
 
-	// String fields
 	state.ConnectionMode = utils.MapStringWithMode(data, "connection_mode", resourceType, mode)
 
-	// Int64 fields
 	state.ReauthorizationPeriodSec = utils.MapInt64WithMode(data, "reauthorization_period_sec", resourceType, mode)
 	state.MacAuthenticationHoldoffSec = utils.MapInt64WithMode(data, "mac_authentication_holdoff_sec", resourceType, mode)
 
-	// Handle eth_ports array
 	if utils.FieldAppliesToMode(resourceType, "eth_ports", mode) {
 		if ethPortsData, ok := data["eth_ports"].([]interface{}); ok && len(ethPortsData) > 0 {
 			var ethPorts []verityAuthenticatedEthPortEthPortModel
@@ -676,7 +653,6 @@ func populateAuthenticatedEthPortState(ctx context.Context, state verityAuthenti
 		state.EthPorts = nil
 	}
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityAuthenticatedEthPortObjectPropertiesModel{
@@ -694,9 +670,7 @@ func populateAuthenticatedEthPortState(ctx context.Context, state verityAuthenti
 }
 
 func (r *verityAuthenticatedEthPortResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -707,11 +681,6 @@ func (r *verityAuthenticatedEthPortResource) ModifyPlan(ctx context.Context, req
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := authenticatedEthPortResourceType
 	mode := r.provCtx.mode
 
@@ -747,16 +716,10 @@ func (r *verityAuthenticatedEthPortResource) ModifyPlan(ctx context.Context, req
 		StringFields: []string{"port_monitoring"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityAuthenticatedEthPortResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -769,11 +732,6 @@ func (r *verityAuthenticatedEthPortResource) ModifyPlan(ctx context.Context, req
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, authenticatedEthPortTerraformType, name)

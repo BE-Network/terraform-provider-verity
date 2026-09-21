@@ -18,13 +18,6 @@ import (
 	"terraform-provider-verity/internal/utils"
 )
 
-// genericRuntime adapts the provider's session to what the generic engine needs.
-//
-// The engine takes an interface so it does not depend on this package; this is
-// the only place the two meet, and it is deliberately thin — every method here
-// forwards to the same helper the handwritten resources call, so a migrated
-// resource shares their caching, retry, and authentication behavior rather than
-// getting a parallel implementation of it.
 type genericRuntime struct {
 	provCtx *providerContext
 }
@@ -51,22 +44,10 @@ func (g genericRuntime) BulkManager() *bulkops.Manager { return g.provCtx.bulkOp
 
 func (g genericRuntime) NotifyOperationAdded() { g.provCtx.NotifyOperationAdded() }
 
-// ConfiguredAttributes parses the .tf files the same way the handwritten
-// resources do, from the same working directory.
 func (g genericRuntime) ConfiguredAttributes(ctx context.Context, terraformType, resourceName string) *utils.ConfiguredAttributes {
 	return utils.ParseResourceConfiguredAttributes(ctx, g.provCtx.workDir, terraformType, resourceName)
 }
 
-// FetchCollection reads a resource's endpoint and returns the objects under its
-// response collection key, through the same cache and retry the handwritten
-// resources use.
-//
-// The request is issued directly rather than through a generated SDK method. The
-// typed methods are one per endpoint, so reaching them generically would need a
-// table mapping every resource to its own function — the duplication the
-// registry exists to remove. A GET has no request body to type, so the endpoint
-// path from the spec is enough to build it, and the response is decoded as data
-// because that is what the engine decodes against the spec anyway.
 func (g genericRuntime) FetchCollection(ctx context.Context, resourceSpec spec.ResourceSpec, resourceName string) (map[string]interface{}, error) {
 	return utils.FetchResourceWithRetry(ctx, g.provCtx, resourceSpec.API.CacheKey, resourceName,
 		func() (map[string]interface{}, error) { return g.get(ctx, resourceSpec) },
@@ -82,11 +63,6 @@ func (g genericRuntime) get(ctx context.Context, resourceSpec spec.ResourceSpec)
 	}
 	endpoint := strings.TrimSuffix(base, "/") + resourceSpec.API.EndpointPath
 
-	// One endpoint can back several resources, selected by a fixed parameter; the
-	// ACLs are the case, separated by ip_version. The registry calls these
-	// fixed_headers after the bulk manager's HeaderParams, but the OpenAPI
-	// documents declare ip_version `in: query` for every operation, and the
-	// generated SDK and the handwritten resources send it that way.
 	if len(resourceSpec.API.FixedHeaders) != 0 {
 		query := url.Values{}
 		for name, value := range resourceSpec.API.FixedHeaders {
@@ -104,10 +80,6 @@ func (g genericRuntime) get(ctx context.Context, resourceSpec spec.ResourceSpec)
 		request.Header.Set(name, value)
 	}
 
-	// The generic reader calls the HTTP client directly, unlike the handwritten
-	// resources that call generated SDK endpoint methods. Record the same useful
-	// request evidence at debug level without exposing the server URL, headers, or
-	// any credential that may be present in either.
 	tflog.Debug(ctx, fmt.Sprintf("Generic API request for %s: %s %s",
 		resourceSpec.TerraformType, request.Method, request.URL.EscapedPath()))
 	response, err := config.HTTPClient.Do(request)
@@ -116,9 +88,7 @@ func (g genericRuntime) get(ctx context.Context, resourceSpec spec.ResourceSpec)
 	}
 	defer response.Body.Close()
 	if config.Debug {
-		// DumpResponse preserves response.Body, so decoding below sees the exact
-		// same bytes that were logged. This deliberately matches openapi.callAPI's
-		// established multi-line HTTP debug format.
+
 		dump, err := httputil.DumpResponse(response, true)
 		if err != nil {
 			return nil, fmt.Errorf("dump %s response: %w", resourceSpec.TerraformType, err)
@@ -135,8 +105,7 @@ func (g genericRuntime) get(ctx context.Context, resourceSpec spec.ResourceSpec)
 	}
 	collection, ok := decoded[resourceSpec.API.ResponseCollectionKey].(map[string]interface{})
 	if !ok {
-		// An endpoint that returns no objects at all is a valid empty collection,
-		// not a malformed response.
+
 		if _, present := decoded[resourceSpec.API.ResponseCollectionKey]; !present {
 			return map[string]interface{}{}, nil
 		}

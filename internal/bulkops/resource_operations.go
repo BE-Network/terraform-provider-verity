@@ -8,15 +8,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 
-// ResourceOperationOptions holds optional configuration for resource operations
 type ResourceOperationOptions struct {
-	// HeaderParams holds custom header parameters for API requests.
-	// For example, ACL resources use "ip_version": "4" or "6"
 	HeaderParams map[string]string
 }
 
-// ExecuteResourceOperation handles the common pattern of bulk operations (Put/Patch/Delete)
-// and waiting for completion with proper error handling
 func ExecuteResourceOperation(
 	ctx context.Context,
 	bulkOpsMgr *Manager,
@@ -28,8 +23,6 @@ func ExecuteResourceOperation(
 	return ExecuteResourceOperationWithOptions(ctx, bulkOpsMgr, notifyFunc, operationType, resourceType, resourceName, resourceData, diagnostics, nil)
 }
 
-// ExecuteResourceOperationWithOptions handles resource operations with optional configuration
-// such as IP version for ACL resources
 func ExecuteResourceOperationWithOptions(
 	ctx context.Context,
 	bulkOpsMgr *Manager,
@@ -41,7 +34,6 @@ func ExecuteResourceOperationWithOptions(
 ) bool {
 	var operationID string
 
-	// Extract header parameters if provided
 	var headerParams map[string]string
 	if options != nil && options.HeaderParams != nil {
 		headerParams = options.HeaderParams

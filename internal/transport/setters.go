@@ -7,20 +7,9 @@ import (
 	"terraform-provider-verity/openapi"
 )
 
-// ResourceValueAdapter converts the codec's canonical object into the typed
-// value the bulk manager asserts for one resource.
-//
-// The generated adapters implement it. The interface lives here, beside the
-// setters they call, so the generated file carries nothing but the per-resource
-// mapping.
 type ResourceValueAdapter interface {
 	ResourceValue(object WireObject) (interface{}, error)
 }
-
-// The setters below are the whole vocabulary the generated adapters use. Each
-// takes one canonical value and fills one field of a generated SDK struct,
-// which is where the two type systems meet: a wire null becomes an explicit API
-// null where the field can hold one, and is refused where it cannot.
 
 func wireStringPtr(value WireValue, target **string) error {
 	if value.Kind() == ValueKindNull {
@@ -94,8 +83,6 @@ func wireFloat32Ptr(value WireValue, target **float32) error {
 	return nil
 }
 
-// A nullable field is the one place an explicit null is a value rather than an
-// error: it is how this API clears a number.
 func wireNullableInt64(value WireValue, target *openapi.NullableInt64) error {
 	if value.Kind() == ValueKindNull {
 		*target = *openapi.NewNullableInt64(nil)
@@ -161,9 +148,6 @@ func wireNullableString(value WireValue, target *openapi.NullableString) error {
 	return nil
 }
 
-// int64Of and float64Of accept the two numeric kinds the codec produces. A
-// decimal keeps its lexical form until here, so the conversion happens once, at
-// the boundary, rather than being carried as a float through the codec.
 func int64Of(value WireValue) (int64, error) {
 	switch value.Kind() {
 	case ValueKindInt64:
@@ -220,9 +204,6 @@ func float32Of(value WireValue) (float32, error) {
 	}
 }
 
-// wireObject unwraps a singleton object for a generated nested adapter. An
-// object is never sent as null — an absent block is omitted instead — so a null
-// here means the codec and the adapter disagree.
 func wireObject(value WireValue) (WireObject, error) {
 	if value.Kind() != ValueKindObject {
 		return nil, fmt.Errorf("expected object, got %s", value.Kind())
@@ -230,8 +211,6 @@ func wireObject(value WireValue) (WireObject, error) {
 	return value.ObjectValue(), nil
 }
 
-// wireList unwraps an indexed collection for a generated list adapter. Like an
-// object, a list is omitted when absent rather than sent as null.
 func wireList(value WireValue) ([]WireValue, error) {
 	if value.Kind() != ValueKindList {
 		return nil, fmt.Errorf("expected list, got %s", value.Kind())
@@ -239,10 +218,6 @@ func wireList(value WireValue) ([]WireValue, error) {
 	return value.ListValue(), nil
 }
 
-// wireEmptyObject fills an object the API declares with no properties. The SDK
-// types it as a plain map and serializes it through ToMap, which checks for nil
-// rather than emptiness, so an empty map is sent as {} — as the handwritten
-// resources send it when the block is written.
 func wireEmptyObject(value WireValue, target *map[string]interface{}) error {
 	members, err := wireObject(value)
 	if err != nil {

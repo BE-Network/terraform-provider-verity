@@ -10,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
-// SupportedAPIVersion defines the API version this provider is built for
 const (
 	SupportedAPIMajor = 6
 	SupportedAPIMinor = 6
@@ -31,20 +30,11 @@ const (
 	ResourceModeBoth       ResourceMode = "both"
 )
 
-// pendingResourceCompatibility holds the resources the reviewed registry does not
-// represent yet. Each is blocked by a recorded API-versus-provider disagreement;
-// see status.md. Entries move out of this map as the registry grows, and
-// ResourceCompatibility is the union of it and the generated table.
 var pendingResourceCompatibility = map[string]ResourceMode{
-	// verity_operation_stage is not API-backed, so it has no endpoint to extract
-	// and is intentionally excluded from the registry; the refactor plan keeps it
-	// bespoke. It is the only entry that is not expected to move.
+
 	"verity_operation_stage": ResourceModeBoth,
 }
 
-// ResourceCompatibility maps each Terraform resource to the operation modes it
-// supports. It is derived from the reviewed spec registry, with the pending
-// resources above merged in until they are represented.
 var ResourceCompatibility = mergeResourceCompatibility()
 
 func mergeResourceCompatibility() map[string]ResourceMode {
@@ -58,7 +48,6 @@ func mergeResourceCompatibility() map[string]ResourceMode {
 	return merged
 }
 
-// ValidateAPIVersion checks if the API version matches the supported version.
 func ValidateAPIVersion(apiVersion string) error {
 	major, minor, err := ParseApiVersion(apiVersion)
 	if err != nil {
@@ -78,7 +67,6 @@ func GetSupportedAPIVersionString() string {
 	return fmt.Sprintf("%d.%d", SupportedAPIMajor, SupportedAPIMinor)
 }
 
-// FilterResourcesByMode filters resources based on the operation mode (datacenter/campus).
 func FilterResourcesByMode(
 	ctx context.Context,
 	resources []func() resource.Resource,
@@ -126,7 +114,6 @@ func FilterResourcesByMode(
 	return compatibleResources
 }
 
-// ParseApiVersion extracts major and minor version numbers from a version string.
 func ParseApiVersion(version string) (int, int, error) {
 	parts := strings.Split(version, ".")
 

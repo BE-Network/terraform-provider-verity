@@ -1,5 +1,3 @@
-# Test case: Add new resources
-# Define resources to be injected into the corresponding .tf file for testing
 
 resource "verity_voice_port_profile" "voice_port_profile_test_script1" {
     name = "voice_port_profile_test_script1"

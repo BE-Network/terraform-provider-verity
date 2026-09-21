@@ -202,14 +202,12 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Color", APIField: &lagReq.Color, TFValue: plan.Color},
 		{FieldName: "EthPortProfile", APIField: &lagReq.EthPortProfile, TFValue: plan.EthPortProfile},
 		{FieldName: "EthPortProfileRefType", APIField: &lagReq.EthPortProfileRefType, TFValue: plan.EthPortProfileRefType},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &lagReq.Enable, TFValue: plan.Enable},
 		{FieldName: "IsPeerLink", APIField: &lagReq.IsPeerLink, TFValue: plan.IsPeerLink},
@@ -219,7 +217,6 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 		{FieldName: "Uplink", APIField: &lagReq.Uplink, TFValue: plan.Uplink},
 	})
 
-	// Handle nullable int64 fields - parse HCL to detect explicit config
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, lagTerraformType, name)
 
@@ -228,7 +225,6 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 		{FieldName: "CrcFailureThreshold", APIField: &lagReq.CrcFailureThreshold, TFValue: config.CrcFailureThreshold, IsConfigured: configuredAttrs.IsConfigured("crc_failure_threshold")},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.LagsPutRequestLagValueObjectProperties{}
@@ -271,7 +267,6 @@ func (r *verityLagResource) Create(ctx context.Context, req resource.CreateReque
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -308,7 +303,6 @@ func (r *verityLagResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	lagName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if lagData, exists := r.bulkOpsMgr.GetResourceResponse("lag", lagName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached lag data for %s from recent operation", lagName))
@@ -407,7 +401,6 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
-	// Get config for nullable field handling
 	var config verityLagResourceModel
 	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
@@ -427,15 +420,12 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 	lagReq := openapi.LagsPutRequestLagValue{}
 	hasChanges := false
 
-	// Parse HCL to detect which fields are explicitly configured
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, lagTerraformType, name)
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { lagReq.Name = v }, &hasChanges)
 	utils.CompareAndSetStringField(plan.Color, state.Color, func(v *string) { lagReq.Color = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { lagReq.Enable = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.IsPeerLink, state.IsPeerLink, func(v *bool) { lagReq.IsPeerLink = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.Lacp, state.Lacp, func(v *bool) { lagReq.Lacp = v }, &hasChanges)
@@ -443,11 +433,9 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 	utils.CompareAndSetBoolField(plan.FastRate, state.FastRate, func(v *bool) { lagReq.FastRate = v }, &hasChanges)
 	utils.CompareAndSetBoolField(plan.Uplink, state.Uplink, func(v *bool) { lagReq.Uplink = v }, &hasChanges)
 
-	// Handle nullable int64 field changes - parse HCL to detect explicit config
 	utils.CompareAndSetNullableInt64Field(config.PeerLinkVlan, state.PeerLinkVlan, configuredAttrs.IsConfigured("peer_link_vlan"), func(v *openapi.NullableInt64) { lagReq.PeerLinkVlan = *v }, &hasChanges)
 	utils.CompareAndSetNullableInt64Field(config.CrcFailureThreshold, state.CrcFailureThreshold, configuredAttrs.IsConfigured("crc_failure_threshold"), func(v *openapi.NullableInt64) { lagReq.CrcFailureThreshold = *v }, &hasChanges)
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.LagsPutRequestLagValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -474,7 +462,6 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 		}
 	}
 
-	// Handle EthPortProfile and EthPortProfileRefType using "Many ref types supported" pattern
 	if !utils.HandleMultipleRefTypesSupported(
 		plan.EthPortProfile, state.EthPortProfile, plan.EthPortProfileRefType, state.EthPortProfileRefType,
 		func(v *string) { lagReq.EthPortProfile = v },
@@ -507,7 +494,6 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if lagData, exists := bulkMgr.GetResourceResponse("lag", name); exists {
 			newState := populateLagState(ctx, minState, utils.MergeMissingPlanScalars(lagData, plan, lagResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -516,7 +502,6 @@ func (r *verityLagResource) Update(ctx context.Context, req resource.UpdateReque
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -572,11 +557,9 @@ func populateLagState(ctx context.Context, state verityLagResourceModel, data ma
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Int fields
 	state.PeerLinkVlan = utils.MapInt64WithMode(data, "peer_link_vlan", resourceType, mode)
 	state.CrcFailureThreshold = utils.MapInt64WithMode(data, "crc_failure_threshold", resourceType, mode)
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 	state.IsPeerLink = utils.MapBoolWithMode(data, "is_peer_link", resourceType, mode)
 	state.Lacp = utils.MapBoolWithMode(data, "lacp", resourceType, mode)
@@ -584,12 +567,10 @@ func populateLagState(ctx context.Context, state verityLagResourceModel, data ma
 	state.FastRate = utils.MapBoolWithMode(data, "fast_rate", resourceType, mode)
 	state.Uplink = utils.MapBoolWithMode(data, "uplink", resourceType, mode)
 
-	// String fields
 	state.Color = utils.MapStringWithMode(data, "color", resourceType, mode)
 	state.EthPortProfile = utils.MapStringWithMode(data, "eth_port_profile", resourceType, mode)
 	state.EthPortProfileRefType = utils.MapStringWithMode(data, "eth_port_profile_ref_type_", resourceType, mode)
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			objPropsModel := verityLagObjectPropertiesModel{
@@ -608,9 +589,7 @@ func populateLagState(ctx context.Context, state verityLagResourceModel, data ma
 }
 
 func (r *verityLagResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -621,11 +600,6 @@ func (r *verityLagResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := lagResourceType
 	mode := r.provCtx.mode
 
@@ -654,16 +628,10 @@ func (r *verityLagResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 		StringFields: []string{"fabric", "fabric_ref_type_"},
 	})
 
-	// =========================================================================
-	// Skip UPDATE-specific logic during CREATE
-	// =========================================================================
 	if req.State.Raw.IsNull() {
 		return
 	}
 
-	// =========================================================================
-	// UPDATE operation - get state and config
-	// =========================================================================
 	var state verityLagResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -676,11 +644,6 @@ func (r *verityLagResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 		return
 	}
 
-	// =========================================================================
-	// Handle nullable Int64 fields (explicit null detection)
-	// For Optional+Computed fields, Terraform copies state to plan when config
-	// is null. We detect explicit null in HCL and force plan to null.
-	// =========================================================================
 	name := plan.Name.ValueString()
 	workDir := r.provCtx.workDir
 	configuredAttrs := utils.ParseResourceConfiguredAttributes(ctx, workDir, lagTerraformType, name)

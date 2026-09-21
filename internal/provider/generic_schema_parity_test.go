@@ -14,22 +14,9 @@ import (
 	"terraform-provider-verity/internal/transport"
 )
 
-// The generic engine must serve the schema the provider already ships.
-//
-// Phase 2 migrates verity_ipv4_list to a compiled schema with no handwritten
-// attribute map. The registry is verified against the legacy schema elsewhere,
-// but that proves the *description* is faithful, not that compiling it back
-// produces the same thing. This closes the loop: compile the reviewed spec and
-// compare it to what the handwritten resource returns, attribute by attribute.
-//
-// A schema difference is a state-compatibility break, so this is the check that
-// has to pass before the generic resource is allowed to serve real state.
 func TestCompiledSchemaMatchesLegacy(t *testing.T) {
 	t.Parallel()
 
-	// Every resource the engine can serve, not just the pilot. Checking one of
-	// them left the others' schemas unverified, and a schema difference is what
-	// decides whether Terraform plans a change at all.
 	servable := make([]string, 0, len(transport.GeneratedAdapters))
 	for terraformType := range transport.GeneratedAdapters {
 		servable = append(servable, terraformType)
@@ -82,9 +69,6 @@ func assertSchemaParity(t *testing.T, terraformType string) {
 		compareAttributes(t, name, got, want)
 	}
 
-	// Blocks are compared as strictly as attributes. A block's type decides the
-	// state shape, so a singleton compiled to anything but the list block the
-	// handwritten resource declares would break existing state.
 	if len(compiled.Blocks) != len(legacy.Blocks) {
 		t.Fatalf("compiled %d blocks, legacy has %d", len(compiled.Blocks), len(legacy.Blocks))
 	}
@@ -132,10 +116,6 @@ func compareBlocks(t *testing.T, name string, got, want schema.Block) {
 	}
 }
 
-// compareAttributes checks the facts Terraform acts on: the value type, the three
-// access flags, sensitivity, the description shown to users, and whether a change
-// forces replacement. Plan modifiers are compared by identifying RequiresReplace
-// rather than by counting, since an unrelated modifier is not replacement.
 func compareAttributes(t *testing.T, name string, got, want schema.Attribute) {
 	t.Helper()
 
@@ -158,9 +138,6 @@ func compareAttributes(t *testing.T, name string, got, want schema.Attribute) {
 	}
 }
 
-// attributeRequiresReplace reports whether an attribute carries the
-// RequiresReplace plan modifier for its kind. The modifier list is typed per
-// kind, so this switches on the concrete attribute type to reach it.
 func attributeRequiresReplace(attribute schema.Attribute) bool {
 	switch typed := attribute.(type) {
 	case schema.StringAttribute:
@@ -205,11 +182,6 @@ func registrySpec(t *testing.T, terraformType string) spec.ResourceSpec {
 	return spec.ResourceSpec{}
 }
 
-// The compiler must refuse what the engine cannot serve rather than approximate
-// it. Emitting a bare attribute for a shape the engine does not implement would
-// produce a schema that accepts configuration the engine then ignores. Every
-// registry resource is now served, so the check runs on a registry resource
-// given a shape no resource has: an object nested inside its singleton block.
 func TestCompileSchemaRefusesUnsupportedResources(t *testing.T) {
 	t.Parallel()
 
@@ -240,9 +212,6 @@ func TestCompileSchemaRefusesUnsupportedResources(t *testing.T) {
 	}
 }
 
-// Every resource the support rule accepts must compile and have a generated
-// adapter. The support rule, the compiler, and the generator are separate code,
-// and a resource one of them accepts and another does not is not migratable.
 func TestEverySupportedResourceCompilesAndHasAnAdapter(t *testing.T) {
 	t.Parallel()
 

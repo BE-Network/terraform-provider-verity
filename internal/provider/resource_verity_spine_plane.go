@@ -139,18 +139,15 @@ func (r *veritySpinePlaneResource) Create(ctx context.Context, req resource.Crea
 		Name: openapi.PtrString(name),
 	}
 
-	// Handle string fields
 	utils.SetStringFields([]utils.StringFieldMapping{
 		{FieldName: "Fabric", APIField: &spinePlaneReq.Fabric, TFValue: plan.Fabric},
 		{FieldName: "FabricRefType", APIField: &spinePlaneReq.FabricRefType, TFValue: plan.FabricRefType},
 	})
 
-	// Handle boolean fields
 	utils.SetBoolFields([]utils.BoolFieldMapping{
 		{FieldName: "Enable", APIField: &spinePlaneReq.Enable, TFValue: plan.Enable},
 	})
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 {
 		op := plan.ObjectProperties[0]
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
@@ -184,7 +181,6 @@ func (r *veritySpinePlaneResource) Create(ctx context.Context, req resource.Crea
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -221,7 +217,6 @@ func (r *veritySpinePlaneResource) Read(ctx context.Context, req resource.ReadRe
 
 	spinePlaneName := state.Name.ValueString()
 
-	// Check for cached data from recent operations first
 	if r.bulkOpsMgr != nil {
 		if spinePlaneData, exists := r.bulkOpsMgr.GetResourceResponse("spine_plane", spinePlaneName); exists {
 			tflog.Info(ctx, fmt.Sprintf("Using cached spine_plane data for %s from recent operation", spinePlaneName))
@@ -332,13 +327,10 @@ func (r *veritySpinePlaneResource) Update(ctx context.Context, req resource.Upda
 	spinePlaneReq := openapi.SpineplanesPutRequestSpinePlaneValue{}
 	hasChanges := false
 
-	// Handle string field changes
 	utils.CompareAndSetStringField(plan.Name, state.Name, func(v *string) { spinePlaneReq.Name = v }, &hasChanges)
 
-	// Handle boolean field changes
 	utils.CompareAndSetBoolField(plan.Enable, state.Enable, func(v *bool) { spinePlaneReq.Enable = v }, &hasChanges)
 
-	// Handle fabric and fabric_ref_type_ using "One ref type supported" pattern
 	if !utils.HandleOneRefTypeSupported(
 		plan.Fabric, state.Fabric, plan.FabricRefType, state.FabricRefType,
 		func(v *string) { spinePlaneReq.Fabric = v },
@@ -349,7 +341,6 @@ func (r *veritySpinePlaneResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	// Handle object properties
 	if len(plan.ObjectProperties) > 0 && len(state.ObjectProperties) > 0 {
 		objProps := openapi.AclsPutRequestIpFilterValueObjectProperties{}
 		op := plan.ObjectProperties[0]
@@ -387,7 +378,6 @@ func (r *veritySpinePlaneResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	// Try to use cached response from bulk operation to populate state with API values
 	if bulkMgr := r.provCtx.bulkOpsMgr; bulkMgr != nil {
 		if spinePlaneData, exists := bulkMgr.GetResourceResponse("spine_plane", name); exists {
 			newState := populateSpinePlaneState(ctx, minState, utils.MergeMissingPlanScalars(spinePlaneData, plan, spinePlaneResourceType, r.provCtx.mode), r.provCtx.mode)
@@ -396,7 +386,6 @@ func (r *veritySpinePlaneResource) Update(ctx context.Context, req resource.Upda
 		}
 	}
 
-	// If no cached data, fall back to normal Read
 	readReq := resource.ReadRequest{
 		State: resp.State,
 	}
@@ -452,14 +441,11 @@ func populateSpinePlaneState(ctx context.Context, state veritySpinePlaneResource
 
 	state.Name = utils.MapStringFromAPI(data["name"])
 
-	// Boolean fields
 	state.Enable = utils.MapBoolWithMode(data, "enable", resourceType, mode)
 
-	// String fields
 	state.Fabric = utils.MapStringWithMode(data, "fabric", resourceType, mode)
 	state.FabricRefType = utils.MapStringWithMode(data, "fabric_ref_type_", resourceType, mode)
 
-	// Handle object_properties block
 	if utils.FieldAppliesToMode(resourceType, "object_properties", mode) {
 		if objProps, ok := data["object_properties"].(map[string]interface{}); ok {
 			state.ObjectProperties = []veritySpinePlaneObjectPropertiesModel{
@@ -478,9 +464,7 @@ func populateSpinePlaneState(ctx context.Context, state veritySpinePlaneResource
 }
 
 func (r *veritySpinePlaneResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	// =========================================================================
-	// Skip if deleting
-	// =========================================================================
+
 	if req.Plan.Raw.IsNull() {
 		return
 	}
@@ -491,11 +475,6 @@ func (r *veritySpinePlaneResource) ModifyPlan(ctx context.Context, req resource.
 		return
 	}
 
-	// =========================================================================
-	// Mode-aware field nullification
-	// Set fields that don't apply to current mode to null to prevent
-	// "known after apply" messages for irrelevant fields.
-	// =========================================================================
 	resourceType := spinePlaneResourceType
 	mode := r.provCtx.mode
 
