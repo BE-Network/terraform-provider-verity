@@ -308,9 +308,13 @@ func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value, nul
 				objectChanged bool
 				err           error
 			)
-			if field.Kind == spec.FieldKindList {
+			send := true
+			switch {
+			case field.Kind == spec.FieldKindList:
 				wire, objectChanged, err = updateList(field, value, previous, nullables, diagnostics)
-			} else {
+			case !hasManagedMembers(field):
+				wire, send, objectChanged, err = updateEmptySingleton(field, value, previous)
+			default:
 				wire, objectChanged, err = updateSingleton(field, value, previous, diagnostics)
 			}
 			if err != nil {
@@ -320,7 +324,9 @@ func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value, nul
 				return nil, false, nil
 			}
 			if objectChanged {
-				object[field.APIName] = wire
+				if send {
+					object[field.APIName] = wire
+				}
 				changed = true
 			}
 			continue

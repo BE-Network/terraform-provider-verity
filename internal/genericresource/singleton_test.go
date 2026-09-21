@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"terraform-provider-verity/internal/spec"
+	"terraform-provider-verity/internal/transport"
 )
 
 // singletonFields is a resource with an identity and one singleton block holding
@@ -184,5 +185,46 @@ func TestNullifyUnknownSettlesSingletonMembers(t *testing.T) {
 	want := block(t, blockMembers(types.StringNull(), types.StringValue("l"), types.StringValue("lag")))
 	if got := settled["object_properties"]; !got.Equal(want) {
 		t.Fatalf("object_properties = %v, want %v", got, want)
+	}
+}
+
+// An object the API declares with no properties can only be present or absent.
+// Adding it sends an empty object; removing it is a change with nothing to send,
+// as the handwritten resources treat it.
+func TestUpdateEmptySingletonFollowsPresence(t *testing.T) {
+	t.Parallel()
+
+	field := singletonSpec().Fields[1]
+	present, err := singletonValue(field, map[string]attr.Value{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	absent := types.ListValueMust(elementType(field), nil)
+
+	cases := []struct {
+		name              string
+		plan, state       attr.Value
+		wantSend, wantChg bool
+	}{
+		{"added", present, absent, true, true},
+		{"removed", absent, present, false, true},
+		{"present in both", present, present, false, false},
+		{"absent in both", absent, absent, false, false},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			wire, send, changed, err := updateEmptySingleton(field, tc.plan, tc.state)
+			if err != nil {
+				t.Fatalf("updateEmptySingleton: %v", err)
+			}
+			if send != tc.wantSend || changed != tc.wantChg {
+				t.Fatalf("send=%v changed=%v, want send=%v changed=%v", send, changed, tc.wantSend, tc.wantChg)
+			}
+			if send {
+				if got := encode(t, transport.WireObject{"object_properties": wire}); got != `{"object_properties":{}}` {
+					t.Fatalf("sent %s, want an empty object", got)
+				}
+			}
+		})
 	}
 }

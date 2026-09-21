@@ -85,6 +85,31 @@ func assertGoldenParity(t *testing.T, terraformType string) {
 
 	address := entry.TerraformType + ".test"
 
+	if entry.SkipCreate {
+		// An update-only resource cannot be created, so it is imported, exactly
+		// as TestGoldenWireFixtures records its read fixture. The state is not
+		// persisted, because the harness would destroy it and delete is refused
+		// too. Its update request is pinned against the same patch fixture by
+		// TestGenericUpdateOnlyAdapterMatchesGoldenPatch.
+		fwresource.UnitTest(t, fwresource.TestCase{
+			ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(),
+			Steps: []fwresource.TestStep{{
+				PreConfig:     func() { mock.WriteTFConfig(t, ms.URL(), createConfig) },
+				Config:        createConfig,
+				ResourceName:  address,
+				ImportState:   true,
+				ImportStateId: importIDFor(entry),
+				ImportStateCheck: func(states []*terraform.InstanceState) error {
+					if len(states) != 1 {
+						return fmt.Errorf("%s: imported %d instances, want 1", entry.TerraformType, len(states))
+					}
+					return compareGoldenAttributes(t, entry.TerraformType, states[0].Attributes)
+				},
+			}},
+		})
+		return
+	}
+
 	fwresource.UnitTest(t, fwresource.TestCase{
 		ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(),
 		Steps: []fwresource.TestStep{

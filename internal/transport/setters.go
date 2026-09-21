@@ -238,3 +238,19 @@ func wireList(value WireValue) ([]WireValue, error) {
 	}
 	return value.ListValue(), nil
 }
+
+// wireEmptyObject fills an object the API declares with no properties. The SDK
+// types it as a plain map and serializes it through ToMap, which checks for nil
+// rather than emptiness, so an empty map is sent as {} — as the handwritten
+// resources send it when the block is written.
+func wireEmptyObject(value WireValue, target *map[string]interface{}) error {
+	members, err := wireObject(value)
+	if err != nil {
+		return err
+	}
+	if len(members) != 0 {
+		return fmt.Errorf("an object with no properties was given %d members", len(members))
+	}
+	*target = map[string]interface{}{}
+	return nil
+}

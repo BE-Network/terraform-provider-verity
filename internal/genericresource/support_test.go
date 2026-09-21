@@ -41,6 +41,10 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 	if err := Supported(singletonSpec(notesMember())); err != nil {
 		t.Fatalf("a singleton with a scalar member was refused: %v", err)
 	}
+	// An object the API declares with no properties is served as an empty block.
+	if err := Supported(singletonSpec()); err != nil {
+		t.Fatalf("a singleton with no members was refused: %v", err)
+	}
 
 	// A fixed parameter selecting between resources on one endpoint is served: the
 	// write path passes it to the bulk manager and the read sends it as a query
@@ -112,7 +116,6 @@ func TestSupportedRefusesWhatTheEngineWouldGetWrong(t *testing.T) {
 		{"nullable member of a singleton", singletonSpec(nullableMember), "nullable member of a singleton block"},
 		{"object inside an object", singletonSpec(nestedObject), "object inside an object"},
 		{"object without the singleton strategy", notSingleton, "without the singleton strategy"},
-		{"object with no members", singletonSpec(), "no members"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

@@ -7,9 +7,7 @@
 // is the boundary the plan puts between the two.
 //
 // Resources without an adapter, and why:
-//   verity_device_settings: object_properties is an object with no members
 //   verity_fabric: system_graphs is a list inside a block, which the engine does not serve yet
-//   verity_sfp_breakout: object_properties is an object with no members
 //   verity_switchpoint: number_of_multipoints is a nullable member of a singleton block, which the engine does not serve yet
 
 package transport
@@ -30,6 +28,7 @@ var GeneratedAdapters = map[string]ResourceValueAdapter{
 	"verity_badge":                    badgeAdapter{},
 	"verity_bundle":                   bundleAdapter{},
 	"verity_community_list":           communityListAdapter{},
+	"verity_device_settings":          deviceSettingsAdapter{},
 	"verity_device_voice_settings":    deviceVoiceSettingsAdapter{},
 	"verity_diagnostics_port_profile": diagnosticsPortProfileAdapter{},
 	"verity_diagnostics_profile":      diagnosticsProfileAdapter{},
@@ -60,6 +59,7 @@ var GeneratedAdapters = map[string]ResourceValueAdapter{
 	"verity_service":                  serviceAdapter{},
 	"verity_service_port_profile":     servicePortProfileAdapter{},
 	"verity_sflow_collector":          sflowCollectorAdapter{},
+	"verity_sfp_breakout":             sfpBreakoutAdapter{},
 	"verity_spine_plane":              spinePlaneAdapter{},
 	"verity_ssp_group":                sspGroupAdapter{},
 	"verity_su":                       suAdapter{},
@@ -987,6 +987,245 @@ func communityListObjectPropertiesValue(wire WireValue, target **openapi.AclsPut
 		}
 	}
 	*target = &value
+	return nil
+}
+
+type deviceSettingsAdapter struct{}
+
+func (deviceSettingsAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.DevicesettingsPutRequestEthDeviceProfilesValue
+	for name, wire := range object {
+		switch name {
+		case "cli_commands":
+			if err := wireStringPtr(wire, &value.CliCommands); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "commit_to_flash_interval":
+			if err := wireNullableInt64(wire, &value.CommitToFlashInterval); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "cut_through_switching":
+			if err := wireBoolPtr(wire, &value.CutThroughSwitching); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "device_aaa_profile":
+			if err := wireStringPtr(wire, &value.DeviceAaaProfile); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "device_aaa_profile_ref_type_":
+			if err := wireStringPtr(wire, &value.DeviceAaaProfileRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "disable_tcp_udp_learned_packet_acceleration":
+			if err := wireBoolPtr(wire, &value.DisableTcpUdpLearnedPacketAcceleration); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "dns_servers":
+			if err := deviceSettingsDnsServersValue(wire, &value.DnsServers); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "external_battery_power_available":
+			if err := wireNullableInt64(wire, &value.ExternalBatteryPowerAvailable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "external_power_available":
+			if err := wireNullableInt64(wire, &value.ExternalPowerAvailable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "hold_timer":
+			if err := wireNullableInt64(wire, &value.HoldTimer); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "login_banner":
+			if err := wireStringPtr(wire, &value.LoginBanner); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "mac_aging_timer_override":
+			if err := wireNullableInt64(wire, &value.MacAgingTimerOverride); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "mode":
+			if err := wireStringPtr(wire, &value.Mode); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "ntp_servers":
+			if err := deviceSettingsNtpServersValue(wire, &value.NtpServers); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "ntp_vrf":
+			if err := wireStringPtr(wire, &value.NtpVrf); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "ntp_vrf_tenant":
+			if err := wireStringPtr(wire, &value.NtpVrfTenant); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "ntp_vrf_tenant_ref_type_":
+			if err := wireStringPtr(wire, &value.NtpVrfTenantRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := wireEmptyObject(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "packet_queue":
+			if err := wireStringPtr(wire, &value.PacketQueue); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "packet_queue_ref_type_":
+			if err := wireStringPtr(wire, &value.PacketQueueRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "rocev2":
+			if err := wireBoolPtr(wire, &value.Rocev2); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "security_audit_interval":
+			if err := wireNullableInt64(wire, &value.SecurityAuditInterval); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "spanning_tree_priority":
+			if err := wireStringPtr(wire, &value.SpanningTreePriority); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "syslog_servers":
+			if err := deviceSettingsSyslogServersValue(wire, &value.SyslogServers); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "usage_threshold":
+			if err := wireNullableFloat64(wire, &value.UsageThreshold); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("DevicesettingsPutRequestEthDeviceProfilesValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func deviceSettingsDnsServersValue(wire WireValue, target *[]openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner) error {
+	entries, err := wireList(wire)
+	if err != nil {
+		return err
+	}
+	values := make([]openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner, 0, len(entries))
+	for position, entry := range entries {
+		members, err := wireObject(entry)
+		if err != nil {
+			return fmt.Errorf("[%d]: %w", position, err)
+		}
+		var value openapi.DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner
+		for name, member := range members {
+			switch name {
+			case "enabled":
+				if err := wireBoolPtr(member, &value.Enabled); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "index":
+				if err := wireInt64Ptr(member, &value.Index); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "server":
+				if err := wireStringPtr(member, &value.Server); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			default:
+				return fmt.Errorf("DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner has no field %q", name)
+			}
+		}
+		values = append(values, value)
+	}
+	*target = values
+	return nil
+}
+
+func deviceSettingsNtpServersValue(wire WireValue, target *[]openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) error {
+	entries, err := wireList(wire)
+	if err != nil {
+		return err
+	}
+	values := make([]openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner, 0, len(entries))
+	for position, entry := range entries {
+		members, err := wireObject(entry)
+		if err != nil {
+			return fmt.Errorf("[%d]: %w", position, err)
+		}
+		var value openapi.DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner
+		for name, member := range members {
+			switch name {
+			case "enabled":
+				if err := wireBoolPtr(member, &value.Enabled); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "index":
+				if err := wireInt64Ptr(member, &value.Index); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "server":
+				if err := wireStringPtr(member, &value.Server); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			default:
+				return fmt.Errorf("DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner has no field %q", name)
+			}
+		}
+		values = append(values, value)
+	}
+	*target = values
+	return nil
+}
+
+func deviceSettingsSyslogServersValue(wire WireValue, target *[]openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) error {
+	entries, err := wireList(wire)
+	if err != nil {
+		return err
+	}
+	values := make([]openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner, 0, len(entries))
+	for position, entry := range entries {
+		members, err := wireObject(entry)
+		if err != nil {
+			return fmt.Errorf("[%d]: %w", position, err)
+		}
+		var value openapi.DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner
+		for name, member := range members {
+			switch name {
+			case "enabled":
+				if err := wireBoolPtr(member, &value.Enabled); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "index":
+				if err := wireInt64Ptr(member, &value.Index); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "port":
+				if err := wireStringPtr(member, &value.Port); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "scheme":
+				if err := wireStringPtr(member, &value.Scheme); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "server":
+				if err := wireStringPtr(member, &value.Server); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			default:
+				return fmt.Errorf("DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner has no field %q", name)
+			}
+		}
+		values = append(values, value)
+	}
+	*target = values
 	return nil
 }
 
@@ -4546,6 +4785,77 @@ func (sflowCollectorAdapter) ResourceValue(object WireObject) (interface{}, erro
 		}
 	}
 	return value, nil
+}
+
+type sfpBreakoutAdapter struct{}
+
+func (sfpBreakoutAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue
+	for name, wire := range object {
+		switch name {
+		case "breakout":
+			if err := sfpBreakoutBreakoutValue(wire, &value.Breakout); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := wireEmptyObject(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			// The codec only emits fields the spec declares, so an unknown one
+			// means the registry and this adapter were generated apart.
+			return nil, fmt.Errorf("SfpbreakoutsPatchRequestSfpBreakoutsValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func sfpBreakoutBreakoutValue(wire WireValue, target *[]openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) error {
+	entries, err := wireList(wire)
+	if err != nil {
+		return err
+	}
+	values := make([]openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner, 0, len(entries))
+	for position, entry := range entries {
+		members, err := wireObject(entry)
+		if err != nil {
+			return fmt.Errorf("[%d]: %w", position, err)
+		}
+		var value openapi.SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner
+		for name, member := range members {
+			switch name {
+			case "breakout":
+				if err := wireStringPtr(member, &value.Breakout); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "enable":
+				if err := wireBoolPtr(member, &value.Enable); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "index":
+				if err := wireInt64Ptr(member, &value.Index); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "part_number":
+				if err := wireStringPtr(member, &value.PartNumber); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "vendor":
+				if err := wireStringPtr(member, &value.Vendor); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			default:
+				return fmt.Errorf("SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner has no field %q", name)
+			}
+		}
+		values = append(values, value)
+	}
+	*target = values
+	return nil
 }
 
 type spinePlaneAdapter struct{}

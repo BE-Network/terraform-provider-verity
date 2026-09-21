@@ -86,9 +86,10 @@ func supportedField(field spec.FieldSpec, container spec.FieldKind) error {
 		if field.Collection == nil || field.Collection.Strategy != spec.CollectionSingleton {
 			return fmt.Errorf("%s is an object without the singleton strategy, which the engine does not serve", field.APIName)
 		}
-		if len(field.Fields) == 0 {
-			return fmt.Errorf("%s is an object with no members", field.APIName)
-		}
+		// A singleton with no members is the API declaring an object with no
+		// properties. Two resources expose it as an empty block; it carries no
+		// values, so only its presence has any meaning, and updateEmptySingleton
+		// decides what a change of presence sends.
 		for _, member := range field.Fields {
 			if member.Unmanaged {
 				continue

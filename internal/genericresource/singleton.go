@@ -98,6 +98,41 @@ func createSingleton(field spec.FieldSpec, value attr.Value) (transport.WireValu
 	return transport.Object(object), true, nil
 }
 
+// updateEmptySingleton handles an object the API declares with no properties.
+// Its presence is all that can change, and the handwritten resources treat a
+// change of presence as a change of the resource: adding the block sends an
+// empty object, and removing it counts as a change with nothing to send. The
+// removal case never converges — the server keeps the object, and the read that
+// follows restores the block — and the engine reproduces that rather than
+// quietly differing; see "Phase 4: indexed collections" in status.md.
+func updateEmptySingleton(field spec.FieldSpec, plan, state attr.Value) (wire transport.WireValue, send, changed bool, err error) {
+	_, plannedPresent, err := singletonMembers(field, plan)
+	if err != nil {
+		return transport.WireValue{}, false, false, err
+	}
+	_, previousPresent, err := singletonMembers(field, state)
+	if err != nil {
+		return transport.WireValue{}, false, false, err
+	}
+	switch {
+	case plannedPresent == previousPresent:
+		return transport.WireValue{}, false, false, nil
+	case plannedPresent:
+		return transport.Object(transport.WireObject{}), true, true, nil
+	default:
+		return transport.WireValue{}, false, true, nil
+	}
+}
+
+func hasManagedMembers(field spec.FieldSpec) bool {
+	for _, member := range field.Fields {
+		if !member.Unmanaged {
+			return true
+		}
+	}
+	return false
+}
+
 // updateSingleton decides what an update sends for a singleton that differs from
 // state. It reports whether anything changed; only then is the object sent, and
 // it carries only the members that changed.
@@ -115,6 +150,10 @@ func updateSingleton(field spec.FieldSpec, plan, state attr.Value, diagnostics *
 		return transport.WireValue{}, false, err
 	}
 	if !plannedPresent || !previousPresent {
+		return transport.WireValue{}, false, nil
+	}
+	if !hasManagedMembers(field) {
+		// Present in both, and there is nothing inside it to differ.
 		return transport.WireValue{}, false, nil
 	}
 

@@ -196,6 +196,11 @@ func planOne(resource spec.ResourceSpec, structs map[string]goStruct) (resourceA
 		return resourceAdapter{}, err.Error()
 	}
 	requestName := putRequestTypeName(resource.API.EndpointPath)
+	if !resource.Operations.Create {
+		// A resource that is only ever updated has no PUT; the SDK declares its
+		// body under PATCH, and that is the type the bulk manager asserts.
+		requestName = strings.TrimSuffix(requestName, "PutRequest") + "PatchRequest"
+	}
 	request, found := structs[requestName]
 	if !found {
 		return resourceAdapter{}, fmt.Sprintf("no %s in the generated SDK", requestName)
@@ -233,6 +238,16 @@ func planFields(terraformType string, fields []spec.FieldSpec, value goStruct, s
 		target, found := value.Fields[field.APIName]
 		if !found {
 			return nil, fmt.Sprintf("%s carries no %q field", value.Name, field.APIName)
+		}
+		if field.Kind == spec.FieldKindObject && managedMembers(field) == 0 {
+			// The API declares this object with no properties, and the SDK types
+			// it as a plain map rather than a struct; it has nothing to convert
+			// but its presence.
+			if target.GoType != "map[string]interface{}" {
+				return nil, fmt.Sprintf("%s.%s is %s, not the map the SDK uses for an object with no properties", value.Name, target.GoName, target.GoType)
+			}
+			planned = append(planned, adapterField{APIName: field.APIName, GoName: target.GoName, Setter: "wireEmptyObject"})
+			continue
 		}
 		if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
 			prefix, shape := "*", "a pointer to"
@@ -428,4 +443,14 @@ func adapterTypeName(terraformType string) string {
 		name += strings.ToUpper(part[:1]) + part[1:]
 	}
 	return name + "Adapter"
+}
+
+func managedMembers(field spec.FieldSpec) int {
+	count := 0
+	for _, member := range field.Fields {
+		if !member.Unmanaged {
+			count++
+		}
+	}
+	return count
 }
