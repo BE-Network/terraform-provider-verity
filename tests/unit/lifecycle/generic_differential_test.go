@@ -148,11 +148,11 @@ func captureLifecycle(t *testing.T, terraformType string, generic bool, createCo
 		expect = outcome[0]
 	}
 
-	selection := ""
+	legacy := terraformType
 	if generic {
-		selection = terraformType
+		legacy = ""
 	}
-	t.Setenv(provider.GenericResourcesEnvVar, selection)
+	t.Setenv(provider.LegacyResourcesEnvVar, legacy)
 	if generic {
 		assertServedGenerically(t, terraformType)
 	}

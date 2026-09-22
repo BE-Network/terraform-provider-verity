@@ -426,9 +426,9 @@ var resourceConstructors = map[string]func() resource.Resource{
 func getAllResources() []func() resource.Resource {
 	all := make([]func() resource.Resource, 0, len(generatedResourceOrder)+len(nonAPIResources))
 
-	selected := genericSelection()
+	legacy := legacySelection()
 	for _, terraformType := range generatedResourceOrder {
-		generic, err := genericConstructor(terraformType, selected)
+		generic, err := genericConstructor(terraformType, legacy)
 		if err != nil {
 			panic("provider: " + err.Error())
 		}

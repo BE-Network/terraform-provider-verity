@@ -113,7 +113,7 @@ func TestIndexZeroAddOmitsTheIndexEntirely(t *testing.T) {
 					return nil
 				},
 
-				ExpectError: regexp.MustCompile(`(?s)inconsistent result after apply.*block count changed from 3 to 1`),
+				ExpectError: regexp.MustCompile(`(?s)inconsistent result after apply.*block count changed from 3 to 2`),
 			},
 		},
 	})

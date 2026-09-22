@@ -12,15 +12,15 @@ import (
 	"terraform-provider-verity/internal/transport"
 )
 
-const GenericResourcesEnvVar = "VERITY_GENERIC_RESOURCES"
+const LegacyResourcesEnvVar = "VERITY_LEGACY_RESOURCES"
 
 func genericAdapter(terraformType string) (genericresource.TransportAdapter, bool) {
 	adapter, found := transport.GeneratedAdapters[terraformType]
 	return adapter, found
 }
 
-func genericSelection() map[string]bool {
-	raw := strings.TrimSpace(os.Getenv(GenericResourcesEnvVar))
+func legacySelection() map[string]bool {
+	raw := strings.TrimSpace(os.Getenv(LegacyResourcesEnvVar))
 	if raw == "" {
 		return nil
 	}
@@ -35,18 +35,13 @@ func genericSelection() map[string]bool {
 	return selected
 }
 
-func genericConstructor(terraformType string, selected map[string]bool) (func() resource.Resource, error) {
-	if !selected[terraformType] && !selected["all"] {
+func genericConstructor(terraformType string, legacy map[string]bool) (func() resource.Resource, error) {
+	if legacy[terraformType] || legacy["all"] {
 		return nil, nil
 	}
 	adapter, hasAdapter := genericAdapter(terraformType)
 	if !hasAdapter {
-		if selected["all"] {
-
-			return nil, nil
-		}
-		return nil, fmt.Errorf("%s=%s selects %s, which has no transport adapter yet",
-			GenericResourcesEnvVar, os.Getenv(GenericResourcesEnvVar), terraformType)
+		return nil, fmt.Errorf("%s has no generated transport adapter", terraformType)
 	}
 	resourceSpec, err := registry.Lookup(terraformType)
 	if err != nil {
@@ -54,9 +49,6 @@ func genericConstructor(terraformType string, selected map[string]bool) (func() 
 	}
 	factory, err := genericresource.New(resourceSpec, adapter, bindGenericRuntime)
 	if err != nil {
-		if selected["all"] {
-			return nil, nil
-		}
 		return nil, fmt.Errorf("%s cannot be served generically: %w", terraformType, err)
 	}
 	return factory, nil

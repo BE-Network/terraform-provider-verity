@@ -44,8 +44,8 @@ func TestImporterKeepsEverySupportedArgument(t *testing.T) {
 	}
 
 	for _, selection := range []string{"", "all"} {
-		t.Run("generic="+selection, func(t *testing.T) {
-			t.Setenv(GenericResourcesEnvVar, selection)
+		t.Run("legacy="+selection, func(t *testing.T) {
+			t.Setenv(LegacyResourcesEnvVar, selection)
 			imp := importer.NewImporter(nil, "datacenter").WithSupportedFields(importerSupportedFields(context.Background()))
 			checked := 0
 			for _, path := range bodies {

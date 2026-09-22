@@ -175,3 +175,75 @@ func TestReferencePairRefusesAMissingCompanion(t *testing.T) {
 		t.Fatal("a reference with no companion field was accepted")
 	}
 }
+
+func TestReferencePairNotConfiguredSendsNothing(t *testing.T) {
+	t.Parallel()
+
+	state := pairState("lag-a", "lag")
+	plan := map[string]attr.Value{
+		"name":          types.StringValue("p"),
+		"lag":           types.StringUnknown(),
+		"lag_ref_type_": types.StringUnknown(),
+	}
+
+	body, changed, diagnostics := updatePair(t, pairFields(), plan, state)
+	if diagnostics.HasError() {
+		t.Fatalf("an unconfigured pair was refused: %v", diagnostics)
+	}
+	if changed {
+		t.Fatalf("an unconfigured pair reported a change and would send %s", body)
+	}
+}
+
+func TestReferencePairUnconfiguredHalfKeepsTheServerValue(t *testing.T) {
+	t.Parallel()
+
+	state := pairState("lag-a", "lag")
+	plan := map[string]attr.Value{
+		"name":          types.StringValue("p"),
+		"lag":           types.StringValue("lag-b"),
+		"lag_ref_type_": types.StringUnknown(),
+	}
+	body, changed, diagnostics := updatePair(t, pairFields(), plan, state)
+	if diagnostics.HasError() {
+		t.Fatalf("a changed value with an unconfigured type was refused: %v", diagnostics)
+	}
+	if !changed {
+		t.Fatal("changing the referenced object reported no change")
+	}
+	if want := `{"lag":"lag-b"}`; body != want {
+		t.Fatalf("update sent %s, want %s", body, want)
+	}
+
+	fields := pairFields("lag", "bundle")
+	body, _, diagnostics = updatePair(t, fields, plan, state)
+	if diagnostics.HasError() {
+		t.Fatalf("refused: %v", diagnostics)
+	}
+	if want := `{"lag":"lag-b","lag_ref_type_":"lag"}`; body != want {
+		t.Fatalf("update sent %s, want %s", body, want)
+	}
+
+	plan = map[string]attr.Value{
+		"name":          types.StringValue("p"),
+		"lag":           types.StringValue("lag-a"),
+		"lag_ref_type_": types.StringUnknown(),
+	}
+	if body, changed, _ := updatePair(t, pairFields(), plan, state); changed {
+		t.Fatalf("an unchanged configured half with an unconfigured companion would send %s", body)
+	}
+}
+
+func TestReferencePairExplicitClearIsSent(t *testing.T) {
+	t.Parallel()
+
+	state := pairState("lag-a", "lag")
+	plan := pairState("", "")
+	body, changed, _ := updatePair(t, pairFields(), plan, state)
+	if !changed {
+		t.Fatal("an explicit clear reported no change")
+	}
+	if want := `{"lag":"","lag_ref_type_":""}`; body != want {
+		t.Fatalf("update sent %s, want %s", body, want)
+	}
+}

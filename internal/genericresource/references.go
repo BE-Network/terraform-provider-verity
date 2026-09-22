@@ -32,6 +32,13 @@ func applyReferencePair(base, companion spec.FieldSpec, plan, state map[string]a
 		return false, err
 	}
 
+	if planBase.IsUnknown() {
+		planBase = stateBase
+	}
+	if planType.IsUnknown() {
+		planType = stateType
+	}
+
 	baseChanged := !planBase.Equal(stateBase)
 	typeChanged := !planType.Equal(stateType)
 	if !baseChanged && !typeChanged {
