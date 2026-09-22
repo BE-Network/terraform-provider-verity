@@ -209,3 +209,30 @@ func TestStateFromAPIDecodesPresentAndAbsent(t *testing.T) {
 		t.Errorf("ipv4_list = %v, want null: the response carried no such member", got)
 	}
 }
+
+func TestStateFromAPIPreservesFourByteASN(t *testing.T) {
+	t.Parallel()
+
+	const fourByteASN int64 = 4201200024
+	var response map[string]interface{}
+	if err := json.Unmarshal([]byte(`{"bgp_as_number":4201200024}`), &response); err != nil {
+		t.Fatal(err)
+	}
+	fields := []spec.FieldSpec{{
+		TerraformName: "bgp_as_number", APIName: "bgp_as_number", Kind: spec.FieldKindInt64,
+		Access: spec.AccessOptionalComputed, Modes: []spec.Mode{spec.ModeDatacenter},
+		CreateNull: spec.CreateNullAPINull, UpdateClear: spec.UpdateClearAPINull,
+		UnknownPlan: spec.UnknownPlanOmitAndRead, ResponseAbsence: spec.ResponseAbsenceTerraformNull,
+	}}
+	values, err := stateFromAPI(fields, response, "datacenter", nil)
+	if err != nil {
+		t.Fatalf("stateFromAPI: %v", err)
+	}
+	got, ok := values["bgp_as_number"].(types.Int64)
+	if !ok {
+		t.Fatalf("bgp_as_number has type %T, want types.Int64", values["bgp_as_number"])
+	}
+	if got.ValueInt64() != fourByteASN {
+		t.Fatalf("bgp_as_number = %d, want %d", got.ValueInt64(), fourByteASN)
+	}
+}
