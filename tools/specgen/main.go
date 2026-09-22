@@ -45,7 +45,7 @@ type normalizeOptions struct {
 
 func main() {
 	if len(os.Args) < 2 {
-		fail("usage: specgen <normalize|verify|extract|registry|metadata> [flags]")
+		fail("usage: specgen <normalize|verify|extract|registry|adapters|metadata|docs> [flags]")
 	}
 
 	switch os.Args[1] {
@@ -114,8 +114,19 @@ func main() {
 		if err := generateModeMetadata(opts); err != nil {
 			fail(err.Error())
 		}
+	case "docs":
+		fs := flag.NewFlagSet("docs", flag.ExitOnError)
+		opts := docsOptions{}
+		fs.StringVar(&opts.Registry, "registry", "", "generated registry input path")
+		fs.StringVar(&opts.OutputDir, "output-dir", "", "resource documentation directory")
+		fs.StringVar(&opts.Keep, "keep", "verity_operation_stage.md", "comma-separated pages in the output directory that are not generated")
+		fs.BoolVar(&opts.Check, "check", false, "fail if output differs from deterministic generation")
+		_ = fs.Parse(os.Args[2:])
+		if err := generateDocs(opts); err != nil {
+			fail(err.Error())
+		}
 	default:
-		fail(fmt.Sprintf("unknown command %q; expected normalize, verify, extract, registry, or metadata", os.Args[1]))
+		fail(fmt.Sprintf("unknown command %q; expected normalize, verify, extract, registry, adapters, metadata, or docs", os.Args[1]))
 	}
 }
 

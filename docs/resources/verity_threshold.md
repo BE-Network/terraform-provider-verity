@@ -1,60 +1,81 @@
-# Threshold Resource
+# verity_threshold (Resource)
 
-`verity_threshold` manages threshold resources in Verity, which define alarm thresholds based on metrics or nested conditions.
+Manages a Verity Threshold.
+
+Supported modes: Campus, Datacenter.
 
 ## Example Usage
 
 ```hcl
 resource "verity_threshold" "example" {
   name = "example"
-  enable = true
-  type = "interface"
-  operation = "and"
-  severity = "notice"
-  for = "5"
-  keep_firing_for = "5"
+  critical_escalation_value = ""
+  enable = false
+  error_escalation_value = ""
+  escalation_metric = ""
+  escalation_operation = ""
+  for = ""
+  keep_firing_for = ""
+  notice_escalation_value = ""
+  operation = ""
+  severity = ""
+  type = ""
+  warning_escalation_value = ""
 
   rules {
     index = 1
     enable = false
-    type = "metric"
-    metric = "prometheus"
-    operation = "eq"
-    value = "1"
+    metric = ""
+    operation = ""
     threshold = ""
-    threshold_ref_type_ = ""
+    threshold_ref_type_ = "threshold"
+    type = ""
+    value = ""
   }
 }
 ```
 
 ## Argument Reference
 
-* `name` (String) - Object Name. Must be unique
-* `enable` (Boolean) - Enable object
-* `type` (String) - Type of elements threshold applies to
-* `operation` (String) - How to combine rules
-* `severity` (String) - Severity of the alarm when the threshold is met
-* `for` (String) - Duration in minutes the threshold must be met before firing the alarm
-* `keep_firing_for` (String) - Duration in minutes to keep firing the alarm after the threshold is no longer met
-* `escalation_metric` (String) - Metric threshold is on
-* `escalation_operation` (String) - How to compare the metric to the value
-* `critical_escalation_value` (String) - Value to compare the metric to
-* `error_escalation_value` (String) - Value to compare the metric to
-* `warning_escalation_value` (String) - Value to compare the metric to
-* `notice_escalation_value` (String) - Value to compare the metric to
-* `rules` (Array) - List of rule blocks
-  * `enable` (Boolean) - Enable
-  * `type` (String) - Use a metric or a nested threshold
-  * `metric` (String) - Metric threshold is on
-  * `operation` (String) - How to compare the metric to the value
-  * `value` (String) - Value to compare the metric to
-  * `threshold` (String) - How to compare the metric to the value
-  * `threshold_ref_type_` (String) - Object type for threshold field
-  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list
+### Required
+
+* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+
+### Optional
+
+* `critical_escalation_value` (String) - Value to compare the metric to.
+* `enable` (Boolean) - Enable object.
+* `error_escalation_value` (String) - Value to compare the metric to.
+* `escalation_metric` (String) - Metric threshold is on.
+* `escalation_operation` (String) - How to compare the metric to the value.
+* `for` (String) - Duration in minutes the threshold must be met before firing the alarm.
+* `keep_firing_for` (String) - Duration in minutes to keep firing the alarm after the threshold is no longer met.
+* `notice_escalation_value` (String) - Value to compare the metric to.
+* `operation` (String) - How to combine rules.
+* `rules` (Block List) - Rules for the threshold. Entries are matched by `index`.
+  * `enable` (Boolean) - Enable.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+  * `metric` (String) - Metric threshold is on.
+  * `operation` (String) - How to compare the metric to the value.
+  * `threshold` (String) - Nested threshold to evaluate (when Type is Threshold). Set together with `threshold_ref_type_`.
+  * `threshold_ref_type_` (String) - Object type for threshold field.
+  * `type` (String) - Use a metric or a nested threshold.
+  * `value` (String) - Value to compare the metric to.
+* `severity` (String) - Severity of the alarm when the threshold is met.
+* `type` (String) - Type of elements threshold applies to.
+* `warning_escalation_value` (String) - Value to compare the metric to.
+
+## Reference Fields
+
+A reference names another Verity object. Set the reference and its type field together. When your configuration sets neither, Terraform leaves the reference to the server, including one set in the Verity UI.
+
+| Field | Type field | Allowed types |
+| --- | --- | --- |
+| `rules.threshold` | `threshold_ref_type_` | `threshold` |
 
 ## Import
 
-Threshold resources can be imported using the `name` attribute:
+Import an existing object by its `name`:
 
 ```sh
 terraform import verity_threshold.<resource_name> <name>

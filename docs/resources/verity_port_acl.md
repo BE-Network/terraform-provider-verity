@@ -1,6 +1,8 @@
-# Port ACL Resource
+# verity_port_acl (Resource)
 
-Provides a Verity Port ACL resource. Port ACLs are used to control access to network ports using IPv4 and IPv6 filters for permit and deny rules.
+Manages a Verity Port ACL.
+
+Supported modes: Campus, Datacenter.
 
 ## Example Usage
 
@@ -41,32 +43,48 @@ resource "verity_port_acl" "example" {
 
 ## Argument Reference
 
-* `name` (String) - Object Name. Must be unique
-* `enable` (Boolean) - Enable object
-* `ipv4_permit` (Array) - List of IPv4 permit rules
-  * `enable` (Boolean) - Enable
-  * `filter` (String) - Filter
-  * `filter_ref_type_` (String) - Object type for filter field
-  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list
-* `ipv4_deny` (Array) - List of IPv4 deny rules
-  * `enable` (Boolean) - Enable
-  * `filter` (String) - Filter
-  * `filter_ref_type_` (String) - Object type for filter field
-  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list
-* `ipv6_permit` (Array) - List of IPv6 permit rules
-  * `enable` (Boolean) - Enable
-  * `filter` (String) - Filter
-  * `filter_ref_type_` (String) - Object type for filter field
-  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list
-* `ipv6_deny` (Array) - List of IPv6 deny rules
-  * `enable` (Boolean) - Enable
-  * `filter` (String) - Filter
-  * `filter_ref_type_` (String) - Object type for filter field
-  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list
+### Required
+
+* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+
+### Optional
+
+* `enable` (Boolean) - Enable object.
+* `ipv4_deny` (Block List) - List of IPv4 deny filters. Entries are matched by `index`.
+  * `enable` (Boolean) - Enable.
+  * `filter` (String) - Filter. Set together with `filter_ref_type_`.
+  * `filter_ref_type_` (String) - Object type for filter field.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+* `ipv4_permit` (Block List) - List of IPv4 permit filters. Entries are matched by `index`.
+  * `enable` (Boolean) - Enable.
+  * `filter` (String) - Filter. Set together with `filter_ref_type_`.
+  * `filter_ref_type_` (String) - Object type for filter field.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+* `ipv6_deny` (Block List) - List of IPv6 deny filters. Entries are matched by `index`.
+  * `enable` (Boolean) - Enable.
+  * `filter` (String) - Filter. Set together with `filter_ref_type_`.
+  * `filter_ref_type_` (String) - Object type for filter field.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+* `ipv6_permit` (Block List) - List of IPv6 permit filters. Entries are matched by `index`.
+  * `enable` (Boolean) - Enable.
+  * `filter` (String) - Filter. Set together with `filter_ref_type_`.
+  * `filter_ref_type_` (String) - Object type for filter field.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+
+## Reference Fields
+
+A reference names another Verity object. Set the reference and its type field together. When your configuration sets neither, Terraform leaves the reference to the server, including one set in the Verity UI.
+
+| Field | Type field | Allowed types |
+| --- | --- | --- |
+| `ipv4_deny.filter` | `filter_ref_type_` | `ipv4_filter` |
+| `ipv4_permit.filter` | `filter_ref_type_` | `ipv4_filter` |
+| `ipv6_deny.filter` | `filter_ref_type_` | `ipv6_filter` |
+| `ipv6_permit.filter` | `filter_ref_type_` | `ipv6_filter` |
 
 ## Import
 
-Port ACLs can be imported using the name:
+Import an existing object by its `name`:
 
 ```sh
 terraform import verity_port_acl.<resource_name> <name>

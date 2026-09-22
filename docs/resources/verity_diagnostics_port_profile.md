@@ -1,6 +1,8 @@
-# Diagnostics Port Profile Resource
+# verity_diagnostics_port_profile (Resource)
 
-`verity_diagnostics_port_profile` manages Diagnostics Port Profile resources in Verity, which define diagnostics and sFlow settings for switch ports.
+Manages a Verity Diagnostics Port Profile.
+
+Supported modes: Campus, Datacenter.
 
 ## Example Usage
 
@@ -8,19 +10,24 @@
 resource "verity_diagnostics_port_profile" "example" {
   name = "example"
   enable = false
-  enable_sflow = true
+  enable_sflow = false
 }
 ```
 
 ## Argument Reference
 
-* `name` (String) - Object Name. Must be unique.
+### Required
+
+* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+
+### Optional
+
 * `enable` (Boolean) - Enable object.
 * `enable_sflow` (Boolean) - Enable sFlow for this Diagnostics Profile.
 
 ## Import
 
-Diagnostics Port Profile resources can be imported using the `name` attribute:
+Import an existing object by its `name`:
 
 ```sh
 terraform import verity_diagnostics_port_profile.<resource_name> <name>

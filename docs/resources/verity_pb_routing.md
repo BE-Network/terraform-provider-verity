@@ -1,36 +1,51 @@
-# PB Routing Resource
+# verity_pb_routing (Resource)
 
-Manages a Policy-Based Routing (PBR) configuration in Verity. This resource allows you to define named PBR objects, each with a set of ordered policies referencing ACLs for advanced routing decisions.
+Manages a Policy-Based Routing resource.
+
+Supported modes: Datacenter.
 
 ## Example Usage
 
 ```hcl
 resource "verity_pb_routing" "example" {
   name = "example"
-  enable = true
+  enable = false
 
   policy {
-    enable = true
-    pb_routing_acl = "ipv4_1"
-    pb_routing_acl_ref_type = "pb_routing_acl"
     index = 1
+    enable = false
+    pb_routing_acl = ""
+    pb_routing_acl_ref_type_ = "pb_routing_acl"
   }
 }
 ```
 
 ## Argument Reference
 
-* `name` (String) - Object Name. Must be unique.
+### Required
+
+* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+
+### Optional
+
 * `enable` (Boolean) - Enable object.
-* `policy` (Array) - 
+* `policy` (Block List) - Policy configurations. Entries are matched by `index`.
   * `enable` (Boolean) - Enable.
-  * `pb_routing_acl` (String) - Path to the PB Routing ACL.
-  * `pb_routing_acl_ref_type` (String) - Object type for pb_routing_acl field.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+  * `pb_routing_acl` (String) - Path to the PB Routing ACL. Set together with `pb_routing_acl_ref_type_`.
+  * `pb_routing_acl_ref_type_` (String) - Object type for pb_routing_acl field.
+
+## Reference Fields
+
+A reference names another Verity object. Set the reference and its type field together. When your configuration sets neither, Terraform leaves the reference to the server, including one set in the Verity UI.
+
+| Field | Type field | Allowed types |
+| --- | --- | --- |
+| `policy.pb_routing_acl` | `pb_routing_acl_ref_type_` | `pb_routing_acl` |
 
 ## Import
 
-This resource can be imported using the PBR name:
+Import an existing object by its `name`:
 
 ```sh
 terraform import verity_pb_routing.<resource_name> <name>

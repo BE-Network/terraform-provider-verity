@@ -1,22 +1,24 @@
-# Community List Resource
+# verity_community_list (Resource)
 
-`verity_community_list` manages Community List resources in Verity, which define rules for matching BGP community strings and expanded expressions.
+Manages a Verity Community List.
+
+Supported modes: Datacenter.
 
 ## Example Usage
 
 ```hcl
 resource "verity_community_list" "example" {
   name = "example"
-  any_all = "any"
+  any_all = ""
   enable = false
-  permit_deny = "permit"
-  standard_expanded = "standard"
+  permit_deny = ""
+  standard_expanded = ""
 
   lists {
     index = 1
     community_string_expanded_expression = ""
     enable = false
-    mode = "community"
+    mode = ""
   }
 
   object_properties {
@@ -27,22 +29,27 @@ resource "verity_community_list" "example" {
 
 ## Argument Reference
 
-* `name` (String) - Object Name. Must be unique.
-* `enable` (Boolean) - Enable object.
-* `permit_deny` (String) - Action upon match of Community Strings.
+### Required
+
+* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+
+### Optional
+
 * `any_all` (String) - BGP does not advertise any or all routes that do not match the Community String.
-* `standard_expanded` (String) - Used Community String or Expanded Expression.
-* `lists` (Array) - 
-  * `enable` (Boolean) - Enable of this Community List.
-  * `mode` (String) - Mode.
+* `enable` (Boolean) - Enable object.
+* `lists` (Block List) - List of Community List entries. Entries are matched by `index`.
   * `community_string_expanded_expression` (String) - Community String in standard mode and Expanded Expression in Expanded mode.
+  * `enable` (Boolean) - Enable of this Community List.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
-* `object_properties` (Object) - 
+  * `mode` (String) - Mode.
+* `object_properties` (Block) - Object properties for the Community List. At most one block.
   * `notes` (String) - User Notes.
+* `permit_deny` (String) - Action upon match of Community Strings.
+* `standard_expanded` (String) - Used Community String or Expanded Expression.
 
 ## Import
 
-Community List resources can be imported using the `name` attribute:
+Import an existing object by its `name`:
 
 ```sh
 terraform import verity_community_list.<resource_name> <name>

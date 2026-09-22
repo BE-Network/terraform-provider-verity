@@ -1,6 +1,8 @@
-# ipv4 List Resource
+# verity_ipv4_list (Resource)
 
-Provides a Verity IPv4 List resource. IPv4 Lists are used to define sets of IPv4 addresses for filtering and policy application.
+Manages a Verity IPv4 List Filter.
+
+Supported modes: Datacenter.
 
 ## Example Usage
 
@@ -14,15 +16,18 @@ resource "verity_ipv4_list" "example" {
 
 ## Argument Reference
 
-The following arguments are supported:
+### Required
 
-* `name` (String) - Object Name. Must be unique.
+* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+
+### Optional
+
 * `enable` (Boolean) - Enable object.
 * `ipv4_list` (String) - Comma separated list of IPv4 addresses.
 
 ## Import
 
-IPv4 Lists can be imported using the name:
+Import an existing object by its `name`:
 
 ```sh
 terraform import verity_ipv4_list.<resource_name> <name>

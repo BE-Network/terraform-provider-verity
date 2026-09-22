@@ -1,36 +1,51 @@
-# SSP Group Resource
+# verity_ssp_group (Resource)
 
-`verity_ssp_group` manages SuperSpine Group resources in Verity.
+Manages a Verity SuperSpine Group resource.
+
+Supported modes: Datacenter.
 
 ## Example Usage
 
 ```hcl
 resource "verity_ssp_group" "example" {
   name = "example"
-  enable = true
-  fabric = "fabric-a"
+  enable = false
+  fabric = ""
   fabric_ref_type_ = "fabric"
-  position = 1
+  position = null
 
   object_properties {
-    notes = "Example SSP group"
+    notes = ""
   }
 }
 ```
 
 ## Argument Reference
 
-* `name` (String) - Template Name. Must be unique within type.
+### Required
+
+* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+
+### Optional
+
 * `enable` (Boolean) - Enable object.
-* `fabric` (String) - Fabric this SuperSpine Group is assigned to.
-* `fabric_ref_type_` (String) - Object type for `fabric` field.
-* `position` (Number) - Position of the Switch.
-* `object_properties` (Object) -
+* `fabric` (String) - Fabric this SuperSpine Group is assigned to. Set together with `fabric_ref_type_`.
+* `fabric_ref_type_` (String) - Object type for fabric field.
+* `object_properties` (Block) - Object properties for the superspine group. At most one block.
   * `notes` (String) - User Notes.
+* `position` (Number) - Position of the Switch. Set it to `null` to clear it.
+
+## Reference Fields
+
+A reference names another Verity object. Set the reference and its type field together. When your configuration sets neither, Terraform leaves the reference to the server, including one set in the Verity UI.
+
+| Field | Type field | Allowed types |
+| --- | --- | --- |
+| `fabric` | `fabric_ref_type_` | `fabric` |
 
 ## Import
 
-SSP group resources can be imported using the `name` attribute:
+Import an existing object by its `name`:
 
 ```sh
 terraform import verity_ssp_group.<resource_name> <name>

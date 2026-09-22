@@ -1,6 +1,8 @@
-# ipv6 List Resource
+# verity_ipv6_list (Resource)
 
-Provides a Verity IPv6 List resource. IPv6 Lists are used to define sets of IPv6 addresses for filtering and policy application.
+Manages a Verity IPv6 List Filter.
+
+Supported modes: Datacenter.
 
 ## Example Usage
 
@@ -14,13 +16,18 @@ resource "verity_ipv6_list" "example" {
 
 ## Argument Reference
 
-* `name` (String) - Object Name. Must be unique.
+### Required
+
+* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+
+### Optional
+
 * `enable` (Boolean) - Enable object.
 * `ipv6_list` (String) - Comma separated list of IPv6 addresses.
 
 ## Import
 
-IPv6 Lists can be imported using the name:
+Import an existing object by its `name`:
 
 ```sh
 terraform import verity_ipv6_list.<resource_name> <name>

@@ -211,6 +211,11 @@ go run ./tools/specgen registry \
   --input-dir specs/openapi/6.6 \
   --overrides specs/overrides.yaml \
   --output specs/generated_registry.json
+
+# Regenerate the resource pages in docs/resources.
+go run ./tools/specgen docs \
+  --registry specs/generated_registry.json \
+  --output-dir docs/resources
 ```
 
 Resource metadata lives in `specs/overrides.yaml`, which records only what differs
@@ -254,23 +259,61 @@ The command requires Docker, Python 3, Go, and `rsync` for `--write`. Do not
 delete `openapi/` manually and do not install an unpinned global generator.
 
 
-### Updating Provider Resources
+### Adding or Changing a Resource
 
 Every API-backed resource is served by one generic engine
 (`internal/genericresource`) from the resource registry; there are no
 per-resource lifecycle files. `verity_operation_stage` is the one bespoke
-resource. To change a resource:
+resource.
 
-1. Regenerate the registry from the OpenAPI inputs, and put any behavior the
-   OpenAPI documents cannot express in `specs/overrides.yaml`. Examples are a
-   field's clear policy or an auto-assignment dependency.
-2. Regenerate the transport adapters and metadata with the `specgen` commands
-   above.
-3. Run the tests. The schema golden file
-   (`tests/unit/testdata/schema_golden_v6_6.json`) and the golden wire
-   fixtures (`tests/unit/lifecycle/testdata/golden`) fail on any schema or
-   request change. Regenerate them intentionally with `UPDATE_SCHEMA_SNAPSHOT=1`
-   and `UPDATE_GOLDEN=1` after reviewing the diff.
+To add a resource:
+
+1. **OpenAPI input.** Make sure the endpoint is in the committed inputs under
+   `specs/openapi/6.6/`, and run `specgen verify` (above).
+2. **Override entry.** Add the resource to `specs/overrides.yaml`: `path`,
+   `terraform_type`, `description`, `modes`, `identity_path`, the `api` keys
+   (`bulk_key`, `cache_key`, `response_collection_key`, `delete_parameter`),
+   and its `fields`. Declare only what OpenAPI cannot express:
+   - `auto_assignment.recomputed_when`, if the server reassigns an
+     auto-assigned value when another field changes (see `vni` under
+     `verity_service`);
+   - a nested list's `collection`;
+   - `modes` on fields that exist in only one mode;
+   - a policy that differs from the field's profile: `create_null`,
+     `update_clear`, `unknown_plan`, `response_absence`, `state_ownership`.
+
+   Reference and auto-assignment pairs need no declaration. A field with a
+   `<field>_ref_type_` companion becomes a reference pair whose allowed types
+   are the companion's enum. A field with a `<field>_auto_assigned_` companion
+   becomes an auto-assignment pair.
+3. **Regenerate** with the `specgen` commands above: `extract`, `registry`
+   (with `--embed-output internal/registry/registry.json`), `adapters`,
+   `metadata`, and `docs`. `adapters` skips a resource it cannot serve and
+   prints why.
+4. **State importer.** Add the resource to `internal/importer/importer.go`: its
+   API call in `importerRegistry`, its rendering config in `resourceConfigs` and
+   `terraformTypeToResourceKey`, and its task in `ImportAll`. Stage ordering
+   lives in `generateStagesTF`.
+5. **Tests.** Add a coverage entry to `allResourceTests` in
+   `tests/unit/lifecycle/field_coverage_test.go`, with a mock response in
+   `tests/unit/testdata/responses/<mode>/`. Record the golden fixtures and the
+   schema snapshot, review the diff, then run the suites (see "Unit Tests"):
+
+   ```bash
+   UPDATE_GOLDEN=1 go test ./tests/unit/lifecycle/ -run TestGoldenWireFixtures -count=1
+   UPDATE_SCHEMA_SNAPSHOT=1 go test ./tests/unit/lifecycle/ -run TestSchemaGolden -count=1
+   ```
+
+To add or change a field on an existing resource, regenerate as in step 3. A
+field with a conventional OpenAPI shape and policies needs no override. Review
+the regenerated registry, adapter, and docs, then update the golden fixtures
+and schema snapshot as in step 5.
+
+The pages in `docs/resources` are generated from one template,
+`tools/specgen/templates/resource.md.tmpl`. Change the template or the
+registry, never a page. `verity_operation_stage.md` is the one handwritten page.
+In CI, every `specgen` generator runs with `--check`, so a registry, adapter,
+metadata file, or doc page that no longer matches its inputs fails the build.
 
 ## Using the State Import Scripts
 
