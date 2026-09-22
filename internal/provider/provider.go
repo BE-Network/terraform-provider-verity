@@ -370,77 +370,14 @@ func (p *verityProvider) Resources(_ context.Context) []func() resource.Resource
 	return getAllResources()
 }
 
-var resourceConstructors = map[string]func() resource.Resource{
-	"verity_tenant":                   NewVerityTenantResource,
-	"verity_gateway":                  NewVerityGatewayResource,
-	"verity_service":                  NewVerityServiceResource,
-	"verity_eth_port_profile":         NewVerityEthPortProfileResource,
-	"verity_eth_port_settings":        NewVerityEthPortSettingsResource,
-	"verity_bundle":                   NewVerityBundleResource,
-	"verity_lag":                      NewVerityLagResource,
-	"verity_gateway_profile":          NewVerityGatewayProfileResource,
-	"verity_aaa_profile":              NewVerityAaaProfileResource,
-	"verity_ldap_profile":             NewVerityLdapProfileResource,
-	"verity_acl_v4":                   NewVerityACLV4Resource,
-	"verity_acl_v6":                   NewVerityACLV6Resource,
-	"verity_badge":                    NewVerityBadgeResource,
-	"verity_authenticated_eth_port":   NewVerityAuthenticatedEthPortResource,
-	"verity_device_voice_settings":    NewVerityDeviceVoiceSettingsResource,
-	"verity_packet_broker":            NewVerityPacketBrokerResource,
-	"verity_packet_queue":             NewVerityPacketQueueResource,
-	"verity_tacacs_profile":           NewVerityTacacsProfileResource,
-	"verity_service_port_profile":     NewVerityServicePortProfileResource,
-	"verity_voice_port_profile":       NewVerityVoicePortProfileResource,
-	"verity_switchpoint":              NewVeritySwitchpointResource,
-	"verity_as_path_access_list":      NewVerityAsPathAccessListResource,
-	"verity_community_list":           NewVerityCommunityListResource,
-	"verity_mac_filter":               NewVerityMacFilterResource,
-	"verity_device_settings":          NewVerityDeviceSettingsResource,
-	"verity_extended_community_list":  NewVerityExtendedCommunityListResource,
-	"verity_ipv4_list":                NewVerityIpv4ListResource,
-	"verity_ipv4_prefix_list":         NewVerityIpv4PrefixListResource,
-	"verity_ipv6_list":                NewVerityIpv6ListResource,
-	"verity_ipv6_prefix_list":         NewVerityIpv6PrefixListResource,
-	"verity_route_map_clause":         NewVerityRouteMapClauseResource,
-	"verity_route_map":                NewVerityRouteMapResource,
-	"verity_sfp_breakout":             NewVeritySfpBreakoutResource,
-	"verity_fabric":                   NewVerityFabricResource,
-	"verity_plane":                    NewVerityPlaneResource,
-	"verity_rack":                     NewVerityRackResource,
-	"verity_pair":                     NewVerityPairResource,
-	"verity_pod":                      NewVerityPodResource,
-	"verity_port_acl":                 NewVerityPortAclResource,
-	"verity_sflow_collector":          NewVeritySflowCollectorResource,
-	"verity_diagnostics_profile":      NewVerityDiagnosticsProfileResource,
-	"verity_diagnostics_port_profile": NewVerityDiagnosticsPortProfileResource,
-	"verity_pb_routing":               NewVerityPBRoutingResource,
-	"verity_pb_routing_acl":           NewVerityPBRoutingACLResource,
-	"verity_spine_plane":              NewVeritySpinePlaneResource,
-	"verity_ssp_group":                NewVeritySspGroupResource,
-	"verity_su":                       NewVeritySuResource,
-	"verity_grouping_rule":            NewVerityGroupingRuleResource,
-	"verity_threshold_group":          NewVerityThresholdGroupResource,
-	"verity_threshold":                NewVerityThresholdResource,
-}
-
 func getAllResources() []func() resource.Resource {
 	all := make([]func() resource.Resource, 0, len(generatedResourceOrder)+len(nonAPIResources))
-
-	legacy := legacySelection()
 	for _, terraformType := range generatedResourceOrder {
-		generic, err := genericConstructor(terraformType, legacy)
+		factory, err := genericConstructor(terraformType)
 		if err != nil {
 			panic("provider: " + err.Error())
 		}
-		if generic != nil {
-			all = append(all, generic)
-			continue
-		}
-		constructor, exists := resourceConstructors[terraformType]
-		if !exists {
-			panic("provider: no constructor for registry resource " + terraformType + "; add one to resourceConstructors")
-		}
-		all = append(all, constructor)
+		all = append(all, factory)
 	}
 	return append(all, nonAPIResources...)
 }

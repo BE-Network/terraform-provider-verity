@@ -49,10 +49,6 @@ func MapInt64FromAPI(apiValue interface{}) types.Int64 {
 	return types.Int64Null()
 }
 
-func MapNullableInt64FromAPI(apiValue interface{}) types.Int64 {
-	return MapInt64FromAPI(apiValue)
-}
-
 func MapNumberFromAPI(apiValue interface{}) types.Number {
 	if apiValue == nil {
 		return types.NumberNull()
@@ -78,53 +74,4 @@ func MapNumberFromAPI(apiValue interface{}) types.Number {
 	}
 
 	return types.NumberNull()
-}
-
-func MapStringWithMode(data map[string]interface{}, fieldName, resourceType, mode string) types.String {
-	if !FieldAppliesToMode(resourceType, fieldName, mode) {
-		return types.StringNull()
-	}
-	return MapStringFromAPI(data[fieldName])
-}
-
-func MapBoolWithMode(data map[string]interface{}, fieldName, resourceType, mode string) types.Bool {
-	if !FieldAppliesToMode(resourceType, fieldName, mode) {
-		return types.BoolNull()
-	}
-	return MapBoolFromAPI(data[fieldName])
-}
-
-func MapInt64WithMode(data map[string]interface{}, fieldName, resourceType, mode string) types.Int64 {
-	if !FieldAppliesToMode(resourceType, fieldName, mode) {
-		return types.Int64Null()
-	}
-	return MapInt64FromAPI(data[fieldName])
-}
-
-func MapNumberWithMode(data map[string]interface{}, fieldName, resourceType, mode string) types.Number {
-	if !FieldAppliesToMode(resourceType, fieldName, mode) {
-		return types.NumberNull()
-	}
-	return MapNumberFromAPI(data[fieldName])
-}
-
-func MapStringWithModeNested(data map[string]interface{}, dataKey, resourceType, fieldPath, mode string) types.String {
-	if !FieldAppliesToMode(resourceType, fieldPath, mode) {
-		return types.StringNull()
-	}
-	return MapStringFromAPI(data[dataKey])
-}
-
-func MapBoolWithModeNested(data map[string]interface{}, dataKey, resourceType, fieldPath, mode string) types.Bool {
-	if !FieldAppliesToMode(resourceType, fieldPath, mode) {
-		return types.BoolNull()
-	}
-	return MapBoolFromAPI(data[dataKey])
-}
-
-func MapInt64WithModeNested(data map[string]interface{}, dataKey, resourceType, fieldPath, mode string) types.Int64 {
-	if !FieldAppliesToMode(resourceType, fieldPath, mode) {
-		return types.Int64Null()
-	}
-	return MapInt64FromAPI(data[dataKey])
 }

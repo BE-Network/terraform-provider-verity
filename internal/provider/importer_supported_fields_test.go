@@ -43,38 +43,33 @@ func TestImporterKeepsEverySupportedArgument(t *testing.T) {
 		t.Fatalf("found only %d bodies to check; the test data moved", len(bodies))
 	}
 
-	for _, selection := range []string{"", "all"} {
-		t.Run("legacy="+selection, func(t *testing.T) {
-			t.Setenv(LegacyResourcesEnvVar, selection)
-			imp := importer.NewImporter(nil, "datacenter").WithSupportedFields(importerSupportedFields(context.Background()))
-			checked := 0
-			for _, path := range bodies {
-				raw, err := os.ReadFile(path)
-				if err != nil {
-					t.Fatal(err)
-				}
-				var body map[string]map[string]map[string]interface{}
-				if err := json.Unmarshal(raw, &body); err != nil {
-					t.Fatalf("%s: %v", path, err)
-				}
-				for wrapper, objects := range body {
-					resourceTypes := typesByWrapper[wrapper]
-					if len(resourceTypes) == 0 {
-						t.Fatalf("%s: no registry resource uses wrapper key %q", path, wrapper)
-					}
-					for _, resourceType := range resourceTypes {
-						imp.PruneUnsupported(resourceType, objects)
-						checked++
-					}
-				}
+	imp := importer.NewImporter(nil, "datacenter").WithSupportedFields(importerSupportedFields(context.Background()))
+	checked := 0
+	for _, path := range bodies {
+		raw, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var body map[string]map[string]map[string]interface{}
+		if err := json.Unmarshal(raw, &body); err != nil {
+			t.Fatalf("%s: %v", path, err)
+		}
+		for wrapper, objects := range body {
+			resourceTypes := typesByWrapper[wrapper]
+			if len(resourceTypes) == 0 {
+				t.Fatalf("%s: no registry resource uses wrapper key %q", path, wrapper)
 			}
-			if checked == 0 {
-				t.Fatal("nothing was checked")
+			for _, resourceType := range resourceTypes {
+				imp.PruneUnsupported(resourceType, objects)
+				checked++
 			}
-			for resourceType, paths := range imp.UnsupportedFields() {
-				t.Errorf("%s: supported arguments were left out: %s", resourceType, strings.Join(paths, ", "))
-			}
-		})
+		}
+	}
+	if checked == 0 {
+		t.Fatal("nothing was checked")
+	}
+	for resourceType, paths := range imp.UnsupportedFields() {
+		t.Errorf("%s: supported arguments were left out: %s", resourceType, strings.Join(paths, ", "))
 	}
 }
 

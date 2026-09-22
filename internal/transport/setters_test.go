@@ -36,3 +36,23 @@ func TestInt32SettersRejectOverflow(t *testing.T) {
 		t.Fatal("wireInt32Ptr accepted an integer outside int32 range")
 	}
 }
+
+func TestNullableInt64SetterPreservesFourByteASN(t *testing.T) {
+	t.Parallel()
+
+	const fourByteASN int64 = 4201200024
+	var target openapi.NullableInt64
+	if err := wireNullableInt64(Int64(fourByteASN), &target); err != nil {
+		t.Fatal(err)
+	}
+	if target.Get() == nil || *target.Get() != fourByteASN {
+		t.Fatalf("wireNullableInt64 = %v, want %d", target.Get(), fourByteASN)
+	}
+	serialized, err := target.MarshalJSON()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(serialized) != "4201200024" {
+		t.Fatalf("serialized = %s, want 4201200024", serialized)
+	}
+}

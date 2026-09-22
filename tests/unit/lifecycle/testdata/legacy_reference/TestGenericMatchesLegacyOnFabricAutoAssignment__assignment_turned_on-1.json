@@ -1,0 +1,99 @@
+{
+  "DELETE query": {
+    "fabric_name": [
+      "difffabric"
+    ]
+  },
+  "PATCH": {
+    "fabric": {
+      "difffabric": {
+        "anycast_mac_address_auto_assigned_": true
+      }
+    }
+  },
+  "PATCH query": {},
+  "PUT": {
+    "fabric": {
+      "difffabric": {
+        "aggressive_reporting": true,
+        "allow_all_underlay_connections": true,
+        "anycast_mac_address": "",
+        "anycast_mac_address_auto_assigned_": false,
+        "base_bgp_as_number": "",
+        "bgp_hold_down_timer": 42,
+        "bgp_keepalive_timer": 42,
+        "controller_gateway": "",
+        "controller_ip_base": "",
+        "domain_for_fabric": "",
+        "domain_for_fabric_ref_type_": "",
+        "dscp_to_p_bit_map": "",
+        "duplicate_address_detection_max_number_of_moves": 42,
+        "duplicate_address_detection_time": 42,
+        "enable": true,
+        "enable_dscp": true,
+        "evpn_mac_holdtime": 42,
+        "evpn_multihoming_startup_delay": 42,
+        "fabric_type": "",
+        "force_spanning_tree_on_fabric_ports": true,
+        "gpu_architecture": "",
+        "hgx_password": "",
+        "hgx_password_encrypted": "",
+        "hgx_username": "",
+        "leaf_bgp_advertisement_interval": 42,
+        "leaf_bgp_connect_timer": 42,
+        "leaf_bgp_hold_down_timer": 42,
+        "leaf_bgp_keep_alive_timer": 42,
+        "link_state_timeout_value": 42,
+        "mac_address_aging_time": 42,
+        "max_pods": 42,
+        "max_sus": 42,
+        "max_switches": "",
+        "mlag_delay_restore_timer": 42,
+        "multi_tenant": true,
+        "name": "difffabric",
+        "object_properties": {
+          "system_graphs": [
+            {
+              "index": 1
+            }
+          ]
+        },
+        "paired_ip_subnet": "",
+        "pause_validation_alarms": true,
+        "plane_count": "",
+        "port_admin_polling_interval": 42,
+        "port_status_polling_interval": 42,
+        "read_only_mode": true,
+        "region_name": "",
+        "revision": 42,
+        "route_aggregation": "",
+        "route_aggregators": [
+          {
+            "index": 1,
+            "route_aggregation_num_enable": true,
+            "route_aggregation_num_ip_and_mask": ""
+          }
+        ],
+        "router_id_base_prefix": "",
+        "server_management": true,
+        "service_for_fabric": "",
+        "service_for_fabric_ref_type_": "",
+        "set_leaf_router_id_on_bgp": true,
+        "spanning_tree_type": "",
+        "spine_as_number": 42,
+        "spine_bgp_advertisement_interval": 42,
+        "spine_bgp_connect_timer": 42,
+        "starting_octet": 42,
+        "su_size": "",
+        "su_support": true,
+        "switch_gateway": "",
+        "switch_ip_base": "",
+        "switch_password": "",
+        "switch_password_encrypted": "",
+        "switch_username": "",
+        "vtep_id_base_prefix": ""
+      }
+    }
+  },
+  "PUT query": {}
+}

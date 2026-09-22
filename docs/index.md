@@ -80,19 +80,6 @@ export TF_CLI_ARGS_apply="-parallelism=2000"
 
 Make sure to set these environment variables before running any Terraform commands.
 
-### Falling back to the previous resource implementation
-
-Every API-backed resource is now served by one generic implementation driven by the provider's resource registry. The previous, per-resource implementations remain in this release as a fallback. If a resource behaves differently than before, you can switch it back without changing provider versions:
-
-```bash
-# one or more resources, comma-separated
-export VERITY_LEGACY_RESOURCES="verity_switchpoint,verity_acl_v4"
-# or every resource
-export VERITY_LEGACY_RESOURCES="all"
-```
-
-Unset the variable to return to the default. Please report any resource you had to switch back. The fallback will be removed in a later release.
-
 ### Behavior changes in this release
 
 - **Unset reference fields are no longer cleared by unrelated updates.** A reference field and its `*_ref_type_` companion, for example `policy_based_routing` and `policy_based_routing_ref_type_`, are left out of an update when your configuration sets neither of them. Previously, changing any other field of the resource, such as `vlan`, also sent both as empty strings. That erased a reference set through the Verity UI or API. A reference you configure, change, or clear with `""` is still sent as before.

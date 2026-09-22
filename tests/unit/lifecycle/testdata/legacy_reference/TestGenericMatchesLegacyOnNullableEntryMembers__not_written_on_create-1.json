@@ -1,0 +1,27 @@
+{
+  "DELETE query": {
+    "tacacs_profile_name": [
+      "difftacacs"
+    ]
+  },
+  "PUT": {
+    "tacacs_profile": {
+      "difftacacs": {
+        "enable": true,
+        "name": "difftacacs",
+        "tacacs_servers": [
+          {
+            "auth_type": "pap",
+            "enabled": true,
+            "enc_secret": "",
+            "index": 1,
+            "port": "49",
+            "secret": "",
+            "server": "10.0.0.1"
+          }
+        ]
+      }
+    }
+  },
+  "PUT query": {}
+}

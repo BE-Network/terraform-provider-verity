@@ -31,8 +31,8 @@ func TestGeneratedSpecsMatchLegacySchemas(t *testing.T) {
 	constructors := legacyConstructorsByType(t)
 
 	cacheKeys := map[string]string{
-		"verity_acl_v4":                   NewVerityACLV4Resource().(*verityACLUnifiedResource).getCacheKey(),
-		"verity_acl_v6":                   NewVerityACLV6Resource().(*verityACLUnifiedResource).getCacheKey(),
+		"verity_acl_v4":                   "acls_ipv4",
+		"verity_acl_v6":                   "acls_ipv6",
 		"verity_aaa_profile":              "device_aaa_profiles",
 		"verity_as_path_access_list":      "as_path_access_lists",
 		"verity_authenticated_eth_port":   "authenticated_eth_ports",

@@ -1,13 +1,9 @@
 package utils
 
 import (
-	"context"
 	"fmt"
 	"strconv"
 	"strings"
-
-	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 const (
@@ -65,53 +61,6 @@ func ValidateAPIVersion(apiVersion string) error {
 
 func GetSupportedAPIVersionString() string {
 	return fmt.Sprintf("%d.%d", SupportedAPIMajor, SupportedAPIMinor)
-}
-
-func FilterResourcesByMode(
-	ctx context.Context,
-	resources []func() resource.Resource,
-	currentMode string,
-	apiVersion string,
-) []func() resource.Resource {
-	tflog.Info(ctx, "Filtering resources by mode", map[string]interface{}{
-		"mode":        currentMode,
-		"api_version": apiVersion,
-	})
-
-	compatibleResources := make([]func() resource.Resource, 0, len(resources))
-	resourceTypeToConstructor := make(map[string]func() resource.Resource, len(resources))
-
-	for _, constructorFn := range resources {
-		instance := constructorFn()
-		metadataResponse := resource.MetadataResponse{}
-		instance.Metadata(ctx, resource.MetadataRequest{ProviderTypeName: "verity"}, &metadataResponse)
-
-		if _, isModeControlled := ResourceCompatibility[metadataResponse.TypeName]; isModeControlled {
-			resourceTypeToConstructor[metadataResponse.TypeName] = constructorFn
-		}
-	}
-
-	for resourceType, constructorFn := range resourceTypeToConstructor {
-		if IsResourceCompatibleWithMode(resourceType, currentMode) {
-			tflog.Debug(ctx, "Resource is compatible with mode", map[string]interface{}{
-				"resource_type": resourceType,
-				"mode":          currentMode,
-			})
-			compatibleResources = append(compatibleResources, constructorFn)
-		} else {
-			tflog.Debug(ctx, "Resource is NOT compatible with mode", map[string]interface{}{
-				"resource_type": resourceType,
-				"mode":          currentMode,
-			})
-		}
-	}
-
-	tflog.Info(ctx, "Resource filtering complete", map[string]interface{}{
-		"total_resources":      len(resources),
-		"compatible_resources": len(compatibleResources),
-	})
-
-	return compatibleResources
 }
 
 func ParseApiVersion(version string) (int, int, error) {

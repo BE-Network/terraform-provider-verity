@@ -50,11 +50,26 @@ type ResourceCoverageEntry struct {
 	RequiredQueryParams map[string]string
 }
 
+func init() {
+	byType := map[string]func() resource.Resource{}
+	for _, factory := range provider.New("test")().Resources(context.Background()) {
+		var metadata resource.MetadataResponse
+		factory().Metadata(context.Background(), resource.MetadataRequest{ProviderTypeName: "verity"}, &metadata)
+		byType[metadata.TypeName] = factory
+	}
+	for i := range allResourceTests {
+		factory, registered := byType[allResourceTests[i].TerraformType]
+		if !registered {
+			panic("coverage entry for unregistered resource " + allResourceTests[i].TerraformType)
+		}
+		allResourceTests[i].Factory = factory
+	}
+}
+
 var allResourceTests = []ResourceCoverageEntry{
 
 	{
 		TerraformType: "verity_badge",
-		Factory:       provider.NewVerityBadgeResource,
 		APIPath:       "/api/badges",
 		WrapperKey:    "badge",
 		Mode:          "datacenter",
@@ -62,7 +77,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_bundle",
-		Factory:       provider.NewVerityBundleResource,
 		APIPath:       "/api/bundles",
 		WrapperKey:    "endpoint_bundle",
 		Mode:          "datacenter",
@@ -70,7 +84,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_service",
-		Factory:       provider.NewVerityServiceResource,
 		APIPath:       "/api/services",
 		WrapperKey:    "service",
 		Mode:          "datacenter",
@@ -78,7 +91,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_aaa_profile",
-		Factory:       provider.NewVerityAaaProfileResource,
 		APIPath:       "/api/deviceaaaprofiles",
 		WrapperKey:    "device_aaa_profile",
 		Mode:          "datacenter",
@@ -86,7 +98,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_ldap_profile",
-		Factory:       provider.NewVerityLdapProfileResource,
 		APIPath:       "/api/ldapprofiles",
 		WrapperKey:    "ldap_profile",
 		Mode:          "datacenter",
@@ -94,7 +105,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_fabric",
-		Factory:       provider.NewVerityFabricResource,
 		APIPath:       "/api/fabrics",
 		WrapperKey:    "fabric",
 		Mode:          "datacenter",
@@ -102,7 +112,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_plane",
-		Factory:       provider.NewVerityPlaneResource,
 		APIPath:       "/api/planes",
 		WrapperKey:    "plane",
 		Mode:          "datacenter",
@@ -110,7 +119,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_rack",
-		Factory:       provider.NewVerityRackResource,
 		APIPath:       "/api/racks",
 		WrapperKey:    "rack",
 		Mode:          "datacenter",
@@ -118,7 +126,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_eth_port_profile",
-		Factory:       provider.NewVerityEthPortProfileResource,
 		APIPath:       "/api/ethportprofiles",
 		WrapperKey:    "eth_port_profile_",
 		Mode:          "datacenter",
@@ -126,7 +133,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_eth_port_settings",
-		Factory:       provider.NewVerityEthPortSettingsResource,
 		APIPath:       "/api/ethportsettings",
 		WrapperKey:    "eth_port_settings",
 		Mode:          "datacenter",
@@ -134,7 +140,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_lag",
-		Factory:       provider.NewVerityLagResource,
 		APIPath:       "/api/lags",
 		WrapperKey:    "lag",
 		Mode:          "datacenter",
@@ -142,7 +147,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType:       "verity_acl_v4",
-		Factory:             provider.NewVerityACLV4Resource,
 		APIPath:             "/api/acls",
 		WrapperKey:          "ip_filter",
 		Mode:                "datacenter",
@@ -151,7 +155,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType:       "verity_acl_v6",
-		Factory:             provider.NewVerityACLV6Resource,
 		APIPath:             "/api/acls",
 		WrapperKey:          "ip_filter",
 		Mode:                "datacenter",
@@ -160,7 +163,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_sflow_collector",
-		Factory:       provider.NewVeritySflowCollectorResource,
 		APIPath:       "/api/sflowcollectors",
 		WrapperKey:    "sflow_collector",
 		Mode:          "datacenter",
@@ -168,7 +170,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_switchpoint",
-		Factory:       provider.NewVeritySwitchpointResource,
 		APIPath:       "/api/switchpoints",
 		WrapperKey:    "switchpoint",
 		Mode:          "datacenter",
@@ -176,7 +177,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_device_settings",
-		Factory:       provider.NewVerityDeviceSettingsResource,
 		APIPath:       "/api/devicesettings",
 		WrapperKey:    "eth_device_profiles",
 		Mode:          "datacenter",
@@ -184,7 +184,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_packet_queue",
-		Factory:       provider.NewVerityPacketQueueResource,
 		APIPath:       "/api/packetqueues",
 		WrapperKey:    "packet_queue",
 		Mode:          "datacenter",
@@ -192,7 +191,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_diagnostics_profile",
-		Factory:       provider.NewVerityDiagnosticsProfileResource,
 		APIPath:       "/api/diagnosticsprofiles",
 		WrapperKey:    "diagnostics_profile",
 		Mode:          "datacenter",
@@ -200,7 +198,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_diagnostics_port_profile",
-		Factory:       provider.NewVerityDiagnosticsPortProfileResource,
 		APIPath:       "/api/diagnosticsportprofiles",
 		WrapperKey:    "diagnostics_port_profile",
 		Mode:          "datacenter",
@@ -208,7 +205,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_ipv4_list",
-		Factory:       provider.NewVerityIpv4ListResource,
 		APIPath:       "/api/ipv4lists",
 		WrapperKey:    "ipv4_list_filter",
 		Mode:          "datacenter",
@@ -216,7 +212,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_ipv6_list",
-		Factory:       provider.NewVerityIpv6ListResource,
 		APIPath:       "/api/ipv6lists",
 		WrapperKey:    "ipv6_list_filter",
 		Mode:          "datacenter",
@@ -224,7 +219,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_port_acl",
-		Factory:       provider.NewVerityPortAclResource,
 		APIPath:       "/api/portacls",
 		WrapperKey:    "port_acl",
 		Mode:          "datacenter",
@@ -232,7 +226,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_pb_routing",
-		Factory:       provider.NewVerityPBRoutingResource,
 		APIPath:       "/api/policybasedrouting",
 		WrapperKey:    "pb_routing",
 		Mode:          "datacenter",
@@ -240,7 +233,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_pb_routing_acl",
-		Factory:       provider.NewVerityPBRoutingACLResource,
 		APIPath:       "/api/policybasedroutingacl",
 		WrapperKey:    "pb_routing_acl",
 		Mode:          "datacenter",
@@ -248,7 +240,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_grouping_rule",
-		Factory:       provider.NewVerityGroupingRuleResource,
 		APIPath:       "/api/groupingrules",
 		WrapperKey:    "grouping_rules",
 		Mode:          "datacenter",
@@ -256,7 +247,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_threshold_group",
-		Factory:       provider.NewVerityThresholdGroupResource,
 		APIPath:       "/api/thresholdgroups",
 		WrapperKey:    "threshold_group",
 		Mode:          "datacenter",
@@ -264,7 +254,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_threshold",
-		Factory:       provider.NewVerityThresholdResource,
 		APIPath:       "/api/thresholds",
 		WrapperKey:    "threshold",
 		Mode:          "datacenter",
@@ -273,7 +262,6 @@ var allResourceTests = []ResourceCoverageEntry{
 
 	{
 		TerraformType: "verity_tenant",
-		Factory:       provider.NewVerityTenantResource,
 		APIPath:       "/api/tenants",
 		WrapperKey:    "tenant",
 		Mode:          "datacenter",
@@ -284,7 +272,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_gateway",
-		Factory:       provider.NewVerityGatewayResource,
 		APIPath:       "/api/gateways",
 		WrapperKey:    "gateway",
 		Mode:          "datacenter",
@@ -292,7 +279,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_gateway_profile",
-		Factory:       provider.NewVerityGatewayProfileResource,
 		APIPath:       "/api/gatewayprofiles",
 		WrapperKey:    "gateway_profile",
 		Mode:          "datacenter",
@@ -300,7 +286,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_as_path_access_list",
-		Factory:       provider.NewVerityAsPathAccessListResource,
 		APIPath:       "/api/aspathaccesslists",
 		WrapperKey:    "as_path_access_list",
 		Mode:          "datacenter",
@@ -308,7 +293,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_community_list",
-		Factory:       provider.NewVerityCommunityListResource,
 		APIPath:       "/api/communitylists",
 		WrapperKey:    "community_list",
 		Mode:          "datacenter",
@@ -316,7 +300,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_extended_community_list",
-		Factory:       provider.NewVerityExtendedCommunityListResource,
 		APIPath:       "/api/extendedcommunitylists",
 		WrapperKey:    "extended_community_list",
 		Mode:          "datacenter",
@@ -324,7 +307,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_ipv4_prefix_list",
-		Factory:       provider.NewVerityIpv4PrefixListResource,
 		APIPath:       "/api/ipv4prefixlists",
 		WrapperKey:    "ipv4_prefix_list",
 		Mode:          "datacenter",
@@ -332,7 +314,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_ipv6_prefix_list",
-		Factory:       provider.NewVerityIpv6PrefixListResource,
 		APIPath:       "/api/ipv6prefixlists",
 		WrapperKey:    "ipv6_prefix_list",
 		Mode:          "datacenter",
@@ -340,7 +321,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_route_map_clause",
-		Factory:       provider.NewVerityRouteMapClauseResource,
 		APIPath:       "/api/routemapclauses",
 		WrapperKey:    "route_map_clause",
 		Mode:          "datacenter",
@@ -348,7 +328,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_route_map",
-		Factory:       provider.NewVerityRouteMapResource,
 		APIPath:       "/api/routemaps",
 		WrapperKey:    "route_map",
 		Mode:          "datacenter",
@@ -356,7 +335,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_sfp_breakout",
-		Factory:       provider.NewVeritySfpBreakoutResource,
 		APIPath:       "/api/sfpbreakouts",
 		WrapperKey:    "sfp_breakouts",
 		Mode:          "datacenter",
@@ -365,7 +343,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_pod",
-		Factory:       provider.NewVerityPodResource,
 		APIPath:       "/api/pods",
 		WrapperKey:    "pod",
 		Mode:          "datacenter",
@@ -373,7 +350,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_spine_plane",
-		Factory:       provider.NewVeritySpinePlaneResource,
 		APIPath:       "/api/spineplanes",
 		WrapperKey:    "spine_plane",
 		Mode:          "datacenter",
@@ -381,7 +357,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_packet_broker",
-		Factory:       provider.NewVerityPacketBrokerResource,
 		APIPath:       "/api/packetbroker",
 		WrapperKey:    "pb_egress_profile",
 		Mode:          "datacenter",
@@ -390,7 +365,6 @@ var allResourceTests = []ResourceCoverageEntry{
 
 	{
 		TerraformType: "verity_authenticated_eth_port",
-		Factory:       provider.NewVerityAuthenticatedEthPortResource,
 		APIPath:       "/api/authenticatedethports",
 		WrapperKey:    "authenticated_eth_port",
 		Mode:          "campus",
@@ -398,7 +372,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_device_voice_settings",
-		Factory:       provider.NewVerityDeviceVoiceSettingsResource,
 		APIPath:       "/api/devicevoicesettings",
 		WrapperKey:    "device_voice_settings",
 		Mode:          "campus",
@@ -406,7 +379,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_service_port_profile",
-		Factory:       provider.NewVerityServicePortProfileResource,
 		APIPath:       "/api/serviceportprofiles",
 		WrapperKey:    "service_port_profile",
 		Mode:          "campus",
@@ -414,7 +386,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_voice_port_profile",
-		Factory:       provider.NewVerityVoicePortProfileResource,
 		APIPath:       "/api/voiceportprofiles",
 		WrapperKey:    "voice_port_profiles",
 		Mode:          "campus",
@@ -423,7 +394,6 @@ var allResourceTests = []ResourceCoverageEntry{
 
 	{
 		TerraformType: "verity_mac_filter",
-		Factory:       provider.NewVerityMacFilterResource,
 		APIPath:       "/api/macfilters",
 		WrapperKey:    "mac_filter",
 		Mode:          "campus",
@@ -431,7 +401,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_pair",
-		Factory:       provider.NewVerityPairResource,
 		APIPath:       "/api/pairs",
 		WrapperKey:    "switch_pair",
 		Mode:          "datacenter",
@@ -439,7 +408,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_ssp_group",
-		Factory:       provider.NewVeritySspGroupResource,
 		APIPath:       "/api/sspgroups",
 		WrapperKey:    "superspine_group",
 		Mode:          "datacenter",
@@ -447,7 +415,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_su",
-		Factory:       provider.NewVeritySuResource,
 		APIPath:       "/api/sus",
 		WrapperKey:    "su",
 		Mode:          "datacenter",
@@ -455,7 +422,6 @@ var allResourceTests = []ResourceCoverageEntry{
 	},
 	{
 		TerraformType: "verity_tacacs_profile",
-		Factory:       provider.NewVerityTacacsProfileResource,
 		APIPath:       "/api/tacacsprofiles",
 		WrapperKey:    "tacacs_profile",
 		Mode:          "datacenter",

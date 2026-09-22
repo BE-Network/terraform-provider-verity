@@ -1,0 +1,39 @@
+{
+  "DELETE query": {
+    "mac_filter_name": [
+      "diffmac"
+    ]
+  },
+  "PATCH": {
+    "mac_filter": {
+      "diffmac": {
+        "filters": [
+          {
+            "filter_num_enable": false,
+            "filter_num_mac": "",
+            "index": 1
+          }
+        ]
+      }
+    }
+  },
+  "PATCH query": {},
+  "PUT": {
+    "mac_filter": {
+      "diffmac": {
+        "enable": true,
+        "filters": [
+          {
+            "filter_num_enable": true,
+            "filter_num_mac": "00:11:22:33:44:55",
+            "filter_num_mask": "ff:ff:ff:00:00:00",
+            "index": 1
+          }
+        ],
+        "name": "diffmac",
+        "type": ""
+      }
+    }
+  },
+  "PUT query": {}
+}

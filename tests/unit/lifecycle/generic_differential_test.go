@@ -9,7 +9,6 @@ import (
 	fwresource "github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 
-	"terraform-provider-verity/internal/provider"
 	"terraform-provider-verity/tests/unit/mock"
 )
 
@@ -142,23 +141,24 @@ type lifecycleOutcome struct {
 
 func captureLifecycle(t *testing.T, terraformType string, generic bool, createConfig, updateConfig string, outcome ...lifecycleOutcome) map[string]map[string]interface{} {
 	t.Helper()
+	if !generic {
+		return legacyReference(t)
+	}
+	return runLifecycle(t, terraformType, createConfig, updateConfig, outcome...)
+}
+
+func runLifecycle(t *testing.T, terraformType string, createConfig, updateConfig string, outcome ...lifecycleOutcome) map[string]map[string]interface{} {
+	t.Helper()
 
 	var expect lifecycleOutcome
 	if len(outcome) > 0 {
 		expect = outcome[0]
 	}
 
-	legacy := terraformType
-	if generic {
-		legacy = ""
-	}
-	t.Setenv(provider.LegacyResourcesEnvVar, legacy)
-	if generic {
-		assertServedGenerically(t, terraformType)
-	}
+	assertServedGenerically(t, terraformType)
 
 	entry := coverageEntry(t, terraformType)
-	t.Logf("=== lifecycle for %s, generic=%v", terraformType, generic)
+	t.Logf("=== lifecycle for %s", terraformType)
 	ms := mock.NewMockServer(entry.Mode)
 	defer ms.Close()
 	ms.SetTestLogger(t)

@@ -5,12 +5,10 @@ import (
 
 	fwresource "github.com/hashicorp/terraform-plugin-testing/helper/resource"
 
-	"terraform-provider-verity/internal/provider"
 	"terraform-provider-verity/tests/unit/mock"
 )
 
 func TestUnconfiguredReferenceSurvivesAnUnrelatedUpdate(t *testing.T) {
-	t.Setenv(provider.LegacyResourcesEnvVar, "")
 	entry := coverageEntry(t, "verity_service")
 	assertServedGenerically(t, entry.TerraformType)
 

@@ -39,8 +39,6 @@ func genericallyServable(t *testing.T) []string {
 }
 
 func assertGoldenParity(t *testing.T, terraformType string) {
-	t.Setenv(provider.LegacyResourcesEnvVar, "")
-
 	entry := coverageEntry(t, terraformType)
 	assertServedGenerically(t, entry.TerraformType)
 
@@ -116,8 +114,6 @@ func assertGoldenParity(t *testing.T, terraformType string) {
 }
 
 func TestGenericIPv4ListImportsAndDeletes(t *testing.T) {
-	t.Setenv(provider.LegacyResourcesEnvVar, "")
-
 	entry := coverageEntry(t, "verity_ipv4_list")
 	assertServedGenerically(t, entry.TerraformType)
 
@@ -177,8 +173,7 @@ func assertServedGenerically(t *testing.T, terraformType string) {
 		t.Fatalf("%s is not registered at all", terraformType)
 	}
 	if _, generic := served.(*genericresource.Resource); !generic {
-		t.Fatalf("%s is served by %T, not the generic engine; is %s set?",
-			terraformType, served, provider.LegacyResourcesEnvVar)
+		t.Fatalf("%s is served by %T, not the generic engine", terraformType, served)
 	}
 }
 

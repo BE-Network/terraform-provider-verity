@@ -254,12 +254,23 @@ The command requires Docker, Python 3, Go, and `rsync` for `--write`. Do not
 delete `openapi/` manually and do not install an unpinned global generator.
 
 
-### Updating Provider Resource Files
+### Updating Provider Resources
 
-During the migration, SDK changes are reviewed with the generated spec report
-and transport adapters. Do not add/remove provider fields by hand as a normal
-SDK regeneration step; API shape and Terraform lifecycle semantics are being
-moved into the validated resource-spec registry.
+Every API-backed resource is served by one generic engine
+(`internal/genericresource`) from the resource registry; there are no
+per-resource lifecycle files. `verity_operation_stage` is the one bespoke
+resource. To change a resource:
+
+1. Regenerate the registry from the OpenAPI inputs, and put any behavior the
+   OpenAPI documents cannot express in `specs/overrides.yaml`. Examples are a
+   field's clear policy or an auto-assignment dependency.
+2. Regenerate the transport adapters and metadata with the `specgen` commands
+   above.
+3. Run the tests. The schema golden file
+   (`tests/unit/testdata/schema_golden_v6_6.json`) and the golden wire
+   fixtures (`tests/unit/lifecycle/testdata/golden`) fail on any schema or
+   request change. Regenerate them intentionally with `UPDATE_SCHEMA_SNAPSHOT=1`
+   and `UPDATE_GOLDEN=1` after reviewing the diff.
 
 ## Using the State Import Scripts
 
@@ -371,6 +382,7 @@ The provider includes a unit test suite that runs fully offline using a mock HTT
 - Mode field exclusion: datacenter-only fields absent in campus mode and vice versa
 - Required query params: ACL `ip_version` param sent correctly for v4/v6
 - Delete and import: resource removal and `terraform import` paths
+- Differential tests (`generic_*_differential_test.go`): the generic engine's requests for each semantic rule, compared with what the retired handwritten resources sent for the same configurations, recorded in `testdata/legacy_reference`
 
 ### Running locally
 
@@ -383,7 +395,7 @@ export VERITY_RESPONSE_PROCESSOR_DELAY=0s
 export VERITY_POST_OPERATION_VERIFICATION_BACKOFF=0s
 export VERITY_DEBOUNCE_DELAY=100ms
 
-go test ./tests/unit/lifecycle/ -count=1 -timeout 5m
+go test ./tests/unit/lifecycle/ -count=1 -timeout 15m
 go test ./tests/unit/bulkops/ -count=1 -timeout 2m
 ```
 

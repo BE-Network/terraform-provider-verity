@@ -56,11 +56,3 @@ func FindResourceByAPIName[T any](
 	}
 	return resource, "", false
 }
-
-func FindResourceByKey[T any](
-	resources map[string]T,
-	targetName string,
-) (resource T, exists bool) {
-	res, exists := resources[targetName]
-	return res, exists
-}

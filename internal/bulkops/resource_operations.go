@@ -12,17 +12,6 @@ type ResourceOperationOptions struct {
 	HeaderParams map[string]string
 }
 
-func ExecuteResourceOperation(
-	ctx context.Context,
-	bulkOpsMgr *Manager,
-	notifyFunc func(),
-	operationType, resourceType, resourceName string,
-	resourceData interface{},
-	diagnostics *diag.Diagnostics,
-) bool {
-	return ExecuteResourceOperationWithOptions(ctx, bulkOpsMgr, notifyFunc, operationType, resourceType, resourceName, resourceData, diagnostics, nil)
-}
-
 func ExecuteResourceOperationWithOptions(
 	ctx context.Context,
 	bulkOpsMgr *Manager,

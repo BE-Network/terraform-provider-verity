@@ -1,0 +1,41 @@
+{
+  "DELETE query": {
+    "lag_name": [
+      "difflag"
+    ]
+  },
+  "PATCH": {
+    "lag": {
+      "difflag": {
+        "object_properties": {
+          "fabric": "",
+          "fabric_ref_type_": ""
+        }
+      }
+    }
+  },
+  "PATCH query": {},
+  "PUT": {
+    "lag": {
+      "difflag": {
+        "color": "",
+        "crc_failure_threshold": 42,
+        "enable": true,
+        "eth_port_profile": "",
+        "eth_port_profile_ref_type_": "",
+        "fallback": true,
+        "fast_rate": true,
+        "is_peer_link": true,
+        "lacp": true,
+        "name": "difflag",
+        "object_properties": {
+          "fabric": "fabric-a",
+          "fabric_ref_type_": "fabric"
+        },
+        "peer_link_vlan": 42,
+        "uplink": true
+      }
+    }
+  },
+  "PUT query": {}
+}
