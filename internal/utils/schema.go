@@ -1,49 +1,42 @@
 package utils
 
-type FieldMode string
+import (
+	"strings"
 
-const (
-	FieldModeBoth       FieldMode = "both"
-	FieldModeDatacenter FieldMode = "datacenter"
-	FieldModeCampus     FieldMode = "campus"
+	"terraform-provider-verity/internal/spec"
 )
 
-func FieldAppliesToMode(resourceType, fieldName, mode string) bool {
-	resourceFields, ok := ModeFields[resourceType]
-	if !ok {
-
+func FieldAppliesToMode(endpointKey, fieldPath, mode string) bool {
+	resource, found := registryResourceByEndpoint(endpointKey)
+	if !found {
 		return true
 	}
-
-	fieldMode, ok := resourceFields[fieldName]
-	if !ok {
-
+	field, found := registryField(resource.Fields, strings.Split(fieldPath, "."))
+	if !found {
 		return true
 	}
-
-	switch fieldMode {
-	case FieldModeBoth:
-		return true
-	case FieldModeDatacenter:
-		return mode == "datacenter"
-	case FieldModeCampus:
-		return mode == "campus"
-	default:
+	modes := field.Modes
+	if len(modes) == 0 {
+		modes = resource.Modes
+	}
+	if len(modes) == 0 {
 		return true
 	}
+	return specModeSet(modes)[mode]
 }
 
-var pendingModeFields = map[string]map[string]FieldMode{}
-
-var ModeFields = mergeModeFields()
-
-func mergeModeFields() map[string]map[string]FieldMode {
-	merged := make(map[string]map[string]FieldMode, len(generatedModeFields)+len(pendingModeFields))
-	for resource, fields := range generatedModeFields {
-		merged[resource] = fields
+func registryField(fields []spec.FieldSpec, path []string) (spec.FieldSpec, bool) {
+	if len(path) == 0 {
+		return spec.FieldSpec{}, false
 	}
-	for resource, fields := range pendingModeFields {
-		merged[resource] = fields
+	for _, field := range fields {
+		if field.TerraformName != path[0] {
+			continue
+		}
+		if len(path) == 1 {
+			return field, true
+		}
+		return registryField(field.Fields, path[1:])
 	}
-	return merged
+	return spec.FieldSpec{}, false
 }

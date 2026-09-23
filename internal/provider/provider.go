@@ -371,8 +371,9 @@ func (p *verityProvider) Resources(_ context.Context) []func() resource.Resource
 }
 
 func getAllResources() []func() resource.Resource {
-	all := make([]func() resource.Resource, 0, len(generatedResourceOrder)+len(nonAPIResources))
-	for _, terraformType := range generatedResourceOrder {
+	order := registryResourceOrder()
+	all := make([]func() resource.Resource, 0, len(order)+len(nonAPIResources))
+	for _, terraformType := range order {
 		factory, err := genericConstructor(terraformType)
 		if err != nil {
 			panic("provider: " + err.Error())

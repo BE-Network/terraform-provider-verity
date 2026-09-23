@@ -288,7 +288,7 @@ To add a resource:
    becomes an auto-assignment pair.
 3. **Regenerate** with the `specgen` commands above: `extract`, `registry`
    (with `--embed-output internal/registry/registry.json`), `adapters`,
-   `metadata`, and `docs`. `adapters` skips a resource it cannot serve and
+   and `docs`. `adapters` skips a resource it cannot serve and
    prints why.
 4. **State importer.** Add the resource to `internal/importer/importer.go`: its
    API call in `importerRegistry`, its rendering config in `resourceConfigs` and
@@ -313,7 +313,7 @@ The pages in `docs/resources` are generated from one template,
 `tools/specgen/templates/resource.md.tmpl`. Change the template or the
 registry, never a page. `verity_operation_stage.md` is the one handwritten page.
 In CI, every `specgen` generator runs with `--check`, so a registry, adapter,
-metadata file, or doc page that no longer matches its inputs fails the build.
+or doc page that no longer matches its inputs fails the build.
 
 ## Using the State Import Scripts
 

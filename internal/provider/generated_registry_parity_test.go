@@ -112,9 +112,9 @@ func legacyConstructorsByType(t *testing.T) map[string]func() resource.Resource 
 
 func assertGeneratedModes(t *testing.T, resourceSpec spec.ResourceSpec) {
 	t.Helper()
-	legacyMode, exists := utils.ResourceCompatibility[resourceSpec.TerraformType]
+	legacyMode, exists := utils.ResourceModeFor(resourceSpec.TerraformType)
 	if !exists {
-		t.Fatalf("legacy compatibility map is missing %q", resourceSpec.TerraformType)
+		t.Fatalf("no mode is reported for %q", resourceSpec.TerraformType)
 	}
 	expected := map[utils.ResourceMode][]spec.Mode{
 		utils.ResourceModeDatacenter: {spec.ModeDatacenter},

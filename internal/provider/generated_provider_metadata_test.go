@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 	"sort"
-	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -11,33 +10,11 @@ import (
 	"terraform-provider-verity/internal/genericresource"
 )
 
-func TestGeneratedResourceKeysCoverEveryResource(t *testing.T) {
-	registry := generatedRegistry(t)
-	if len(generatedResourceKeys) != len(registry) {
-		t.Fatalf("key table has %d entries, the registry has %d", len(generatedResourceKeys), len(registry))
-	}
-	for _, resourceSpec := range registry {
-		keys, exists := generatedResourceKeys[resourceSpec.TerraformType]
-		if !exists {
-			t.Errorf("no generated keys for %s", resourceSpec.TerraformType)
-			continue
-		}
-		if keys.Endpoint == "" || keys.CacheKey == "" || keys.ResponseCollectionKey == "" {
-			t.Errorf("%s has an incomplete key entry: %+v", resourceSpec.TerraformType, keys)
-		}
-		if want := strings.TrimPrefix(resourceSpec.API.EndpointPath, "/"); keys.Endpoint != want {
-			t.Errorf("%s endpoint = %q, registry says %q", resourceSpec.TerraformType, keys.Endpoint, want)
-		}
-		if keys.CacheKey != resourceSpec.API.CacheKey {
-			t.Errorf("%s cache key = %q, registry says %q", resourceSpec.TerraformType, keys.CacheKey, resourceSpec.API.CacheKey)
-		}
-	}
-}
-
 func TestRegistrationFollowsTheRegistry(t *testing.T) {
 	registry := generatedRegistry(t)
-	if len(generatedResourceOrder) != len(registry) {
-		t.Fatalf("registration order lists %d resources, the registry has %d", len(generatedResourceOrder), len(registry))
+	order := registryResourceOrder()
+	if len(order) != len(registry) {
+		t.Fatalf("registration order lists %d resources, the registry has %d", len(order), len(registry))
 	}
 	inRegistry := make(map[string]bool, len(registry))
 	for _, resourceSpec := range registry {
@@ -65,7 +42,7 @@ func TestRegistrationFollowsTheRegistry(t *testing.T) {
 		}
 	}
 
-	if !sort.StringsAreSorted(generatedResourceOrder) {
+	if !sort.StringsAreSorted(order) {
 		t.Error("registration order is not in canonical Terraform-name order")
 	}
 

@@ -541,23 +541,6 @@ func TestAPINullableFollowsTheSwaggerTransform(t *testing.T) {
 	}
 }
 
-func TestBulkMetadataRejectsMultipleFixedHeaders(t *testing.T) {
-	resource := spec.ResourceSpec{
-		TerraformType: "verity_example",
-		API: spec.APIResourceSpec{
-			EndpointPath: "/examples", BulkKey: "example",
-			FixedHeaders: map[string]string{"ip_version": "4", "region": "east"},
-		},
-	}
-	_, err := renderBulkMetadata(spec.Registry{resource})
-	if err == nil || !strings.Contains(err.Error(), "supports one split key") {
-		t.Fatalf("renderBulkMetadata() error = %v, want rejection of multiple fixed headers", err)
-	}
-	if !strings.Contains(err.Error(), "ip_version, region") {
-		t.Fatalf("error should name the headers in a stable order, got %v", err)
-	}
-}
-
 func TestDefaultUpdateClearOmitsInsideASingleton(t *testing.T) {
 	for _, kind := range []string{"string", "boolean", "integer", "number"} {
 		if got := defaultUpdateClear(kind, false, string(spec.CollectionSingleton), false); got != "omit" {

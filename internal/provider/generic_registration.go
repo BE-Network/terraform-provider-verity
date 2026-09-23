@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 
@@ -24,4 +25,17 @@ func genericConstructor(terraformType string) (func() resource.Resource, error) 
 		return nil, fmt.Errorf("%s cannot be served generically: %w", terraformType, err)
 	}
 	return factory, nil
+}
+
+func registryResourceOrder() []string {
+	resources, err := registry.Load()
+	if err != nil {
+		panic("provider: " + err.Error())
+	}
+	order := make([]string, 0, len(resources))
+	for _, resource := range resources {
+		order = append(order, resource.TerraformType)
+	}
+	sort.Strings(order)
+	return order
 }

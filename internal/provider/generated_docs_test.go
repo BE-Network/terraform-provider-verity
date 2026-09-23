@@ -50,8 +50,8 @@ func TestGeneratedDocExamplesMatchTheSchema(t *testing.T) {
 			}
 		}
 	}
-	if checked < len(generatedResourceOrder) {
-		t.Fatalf("checked %d examples, want at least one for each of the %d registry resources", checked, len(generatedResourceOrder))
+	if want := len(registryResourceOrder()); checked < want {
+		t.Fatalf("checked %d examples, want at least one for each of the %d registry resources", checked, want)
 	}
 }
 

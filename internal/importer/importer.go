@@ -845,7 +845,7 @@ func (i *Importer) importResource(resourceName string) (interface{}, error) {
 		return nil, fmt.Errorf("failed to decode %s response: %v", resourceName, err)
 	}
 
-	jsonKey := utils.GetImporterJSONKey(resourceName)
+	jsonKey := utils.ResponseCollectionKeyForEndpoint(resourceName)
 	if jsonKey == "" {
 		return nil, fmt.Errorf("no JSON key mapping found for %s", resourceName)
 	}
@@ -1229,7 +1229,7 @@ func (i *Importer) importACLs(ipVersion string) (map[string]map[string]interface
 	}
 	defer resp.Body.Close()
 
-	jsonKey := utils.GetACLJSONKey(ipVersion)
+	jsonKey := utils.ResponseCollectionKeyForType("verity_acl_v" + ipVersion)
 
 	var result map[string]map[string]map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {

@@ -45,7 +45,7 @@ type normalizeOptions struct {
 
 func main() {
 	if len(os.Args) < 2 {
-		fail("usage: specgen <normalize|verify|extract|registry|adapters|metadata|docs> [flags]")
+		fail("usage: specgen <normalize|verify|extract|registry|adapters|docs> [flags]")
 	}
 
 	switch os.Args[1] {
@@ -102,18 +102,6 @@ func main() {
 		if err := generateAdapters(opts); err != nil {
 			fail(err.Error())
 		}
-	case "metadata":
-		fs := flag.NewFlagSet("metadata", flag.ExitOnError)
-		opts := metadataOptions{}
-		fs.StringVar(&opts.Registry, "registry", "", "generated registry input path")
-		fs.StringVar(&opts.Output, "output", "", "generated Go metadata output path")
-		fs.StringVar(&opts.BulkOutput, "bulk-output", "", "generated bulk metadata output path")
-		fs.StringVar(&opts.KeysOutput, "keys-output", "", "generated resource key output path")
-		fs.BoolVar(&opts.Check, "check", false, "fail if output differs from deterministic generation")
-		_ = fs.Parse(os.Args[2:])
-		if err := generateModeMetadata(opts); err != nil {
-			fail(err.Error())
-		}
 	case "docs":
 		fs := flag.NewFlagSet("docs", flag.ExitOnError)
 		opts := docsOptions{}
@@ -126,7 +114,7 @@ func main() {
 			fail(err.Error())
 		}
 	default:
-		fail(fmt.Sprintf("unknown command %q; expected normalize, verify, extract, registry, adapters, metadata, or docs", os.Args[1]))
+		fail(fmt.Sprintf("unknown command %q; expected normalize, verify, extract, registry, adapters, or docs", os.Args[1]))
 	}
 }
 

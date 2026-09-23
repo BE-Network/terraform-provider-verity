@@ -26,22 +26,29 @@ const (
 	ResourceModeBoth       ResourceMode = "both"
 )
 
-var pendingResourceCompatibility = map[string]ResourceMode{
-
+var nonAPIResourceCompatibility = map[string]ResourceMode{
 	"verity_operation_stage": ResourceModeBoth,
 }
 
-var ResourceCompatibility = mergeResourceCompatibility()
-
-func mergeResourceCompatibility() map[string]ResourceMode {
-	merged := make(map[string]ResourceMode, len(generatedResourceCompatibility)+len(pendingResourceCompatibility))
-	for name, mode := range generatedResourceCompatibility {
-		merged[name] = mode
+func ResourceModeFor(resourceType string) (ResourceMode, bool) {
+	if mode, found := nonAPIResourceCompatibility[resourceType]; found {
+		return mode, true
 	}
-	for name, mode := range pendingResourceCompatibility {
-		merged[name] = mode
+	resource, found := registryResource(resourceType)
+	if !found {
+		return "", false
 	}
-	return merged
+	modes := specModeSet(resource.Modes)
+	switch {
+	case modes[string(ModeDatacenter)] && modes[string(ModeCampus)]:
+		return ResourceModeBoth, true
+	case modes[string(ModeDatacenter)]:
+		return ResourceModeDatacenter, true
+	case modes[string(ModeCampus)]:
+		return ResourceModeCampus, true
+	default:
+		return "", false
+	}
 }
 
 func ValidateAPIVersion(apiVersion string) error {
@@ -83,7 +90,7 @@ func ParseApiVersion(version string) (int, int, error) {
 }
 
 func IsResourceCompatibleWithMode(resourceType string, mode string) bool {
-	compatMode, exists := ResourceCompatibility[resourceType]
+	compatMode, exists := ResourceModeFor(resourceType)
 	if !exists {
 		return false
 	}

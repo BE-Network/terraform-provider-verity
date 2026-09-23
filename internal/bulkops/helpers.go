@@ -1424,7 +1424,7 @@ func (m *Manager) fetchResourceResponse(fetchCtx context.Context, logCtx context
 		}
 	} else {
 
-		jsonKey := utils.GetResourceJSONKey(config.ResourceType)
+		jsonKey := utils.ResponseCollectionKeyForBulkKey(config.ResourceType)
 		if jsonKey == "" {
 			tflog.Warn(logCtx, fmt.Sprintf("No JSON key mapping found for resource type: %s", config.ResourceType))
 			return nil, nil

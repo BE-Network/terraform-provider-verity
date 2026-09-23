@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 	"reflect"
+
+	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 )
 
@@ -968,12 +970,12 @@ var resourceRegistry = map[string]ResourceConfig{
 
 func init() {
 	for key, config := range resourceRegistry {
-		generated, exists := generatedBulkMetadata[key]
-		if !exists {
-			panic("bulkops: no generated metadata for bulk key " + key + "; regenerate with specgen metadata")
+		splitKey, err := utils.HeaderSplitKeyForBulkKey(key)
+		if err != nil {
+			panic("bulkops: " + err.Error())
 		}
 		config.ResourceType = key
-		config.HeaderSplitKey = generated.HeaderSplitKey
+		config.HeaderSplitKey = splitKey
 		resourceRegistry[key] = config
 	}
 }
