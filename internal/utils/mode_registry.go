@@ -69,22 +69,6 @@ func ResponseCollectionKeyForBulkKey(bulkKey string) string {
 	return key
 }
 
-func ResponseCollectionKeyForEndpoint(endpoint string) string {
-	resource, found := registryResourceByEndpoint(endpoint)
-	if !found {
-		return ""
-	}
-	return resource.API.ResponseCollectionKey
-}
-
-func ResponseCollectionKeyForType(terraformType string) string {
-	resource, found := registryResource(terraformType)
-	if !found {
-		return ""
-	}
-	return resource.API.ResponseCollectionKey
-}
-
 func HeaderSplitKeyForBulkKey(bulkKey string) (string, error) {
 	loadRegistryIndexes()
 	resources := make([]spec.ResourceSpec, 0, len(registryByType))

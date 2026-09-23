@@ -970,12 +970,8 @@ var resourceRegistry = map[string]ResourceConfig{
 
 func init() {
 	for key, config := range resourceRegistry {
-		splitKey, err := utils.HeaderSplitKeyForBulkKey(key)
-		if err != nil {
-			panic("bulkops: " + err.Error())
-		}
 		config.ResourceType = key
-		config.HeaderSplitKey = splitKey
+		config.HeaderSplitKey, _ = utils.HeaderSplitKeyForBulkKey(key)
 		resourceRegistry[key] = config
 	}
 }

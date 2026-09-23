@@ -20,7 +20,7 @@ func TestPruneUnsupportedLeavesOutUnknownArguments(t *testing.T) {
 	tenant.Blocks["object_properties"] = objectProperties
 	tenant.Blocks["route_tenants"] = leaf("index", "tenant")
 
-	imp := (&Importer{}).WithSupportedFields(map[string]*SchemaFields{"verity_tenant": tenant})
+	imp := (&Importer{Mode: "datacenter"}).WithSupportedFields(map[string]*SchemaFields{"verity_tenant": tenant})
 	objects := map[string]map[string]interface{}{
 		"t1": {
 			"name":                    "t1",
@@ -79,7 +79,7 @@ func TestPruneUnsupportedLeavesOutUnknownArguments(t *testing.T) {
 func TestPruneUnsupportedHonorsSkipKeysAndFieldMappings(t *testing.T) {
 
 	voice := &SchemaFields{Attributes: map[string]bool{"codecs": true}, Blocks: map[string]*SchemaFields{}}
-	imp := (&Importer{}).WithSupportedFields(map[string]*SchemaFields{"verity_device_voice_settings": voice})
+	imp := (&Importer{Mode: "campus"}).WithSupportedFields(map[string]*SchemaFields{"verity_device_voice_settings": voice})
 	objects := map[string]map[string]interface{}{"v": {"name": "v", "Codecs": []interface{}{}}}
 	imp.PruneUnsupported("verity_device_voice_settings", objects)
 	if _, kept := objects["v"]["Codecs"]; !kept {
@@ -101,7 +101,7 @@ func TestPruneUnsupportedWithoutSchemasKeepsEverything(t *testing.T) {
 
 func TestPruneUnsupportedReportsARootIndexTheSchemaDoesNotHave(t *testing.T) {
 	tenant := &SchemaFields{Attributes: map[string]bool{"enable": true}, Blocks: map[string]*SchemaFields{}}
-	imp := (&Importer{}).WithSupportedFields(map[string]*SchemaFields{"verity_tenant": tenant})
+	imp := (&Importer{Mode: "datacenter"}).WithSupportedFields(map[string]*SchemaFields{"verity_tenant": tenant})
 	objects := map[string]map[string]interface{}{"t": {"name": "t", "enable": true, "index": float64(1)}}
 	imp.PruneUnsupported("verity_tenant", objects)
 

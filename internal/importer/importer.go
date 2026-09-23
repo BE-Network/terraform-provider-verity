@@ -52,9 +52,13 @@ func (i *Importer) resourceConfig(terraformType string) (ResourceConfig, error) 
 	if err != nil {
 		return ResourceConfig{}, err
 	}
+	stageName, err := stageNameFor(i.Mode, terraformType)
+	if err != nil {
+		return ResourceConfig{}, err
+	}
 	config := ResourceConfig{
 		ResourceType:                 strings.TrimPrefix(terraformType, "verity_"),
-		StageName:                    stageNameFor(i.Mode, terraformType),
+		StageName:                    stageName,
 		NestedBlockFields:            map[string]bool{},
 		ObjectPropsNestedBlockFields: map[string]bool{},
 		FieldMappings:                map[string]string{},
@@ -87,13 +91,17 @@ func (i *Importer) resourceConfig(terraformType string) (ResourceConfig, error) 
 	return config, nil
 }
 
-func stageNameFor(mode, terraformType string) string {
-	for _, stage := range stageOrder(mode) {
+func stageNameFor(mode, terraformType string) (string, error) {
+	stages, err := stageOrder(mode)
+	if err != nil {
+		return "", err
+	}
+	for _, stage := range stages {
 		if stage.ResourceType == terraformType {
-			return stage.StageName
+			return stage.StageName, nil
 		}
 	}
-	return ""
+	return "", fmt.Errorf("%s has no import stage for mode %q", terraformType, mode)
 }
 
 var nameSplitRE = regexp.MustCompile(`(\d+|\D+)`)
@@ -129,98 +137,23 @@ func (i *Importer) ImportAll(outputDir string) error {
 		"api_version": utils.GetSupportedAPIVersionString(),
 	})
 
-	allResourceTasks := []struct {
-		name                  string
-		terraformResourceType string
-		importer              func() (interface{}, error)
-	}{
-		{name: "tenants", terraformResourceType: "verity_tenant", importer: func() (interface{}, error) { return i.importResource("tenants") }},
-		{name: "gateways", terraformResourceType: "verity_gateway", importer: func() (interface{}, error) { return i.importResource("gateways") }},
-		{name: "gatewayprofiles", terraformResourceType: "verity_gateway_profile", importer: func() (interface{}, error) { return i.importResource("gatewayprofiles") }},
-		{name: "deviceaaaprofiles", terraformResourceType: "verity_aaa_profile", importer: func() (interface{}, error) { return i.importResource("deviceaaaprofiles") }},
-		{name: "ldapprofiles", terraformResourceType: "verity_ldap_profile", importer: func() (interface{}, error) { return i.importResource("ldapprofiles") }},
-		{name: "ethportprofiles", terraformResourceType: "verity_eth_port_profile", importer: func() (interface{}, error) { return i.importResource("ethportprofiles") }},
-		{name: "lags", terraformResourceType: "verity_lag", importer: func() (interface{}, error) { return i.importResource("lags") }},
-		{name: "sflowcollectors", terraformResourceType: "verity_sflow_collector", importer: func() (interface{}, error) { return i.importResource("sflowcollectors") }},
-		{name: "diagnosticsprofiles", terraformResourceType: "verity_diagnostics_profile", importer: func() (interface{}, error) { return i.importResource("diagnosticsprofiles") }},
-		{name: "diagnosticsportprofiles", terraformResourceType: "verity_diagnostics_port_profile", importer: func() (interface{}, error) { return i.importResource("diagnosticsportprofiles") }},
-		{name: "policybasedroutingacl", terraformResourceType: "verity_pb_routing_acl", importer: func() (interface{}, error) { return i.importResource("policybasedroutingacl") }},
-		{name: "policybasedrouting", terraformResourceType: "verity_pb_routing", importer: func() (interface{}, error) { return i.importResource("policybasedrouting") }},
-		{name: "services", terraformResourceType: "verity_service", importer: func() (interface{}, error) { return i.importResource("services") }},
-		{name: "ethportsettings", terraformResourceType: "verity_eth_port_settings", importer: func() (interface{}, error) { return i.importResource("ethportsettings") }},
-		{name: "bundles", terraformResourceType: "verity_bundle", importer: func() (interface{}, error) { return i.importResource("bundles") }},
-		{name: "acls_ipv4", terraformResourceType: "verity_acl_v4", importer: i.importACLsIPv4},
-		{name: "acls_ipv6", terraformResourceType: "verity_acl_v6", importer: i.importACLsIPv6},
-		{name: "badges", terraformResourceType: "verity_badge", importer: func() (interface{}, error) { return i.importResource("badges") }},
-		{name: "authenticatedethports", terraformResourceType: "verity_authenticated_eth_port", importer: func() (interface{}, error) { return i.importResource("authenticatedethports") }},
-		{name: "devicevoicesettings", terraformResourceType: "verity_device_voice_settings", importer: func() (interface{}, error) { return i.importResource("devicevoicesettings") }},
-		{name: "packetbroker", terraformResourceType: "verity_packet_broker", importer: func() (interface{}, error) { return i.importResource("packetbroker") }},
-		{name: "packetqueues", terraformResourceType: "verity_packet_queue", importer: func() (interface{}, error) { return i.importResource("packetqueues") }},
-		{name: "tacacsprofiles", terraformResourceType: "verity_tacacs_profile", importer: func() (interface{}, error) { return i.importResource("tacacsprofiles") }},
-		{name: "serviceportprofiles", terraformResourceType: "verity_service_port_profile", importer: func() (interface{}, error) { return i.importResource("serviceportprofiles") }},
-		{name: "voiceportprofiles", terraformResourceType: "verity_voice_port_profile", importer: func() (interface{}, error) { return i.importResource("voiceportprofiles") }},
-		{name: "spineplanes", terraformResourceType: "verity_spine_plane", importer: func() (interface{}, error) { return i.importResource("spineplanes") }},
-		{name: "switchpoints", terraformResourceType: "verity_switchpoint", importer: func() (interface{}, error) { return i.importResource("switchpoints") }},
-		{name: "aspathaccesslists", terraformResourceType: "verity_as_path_access_list", importer: func() (interface{}, error) { return i.importResource("aspathaccesslists") }},
-		{name: "communitylists", terraformResourceType: "verity_community_list", importer: func() (interface{}, error) { return i.importResource("communitylists") }},
-		{name: "macfilters", terraformResourceType: "verity_mac_filter", importer: func() (interface{}, error) { return i.importResource("macfilters") }},
-		{name: "devicesettings", terraformResourceType: "verity_device_settings", importer: func() (interface{}, error) { return i.importResource("devicesettings") }},
-		{name: "extendedcommunitylists", terraformResourceType: "verity_extended_community_list", importer: func() (interface{}, error) { return i.importResource("extendedcommunitylists") }},
-		{name: "ipv4lists", terraformResourceType: "verity_ipv4_list", importer: func() (interface{}, error) { return i.importResource("ipv4lists") }},
-		{name: "ipv4prefixlists", terraformResourceType: "verity_ipv4_prefix_list", importer: func() (interface{}, error) { return i.importResource("ipv4prefixlists") }},
-		{name: "ipv6lists", terraformResourceType: "verity_ipv6_list", importer: func() (interface{}, error) { return i.importResource("ipv6lists") }},
-		{name: "ipv6prefixlists", terraformResourceType: "verity_ipv6_prefix_list", importer: func() (interface{}, error) { return i.importResource("ipv6prefixlists") }},
-		{name: "routemapclauses", terraformResourceType: "verity_route_map_clause", importer: func() (interface{}, error) { return i.importResource("routemapclauses") }},
-		{name: "routemaps", terraformResourceType: "verity_route_map", importer: func() (interface{}, error) { return i.importResource("routemaps") }},
-		{name: "sfpbreakouts", terraformResourceType: "verity_sfp_breakout", importer: func() (interface{}, error) { return i.importResource("sfpbreakouts") }},
-		{name: "fabrics", terraformResourceType: "verity_fabric", importer: func() (interface{}, error) { return i.importResource("fabrics") }},
-		{name: "planes", terraformResourceType: "verity_plane", importer: func() (interface{}, error) { return i.importResource("planes") }},
-		{name: "racks", terraformResourceType: "verity_rack", importer: func() (interface{}, error) { return i.importResource("racks") }},
-		{name: "pairs", terraformResourceType: "verity_pair", importer: func() (interface{}, error) { return i.importResource("pairs") }},
-		{name: "pods", terraformResourceType: "verity_pod", importer: func() (interface{}, error) { return i.importResource("pods") }},
-		{name: "sspgroups", terraformResourceType: "verity_ssp_group", importer: func() (interface{}, error) { return i.importResource("sspgroups") }},
-		{name: "sus", terraformResourceType: "verity_su", importer: func() (interface{}, error) { return i.importResource("sus") }},
-		{name: "portacls", terraformResourceType: "verity_port_acl", importer: func() (interface{}, error) { return i.importResource("portacls") }},
-		{name: "groupingrules", terraformResourceType: "verity_grouping_rule", importer: func() (interface{}, error) { return i.importResource("groupingrules") }},
-		{name: "thresholdgroups", terraformResourceType: "verity_threshold_group", importer: func() (interface{}, error) { return i.importResource("thresholdgroups") }},
-		{name: "thresholds", terraformResourceType: "verity_threshold", importer: func() (interface{}, error) { return i.importResource("thresholds") }},
+	tasks, err := i.importTasks()
+	if err != nil {
+		return err
 	}
 
-	var resourceTasks []struct {
-		name                  string
-		terraformResourceType string
-		importer              func() (interface{}, error)
-	}
-
-	for _, task := range allResourceTasks {
-		if utils.IsResourceCompatibleWithMode(task.terraformResourceType, i.Mode) {
-			resourceTasks = append(resourceTasks, task)
-		} else {
-			tflog.Info(i.ctx, "Skipping resource due to mode incompatibility", map[string]interface{}{
-				"resource_name":           task.name,
-				"terraform_resource_type": task.terraformResourceType,
-				"mode":                    i.Mode,
-			})
-		}
-	}
-
-	for _, task := range resourceTasks {
+	for _, task := range tasks {
 		tflog.Info(i.ctx, "Importing resource", map[string]interface{}{
 			"resource_name":           task.name,
 			"terraform_resource_type": task.terraformResourceType,
 		})
 
-		data, err := task.importer()
+		data, err := i.fetchResource(task.resource)
 		if err != nil {
 			tflog.Error(i.ctx, "Failed to import resource", map[string]interface{}{"resource_name": task.name, "error": err})
 			return fmt.Errorf("failed to import %s: %w", task.name, err)
 		}
-
-		if data == nil {
-			tflog.Info(i.ctx, "No data returned by importer, skipping TF generation", map[string]interface{}{"resource_name": task.name})
-			continue
-		}
-		if m, ok := data.(map[string]map[string]interface{}); ok && len(m) == 0 {
+		if len(data) == 0 {
 			tflog.Info(i.ctx, "No data found for resource, skipping TF generation", map[string]interface{}{"resource_name": task.name})
 			continue
 		}
@@ -235,9 +168,7 @@ func (i *Importer) ImportAll(outputDir string) error {
 			return fmt.Errorf("no registry entry for %s: %w", task.terraformResourceType, err)
 		}
 
-		if objects, ok := data.(map[string]map[string]interface{}); ok {
-			i.PruneUnsupported(task.terraformResourceType, objects)
-		}
+		i.PruneUnsupported(task.terraformResourceType, data)
 
 		tfConfig, err := i.generateResourceTF(data, config)
 		if err != nil {
@@ -273,12 +204,39 @@ func (i *Importer) ImportAll(outputDir string) error {
 	return nil
 }
 
-func (i *Importer) importResource(resourceName string) (interface{}, error) {
-	collectionKey := utils.ResponseCollectionKeyForEndpoint(resourceName)
-	if collectionKey == "" {
-		return nil, fmt.Errorf("the resource registry describes no endpoint %q", resourceName)
+type importTask struct {
+	name                  string
+	terraformResourceType string
+	resource              spec.ResourceSpec
+}
+
+var importFileNames = map[string]string{
+	"verity_acl_v4": "acls_ipv4",
+	"verity_acl_v6": "acls_ipv6",
+}
+
+func (i *Importer) importTasks() ([]importTask, error) {
+	tasks := make([]importTask, 0, 50)
+	resourceTypes, err := ResourceTypeOrder(i.Mode)
+	if err != nil {
+		return nil, err
 	}
-	return i.fetch(resourceName, "/"+resourceName, nil, collectionKey)
+	for _, terraformType := range resourceTypes {
+		resource, err := registry.Lookup(terraformType)
+		if err != nil {
+			return nil, fmt.Errorf("no registry entry for %s: %w", terraformType, err)
+		}
+		name, named := importFileNames[terraformType]
+		if !named {
+			name = strings.Trim(resource.API.EndpointPath, "/")
+		}
+		tasks = append(tasks, importTask{name: name, terraformResourceType: terraformType, resource: resource})
+	}
+	return tasks, nil
+}
+
+func (i *Importer) fetchResource(resource spec.ResourceSpec) (map[string]map[string]interface{}, error) {
+	return i.fetch(resource.TerraformType, resource.API.EndpointPath, resource.API.FixedHeaders, resource.API.ResponseCollectionKey)
 }
 
 func (i *Importer) fetch(label, endpointPath string, fixedHeaders map[string]string, collectionKey string) (map[string]map[string]interface{}, error) {
@@ -297,11 +255,7 @@ func (i *Importer) fetch(label, endpointPath string, fixedHeaders map[string]str
 	return objects, nil
 }
 
-func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (string, error) {
-	resourcesMap, ok := data.(map[string]map[string]interface{})
-	if !ok {
-		return "", fmt.Errorf("invalid data format for resource type %s", config.ResourceType)
-	}
+func (i *Importer) generateResourceTF(resourcesMap map[string]map[string]interface{}, config ResourceConfig) (string, error) {
 
 	var resourceNames []string
 	for name := range resourcesMap {
@@ -472,100 +426,43 @@ type stageDefinition struct {
 	StageName      string
 	ResourceType   string
 	DependsOnStage string
+	order          int
 }
 
-func stageOrder(mode string) []stageDefinition {
-	if mode == "campus" {
-		return []stageDefinition{
-			{"sfp_breakout_stage", "verity_sfp_breakout", ""},
-			{"acl_v6_stage", "verity_acl_v6", "sfp_breakout_stage"},
-			{"acl_v4_stage", "verity_acl_v4", "acl_v6_stage"},
-			{"mac_filter_stage", "verity_mac_filter", "acl_v4_stage"},
-			{"service_stage", "verity_service", "mac_filter_stage"},
-			{"port_acl_stage", "verity_port_acl", "service_stage"},
-			{"tacacs_profile_stage", "verity_tacacs_profile", "port_acl_stage"},
-			{"ldap_profile_stage", "verity_ldap_profile", "tacacs_profile_stage"},
-			{"sflow_collector_stage", "verity_sflow_collector", "ldap_profile_stage"},
-			{"eth_port_profile_stage", "verity_eth_port_profile", "sflow_collector_stage"},
-			{"packet_queue_stage", "verity_packet_queue", "eth_port_profile_stage"},
-			{"device_aaa_profile_stage", "verity_aaa_profile", "packet_queue_stage"},
-			{"fabric_stage", "verity_fabric", "device_aaa_profile_stage"},
-			{"service_port_profile_stage", "verity_service_port_profile", "fabric_stage"},
-			{"diagnostics_profile_stage", "verity_diagnostics_profile", "service_port_profile_stage"},
-			{"authenticated_eth_port_stage", "verity_authenticated_eth_port", "diagnostics_profile_stage"},
-			{"device_settings_stage", "verity_device_settings", "authenticated_eth_port_stage"},
-			{"voice_port_profile_stage", "verity_voice_port_profile", "device_settings_stage"},
-			{"lag_stage", "verity_lag", "voice_port_profile_stage"},
-			{"device_voice_setting_stage", "verity_device_voice_settings", "lag_stage"},
-			{"eth_port_settings_stage", "verity_eth_port_settings", "device_voice_setting_stage"},
-			{"diagnostics_port_profile_stage", "verity_diagnostics_port_profile", "eth_port_settings_stage"},
-			{"bundle_stage", "verity_bundle", "diagnostics_port_profile_stage"},
-			{"badge_stage", "verity_badge", "bundle_stage"},
-			{"grouping_rule_stage", "verity_grouping_rule", "badge_stage"},
-			{"switchpoint_stage", "verity_switchpoint", "grouping_rule_stage"},
-			{"threshold_stage", "verity_threshold", "switchpoint_stage"},
-			{"threshold_group_stage", "verity_threshold_group", "threshold_stage"},
-			{"pair_stage", "verity_pair", "threshold_group_stage"},
+func stageOrder(mode string) ([]stageDefinition, error) {
+	resources, err := registry.Load()
+	if err != nil {
+		return nil, fmt.Errorf("load import stages: %w", err)
+	}
+	stages := make([]stageDefinition, 0, len(resources))
+	for _, resource := range resources {
+		stage, declared := resource.ImportStages[spec.Mode(mode)]
+		if !declared {
+			continue
+		}
+		stages = append(stages, stageDefinition{StageName: stage.Name, ResourceType: resource.TerraformType, order: stage.Order})
+	}
+	sort.Slice(stages, func(i, j int) bool { return stages[i].order < stages[j].order })
+	for index := range stages {
+		if index > 0 {
+			stages[index].DependsOnStage = stages[index-1].StageName
 		}
 	}
-	return []stageDefinition{
-		{"sfp_breakout_stage", "verity_sfp_breakout", ""},
-		{"community_list_stage", "verity_community_list", "sfp_breakout_stage"},
-		{"as_path_access_list_stage", "verity_as_path_access_list", "community_list_stage"},
-		{"ipv6_prefix_list_stage", "verity_ipv6_prefix_list", "as_path_access_list_stage"},
-		{"ipv4_prefix_list_stage", "verity_ipv4_prefix_list", "ipv6_prefix_list_stage"},
-		{"extended_community_list_stage", "verity_extended_community_list", "ipv4_prefix_list_stage"},
-		{"acl_v6_stage", "verity_acl_v6", "extended_community_list_stage"},
-		{"acl_v4_stage", "verity_acl_v4", "acl_v6_stage"},
-		{"route_map_clause_stage", "verity_route_map_clause", "acl_v4_stage"},
-		{"pb_routing_acl_stage", "verity_pb_routing_acl", "route_map_clause_stage"},
-		{"route_map_stage", "verity_route_map", "pb_routing_acl_stage"},
-		{"pb_routing_stage", "verity_pb_routing", "route_map_stage"},
-		{"tenant_stage", "verity_tenant", "pb_routing_stage"},
-		{"service_stage", "verity_service", "tenant_stage"},
-		{"fabric_stage", "verity_fabric", "service_stage"},
-		{"tacacs_profile_stage", "verity_tacacs_profile", "fabric_stage"},
-		{"ldap_profile_stage", "verity_ldap_profile", "tacacs_profile_stage"},
-		{"port_acl_stage", "verity_port_acl", "ldap_profile_stage"},
-		{"ipv6_list_stage", "verity_ipv6_list", "port_acl_stage"},
-		{"ipv4_list_stage", "verity_ipv4_list", "ipv6_list_stage"},
-		{"pod_stage", "verity_pod", "ipv4_list_stage"},
-		{"packet_queue_stage", "verity_packet_queue", "pod_stage"},
-		{"device_aaa_profile_stage", "verity_aaa_profile", "packet_queue_stage"},
-		{"eth_port_profile_stage", "verity_eth_port_profile", "device_aaa_profile_stage"},
-		{"packet_broker_stage", "verity_packet_broker", "eth_port_profile_stage"},
-		{"sflow_collector_stage", "verity_sflow_collector", "packet_broker_stage"},
-		{"gateway_stage", "verity_gateway", "sflow_collector_stage"},
-		{"su_stage", "verity_su", "gateway_stage"},
-		{"diagnostics_port_profile_stage", "verity_diagnostics_port_profile", "su_stage"},
-		{"device_settings_stage", "verity_device_settings", "diagnostics_port_profile_stage"},
-		{"lag_stage", "verity_lag", "device_settings_stage"},
-		{"diagnostics_profile_stage", "verity_diagnostics_profile", "lag_stage"},
-		{"gateway_profile_stage", "verity_gateway_profile", "diagnostics_profile_stage"},
-		{"eth_port_settings_stage", "verity_eth_port_settings", "gateway_profile_stage"},
-		{"badge_stage", "verity_badge", "eth_port_settings_stage"},
-		{"plane_stage", "verity_plane", "badge_stage"},
-		{"spine_plane_stage", "verity_spine_plane", "plane_stage"},
-		{"rack_stage", "verity_rack", "spine_plane_stage"},
-		{"bundle_stage", "verity_bundle", "rack_stage"},
-		{"ssp_group_stage", "verity_ssp_group", "bundle_stage"},
-		{"grouping_rule_stage", "verity_grouping_rule", "ssp_group_stage"},
-		{"switchpoint_stage", "verity_switchpoint", "grouping_rule_stage"},
-		{"threshold_stage", "verity_threshold", "switchpoint_stage"},
-		{"threshold_group_stage", "verity_threshold_group", "threshold_stage"},
-		{"pair_stage", "verity_pair", "threshold_group_stage"},
-	}
+	return stages, nil
 }
 
-func ResourceTypeOrder(mode string) []string {
-	stages := stageOrder(mode)
+func ResourceTypeOrder(mode string) ([]string, error) {
+	stages, err := stageOrder(mode)
+	if err != nil {
+		return nil, err
+	}
 	order := make([]string, 0, len(stages))
 	for _, stage := range stages {
 		if utils.IsResourceCompatibleWithMode(stage.ResourceType, mode) {
 			order = append(order, stage.ResourceType)
 		}
 	}
-	return order
+	return order, nil
 }
 
 func (i *Importer) generateStagesTF() (string, error) {
@@ -575,7 +472,10 @@ func (i *Importer) generateStagesTF() (string, error) {
 		"mode": i.Mode,
 	})
 
-	stages := stageOrder(i.Mode)
+	stages, err := stageOrder(i.Mode)
+	if err != nil {
+		return "", err
+	}
 
 	var compatibleStages []stageDefinition
 	var lastCompatibleStage string
@@ -619,19 +519,6 @@ func (i *Importer) generateStagesTF() (string, error) {
 	})
 
 	return tfConfig.String(), nil
-}
-
-func (i *Importer) importACLsIPv4() (interface{}, error) {
-	return i.importACLs("4")
-}
-
-func (i *Importer) importACLsIPv6() (interface{}, error) {
-	return i.importACLs("6")
-}
-
-func (i *Importer) importACLs(ipVersion string) (map[string]map[string]interface{}, error) {
-	return i.fetch("IPv"+ipVersion+" ACLs", "/acls", map[string]string{"ip_version": ipVersion},
-		utils.ResponseCollectionKeyForType("verity_acl_v"+ipVersion))
 }
 
 func universalObjectPropsHandler(objProps map[string]interface{}, builder *strings.Builder, config ResourceConfig) {

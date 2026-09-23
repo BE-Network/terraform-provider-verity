@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"terraform-provider-verity/internal/spec"
+	"terraform-provider-verity/internal/utils"
 )
 
 func TestGeneratedSpecsMatchLegacyBulkRegistry(t *testing.T) {
@@ -75,6 +76,14 @@ func TestBulkMetadataMatchesGolden(t *testing.T) {
 		}
 		if config.HeaderSplitKey != want["header_split_key"] {
 			t.Errorf("%s header split key = %q, golden = %q", key, config.HeaderSplitKey, want["header_split_key"])
+		}
+	}
+}
+
+func TestEveryBulkKeyResolvesThroughTheRegistry(t *testing.T) {
+	for key := range resourceRegistry {
+		if _, err := utils.HeaderSplitKeyForBulkKey(key); err != nil {
+			t.Errorf("bulk key %q does not resolve: %v", key, err)
 		}
 	}
 }

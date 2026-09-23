@@ -437,6 +437,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "device_aaa_profile_stage",
+          "order": 12
+        },
+        "datacenter": {
+          "name": "device_aaa_profile_stage",
+          "order": 23
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -889,6 +899,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "acl_v4_stage",
+          "order": 3
+        },
+        "datacenter": {
+          "name": "acl_v4_stage",
+          "order": 8
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -1341,6 +1361,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "acl_v6_stage",
+          "order": 2
+        },
+        "datacenter": {
+          "name": "acl_v6_stage",
+          "order": 7
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -1644,6 +1674,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "as_path_access_list_stage",
+          "order": 3
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -2148,6 +2184,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "authenticated_eth_port_stage",
+          "order": 16
+        }
+      },
       "modes": [
         "campus"
       ],
@@ -2364,6 +2406,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "badge_stage",
+          "order": 24
+        },
+        "datacenter": {
+          "name": "badge_stage",
+          "order": 35
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -3708,6 +3760,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "bundle_stage",
+          "order": 23
+        },
+        "datacenter": {
+          "name": "bundle_stage",
+          "order": 39
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -4095,6 +4157,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "community_list_stage",
+          "order": 2
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -5276,6 +5344,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "device_settings_stage",
+          "order": 17
+        },
+        "datacenter": {
+          "name": "device_settings_stage",
+          "order": 30
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -7198,6 +7276,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "device_voice_setting_stage",
+          "order": 20
+        }
+      },
       "modes": [
         "campus"
       ],
@@ -7321,6 +7405,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "diagnostics_port_profile_stage",
+          "order": 22
+        },
+        "datacenter": {
+          "name": "diagnostics_port_profile_stage",
+          "order": 29
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -7805,6 +7899,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "diagnostics_profile_stage",
+          "order": 15
+        },
+        "datacenter": {
+          "name": "diagnostics_profile_stage",
+          "order": 32
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -8700,6 +8804,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "eth_port_profile_stage",
+          "order": 10
+        },
+        "datacenter": {
+          "name": "eth_port_profile_stage",
+          "order": 24
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -10325,6 +10439,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "eth_port_settings_stage",
+          "order": 21
+        },
+        "datacenter": {
+          "name": "eth_port_settings_stage",
+          "order": 34
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -10712,6 +10836,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "extended_community_list_stage",
+          "order": 6
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -12858,6 +12988,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "fabric_stage",
+          "order": 13
+        },
+        "datacenter": {
+          "name": "fabric_stage",
+          "order": 15
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -14299,6 +14439,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "gateway_stage",
+          "order": 27
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -14601,6 +14747,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "gateway_profile_stage",
+          "order": 33
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -15009,6 +15161,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "grouping_rule_stage",
+          "order": 25
+        },
+        "datacenter": {
+          "name": "grouping_rule_stage",
+          "order": 41
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -15130,6 +15292,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "ipv4_list_stage",
+          "order": 20
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -15488,6 +15656,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "ipv4_prefix_list_stage",
+          "order": 5
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -15608,6 +15782,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "ipv6_list_stage",
+          "order": 19
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -15966,6 +16146,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "ipv6_prefix_list_stage",
+          "order": 4
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -16457,6 +16643,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "lag_stage",
+          "order": 19
+        },
+        "datacenter": {
+          "name": "lag_stage",
+          "order": 31
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -17758,6 +17954,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "ldap_profile_stage",
+          "order": 8
+        },
+        "datacenter": {
+          "name": "ldap_profile_stage",
+          "order": 17
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -18027,6 +18233,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "mac_filter_stage",
+          "order": 4
+        }
+      },
       "modes": [
         "campus"
       ],
@@ -18739,6 +18951,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "packet_broker_stage",
+          "order": 25
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -19111,6 +19329,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "packet_queue_stage",
+          "order": 11
+        },
+        "datacenter": {
+          "name": "packet_queue_stage",
+          "order": 22
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -19427,6 +19655,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "pair_stage",
+          "order": 29
+        },
+        "datacenter": {
+          "name": "pair_stage",
+          "order": 45
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -19674,6 +19912,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "pb_routing_stage",
+          "order": 12
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -20438,6 +20682,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "pb_routing_acl_stage",
+          "order": 10
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -20682,6 +20932,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "plane_stage",
+          "order": 36
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -20954,6 +21210,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "pod_stage",
+          "order": 21
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -21684,6 +21946,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "port_acl_stage",
+          "order": 6
+        },
+        "datacenter": {
+          "name": "port_acl_stage",
+          "order": 18
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -21929,6 +22201,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "rack_stage",
+          "order": 38
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -22237,6 +22515,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "route_map_stage",
+          "order": 11
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -23307,6 +23591,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "route_map_clause_stage",
+          "order": 9
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -24239,6 +24529,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "service_stage",
+          "order": 5
+        },
+        "datacenter": {
+          "name": "service_stage",
+          "order": 14
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -24834,6 +25134,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "service_port_profile_stage",
+          "order": 14
+        }
+      },
       "modes": [
         "campus"
       ],
@@ -24986,6 +25292,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "sflow_collector_stage",
+          "order": 9
+        },
+        "datacenter": {
+          "name": "sflow_collector_stage",
+          "order": 26
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -25267,6 +25583,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "sfp_breakout_stage",
+          "order": 1
+        },
+        "datacenter": {
+          "name": "sfp_breakout_stage",
+          "order": 1
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -25484,6 +25810,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "spine_plane_stage",
+          "order": 37
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -25728,6 +26060,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "ssp_group_stage",
+          "order": 40
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -25972,6 +26310,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "su_stage",
+          "order": 28
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -29869,6 +30213,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "switchpoint_stage",
+          "order": 26
+        },
+        "datacenter": {
+          "name": "switchpoint_stage",
+          "order": 42
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -30233,6 +30587,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "tacacs_profile_stage",
+          "order": 7
+        },
+        "datacenter": {
+          "name": "tacacs_profile_stage",
+          "order": 16
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -31091,6 +31455,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "datacenter": {
+          "name": "tenant_stage",
+          "order": 13
+        }
+      },
       "modes": [
         "datacenter"
       ],
@@ -31779,6 +32149,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "threshold_stage",
+          "order": 27
+        },
+        "datacenter": {
+          "name": "threshold_stage",
+          "order": 43
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -32404,6 +32784,16 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "threshold_group_stage",
+          "order": 28
+        },
+        "datacenter": {
+          "name": "threshold_group_stage",
+          "order": 44
+        }
+      },
       "modes": [
         "campus",
         "datacenter"
@@ -33483,6 +33873,12 @@
         }
       ],
       "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "voice_port_profile_stage",
+          "order": 18
+        }
+      },
       "modes": [
         "campus"
       ],

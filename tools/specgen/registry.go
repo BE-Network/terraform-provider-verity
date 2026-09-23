@@ -49,17 +49,23 @@ type policyProfile struct {
 }
 
 type resourceOverride struct {
-	Path          string               `yaml:"path"`
-	TerraformType string               `yaml:"terraform_type"`
-	Description   string               `yaml:"description"`
-	Modes         []string             `yaml:"modes"`
-	Versions      versionRangeOverride `yaml:"versions"`
-	IdentityPath  string               `yaml:"identity_path"`
-	SchemaVersion int64                `yaml:"schema_version"`
-	API           apiOverride          `yaml:"api"`
-	Fields        []fieldOverride      `yaml:"fields"`
-	Dependencies  spec.DependencySpec  `yaml:"dependencies"`
-	Hooks         []string             `yaml:"hooks"`
+	Path          string                         `yaml:"path"`
+	TerraformType string                         `yaml:"terraform_type"`
+	Description   string                         `yaml:"description"`
+	Modes         []string                       `yaml:"modes"`
+	Versions      versionRangeOverride           `yaml:"versions"`
+	IdentityPath  string                         `yaml:"identity_path"`
+	SchemaVersion int64                          `yaml:"schema_version"`
+	API           apiOverride                    `yaml:"api"`
+	Fields        []fieldOverride                `yaml:"fields"`
+	Dependencies  spec.DependencySpec            `yaml:"dependencies"`
+	ImportStages  map[string]importStageOverride `yaml:"import_stage"`
+	Hooks         []string                       `yaml:"hooks"`
+}
+
+type importStageOverride struct {
+	Name  string `yaml:"name"`
+	Order int    `yaml:"order"`
 }
 
 type apiOverride struct {
@@ -301,6 +307,7 @@ func mergeResourceOverride(coverage coverageResource, override resourceOverride,
 		Operations:   operations,
 		Fields:       fields,
 		Dependencies: override.Dependencies,
+		ImportStages: importStagesFor(override.ImportStages),
 		Hooks:        override.Hooks,
 	}, nil
 }
@@ -758,4 +765,15 @@ func parseVersionRange(value versionRangeOverride) (spec.VersionRange, error) {
 
 func versionRangeSubset(value, container spec.VersionRange) bool {
 	return value.MinInclusive.Compare(container.MinInclusive) >= 0 && value.MaxExclusive.Compare(container.MaxExclusive) <= 0
+}
+
+func importStagesFor(overrides map[string]importStageOverride) map[spec.Mode]spec.ImportStageSpec {
+	if len(overrides) == 0 {
+		return nil
+	}
+	stages := make(map[spec.Mode]spec.ImportStageSpec, len(overrides))
+	for mode, stage := range overrides {
+		stages[spec.Mode(mode)] = spec.ImportStageSpec{Name: stage.Name, Order: stage.Order}
+	}
+	return stages
 }

@@ -31,6 +31,8 @@ resources:
     description: Manages a Verity IPv4 List Filter
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: ipv4_list_stage, order: 20}
     api:
       bulk_key: ipv4_list
       cache_key: ipv4_lists
@@ -49,6 +51,8 @@ resources:
     description: Manages a Verity MAC Filter.
     modes: [campus]
     identity_path: name
+    import_stage:
+      campus: {name: mac_filter_stage, order: 4}
     api:
       bulk_key: mac_filter
       cache_key: mac_filters
@@ -82,6 +86,8 @@ resources:
     description: Manages a Verity IPv6 List Filter
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: ipv6_list_stage, order: 19}
     api:
       bulk_key: ipv6_list
       cache_key: ipv6_lists
@@ -100,6 +106,9 @@ resources:
     description: Manages a Verity SFlow Collector
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: sflow_collector_stage, order: 9}
+      datacenter: {name: sflow_collector_stage, order: 26}
     api:
       bulk_key: sflow_collector
       cache_key: sflow_collectors
@@ -120,6 +129,9 @@ resources:
     description: Manages a Verity IPv4 IP Filter (ACL)
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: acl_v4_stage, order: 3}
+      datacenter: {name: acl_v4_stage, order: 8}
     api:
       bulk_key: acl
       cache_key: acls_ipv4
@@ -169,6 +181,9 @@ resources:
     description: Manages a Verity IPv6 IP Filter (ACL)
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: acl_v6_stage, order: 2}
+      datacenter: {name: acl_v6_stage, order: 7}
     api:
       bulk_key: acl
       cache_key: acls_ipv6
@@ -220,6 +235,9 @@ resources:
     description: Manages a Verity Device AAA Profile.
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: device_aaa_profile_stage, order: 12}
+      datacenter: {name: device_aaa_profile_stage, order: 23}
     api:
       bulk_key: device_aaa_profile
       cache_key: device_aaa_profiles
@@ -262,6 +280,8 @@ resources:
     description: Manages a Verity AS Path Access List
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: as_path_access_list_stage, order: 3}
     api:
       bulk_key: as_path_access_list
       cache_key: as_path_access_lists
@@ -303,6 +323,8 @@ resources:
     description: Manages a Verity Authenticated Eth-Port
     modes: [campus]
     identity_path: name
+    import_stage:
+      campus: {name: authenticated_eth_port_stage, order: 16}
     api:
       bulk_key: authenticated_eth_port
       cache_key: authenticated_eth_ports
@@ -356,6 +378,9 @@ resources:
     description: Manages a Badge resource
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: badge_stage, order: 24}
+      datacenter: {name: badge_stage, order: 35}
     api:
       bulk_key: badge
       cache_key: badges
@@ -384,6 +409,9 @@ resources:
     description: Manages a Verity Bundle
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: bundle_stage, order: 23}
+      datacenter: {name: bundle_stage, order: 39}
     api:
       bulk_key: bundle
       cache_key: bundles
@@ -511,6 +539,8 @@ resources:
     description: Manages a Verity Community List
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: community_list_stage, order: 2}
     api:
       bulk_key: community_list
       cache_key: community_lists
@@ -556,6 +586,8 @@ resources:
     description: Manages a Verity Device Voice Settings
     modes: [campus]
     identity_path: name
+    import_stage:
+      campus: {name: device_voice_setting_stage, order: 20}
     api:
       bulk_key: device_voice_settings
       cache_key: device_voice_settings
@@ -708,6 +740,9 @@ resources:
     description: Manages a Verity Diagnostics Port Profile
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: diagnostics_port_profile_stage, order: 22}
+      datacenter: {name: diagnostics_port_profile_stage, order: 29}
     api:
       bulk_key: diagnostics_port_profile
       cache_key: diagnostics_port_profiles
@@ -726,6 +761,9 @@ resources:
     description: Manages a Verity Diagnostics Profile
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: diagnostics_profile_stage, order: 15}
+      datacenter: {name: diagnostics_profile_stage, order: 32}
     api:
       bulk_key: diagnostics_profile
       cache_key: diagnostics_profiles
@@ -768,6 +806,9 @@ resources:
     description: Manages an Ethernet Port Profile
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: eth_port_profile_stage, order: 10}
+      datacenter: {name: eth_port_profile_stage, order: 24}
     api:
       bulk_key: eth_port_profile
       cache_key: eth_port_profiles
@@ -855,6 +896,9 @@ resources:
     description: Manages Ethernet port settings
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: eth_port_settings_stage, order: 21}
+      datacenter: {name: eth_port_settings_stage, order: 34}
     api:
       bulk_key: eth_port_settings
       cache_key: eth_port_settings
@@ -1004,6 +1048,8 @@ resources:
     description: Manages a Verity Extended Community List
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: extended_community_list_stage, order: 6}
     api:
       bulk_key: extended_community_list
       cache_key: extended_community_lists
@@ -1049,6 +1095,8 @@ resources:
     description: Manages a Gateway Profile
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: gateway_profile_stage, order: 33}
     api:
       bulk_key: gateway_profile
       cache_key: gateway_profiles
@@ -1084,6 +1132,9 @@ resources:
     description: Manages a Verity Grouping Rule.
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: grouping_rule_stage, order: 25}
+      datacenter: {name: grouping_rule_stage, order: 41}
     api:
       bulk_key: grouping_rule
       cache_key: grouping_rules
@@ -1125,6 +1176,8 @@ resources:
     description: Manages a Verity IPv4 Prefix List
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: ipv4_prefix_list_stage, order: 5}
     api:
       bulk_key: ipv4_prefix_list
       cache_key: ipv4_prefix_lists
@@ -1168,6 +1221,8 @@ resources:
     description: Manages a Verity IPv6 Prefix List
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: ipv6_prefix_list_stage, order: 4}
     api:
       bulk_key: ipv6_prefix_list
       cache_key: ipv6_prefix_lists
@@ -1211,6 +1266,9 @@ resources:
     description: Manages a Link Aggregation Group (LAG)
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: lag_stage, order: 19}
+      datacenter: {name: lag_stage, order: 31}
     api:
       bulk_key: lag
       cache_key: lags
@@ -1257,6 +1315,9 @@ resources:
     description: Manages a Verity LDAP Profile.
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: ldap_profile_stage, order: 8}
+      datacenter: {name: ldap_profile_stage, order: 17}
     api:
       bulk_key: ldap_profile
       cache_key: ldap_profiles
@@ -1366,6 +1427,8 @@ resources:
     description: Manages a Verity Packet Broker
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: packet_broker_stage, order: 25}
     api:
       bulk_key: packet_broker
       cache_key: packet_brokers
@@ -1442,6 +1505,9 @@ resources:
     description: Manages a Verity Packet Queue
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: packet_queue_stage, order: 11}
+      datacenter: {name: packet_queue_stage, order: 22}
     api:
       bulk_key: packet_queue
       cache_key: packet_queues
@@ -1487,6 +1553,9 @@ resources:
     description: Manages a Verity Switch Pair.
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: pair_stage, order: 29}
+      datacenter: {name: pair_stage, order: 45}
     api:
       bulk_key: pair
       cache_key: pairs
@@ -1517,6 +1586,8 @@ resources:
     description: Manages a Policy-Based Routing resource
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: pb_routing_stage, order: 12}
     api:
       bulk_key: pb_routing
       cache_key: pb_routing
@@ -1548,6 +1619,8 @@ resources:
     description: Manages a Policy-Based Routing ACL resource
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: pb_routing_acl_stage, order: 10}
     api:
       bulk_key: pb_routing_acl
       cache_key: pb_routing_acl
@@ -1628,6 +1701,8 @@ resources:
     description: Manages a Verity Plane resource
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: plane_stage, order: 36}
     api:
       bulk_key: plane
       cache_key: planes
@@ -1658,6 +1733,8 @@ resources:
     description: Manages a Pod resource
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: pod_stage, order: 21}
     api:
       bulk_key: pod
       cache_key: pods
@@ -1690,6 +1767,9 @@ resources:
     description: Manages a Verity Port ACL
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: port_acl_stage, order: 6}
+      datacenter: {name: port_acl_stage, order: 18}
     api:
       bulk_key: port_acl
       cache_key: port_acls
@@ -1766,6 +1846,8 @@ resources:
     description: Manages a Verity Rack resource
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: rack_stage, order: 38}
     api:
       bulk_key: rack
       cache_key: racks
@@ -1796,6 +1878,8 @@ resources:
     description: Manages a Verity Route Map
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: route_map_stage, order: 11}
     api:
       bulk_key: route_map
       cache_key: route_maps
@@ -1835,6 +1919,8 @@ resources:
     description: Manages a Verity Route Map Clause
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: route_map_clause_stage, order: 9}
     api:
       bulk_key: route_map_clause
       cache_key: route_map_clauses
@@ -1921,6 +2007,9 @@ resources:
     description: Manages a Service resource
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: service_stage, order: 5}
+      datacenter: {name: service_stage, order: 14}
     api:
       bulk_key: service
       cache_key: services
@@ -2028,6 +2117,8 @@ resources:
     description: Manages a Verity Service Port Profile
     modes: [campus]
     identity_path: name
+    import_stage:
+      campus: {name: service_port_profile_stage, order: 14}
     api:
       bulk_key: service_port_profile
       cache_key: service_port_profiles
@@ -2087,6 +2178,8 @@ resources:
     description: Manages a Spine Plane resource
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: spine_plane_stage, order: 37}
     api:
       bulk_key: spine_plane
       cache_key: spine_planes
@@ -2115,6 +2208,8 @@ resources:
     description: Manages a Verity SuperSpine Group resource
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: ssp_group_stage, order: 40}
     api:
       bulk_key: ssp_group
       cache_key: ssp_groups
@@ -2145,6 +2240,8 @@ resources:
     description: Manages a Verity SU resource
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: su_stage, order: 28}
     api:
       bulk_key: su
       cache_key: sus
@@ -2175,6 +2272,9 @@ resources:
     description: Manages a Verity Switchpoint
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: switchpoint_stage, order: 26}
+      datacenter: {name: switchpoint_stage, order: 42}
     api:
       bulk_key: switchpoint
       cache_key: switchpoints
@@ -2508,6 +2608,9 @@ resources:
     description: Manages a Verity TACACS Profile.
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: tacacs_profile_stage, order: 7}
+      datacenter: {name: tacacs_profile_stage, order: 16}
     api:
       bulk_key: tacacs_profile
       cache_key: tacacs_profiles
@@ -2547,6 +2650,8 @@ resources:
     description: Manages a Tenant resource
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: tenant_stage, order: 13}
     api:
       bulk_key: tenant
       cache_key: tenants
@@ -2625,6 +2730,9 @@ resources:
     description: Manages a Verity Threshold.
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: threshold_stage, order: 27}
+      datacenter: {name: threshold_stage, order: 43}
     api:
       bulk_key: threshold
       cache_key: thresholds
@@ -2686,6 +2794,9 @@ resources:
     description: Manages a Verity Threshold Group.
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: threshold_group_stage, order: 28}
+      datacenter: {name: threshold_group_stage, order: 44}
     api:
       bulk_key: threshold_group
       cache_key: threshold_groups
@@ -2746,6 +2857,8 @@ resources:
     description: Manages a Verity Voice Port Profile
     modes: [campus]
     identity_path: name
+    import_stage:
+      campus: {name: voice_port_profile_stage, order: 18}
     api:
       bulk_key: voice_port_profile
       cache_key: voice_port_profiles
@@ -2836,6 +2949,9 @@ resources:
     description: Manages a Verity Device Settings (Eth Device Profile)
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: device_settings_stage, order: 17}
+      datacenter: {name: device_settings_stage, order: 30}
     api:
       bulk_key: device_settings
       cache_key: device_settings
@@ -2954,6 +3070,9 @@ resources:
     description: Manages a Verity Fabric
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: fabric_stage, order: 13}
+      datacenter: {name: fabric_stage, order: 15}
     api:
       bulk_key: fabric
       cache_key: fabrics
@@ -3167,6 +3286,8 @@ resources:
     description: Manages a Verity Gateway
     modes: [datacenter]
     identity_path: name
+    import_stage:
+      datacenter: {name: gateway_stage, order: 27}
     api:
       bulk_key: gateway
       cache_key: gateways
@@ -3294,6 +3415,9 @@ resources:
     description: Manages a Verity SFP Breakout
     modes: [campus, datacenter]
     identity_path: name
+    import_stage:
+      campus: {name: sfp_breakout_stage, order: 1}
+      datacenter: {name: sfp_breakout_stage, order: 1}
     api:
       bulk_key: sfp_breakout
       cache_key: sfp_breakouts

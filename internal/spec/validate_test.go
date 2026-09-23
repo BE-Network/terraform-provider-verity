@@ -11,6 +11,52 @@ func TestResourceSpecValidateAcceptsCompleteIPv4List(t *testing.T) {
 	}
 }
 
+func TestRegistryValidateImportStages(t *testing.T) {
+	tests := []struct {
+		name string
+		edit func(Registry)
+		want string
+	}{
+		{"missing stage", func(r Registry) { delete(r[1].ImportStages, ModeDatacenter) }, "declares no import stage"},
+		{"duplicate name", func(r Registry) {
+			r[1].ImportStages[ModeDatacenter] = ImportStageSpec{Name: "datacenter_one", Order: 2}
+		}, "declared by both"},
+		{"duplicate order", func(r Registry) {
+			r[1].ImportStages[ModeDatacenter] = ImportStageSpec{Name: "datacenter_two", Order: 1}
+		}, "order 1 is declared by both"},
+		{"gap in order", func(r Registry) {
+			r[1].ImportStages[ModeDatacenter] = ImportStageSpec{Name: "datacenter_two", Order: 3}
+		}, "order 2 is missing"},
+		{"unsupported mode", func(r Registry) { r[0].ImportStages[ModeCampus] = ImportStageSpec{Name: "campus_one", Order: 1} }, "unsupported mode"},
+		{"unknown mode", func(r Registry) { r[0].ImportStages[Mode("other")] = ImportStageSpec{Name: "other", Order: 1} }, "unknown mode"},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			registry := validImportStageRegistry()
+			test.edit(registry)
+			err := registry.Validate()
+			if err == nil || !strings.Contains(err.Error(), test.want) {
+				t.Fatalf("Validate() error = %v, want substring %q", err, test.want)
+			}
+		})
+	}
+}
+
+func validImportStageRegistry() Registry {
+	first := validIPv4ListSpec()
+	first.ImportStages = map[Mode]ImportStageSpec{ModeDatacenter: {Name: "datacenter_one", Order: 1}}
+	second := validIPv4ListSpec()
+	second.TerraformType = "verity_ipv4_list_second"
+	second.API.EndpointPath = "/ipv4listssecond"
+	second.API.BulkKey = "ipv4_list_second"
+	second.API.RequestWrapperKey = "ipv4_list_second"
+	second.API.ResponseCollectionKey = "ipv4_list_second"
+	second.API.DeleteParameter = "ipv4_list_second_name"
+	second.API.CacheKey = "ipv4_lists_second"
+	second.ImportStages = map[Mode]ImportStageSpec{ModeDatacenter: {Name: "datacenter_two", Order: 2}}
+	return Registry{first, second}
+}
+
 func TestResourceSpecValidateRejectsIncompleteAndContradictoryFields(t *testing.T) {
 	tests := []struct {
 		name string

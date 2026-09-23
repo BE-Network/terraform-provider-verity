@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"terraform-provider-verity/internal/importer"
+	"terraform-provider-verity/internal/registry"
 	"terraform-provider-verity/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -184,57 +185,9 @@ func createImportBlocks(ctx context.Context, dirPath string, mode string) (strin
 		return "", fmt.Errorf("error writing to output file: %w", err)
 	}
 
-	supportedResources := map[string]struct{}{
-		"verity_service":                  {},
-		"verity_aaa_profile":              {},
-		"verity_ldap_profile":             {},
-		"verity_eth_port_profile":         {},
-		"verity_authenticated_eth_port":   {},
-		"verity_device_voice_settings":    {},
-		"verity_packet_queue":             {},
-		"verity_tacacs_profile":           {},
-		"verity_service_port_profile":     {},
-		"verity_voice_port_profile":       {},
-		"verity_eth_port_settings":        {},
-		"verity_device_settings":          {},
-		"verity_lag":                      {},
-		"verity_sflow_collector":          {},
-		"verity_diagnostics_profile":      {},
-		"verity_diagnostics_port_profile": {},
-		"verity_bundle":                   {},
-		"verity_acl_v4":                   {},
-		"verity_acl_v6":                   {},
-		"verity_ipv4_list":                {},
-		"verity_ipv6_list":                {},
-		"verity_port_acl":                 {},
-		"verity_badge":                    {},
-		"verity_switchpoint":              {},
-		"verity_mac_filter":               {},
-		"verity_fabric":                   {},
-		"verity_plane":                    {},
-		"verity_rack":                     {},
-		"verity_pair":                     {},
-		"verity_tenant":                   {},
-		"verity_gateway_profile":          {},
-		"verity_gateway":                  {},
-		"verity_ipv4_prefix_list":         {},
-		"verity_ipv6_prefix_list":         {},
-		"verity_packet_broker":            {},
-		"verity_pod":                      {},
-		"verity_ssp_group":                {},
-		"verity_su":                       {},
-		"verity_as_path_access_list":      {},
-		"verity_community_list":           {},
-		"verity_extended_community_list":  {},
-		"verity_route_map_clause":         {},
-		"verity_route_map":                {},
-		"verity_pb_routing":               {},
-		"verity_pb_routing_acl":           {},
-		"verity_spine_plane":              {},
-		"verity_sfp_breakout":             {},
-		"verity_grouping_rule":            {},
-		"verity_threshold_group":          {},
-		"verity_threshold":                {},
+	supportedResources, err := importerSupportedResources()
+	if err != nil {
+		return "", err
 	}
 
 	importBlocks := make(map[string][]string)
@@ -317,7 +270,11 @@ func createImportBlocks(ctx context.Context, dirPath string, mode string) (strin
 		}
 	}
 
-	for _, resourceType := range importBlockOrder(importBlocks, mode) {
+	resourceTypes, err := importBlockOrder(importBlocks, mode)
+	if err != nil {
+		return "", err
+	}
+	for _, resourceType := range resourceTypes {
 		blocks := importBlocks[resourceType]
 		if len(blocks) > 0 {
 			if _, err := file.WriteString(fmt.Sprintf("# %s imports\n", resourceType)); err != nil {
@@ -404,10 +361,14 @@ func findResourceBlocks(filePath string) ([]string, error) {
 	return blocks, nil
 }
 
-func importBlockOrder(importBlocks map[string][]string, mode string) []string {
+func importBlockOrder(importBlocks map[string][]string, mode string) ([]string, error) {
 	order := make([]string, 0, len(importBlocks))
 	written := make(map[string]bool, len(importBlocks))
-	for _, resourceType := range importer.ResourceTypeOrder(mode) {
+	resourceTypes, err := importer.ResourceTypeOrder(mode)
+	if err != nil {
+		return nil, fmt.Errorf("read importer resource order: %w", err)
+	}
+	for _, resourceType := range resourceTypes {
 		if _, present := importBlocks[resourceType]; present && !written[resourceType] {
 			order = append(order, resourceType)
 			written[resourceType] = true
@@ -420,5 +381,17 @@ func importBlockOrder(importBlocks map[string][]string, mode string) []string {
 		}
 	}
 	sort.Strings(remaining)
-	return append(order, remaining...)
+	return append(order, remaining...), nil
+}
+
+func importerSupportedResources() (map[string]struct{}, error) {
+	resources, err := registry.Load()
+	if err != nil {
+		return nil, fmt.Errorf("read resource registry: %w", err)
+	}
+	supported := make(map[string]struct{}, len(resources))
+	for _, resource := range resources {
+		supported[resource.TerraformType] = struct{}{}
+	}
+	return supported, nil
 }

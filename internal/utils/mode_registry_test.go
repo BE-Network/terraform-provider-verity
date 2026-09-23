@@ -38,35 +38,16 @@ func TestHeaderSplitKeyReadsTheRegistry(t *testing.T) {
 	}
 }
 
-func TestResponseCollectionKeyLookups(t *testing.T) {
-	cases := []struct {
-		endpoint, terraformType, bulkKey, want string
-	}{
-		{endpoint: "tenants", want: "tenant"},
-		{endpoint: "/bundles", want: "endpoint_bundle"},
-		{endpoint: "no_such_endpoint", want: ""},
-		{terraformType: "verity_acl_v4", want: "ipv4_filter"},
-		{terraformType: "verity_acl_v6", want: "ipv6_filter"},
-		{terraformType: "verity_no_such_resource", want: ""},
-		{bulkKey: "tenant", want: "tenant"},
-		{bulkKey: "device_voice_settings", want: "device_voice_settings"},
-		{bulkKey: "acl", want: ""},
-		{bulkKey: "no_such_bulk_key", want: ""},
+func TestResponseCollectionKeyForBulkKey(t *testing.T) {
+	cases := map[string]string{
+		"tenant":                "tenant",
+		"device_voice_settings": "device_voice_settings",
+		"acl":                   "",
+		"no_such_bulk_key":      "",
 	}
-	for _, tc := range cases {
-		switch {
-		case tc.endpoint != "":
-			if got := ResponseCollectionKeyForEndpoint(tc.endpoint); got != tc.want {
-				t.Errorf("ResponseCollectionKeyForEndpoint(%q) = %q, want %q", tc.endpoint, got, tc.want)
-			}
-		case tc.terraformType != "":
-			if got := ResponseCollectionKeyForType(tc.terraformType); got != tc.want {
-				t.Errorf("ResponseCollectionKeyForType(%q) = %q, want %q", tc.terraformType, got, tc.want)
-			}
-		default:
-			if got := ResponseCollectionKeyForBulkKey(tc.bulkKey); got != tc.want {
-				t.Errorf("ResponseCollectionKeyForBulkKey(%q) = %q, want %q", tc.bulkKey, got, tc.want)
-			}
+	for bulkKey, want := range cases {
+		if got := ResponseCollectionKeyForBulkKey(bulkKey); got != want {
+			t.Errorf("ResponseCollectionKeyForBulkKey(%q) = %q, want %q", bulkKey, got, want)
 		}
 	}
 }

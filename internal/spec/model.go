@@ -224,21 +224,27 @@ type OperationSpec struct {
 	Delete bool `json:"delete"`
 }
 
+type ImportStageSpec struct {
+	Name  string `json:"name"`
+	Order int    `json:"order"`
+}
+
 type DependencySpec struct {
 	Before []string `json:"before,omitempty"`
 	After  []string `json:"after,omitempty"`
 }
 
 type ResourceSpec struct {
-	TerraformType string          `json:"terraform_type"`
-	Description   string          `json:"description"`
-	Modes         []Mode          `json:"modes"`
-	Versions      VersionRange    `json:"versions"`
-	IdentityPath  string          `json:"identity_path"`
-	SchemaVersion int64           `json:"schema_version"`
-	API           APIResourceSpec `json:"api"`
-	Operations    OperationSpec   `json:"operations"`
-	Fields        []FieldSpec     `json:"fields"`
-	Dependencies  DependencySpec  `json:"dependencies,omitempty"`
-	Hooks         []string        `json:"hooks,omitempty"`
+	TerraformType string                   `json:"terraform_type"`
+	Description   string                   `json:"description"`
+	Modes         []Mode                   `json:"modes"`
+	Versions      VersionRange             `json:"versions"`
+	IdentityPath  string                   `json:"identity_path"`
+	SchemaVersion int64                    `json:"schema_version"`
+	API           APIResourceSpec          `json:"api"`
+	Operations    OperationSpec            `json:"operations"`
+	Fields        []FieldSpec              `json:"fields"`
+	Dependencies  DependencySpec           `json:"dependencies,omitempty"`
+	ImportStages  map[Mode]ImportStageSpec `json:"import_stages,omitempty"`
+	Hooks         []string                 `json:"hooks,omitempty"`
 }

@@ -274,6 +274,8 @@ To add a resource:
    `terraform_type`, `description`, `modes`, `identity_path`, the `api` keys
    (`bulk_key`, `cache_key`, `response_collection_key`, `delete_parameter`),
    and its `fields`. Declare only what OpenAPI cannot express:
+   - `import_stage`, the state importer's stage name and order for each mode
+     the resource supports;
    - `auto_assignment.recomputed_when`, if the server reassigns an
      auto-assigned value when another field changes (see `vni` under
      `verity_service`);
@@ -290,11 +292,7 @@ To add a resource:
    (with `--embed-output internal/registry/registry.json`), `adapters`,
    and `docs`. `adapters` skips a resource it cannot serve and
    prints why.
-4. **State importer.** Add the resource to `internal/importer/importer.go`: its
-   API call in `importerRegistry`, its rendering config in `resourceConfigs` and
-   `terraformTypeToResourceKey`, and its task in `ImportAll`. Stage ordering
-   lives in `generateStagesTF`.
-5. **Tests.** Add a coverage entry to `allResourceTests` in
+4. **Tests.** Add a coverage entry to `allResourceTests` in
    `tests/unit/lifecycle/field_coverage_test.go`, with a mock response in
    `tests/unit/testdata/responses/<mode>/`. Record the golden fixtures and the
    schema snapshot, review the diff, then run the suites (see "Unit Tests"):
@@ -307,7 +305,7 @@ To add a resource:
 To add or change a field on an existing resource, regenerate as in step 3. A
 field with a conventional OpenAPI shape and policies needs no override. Review
 the regenerated registry, adapter, and docs, then update the golden fixtures
-and schema snapshot as in step 5.
+and schema snapshot as in step 4.
 
 The pages in `docs/resources` are generated from one template,
 `tools/specgen/templates/resource.md.tmpl`. Change the template or the
