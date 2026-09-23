@@ -2,9 +2,7 @@ package importer
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -12,6 +10,9 @@ import (
 	"strconv"
 	"strings"
 
+	"terraform-provider-verity/internal/registry"
+	"terraform-provider-verity/internal/spec"
+	"terraform-provider-verity/internal/transport"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/openapi"
 
@@ -27,632 +28,75 @@ type Importer struct {
 	unsupported map[string]map[string]bool
 }
 
-type NestedBlockIterationStyle struct {
-	PrintIndexFirst     bool
-	SkipIndexInMainLoop bool
-	IterateAllAsMap     bool
-}
-
 type ResourceConfig struct {
 	ResourceType                 string
 	StageName                    string
-	HeaderNameLineFormat         string
-	HeaderDependsOnLineFormat    string
-	ObjectPropsHandler           func(objProps map[string]interface{}, builder *strings.Builder, config ResourceConfig)
 	NestedBlockFields            map[string]bool
 	ObjectPropsNestedBlockFields map[string]bool
 	FieldMappings                map[string]string
-	AdditionalTopLevelSkipKeys   []string
-	EmptyObjectPropsAsSingleLine bool
-	NestedBlockStyles            map[string]NestedBlockIterationStyle
+	SkipTopLevelKeys             map[string]bool
 }
 
-type ImporterFunc func(context.Context, *openapi.APIClient) (*http.Response, error)
+var apiFieldRenames = map[string]map[string]string{
+	"verity_device_voice_settings": {"Codecs": "codecs"},
+}
+
+var rootIndexSkipped = map[string]bool{
+	"verity_gateway_profile":  true,
+	"verity_eth_port_profile": true,
+	"verity_bundle":           true,
+}
+
+func (i *Importer) resourceConfig(terraformType string) (ResourceConfig, error) {
+	resource, err := registry.Lookup(terraformType)
+	if err != nil {
+		return ResourceConfig{}, err
+	}
+	config := ResourceConfig{
+		ResourceType:                 strings.TrimPrefix(terraformType, "verity_"),
+		StageName:                    stageNameFor(i.Mode, terraformType),
+		NestedBlockFields:            map[string]bool{},
+		ObjectPropsNestedBlockFields: map[string]bool{},
+		FieldMappings:                map[string]string{},
+		SkipTopLevelKeys:             map[string]bool{"name": true},
+	}
+	if rootIndexSkipped[terraformType] {
+		config.SkipTopLevelKeys["index"] = true
+	}
+	for apiName, terraformName := range apiFieldRenames[terraformType] {
+		config.FieldMappings[apiName] = terraformName
+	}
+	for _, field := range resource.Fields {
+		if field.Unmanaged {
+			continue
+		}
+		if field.APIName != field.TerraformName {
+			config.FieldMappings[field.APIName] = field.TerraformName
+		}
+		switch {
+		case field.Kind == spec.FieldKindList && len(field.Fields) > 0:
+			config.NestedBlockFields[field.TerraformName] = true
+		case field.Kind == spec.FieldKindObject:
+			for _, member := range field.Fields {
+				if !member.Unmanaged && member.Kind == spec.FieldKindList && len(member.Fields) > 0 {
+					config.ObjectPropsNestedBlockFields[member.TerraformName] = true
+				}
+			}
+		}
+	}
+	return config, nil
+}
+
+func stageNameFor(mode, terraformType string) string {
+	for _, stage := range stageOrder(mode) {
+		if stage.ResourceType == terraformType {
+			return stage.StageName
+		}
+	}
+	return ""
+}
 
 var nameSplitRE = regexp.MustCompile(`(\d+|\D+)`)
-
-var importerRegistry = map[string]struct {
-	apiCaller ImporterFunc
-}{
-	"tenants": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.TenantsAPI.TenantsGet(ctx).Execute()
-	}},
-	"gateways": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.GatewaysAPI.GatewaysGet(ctx).Execute()
-	}},
-	"gatewayprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.GatewayProfilesAPI.GatewayprofilesGet(ctx).Execute()
-	}},
-	"deviceaaaprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.DeviceAAAProfilesAPI.DeviceaaaprofilesGet(ctx).Execute()
-	}},
-	"ldapprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.LDAPProfilesAPI.LdapprofilesGet(ctx).Execute()
-	}},
-	"ethportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.EthPortProfilesAPI.EthportprofilesGet(ctx).Execute()
-	}},
-	"lags": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.LAGsAPI.LagsGet(ctx).Execute()
-	}},
-	"sflowcollectors": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.SFlowCollectorsAPI.SflowcollectorsGet(ctx).Execute()
-	}},
-	"diagnosticsprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.DiagnosticsProfilesAPI.DiagnosticsprofilesGet(ctx).Execute()
-	}},
-	"diagnosticsportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesGet(ctx).Execute()
-	}},
-	"services": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.ServicesAPI.ServicesGet(ctx).Execute()
-	}},
-	"ethportsettings": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.EthPortSettingsAPI.EthportsettingsGet(ctx).Execute()
-	}},
-	"bundles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.BundlesAPI.BundlesGet(ctx).Execute()
-	}},
-	"badges": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.BadgesAPI.BadgesGet(ctx).Execute()
-	}},
-	"authenticatedethports": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.AuthenticatedEthPortsAPI.AuthenticatedethportsGet(ctx).Execute()
-	}},
-	"devicevoicesettings": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.DeviceVoiceSettingsAPI.DevicevoicesettingsGet(ctx).Execute()
-	}},
-	"packetbroker": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.PacketBrokerAPI.PacketbrokerGet(ctx).Execute()
-	}},
-	"packetqueues": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.PacketQueuesAPI.PacketqueuesGet(ctx).Execute()
-	}},
-	"tacacsprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.TACACSProfilesAPI.TacacsprofilesGet(ctx).Execute()
-	}},
-	"serviceportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.ServicePortProfilesAPI.ServiceportprofilesGet(ctx).Execute()
-	}},
-	"voiceportprofiles": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.VoicePortProfilesAPI.VoiceportprofilesGet(ctx).Execute()
-	}},
-	"switchpoints": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.SwitchpointsAPI.SwitchpointsGet(ctx).Execute()
-	}},
-	"aspathaccesslists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.ASPathAccessListsAPI.AspathaccesslistsGet(ctx).Execute()
-	}},
-	"communitylists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.CommunityListsAPI.CommunitylistsGet(ctx).Execute()
-	}},
-	"macfilters": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.MACFiltersAPI.MacfiltersGet(ctx).Execute()
-	}},
-	"devicesettings": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.DeviceSettingsAPI.DevicesettingsGet(ctx).Execute()
-	}},
-	"extendedcommunitylists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.ExtendedCommunityListsAPI.ExtendedcommunitylistsGet(ctx).Execute()
-	}},
-	"ipv4lists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.IPv4ListFiltersAPI.Ipv4listsGet(ctx).Execute()
-	}},
-	"ipv4prefixlists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.IPv4PrefixListsAPI.Ipv4prefixlistsGet(ctx).Execute()
-	}},
-	"ipv6lists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.IPv6ListFiltersAPI.Ipv6listsGet(ctx).Execute()
-	}},
-	"ipv6prefixlists": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.IPv6PrefixListsAPI.Ipv6prefixlistsGet(ctx).Execute()
-	}},
-	"routemapclauses": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.RouteMapClausesAPI.RoutemapclausesGet(ctx).Execute()
-	}},
-	"routemaps": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.RouteMapsAPI.RoutemapsGet(ctx).Execute()
-	}},
-	"sfpbreakouts": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.SFPBreakoutsAPI.SfpbreakoutsGet(ctx).Execute()
-	}},
-	"fabrics": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.FabricsAPI.FabricsGet(ctx).Execute()
-	}},
-	"planes": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.PlanesAPI.PlanesGet(ctx).Execute()
-	}},
-	"racks": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.RacksAPI.RacksGet(ctx).Execute()
-	}},
-	"pairs": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.SwitchPairsAPI.PairsGet(ctx).Execute()
-	}},
-	"pods": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.PodsAPI.PodsGet(ctx).Execute()
-	}},
-	"sspgroups": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.SuperSpineGroupsAPI.SspgroupsGet(ctx).Execute()
-	}},
-	"spineplanes": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.SpinePlanesAPI.SpineplanesGet(ctx).Execute()
-	}},
-	"sus": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.SUsAPI.SusGet(ctx).Execute()
-	}},
-	"policybasedroutingacl": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.PBRoutingACLAPI.PolicybasedroutingaclGet(ctx).Execute()
-	}},
-	"policybasedrouting": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.PBRoutingAPI.PolicybasedroutingGet(ctx).Execute()
-	}},
-	"portacls": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.PortACLsAPI.PortaclsGet(ctx).Execute()
-	}},
-	"groupingrules": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.GroupingRulesAPI.GroupingrulesGet(ctx).Execute()
-	}},
-	"thresholdgroups": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.ThresholdGroupsAPI.ThresholdgroupsGet(ctx).Execute()
-	}},
-	"thresholds": {apiCaller: func(ctx context.Context, client *openapi.APIClient) (*http.Response, error) {
-		return client.ThresholdsAPI.ThresholdsGet(ctx).Execute()
-	}},
-}
-
-var terraformTypeToResourceKey = map[string]string{
-	"verity_tenant":                   "tenant",
-	"verity_gateway":                  "gateway",
-	"verity_gateway_profile":          "gateway_profile",
-	"verity_aaa_profile":              "aaa_profile",
-	"verity_ldap_profile":             "ldap_profile",
-	"verity_eth_port_profile":         "eth_port_profile",
-	"verity_lag":                      "lag",
-	"verity_sflow_collector":          "sflow_collector",
-	"verity_diagnostics_profile":      "diagnostics_profile",
-	"verity_diagnostics_port_profile": "diagnostics_port_profile",
-	"verity_pb_routing_acl":           "pb_routing_acl",
-	"verity_pb_routing":               "pb_routing",
-	"verity_service":                  "service",
-	"verity_eth_port_settings":        "eth_port_settings",
-	"verity_bundle":                   "bundle",
-	"verity_acl_v4":                   "acl_v4",
-	"verity_acl_v6":                   "acl_v6",
-	"verity_badge":                    "badge",
-	"verity_authenticated_eth_port":   "authenticated_eth_port",
-	"verity_device_voice_settings":    "device_voice_settings",
-	"verity_packet_broker":            "packet_broker",
-	"verity_packet_queue":             "packet_queue",
-	"verity_tacacs_profile":           "tacacs_profile",
-	"verity_service_port_profile":     "service_port_profile",
-	"verity_voice_port_profile":       "voice_port_profile",
-	"verity_spine_plane":              "spine_plane",
-	"verity_switchpoint":              "switchpoint",
-	"verity_as_path_access_list":      "as_path_access_list",
-	"verity_community_list":           "community_list",
-	"verity_mac_filter":               "mac_filter",
-	"verity_device_settings":          "device_settings",
-	"verity_extended_community_list":  "extended_community_list",
-	"verity_ipv4_list":                "ipv4_list",
-	"verity_ipv4_prefix_list":         "ipv4_prefix_list",
-	"verity_ipv6_list":                "ipv6_list",
-	"verity_ipv6_prefix_list":         "ipv6_prefix_list",
-	"verity_route_map_clause":         "route_map_clause",
-	"verity_route_map":                "route_map",
-	"verity_sfp_breakout":             "sfp_breakout",
-	"verity_fabric":                   "fabric",
-	"verity_plane":                    "plane",
-	"verity_rack":                     "rack",
-	"verity_pair":                     "pair",
-	"verity_pod":                      "pod",
-	"verity_ssp_group":                "ssp_group",
-	"verity_su":                       "su",
-	"verity_port_acl":                 "port_acl",
-	"verity_grouping_rule":            "grouping_rule",
-	"verity_threshold_group":          "threshold_group",
-	"verity_threshold":                "threshold",
-}
-
-var resourceConfigs = map[string]ResourceConfig{
-	"tenant": {
-		ResourceType:              "tenant",
-		StageName:                 "tenant_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"route_tenants": true, "route_aggregators": true},
-	},
-	"gateway": {
-		ResourceType:              "gateway",
-		StageName:                 "gateway_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"static_routes": true},
-	},
-	"gateway_profile": {
-		ResourceType:               "gateway_profile",
-		StageName:                  "gateway_profile_stage",
-		HeaderNameLineFormat:       "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:  "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:         universalObjectPropsHandler,
-		NestedBlockFields:          map[string]bool{"external_gateways": true},
-		AdditionalTopLevelSkipKeys: []string{"index"},
-	},
-	"aaa_profile": {
-		ResourceType:              "aaa_profile",
-		StageName:                 "device_aaa_profile_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"login_default": true},
-	},
-	"ldap_profile": {
-		ResourceType:              "ldap_profile",
-		StageName:                 "ldap_profile_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		NestedBlockFields:         map[string]bool{"ldap_servers": true, "attribute_maps": true},
-	},
-	"eth_port_profile": {
-		ResourceType:               "eth_port_profile",
-		StageName:                  "eth_port_profile_stage",
-		HeaderNameLineFormat:       "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:  "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:         universalObjectPropsHandler,
-		NestedBlockFields:          map[string]bool{"services": true},
-		AdditionalTopLevelSkipKeys: []string{"index"},
-	},
-	"lag": {
-		ResourceType:                 "lag",
-		StageName:                    "lag_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		EmptyObjectPropsAsSingleLine: true,
-	},
-	"sflow_collector": {
-		ResourceType:                 "sflow_collector",
-		StageName:                    "sflow_collector_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		EmptyObjectPropsAsSingleLine: true,
-	},
-	"diagnostics_profile": {
-		ResourceType:                 "diagnostics_profile",
-		StageName:                    "diagnostics_profile_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		EmptyObjectPropsAsSingleLine: true,
-	},
-	"diagnostics_port_profile": {
-		ResourceType:                 "diagnostics_port_profile",
-		StageName:                    "diagnostics_port_profile_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		EmptyObjectPropsAsSingleLine: true,
-	},
-	"pb_routing_acl": {
-		ResourceType:              "pb_routing_acl",
-		StageName:                 "pb_routing_acl_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"ipv4_permit": true, "ipv4_deny": true, "ipv6_permit": true, "ipv6_deny": true},
-	},
-	"pb_routing": {
-		ResourceType:              "pb_routing",
-		StageName:                 "pb_routing_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"policy": true},
-	},
-	"service": {
-		ResourceType:              "service",
-		StageName:                 "service_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	},
-	"eth_port_settings": {
-		ResourceType:              "eth_port_settings",
-		StageName:                 "eth_port_settings_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"lldp_med": true},
-	},
-	"bundle": {
-		ResourceType:               "bundle",
-		StageName:                  "bundle_stage",
-		HeaderNameLineFormat:       "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:  "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:         universalObjectPropsHandler,
-		NestedBlockFields:          map[string]bool{"eth_port_paths": true, "user_services": true, "rg_services": true, "voice_port_profile_paths": true},
-		AdditionalTopLevelSkipKeys: []string{"index"},
-		NestedBlockStyles: map[string]NestedBlockIterationStyle{
-			"eth_port_paths":           {IterateAllAsMap: true},
-			"user_services":            {IterateAllAsMap: true},
-			"rg_services":              {IterateAllAsMap: true},
-			"voice_port_profile_paths": {IterateAllAsMap: true},
-		},
-	},
-	"acl_v4": {
-		ResourceType:              "acl_v4",
-		StageName:                 "acl_v4_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	},
-	"acl_v6": {
-		ResourceType:              "acl_v6",
-		StageName:                 "acl_v6_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	},
-	"badge": {
-		ResourceType:               "badge",
-		StageName:                  "badge_stage",
-		HeaderNameLineFormat:       "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:  "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:         universalObjectPropsHandler,
-		AdditionalTopLevelSkipKeys: []string{},
-	},
-	"authenticated_eth_port": {
-		ResourceType:              "authenticated_eth_port",
-		StageName:                 "authenticated_eth_port_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"eth_ports": true},
-	},
-	"device_voice_settings": {
-		ResourceType:                 "device_voice_settings",
-		StageName:                    "device_voice_setting_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		EmptyObjectPropsAsSingleLine: true,
-		NestedBlockFields:            map[string]bool{"codecs": true},
-		FieldMappings:                map[string]string{"Codecs": "codecs"},
-	},
-	"packet_broker": {
-		ResourceType:              "packet_broker",
-		StageName:                 "packet_broker_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"ipv4_permit": true, "ipv4_deny": true, "ipv6_permit": true, "ipv6_deny": true},
-	},
-	"packet_queue": {
-		ResourceType:              "packet_queue",
-		StageName:                 "packet_queue_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"pbit": true, "queue": true},
-	},
-	"tacacs_profile": {
-		ResourceType:              "tacacs_profile",
-		StageName:                 "tacacs_profile_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"tacacs_servers": true},
-	},
-	"service_port_profile": {
-		ResourceType:              "service_port_profile",
-		StageName:                 "service_port_profile_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"services": true},
-	},
-	"voice_port_profile": {
-		ResourceType:                 "voice_port_profile",
-		StageName:                    "voice_port_profile_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		EmptyObjectPropsAsSingleLine: false,
-	},
-	"spine_plane": {
-		ResourceType:              "spine_plane",
-		StageName:                 "spine_plane_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	},
-	"switchpoint": {
-		ResourceType:              "switchpoint",
-		StageName:                 "switchpoint_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"badges": true, "children": true, "traffic_mirrors": true, "eths": true, "pots": true},
-	},
-	"as_path_access_list": {
-		ResourceType:              "as_path_access_list",
-		StageName:                 "as_path_access_list_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"lists": true},
-	},
-	"community_list": {
-		ResourceType:              "community_list",
-		StageName:                 "community_list_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"lists": true},
-	},
-	"mac_filter": {
-		ResourceType:              "mac_filter",
-		StageName:                 "mac_filter_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"filters": true},
-	},
-	"device_settings": {
-		ResourceType:              "device_settings",
-		StageName:                 "device_settings_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"dns_servers": true, "ntp_servers": true, "syslog_servers": true},
-	},
-	"extended_community_list": {
-		ResourceType:              "extended_community_list",
-		StageName:                 "extended_community_list_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"lists": true},
-	},
-	"ipv4_list": {
-		ResourceType:              "ipv4_list",
-		StageName:                 "ipv4_list_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	},
-	"ipv4_prefix_list": {
-		ResourceType:              "ipv4_prefix_list",
-		StageName:                 "ipv4_prefix_list_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"lists": true},
-	},
-	"ipv6_list": {
-		ResourceType:              "ipv6_list",
-		StageName:                 "ipv6_list_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	},
-	"ipv6_prefix_list": {
-		ResourceType:              "ipv6_prefix_list",
-		StageName:                 "ipv6_prefix_list_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"lists": true},
-	},
-	"route_map_clause": {
-		ResourceType:              "route_map_clause",
-		StageName:                 "route_map_clause_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	},
-	"route_map": {
-		ResourceType:              "route_map",
-		StageName:                 "route_map_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"route_map_clauses": true},
-	},
-	"sfp_breakout": {
-		ResourceType:              "sfp_breakout",
-		StageName:                 "sfp_breakout_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"breakout": true},
-	},
-	"fabric": {
-		ResourceType:                 "fabric",
-		StageName:                    "fabric_stage",
-		HeaderNameLineFormat:         "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat:    "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:           universalObjectPropsHandler,
-		NestedBlockFields:            map[string]bool{"route_aggregators": true},
-		ObjectPropsNestedBlockFields: map[string]bool{"system_graphs": true},
-	},
-	"plane": {
-		ResourceType:              "plane",
-		StageName:                 "plane_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	},
-	"rack": {
-		ResourceType:              "rack",
-		StageName:                 "rack_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	},
-	"pair": {
-		ResourceType:              "pair",
-		StageName:                 "pair_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	},
-	"pod": {
-		ResourceType:              "pod",
-		StageName:                 "pod_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	},
-	"ssp_group": {
-		ResourceType:              "ssp_group",
-		StageName:                 "ssp_group_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	},
-	"su": {
-		ResourceType:              "su",
-		StageName:                 "su_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-	},
-	"port_acl": {
-		ResourceType:              "port_acl",
-		StageName:                 "port_acl_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"ipv4_permit": true, "ipv4_deny": true, "ipv6_permit": true, "ipv6_deny": true},
-	},
-	"grouping_rule": {
-		ResourceType:              "grouping_rule",
-		StageName:                 "grouping_rule_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"rules": true},
-	},
-	"threshold_group": {
-		ResourceType:              "threshold_group",
-		StageName:                 "threshold_group_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"targets": true, "thresholds": true},
-	},
-	"threshold": {
-		ResourceType:              "threshold",
-		StageName:                 "threshold_stage",
-		HeaderNameLineFormat:      "    name = \"%s\"\n",
-		HeaderDependsOnLineFormat: "    depends_on = [verity_operation_stage.%s]\n",
-		ObjectPropsHandler:        universalObjectPropsHandler,
-		NestedBlockFields:         map[string]bool{"rules": true},
-	},
-}
 
 func getNaturalSortParts(s string) []interface{} {
 	matches := nameSplitRE.FindAllString(s, -1)
@@ -781,20 +225,21 @@ func (i *Importer) ImportAll(outputDir string) error {
 			continue
 		}
 
-		resourceKey, ok := terraformTypeToResourceKey[task.terraformResourceType]
-		if !ok {
-			tflog.Error(i.ctx, "No resource config found for terraform type", map[string]interface{}{
+		config, err := i.resourceConfig(task.terraformResourceType)
+		if err != nil {
+			tflog.Error(i.ctx, "No registry entry for terraform type", map[string]interface{}{
 				"resource_name":  task.name,
 				"terraform_type": task.terraformResourceType,
+				"error":          err,
 			})
-			return fmt.Errorf("no resource config found for %s", task.terraformResourceType)
+			return fmt.Errorf("no registry entry for %s: %w", task.terraformResourceType, err)
 		}
 
 		if objects, ok := data.(map[string]map[string]interface{}); ok {
 			i.PruneUnsupported(task.terraformResourceType, objects)
 		}
 
-		tfConfig, err := i.generateResourceTFByName(resourceKey, data)
+		tfConfig, err := i.generateResourceTF(data, config)
 		if err != nil {
 			tflog.Error(i.ctx, "Failed to generate Terraform config", map[string]interface{}{"resource_name": task.name, "error": err})
 			return fmt.Errorf("failed to generate terraform config for %s: %w", task.name, err)
@@ -829,42 +274,27 @@ func (i *Importer) ImportAll(outputDir string) error {
 }
 
 func (i *Importer) importResource(resourceName string) (interface{}, error) {
-	config, ok := importerRegistry[resourceName]
-	if !ok {
-		return nil, fmt.Errorf("no importer configuration found for %s", resourceName)
+	collectionKey := utils.ResponseCollectionKeyForEndpoint(resourceName)
+	if collectionKey == "" {
+		return nil, fmt.Errorf("the resource registry describes no endpoint %q", resourceName)
 	}
-
-	resp, err := config.apiCaller(i.ctx, i.client)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get %s: %v", resourceName, err)
-	}
-	defer resp.Body.Close()
-
-	result := make(map[string]map[string]map[string]interface{})
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode %s response: %v", resourceName, err)
-	}
-
-	jsonKey := utils.ResponseCollectionKeyForEndpoint(resourceName)
-	if jsonKey == "" {
-		return nil, fmt.Errorf("no JSON key mapping found for %s", resourceName)
-	}
-
-	data, ok := result[jsonKey]
-	if !ok {
-
-		return make(map[string]map[string]interface{}), nil
-	}
-
-	return data, nil
+	return i.fetch(resourceName, "/"+resourceName, nil, collectionKey)
 }
 
-func (i *Importer) generateResourceTFByName(resourceKey string, data interface{}) (string, error) {
-	cfg, ok := resourceConfigs[resourceKey]
-	if !ok {
-		return "", fmt.Errorf("unknown resource type: %s", resourceKey)
+func (i *Importer) fetch(label, endpointPath string, fixedHeaders map[string]string, collectionKey string) (map[string]map[string]interface{}, error) {
+	collection, err := transport.FetchCollection(i.ctx, i.client, label, endpointPath, fixedHeaders, collectionKey)
+	if err != nil {
+		return nil, err
 	}
-	return i.generateResourceTF(data, cfg)
+	objects := make(map[string]map[string]interface{}, len(collection))
+	for name, raw := range collection {
+		object, ok := raw.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf("%s object %q is not an object", label, name)
+		}
+		objects[name] = object
+	}
+	return objects, nil
 }
 
 func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (string, error) {
@@ -923,16 +353,10 @@ func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (
 		sanitizedName := utils.SanitizeResourceName(name)
 
 		tfConfig.WriteString(fmt.Sprintf("\nresource \"verity_%s\" \"%s\" {\n", config.ResourceType, sanitizedName))
-		tfConfig.WriteString(fmt.Sprintf(config.HeaderNameLineFormat, name))
-		tfConfig.WriteString(fmt.Sprintf(config.HeaderDependsOnLineFormat, config.StageName))
+		tfConfig.WriteString(fmt.Sprintf("    name = %q\n", name))
+		tfConfig.WriteString(fmt.Sprintf("    depends_on = [verity_operation_stage.%s]\n", config.StageName))
 
-		skipObjectProperties := false
-		for _, key := range config.AdditionalTopLevelSkipKeys {
-			if key == "object_properties" {
-				skipObjectProperties = true
-				break
-			}
-		}
+		skipObjectProperties := config.SkipTopLevelKeys["object_properties"]
 
 		if !skipObjectProperties {
 
@@ -944,19 +368,13 @@ func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (
 
 				isEmptyObjectProps := len(objProps) == 0
 
-				if isEmptyObjectProps && config.EmptyObjectPropsAsSingleLine {
+				if isEmptyObjectProps {
 					tfConfig.WriteString(" {}\n")
-				} else if isEmptyObjectProps {
-
-					tfConfig.WriteString(" {\n")
-					tfConfig.WriteString("	}\n")
 				} else {
 
 					tfConfig.WriteString(" {\n")
 					var objPropsContentBuilder strings.Builder
-					if config.ObjectPropsHandler != nil {
-						config.ObjectPropsHandler(objProps, &objPropsContentBuilder, config)
-					}
+					universalObjectPropsHandler(objProps, &objPropsContentBuilder, config)
 					tfConfig.WriteString(objPropsContentBuilder.String())
 					tfConfig.WriteString("	}\n")
 				}
@@ -964,11 +382,8 @@ func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (
 
 		}
 
-		skipKeysSet := map[string]bool{
-			"name":              true,
-			"object_properties": true,
-		}
-		for _, key := range config.AdditionalTopLevelSkipKeys {
+		skipKeysSet := map[string]bool{"object_properties": true}
+		for key := range config.SkipTopLevelKeys {
 			skipKeysSet[key] = true
 		}
 
@@ -1008,53 +423,29 @@ func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (
 				tfConfig.WriteString(fmt.Sprintf("	%s = %s\n", tfFieldName, formatValue(v)))
 			case []interface{}:
 				if _, isNestedBlock := config.NestedBlockFields[tfFieldName]; isNestedBlock {
-					style, hasStyle := config.NestedBlockStyles[tfFieldName]
-					if !hasStyle {
-						style = NestedBlockIterationStyle{PrintIndexFirst: true, SkipIndexInMainLoop: true, IterateAllAsMap: false}
-					}
-
 					for _, item := range v {
 						if itemMap, ok := item.(map[string]interface{}); ok {
 							tfConfig.WriteString(fmt.Sprintf("	%s {\n", tfFieldName))
 
-							if style.IterateAllAsMap {
-								itemKeys := make([]string, 0, len(itemMap))
-								for itemKey := range itemMap {
-									itemKeys = append(itemKeys, itemKey)
+							printedIndex := false
+							if indexVal, idxExists := itemMap["index"]; idxExists {
+								if indexFloat, isFloat := indexVal.(float64); isFloat {
+									tfConfig.WriteString(fmt.Sprintf("		index = %d\n", int(indexFloat)))
+									printedIndex = true
 								}
-								sort.Strings(itemKeys)
-								for _, itemKey := range itemKeys {
-									tfConfig.WriteString(fmt.Sprintf("		%s = %s\n", itemKey, formatValue(itemMap[itemKey])))
-								}
-							} else {
-								printedIndex := false
-								if style.PrintIndexFirst {
-									if indexVal, idxExists := itemMap["index"]; idxExists {
-										if indexFloat, isFloat := indexVal.(float64); isFloat {
-											tfConfig.WriteString(fmt.Sprintf("		index = %d\n", int(indexFloat)))
-											printedIndex = true
-										}
-									}
-								}
+							}
 
-								var nestedItemKeys []string
-								for itemKey := range itemMap {
-									if style.SkipIndexInMainLoop && itemKey == "index" && printedIndex {
-										continue
-									}
-									if itemKey == "index" && style.SkipIndexInMainLoop && !printedIndex {
-										if style.SkipIndexInMainLoop {
-											continue
-										}
-									}
-									nestedItemKeys = append(nestedItemKeys, itemKey)
+							var nestedItemKeys []string
+							for itemKey := range itemMap {
+								if itemKey == "index" && printedIndex {
+									continue
 								}
-								sort.Strings(nestedItemKeys)
+								nestedItemKeys = append(nestedItemKeys, itemKey)
+							}
+							sort.Strings(nestedItemKeys)
 
-								for _, itemKey := range nestedItemKeys {
-									itemValue := itemMap[itemKey]
-									tfConfig.WriteString(fmt.Sprintf("		%s = %s\n", itemKey, formatValue(itemValue)))
-								}
+							for _, itemKey := range nestedItemKeys {
+								tfConfig.WriteString(fmt.Sprintf("		%s = %s\n", itemKey, formatValue(itemMap[itemKey])))
 							}
 							tfConfig.WriteString("	}\n")
 						}
@@ -1239,24 +630,8 @@ func (i *Importer) importACLsIPv6() (interface{}, error) {
 }
 
 func (i *Importer) importACLs(ipVersion string) (map[string]map[string]interface{}, error) {
-	resp, err := i.client.ACLsAPI.AclsGet(i.ctx).IpVersion(ipVersion).Execute()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get %s ACLs: %v", ipVersion, err)
-	}
-	defer resp.Body.Close()
-
-	jsonKey := utils.ResponseCollectionKeyForType("verity_acl_v" + ipVersion)
-
-	var result map[string]map[string]map[string]interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, fmt.Errorf("failed to decode IPv%s ACLs response: %v", ipVersion, err)
-	}
-
-	if data, ok := result[jsonKey]; ok {
-		return data, nil
-	}
-
-	return make(map[string]map[string]interface{}), nil
+	return i.fetch("IPv"+ipVersion+" ACLs", "/acls", map[string]string{"ip_version": ipVersion},
+		utils.ResponseCollectionKeyForType("verity_acl_v"+ipVersion))
 }
 
 func universalObjectPropsHandler(objProps map[string]interface{}, builder *strings.Builder, config ResourceConfig) {

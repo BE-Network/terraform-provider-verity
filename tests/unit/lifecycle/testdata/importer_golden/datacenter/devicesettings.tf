@@ -2,8 +2,7 @@
 resource "verity_device_settings" "device_settings_test1" {
     name = "device_settings_test1"
     depends_on = [verity_operation_stage.device_settings_stage]
-	object_properties {
-	}
+	object_properties {}
 	commit_to_flash_interval = 0
 	cut_through_switching = false
 	disable_tcp_udp_learned_packet_acceleration = false

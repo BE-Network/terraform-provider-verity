@@ -2,8 +2,7 @@
 resource "verity_service" "service_test1" {
     name = "service_test1"
     depends_on = [verity_operation_stage.service_stage]
-	object_properties {
-	}
+	object_properties {}
 	anycast_ipv4_mask = "10.12.14.16/24"
 	anycast_ipv6_mask = ""
 	dhcp_server_ipv4 = ""

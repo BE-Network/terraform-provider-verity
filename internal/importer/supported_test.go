@@ -2,6 +2,7 @@ package importer
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -95,5 +96,44 @@ func TestPruneUnsupportedWithoutSchemasKeepsEverything(t *testing.T) {
 	imp.PruneUnsupported("verity_tenant", objects)
 	if _, kept := objects["t"]["anything"]; !kept {
 		t.Fatal("an argument was left out with no schema to check it against")
+	}
+}
+
+func TestPruneUnsupportedReportsARootIndexTheSchemaDoesNotHave(t *testing.T) {
+	tenant := &SchemaFields{Attributes: map[string]bool{"enable": true}, Blocks: map[string]*SchemaFields{}}
+	imp := (&Importer{}).WithSupportedFields(map[string]*SchemaFields{"verity_tenant": tenant})
+	objects := map[string]map[string]interface{}{"t": {"name": "t", "enable": true, "index": float64(1)}}
+	imp.PruneUnsupported("verity_tenant", objects)
+
+	if _, kept := objects["t"]["index"]; kept {
+		t.Error("a root index the schema does not have was written")
+	}
+	reported := imp.UnsupportedFields()["verity_tenant"]
+	if len(reported) != 1 || reported[0] != "index" {
+		t.Errorf("UnsupportedFields() = %v, want [index]: a newly returned field must be reported", reported)
+	}
+}
+
+func TestTheKnownRootIndexQuirksAreNeitherWrittenNorReported(t *testing.T) {
+	for _, terraformType := range []string{"verity_gateway_profile", "verity_eth_port_profile", "verity_bundle"} {
+		fields := &SchemaFields{Attributes: map[string]bool{"enable": true}, Blocks: map[string]*SchemaFields{}}
+		imp := (&Importer{Mode: "datacenter"}).WithSupportedFields(map[string]*SchemaFields{terraformType: fields})
+		objects := map[string]map[string]interface{}{"x": {"name": "x", "enable": true, "index": float64(1)}}
+		imp.PruneUnsupported(terraformType, objects)
+
+		if reported := imp.UnsupportedFields(); len(reported) != 0 {
+			t.Errorf("%s: root index reported as unsupported: %v", terraformType, reported)
+		}
+		config, err := imp.resourceConfig(terraformType)
+		if err != nil {
+			t.Fatalf("%s: %v", terraformType, err)
+		}
+		generated, err := imp.generateResourceTF(objects, config)
+		if err != nil {
+			t.Fatalf("%s: %v", terraformType, err)
+		}
+		if strings.Contains(generated, "index =") {
+			t.Errorf("%s: the root index reached the generated configuration:\n%s", terraformType, generated)
+		}
 	}
 }

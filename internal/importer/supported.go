@@ -30,14 +30,12 @@ func (i *Importer) PruneUnsupported(resourceType string, objects map[string]map[
 	if !known {
 		return
 	}
-	config := resourceConfigs[terraformTypeToResourceKey[resourceType]]
-
-	skip := map[string]bool{"name": true}
-	for _, key := range config.AdditionalTopLevelSkipKeys {
-		skip[key] = true
+	config, err := i.resourceConfig(resourceType)
+	if err != nil {
+		return
 	}
 	for _, object := range objects {
-		i.pruneObject(resourceType, fields, object, "", skip, config.FieldMappings)
+		i.pruneObject(resourceType, fields, object, "", config.SkipTopLevelKeys, config.FieldMappings)
 	}
 }
 

@@ -12,243 +12,243 @@ resource "verity_bundle" "Bundle_for_test" {
 	diagnostics_profile_ref_type_ = ""
 	enable = true
 	eth_port_paths {
-		eth_port_num_eth_port_profile = ""
-		eth_port_num_eth_port_profile_ref_type_ = ""
-		eth_port_num_eth_port_settings = ""
-		eth_port_num_eth_port_settings_ref_type_ = ""
-		eth_port_num_gateway_profile = ""
-		eth_port_num_gateway_profile_ref_type_ = ""
 		index = 1
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 2
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 3
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 4
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 5
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 6
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 7
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 8
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 9
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 10
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 11
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 12
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 13
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 14
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 15
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 16
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 17
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 18
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 19
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 20
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 21
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 22
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 23
-		port_name = ""
-	}
-	eth_port_paths {
 		eth_port_num_eth_port_profile = ""
 		eth_port_num_eth_port_profile_ref_type_ = ""
 		eth_port_num_eth_port_settings = ""
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
+		port_name = ""
+	}
+	eth_port_paths {
 		index = 24
+		eth_port_num_eth_port_profile = ""
+		eth_port_num_eth_port_profile_ref_type_ = ""
+		eth_port_num_eth_port_settings = ""
+		eth_port_num_eth_port_settings_ref_type_ = ""
+		eth_port_num_gateway_profile = ""
+		eth_port_num_gateway_profile_ref_type_ = ""
 		port_name = ""
 	}
 	protocol = "SIP"
