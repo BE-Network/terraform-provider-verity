@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 
@@ -316,7 +317,8 @@ func createImportBlocks(ctx context.Context, dirPath string, mode string) (strin
 		}
 	}
 
-	for resourceType, blocks := range importBlocks {
+	for _, resourceType := range importBlockOrder(importBlocks, mode) {
+		blocks := importBlocks[resourceType]
 		if len(blocks) > 0 {
 			if _, err := file.WriteString(fmt.Sprintf("# %s imports\n", resourceType)); err != nil {
 				return "", fmt.Errorf("error writing to output file: %w", err)
@@ -400,4 +402,23 @@ func findResourceBlocks(filePath string) ([]string, error) {
 	}
 
 	return blocks, nil
+}
+
+func importBlockOrder(importBlocks map[string][]string, mode string) []string {
+	order := make([]string, 0, len(importBlocks))
+	written := make(map[string]bool, len(importBlocks))
+	for _, resourceType := range importer.ResourceTypeOrder(mode) {
+		if _, present := importBlocks[resourceType]; present && !written[resourceType] {
+			order = append(order, resourceType)
+			written[resourceType] = true
+		}
+	}
+	remaining := make([]string, 0, len(importBlocks)-len(order))
+	for resourceType := range importBlocks {
+		if !written[resourceType] {
+			remaining = append(remaining, resourceType)
+		}
+	}
+	sort.Strings(remaining)
+	return append(order, remaining...)
 }

@@ -1018,8 +1018,13 @@ func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (
 							tfConfig.WriteString(fmt.Sprintf("	%s {\n", tfFieldName))
 
 							if style.IterateAllAsMap {
-								for itemKey, itemValue := range itemMap {
-									tfConfig.WriteString(fmt.Sprintf("		%s = %s\n", itemKey, formatValue(itemValue)))
+								itemKeys := make([]string, 0, len(itemMap))
+								for itemKey := range itemMap {
+									itemKeys = append(itemKeys, itemKey)
+								}
+								sort.Strings(itemKeys)
+								for _, itemKey := range itemKeys {
+									tfConfig.WriteString(fmt.Sprintf("		%s = %s\n", itemKey, formatValue(itemMap[itemKey])))
 								}
 							} else {
 								printedIndex := false
@@ -1072,23 +1077,15 @@ func (i *Importer) generateResourceTF(data interface{}, config ResourceConfig) (
 	return tfConfig.String(), nil
 }
 
-func (i *Importer) generateStagesTF() (string, error) {
-	var tfConfig strings.Builder
+type stageDefinition struct {
+	StageName      string
+	ResourceType   string
+	DependsOnStage string
+}
 
-	tflog.Info(i.ctx, "Generating stages for mode", map[string]interface{}{
-		"mode": i.Mode,
-	})
-
-	type StageDefinition struct {
-		StageName      string
-		ResourceType   string
-		DependsOnStage string
-	}
-
-	var stageOrder []StageDefinition
-
-	if i.Mode == "campus" {
-		stageOrder = []StageDefinition{
+func stageOrder(mode string) []stageDefinition {
+	if mode == "campus" {
+		return []stageDefinition{
 			{"sfp_breakout_stage", "verity_sfp_breakout", ""},
 			{"acl_v6_stage", "verity_acl_v6", "sfp_breakout_stage"},
 			{"acl_v4_stage", "verity_acl_v4", "acl_v6_stage"},
@@ -1119,61 +1116,80 @@ func (i *Importer) generateStagesTF() (string, error) {
 			{"threshold_group_stage", "verity_threshold_group", "threshold_stage"},
 			{"pair_stage", "verity_pair", "threshold_group_stage"},
 		}
-	} else {
+	}
+	return []stageDefinition{
+		{"sfp_breakout_stage", "verity_sfp_breakout", ""},
+		{"community_list_stage", "verity_community_list", "sfp_breakout_stage"},
+		{"as_path_access_list_stage", "verity_as_path_access_list", "community_list_stage"},
+		{"ipv6_prefix_list_stage", "verity_ipv6_prefix_list", "as_path_access_list_stage"},
+		{"ipv4_prefix_list_stage", "verity_ipv4_prefix_list", "ipv6_prefix_list_stage"},
+		{"extended_community_list_stage", "verity_extended_community_list", "ipv4_prefix_list_stage"},
+		{"acl_v6_stage", "verity_acl_v6", "extended_community_list_stage"},
+		{"acl_v4_stage", "verity_acl_v4", "acl_v6_stage"},
+		{"route_map_clause_stage", "verity_route_map_clause", "acl_v4_stage"},
+		{"pb_routing_acl_stage", "verity_pb_routing_acl", "route_map_clause_stage"},
+		{"route_map_stage", "verity_route_map", "pb_routing_acl_stage"},
+		{"pb_routing_stage", "verity_pb_routing", "route_map_stage"},
+		{"tenant_stage", "verity_tenant", "pb_routing_stage"},
+		{"service_stage", "verity_service", "tenant_stage"},
+		{"fabric_stage", "verity_fabric", "service_stage"},
+		{"tacacs_profile_stage", "verity_tacacs_profile", "fabric_stage"},
+		{"ldap_profile_stage", "verity_ldap_profile", "tacacs_profile_stage"},
+		{"port_acl_stage", "verity_port_acl", "ldap_profile_stage"},
+		{"ipv6_list_stage", "verity_ipv6_list", "port_acl_stage"},
+		{"ipv4_list_stage", "verity_ipv4_list", "ipv6_list_stage"},
+		{"pod_stage", "verity_pod", "ipv4_list_stage"},
+		{"packet_queue_stage", "verity_packet_queue", "pod_stage"},
+		{"device_aaa_profile_stage", "verity_aaa_profile", "packet_queue_stage"},
+		{"eth_port_profile_stage", "verity_eth_port_profile", "device_aaa_profile_stage"},
+		{"packet_broker_stage", "verity_packet_broker", "eth_port_profile_stage"},
+		{"sflow_collector_stage", "verity_sflow_collector", "packet_broker_stage"},
+		{"gateway_stage", "verity_gateway", "sflow_collector_stage"},
+		{"su_stage", "verity_su", "gateway_stage"},
+		{"diagnostics_port_profile_stage", "verity_diagnostics_port_profile", "su_stage"},
+		{"device_settings_stage", "verity_device_settings", "diagnostics_port_profile_stage"},
+		{"lag_stage", "verity_lag", "device_settings_stage"},
+		{"diagnostics_profile_stage", "verity_diagnostics_profile", "lag_stage"},
+		{"gateway_profile_stage", "verity_gateway_profile", "diagnostics_profile_stage"},
+		{"eth_port_settings_stage", "verity_eth_port_settings", "gateway_profile_stage"},
+		{"badge_stage", "verity_badge", "eth_port_settings_stage"},
+		{"plane_stage", "verity_plane", "badge_stage"},
+		{"spine_plane_stage", "verity_spine_plane", "plane_stage"},
+		{"rack_stage", "verity_rack", "spine_plane_stage"},
+		{"bundle_stage", "verity_bundle", "rack_stage"},
+		{"ssp_group_stage", "verity_ssp_group", "bundle_stage"},
+		{"grouping_rule_stage", "verity_grouping_rule", "ssp_group_stage"},
+		{"switchpoint_stage", "verity_switchpoint", "grouping_rule_stage"},
+		{"threshold_stage", "verity_threshold", "switchpoint_stage"},
+		{"threshold_group_stage", "verity_threshold_group", "threshold_stage"},
+		{"pair_stage", "verity_pair", "threshold_group_stage"},
+	}
+}
 
-		stageOrder = []StageDefinition{
-			{"sfp_breakout_stage", "verity_sfp_breakout", ""},
-			{"community_list_stage", "verity_community_list", "sfp_breakout_stage"},
-			{"as_path_access_list_stage", "verity_as_path_access_list", "community_list_stage"},
-			{"ipv6_prefix_list_stage", "verity_ipv6_prefix_list", "as_path_access_list_stage"},
-			{"ipv4_prefix_list_stage", "verity_ipv4_prefix_list", "ipv6_prefix_list_stage"},
-			{"extended_community_list_stage", "verity_extended_community_list", "ipv4_prefix_list_stage"},
-			{"acl_v6_stage", "verity_acl_v6", "extended_community_list_stage"},
-			{"acl_v4_stage", "verity_acl_v4", "acl_v6_stage"},
-			{"route_map_clause_stage", "verity_route_map_clause", "acl_v4_stage"},
-			{"pb_routing_acl_stage", "verity_pb_routing_acl", "route_map_clause_stage"},
-			{"route_map_stage", "verity_route_map", "pb_routing_acl_stage"},
-			{"pb_routing_stage", "verity_pb_routing", "route_map_stage"},
-			{"tenant_stage", "verity_tenant", "pb_routing_stage"},
-			{"service_stage", "verity_service", "tenant_stage"},
-			{"fabric_stage", "verity_fabric", "service_stage"},
-			{"tacacs_profile_stage", "verity_tacacs_profile", "fabric_stage"},
-			{"ldap_profile_stage", "verity_ldap_profile", "tacacs_profile_stage"},
-			{"port_acl_stage", "verity_port_acl", "ldap_profile_stage"},
-			{"ipv6_list_stage", "verity_ipv6_list", "port_acl_stage"},
-			{"ipv4_list_stage", "verity_ipv4_list", "ipv6_list_stage"},
-			{"pod_stage", "verity_pod", "ipv4_list_stage"},
-			{"packet_queue_stage", "verity_packet_queue", "pod_stage"},
-			{"device_aaa_profile_stage", "verity_aaa_profile", "packet_queue_stage"},
-			{"eth_port_profile_stage", "verity_eth_port_profile", "device_aaa_profile_stage"},
-			{"packet_broker_stage", "verity_packet_broker", "eth_port_profile_stage"},
-			{"sflow_collector_stage", "verity_sflow_collector", "packet_broker_stage"},
-			{"gateway_stage", "verity_gateway", "sflow_collector_stage"},
-			{"su_stage", "verity_su", "gateway_stage"},
-			{"diagnostics_port_profile_stage", "verity_diagnostics_port_profile", "su_stage"},
-			{"device_settings_stage", "verity_device_settings", "diagnostics_port_profile_stage"},
-			{"lag_stage", "verity_lag", "device_settings_stage"},
-			{"diagnostics_profile_stage", "verity_diagnostics_profile", "lag_stage"},
-			{"gateway_profile_stage", "verity_gateway_profile", "diagnostics_profile_stage"},
-			{"eth_port_settings_stage", "verity_eth_port_settings", "gateway_profile_stage"},
-			{"badge_stage", "verity_badge", "eth_port_settings_stage"},
-			{"plane_stage", "verity_plane", "badge_stage"},
-			{"spine_plane_stage", "verity_spine_plane", "plane_stage"},
-			{"rack_stage", "verity_rack", "spine_plane_stage"},
-			{"bundle_stage", "verity_bundle", "rack_stage"},
-			{"ssp_group_stage", "verity_ssp_group", "bundle_stage"},
-			{"grouping_rule_stage", "verity_grouping_rule", "ssp_group_stage"},
-			{"switchpoint_stage", "verity_switchpoint", "grouping_rule_stage"},
-			{"threshold_stage", "verity_threshold", "switchpoint_stage"},
-			{"threshold_group_stage", "verity_threshold_group", "threshold_stage"},
-			{"pair_stage", "verity_pair", "threshold_group_stage"},
+func ResourceTypeOrder(mode string) []string {
+	stages := stageOrder(mode)
+	order := make([]string, 0, len(stages))
+	for _, stage := range stages {
+		if utils.IsResourceCompatibleWithMode(stage.ResourceType, mode) {
+			order = append(order, stage.ResourceType)
 		}
 	}
+	return order
+}
 
-	var compatibleStages []StageDefinition
+func (i *Importer) generateStagesTF() (string, error) {
+	var tfConfig strings.Builder
+
+	tflog.Info(i.ctx, "Generating stages for mode", map[string]interface{}{
+		"mode": i.Mode,
+	})
+
+	stages := stageOrder(i.Mode)
+
+	var compatibleStages []stageDefinition
 	var lastCompatibleStage string
 
-	for _, stage := range stageOrder {
+	for _, stage := range stages {
 		if utils.IsResourceCompatibleWithMode(stage.ResourceType, i.Mode) {
 			if stage.DependsOnStage != "" && lastCompatibleStage != "" && stage.DependsOnStage != lastCompatibleStage {
 				stage.DependsOnStage = lastCompatibleStage
@@ -1207,7 +1223,7 @@ func (i *Importer) generateStagesTF() (string, error) {
 
 	tflog.Info(i.ctx, "Generated stages", map[string]interface{}{
 		"mode":              i.Mode,
-		"total_stages":      len(stageOrder),
+		"total_stages":      len(stages),
 		"compatible_stages": len(compatibleStages),
 	})
 
