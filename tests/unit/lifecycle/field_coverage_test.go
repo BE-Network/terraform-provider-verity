@@ -2,10 +2,7 @@ package lifecycle
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"os"
-	"path/filepath"
 	"sort"
 	"strings"
 	"testing"
@@ -16,6 +13,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"terraform-provider-verity/internal/provider"
+	"terraform-provider-verity/internal/registry"
+	"terraform-provider-verity/internal/spec"
 	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/tests/unit/mock"
 )
@@ -66,367 +65,131 @@ func init() {
 	}
 }
 
-var allResourceTests = []ResourceCoverageEntry{
+type coverageTestData struct {
+	ResourceName string
+	Overrides    map[string]string
+}
 
-	{
-		TerraformType: "verity_badge",
-		APIPath:       "/api/badges",
-		WrapperKey:    "badge",
-		Mode:          "datacenter",
-		ResourceName:  "cov_badge",
+var coverageTestDataByType = map[string]coverageTestData{
+	"verity_aaa_profile":              {ResourceName: "cov_aaa"},
+	"verity_acl_v4":                   {ResourceName: "cov_aclv4"},
+	"verity_acl_v6":                   {ResourceName: "cov_aclv6"},
+	"verity_as_path_access_list":      {ResourceName: "cov_apal"},
+	"verity_authenticated_eth_port":   {ResourceName: "cov_aep"},
+	"verity_badge":                    {ResourceName: "cov_badge"},
+	"verity_bundle":                   {ResourceName: "cov_bundle"},
+	"verity_community_list":           {ResourceName: "cov_cl"},
+	"verity_device_settings":          {ResourceName: "cov_ds"},
+	"verity_device_voice_settings":    {ResourceName: "cov_dvs"},
+	"verity_diagnostics_port_profile": {ResourceName: "cov_diagpp"},
+	"verity_diagnostics_profile":      {ResourceName: "cov_diagp"},
+	"verity_eth_port_profile":         {ResourceName: "cov_ethpp"},
+	"verity_eth_port_settings":        {ResourceName: "cov_ethps"},
+	"verity_extended_community_list":  {ResourceName: "cov_ecl"},
+	"verity_fabric":                   {ResourceName: "cov_fabric"},
+	"verity_gateway":                  {ResourceName: "cov_gw"},
+	"verity_gateway_profile":          {ResourceName: "cov_gwp"},
+	"verity_grouping_rule":            {ResourceName: "cov_gr"},
+	"verity_ipv4_list":                {ResourceName: "cov_ipv4l"},
+	"verity_ipv4_prefix_list":         {ResourceName: "cov_ipv4pl"},
+	"verity_ipv6_list":                {ResourceName: "cov_ipv6l"},
+	"verity_ipv6_prefix_list":         {ResourceName: "cov_ipv6pl"},
+	"verity_lag":                      {ResourceName: "cov_lag"},
+	"verity_ldap_profile":             {ResourceName: "cov_ldap"},
+	"verity_mac_filter":               {ResourceName: "cov_mac_filter"},
+	"verity_packet_broker":            {ResourceName: "cov_pb"},
+	"verity_packet_queue":             {ResourceName: "cov_pq"},
+	"verity_pair":                     {ResourceName: "cov_pair"},
+	"verity_pb_routing":               {ResourceName: "cov_pbr"},
+	"verity_pb_routing_acl":           {ResourceName: "cov_pbra"},
+	"verity_plane":                    {ResourceName: "cov_plane"},
+	"verity_pod":                      {ResourceName: "cov_pod"},
+	"verity_port_acl":                 {ResourceName: "cov_pacl"},
+	"verity_rack":                     {ResourceName: "cov_rack"},
+	"verity_route_map":                {ResourceName: "cov_rm"},
+	"verity_route_map_clause":         {ResourceName: "cov_rmc"},
+	"verity_service":                  {ResourceName: "cov_service"},
+	"verity_service_port_profile":     {ResourceName: "cov_spp"},
+	"verity_sflow_collector":          {ResourceName: "cov_sflow"},
+	"verity_sfp_breakout":             {ResourceName: "cov_sfpb"},
+	"verity_spine_plane":              {ResourceName: "cov_spinep"},
+	"verity_ssp_group":                {ResourceName: "cov_ssp_group"},
+	"verity_su":                       {ResourceName: "cov_su"},
+	"verity_switchpoint":              {ResourceName: "cov_sp"},
+	"verity_tacacs_profile":           {ResourceName: "cov_tacacs_profile"},
+	"verity_tenant": {
+		ResourceName: "cov_tenant",
+		Overrides:    map[string]string{"vrf_name": `"TestVrf"`},
 	},
-	{
-		TerraformType: "verity_bundle",
-		APIPath:       "/api/bundles",
-		WrapperKey:    "endpoint_bundle",
-		Mode:          "datacenter",
-		ResourceName:  "cov_bundle",
-	},
-	{
-		TerraformType: "verity_service",
-		APIPath:       "/api/services",
-		WrapperKey:    "service",
-		Mode:          "datacenter",
-		ResourceName:  "cov_service",
-	},
-	{
-		TerraformType: "verity_aaa_profile",
-		APIPath:       "/api/deviceaaaprofiles",
-		WrapperKey:    "device_aaa_profile",
-		Mode:          "datacenter",
-		ResourceName:  "cov_aaa",
-	},
-	{
-		TerraformType: "verity_ldap_profile",
-		APIPath:       "/api/ldapprofiles",
-		WrapperKey:    "ldap_profile",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ldap",
-	},
-	{
-		TerraformType: "verity_fabric",
-		APIPath:       "/api/fabrics",
-		WrapperKey:    "fabric",
-		Mode:          "datacenter",
-		ResourceName:  "cov_fabric",
-	},
-	{
-		TerraformType: "verity_plane",
-		APIPath:       "/api/planes",
-		WrapperKey:    "plane",
-		Mode:          "datacenter",
-		ResourceName:  "cov_plane",
-	},
-	{
-		TerraformType: "verity_rack",
-		APIPath:       "/api/racks",
-		WrapperKey:    "rack",
-		Mode:          "datacenter",
-		ResourceName:  "cov_rack",
-	},
-	{
-		TerraformType: "verity_eth_port_profile",
-		APIPath:       "/api/ethportprofiles",
-		WrapperKey:    "eth_port_profile_",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ethpp",
-	},
-	{
-		TerraformType: "verity_eth_port_settings",
-		APIPath:       "/api/ethportsettings",
-		WrapperKey:    "eth_port_settings",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ethps",
-	},
-	{
-		TerraformType: "verity_lag",
-		APIPath:       "/api/lags",
-		WrapperKey:    "lag",
-		Mode:          "datacenter",
-		ResourceName:  "cov_lag",
-	},
-	{
-		TerraformType:       "verity_acl_v4",
-		APIPath:             "/api/acls",
-		WrapperKey:          "ip_filter",
-		Mode:                "datacenter",
-		ResourceName:        "cov_aclv4",
-		RequiredQueryParams: map[string]string{"ip_version": "4"},
-	},
-	{
-		TerraformType:       "verity_acl_v6",
-		APIPath:             "/api/acls",
-		WrapperKey:          "ip_filter",
-		Mode:                "datacenter",
-		ResourceName:        "cov_aclv6",
-		RequiredQueryParams: map[string]string{"ip_version": "6"},
-	},
-	{
-		TerraformType: "verity_sflow_collector",
-		APIPath:       "/api/sflowcollectors",
-		WrapperKey:    "sflow_collector",
-		Mode:          "datacenter",
-		ResourceName:  "cov_sflow",
-	},
-	{
-		TerraformType: "verity_switchpoint",
-		APIPath:       "/api/switchpoints",
-		WrapperKey:    "switchpoint",
-		Mode:          "datacenter",
-		ResourceName:  "cov_sp",
-	},
-	{
-		TerraformType: "verity_device_settings",
-		APIPath:       "/api/devicesettings",
-		WrapperKey:    "eth_device_profiles",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ds",
-	},
-	{
-		TerraformType: "verity_packet_queue",
-		APIPath:       "/api/packetqueues",
-		WrapperKey:    "packet_queue",
-		Mode:          "datacenter",
-		ResourceName:  "cov_pq",
-	},
-	{
-		TerraformType: "verity_diagnostics_profile",
-		APIPath:       "/api/diagnosticsprofiles",
-		WrapperKey:    "diagnostics_profile",
-		Mode:          "datacenter",
-		ResourceName:  "cov_diagp",
-	},
-	{
-		TerraformType: "verity_diagnostics_port_profile",
-		APIPath:       "/api/diagnosticsportprofiles",
-		WrapperKey:    "diagnostics_port_profile",
-		Mode:          "datacenter",
-		ResourceName:  "cov_diagpp",
-	},
-	{
-		TerraformType: "verity_ipv4_list",
-		APIPath:       "/api/ipv4lists",
-		WrapperKey:    "ipv4_list_filter",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ipv4l",
-	},
-	{
-		TerraformType: "verity_ipv6_list",
-		APIPath:       "/api/ipv6lists",
-		WrapperKey:    "ipv6_list_filter",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ipv6l",
-	},
-	{
-		TerraformType: "verity_port_acl",
-		APIPath:       "/api/portacls",
-		WrapperKey:    "port_acl",
-		Mode:          "datacenter",
-		ResourceName:  "cov_pacl",
-	},
-	{
-		TerraformType: "verity_pb_routing",
-		APIPath:       "/api/policybasedrouting",
-		WrapperKey:    "pb_routing",
-		Mode:          "datacenter",
-		ResourceName:  "cov_pbr",
-	},
-	{
-		TerraformType: "verity_pb_routing_acl",
-		APIPath:       "/api/policybasedroutingacl",
-		WrapperKey:    "pb_routing_acl",
-		Mode:          "datacenter",
-		ResourceName:  "cov_pbra",
-	},
-	{
-		TerraformType: "verity_grouping_rule",
-		APIPath:       "/api/groupingrules",
-		WrapperKey:    "grouping_rules",
-		Mode:          "datacenter",
-		ResourceName:  "cov_gr",
-	},
-	{
-		TerraformType: "verity_threshold_group",
-		APIPath:       "/api/thresholdgroups",
-		WrapperKey:    "threshold_group",
-		Mode:          "datacenter",
-		ResourceName:  "cov_tg",
-	},
-	{
-		TerraformType: "verity_threshold",
-		APIPath:       "/api/thresholds",
-		WrapperKey:    "threshold",
-		Mode:          "datacenter",
-		ResourceName:  "cov_th",
-	},
+	"verity_threshold":          {ResourceName: "cov_th"},
+	"verity_threshold_group":    {ResourceName: "cov_tg"},
+	"verity_voice_port_profile": {ResourceName: "cov_vpp"},
+}
 
-	{
-		TerraformType: "verity_tenant",
-		APIPath:       "/api/tenants",
-		WrapperKey:    "tenant",
-		Mode:          "datacenter",
-		ResourceName:  "cov_tenant",
-		Overrides: map[string]string{
-			"vrf_name": `"TestVrf"`,
-		},
-	},
-	{
-		TerraformType: "verity_gateway",
-		APIPath:       "/api/gateways",
-		WrapperKey:    "gateway",
-		Mode:          "datacenter",
-		ResourceName:  "cov_gw",
-	},
-	{
-		TerraformType: "verity_gateway_profile",
-		APIPath:       "/api/gatewayprofiles",
-		WrapperKey:    "gateway_profile",
-		Mode:          "datacenter",
-		ResourceName:  "cov_gwp",
-	},
-	{
-		TerraformType: "verity_as_path_access_list",
-		APIPath:       "/api/aspathaccesslists",
-		WrapperKey:    "as_path_access_list",
-		Mode:          "datacenter",
-		ResourceName:  "cov_apal",
-	},
-	{
-		TerraformType: "verity_community_list",
-		APIPath:       "/api/communitylists",
-		WrapperKey:    "community_list",
-		Mode:          "datacenter",
-		ResourceName:  "cov_cl",
-	},
-	{
-		TerraformType: "verity_extended_community_list",
-		APIPath:       "/api/extendedcommunitylists",
-		WrapperKey:    "extended_community_list",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ecl",
-	},
-	{
-		TerraformType: "verity_ipv4_prefix_list",
-		APIPath:       "/api/ipv4prefixlists",
-		WrapperKey:    "ipv4_prefix_list",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ipv4pl",
-	},
-	{
-		TerraformType: "verity_ipv6_prefix_list",
-		APIPath:       "/api/ipv6prefixlists",
-		WrapperKey:    "ipv6_prefix_list",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ipv6pl",
-	},
-	{
-		TerraformType: "verity_route_map_clause",
-		APIPath:       "/api/routemapclauses",
-		WrapperKey:    "route_map_clause",
-		Mode:          "datacenter",
-		ResourceName:  "cov_rmc",
-	},
-	{
-		TerraformType: "verity_route_map",
-		APIPath:       "/api/routemaps",
-		WrapperKey:    "route_map",
-		Mode:          "datacenter",
-		ResourceName:  "cov_rm",
-	},
-	{
-		TerraformType: "verity_sfp_breakout",
-		APIPath:       "/api/sfpbreakouts",
-		WrapperKey:    "sfp_breakouts",
-		Mode:          "datacenter",
-		ResourceName:  "cov_sfpb",
-		SkipCreate:    true,
-	},
-	{
-		TerraformType: "verity_pod",
-		APIPath:       "/api/pods",
-		WrapperKey:    "pod",
-		Mode:          "datacenter",
-		ResourceName:  "cov_pod",
-	},
-	{
-		TerraformType: "verity_spine_plane",
-		APIPath:       "/api/spineplanes",
-		WrapperKey:    "spine_plane",
-		Mode:          "datacenter",
-		ResourceName:  "cov_spinep",
-	},
-	{
-		TerraformType: "verity_packet_broker",
-		APIPath:       "/api/packetbroker",
-		WrapperKey:    "pb_egress_profile",
-		Mode:          "datacenter",
-		ResourceName:  "cov_pb",
-	},
+var allResourceTests = mustCoverageEntries()
 
-	{
-		TerraformType: "verity_authenticated_eth_port",
-		APIPath:       "/api/authenticatedethports",
-		WrapperKey:    "authenticated_eth_port",
-		Mode:          "campus",
-		ResourceName:  "cov_aep",
-	},
-	{
-		TerraformType: "verity_device_voice_settings",
-		APIPath:       "/api/devicevoicesettings",
-		WrapperKey:    "device_voice_settings",
-		Mode:          "campus",
-		ResourceName:  "cov_dvs",
-	},
-	{
-		TerraformType: "verity_service_port_profile",
-		APIPath:       "/api/serviceportprofiles",
-		WrapperKey:    "service_port_profile",
-		Mode:          "campus",
-		ResourceName:  "cov_spp",
-	},
-	{
-		TerraformType: "verity_voice_port_profile",
-		APIPath:       "/api/voiceportprofiles",
-		WrapperKey:    "voice_port_profiles",
-		Mode:          "campus",
-		ResourceName:  "cov_vpp",
-	},
+func mustCoverageEntries() []ResourceCoverageEntry {
+	entries, err := coverageEntries()
+	if err != nil {
+		panic("build resource coverage entries: " + err.Error())
+	}
+	return entries
+}
 
-	{
-		TerraformType: "verity_mac_filter",
-		APIPath:       "/api/macfilters",
-		WrapperKey:    "mac_filter",
-		Mode:          "campus",
-		ResourceName:  "cov_mac_filter",
-	},
-	{
-		TerraformType: "verity_pair",
-		APIPath:       "/api/pairs",
-		WrapperKey:    "switch_pair",
-		Mode:          "datacenter",
-		ResourceName:  "cov_pair",
-	},
-	{
-		TerraformType: "verity_ssp_group",
-		APIPath:       "/api/sspgroups",
-		WrapperKey:    "superspine_group",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ssp_group",
-	},
-	{
-		TerraformType: "verity_su",
-		APIPath:       "/api/sus",
-		WrapperKey:    "su",
-		Mode:          "datacenter",
-		ResourceName:  "cov_su",
-	},
-	{
-		TerraformType: "verity_tacacs_profile",
-		APIPath:       "/api/tacacsprofiles",
-		WrapperKey:    "tacacs_profile",
-		Mode:          "datacenter",
-		ResourceName:  "cov_tacacs_profile",
-	},
+func coverageEntries() ([]ResourceCoverageEntry, error) {
+	resources, err := registry.Load()
+	if err != nil {
+		return nil, err
+	}
+	return coverageEntriesFor(resources, coverageTestDataByType)
+}
+
+func coverageEntriesFor(resources spec.Registry, testDataByType map[string]coverageTestData) ([]ResourceCoverageEntry, error) {
+	entries := make([]ResourceCoverageEntry, 0, len(resources))
+	registryTypes := make(map[string]bool, len(resources))
+	for _, resourceSpec := range resources {
+		registryTypes[resourceSpec.TerraformType] = true
+		testData := testDataByType[resourceSpec.TerraformType]
+		resourceName := testData.ResourceName
+		if resourceName == "" {
+			resourceName = "cov_" + strings.TrimPrefix(resourceSpec.TerraformType, "verity_")
+		}
+		mode, err := coverageMode(resourceSpec.Modes)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", resourceSpec.TerraformType, err)
+		}
+		entries = append(entries, ResourceCoverageEntry{
+			TerraformType:       resourceSpec.TerraformType,
+			APIPath:             "/api" + resourceSpec.API.EndpointPath,
+			WrapperKey:          resourceSpec.API.RequestWrapperKey,
+			Mode:                mode,
+			ResourceName:        resourceName,
+			Overrides:           testData.Overrides,
+			SkipCreate:          !resourceSpec.Operations.Create,
+			RequiredQueryParams: resourceSpec.API.FixedHeaders,
+		})
+	}
+	for terraformType := range testDataByType {
+		if !registryTypes[terraformType] {
+			return nil, fmt.Errorf("test data exists for registry-absent resource %s", terraformType)
+		}
+	}
+	sort.Slice(entries, func(i, j int) bool { return entries[i].TerraformType < entries[j].TerraformType })
+	return entries, nil
+}
+
+func coverageMode(modes []spec.Mode) (string, error) {
+	for _, mode := range modes {
+		if mode == spec.ModeDatacenter {
+			return string(mode), nil
+		}
+	}
+	for _, mode := range modes {
+		if mode == spec.ModeCampus {
+			return string(mode), nil
+		}
+	}
+	return "", fmt.Errorf("resource supports no coverage mode")
 }
 
 func attrFieldType(attr fwschema.Attribute) string {
@@ -639,14 +402,27 @@ func TestFieldCoverage_PutContainsAllFields(t *testing.T) {
 							if len(puts) == 0 {
 								return fmt.Errorf("no PUT request captured for %s", tc.APIPath)
 							}
-							body := puts[len(puts)-1].Body
-							return verifyPutFieldCoverage(t, body, tc, rs)
+							put := puts[len(puts)-1]
+							if err := verifyPutFieldCoverage(t, put.Body, tc, rs); err != nil {
+								return err
+							}
+							return verifyRequiredQueryParams(put.QueryParams, tc)
 						},
 					},
 				},
 			})
 		})
 	}
+}
+
+func verifyRequiredQueryParams(params map[string][]string, tc ResourceCoverageEntry) error {
+	for name, expected := range tc.RequiredQueryParams {
+		values := params[name]
+		if len(values) == 0 || values[0] != expected {
+			return fmt.Errorf("%s query parameter %q = %v, want [%s]", tc.TerraformType, name, values, expected)
+		}
+	}
+	return nil
 }
 
 func verifyPutFieldCoverage(t *testing.T, body map[string]interface{}, tc ResourceCoverageEntry, rs resourceSchemaInfo) error {
@@ -731,49 +507,49 @@ func mapKeys(m map[string]interface{}) []string {
 	return keys
 }
 
-func TestCoverageTableMatchesRegistry(t *testing.T) {
-	raw, err := os.ReadFile(filepath.Join("..", "..", "..", "specs", "generated_registry.json"))
+func TestCoverageEntriesReadTheRegistry(t *testing.T) {
+	if _, err := coverageEntries(); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCoverageEntriesDefaultTestDataFromTheRegistry(t *testing.T) {
+	entries, err := coverageEntriesFor(spec.Registry{{
+		TerraformType: "verity_new_resource",
+		Modes:         []spec.Mode{spec.ModeCampus, spec.ModeDatacenter},
+		API: spec.APIResourceSpec{
+			EndpointPath:      "/newresources",
+			RequestWrapperKey: "new_resource",
+			FixedHeaders:      map[string]string{"scope": "global"},
+		},
+		Operations: spec.OperationSpec{Create: false},
+	}}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	var artifact struct {
-		Resources []struct {
-			TerraformType string `json:"terraform_type"`
-			API           struct {
-				EndpointPath      string `json:"endpoint_path"`
-				RequestWrapperKey string `json:"request_wrapper_key"`
-			} `json:"api"`
-		} `json:"resources"`
+	if len(entries) != 1 {
+		t.Fatalf("entry count = %d, want 1", len(entries))
 	}
-	if err := json.Unmarshal(raw, &artifact); err != nil {
-		t.Fatal(err)
+	entry := entries[0]
+	if entry.ResourceName != "cov_new_resource" {
+		t.Errorf("resource name = %q, want cov_new_resource", entry.ResourceName)
 	}
-
-	byType := make(map[string]ResourceCoverageEntry, len(allResourceTests))
-	for _, entry := range allResourceTests {
-		if _, duplicate := byType[entry.TerraformType]; duplicate {
-			t.Errorf("%s appears twice in the coverage table", entry.TerraformType)
-		}
-		byType[entry.TerraformType] = entry
+	if entry.APIPath != "/api/newresources" {
+		t.Errorf("API path = %q, want /api/newresources", entry.APIPath)
 	}
-	if len(byType) != len(artifact.Resources) {
-		t.Errorf("coverage table has %d resources, the registry has %d", len(byType), len(artifact.Resources))
+	if entry.WrapperKey != "new_resource" {
+		t.Errorf("wrapper key = %q, want new_resource", entry.WrapperKey)
 	}
-	for _, resourceSpec := range artifact.Resources {
-		entry, exists := byType[resourceSpec.TerraformType]
-		if !exists {
-			t.Errorf("no coverage entry for %s", resourceSpec.TerraformType)
-			continue
-		}
-		if want := "/api" + resourceSpec.API.EndpointPath; entry.APIPath != want {
-			t.Errorf("%s coverage path = %q, registry endpoint is %q", resourceSpec.TerraformType, entry.APIPath, want)
-		}
-		if entry.WrapperKey != resourceSpec.API.RequestWrapperKey {
-			t.Errorf("%s wrapper key = %q, registry says %q", resourceSpec.TerraformType, entry.WrapperKey, resourceSpec.API.RequestWrapperKey)
-		}
-		delete(byType, resourceSpec.TerraformType)
+	if entry.Mode != "datacenter" {
+		t.Errorf("mode = %q, want datacenter", entry.Mode)
 	}
-	for name := range byType {
-		t.Errorf("coverage entry %q has no registry resource", name)
+	if !entry.SkipCreate {
+		t.Error("SkipCreate = false, want true")
+	}
+	if got := entry.RequiredQueryParams["scope"]; got != "global" || len(entry.RequiredQueryParams) != 1 {
+		t.Errorf("required query parameters = %v, want map[scope:global]", entry.RequiredQueryParams)
+	}
+	if err := verifyRequiredQueryParams(map[string][]string{"scope": {"global"}}, entry); err != nil {
+		t.Error(err)
 	}
 }

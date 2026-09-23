@@ -292,9 +292,9 @@ To add a resource:
    (with `--embed-output internal/registry/registry.json`), `adapters`,
    and `docs`. `adapters` skips a resource it cannot serve and
    prints why.
-4. **Tests.** Add a coverage entry to `allResourceTests` in
-   `tests/unit/lifecycle/field_coverage_test.go`, with a mock response in
-   `tests/unit/testdata/responses/<mode>/`. Record the golden fixtures and the
+4. **Tests.** Coverage tests read the resource path, wrapper, mode, fixed
+   headers, and supported operations from the registry. Add a mock response in
+   `tests/unit/testdata/responses/<mode>/`, record the golden fixtures and the
    schema snapshot, review the diff, then run the suites (see "Unit Tests"):
 
    ```bash
