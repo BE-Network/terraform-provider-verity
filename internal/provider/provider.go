@@ -438,14 +438,12 @@ func authenticate(ctx context.Context, provCtx *providerContext) error {
 		return nil
 	}
 
-	auth := openapi.NewAuthPostRequestAuth(
-		provCtx.credentials.username,
-		provCtx.credentials.password,
-	)
-	authReq := openapi.NewAuthPostRequest()
-	authReq.SetAuth(*auth)
+	authReq := openapi.AuthPostRequest{Auth: &openapi.AuthPostRequestAuth{
+		Username: provCtx.credentials.username,
+		Password: provCtx.credentials.password,
+	}}
 
-	resp, err := provCtx.client.AuthorizationAPI.AuthPost(ctx).AuthPostRequest(*authReq).Execute()
+	resp, err := provCtx.client.AuthorizationAPI.AuthPost(ctx).AuthPostRequest(authReq).Execute()
 	if err != nil {
 		return fmt.Errorf("failed to authenticate: %v", err)
 	}
