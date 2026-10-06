@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,10 +19,10 @@ var _ MappedNullable = &VoiceportprofilesPutRequestVoicePortProfilesValueObjectP
 
 // VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties struct for VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties
 type VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties struct {
-	// Defines importance of Link Down on this port
-	PortMonitoring *string `json:"port_monitoring,omitempty"`
 	// Format dial plan for easier viewing
 	FormatDialPlan *bool `json:"format_dial_plan,omitempty"`
+	// Defines importance of Link Down on this port
+	PortMonitoring *string `json:"port_monitoring,omitempty"`
 }
 
 // NewVoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties instantiates a new VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties object
@@ -31,10 +31,10 @@ type VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties struct {
 // will change when the set of required properties is changed
 func NewVoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties() *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties {
 	this := VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
-	var portMonitoring string = ""
-	this.PortMonitoring = &portMonitoring
 	var formatDialPlan bool = true
 	this.FormatDialPlan = &formatDialPlan
+	var portMonitoring string = ""
+	this.PortMonitoring = &portMonitoring
 	return &this
 }
 
@@ -43,43 +43,11 @@ func NewVoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties() *Voi
 // but it doesn't guarantee that properties required by API are set
 func NewVoiceportprofilesPutRequestVoicePortProfilesValueObjectPropertiesWithDefaults() *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties {
 	this := VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties{}
-	var portMonitoring string = ""
-	this.PortMonitoring = &portMonitoring
 	var formatDialPlan bool = true
 	this.FormatDialPlan = &formatDialPlan
+	var portMonitoring string = ""
+	this.PortMonitoring = &portMonitoring
 	return &this
-}
-
-// GetPortMonitoring returns the PortMonitoring field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) GetPortMonitoring() string {
-	if o == nil || IsNil(o.PortMonitoring) {
-		var ret string
-		return ret
-	}
-	return *o.PortMonitoring
-}
-
-// GetPortMonitoringOk returns a tuple with the PortMonitoring field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) GetPortMonitoringOk() (*string, bool) {
-	if o == nil || IsNil(o.PortMonitoring) {
-		return nil, false
-	}
-	return o.PortMonitoring, true
-}
-
-// HasPortMonitoring returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) HasPortMonitoring() bool {
-	if o != nil && !IsNil(o.PortMonitoring) {
-		return true
-	}
-
-	return false
-}
-
-// SetPortMonitoring gets a reference to the given string and assigns it to the PortMonitoring field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) SetPortMonitoring(v string) {
-	o.PortMonitoring = &v
 }
 
 // GetFormatDialPlan returns the FormatDialPlan field value if set, zero value otherwise.
@@ -114,8 +82,40 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) SetF
 	o.FormatDialPlan = &v
 }
 
+// GetPortMonitoring returns the PortMonitoring field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) GetPortMonitoring() string {
+	if o == nil || IsNil(o.PortMonitoring) {
+		var ret string
+		return ret
+	}
+	return *o.PortMonitoring
+}
+
+// GetPortMonitoringOk returns a tuple with the PortMonitoring field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) GetPortMonitoringOk() (*string, bool) {
+	if o == nil || IsNil(o.PortMonitoring) {
+		return nil, false
+	}
+	return o.PortMonitoring, true
+}
+
+// HasPortMonitoring returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) HasPortMonitoring() bool {
+	if o != nil && !IsNil(o.PortMonitoring) {
+		return true
+	}
+
+	return false
+}
+
+// SetPortMonitoring gets a reference to the given string and assigns it to the PortMonitoring field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) SetPortMonitoring(v string) {
+	o.PortMonitoring = &v
+}
+
 func (o VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -124,11 +124,11 @@ func (o VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) Marsh
 
 func (o VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.PortMonitoring) {
-		toSerialize["port_monitoring"] = o.PortMonitoring
-	}
 	if !IsNil(o.FormatDialPlan) {
 		toSerialize["format_dial_plan"] = o.FormatDialPlan
+	}
+	if !IsNil(o.PortMonitoring) {
+		toSerialize["port_monitoring"] = o.PortMonitoring
 	}
 	return toSerialize, nil
 }
@@ -168,5 +168,3 @@ func (v *NullableVoiceportprofilesPutRequestVoicePortProfilesValueObjectProperti
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

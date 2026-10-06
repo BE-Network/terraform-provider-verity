@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // SFlowCollectorsAPIService SFlowCollectorsAPI service
 type SFlowCollectorsAPIService service
 
 type ApiSflowcollectorsDeleteRequest struct {
-	ctx context.Context
-	ApiService *SFlowCollectorsAPIService
+	ctx                context.Context
+	ApiService         *SFlowCollectorsAPIService
 	sflowCollectorName *[]string
-	changesetName *string
+	changesetName      *string
 }
 
 func (r ApiSflowcollectorsDeleteRequest) SflowCollectorName(sflowCollectorName []string) ApiSflowcollectorsDeleteRequest {
@@ -49,23 +48,22 @@ SflowcollectorsDelete Delete sFlow Collector
 
 Deletes an existing sFlow Collector from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSflowcollectorsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSflowcollectorsDeleteRequest
 */
 func (a *SFlowCollectorsAPIService) SflowcollectorsDelete(ctx context.Context) ApiSflowcollectorsDeleteRequest {
 	return ApiSflowcollectorsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SFlowCollectorsAPIService) SflowcollectorsDeleteExecute(r ApiSflowcollectorsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SFlowCollectorsAPIService.SflowcollectorsDelete")
@@ -142,11 +140,11 @@ func (a *SFlowCollectorsAPIService) SflowcollectorsDeleteExecute(r ApiSflowcolle
 }
 
 type ApiSflowcollectorsGetRequest struct {
-	ctx context.Context
-	ApiService *SFlowCollectorsAPIService
+	ctx                context.Context
+	ApiService         *SFlowCollectorsAPIService
 	sflowCollectorName *string
-	includeData *bool
-	changesetName *string
+	includeData        *bool
+	changesetName      *string
 }
 
 func (r ApiSflowcollectorsGetRequest) SflowCollectorName(sflowCollectorName string) ApiSflowcollectorsGetRequest {
@@ -173,23 +171,22 @@ SflowcollectorsGet Get all sFlow Collectors
 
 Downloads all sFlow Collectors from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSflowcollectorsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSflowcollectorsGetRequest
 */
 func (a *SFlowCollectorsAPIService) SflowcollectorsGet(ctx context.Context) ApiSflowcollectorsGetRequest {
 	return ApiSflowcollectorsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SFlowCollectorsAPIService) SflowcollectorsGetExecute(r ApiSflowcollectorsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SFlowCollectorsAPIService.SflowcollectorsGet")
@@ -258,9 +255,9 @@ func (a *SFlowCollectorsAPIService) SflowcollectorsGetExecute(r ApiSflowcollecto
 }
 
 type ApiSflowcollectorsPatchRequest struct {
-	ctx context.Context
-	ApiService *SFlowCollectorsAPIService
-	changesetName *string
+	ctx                       context.Context
+	ApiService                *SFlowCollectorsAPIService
+	changesetName             *string
 	sflowcollectorsPutRequest *SflowcollectorsPutRequest
 }
 
@@ -283,23 +280,22 @@ SflowcollectorsPatch Update sFlow Collector
 
 Update sFlow Collector into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSflowcollectorsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSflowcollectorsPatchRequest
 */
 func (a *SFlowCollectorsAPIService) SflowcollectorsPatch(ctx context.Context) ApiSflowcollectorsPatchRequest {
 	return ApiSflowcollectorsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SFlowCollectorsAPIService) SflowcollectorsPatchExecute(r ApiSflowcollectorsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SFlowCollectorsAPIService.SflowcollectorsPatch")
@@ -364,9 +360,9 @@ func (a *SFlowCollectorsAPIService) SflowcollectorsPatchExecute(r ApiSflowcollec
 }
 
 type ApiSflowcollectorsPutRequest struct {
-	ctx context.Context
-	ApiService *SFlowCollectorsAPIService
-	changesetName *string
+	ctx                       context.Context
+	ApiService                *SFlowCollectorsAPIService
+	changesetName             *string
 	sflowcollectorsPutRequest *SflowcollectorsPutRequest
 }
 
@@ -389,23 +385,22 @@ SflowcollectorsPut Create sFlow Collector
 
 Create sFlow Collector into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSflowcollectorsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSflowcollectorsPutRequest
 */
 func (a *SFlowCollectorsAPIService) SflowcollectorsPut(ctx context.Context) ApiSflowcollectorsPutRequest {
 	return ApiSflowcollectorsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SFlowCollectorsAPIService) SflowcollectorsPutExecute(r ApiSflowcollectorsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SFlowCollectorsAPIService.SflowcollectorsPut")

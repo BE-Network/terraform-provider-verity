@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,16 +21,16 @@ var _ MappedNullable = &Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner{}
 type Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner struct {
 	// Enable of this IPv4 Prefix List
 	Enable *bool `json:"enable,omitempty"`
-	// Action upon match of Community Strings.
-	PermitDeny *string `json:"permit_deny,omitempty"`
-	// IPv4 address and subnet to match against 
-	Ipv4Prefix *string `json:"ipv4_prefix,omitempty"`
-	// Match IP routes with a subnet mask greater than or equal to the value indicated 
+	// Match IP routes with a subnet mask greater than or equal to the value indicated
 	GreaterThanEqualValue NullableInt64 `json:"greater_than_equal_value,omitempty"`
-	// Match IP routes with a subnet mask less than or equal to the value indicated
-	LessThanEqualValue NullableInt64 `json:"less_than_equal_value,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
+	// IPv4 address and subnet to match against
+	Ipv4Prefix *string `json:"ipv4_prefix,omitempty"`
+	// Match IP routes with a subnet mask less than or equal to the value indicated
+	LessThanEqualValue NullableInt64 `json:"less_than_equal_value,omitempty"`
+	// Action upon match of Community Strings.
+	PermitDeny *string `json:"permit_deny,omitempty"`
 }
 
 // NewIpv4prefixlistsPutRequestIpv4PrefixListValueListsInner instantiates a new Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner object
@@ -41,10 +41,10 @@ func NewIpv4prefixlistsPutRequestIpv4PrefixListValueListsInner() *Ipv4prefixlist
 	this := Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner{}
 	var enable bool = false
 	this.Enable = &enable
-	var permitDeny string = "permit"
-	this.PermitDeny = &permitDeny
 	var ipv4Prefix string = ""
 	this.Ipv4Prefix = &ipv4Prefix
+	var permitDeny string = "permit"
+	this.PermitDeny = &permitDeny
 	return &this
 }
 
@@ -55,10 +55,10 @@ func NewIpv4prefixlistsPutRequestIpv4PrefixListValueListsInnerWithDefaults() *Ip
 	this := Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner{}
 	var enable bool = false
 	this.Enable = &enable
-	var permitDeny string = "permit"
-	this.PermitDeny = &permitDeny
 	var ipv4Prefix string = ""
 	this.Ipv4Prefix = &ipv4Prefix
+	var permitDeny string = "permit"
+	this.PermitDeny = &permitDeny
 	return &this
 }
 
@@ -94,70 +94,6 @@ func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetEnable(v boo
 	o.Enable = &v
 }
 
-// GetPermitDeny returns the PermitDeny field value if set, zero value otherwise.
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetPermitDeny() string {
-	if o == nil || IsNil(o.PermitDeny) {
-		var ret string
-		return ret
-	}
-	return *o.PermitDeny
-}
-
-// GetPermitDenyOk returns a tuple with the PermitDeny field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetPermitDenyOk() (*string, bool) {
-	if o == nil || IsNil(o.PermitDeny) {
-		return nil, false
-	}
-	return o.PermitDeny, true
-}
-
-// HasPermitDeny returns a boolean if a field has been set.
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) HasPermitDeny() bool {
-	if o != nil && !IsNil(o.PermitDeny) {
-		return true
-	}
-
-	return false
-}
-
-// SetPermitDeny gets a reference to the given string and assigns it to the PermitDeny field.
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetPermitDeny(v string) {
-	o.PermitDeny = &v
-}
-
-// GetIpv4Prefix returns the Ipv4Prefix field value if set, zero value otherwise.
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetIpv4Prefix() string {
-	if o == nil || IsNil(o.Ipv4Prefix) {
-		var ret string
-		return ret
-	}
-	return *o.Ipv4Prefix
-}
-
-// GetIpv4PrefixOk returns a tuple with the Ipv4Prefix field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetIpv4PrefixOk() (*string, bool) {
-	if o == nil || IsNil(o.Ipv4Prefix) {
-		return nil, false
-	}
-	return o.Ipv4Prefix, true
-}
-
-// HasIpv4Prefix returns a boolean if a field has been set.
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) HasIpv4Prefix() bool {
-	if o != nil && !IsNil(o.Ipv4Prefix) {
-		return true
-	}
-
-	return false
-}
-
-// SetIpv4Prefix gets a reference to the given string and assigns it to the Ipv4Prefix field.
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetIpv4Prefix(v string) {
-	o.Ipv4Prefix = &v
-}
-
 // GetGreaterThanEqualValue returns the GreaterThanEqualValue field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetGreaterThanEqualValue() int64 {
 	if o == nil || IsNil(o.GreaterThanEqualValue.Get()) {
@@ -190,6 +126,7 @@ func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) HasGreaterThanE
 func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetGreaterThanEqualValue(v int64) {
 	o.GreaterThanEqualValue.Set(&v)
 }
+
 // SetGreaterThanEqualValueNil sets the value for GreaterThanEqualValue to be an explicit nil
 func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetGreaterThanEqualValueNil() {
 	o.GreaterThanEqualValue.Set(nil)
@@ -198,48 +135,6 @@ func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetGreaterThanE
 // UnsetGreaterThanEqualValue ensures that no value is present for GreaterThanEqualValue, not even an explicit nil
 func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) UnsetGreaterThanEqualValue() {
 	o.GreaterThanEqualValue.Unset()
-}
-
-// GetLessThanEqualValue returns the LessThanEqualValue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetLessThanEqualValue() int64 {
-	if o == nil || IsNil(o.LessThanEqualValue.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.LessThanEqualValue.Get()
-}
-
-// GetLessThanEqualValueOk returns a tuple with the LessThanEqualValue field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetLessThanEqualValueOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.LessThanEqualValue.Get(), o.LessThanEqualValue.IsSet()
-}
-
-// HasLessThanEqualValue returns a boolean if a field has been set.
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) HasLessThanEqualValue() bool {
-	if o != nil && o.LessThanEqualValue.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetLessThanEqualValue gets a reference to the given NullableInt64 and assigns it to the LessThanEqualValue field.
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetLessThanEqualValue(v int64) {
-	o.LessThanEqualValue.Set(&v)
-}
-// SetLessThanEqualValueNil sets the value for LessThanEqualValue to be an explicit nil
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetLessThanEqualValueNil() {
-	o.LessThanEqualValue.Set(nil)
-}
-
-// UnsetLessThanEqualValue ensures that no value is present for LessThanEqualValue, not even an explicit nil
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) UnsetLessThanEqualValue() {
-	o.LessThanEqualValue.Unset()
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
@@ -274,8 +169,115 @@ func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetIndex(v int6
 	o.Index = &v
 }
 
+// GetIpv4Prefix returns the Ipv4Prefix field value if set, zero value otherwise.
+func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetIpv4Prefix() string {
+	if o == nil || IsNil(o.Ipv4Prefix) {
+		var ret string
+		return ret
+	}
+	return *o.Ipv4Prefix
+}
+
+// GetIpv4PrefixOk returns a tuple with the Ipv4Prefix field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetIpv4PrefixOk() (*string, bool) {
+	if o == nil || IsNil(o.Ipv4Prefix) {
+		return nil, false
+	}
+	return o.Ipv4Prefix, true
+}
+
+// HasIpv4Prefix returns a boolean if a field has been set.
+func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) HasIpv4Prefix() bool {
+	if o != nil && !IsNil(o.Ipv4Prefix) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpv4Prefix gets a reference to the given string and assigns it to the Ipv4Prefix field.
+func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetIpv4Prefix(v string) {
+	o.Ipv4Prefix = &v
+}
+
+// GetLessThanEqualValue returns the LessThanEqualValue field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetLessThanEqualValue() int64 {
+	if o == nil || IsNil(o.LessThanEqualValue.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.LessThanEqualValue.Get()
+}
+
+// GetLessThanEqualValueOk returns a tuple with the LessThanEqualValue field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetLessThanEqualValueOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LessThanEqualValue.Get(), o.LessThanEqualValue.IsSet()
+}
+
+// HasLessThanEqualValue returns a boolean if a field has been set.
+func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) HasLessThanEqualValue() bool {
+	if o != nil && o.LessThanEqualValue.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLessThanEqualValue gets a reference to the given NullableInt64 and assigns it to the LessThanEqualValue field.
+func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetLessThanEqualValue(v int64) {
+	o.LessThanEqualValue.Set(&v)
+}
+
+// SetLessThanEqualValueNil sets the value for LessThanEqualValue to be an explicit nil
+func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetLessThanEqualValueNil() {
+	o.LessThanEqualValue.Set(nil)
+}
+
+// UnsetLessThanEqualValue ensures that no value is present for LessThanEqualValue, not even an explicit nil
+func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) UnsetLessThanEqualValue() {
+	o.LessThanEqualValue.Unset()
+}
+
+// GetPermitDeny returns the PermitDeny field value if set, zero value otherwise.
+func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetPermitDeny() string {
+	if o == nil || IsNil(o.PermitDeny) {
+		var ret string
+		return ret
+	}
+	return *o.PermitDeny
+}
+
+// GetPermitDenyOk returns a tuple with the PermitDeny field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) GetPermitDenyOk() (*string, bool) {
+	if o == nil || IsNil(o.PermitDeny) {
+		return nil, false
+	}
+	return o.PermitDeny, true
+}
+
+// HasPermitDeny returns a boolean if a field has been set.
+func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) HasPermitDeny() bool {
+	if o != nil && !IsNil(o.PermitDeny) {
+		return true
+	}
+
+	return false
+}
+
+// SetPermitDeny gets a reference to the given string and assigns it to the PermitDeny field.
+func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) SetPermitDeny(v string) {
+	o.PermitDeny = &v
+}
+
 func (o Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -287,20 +289,20 @@ func (o Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner) ToMap() (map[str
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.PermitDeny) {
-		toSerialize["permit_deny"] = o.PermitDeny
+	if o.GreaterThanEqualValue.IsSet() {
+		toSerialize["greater_than_equal_value"] = o.GreaterThanEqualValue.Get()
+	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	if !IsNil(o.Ipv4Prefix) {
 		toSerialize["ipv4_prefix"] = o.Ipv4Prefix
 	}
-	if o.GreaterThanEqualValue.IsSet() {
-		toSerialize["greater_than_equal_value"] = o.GreaterThanEqualValue.Get()
-	}
 	if o.LessThanEqualValue.IsSet() {
 		toSerialize["less_than_equal_value"] = o.LessThanEqualValue.Get()
 	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
+	if !IsNil(o.PermitDeny) {
+		toSerialize["permit_deny"] = o.PermitDeny
 	}
 	return toSerialize, nil
 }
@@ -340,5 +342,3 @@ func (v *NullableIpv4prefixlistsPutRequestIpv4PrefixListValueListsInner) Unmarsh
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

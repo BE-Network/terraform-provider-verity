@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,14 @@ var _ MappedNullable = &BadgesPutRequestBadgeValue{}
 
 // BadgesPutRequestBadgeValue struct for BadgesPutRequestBadgeValue
 type BadgesPutRequestBadgeValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
 	// Color of Badge
 	Color *string `json:"color,omitempty"`
+	// Enable object.
+	Enable *bool `json:"enable,omitempty"`
+	// Template Name. Must be unique within type.
+	Name *string `json:"name,omitempty"`
 	// Number of Badge
-	Number NullableInt64 `json:"number,omitempty"`
+	Number           NullableInt64                                `json:"number,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 }
 
@@ -36,12 +36,12 @@ type BadgesPutRequestBadgeValue struct {
 // will change when the set of required properties is changed
 func NewBadgesPutRequestBadgeValue() *BadgesPutRequestBadgeValue {
 	this := BadgesPutRequestBadgeValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = true
-	this.Enable = &enable
 	var color string = "next available color"
 	this.Color = &color
+	var enable bool = true
+	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	return &this
 }
 
@@ -50,77 +50,13 @@ func NewBadgesPutRequestBadgeValue() *BadgesPutRequestBadgeValue {
 // but it doesn't guarantee that properties required by API are set
 func NewBadgesPutRequestBadgeValueWithDefaults() *BadgesPutRequestBadgeValue {
 	this := BadgesPutRequestBadgeValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = true
-	this.Enable = &enable
 	var color string = "next available color"
 	this.Color = &color
+	var enable bool = true
+	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *BadgesPutRequestBadgeValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *BadgesPutRequestBadgeValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *BadgesPutRequestBadgeValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *BadgesPutRequestBadgeValue) SetName(v string) {
-	o.Name = &v
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *BadgesPutRequestBadgeValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *BadgesPutRequestBadgeValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *BadgesPutRequestBadgeValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *BadgesPutRequestBadgeValue) SetEnable(v bool) {
-	o.Enable = &v
 }
 
 // GetColor returns the Color field value if set, zero value otherwise.
@@ -155,6 +91,70 @@ func (o *BadgesPutRequestBadgeValue) SetColor(v string) {
 	o.Color = &v
 }
 
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *BadgesPutRequestBadgeValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BadgesPutRequestBadgeValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *BadgesPutRequestBadgeValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *BadgesPutRequestBadgeValue) SetEnable(v bool) {
+	o.Enable = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *BadgesPutRequestBadgeValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BadgesPutRequestBadgeValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *BadgesPutRequestBadgeValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *BadgesPutRequestBadgeValue) SetName(v string) {
+	o.Name = &v
+}
+
 // GetNumber returns the Number field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *BadgesPutRequestBadgeValue) GetNumber() int64 {
 	if o == nil || IsNil(o.Number.Get()) {
@@ -187,6 +187,7 @@ func (o *BadgesPutRequestBadgeValue) HasNumber() bool {
 func (o *BadgesPutRequestBadgeValue) SetNumber(v int64) {
 	o.Number.Set(&v)
 }
+
 // SetNumberNil sets the value for Number to be an explicit nil
 func (o *BadgesPutRequestBadgeValue) SetNumberNil() {
 	o.Number.Set(nil)
@@ -230,7 +231,7 @@ func (o *BadgesPutRequestBadgeValue) SetObjectProperties(v AclsPutRequestIpFilte
 }
 
 func (o BadgesPutRequestBadgeValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -239,14 +240,14 @@ func (o BadgesPutRequestBadgeValue) MarshalJSON() ([]byte, error) {
 
 func (o BadgesPutRequestBadgeValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
+	if !IsNil(o.Color) {
+		toSerialize["color"] = o.Color
 	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.Color) {
-		toSerialize["color"] = o.Color
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if o.Number.IsSet() {
 		toSerialize["number"] = o.Number.Get()
@@ -292,5 +293,3 @@ func (v *NullableBadgesPutRequestBadgeValue) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

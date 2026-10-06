@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // IPv6ListFiltersAPIService IPv6ListFiltersAPI service
 type IPv6ListFiltersAPIService service
 
 type ApiIpv6listsDeleteRequest struct {
-	ctx context.Context
-	ApiService *IPv6ListFiltersAPIService
+	ctx                context.Context
+	ApiService         *IPv6ListFiltersAPIService
 	ipv6ListFilterName *[]string
-	changesetName *string
+	changesetName      *string
 }
 
 func (r ApiIpv6listsDeleteRequest) Ipv6ListFilterName(ipv6ListFilterName []string) ApiIpv6listsDeleteRequest {
@@ -49,23 +48,22 @@ Ipv6listsDelete Delete IPv6 List Filter
 
 Deletes an existing IPv6 List Filter from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiIpv6listsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiIpv6listsDeleteRequest
 */
 func (a *IPv6ListFiltersAPIService) Ipv6listsDelete(ctx context.Context) ApiIpv6listsDeleteRequest {
 	return ApiIpv6listsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *IPv6ListFiltersAPIService) Ipv6listsDeleteExecute(r ApiIpv6listsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IPv6ListFiltersAPIService.Ipv6listsDelete")
@@ -142,11 +140,11 @@ func (a *IPv6ListFiltersAPIService) Ipv6listsDeleteExecute(r ApiIpv6listsDeleteR
 }
 
 type ApiIpv6listsGetRequest struct {
-	ctx context.Context
-	ApiService *IPv6ListFiltersAPIService
+	ctx                context.Context
+	ApiService         *IPv6ListFiltersAPIService
 	ipv6ListFilterName *string
-	includeData *bool
-	changesetName *string
+	includeData        *bool
+	changesetName      *string
 }
 
 func (r ApiIpv6listsGetRequest) Ipv6ListFilterName(ipv6ListFilterName string) ApiIpv6listsGetRequest {
@@ -173,23 +171,22 @@ Ipv6listsGet Get all IPv6 List Filters
 
 Retrieves all IPv6 List Filters from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiIpv6listsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiIpv6listsGetRequest
 */
 func (a *IPv6ListFiltersAPIService) Ipv6listsGet(ctx context.Context) ApiIpv6listsGetRequest {
 	return ApiIpv6listsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *IPv6ListFiltersAPIService) Ipv6listsGetExecute(r ApiIpv6listsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IPv6ListFiltersAPIService.Ipv6listsGet")
@@ -258,9 +255,9 @@ func (a *IPv6ListFiltersAPIService) Ipv6listsGetExecute(r ApiIpv6listsGetRequest
 }
 
 type ApiIpv6listsPatchRequest struct {
-	ctx context.Context
-	ApiService *IPv6ListFiltersAPIService
-	changesetName *string
+	ctx                 context.Context
+	ApiService          *IPv6ListFiltersAPIService
+	changesetName       *string
 	ipv6listsPutRequest *Ipv6listsPutRequest
 }
 
@@ -283,23 +280,22 @@ Ipv6listsPatch Update IPv6 List Filter
 
 Update IPv6 List Filter into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiIpv6listsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiIpv6listsPatchRequest
 */
 func (a *IPv6ListFiltersAPIService) Ipv6listsPatch(ctx context.Context) ApiIpv6listsPatchRequest {
 	return ApiIpv6listsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *IPv6ListFiltersAPIService) Ipv6listsPatchExecute(r ApiIpv6listsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IPv6ListFiltersAPIService.Ipv6listsPatch")
@@ -364,9 +360,9 @@ func (a *IPv6ListFiltersAPIService) Ipv6listsPatchExecute(r ApiIpv6listsPatchReq
 }
 
 type ApiIpv6listsPutRequest struct {
-	ctx context.Context
-	ApiService *IPv6ListFiltersAPIService
-	changesetName *string
+	ctx                 context.Context
+	ApiService          *IPv6ListFiltersAPIService
+	changesetName       *string
 	ipv6listsPutRequest *Ipv6listsPutRequest
 }
 
@@ -389,23 +385,22 @@ Ipv6listsPut Create IPv6 List Filter
 
 Create IPv6 List Filter into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiIpv6listsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiIpv6listsPutRequest
 */
 func (a *IPv6ListFiltersAPIService) Ipv6listsPut(ctx context.Context) ApiIpv6listsPutRequest {
 	return ApiIpv6listsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *IPv6ListFiltersAPIService) Ipv6listsPutExecute(r ApiIpv6listsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IPv6ListFiltersAPIService.Ipv6listsPut")

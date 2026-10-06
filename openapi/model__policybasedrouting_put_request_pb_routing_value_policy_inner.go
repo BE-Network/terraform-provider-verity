@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,12 +21,12 @@ var _ MappedNullable = &PolicybasedroutingPutRequestPbRoutingValuePolicyInner{}
 type PolicybasedroutingPutRequestPbRoutingValuePolicyInner struct {
 	// Enable
 	Enable *bool `json:"enable,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
 	// Path to the PB Routing ACL
 	PbRoutingAcl *string `json:"pb_routing_acl,omitempty"`
 	// Object type for pb_routing_acl field
 	PbRoutingAclRefType *string `json:"pb_routing_acl_ref_type_,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
 }
 
 // NewPolicybasedroutingPutRequestPbRoutingValuePolicyInner instantiates a new PolicybasedroutingPutRequestPbRoutingValuePolicyInner object
@@ -84,6 +84,38 @@ func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) HasEnable() bool
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) SetEnable(v bool) {
 	o.Enable = &v
+}
+
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetPbRoutingAcl returns the PbRoutingAcl field value if set, zero value otherwise.
@@ -150,40 +182,8 @@ func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) SetPbRoutingAclR
 	o.PbRoutingAclRefType = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *PolicybasedroutingPutRequestPbRoutingValuePolicyInner) SetIndex(v int64) {
-	o.Index = &v
-}
-
 func (o PolicybasedroutingPutRequestPbRoutingValuePolicyInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -195,14 +195,14 @@ func (o PolicybasedroutingPutRequestPbRoutingValuePolicyInner) ToMap() (map[stri
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
+	}
 	if !IsNil(o.PbRoutingAcl) {
 		toSerialize["pb_routing_acl"] = o.PbRoutingAcl
 	}
 	if !IsNil(o.PbRoutingAclRefType) {
 		toSerialize["pb_routing_acl_ref_type_"] = o.PbRoutingAclRefType
-	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }
@@ -242,5 +242,3 @@ func (v *NullablePolicybasedroutingPutRequestPbRoutingValuePolicyInner) Unmarsha
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

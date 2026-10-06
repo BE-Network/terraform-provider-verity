@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,14 @@ var _ MappedNullable = &ThresholdgroupsPutRequestThresholdGroupValue{}
 
 // ThresholdgroupsPutRequestThresholdGroupValue struct for ThresholdgroupsPutRequestThresholdGroupValue
 type ThresholdgroupsPutRequestThresholdGroupValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
+	// Template Name. Must be unique within type.
+	Name       *string                                                       `json:"name,omitempty"`
+	Targets    []ThresholdgroupsPutRequestThresholdGroupValueTargetsInner    `json:"targets,omitempty"`
+	Thresholds []ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner `json:"thresholds,omitempty"`
 	// Type of elements to apply thresholds to
 	Type *string `json:"type,omitempty"`
-	Targets []ThresholdgroupsPutRequestThresholdGroupValueTargetsInner `json:"targets,omitempty"`
-	Thresholds []ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner `json:"thresholds,omitempty"`
 }
 
 // NewThresholdgroupsPutRequestThresholdGroupValue instantiates a new ThresholdgroupsPutRequestThresholdGroupValue object
@@ -35,10 +35,10 @@ type ThresholdgroupsPutRequestThresholdGroupValue struct {
 // will change when the set of required properties is changed
 func NewThresholdgroupsPutRequestThresholdGroupValue() *ThresholdgroupsPutRequestThresholdGroupValue {
 	this := ThresholdgroupsPutRequestThresholdGroupValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	var type_ string = "device"
 	this.Type = &type_
 	return &this
@@ -49,45 +49,13 @@ func NewThresholdgroupsPutRequestThresholdGroupValue() *ThresholdgroupsPutReques
 // but it doesn't guarantee that properties required by API are set
 func NewThresholdgroupsPutRequestThresholdGroupValueWithDefaults() *ThresholdgroupsPutRequestThresholdGroupValue {
 	this := ThresholdgroupsPutRequestThresholdGroupValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	var type_ string = "device"
 	this.Type = &type_
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *ThresholdgroupsPutRequestThresholdGroupValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *ThresholdgroupsPutRequestThresholdGroupValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -122,36 +90,36 @@ func (o *ThresholdgroupsPutRequestThresholdGroupValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
-func (o *ThresholdgroupsPutRequestThresholdGroupValue) GetType() string {
-	if o == nil || IsNil(o.Type) {
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *ThresholdgroupsPutRequestThresholdGroupValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
-	return *o.Type
+	return *o.Name
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValue) GetTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.Type) {
+func (o *ThresholdgroupsPutRequestThresholdGroupValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
-	return o.Type, true
+	return o.Name, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValue) HasType() bool {
-	if o != nil && !IsNil(o.Type) {
+// HasName returns a boolean if a field has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
 	return false
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *ThresholdgroupsPutRequestThresholdGroupValue) SetType(v string) {
-	o.Type = &v
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *ThresholdgroupsPutRequestThresholdGroupValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetTargets returns the Targets field value if set, zero value otherwise.
@@ -218,8 +186,40 @@ func (o *ThresholdgroupsPutRequestThresholdGroupValue) SetThresholds(v []Thresho
 	o.Thresholds = v
 }
 
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *ThresholdgroupsPutRequestThresholdGroupValue) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValue) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValue) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *ThresholdgroupsPutRequestThresholdGroupValue) SetType(v string) {
+	o.Type = &v
+}
+
 func (o ThresholdgroupsPutRequestThresholdGroupValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -228,20 +228,20 @@ func (o ThresholdgroupsPutRequestThresholdGroupValue) MarshalJSON() ([]byte, err
 
 func (o ThresholdgroupsPutRequestThresholdGroupValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.Type) {
-		toSerialize["type"] = o.Type
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.Targets) {
 		toSerialize["targets"] = o.Targets
 	}
 	if !IsNil(o.Thresholds) {
 		toSerialize["thresholds"] = o.Thresholds
+	}
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
 	}
 	return toSerialize, nil
 }
@@ -281,5 +281,3 @@ func (v *NullableThresholdgroupsPutRequestThresholdGroupValue) UnmarshalJSON(src
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

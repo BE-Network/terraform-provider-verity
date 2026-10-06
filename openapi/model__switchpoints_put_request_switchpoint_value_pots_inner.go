@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,22 +19,22 @@ var _ MappedNullable = &SwitchpointsPutRequestSwitchpointValuePotsInner{}
 
 // SwitchpointsPutRequestSwitchpointValuePotsInner struct for SwitchpointsPutRequestSwitchpointValuePotsInner
 type SwitchpointsPutRequestSwitchpointValuePotsInner struct {
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
+	// ASCII string defining the user for the Caller ID display for POTS port
+	PotsNumCallerId *string `json:"pots_num_caller_id,omitempty"`
 	// Enable POTS port
 	PotsNumEnable *bool `json:"pots_num_enable,omitempty"`
+	// URI of line to autodial upon off-hook for POTS port
+	PotsNumHotLine *string `json:"pots_num_hot_line,omitempty"`
+	// SIP password used for authentication for POTS port
+	PotsNumPassword *string `json:"pots_num_password,omitempty"`
+	// SIP password used for authentication for POTS port
+	PotsNumPasswordEncrypted *string `json:"pots_num_password_encrypted,omitempty"`
 	// Specific telephone extension for SIP for POTS port
 	PotsNumUri *string `json:"pots_num_uri,omitempty"`
 	// SIP username used for authentication for POTS port
 	PotsNumUsername *string `json:"pots_num_username,omitempty"`
-	// SIP password used for authentication for POTS port
-	PotsNumPassword *string `json:"pots_num_password,omitempty"`
-	// ASCII string defining the user for the Caller ID display for POTS port
-	PotsNumCallerId *string `json:"pots_num_caller_id,omitempty"`
-	// URI of line to autodial upon off-hook for POTS port
-	PotsNumHotLine *string `json:"pots_num_hot_line,omitempty"`
-	// SIP password used for authentication for POTS port
-	PotsNumPasswordEncrypted *string `json:"pots_num_password_encrypted,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
 }
 
 // NewSwitchpointsPutRequestSwitchpointValuePotsInner instantiates a new SwitchpointsPutRequestSwitchpointValuePotsInner object
@@ -43,20 +43,20 @@ type SwitchpointsPutRequestSwitchpointValuePotsInner struct {
 // will change when the set of required properties is changed
 func NewSwitchpointsPutRequestSwitchpointValuePotsInner() *SwitchpointsPutRequestSwitchpointValuePotsInner {
 	this := SwitchpointsPutRequestSwitchpointValuePotsInner{}
+	var potsNumCallerId string = ""
+	this.PotsNumCallerId = &potsNumCallerId
 	var potsNumEnable bool = false
 	this.PotsNumEnable = &potsNumEnable
+	var potsNumHotLine string = ""
+	this.PotsNumHotLine = &potsNumHotLine
+	var potsNumPassword string = ""
+	this.PotsNumPassword = &potsNumPassword
+	var potsNumPasswordEncrypted string = ""
+	this.PotsNumPasswordEncrypted = &potsNumPasswordEncrypted
 	var potsNumUri string = ""
 	this.PotsNumUri = &potsNumUri
 	var potsNumUsername string = ""
 	this.PotsNumUsername = &potsNumUsername
-	var potsNumPassword string = ""
-	this.PotsNumPassword = &potsNumPassword
-	var potsNumCallerId string = ""
-	this.PotsNumCallerId = &potsNumCallerId
-	var potsNumHotLine string = ""
-	this.PotsNumHotLine = &potsNumHotLine
-	var potsNumPasswordEncrypted string = ""
-	this.PotsNumPasswordEncrypted = &potsNumPasswordEncrypted
 	return &this
 }
 
@@ -65,21 +65,85 @@ func NewSwitchpointsPutRequestSwitchpointValuePotsInner() *SwitchpointsPutReques
 // but it doesn't guarantee that properties required by API are set
 func NewSwitchpointsPutRequestSwitchpointValuePotsInnerWithDefaults() *SwitchpointsPutRequestSwitchpointValuePotsInner {
 	this := SwitchpointsPutRequestSwitchpointValuePotsInner{}
+	var potsNumCallerId string = ""
+	this.PotsNumCallerId = &potsNumCallerId
 	var potsNumEnable bool = false
 	this.PotsNumEnable = &potsNumEnable
+	var potsNumHotLine string = ""
+	this.PotsNumHotLine = &potsNumHotLine
+	var potsNumPassword string = ""
+	this.PotsNumPassword = &potsNumPassword
+	var potsNumPasswordEncrypted string = ""
+	this.PotsNumPasswordEncrypted = &potsNumPasswordEncrypted
 	var potsNumUri string = ""
 	this.PotsNumUri = &potsNumUri
 	var potsNumUsername string = ""
 	this.PotsNumUsername = &potsNumUsername
-	var potsNumPassword string = ""
-	this.PotsNumPassword = &potsNumPassword
-	var potsNumCallerId string = ""
-	this.PotsNumCallerId = &potsNumCallerId
-	var potsNumHotLine string = ""
-	this.PotsNumHotLine = &potsNumHotLine
-	var potsNumPasswordEncrypted string = ""
-	this.PotsNumPasswordEncrypted = &potsNumPasswordEncrypted
 	return &this
+}
+
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) SetIndex(v int64) {
+	o.Index = &v
+}
+
+// GetPotsNumCallerId returns the PotsNumCallerId field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumCallerId() string {
+	if o == nil || IsNil(o.PotsNumCallerId) {
+		var ret string
+		return ret
+	}
+	return *o.PotsNumCallerId
+}
+
+// GetPotsNumCallerIdOk returns a tuple with the PotsNumCallerId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumCallerIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PotsNumCallerId) {
+		return nil, false
+	}
+	return o.PotsNumCallerId, true
+}
+
+// HasPotsNumCallerId returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) HasPotsNumCallerId() bool {
+	if o != nil && !IsNil(o.PotsNumCallerId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPotsNumCallerId gets a reference to the given string and assigns it to the PotsNumCallerId field.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) SetPotsNumCallerId(v string) {
+	o.PotsNumCallerId = &v
 }
 
 // GetPotsNumEnable returns the PotsNumEnable field value if set, zero value otherwise.
@@ -112,6 +176,102 @@ func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) HasPotsNumEnable() boo
 // SetPotsNumEnable gets a reference to the given bool and assigns it to the PotsNumEnable field.
 func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) SetPotsNumEnable(v bool) {
 	o.PotsNumEnable = &v
+}
+
+// GetPotsNumHotLine returns the PotsNumHotLine field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumHotLine() string {
+	if o == nil || IsNil(o.PotsNumHotLine) {
+		var ret string
+		return ret
+	}
+	return *o.PotsNumHotLine
+}
+
+// GetPotsNumHotLineOk returns a tuple with the PotsNumHotLine field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumHotLineOk() (*string, bool) {
+	if o == nil || IsNil(o.PotsNumHotLine) {
+		return nil, false
+	}
+	return o.PotsNumHotLine, true
+}
+
+// HasPotsNumHotLine returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) HasPotsNumHotLine() bool {
+	if o != nil && !IsNil(o.PotsNumHotLine) {
+		return true
+	}
+
+	return false
+}
+
+// SetPotsNumHotLine gets a reference to the given string and assigns it to the PotsNumHotLine field.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) SetPotsNumHotLine(v string) {
+	o.PotsNumHotLine = &v
+}
+
+// GetPotsNumPassword returns the PotsNumPassword field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumPassword() string {
+	if o == nil || IsNil(o.PotsNumPassword) {
+		var ret string
+		return ret
+	}
+	return *o.PotsNumPassword
+}
+
+// GetPotsNumPasswordOk returns a tuple with the PotsNumPassword field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumPasswordOk() (*string, bool) {
+	if o == nil || IsNil(o.PotsNumPassword) {
+		return nil, false
+	}
+	return o.PotsNumPassword, true
+}
+
+// HasPotsNumPassword returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) HasPotsNumPassword() bool {
+	if o != nil && !IsNil(o.PotsNumPassword) {
+		return true
+	}
+
+	return false
+}
+
+// SetPotsNumPassword gets a reference to the given string and assigns it to the PotsNumPassword field.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) SetPotsNumPassword(v string) {
+	o.PotsNumPassword = &v
+}
+
+// GetPotsNumPasswordEncrypted returns the PotsNumPasswordEncrypted field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumPasswordEncrypted() string {
+	if o == nil || IsNil(o.PotsNumPasswordEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.PotsNumPasswordEncrypted
+}
+
+// GetPotsNumPasswordEncryptedOk returns a tuple with the PotsNumPasswordEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumPasswordEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.PotsNumPasswordEncrypted) {
+		return nil, false
+	}
+	return o.PotsNumPasswordEncrypted, true
+}
+
+// HasPotsNumPasswordEncrypted returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) HasPotsNumPasswordEncrypted() bool {
+	if o != nil && !IsNil(o.PotsNumPasswordEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetPotsNumPasswordEncrypted gets a reference to the given string and assigns it to the PotsNumPasswordEncrypted field.
+func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) SetPotsNumPasswordEncrypted(v string) {
+	o.PotsNumPasswordEncrypted = &v
 }
 
 // GetPotsNumUri returns the PotsNumUri field value if set, zero value otherwise.
@@ -178,168 +338,8 @@ func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) SetPotsNumUsername(v s
 	o.PotsNumUsername = &v
 }
 
-// GetPotsNumPassword returns the PotsNumPassword field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumPassword() string {
-	if o == nil || IsNil(o.PotsNumPassword) {
-		var ret string
-		return ret
-	}
-	return *o.PotsNumPassword
-}
-
-// GetPotsNumPasswordOk returns a tuple with the PotsNumPassword field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumPasswordOk() (*string, bool) {
-	if o == nil || IsNil(o.PotsNumPassword) {
-		return nil, false
-	}
-	return o.PotsNumPassword, true
-}
-
-// HasPotsNumPassword returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) HasPotsNumPassword() bool {
-	if o != nil && !IsNil(o.PotsNumPassword) {
-		return true
-	}
-
-	return false
-}
-
-// SetPotsNumPassword gets a reference to the given string and assigns it to the PotsNumPassword field.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) SetPotsNumPassword(v string) {
-	o.PotsNumPassword = &v
-}
-
-// GetPotsNumCallerId returns the PotsNumCallerId field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumCallerId() string {
-	if o == nil || IsNil(o.PotsNumCallerId) {
-		var ret string
-		return ret
-	}
-	return *o.PotsNumCallerId
-}
-
-// GetPotsNumCallerIdOk returns a tuple with the PotsNumCallerId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumCallerIdOk() (*string, bool) {
-	if o == nil || IsNil(o.PotsNumCallerId) {
-		return nil, false
-	}
-	return o.PotsNumCallerId, true
-}
-
-// HasPotsNumCallerId returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) HasPotsNumCallerId() bool {
-	if o != nil && !IsNil(o.PotsNumCallerId) {
-		return true
-	}
-
-	return false
-}
-
-// SetPotsNumCallerId gets a reference to the given string and assigns it to the PotsNumCallerId field.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) SetPotsNumCallerId(v string) {
-	o.PotsNumCallerId = &v
-}
-
-// GetPotsNumHotLine returns the PotsNumHotLine field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumHotLine() string {
-	if o == nil || IsNil(o.PotsNumHotLine) {
-		var ret string
-		return ret
-	}
-	return *o.PotsNumHotLine
-}
-
-// GetPotsNumHotLineOk returns a tuple with the PotsNumHotLine field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumHotLineOk() (*string, bool) {
-	if o == nil || IsNil(o.PotsNumHotLine) {
-		return nil, false
-	}
-	return o.PotsNumHotLine, true
-}
-
-// HasPotsNumHotLine returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) HasPotsNumHotLine() bool {
-	if o != nil && !IsNil(o.PotsNumHotLine) {
-		return true
-	}
-
-	return false
-}
-
-// SetPotsNumHotLine gets a reference to the given string and assigns it to the PotsNumHotLine field.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) SetPotsNumHotLine(v string) {
-	o.PotsNumHotLine = &v
-}
-
-// GetPotsNumPasswordEncrypted returns the PotsNumPasswordEncrypted field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumPasswordEncrypted() string {
-	if o == nil || IsNil(o.PotsNumPasswordEncrypted) {
-		var ret string
-		return ret
-	}
-	return *o.PotsNumPasswordEncrypted
-}
-
-// GetPotsNumPasswordEncryptedOk returns a tuple with the PotsNumPasswordEncrypted field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetPotsNumPasswordEncryptedOk() (*string, bool) {
-	if o == nil || IsNil(o.PotsNumPasswordEncrypted) {
-		return nil, false
-	}
-	return o.PotsNumPasswordEncrypted, true
-}
-
-// HasPotsNumPasswordEncrypted returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) HasPotsNumPasswordEncrypted() bool {
-	if o != nil && !IsNil(o.PotsNumPasswordEncrypted) {
-		return true
-	}
-
-	return false
-}
-
-// SetPotsNumPasswordEncrypted gets a reference to the given string and assigns it to the PotsNumPasswordEncrypted field.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) SetPotsNumPasswordEncrypted(v string) {
-	o.PotsNumPasswordEncrypted = &v
-}
-
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *SwitchpointsPutRequestSwitchpointValuePotsInner) SetIndex(v int64) {
-	o.Index = &v
-}
-
 func (o SwitchpointsPutRequestSwitchpointValuePotsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -348,29 +348,29 @@ func (o SwitchpointsPutRequestSwitchpointValuePotsInner) MarshalJSON() ([]byte, 
 
 func (o SwitchpointsPutRequestSwitchpointValuePotsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
+	}
+	if !IsNil(o.PotsNumCallerId) {
+		toSerialize["pots_num_caller_id"] = o.PotsNumCallerId
+	}
 	if !IsNil(o.PotsNumEnable) {
 		toSerialize["pots_num_enable"] = o.PotsNumEnable
+	}
+	if !IsNil(o.PotsNumHotLine) {
+		toSerialize["pots_num_hot_line"] = o.PotsNumHotLine
+	}
+	if !IsNil(o.PotsNumPassword) {
+		toSerialize["pots_num_password"] = o.PotsNumPassword
+	}
+	if !IsNil(o.PotsNumPasswordEncrypted) {
+		toSerialize["pots_num_password_encrypted"] = o.PotsNumPasswordEncrypted
 	}
 	if !IsNil(o.PotsNumUri) {
 		toSerialize["pots_num_uri"] = o.PotsNumUri
 	}
 	if !IsNil(o.PotsNumUsername) {
 		toSerialize["pots_num_username"] = o.PotsNumUsername
-	}
-	if !IsNil(o.PotsNumPassword) {
-		toSerialize["pots_num_password"] = o.PotsNumPassword
-	}
-	if !IsNil(o.PotsNumCallerId) {
-		toSerialize["pots_num_caller_id"] = o.PotsNumCallerId
-	}
-	if !IsNil(o.PotsNumHotLine) {
-		toSerialize["pots_num_hot_line"] = o.PotsNumHotLine
-	}
-	if !IsNil(o.PotsNumPasswordEncrypted) {
-		toSerialize["pots_num_password_encrypted"] = o.PotsNumPasswordEncrypted
-	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }
@@ -410,5 +410,3 @@ func (v *NullableSwitchpointsPutRequestSwitchpointValuePotsInner) UnmarshalJSON(
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

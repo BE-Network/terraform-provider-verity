@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,14 @@ var _ MappedNullable = &PortaclsPutRequestPortAclValue{}
 
 // PortaclsPutRequestPortAclValue struct for PortaclsPutRequestPortAclValue
 type PortaclsPutRequestPortAclValue struct {
+	// Enable object.
+	Enable     *bool                                                           `json:"enable,omitempty"`
+	Ipv4Deny   []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner `json:"ipv4_deny,omitempty"`
+	Ipv4Permit []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner `json:"ipv4_permit,omitempty"`
+	Ipv6Deny   []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner `json:"ipv6_deny,omitempty"`
+	Ipv6Permit []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner `json:"ipv6_permit,omitempty"`
 	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
-	Ipv4Permit []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner `json:"ipv4_permit,omitempty"`
-	Ipv4Deny []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner `json:"ipv4_deny,omitempty"`
-	Ipv6Permit []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner `json:"ipv6_permit,omitempty"`
-	Ipv6Deny []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner `json:"ipv6_deny,omitempty"`
 }
 
 // NewPortaclsPutRequestPortAclValue instantiates a new PortaclsPutRequestPortAclValue object
@@ -35,10 +35,10 @@ type PortaclsPutRequestPortAclValue struct {
 // will change when the set of required properties is changed
 func NewPortaclsPutRequestPortAclValue() *PortaclsPutRequestPortAclValue {
 	this := PortaclsPutRequestPortAclValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	return &this
 }
 
@@ -47,43 +47,11 @@ func NewPortaclsPutRequestPortAclValue() *PortaclsPutRequestPortAclValue {
 // but it doesn't guarantee that properties required by API are set
 func NewPortaclsPutRequestPortAclValueWithDefaults() *PortaclsPutRequestPortAclValue {
 	this := PortaclsPutRequestPortAclValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *PortaclsPutRequestPortAclValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PortaclsPutRequestPortAclValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *PortaclsPutRequestPortAclValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *PortaclsPutRequestPortAclValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -118,42 +86,10 @@ func (o *PortaclsPutRequestPortAclValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetIpv4Permit returns the Ipv4Permit field value if set, zero value otherwise.
-func (o *PortaclsPutRequestPortAclValue) GetIpv4Permit() []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner {
-	if o == nil || IsNil(o.Ipv4Permit) {
-		var ret []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner
-		return ret
-	}
-	return o.Ipv4Permit
-}
-
-// GetIpv4PermitOk returns a tuple with the Ipv4Permit field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PortaclsPutRequestPortAclValue) GetIpv4PermitOk() ([]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, bool) {
-	if o == nil || IsNil(o.Ipv4Permit) {
-		return nil, false
-	}
-	return o.Ipv4Permit, true
-}
-
-// HasIpv4Permit returns a boolean if a field has been set.
-func (o *PortaclsPutRequestPortAclValue) HasIpv4Permit() bool {
-	if o != nil && !IsNil(o.Ipv4Permit) {
-		return true
-	}
-
-	return false
-}
-
-// SetIpv4Permit gets a reference to the given []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner and assigns it to the Ipv4Permit field.
-func (o *PortaclsPutRequestPortAclValue) SetIpv4Permit(v []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner) {
-	o.Ipv4Permit = v
-}
-
 // GetIpv4Deny returns the Ipv4Deny field value if set, zero value otherwise.
-func (o *PortaclsPutRequestPortAclValue) GetIpv4Deny() []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner {
+func (o *PortaclsPutRequestPortAclValue) GetIpv4Deny() []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner {
 	if o == nil || IsNil(o.Ipv4Deny) {
-		var ret []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner
+		var ret []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner
 		return ret
 	}
 	return o.Ipv4Deny
@@ -161,7 +97,7 @@ func (o *PortaclsPutRequestPortAclValue) GetIpv4Deny() []PolicybasedroutingaclPu
 
 // GetIpv4DenyOk returns a tuple with the Ipv4Deny field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PortaclsPutRequestPortAclValue) GetIpv4DenyOk() ([]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, bool) {
+func (o *PortaclsPutRequestPortAclValue) GetIpv4DenyOk() ([]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner, bool) {
 	if o == nil || IsNil(o.Ipv4Deny) {
 		return nil, false
 	}
@@ -177,47 +113,47 @@ func (o *PortaclsPutRequestPortAclValue) HasIpv4Deny() bool {
 	return false
 }
 
-// SetIpv4Deny gets a reference to the given []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner and assigns it to the Ipv4Deny field.
-func (o *PortaclsPutRequestPortAclValue) SetIpv4Deny(v []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner) {
+// SetIpv4Deny gets a reference to the given []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner and assigns it to the Ipv4Deny field.
+func (o *PortaclsPutRequestPortAclValue) SetIpv4Deny(v []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner) {
 	o.Ipv4Deny = v
 }
 
-// GetIpv6Permit returns the Ipv6Permit field value if set, zero value otherwise.
-func (o *PortaclsPutRequestPortAclValue) GetIpv6Permit() []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
-	if o == nil || IsNil(o.Ipv6Permit) {
-		var ret []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner
+// GetIpv4Permit returns the Ipv4Permit field value if set, zero value otherwise.
+func (o *PortaclsPutRequestPortAclValue) GetIpv4Permit() []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner {
+	if o == nil || IsNil(o.Ipv4Permit) {
+		var ret []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner
 		return ret
 	}
-	return o.Ipv6Permit
+	return o.Ipv4Permit
 }
 
-// GetIpv6PermitOk returns a tuple with the Ipv6Permit field value if set, nil otherwise
+// GetIpv4PermitOk returns a tuple with the Ipv4Permit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PortaclsPutRequestPortAclValue) GetIpv6PermitOk() ([]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, bool) {
-	if o == nil || IsNil(o.Ipv6Permit) {
+func (o *PortaclsPutRequestPortAclValue) GetIpv4PermitOk() ([]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner, bool) {
+	if o == nil || IsNil(o.Ipv4Permit) {
 		return nil, false
 	}
-	return o.Ipv6Permit, true
+	return o.Ipv4Permit, true
 }
 
-// HasIpv6Permit returns a boolean if a field has been set.
-func (o *PortaclsPutRequestPortAclValue) HasIpv6Permit() bool {
-	if o != nil && !IsNil(o.Ipv6Permit) {
+// HasIpv4Permit returns a boolean if a field has been set.
+func (o *PortaclsPutRequestPortAclValue) HasIpv4Permit() bool {
+	if o != nil && !IsNil(o.Ipv4Permit) {
 		return true
 	}
 
 	return false
 }
 
-// SetIpv6Permit gets a reference to the given []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner and assigns it to the Ipv6Permit field.
-func (o *PortaclsPutRequestPortAclValue) SetIpv6Permit(v []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) {
-	o.Ipv6Permit = v
+// SetIpv4Permit gets a reference to the given []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner and assigns it to the Ipv4Permit field.
+func (o *PortaclsPutRequestPortAclValue) SetIpv4Permit(v []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner) {
+	o.Ipv4Permit = v
 }
 
 // GetIpv6Deny returns the Ipv6Deny field value if set, zero value otherwise.
-func (o *PortaclsPutRequestPortAclValue) GetIpv6Deny() []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner {
+func (o *PortaclsPutRequestPortAclValue) GetIpv6Deny() []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner {
 	if o == nil || IsNil(o.Ipv6Deny) {
-		var ret []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner
+		var ret []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner
 		return ret
 	}
 	return o.Ipv6Deny
@@ -225,7 +161,7 @@ func (o *PortaclsPutRequestPortAclValue) GetIpv6Deny() []PolicybasedroutingaclPu
 
 // GetIpv6DenyOk returns a tuple with the Ipv6Deny field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PortaclsPutRequestPortAclValue) GetIpv6DenyOk() ([]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, bool) {
+func (o *PortaclsPutRequestPortAclValue) GetIpv6DenyOk() ([]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner, bool) {
 	if o == nil || IsNil(o.Ipv6Deny) {
 		return nil, false
 	}
@@ -241,13 +177,77 @@ func (o *PortaclsPutRequestPortAclValue) HasIpv6Deny() bool {
 	return false
 }
 
-// SetIpv6Deny gets a reference to the given []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner and assigns it to the Ipv6Deny field.
-func (o *PortaclsPutRequestPortAclValue) SetIpv6Deny(v []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) {
+// SetIpv6Deny gets a reference to the given []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner and assigns it to the Ipv6Deny field.
+func (o *PortaclsPutRequestPortAclValue) SetIpv6Deny(v []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner) {
 	o.Ipv6Deny = v
 }
 
+// GetIpv6Permit returns the Ipv6Permit field value if set, zero value otherwise.
+func (o *PortaclsPutRequestPortAclValue) GetIpv6Permit() []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner {
+	if o == nil || IsNil(o.Ipv6Permit) {
+		var ret []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner
+		return ret
+	}
+	return o.Ipv6Permit
+}
+
+// GetIpv6PermitOk returns a tuple with the Ipv6Permit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PortaclsPutRequestPortAclValue) GetIpv6PermitOk() ([]PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner, bool) {
+	if o == nil || IsNil(o.Ipv6Permit) {
+		return nil, false
+	}
+	return o.Ipv6Permit, true
+}
+
+// HasIpv6Permit returns a boolean if a field has been set.
+func (o *PortaclsPutRequestPortAclValue) HasIpv6Permit() bool {
+	if o != nil && !IsNil(o.Ipv6Permit) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpv6Permit gets a reference to the given []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner and assigns it to the Ipv6Permit field.
+func (o *PortaclsPutRequestPortAclValue) SetIpv6Permit(v []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner) {
+	o.Ipv6Permit = v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *PortaclsPutRequestPortAclValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PortaclsPutRequestPortAclValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *PortaclsPutRequestPortAclValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *PortaclsPutRequestPortAclValue) SetName(v string) {
+	o.Name = &v
+}
+
 func (o PortaclsPutRequestPortAclValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -256,23 +256,23 @@ func (o PortaclsPutRequestPortAclValue) MarshalJSON() ([]byte, error) {
 
 func (o PortaclsPutRequestPortAclValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.Ipv4Permit) {
-		toSerialize["ipv4_permit"] = o.Ipv4Permit
 	}
 	if !IsNil(o.Ipv4Deny) {
 		toSerialize["ipv4_deny"] = o.Ipv4Deny
 	}
-	if !IsNil(o.Ipv6Permit) {
-		toSerialize["ipv6_permit"] = o.Ipv6Permit
+	if !IsNil(o.Ipv4Permit) {
+		toSerialize["ipv4_permit"] = o.Ipv4Permit
 	}
 	if !IsNil(o.Ipv6Deny) {
 		toSerialize["ipv6_deny"] = o.Ipv6Deny
+	}
+	if !IsNil(o.Ipv6Permit) {
+		toSerialize["ipv6_permit"] = o.Ipv6Permit
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	return toSerialize, nil
 }
@@ -312,5 +312,3 @@ func (v *NullablePortaclsPutRequestPortAclValue) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,12 +19,12 @@ var _ MappedNullable = &SwitchpointsPutRequestSwitchpointValueChildrenInner{}
 
 // SwitchpointsPutRequestSwitchpointValueChildrenInner struct for SwitchpointsPutRequestSwitchpointValueChildrenInner
 type SwitchpointsPutRequestSwitchpointValueChildrenInner struct {
+	// Device associated with the Child
+	ChildNumDevice *string `json:"child_num_device,omitempty"`
 	// Switchpoint associated with the Child
 	ChildNumEndpoint *string `json:"child_num_endpoint,omitempty"`
 	// Object type for child_num_endpoint field
 	ChildNumEndpointRefType *string `json:"child_num_endpoint_ref_type_,omitempty"`
-	// Device associated with the Child
-	ChildNumDevice *string `json:"child_num_device,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
 }
@@ -35,10 +35,10 @@ type SwitchpointsPutRequestSwitchpointValueChildrenInner struct {
 // will change when the set of required properties is changed
 func NewSwitchpointsPutRequestSwitchpointValueChildrenInner() *SwitchpointsPutRequestSwitchpointValueChildrenInner {
 	this := SwitchpointsPutRequestSwitchpointValueChildrenInner{}
-	var childNumEndpoint string = ""
-	this.ChildNumEndpoint = &childNumEndpoint
 	var childNumDevice string = ""
 	this.ChildNumDevice = &childNumDevice
+	var childNumEndpoint string = ""
+	this.ChildNumEndpoint = &childNumEndpoint
 	return &this
 }
 
@@ -47,11 +47,43 @@ func NewSwitchpointsPutRequestSwitchpointValueChildrenInner() *SwitchpointsPutRe
 // but it doesn't guarantee that properties required by API are set
 func NewSwitchpointsPutRequestSwitchpointValueChildrenInnerWithDefaults() *SwitchpointsPutRequestSwitchpointValueChildrenInner {
 	this := SwitchpointsPutRequestSwitchpointValueChildrenInner{}
-	var childNumEndpoint string = ""
-	this.ChildNumEndpoint = &childNumEndpoint
 	var childNumDevice string = ""
 	this.ChildNumDevice = &childNumDevice
+	var childNumEndpoint string = ""
+	this.ChildNumEndpoint = &childNumEndpoint
 	return &this
+}
+
+// GetChildNumDevice returns the ChildNumDevice field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) GetChildNumDevice() string {
+	if o == nil || IsNil(o.ChildNumDevice) {
+		var ret string
+		return ret
+	}
+	return *o.ChildNumDevice
+}
+
+// GetChildNumDeviceOk returns a tuple with the ChildNumDevice field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) GetChildNumDeviceOk() (*string, bool) {
+	if o == nil || IsNil(o.ChildNumDevice) {
+		return nil, false
+	}
+	return o.ChildNumDevice, true
+}
+
+// HasChildNumDevice returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) HasChildNumDevice() bool {
+	if o != nil && !IsNil(o.ChildNumDevice) {
+		return true
+	}
+
+	return false
+}
+
+// SetChildNumDevice gets a reference to the given string and assigns it to the ChildNumDevice field.
+func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) SetChildNumDevice(v string) {
+	o.ChildNumDevice = &v
 }
 
 // GetChildNumEndpoint returns the ChildNumEndpoint field value if set, zero value otherwise.
@@ -118,38 +150,6 @@ func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) SetChildNumEndpoin
 	o.ChildNumEndpointRefType = &v
 }
 
-// GetChildNumDevice returns the ChildNumDevice field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) GetChildNumDevice() string {
-	if o == nil || IsNil(o.ChildNumDevice) {
-		var ret string
-		return ret
-	}
-	return *o.ChildNumDevice
-}
-
-// GetChildNumDeviceOk returns a tuple with the ChildNumDevice field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) GetChildNumDeviceOk() (*string, bool) {
-	if o == nil || IsNil(o.ChildNumDevice) {
-		return nil, false
-	}
-	return o.ChildNumDevice, true
-}
-
-// HasChildNumDevice returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) HasChildNumDevice() bool {
-	if o != nil && !IsNil(o.ChildNumDevice) {
-		return true
-	}
-
-	return false
-}
-
-// SetChildNumDevice gets a reference to the given string and assigns it to the ChildNumDevice field.
-func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) SetChildNumDevice(v string) {
-	o.ChildNumDevice = &v
-}
-
 // GetIndex returns the Index field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
@@ -183,7 +183,7 @@ func (o *SwitchpointsPutRequestSwitchpointValueChildrenInner) SetIndex(v int64) 
 }
 
 func (o SwitchpointsPutRequestSwitchpointValueChildrenInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -192,14 +192,14 @@ func (o SwitchpointsPutRequestSwitchpointValueChildrenInner) MarshalJSON() ([]by
 
 func (o SwitchpointsPutRequestSwitchpointValueChildrenInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.ChildNumDevice) {
+		toSerialize["child_num_device"] = o.ChildNumDevice
+	}
 	if !IsNil(o.ChildNumEndpoint) {
 		toSerialize["child_num_endpoint"] = o.ChildNumEndpoint
 	}
 	if !IsNil(o.ChildNumEndpointRefType) {
 		toSerialize["child_num_endpoint_ref_type_"] = o.ChildNumEndpointRefType
-	}
-	if !IsNil(o.ChildNumDevice) {
-		toSerialize["child_num_device"] = o.ChildNumDevice
 	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
@@ -242,5 +242,3 @@ func (v *NullableSwitchpointsPutRequestSwitchpointValueChildrenInner) UnmarshalJ
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

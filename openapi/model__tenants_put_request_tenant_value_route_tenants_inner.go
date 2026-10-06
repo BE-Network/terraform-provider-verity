@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,10 +21,10 @@ var _ MappedNullable = &TenantsPutRequestTenantValueRouteTenantsInner{}
 type TenantsPutRequestTenantValueRouteTenantsInner struct {
 	// Enable
 	Enable *bool `json:"enable,omitempty"`
-	// Tenant
-	Tenant *string `json:"tenant,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
+	// Tenant
+	Tenant *string `json:"tenant,omitempty"`
 }
 
 // NewTenantsPutRequestTenantValueRouteTenantsInner instantiates a new TenantsPutRequestTenantValueRouteTenantsInner object
@@ -84,38 +84,6 @@ func (o *TenantsPutRequestTenantValueRouteTenantsInner) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetTenant returns the Tenant field value if set, zero value otherwise.
-func (o *TenantsPutRequestTenantValueRouteTenantsInner) GetTenant() string {
-	if o == nil || IsNil(o.Tenant) {
-		var ret string
-		return ret
-	}
-	return *o.Tenant
-}
-
-// GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *TenantsPutRequestTenantValueRouteTenantsInner) GetTenantOk() (*string, bool) {
-	if o == nil || IsNil(o.Tenant) {
-		return nil, false
-	}
-	return o.Tenant, true
-}
-
-// HasTenant returns a boolean if a field has been set.
-func (o *TenantsPutRequestTenantValueRouteTenantsInner) HasTenant() bool {
-	if o != nil && !IsNil(o.Tenant) {
-		return true
-	}
-
-	return false
-}
-
-// SetTenant gets a reference to the given string and assigns it to the Tenant field.
-func (o *TenantsPutRequestTenantValueRouteTenantsInner) SetTenant(v string) {
-	o.Tenant = &v
-}
-
 // GetIndex returns the Index field value if set, zero value otherwise.
 func (o *TenantsPutRequestTenantValueRouteTenantsInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
@@ -148,8 +116,40 @@ func (o *TenantsPutRequestTenantValueRouteTenantsInner) SetIndex(v int64) {
 	o.Index = &v
 }
 
+// GetTenant returns the Tenant field value if set, zero value otherwise.
+func (o *TenantsPutRequestTenantValueRouteTenantsInner) GetTenant() string {
+	if o == nil || IsNil(o.Tenant) {
+		var ret string
+		return ret
+	}
+	return *o.Tenant
+}
+
+// GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TenantsPutRequestTenantValueRouteTenantsInner) GetTenantOk() (*string, bool) {
+	if o == nil || IsNil(o.Tenant) {
+		return nil, false
+	}
+	return o.Tenant, true
+}
+
+// HasTenant returns a boolean if a field has been set.
+func (o *TenantsPutRequestTenantValueRouteTenantsInner) HasTenant() bool {
+	if o != nil && !IsNil(o.Tenant) {
+		return true
+	}
+
+	return false
+}
+
+// SetTenant gets a reference to the given string and assigns it to the Tenant field.
+func (o *TenantsPutRequestTenantValueRouteTenantsInner) SetTenant(v string) {
+	o.Tenant = &v
+}
+
 func (o TenantsPutRequestTenantValueRouteTenantsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -161,11 +161,11 @@ func (o TenantsPutRequestTenantValueRouteTenantsInner) ToMap() (map[string]inter
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.Tenant) {
-		toSerialize["tenant"] = o.Tenant
-	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
+	}
+	if !IsNil(o.Tenant) {
+		toSerialize["tenant"] = o.Tenant
 	}
 	return toSerialize, nil
 }
@@ -205,5 +205,3 @@ func (v *NullableTenantsPutRequestTenantValueRouteTenantsInner) UnmarshalJSON(sr
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

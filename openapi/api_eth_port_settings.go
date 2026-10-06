@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // EthPortSettingsAPIService EthPortSettingsAPI service
 type EthPortSettingsAPIService service
 
 type ApiEthportsettingsDeleteRequest struct {
-	ctx context.Context
-	ApiService *EthPortSettingsAPIService
-	portName *[]string
+	ctx           context.Context
+	ApiService    *EthPortSettingsAPIService
+	portName      *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ EthportsettingsDelete Delete Eth-Port Settings
 
 Deletes an existing Eth-Port Settings from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEthportsettingsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEthportsettingsDeleteRequest
 */
 func (a *EthPortSettingsAPIService) EthportsettingsDelete(ctx context.Context) ApiEthportsettingsDeleteRequest {
 	return ApiEthportsettingsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *EthPortSettingsAPIService) EthportsettingsDeleteExecute(r ApiEthportsettingsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EthPortSettingsAPIService.EthportsettingsDelete")
@@ -142,10 +140,10 @@ func (a *EthPortSettingsAPIService) EthportsettingsDeleteExecute(r ApiEthportset
 }
 
 type ApiEthportsettingsGetRequest struct {
-	ctx context.Context
-	ApiService *EthPortSettingsAPIService
-	portName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *EthPortSettingsAPIService
+	portName      *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ EthportsettingsGet Get all Eth-Port Settings
 
 Downloads all Eth-Port Settings from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEthportsettingsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEthportsettingsGetRequest
 */
 func (a *EthPortSettingsAPIService) EthportsettingsGet(ctx context.Context) ApiEthportsettingsGetRequest {
 	return ApiEthportsettingsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *EthPortSettingsAPIService) EthportsettingsGetExecute(r ApiEthportsettingsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EthPortSettingsAPIService.EthportsettingsGet")
@@ -258,9 +255,9 @@ func (a *EthPortSettingsAPIService) EthportsettingsGetExecute(r ApiEthportsettin
 }
 
 type ApiEthportsettingsPatchRequest struct {
-	ctx context.Context
-	ApiService *EthPortSettingsAPIService
-	changesetName *string
+	ctx                       context.Context
+	ApiService                *EthPortSettingsAPIService
+	changesetName             *string
 	ethportsettingsPutRequest *EthportsettingsPutRequest
 }
 
@@ -283,23 +280,22 @@ EthportsettingsPatch Update Eth-Port Settings
 
 Update Eth-Port Settings into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEthportsettingsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEthportsettingsPatchRequest
 */
 func (a *EthPortSettingsAPIService) EthportsettingsPatch(ctx context.Context) ApiEthportsettingsPatchRequest {
 	return ApiEthportsettingsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *EthPortSettingsAPIService) EthportsettingsPatchExecute(r ApiEthportsettingsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EthPortSettingsAPIService.EthportsettingsPatch")
@@ -364,9 +360,9 @@ func (a *EthPortSettingsAPIService) EthportsettingsPatchExecute(r ApiEthportsett
 }
 
 type ApiEthportsettingsPutRequest struct {
-	ctx context.Context
-	ApiService *EthPortSettingsAPIService
-	changesetName *string
+	ctx                       context.Context
+	ApiService                *EthPortSettingsAPIService
+	changesetName             *string
 	ethportsettingsPutRequest *EthportsettingsPutRequest
 }
 
@@ -389,23 +385,22 @@ EthportsettingsPut Create Eth-Port Settings
 
 Create Eth-Port Settings into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiEthportsettingsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiEthportsettingsPutRequest
 */
 func (a *EthPortSettingsAPIService) EthportsettingsPut(ctx context.Context) ApiEthportsettingsPutRequest {
 	return ApiEthportsettingsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *EthPortSettingsAPIService) EthportsettingsPutExecute(r ApiEthportsettingsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EthPortSettingsAPIService.EthportsettingsPut")

@@ -31,8 +31,10 @@ docker run --rm \
   --global-property apiTests=false,modelTests=false \
   --additional-properties packageName=openapi
 
+go run "$task_root/tools/sdkgen" --sdk-dir "$task_temp/sdk"
+
 if [[ "$task_mode" == "--check" ]]; then
-	if ! diff -qr "$task_target" "$task_temp/sdk"; then
+  if ! diff -qr "$task_target" "$task_temp/sdk"; then
     echo "OpenAPI SDK drift detected. Review and apply with: tools/generate_openapi_sdk.sh --write" >&2
     exit 1
   fi

@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // ACLsAPIService ACLsAPI service
 type ACLsAPIService service
 
 type ApiAclsDeleteRequest struct {
-	ctx context.Context
-	ApiService *ACLsAPIService
-	ipFilterName *[]string
-	ipVersion *string
+	ctx           context.Context
+	ApiService    *ACLsAPIService
+	ipFilterName  *[]string
+	ipVersion     *string
 	changesetName *string
 }
 
@@ -55,23 +54,22 @@ AclsDelete Delete IP Filter
 
 Deletes an existing IP Filter from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAclsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAclsDeleteRequest
 */
 func (a *ACLsAPIService) AclsDelete(ctx context.Context) ApiAclsDeleteRequest {
 	return ApiAclsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ACLsAPIService) AclsDeleteExecute(r ApiAclsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ACLsAPIService.AclsDelete")
@@ -152,11 +150,11 @@ func (a *ACLsAPIService) AclsDeleteExecute(r ApiAclsDeleteRequest) (*http.Respon
 }
 
 type ApiAclsGetRequest struct {
-	ctx context.Context
-	ApiService *ACLsAPIService
-	ipVersion *string
-	ipFilterName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *ACLsAPIService
+	ipVersion     *string
+	ipFilterName  *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -189,23 +187,22 @@ AclsGet Get all IP Filters
 
 Retrieves all IP Filters from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAclsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAclsGetRequest
 */
 func (a *ACLsAPIService) AclsGet(ctx context.Context) ApiAclsGetRequest {
 	return ApiAclsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ACLsAPIService) AclsGetExecute(r ApiAclsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ACLsAPIService.AclsGet")
@@ -278,10 +275,10 @@ func (a *ACLsAPIService) AclsGetExecute(r ApiAclsGetRequest) (*http.Response, er
 }
 
 type ApiAclsPatchRequest struct {
-	ctx context.Context
-	ApiService *ACLsAPIService
-	ipVersion *string
-	changesetName *string
+	ctx            context.Context
+	ApiService     *ACLsAPIService
+	ipVersion      *string
+	changesetName  *string
 	aclsPutRequest *AclsPutRequest
 }
 
@@ -309,23 +306,22 @@ AclsPatch Update IP Filter
 
 Update IP Filter into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAclsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAclsPatchRequest
 */
 func (a *ACLsAPIService) AclsPatch(ctx context.Context) ApiAclsPatchRequest {
 	return ApiAclsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ACLsAPIService) AclsPatchExecute(r ApiAclsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ACLsAPIService.AclsPatch")
@@ -394,10 +390,10 @@ func (a *ACLsAPIService) AclsPatchExecute(r ApiAclsPatchRequest) (*http.Response
 }
 
 type ApiAclsPutRequest struct {
-	ctx context.Context
-	ApiService *ACLsAPIService
-	ipVersion *string
-	changesetName *string
+	ctx            context.Context
+	ApiService     *ACLsAPIService
+	ipVersion      *string
+	changesetName  *string
 	aclsPutRequest *AclsPutRequest
 }
 
@@ -425,23 +421,22 @@ AclsPut Create IP Filter
 
 Create IP Filter into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAclsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAclsPutRequest
 */
 func (a *ACLsAPIService) AclsPut(ctx context.Context) ApiAclsPutRequest {
 	return ApiAclsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ACLsAPIService) AclsPutExecute(r ApiAclsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ACLsAPIService.AclsPut")

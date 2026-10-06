@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // IPv6PrefixListsAPIService IPv6PrefixListsAPI service
 type IPv6PrefixListsAPIService service
 
 type ApiIpv6prefixlistsDeleteRequest struct {
-	ctx context.Context
-	ApiService *IPv6PrefixListsAPIService
+	ctx                context.Context
+	ApiService         *IPv6PrefixListsAPIService
 	ipv6PrefixListName *[]string
-	changesetName *string
+	changesetName      *string
 }
 
 func (r ApiIpv6prefixlistsDeleteRequest) Ipv6PrefixListName(ipv6PrefixListName []string) ApiIpv6prefixlistsDeleteRequest {
@@ -49,23 +48,22 @@ Ipv6prefixlistsDelete Delete IPv6 Prefix List
 
 Deletes an existing IPv6 Prefix List from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiIpv6prefixlistsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiIpv6prefixlistsDeleteRequest
 */
 func (a *IPv6PrefixListsAPIService) Ipv6prefixlistsDelete(ctx context.Context) ApiIpv6prefixlistsDeleteRequest {
 	return ApiIpv6prefixlistsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *IPv6PrefixListsAPIService) Ipv6prefixlistsDeleteExecute(r ApiIpv6prefixlistsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IPv6PrefixListsAPIService.Ipv6prefixlistsDelete")
@@ -142,11 +140,11 @@ func (a *IPv6PrefixListsAPIService) Ipv6prefixlistsDeleteExecute(r ApiIpv6prefix
 }
 
 type ApiIpv6prefixlistsGetRequest struct {
-	ctx context.Context
-	ApiService *IPv6PrefixListsAPIService
+	ctx                context.Context
+	ApiService         *IPv6PrefixListsAPIService
 	ipv6PrefixListName *string
-	includeData *bool
-	changesetName *string
+	includeData        *bool
+	changesetName      *string
 }
 
 func (r ApiIpv6prefixlistsGetRequest) Ipv6PrefixListName(ipv6PrefixListName string) ApiIpv6prefixlistsGetRequest {
@@ -173,23 +171,22 @@ Ipv6prefixlistsGet Get all IPv6 Prefix Lists
 
 Retrieves all IPv6 Prefix Lists from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiIpv6prefixlistsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiIpv6prefixlistsGetRequest
 */
 func (a *IPv6PrefixListsAPIService) Ipv6prefixlistsGet(ctx context.Context) ApiIpv6prefixlistsGetRequest {
 	return ApiIpv6prefixlistsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *IPv6PrefixListsAPIService) Ipv6prefixlistsGetExecute(r ApiIpv6prefixlistsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IPv6PrefixListsAPIService.Ipv6prefixlistsGet")
@@ -258,9 +255,9 @@ func (a *IPv6PrefixListsAPIService) Ipv6prefixlistsGetExecute(r ApiIpv6prefixlis
 }
 
 type ApiIpv6prefixlistsPatchRequest struct {
-	ctx context.Context
-	ApiService *IPv6PrefixListsAPIService
-	changesetName *string
+	ctx                       context.Context
+	ApiService                *IPv6PrefixListsAPIService
+	changesetName             *string
 	ipv6prefixlistsPutRequest *Ipv6prefixlistsPutRequest
 }
 
@@ -283,23 +280,22 @@ Ipv6prefixlistsPatch Update IPv6 Prefix List
 
 Update IPv6 Prefix List into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiIpv6prefixlistsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiIpv6prefixlistsPatchRequest
 */
 func (a *IPv6PrefixListsAPIService) Ipv6prefixlistsPatch(ctx context.Context) ApiIpv6prefixlistsPatchRequest {
 	return ApiIpv6prefixlistsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *IPv6PrefixListsAPIService) Ipv6prefixlistsPatchExecute(r ApiIpv6prefixlistsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IPv6PrefixListsAPIService.Ipv6prefixlistsPatch")
@@ -364,9 +360,9 @@ func (a *IPv6PrefixListsAPIService) Ipv6prefixlistsPatchExecute(r ApiIpv6prefixl
 }
 
 type ApiIpv6prefixlistsPutRequest struct {
-	ctx context.Context
-	ApiService *IPv6PrefixListsAPIService
-	changesetName *string
+	ctx                       context.Context
+	ApiService                *IPv6PrefixListsAPIService
+	changesetName             *string
 	ipv6prefixlistsPutRequest *Ipv6prefixlistsPutRequest
 }
 
@@ -389,23 +385,22 @@ Ipv6prefixlistsPut Create IPv6 Prefix List
 
 Create IPv6 Prefix List into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiIpv6prefixlistsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiIpv6prefixlistsPutRequest
 */
 func (a *IPv6PrefixListsAPIService) Ipv6prefixlistsPut(ctx context.Context) ApiIpv6prefixlistsPutRequest {
 	return ApiIpv6prefixlistsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *IPv6PrefixListsAPIService) Ipv6prefixlistsPutExecute(r ApiIpv6prefixlistsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IPv6PrefixListsAPIService.Ipv6prefixlistsPut")

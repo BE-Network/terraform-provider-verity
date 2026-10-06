@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,12 +19,12 @@ var _ MappedNullable = &SflowcollectorsPutRequestSflowCollectorValue{}
 
 // SflowcollectorsPutRequestSflowCollectorValue struct for SflowcollectorsPutRequestSflowCollectorValue
 type SflowcollectorsPutRequestSflowCollectorValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
-	// IP address of the sFlow Collector 
+	// IP address of the sFlow Collector
 	Ip *string `json:"ip,omitempty"`
+	// Template Name. Must be unique within type.
+	Name *string `json:"name,omitempty"`
 	// Port
 	Port NullableInt64 `json:"port,omitempty"`
 }
@@ -35,12 +35,12 @@ type SflowcollectorsPutRequestSflowCollectorValue struct {
 // will change when the set of required properties is changed
 func NewSflowcollectorsPutRequestSflowCollectorValue() *SflowcollectorsPutRequestSflowCollectorValue {
 	this := SflowcollectorsPutRequestSflowCollectorValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
 	var ip string = ""
 	this.Ip = &ip
+	var name string = ""
+	this.Name = &name
 	var port int64 = 6343
 	this.Port = *NewNullableInt64(&port)
 	return &this
@@ -51,47 +51,15 @@ func NewSflowcollectorsPutRequestSflowCollectorValue() *SflowcollectorsPutReques
 // but it doesn't guarantee that properties required by API are set
 func NewSflowcollectorsPutRequestSflowCollectorValueWithDefaults() *SflowcollectorsPutRequestSflowCollectorValue {
 	this := SflowcollectorsPutRequestSflowCollectorValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
 	var ip string = ""
 	this.Ip = &ip
+	var name string = ""
+	this.Name = &name
 	var port int64 = 6343
 	this.Port = *NewNullableInt64(&port)
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *SflowcollectorsPutRequestSflowCollectorValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SflowcollectorsPutRequestSflowCollectorValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *SflowcollectorsPutRequestSflowCollectorValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *SflowcollectorsPutRequestSflowCollectorValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -158,6 +126,38 @@ func (o *SflowcollectorsPutRequestSflowCollectorValue) SetIp(v string) {
 	o.Ip = &v
 }
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *SflowcollectorsPutRequestSflowCollectorValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SflowcollectorsPutRequestSflowCollectorValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *SflowcollectorsPutRequestSflowCollectorValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *SflowcollectorsPutRequestSflowCollectorValue) SetName(v string) {
+	o.Name = &v
+}
+
 // GetPort returns the Port field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SflowcollectorsPutRequestSflowCollectorValue) GetPort() int64 {
 	if o == nil || IsNil(o.Port.Get()) {
@@ -190,6 +190,7 @@ func (o *SflowcollectorsPutRequestSflowCollectorValue) HasPort() bool {
 func (o *SflowcollectorsPutRequestSflowCollectorValue) SetPort(v int64) {
 	o.Port.Set(&v)
 }
+
 // SetPortNil sets the value for Port to be an explicit nil
 func (o *SflowcollectorsPutRequestSflowCollectorValue) SetPortNil() {
 	o.Port.Set(nil)
@@ -201,7 +202,7 @@ func (o *SflowcollectorsPutRequestSflowCollectorValue) UnsetPort() {
 }
 
 func (o SflowcollectorsPutRequestSflowCollectorValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -210,14 +211,14 @@ func (o SflowcollectorsPutRequestSflowCollectorValue) MarshalJSON() ([]byte, err
 
 func (o SflowcollectorsPutRequestSflowCollectorValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
 	if !IsNil(o.Ip) {
 		toSerialize["ip"] = o.Ip
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if o.Port.IsSet() {
 		toSerialize["port"] = o.Port.Get()
@@ -260,5 +261,3 @@ func (v *NullableSflowcollectorsPutRequestSflowCollectorValue) UnmarshalJSON(src
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

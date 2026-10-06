@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // GatewaysAPIService GatewaysAPI service
 type GatewaysAPIService service
 
 type ApiGatewaysDeleteRequest struct {
-	ctx context.Context
-	ApiService *GatewaysAPIService
-	gatewayName *[]string
+	ctx           context.Context
+	ApiService    *GatewaysAPIService
+	gatewayName   *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ GatewaysDelete Delete gateway
 
 Deletes an existing gateway from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGatewaysDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGatewaysDeleteRequest
 */
 func (a *GatewaysAPIService) GatewaysDelete(ctx context.Context) ApiGatewaysDeleteRequest {
 	return ApiGatewaysDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *GatewaysAPIService) GatewaysDeleteExecute(r ApiGatewaysDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GatewaysAPIService.GatewaysDelete")
@@ -142,10 +140,10 @@ func (a *GatewaysAPIService) GatewaysDeleteExecute(r ApiGatewaysDeleteRequest) (
 }
 
 type ApiGatewaysGetRequest struct {
-	ctx context.Context
-	ApiService *GatewaysAPIService
-	gatewayName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *GatewaysAPIService
+	gatewayName   *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ GatewaysGet Get all gateways
 
 Downloads all gateways from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGatewaysGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGatewaysGetRequest
 */
 func (a *GatewaysAPIService) GatewaysGet(ctx context.Context) ApiGatewaysGetRequest {
 	return ApiGatewaysGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *GatewaysAPIService) GatewaysGetExecute(r ApiGatewaysGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GatewaysAPIService.GatewaysGet")
@@ -258,9 +255,9 @@ func (a *GatewaysAPIService) GatewaysGetExecute(r ApiGatewaysGetRequest) (*http.
 }
 
 type ApiGatewaysPatchRequest struct {
-	ctx context.Context
-	ApiService *GatewaysAPIService
-	changesetName *string
+	ctx                context.Context
+	ApiService         *GatewaysAPIService
+	changesetName      *string
 	gatewaysPutRequest *GatewaysPutRequest
 }
 
@@ -283,23 +280,22 @@ GatewaysPatch Update gateway
 
 Update gateway into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGatewaysPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGatewaysPatchRequest
 */
 func (a *GatewaysAPIService) GatewaysPatch(ctx context.Context) ApiGatewaysPatchRequest {
 	return ApiGatewaysPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *GatewaysAPIService) GatewaysPatchExecute(r ApiGatewaysPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GatewaysAPIService.GatewaysPatch")
@@ -364,9 +360,9 @@ func (a *GatewaysAPIService) GatewaysPatchExecute(r ApiGatewaysPatchRequest) (*h
 }
 
 type ApiGatewaysPutRequest struct {
-	ctx context.Context
-	ApiService *GatewaysAPIService
-	changesetName *string
+	ctx                context.Context
+	ApiService         *GatewaysAPIService
+	changesetName      *string
 	gatewaysPutRequest *GatewaysPutRequest
 }
 
@@ -389,23 +385,22 @@ GatewaysPut Create gateway
 
 Create gateway into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGatewaysPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGatewaysPutRequest
 */
 func (a *GatewaysAPIService) GatewaysPut(ctx context.Context) ApiGatewaysPutRequest {
 	return ApiGatewaysPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *GatewaysAPIService) GatewaysPutExecute(r ApiGatewaysPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GatewaysAPIService.GatewaysPut")

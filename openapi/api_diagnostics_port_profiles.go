@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // DiagnosticsPortProfilesAPIService DiagnosticsPortProfilesAPI service
 type DiagnosticsPortProfilesAPIService service
 
 type ApiDiagnosticsportprofilesDeleteRequest struct {
-	ctx context.Context
-	ApiService *DiagnosticsPortProfilesAPIService
+	ctx                        context.Context
+	ApiService                 *DiagnosticsPortProfilesAPIService
 	diagnosticsPortProfileName *[]string
-	changesetName *string
+	changesetName              *string
 }
 
 func (r ApiDiagnosticsportprofilesDeleteRequest) DiagnosticsPortProfileName(diagnosticsPortProfileName []string) ApiDiagnosticsportprofilesDeleteRequest {
@@ -49,23 +48,22 @@ DiagnosticsportprofilesDelete Delete Diagnostics Port Profile
 
 Deletes an existing Diagnostics Port Profile from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDiagnosticsportprofilesDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiDiagnosticsportprofilesDeleteRequest
 */
 func (a *DiagnosticsPortProfilesAPIService) DiagnosticsportprofilesDelete(ctx context.Context) ApiDiagnosticsportprofilesDeleteRequest {
 	return ApiDiagnosticsportprofilesDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *DiagnosticsPortProfilesAPIService) DiagnosticsportprofilesDeleteExecute(r ApiDiagnosticsportprofilesDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DiagnosticsPortProfilesAPIService.DiagnosticsportprofilesDelete")
@@ -142,11 +140,11 @@ func (a *DiagnosticsPortProfilesAPIService) DiagnosticsportprofilesDeleteExecute
 }
 
 type ApiDiagnosticsportprofilesGetRequest struct {
-	ctx context.Context
-	ApiService *DiagnosticsPortProfilesAPIService
+	ctx                        context.Context
+	ApiService                 *DiagnosticsPortProfilesAPIService
 	diagnosticsPortProfileName *string
-	includeData *bool
-	changesetName *string
+	includeData                *bool
+	changesetName              *string
 }
 
 func (r ApiDiagnosticsportprofilesGetRequest) DiagnosticsPortProfileName(diagnosticsPortProfileName string) ApiDiagnosticsportprofilesGetRequest {
@@ -173,23 +171,22 @@ DiagnosticsportprofilesGet Get all Diagnostics Port Profiles
 
 Downloads all Diagnostics Port Profiles from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDiagnosticsportprofilesGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiDiagnosticsportprofilesGetRequest
 */
 func (a *DiagnosticsPortProfilesAPIService) DiagnosticsportprofilesGet(ctx context.Context) ApiDiagnosticsportprofilesGetRequest {
 	return ApiDiagnosticsportprofilesGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *DiagnosticsPortProfilesAPIService) DiagnosticsportprofilesGetExecute(r ApiDiagnosticsportprofilesGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DiagnosticsPortProfilesAPIService.DiagnosticsportprofilesGet")
@@ -258,9 +255,9 @@ func (a *DiagnosticsPortProfilesAPIService) DiagnosticsportprofilesGetExecute(r 
 }
 
 type ApiDiagnosticsportprofilesPatchRequest struct {
-	ctx context.Context
-	ApiService *DiagnosticsPortProfilesAPIService
-	changesetName *string
+	ctx                               context.Context
+	ApiService                        *DiagnosticsPortProfilesAPIService
+	changesetName                     *string
 	diagnosticsportprofilesPutRequest *DiagnosticsportprofilesPutRequest
 }
 
@@ -283,23 +280,22 @@ DiagnosticsportprofilesPatch Update Diagnostics Port Profile
 
 Update Diagnostics Port Profile into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDiagnosticsportprofilesPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiDiagnosticsportprofilesPatchRequest
 */
 func (a *DiagnosticsPortProfilesAPIService) DiagnosticsportprofilesPatch(ctx context.Context) ApiDiagnosticsportprofilesPatchRequest {
 	return ApiDiagnosticsportprofilesPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *DiagnosticsPortProfilesAPIService) DiagnosticsportprofilesPatchExecute(r ApiDiagnosticsportprofilesPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DiagnosticsPortProfilesAPIService.DiagnosticsportprofilesPatch")
@@ -364,9 +360,9 @@ func (a *DiagnosticsPortProfilesAPIService) DiagnosticsportprofilesPatchExecute(
 }
 
 type ApiDiagnosticsportprofilesPutRequest struct {
-	ctx context.Context
-	ApiService *DiagnosticsPortProfilesAPIService
-	changesetName *string
+	ctx                               context.Context
+	ApiService                        *DiagnosticsPortProfilesAPIService
+	changesetName                     *string
 	diagnosticsportprofilesPutRequest *DiagnosticsportprofilesPutRequest
 }
 
@@ -389,23 +385,22 @@ DiagnosticsportprofilesPut Create Diagnostics Port Profile
 
 Create Diagnostics Port Profile into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDiagnosticsportprofilesPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiDiagnosticsportprofilesPutRequest
 */
 func (a *DiagnosticsPortProfilesAPIService) DiagnosticsportprofilesPut(ctx context.Context) ApiDiagnosticsportprofilesPutRequest {
 	return ApiDiagnosticsportprofilesPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *DiagnosticsPortProfilesAPIService) DiagnosticsportprofilesPutExecute(r ApiDiagnosticsportprofilesPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DiagnosticsPortProfilesAPIService.DiagnosticsportprofilesPut")

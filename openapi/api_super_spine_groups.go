@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // SuperSpineGroupsAPIService SuperSpineGroupsAPI service
 type SuperSpineGroupsAPIService service
 
 type ApiSspgroupsDeleteRequest struct {
-	ctx context.Context
-	ApiService *SuperSpineGroupsAPIService
+	ctx                 context.Context
+	ApiService          *SuperSpineGroupsAPIService
 	superspineGroupName *[]string
-	changesetName *string
+	changesetName       *string
 }
 
 func (r ApiSspgroupsDeleteRequest) SuperspineGroupName(superspineGroupName []string) ApiSspgroupsDeleteRequest {
@@ -49,23 +48,22 @@ SspgroupsDelete Delete SuperSpine Group
 
 Deletes an existing SuperSpine Group from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSspgroupsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSspgroupsDeleteRequest
 */
 func (a *SuperSpineGroupsAPIService) SspgroupsDelete(ctx context.Context) ApiSspgroupsDeleteRequest {
 	return ApiSspgroupsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SuperSpineGroupsAPIService) SspgroupsDeleteExecute(r ApiSspgroupsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SuperSpineGroupsAPIService.SspgroupsDelete")
@@ -142,11 +140,11 @@ func (a *SuperSpineGroupsAPIService) SspgroupsDeleteExecute(r ApiSspgroupsDelete
 }
 
 type ApiSspgroupsGetRequest struct {
-	ctx context.Context
-	ApiService *SuperSpineGroupsAPIService
+	ctx                 context.Context
+	ApiService          *SuperSpineGroupsAPIService
 	superspineGroupName *string
-	includeData *bool
-	changesetName *string
+	includeData         *bool
+	changesetName       *string
 }
 
 func (r ApiSspgroupsGetRequest) SuperspineGroupName(superspineGroupName string) ApiSspgroupsGetRequest {
@@ -173,23 +171,22 @@ SspgroupsGet Get all SuperSpine Groups
 
 Downloads all SuperSpine Groups from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSspgroupsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSspgroupsGetRequest
 */
 func (a *SuperSpineGroupsAPIService) SspgroupsGet(ctx context.Context) ApiSspgroupsGetRequest {
 	return ApiSspgroupsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SuperSpineGroupsAPIService) SspgroupsGetExecute(r ApiSspgroupsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SuperSpineGroupsAPIService.SspgroupsGet")
@@ -258,9 +255,9 @@ func (a *SuperSpineGroupsAPIService) SspgroupsGetExecute(r ApiSspgroupsGetReques
 }
 
 type ApiSspgroupsPatchRequest struct {
-	ctx context.Context
-	ApiService *SuperSpineGroupsAPIService
-	changesetName *string
+	ctx                 context.Context
+	ApiService          *SuperSpineGroupsAPIService
+	changesetName       *string
 	sspgroupsPutRequest *SspgroupsPutRequest
 }
 
@@ -283,23 +280,22 @@ SspgroupsPatch Update SuperSpine Group
 
 Update SuperSpine Group into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSspgroupsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSspgroupsPatchRequest
 */
 func (a *SuperSpineGroupsAPIService) SspgroupsPatch(ctx context.Context) ApiSspgroupsPatchRequest {
 	return ApiSspgroupsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SuperSpineGroupsAPIService) SspgroupsPatchExecute(r ApiSspgroupsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SuperSpineGroupsAPIService.SspgroupsPatch")
@@ -364,9 +360,9 @@ func (a *SuperSpineGroupsAPIService) SspgroupsPatchExecute(r ApiSspgroupsPatchRe
 }
 
 type ApiSspgroupsPutRequest struct {
-	ctx context.Context
-	ApiService *SuperSpineGroupsAPIService
-	changesetName *string
+	ctx                 context.Context
+	ApiService          *SuperSpineGroupsAPIService
+	changesetName       *string
 	sspgroupsPutRequest *SspgroupsPutRequest
 }
 
@@ -389,23 +385,22 @@ SspgroupsPut Create SuperSpine Group
 
 Create SuperSpine Group into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSspgroupsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSspgroupsPutRequest
 */
 func (a *SuperSpineGroupsAPIService) SspgroupsPut(ctx context.Context) ApiSspgroupsPutRequest {
 	return ApiSspgroupsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SuperSpineGroupsAPIService) SspgroupsPutExecute(r ApiSspgroupsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SuperSpineGroupsAPIService.SspgroupsPut")

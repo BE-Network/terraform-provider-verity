@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // RouteMapsAPIService RouteMapsAPI service
 type RouteMapsAPIService service
 
 type ApiRoutemapsDeleteRequest struct {
-	ctx context.Context
-	ApiService *RouteMapsAPIService
-	routeMapName *[]string
+	ctx           context.Context
+	ApiService    *RouteMapsAPIService
+	routeMapName  *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ RoutemapsDelete Delete Route Map
 
 Deletes an existing Route Map from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRoutemapsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRoutemapsDeleteRequest
 */
 func (a *RouteMapsAPIService) RoutemapsDelete(ctx context.Context) ApiRoutemapsDeleteRequest {
 	return ApiRoutemapsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *RouteMapsAPIService) RoutemapsDeleteExecute(r ApiRoutemapsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RouteMapsAPIService.RoutemapsDelete")
@@ -142,10 +140,10 @@ func (a *RouteMapsAPIService) RoutemapsDeleteExecute(r ApiRoutemapsDeleteRequest
 }
 
 type ApiRoutemapsGetRequest struct {
-	ctx context.Context
-	ApiService *RouteMapsAPIService
-	routeMapName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *RouteMapsAPIService
+	routeMapName  *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ RoutemapsGet Get all Route Maps
 
 Retrieves all Route Maps from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRoutemapsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRoutemapsGetRequest
 */
 func (a *RouteMapsAPIService) RoutemapsGet(ctx context.Context) ApiRoutemapsGetRequest {
 	return ApiRoutemapsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *RouteMapsAPIService) RoutemapsGetExecute(r ApiRoutemapsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RouteMapsAPIService.RoutemapsGet")
@@ -258,9 +255,9 @@ func (a *RouteMapsAPIService) RoutemapsGetExecute(r ApiRoutemapsGetRequest) (*ht
 }
 
 type ApiRoutemapsPatchRequest struct {
-	ctx context.Context
-	ApiService *RouteMapsAPIService
-	changesetName *string
+	ctx                 context.Context
+	ApiService          *RouteMapsAPIService
+	changesetName       *string
 	routemapsPutRequest *RoutemapsPutRequest
 }
 
@@ -283,23 +280,22 @@ RoutemapsPatch Update Route Map
 
 Update Route Map into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRoutemapsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRoutemapsPatchRequest
 */
 func (a *RouteMapsAPIService) RoutemapsPatch(ctx context.Context) ApiRoutemapsPatchRequest {
 	return ApiRoutemapsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *RouteMapsAPIService) RoutemapsPatchExecute(r ApiRoutemapsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RouteMapsAPIService.RoutemapsPatch")
@@ -364,9 +360,9 @@ func (a *RouteMapsAPIService) RoutemapsPatchExecute(r ApiRoutemapsPatchRequest) 
 }
 
 type ApiRoutemapsPutRequest struct {
-	ctx context.Context
-	ApiService *RouteMapsAPIService
-	changesetName *string
+	ctx                 context.Context
+	ApiService          *RouteMapsAPIService
+	changesetName       *string
 	routemapsPutRequest *RoutemapsPutRequest
 }
 
@@ -389,23 +385,22 @@ RoutemapsPut Create Route Map
 
 Create Route Map into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRoutemapsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRoutemapsPutRequest
 */
 func (a *RouteMapsAPIService) RoutemapsPut(ctx context.Context) ApiRoutemapsPutRequest {
 	return ApiRoutemapsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *RouteMapsAPIService) RoutemapsPutExecute(r ApiRoutemapsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RouteMapsAPIService.RoutemapsPut")

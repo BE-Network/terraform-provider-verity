@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,14 @@ var _ MappedNullable = &SpineplanesPutRequestSpinePlaneValue{}
 
 // SpineplanesPutRequestSpinePlaneValue struct for SpineplanesPutRequestSpinePlaneValue
 type SpineplanesPutRequestSpinePlaneValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	// Fabric this Spine Plane is assigned to
 	Fabric *string `json:"fabric,omitempty"`
 	// Object type for fabric field
 	FabricRefType *string `json:"fabric_ref_type_,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                      `json:"name,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 }
 
@@ -36,12 +36,12 @@ type SpineplanesPutRequestSpinePlaneValue struct {
 // will change when the set of required properties is changed
 func NewSpineplanesPutRequestSpinePlaneValue() *SpineplanesPutRequestSpinePlaneValue {
 	this := SpineplanesPutRequestSpinePlaneValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
 	var fabric string = ""
 	this.Fabric = &fabric
+	var name string = ""
+	this.Name = &name
 	return &this
 }
 
@@ -50,45 +50,13 @@ func NewSpineplanesPutRequestSpinePlaneValue() *SpineplanesPutRequestSpinePlaneV
 // but it doesn't guarantee that properties required by API are set
 func NewSpineplanesPutRequestSpinePlaneValueWithDefaults() *SpineplanesPutRequestSpinePlaneValue {
 	this := SpineplanesPutRequestSpinePlaneValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
 	var fabric string = ""
 	this.Fabric = &fabric
+	var name string = ""
+	this.Name = &name
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *SpineplanesPutRequestSpinePlaneValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SpineplanesPutRequestSpinePlaneValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *SpineplanesPutRequestSpinePlaneValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *SpineplanesPutRequestSpinePlaneValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -187,6 +155,38 @@ func (o *SpineplanesPutRequestSpinePlaneValue) SetFabricRefType(v string) {
 	o.FabricRefType = &v
 }
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *SpineplanesPutRequestSpinePlaneValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SpineplanesPutRequestSpinePlaneValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *SpineplanesPutRequestSpinePlaneValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *SpineplanesPutRequestSpinePlaneValue) SetName(v string) {
+	o.Name = &v
+}
+
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
 func (o *SpineplanesPutRequestSpinePlaneValue) GetObjectProperties() AclsPutRequestIpFilterValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
@@ -220,7 +220,7 @@ func (o *SpineplanesPutRequestSpinePlaneValue) SetObjectProperties(v AclsPutRequ
 }
 
 func (o SpineplanesPutRequestSpinePlaneValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -229,9 +229,6 @@ func (o SpineplanesPutRequestSpinePlaneValue) MarshalJSON() ([]byte, error) {
 
 func (o SpineplanesPutRequestSpinePlaneValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
@@ -240,6 +237,9 @@ func (o SpineplanesPutRequestSpinePlaneValue) ToMap() (map[string]interface{}, e
 	}
 	if !IsNil(o.FabricRefType) {
 		toSerialize["fabric_ref_type_"] = o.FabricRefType
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
@@ -282,5 +282,3 @@ func (v *NullableSpineplanesPutRequestSpinePlaneValue) UnmarshalJSON(src []byte)
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

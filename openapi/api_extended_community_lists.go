@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // ExtendedCommunityListsAPIService ExtendedCommunityListsAPI service
 type ExtendedCommunityListsAPIService service
 
 type ApiExtendedcommunitylistsDeleteRequest struct {
-	ctx context.Context
-	ApiService *ExtendedCommunityListsAPIService
+	ctx                       context.Context
+	ApiService                *ExtendedCommunityListsAPIService
 	extendedCommunityListName *[]string
-	changesetName *string
+	changesetName             *string
 }
 
 func (r ApiExtendedcommunitylistsDeleteRequest) ExtendedCommunityListName(extendedCommunityListName []string) ApiExtendedcommunitylistsDeleteRequest {
@@ -49,23 +48,22 @@ ExtendedcommunitylistsDelete Delete Extended Community List
 
 Deletes an existing Extended Community List from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiExtendedcommunitylistsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiExtendedcommunitylistsDeleteRequest
 */
 func (a *ExtendedCommunityListsAPIService) ExtendedcommunitylistsDelete(ctx context.Context) ApiExtendedcommunitylistsDeleteRequest {
 	return ApiExtendedcommunitylistsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ExtendedCommunityListsAPIService) ExtendedcommunitylistsDeleteExecute(r ApiExtendedcommunitylistsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ExtendedCommunityListsAPIService.ExtendedcommunitylistsDelete")
@@ -142,11 +140,11 @@ func (a *ExtendedCommunityListsAPIService) ExtendedcommunitylistsDeleteExecute(r
 }
 
 type ApiExtendedcommunitylistsGetRequest struct {
-	ctx context.Context
-	ApiService *ExtendedCommunityListsAPIService
+	ctx                       context.Context
+	ApiService                *ExtendedCommunityListsAPIService
 	extendedCommunityListName *string
-	includeData *bool
-	changesetName *string
+	includeData               *bool
+	changesetName             *string
 }
 
 func (r ApiExtendedcommunitylistsGetRequest) ExtendedCommunityListName(extendedCommunityListName string) ApiExtendedcommunitylistsGetRequest {
@@ -173,23 +171,22 @@ ExtendedcommunitylistsGet Get all Extended Community Lists
 
 Retrieves all Extended Community Lists from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiExtendedcommunitylistsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiExtendedcommunitylistsGetRequest
 */
 func (a *ExtendedCommunityListsAPIService) ExtendedcommunitylistsGet(ctx context.Context) ApiExtendedcommunitylistsGetRequest {
 	return ApiExtendedcommunitylistsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ExtendedCommunityListsAPIService) ExtendedcommunitylistsGetExecute(r ApiExtendedcommunitylistsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ExtendedCommunityListsAPIService.ExtendedcommunitylistsGet")
@@ -258,9 +255,9 @@ func (a *ExtendedCommunityListsAPIService) ExtendedcommunitylistsGetExecute(r Ap
 }
 
 type ApiExtendedcommunitylistsPatchRequest struct {
-	ctx context.Context
-	ApiService *ExtendedCommunityListsAPIService
-	changesetName *string
+	ctx                              context.Context
+	ApiService                       *ExtendedCommunityListsAPIService
+	changesetName                    *string
 	extendedcommunitylistsPutRequest *ExtendedcommunitylistsPutRequest
 }
 
@@ -283,23 +280,22 @@ ExtendedcommunitylistsPatch Update Extended Community List
 
 Update Extended Community List into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiExtendedcommunitylistsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiExtendedcommunitylistsPatchRequest
 */
 func (a *ExtendedCommunityListsAPIService) ExtendedcommunitylistsPatch(ctx context.Context) ApiExtendedcommunitylistsPatchRequest {
 	return ApiExtendedcommunitylistsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ExtendedCommunityListsAPIService) ExtendedcommunitylistsPatchExecute(r ApiExtendedcommunitylistsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ExtendedCommunityListsAPIService.ExtendedcommunitylistsPatch")
@@ -364,9 +360,9 @@ func (a *ExtendedCommunityListsAPIService) ExtendedcommunitylistsPatchExecute(r 
 }
 
 type ApiExtendedcommunitylistsPutRequest struct {
-	ctx context.Context
-	ApiService *ExtendedCommunityListsAPIService
-	changesetName *string
+	ctx                              context.Context
+	ApiService                       *ExtendedCommunityListsAPIService
+	changesetName                    *string
 	extendedcommunitylistsPutRequest *ExtendedcommunitylistsPutRequest
 }
 
@@ -389,23 +385,22 @@ ExtendedcommunitylistsPut Create Extended Community List
 
 Create Extended Community List into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiExtendedcommunitylistsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiExtendedcommunitylistsPutRequest
 */
 func (a *ExtendedCommunityListsAPIService) ExtendedcommunitylistsPut(ctx context.Context) ApiExtendedcommunitylistsPutRequest {
 	return ApiExtendedcommunitylistsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ExtendedCommunityListsAPIService) ExtendedcommunitylistsPutExecute(r ApiExtendedcommunitylistsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ExtendedCommunityListsAPIService.ExtendedcommunitylistsPut")

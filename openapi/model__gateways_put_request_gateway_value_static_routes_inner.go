@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,16 +19,16 @@ var _ MappedNullable = &GatewaysPutRequestGatewayValueStaticRoutesInner{}
 
 // GatewaysPutRequestGatewayValueStaticRoutesInner struct for GatewaysPutRequestGatewayValueStaticRoutesInner
 type GatewaysPutRequestGatewayValueStaticRoutesInner struct {
+	// Administrative distancing value, also known as route preference - values from 0-255
+	AdValue NullableInt64 `json:"ad_value,omitempty"`
 	// Enable of this static route
 	Enable *bool `json:"enable,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
 	// IPv4 unicast IP address followed by a subnet mask length
 	Ipv4RoutePrefix *string `json:"ipv4_route_prefix,omitempty"`
 	// Next Hop IP Address. Must be a unicast IP address
 	NextHopIpAddress *string `json:"next_hop_ip_address,omitempty"`
-	// Administrative distancing value, also known as route preference - values from 0-255
-	AdValue NullableInt64 `json:"ad_value,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
 }
 
 // NewGatewaysPutRequestGatewayValueStaticRoutesInner instantiates a new GatewaysPutRequestGatewayValueStaticRoutesInner object
@@ -58,6 +58,49 @@ func NewGatewaysPutRequestGatewayValueStaticRoutesInnerWithDefaults() *GatewaysP
 	var nextHopIpAddress string = ""
 	this.NextHopIpAddress = &nextHopIpAddress
 	return &this
+}
+
+// GetAdValue returns the AdValue field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetAdValue() int64 {
+	if o == nil || IsNil(o.AdValue.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.AdValue.Get()
+}
+
+// GetAdValueOk returns a tuple with the AdValue field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetAdValueOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AdValue.Get(), o.AdValue.IsSet()
+}
+
+// HasAdValue returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) HasAdValue() bool {
+	if o != nil && o.AdValue.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAdValue gets a reference to the given NullableInt64 and assigns it to the AdValue field.
+func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) SetAdValue(v int64) {
+	o.AdValue.Set(&v)
+}
+
+// SetAdValueNil sets the value for AdValue to be an explicit nil
+func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) SetAdValueNil() {
+	o.AdValue.Set(nil)
+}
+
+// UnsetAdValue ensures that no value is present for AdValue, not even an explicit nil
+func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) UnsetAdValue() {
+	o.AdValue.Unset()
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -90,6 +133,38 @@ func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) HasEnable() bool {
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) SetEnable(v bool) {
 	o.Enable = &v
+}
+
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetIpv4RoutePrefix returns the Ipv4RoutePrefix field value if set, zero value otherwise.
@@ -156,82 +231,8 @@ func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) SetNextHopIpAddress(v 
 	o.NextHopIpAddress = &v
 }
 
-// GetAdValue returns the AdValue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetAdValue() int64 {
-	if o == nil || IsNil(o.AdValue.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.AdValue.Get()
-}
-
-// GetAdValueOk returns a tuple with the AdValue field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetAdValueOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.AdValue.Get(), o.AdValue.IsSet()
-}
-
-// HasAdValue returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) HasAdValue() bool {
-	if o != nil && o.AdValue.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetAdValue gets a reference to the given NullableInt64 and assigns it to the AdValue field.
-func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) SetAdValue(v int64) {
-	o.AdValue.Set(&v)
-}
-// SetAdValueNil sets the value for AdValue to be an explicit nil
-func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) SetAdValueNil() {
-	o.AdValue.Set(nil)
-}
-
-// UnsetAdValue ensures that no value is present for AdValue, not even an explicit nil
-func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) UnsetAdValue() {
-	o.AdValue.Unset()
-}
-
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *GatewaysPutRequestGatewayValueStaticRoutesInner) SetIndex(v int64) {
-	o.Index = &v
-}
-
 func (o GatewaysPutRequestGatewayValueStaticRoutesInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -240,20 +241,20 @@ func (o GatewaysPutRequestGatewayValueStaticRoutesInner) MarshalJSON() ([]byte, 
 
 func (o GatewaysPutRequestGatewayValueStaticRoutesInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if o.AdValue.IsSet() {
+		toSerialize["ad_value"] = o.AdValue.Get()
+	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
+	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	if !IsNil(o.Ipv4RoutePrefix) {
 		toSerialize["ipv4_route_prefix"] = o.Ipv4RoutePrefix
 	}
 	if !IsNil(o.NextHopIpAddress) {
 		toSerialize["next_hop_ip_address"] = o.NextHopIpAddress
-	}
-	if o.AdValue.IsSet() {
-		toSerialize["ad_value"] = o.AdValue.Get()
-	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }
@@ -293,5 +294,3 @@ func (v *NullableGatewaysPutRequestGatewayValueStaticRoutesInner) UnmarshalJSON(
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,10 +21,10 @@ var _ MappedNullable = &DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDef
 type DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner struct {
 	// Enable this login method
 	Enabled *bool `json:"enabled,omitempty"`
-	// Authentication method for remote access (SSH, etc.)
-	LoginMethod *string `json:"login_method,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
+	// Authentication method for remote access (SSH, etc.)
+	LoginMethod *string `json:"login_method,omitempty"`
 }
 
 // NewDeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner instantiates a new DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner object
@@ -84,38 +84,6 @@ func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) SetE
 	o.Enabled = &v
 }
 
-// GetLoginMethod returns the LoginMethod field value if set, zero value otherwise.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) GetLoginMethod() string {
-	if o == nil || IsNil(o.LoginMethod) {
-		var ret string
-		return ret
-	}
-	return *o.LoginMethod
-}
-
-// GetLoginMethodOk returns a tuple with the LoginMethod field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) GetLoginMethodOk() (*string, bool) {
-	if o == nil || IsNil(o.LoginMethod) {
-		return nil, false
-	}
-	return o.LoginMethod, true
-}
-
-// HasLoginMethod returns a boolean if a field has been set.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) HasLoginMethod() bool {
-	if o != nil && !IsNil(o.LoginMethod) {
-		return true
-	}
-
-	return false
-}
-
-// SetLoginMethod gets a reference to the given string and assigns it to the LoginMethod field.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) SetLoginMethod(v string) {
-	o.LoginMethod = &v
-}
-
 // GetIndex returns the Index field value if set, zero value otherwise.
 func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
@@ -148,8 +116,40 @@ func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) SetI
 	o.Index = &v
 }
 
+// GetLoginMethod returns the LoginMethod field value if set, zero value otherwise.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) GetLoginMethod() string {
+	if o == nil || IsNil(o.LoginMethod) {
+		var ret string
+		return ret
+	}
+	return *o.LoginMethod
+}
+
+// GetLoginMethodOk returns a tuple with the LoginMethod field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) GetLoginMethodOk() (*string, bool) {
+	if o == nil || IsNil(o.LoginMethod) {
+		return nil, false
+	}
+	return o.LoginMethod, true
+}
+
+// HasLoginMethod returns a boolean if a field has been set.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) HasLoginMethod() bool {
+	if o != nil && !IsNil(o.LoginMethod) {
+		return true
+	}
+
+	return false
+}
+
+// SetLoginMethod gets a reference to the given string and assigns it to the LoginMethod field.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) SetLoginMethod(v string) {
+	o.LoginMethod = &v
+}
+
 func (o DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -161,11 +161,11 @@ func (o DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) ToMap
 	if !IsNil(o.Enabled) {
 		toSerialize["enabled"] = o.Enabled
 	}
-	if !IsNil(o.LoginMethod) {
-		toSerialize["login_method"] = o.LoginMethod
-	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
+	}
+	if !IsNil(o.LoginMethod) {
+		toSerialize["login_method"] = o.LoginMethod
 	}
 	return toSerialize, nil
 }
@@ -205,5 +205,3 @@ func (v *NullableDeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInn
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,13 +19,12 @@ import (
 	"reflect"
 )
 
-
 // MACFiltersAPIService MACFiltersAPI service
 type MACFiltersAPIService service
 
 type ApiMacfiltersDeleteRequest struct {
-	ctx context.Context
-	ApiService *MACFiltersAPIService
+	ctx           context.Context
+	ApiService    *MACFiltersAPIService
 	macFilterName *[]string
 	changesetName *string
 }
@@ -49,23 +48,22 @@ MacfiltersDelete Delete MAC Filter
 
 Deletes an existing MAC Filter from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiMacfiltersDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiMacfiltersDeleteRequest
 */
 func (a *MACFiltersAPIService) MacfiltersDelete(ctx context.Context) ApiMacfiltersDeleteRequest {
 	return ApiMacfiltersDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *MACFiltersAPIService) MacfiltersDeleteExecute(r ApiMacfiltersDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MACFiltersAPIService.MacfiltersDelete")
@@ -142,10 +140,10 @@ func (a *MACFiltersAPIService) MacfiltersDeleteExecute(r ApiMacfiltersDeleteRequ
 }
 
 type ApiMacfiltersGetRequest struct {
-	ctx context.Context
-	ApiService *MACFiltersAPIService
+	ctx           context.Context
+	ApiService    *MACFiltersAPIService
 	macFilterName *string
-	includeData *bool
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ MacfiltersGet Get all MAC Filters
 
 Downloads all MAC Filters from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiMacfiltersGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiMacfiltersGetRequest
 */
 func (a *MACFiltersAPIService) MacfiltersGet(ctx context.Context) ApiMacfiltersGetRequest {
 	return ApiMacfiltersGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *MACFiltersAPIService) MacfiltersGetExecute(r ApiMacfiltersGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MACFiltersAPIService.MacfiltersGet")
@@ -258,9 +255,9 @@ func (a *MACFiltersAPIService) MacfiltersGetExecute(r ApiMacfiltersGetRequest) (
 }
 
 type ApiMacfiltersPatchRequest struct {
-	ctx context.Context
-	ApiService *MACFiltersAPIService
-	changesetName *string
+	ctx                  context.Context
+	ApiService           *MACFiltersAPIService
+	changesetName        *string
 	macfiltersPutRequest *MacfiltersPutRequest
 }
 
@@ -283,23 +280,22 @@ MacfiltersPatch Update MAC Filter
 
 Update MAC Filter into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiMacfiltersPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiMacfiltersPatchRequest
 */
 func (a *MACFiltersAPIService) MacfiltersPatch(ctx context.Context) ApiMacfiltersPatchRequest {
 	return ApiMacfiltersPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *MACFiltersAPIService) MacfiltersPatchExecute(r ApiMacfiltersPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MACFiltersAPIService.MacfiltersPatch")
@@ -364,9 +360,9 @@ func (a *MACFiltersAPIService) MacfiltersPatchExecute(r ApiMacfiltersPatchReques
 }
 
 type ApiMacfiltersPutRequest struct {
-	ctx context.Context
-	ApiService *MACFiltersAPIService
-	changesetName *string
+	ctx                  context.Context
+	ApiService           *MACFiltersAPIService
+	changesetName        *string
 	macfiltersPutRequest *MacfiltersPutRequest
 }
 
@@ -389,23 +385,22 @@ MacfiltersPut Create MAC Filter
 
 Create MAC Filter into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiMacfiltersPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiMacfiltersPutRequest
 */
 func (a *MACFiltersAPIService) MacfiltersPut(ctx context.Context) ApiMacfiltersPutRequest {
 	return ApiMacfiltersPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *MACFiltersAPIService) MacfiltersPutExecute(r ApiMacfiltersPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "MACFiltersAPIService.MacfiltersPut")

@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // PodsAPIService PodsAPI service
 type PodsAPIService service
 
 type ApiPodsDeleteRequest struct {
-	ctx context.Context
-	ApiService *PodsAPIService
-	podName *[]string
+	ctx           context.Context
+	ApiService    *PodsAPIService
+	podName       *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ PodsDelete Delete Pod
 
 Deletes an existing Pod from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPodsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPodsDeleteRequest
 */
 func (a *PodsAPIService) PodsDelete(ctx context.Context) ApiPodsDeleteRequest {
 	return ApiPodsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PodsAPIService) PodsDeleteExecute(r ApiPodsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PodsAPIService.PodsDelete")
@@ -142,10 +140,10 @@ func (a *PodsAPIService) PodsDeleteExecute(r ApiPodsDeleteRequest) (*http.Respon
 }
 
 type ApiPodsGetRequest struct {
-	ctx context.Context
-	ApiService *PodsAPIService
-	podName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *PodsAPIService
+	podName       *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ PodsGet Get all Pods
 
 Downloads all Pods from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPodsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPodsGetRequest
 */
 func (a *PodsAPIService) PodsGet(ctx context.Context) ApiPodsGetRequest {
 	return ApiPodsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PodsAPIService) PodsGetExecute(r ApiPodsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PodsAPIService.PodsGet")
@@ -258,9 +255,9 @@ func (a *PodsAPIService) PodsGetExecute(r ApiPodsGetRequest) (*http.Response, er
 }
 
 type ApiPodsPatchRequest struct {
-	ctx context.Context
-	ApiService *PodsAPIService
-	changesetName *string
+	ctx            context.Context
+	ApiService     *PodsAPIService
+	changesetName  *string
 	podsPutRequest *PodsPutRequest
 }
 
@@ -283,23 +280,22 @@ PodsPatch Update Pod
 
 Update Pod into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPodsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPodsPatchRequest
 */
 func (a *PodsAPIService) PodsPatch(ctx context.Context) ApiPodsPatchRequest {
 	return ApiPodsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PodsAPIService) PodsPatchExecute(r ApiPodsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PodsAPIService.PodsPatch")
@@ -364,9 +360,9 @@ func (a *PodsAPIService) PodsPatchExecute(r ApiPodsPatchRequest) (*http.Response
 }
 
 type ApiPodsPutRequest struct {
-	ctx context.Context
-	ApiService *PodsAPIService
-	changesetName *string
+	ctx            context.Context
+	ApiService     *PodsAPIService
+	changesetName  *string
 	podsPutRequest *PodsPutRequest
 }
 
@@ -389,23 +385,22 @@ PodsPut Create Pod
 
 Create Pod into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPodsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPodsPutRequest
 */
 func (a *PodsAPIService) PodsPut(ctx context.Context) ApiPodsPutRequest {
 	return ApiPodsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PodsAPIService) PodsPutExecute(r ApiPodsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PodsAPIService.PodsPut")

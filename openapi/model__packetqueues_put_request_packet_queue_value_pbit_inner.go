@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,10 +19,10 @@ var _ MappedNullable = &PacketqueuesPutRequestPacketQueueValuePbitInner{}
 
 // PacketqueuesPutRequestPacketQueueValuePbitInner struct for PacketqueuesPutRequestPacketQueueValuePbitInner
 type PacketqueuesPutRequestPacketQueueValuePbitInner struct {
-	// Flag indicating this Traffic Class' Queue
-	PacketQueueForPBit NullableInt64 `json:"packet_queue_for_p_bit,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
+	// Flag indicating this Traffic Class' Queue
+	PacketQueueForPBit NullableInt64 `json:"packet_queue_for_p_bit,omitempty"`
 }
 
 // NewPacketqueuesPutRequestPacketQueueValuePbitInner instantiates a new PacketqueuesPutRequestPacketQueueValuePbitInner object
@@ -44,48 +44,6 @@ func NewPacketqueuesPutRequestPacketQueueValuePbitInnerWithDefaults() *Packetque
 	var packetQueueForPBit int64 = 0
 	this.PacketQueueForPBit = *NewNullableInt64(&packetQueueForPBit)
 	return &this
-}
-
-// GetPacketQueueForPBit returns the PacketQueueForPBit field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetPacketQueueForPBit() int64 {
-	if o == nil || IsNil(o.PacketQueueForPBit.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.PacketQueueForPBit.Get()
-}
-
-// GetPacketQueueForPBitOk returns a tuple with the PacketQueueForPBit field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetPacketQueueForPBitOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.PacketQueueForPBit.Get(), o.PacketQueueForPBit.IsSet()
-}
-
-// HasPacketQueueForPBit returns a boolean if a field has been set.
-func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) HasPacketQueueForPBit() bool {
-	if o != nil && o.PacketQueueForPBit.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetPacketQueueForPBit gets a reference to the given NullableInt64 and assigns it to the PacketQueueForPBit field.
-func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) SetPacketQueueForPBit(v int64) {
-	o.PacketQueueForPBit.Set(&v)
-}
-// SetPacketQueueForPBitNil sets the value for PacketQueueForPBit to be an explicit nil
-func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) SetPacketQueueForPBitNil() {
-	o.PacketQueueForPBit.Set(nil)
-}
-
-// UnsetPacketQueueForPBit ensures that no value is present for PacketQueueForPBit, not even an explicit nil
-func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) UnsetPacketQueueForPBit() {
-	o.PacketQueueForPBit.Unset()
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
@@ -120,8 +78,51 @@ func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) SetIndex(v int64) {
 	o.Index = &v
 }
 
+// GetPacketQueueForPBit returns the PacketQueueForPBit field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetPacketQueueForPBit() int64 {
+	if o == nil || IsNil(o.PacketQueueForPBit.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.PacketQueueForPBit.Get()
+}
+
+// GetPacketQueueForPBitOk returns a tuple with the PacketQueueForPBit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) GetPacketQueueForPBitOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PacketQueueForPBit.Get(), o.PacketQueueForPBit.IsSet()
+}
+
+// HasPacketQueueForPBit returns a boolean if a field has been set.
+func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) HasPacketQueueForPBit() bool {
+	if o != nil && o.PacketQueueForPBit.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPacketQueueForPBit gets a reference to the given NullableInt64 and assigns it to the PacketQueueForPBit field.
+func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) SetPacketQueueForPBit(v int64) {
+	o.PacketQueueForPBit.Set(&v)
+}
+
+// SetPacketQueueForPBitNil sets the value for PacketQueueForPBit to be an explicit nil
+func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) SetPacketQueueForPBitNil() {
+	o.PacketQueueForPBit.Set(nil)
+}
+
+// UnsetPacketQueueForPBit ensures that no value is present for PacketQueueForPBit, not even an explicit nil
+func (o *PacketqueuesPutRequestPacketQueueValuePbitInner) UnsetPacketQueueForPBit() {
+	o.PacketQueueForPBit.Unset()
+}
+
 func (o PacketqueuesPutRequestPacketQueueValuePbitInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -130,11 +131,11 @@ func (o PacketqueuesPutRequestPacketQueueValuePbitInner) MarshalJSON() ([]byte, 
 
 func (o PacketqueuesPutRequestPacketQueueValuePbitInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if o.PacketQueueForPBit.IsSet() {
-		toSerialize["packet_queue_for_p_bit"] = o.PacketQueueForPBit.Get()
-	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
+	}
+	if o.PacketQueueForPBit.IsSet() {
+		toSerialize["packet_queue_for_p_bit"] = o.PacketQueueForPBit.Get()
 	}
 	return toSerialize, nil
 }
@@ -174,5 +175,3 @@ func (v *NullablePacketqueuesPutRequestPacketQueueValuePbitInner) UnmarshalJSON(
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,10 +19,10 @@ var _ MappedNullable = &RoutemapclausesPutRequestRouteMapClauseValueObjectProper
 
 // RoutemapclausesPutRequestRouteMapClauseValueObjectProperties struct for RoutemapclausesPutRequestRouteMapClauseValueObjectProperties
 type RoutemapclausesPutRequestRouteMapClauseValueObjectProperties struct {
-	// User Notes.
-	Notes *string `json:"notes,omitempty"`
 	// Match fields shown
 	MatchFieldsShown *string `json:"match_fields_shown,omitempty"`
+	// User Notes.
+	Notes *string `json:"notes,omitempty"`
 }
 
 // NewRoutemapclausesPutRequestRouteMapClauseValueObjectProperties instantiates a new RoutemapclausesPutRequestRouteMapClauseValueObjectProperties object
@@ -31,10 +31,10 @@ type RoutemapclausesPutRequestRouteMapClauseValueObjectProperties struct {
 // will change when the set of required properties is changed
 func NewRoutemapclausesPutRequestRouteMapClauseValueObjectProperties() *RoutemapclausesPutRequestRouteMapClauseValueObjectProperties {
 	this := RoutemapclausesPutRequestRouteMapClauseValueObjectProperties{}
-	var notes string = ""
-	this.Notes = &notes
 	var matchFieldsShown string = ""
 	this.MatchFieldsShown = &matchFieldsShown
+	var notes string = ""
+	this.Notes = &notes
 	return &this
 }
 
@@ -43,43 +43,11 @@ func NewRoutemapclausesPutRequestRouteMapClauseValueObjectProperties() *Routemap
 // but it doesn't guarantee that properties required by API are set
 func NewRoutemapclausesPutRequestRouteMapClauseValueObjectPropertiesWithDefaults() *RoutemapclausesPutRequestRouteMapClauseValueObjectProperties {
 	this := RoutemapclausesPutRequestRouteMapClauseValueObjectProperties{}
-	var notes string = ""
-	this.Notes = &notes
 	var matchFieldsShown string = ""
 	this.MatchFieldsShown = &matchFieldsShown
+	var notes string = ""
+	this.Notes = &notes
 	return &this
-}
-
-// GetNotes returns the Notes field value if set, zero value otherwise.
-func (o *RoutemapclausesPutRequestRouteMapClauseValueObjectProperties) GetNotes() string {
-	if o == nil || IsNil(o.Notes) {
-		var ret string
-		return ret
-	}
-	return *o.Notes
-}
-
-// GetNotesOk returns a tuple with the Notes field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValueObjectProperties) GetNotesOk() (*string, bool) {
-	if o == nil || IsNil(o.Notes) {
-		return nil, false
-	}
-	return o.Notes, true
-}
-
-// HasNotes returns a boolean if a field has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValueObjectProperties) HasNotes() bool {
-	if o != nil && !IsNil(o.Notes) {
-		return true
-	}
-
-	return false
-}
-
-// SetNotes gets a reference to the given string and assigns it to the Notes field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValueObjectProperties) SetNotes(v string) {
-	o.Notes = &v
 }
 
 // GetMatchFieldsShown returns the MatchFieldsShown field value if set, zero value otherwise.
@@ -114,8 +82,40 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValueObjectProperties) SetMatchF
 	o.MatchFieldsShown = &v
 }
 
+// GetNotes returns the Notes field value if set, zero value otherwise.
+func (o *RoutemapclausesPutRequestRouteMapClauseValueObjectProperties) GetNotes() string {
+	if o == nil || IsNil(o.Notes) {
+		var ret string
+		return ret
+	}
+	return *o.Notes
+}
+
+// GetNotesOk returns a tuple with the Notes field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValueObjectProperties) GetNotesOk() (*string, bool) {
+	if o == nil || IsNil(o.Notes) {
+		return nil, false
+	}
+	return o.Notes, true
+}
+
+// HasNotes returns a boolean if a field has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValueObjectProperties) HasNotes() bool {
+	if o != nil && !IsNil(o.Notes) {
+		return true
+	}
+
+	return false
+}
+
+// SetNotes gets a reference to the given string and assigns it to the Notes field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValueObjectProperties) SetNotes(v string) {
+	o.Notes = &v
+}
+
 func (o RoutemapclausesPutRequestRouteMapClauseValueObjectProperties) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -124,11 +124,11 @@ func (o RoutemapclausesPutRequestRouteMapClauseValueObjectProperties) MarshalJSO
 
 func (o RoutemapclausesPutRequestRouteMapClauseValueObjectProperties) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Notes) {
-		toSerialize["notes"] = o.Notes
-	}
 	if !IsNil(o.MatchFieldsShown) {
 		toSerialize["match_fields_shown"] = o.MatchFieldsShown
+	}
+	if !IsNil(o.Notes) {
+		toSerialize["notes"] = o.Notes
 	}
 	return toSerialize, nil
 }
@@ -168,5 +168,3 @@ func (v *NullableRoutemapclausesPutRequestRouteMapClauseValueObjectProperties) U
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

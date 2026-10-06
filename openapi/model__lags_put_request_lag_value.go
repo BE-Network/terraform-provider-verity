@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,31 +19,31 @@ var _ MappedNullable = &LagsPutRequestLagValue{}
 
 // LagsPutRequestLagValue struct for LagsPutRequestLagValue
 type LagsPutRequestLagValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
-	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
-	Enable *bool `json:"enable,omitempty"`
-	// Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN
-	Uplink *bool `json:"uplink,omitempty"`
-	// Indicates this LAG is used for peer-to-peer Peer-LAG/IDS link
-	IsPeerLink *bool `json:"is_peer_link,omitempty"`
 	// Choose the color to display the connectors on the network view
 	Color *string `json:"color,omitempty"`
-	// LACP
-	Lacp *bool `json:"lacp,omitempty"`
+	// Threshold in Errors per second that when met will disable this LAG's links
+	CrcFailureThreshold NullableInt64 `json:"crc_failure_threshold,omitempty"`
+	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
+	Enable *bool `json:"enable,omitempty"`
 	// Choose an Eth Port Profile
 	EthPortProfile *string `json:"eth_port_profile,omitempty"`
 	// Object type for eth_port_profile field
 	EthPortProfileRefType *string `json:"eth_port_profile_ref_type_,omitempty"`
-	// For peer-peer LAGs. The VLAN used for control
-	PeerLinkVlan NullableInt64 `json:"peer_link_vlan,omitempty"`
 	// Allows an active member interface to establish a connection with a peer interface before the port channel receives the LACP protocol negotiation from the peer.
 	Fallback *bool `json:"fallback,omitempty"`
 	// Send LACP packets every second (if disabled, packets are sent every 30 seconds)
 	FastRate *bool `json:"fast_rate,omitempty"`
-	// Threshold in Errors per second that when met will disable this LAG's links
-	CrcFailureThreshold NullableInt64 `json:"crc_failure_threshold,omitempty"`
+	// Indicates this LAG is used for peer-to-peer Peer-LAG/IDS link
+	IsPeerLink *bool `json:"is_peer_link,omitempty"`
+	// LACP
+	Lacp *bool `json:"lacp,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                 `json:"name,omitempty"`
 	ObjectProperties *LagsPutRequestLagValueObjectProperties `json:"object_properties,omitempty"`
+	// For peer-peer LAGs. The VLAN used for control
+	PeerLinkVlan NullableInt64 `json:"peer_link_vlan,omitempty"`
+	// Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN
+	Uplink *bool `json:"uplink,omitempty"`
 }
 
 // NewLagsPutRequestLagValue instantiates a new LagsPutRequestLagValue object
@@ -52,24 +52,24 @@ type LagsPutRequestLagValue struct {
 // will change when the set of required properties is changed
 func NewLagsPutRequestLagValue() *LagsPutRequestLagValue {
 	this := LagsPutRequestLagValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
-	var uplink bool = false
-	this.Uplink = &uplink
-	var isPeerLink bool = false
-	this.IsPeerLink = &isPeerLink
 	var color string = "anakiwa"
 	this.Color = &color
-	var lacp bool = true
-	this.Lacp = &lacp
+	var enable bool = false
+	this.Enable = &enable
 	var ethPortProfile string = ""
 	this.EthPortProfile = &ethPortProfile
 	var fallback bool = false
 	this.Fallback = &fallback
 	var fastRate bool = false
 	this.FastRate = &fastRate
+	var isPeerLink bool = false
+	this.IsPeerLink = &isPeerLink
+	var lacp bool = true
+	this.Lacp = &lacp
+	var name string = ""
+	this.Name = &name
+	var uplink bool = false
+	this.Uplink = &uplink
 	return &this
 }
 
@@ -78,153 +78,25 @@ func NewLagsPutRequestLagValue() *LagsPutRequestLagValue {
 // but it doesn't guarantee that properties required by API are set
 func NewLagsPutRequestLagValueWithDefaults() *LagsPutRequestLagValue {
 	this := LagsPutRequestLagValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
-	var uplink bool = false
-	this.Uplink = &uplink
-	var isPeerLink bool = false
-	this.IsPeerLink = &isPeerLink
 	var color string = "anakiwa"
 	this.Color = &color
-	var lacp bool = true
-	this.Lacp = &lacp
+	var enable bool = false
+	this.Enable = &enable
 	var ethPortProfile string = ""
 	this.EthPortProfile = &ethPortProfile
 	var fallback bool = false
 	this.Fallback = &fallback
 	var fastRate bool = false
 	this.FastRate = &fastRate
+	var isPeerLink bool = false
+	this.IsPeerLink = &isPeerLink
+	var lacp bool = true
+	this.Lacp = &lacp
+	var name string = ""
+	this.Name = &name
+	var uplink bool = false
+	this.Uplink = &uplink
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *LagsPutRequestLagValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LagsPutRequestLagValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *LagsPutRequestLagValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *LagsPutRequestLagValue) SetName(v string) {
-	o.Name = &v
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *LagsPutRequestLagValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LagsPutRequestLagValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *LagsPutRequestLagValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *LagsPutRequestLagValue) SetEnable(v bool) {
-	o.Enable = &v
-}
-
-// GetUplink returns the Uplink field value if set, zero value otherwise.
-func (o *LagsPutRequestLagValue) GetUplink() bool {
-	if o == nil || IsNil(o.Uplink) {
-		var ret bool
-		return ret
-	}
-	return *o.Uplink
-}
-
-// GetUplinkOk returns a tuple with the Uplink field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LagsPutRequestLagValue) GetUplinkOk() (*bool, bool) {
-	if o == nil || IsNil(o.Uplink) {
-		return nil, false
-	}
-	return o.Uplink, true
-}
-
-// HasUplink returns a boolean if a field has been set.
-func (o *LagsPutRequestLagValue) HasUplink() bool {
-	if o != nil && !IsNil(o.Uplink) {
-		return true
-	}
-
-	return false
-}
-
-// SetUplink gets a reference to the given bool and assigns it to the Uplink field.
-func (o *LagsPutRequestLagValue) SetUplink(v bool) {
-	o.Uplink = &v
-}
-
-// GetIsPeerLink returns the IsPeerLink field value if set, zero value otherwise.
-func (o *LagsPutRequestLagValue) GetIsPeerLink() bool {
-	if o == nil || IsNil(o.IsPeerLink) {
-		var ret bool
-		return ret
-	}
-	return *o.IsPeerLink
-}
-
-// GetIsPeerLinkOk returns a tuple with the IsPeerLink field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LagsPutRequestLagValue) GetIsPeerLinkOk() (*bool, bool) {
-	if o == nil || IsNil(o.IsPeerLink) {
-		return nil, false
-	}
-	return o.IsPeerLink, true
-}
-
-// HasIsPeerLink returns a boolean if a field has been set.
-func (o *LagsPutRequestLagValue) HasIsPeerLink() bool {
-	if o != nil && !IsNil(o.IsPeerLink) {
-		return true
-	}
-
-	return false
-}
-
-// SetIsPeerLink gets a reference to the given bool and assigns it to the IsPeerLink field.
-func (o *LagsPutRequestLagValue) SetIsPeerLink(v bool) {
-	o.IsPeerLink = &v
 }
 
 // GetColor returns the Color field value if set, zero value otherwise.
@@ -259,36 +131,79 @@ func (o *LagsPutRequestLagValue) SetColor(v string) {
 	o.Color = &v
 }
 
-// GetLacp returns the Lacp field value if set, zero value otherwise.
-func (o *LagsPutRequestLagValue) GetLacp() bool {
-	if o == nil || IsNil(o.Lacp) {
-		var ret bool
+// GetCrcFailureThreshold returns the CrcFailureThreshold field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *LagsPutRequestLagValue) GetCrcFailureThreshold() int64 {
+	if o == nil || IsNil(o.CrcFailureThreshold.Get()) {
+		var ret int64
 		return ret
 	}
-	return *o.Lacp
+	return *o.CrcFailureThreshold.Get()
 }
 
-// GetLacpOk returns a tuple with the Lacp field value if set, nil otherwise
+// GetCrcFailureThresholdOk returns a tuple with the CrcFailureThreshold field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LagsPutRequestLagValue) GetLacpOk() (*bool, bool) {
-	if o == nil || IsNil(o.Lacp) {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LagsPutRequestLagValue) GetCrcFailureThresholdOk() (*int64, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Lacp, true
+	return o.CrcFailureThreshold.Get(), o.CrcFailureThreshold.IsSet()
 }
 
-// HasLacp returns a boolean if a field has been set.
-func (o *LagsPutRequestLagValue) HasLacp() bool {
-	if o != nil && !IsNil(o.Lacp) {
+// HasCrcFailureThreshold returns a boolean if a field has been set.
+func (o *LagsPutRequestLagValue) HasCrcFailureThreshold() bool {
+	if o != nil && o.CrcFailureThreshold.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLacp gets a reference to the given bool and assigns it to the Lacp field.
-func (o *LagsPutRequestLagValue) SetLacp(v bool) {
-	o.Lacp = &v
+// SetCrcFailureThreshold gets a reference to the given NullableInt64 and assigns it to the CrcFailureThreshold field.
+func (o *LagsPutRequestLagValue) SetCrcFailureThreshold(v int64) {
+	o.CrcFailureThreshold.Set(&v)
+}
+
+// SetCrcFailureThresholdNil sets the value for CrcFailureThreshold to be an explicit nil
+func (o *LagsPutRequestLagValue) SetCrcFailureThresholdNil() {
+	o.CrcFailureThreshold.Set(nil)
+}
+
+// UnsetCrcFailureThreshold ensures that no value is present for CrcFailureThreshold, not even an explicit nil
+func (o *LagsPutRequestLagValue) UnsetCrcFailureThreshold() {
+	o.CrcFailureThreshold.Unset()
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *LagsPutRequestLagValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LagsPutRequestLagValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *LagsPutRequestLagValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *LagsPutRequestLagValue) SetEnable(v bool) {
+	o.Enable = &v
 }
 
 // GetEthPortProfile returns the EthPortProfile field value if set, zero value otherwise.
@@ -355,48 +270,6 @@ func (o *LagsPutRequestLagValue) SetEthPortProfileRefType(v string) {
 	o.EthPortProfileRefType = &v
 }
 
-// GetPeerLinkVlan returns the PeerLinkVlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LagsPutRequestLagValue) GetPeerLinkVlan() int64 {
-	if o == nil || IsNil(o.PeerLinkVlan.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.PeerLinkVlan.Get()
-}
-
-// GetPeerLinkVlanOk returns a tuple with the PeerLinkVlan field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LagsPutRequestLagValue) GetPeerLinkVlanOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.PeerLinkVlan.Get(), o.PeerLinkVlan.IsSet()
-}
-
-// HasPeerLinkVlan returns a boolean if a field has been set.
-func (o *LagsPutRequestLagValue) HasPeerLinkVlan() bool {
-	if o != nil && o.PeerLinkVlan.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetPeerLinkVlan gets a reference to the given NullableInt64 and assigns it to the PeerLinkVlan field.
-func (o *LagsPutRequestLagValue) SetPeerLinkVlan(v int64) {
-	o.PeerLinkVlan.Set(&v)
-}
-// SetPeerLinkVlanNil sets the value for PeerLinkVlan to be an explicit nil
-func (o *LagsPutRequestLagValue) SetPeerLinkVlanNil() {
-	o.PeerLinkVlan.Set(nil)
-}
-
-// UnsetPeerLinkVlan ensures that no value is present for PeerLinkVlan, not even an explicit nil
-func (o *LagsPutRequestLagValue) UnsetPeerLinkVlan() {
-	o.PeerLinkVlan.Unset()
-}
-
 // GetFallback returns the Fallback field value if set, zero value otherwise.
 func (o *LagsPutRequestLagValue) GetFallback() bool {
 	if o == nil || IsNil(o.Fallback) {
@@ -461,46 +334,100 @@ func (o *LagsPutRequestLagValue) SetFastRate(v bool) {
 	o.FastRate = &v
 }
 
-// GetCrcFailureThreshold returns the CrcFailureThreshold field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LagsPutRequestLagValue) GetCrcFailureThreshold() int64 {
-	if o == nil || IsNil(o.CrcFailureThreshold.Get()) {
-		var ret int64
+// GetIsPeerLink returns the IsPeerLink field value if set, zero value otherwise.
+func (o *LagsPutRequestLagValue) GetIsPeerLink() bool {
+	if o == nil || IsNil(o.IsPeerLink) {
+		var ret bool
 		return ret
 	}
-	return *o.CrcFailureThreshold.Get()
+	return *o.IsPeerLink
 }
 
-// GetCrcFailureThresholdOk returns a tuple with the CrcFailureThreshold field value if set, nil otherwise
+// GetIsPeerLinkOk returns a tuple with the IsPeerLink field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LagsPutRequestLagValue) GetCrcFailureThresholdOk() (*int64, bool) {
-	if o == nil {
+func (o *LagsPutRequestLagValue) GetIsPeerLinkOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsPeerLink) {
 		return nil, false
 	}
-	return o.CrcFailureThreshold.Get(), o.CrcFailureThreshold.IsSet()
+	return o.IsPeerLink, true
 }
 
-// HasCrcFailureThreshold returns a boolean if a field has been set.
-func (o *LagsPutRequestLagValue) HasCrcFailureThreshold() bool {
-	if o != nil && o.CrcFailureThreshold.IsSet() {
+// HasIsPeerLink returns a boolean if a field has been set.
+func (o *LagsPutRequestLagValue) HasIsPeerLink() bool {
+	if o != nil && !IsNil(o.IsPeerLink) {
 		return true
 	}
 
 	return false
 }
 
-// SetCrcFailureThreshold gets a reference to the given NullableInt64 and assigns it to the CrcFailureThreshold field.
-func (o *LagsPutRequestLagValue) SetCrcFailureThreshold(v int64) {
-	o.CrcFailureThreshold.Set(&v)
-}
-// SetCrcFailureThresholdNil sets the value for CrcFailureThreshold to be an explicit nil
-func (o *LagsPutRequestLagValue) SetCrcFailureThresholdNil() {
-	o.CrcFailureThreshold.Set(nil)
+// SetIsPeerLink gets a reference to the given bool and assigns it to the IsPeerLink field.
+func (o *LagsPutRequestLagValue) SetIsPeerLink(v bool) {
+	o.IsPeerLink = &v
 }
 
-// UnsetCrcFailureThreshold ensures that no value is present for CrcFailureThreshold, not even an explicit nil
-func (o *LagsPutRequestLagValue) UnsetCrcFailureThreshold() {
-	o.CrcFailureThreshold.Unset()
+// GetLacp returns the Lacp field value if set, zero value otherwise.
+func (o *LagsPutRequestLagValue) GetLacp() bool {
+	if o == nil || IsNil(o.Lacp) {
+		var ret bool
+		return ret
+	}
+	return *o.Lacp
+}
+
+// GetLacpOk returns a tuple with the Lacp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LagsPutRequestLagValue) GetLacpOk() (*bool, bool) {
+	if o == nil || IsNil(o.Lacp) {
+		return nil, false
+	}
+	return o.Lacp, true
+}
+
+// HasLacp returns a boolean if a field has been set.
+func (o *LagsPutRequestLagValue) HasLacp() bool {
+	if o != nil && !IsNil(o.Lacp) {
+		return true
+	}
+
+	return false
+}
+
+// SetLacp gets a reference to the given bool and assigns it to the Lacp field.
+func (o *LagsPutRequestLagValue) SetLacp(v bool) {
+	o.Lacp = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *LagsPutRequestLagValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LagsPutRequestLagValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *LagsPutRequestLagValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *LagsPutRequestLagValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -535,8 +462,83 @@ func (o *LagsPutRequestLagValue) SetObjectProperties(v LagsPutRequestLagValueObj
 	o.ObjectProperties = &v
 }
 
+// GetPeerLinkVlan returns the PeerLinkVlan field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *LagsPutRequestLagValue) GetPeerLinkVlan() int64 {
+	if o == nil || IsNil(o.PeerLinkVlan.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.PeerLinkVlan.Get()
+}
+
+// GetPeerLinkVlanOk returns a tuple with the PeerLinkVlan field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LagsPutRequestLagValue) GetPeerLinkVlanOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PeerLinkVlan.Get(), o.PeerLinkVlan.IsSet()
+}
+
+// HasPeerLinkVlan returns a boolean if a field has been set.
+func (o *LagsPutRequestLagValue) HasPeerLinkVlan() bool {
+	if o != nil && o.PeerLinkVlan.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPeerLinkVlan gets a reference to the given NullableInt64 and assigns it to the PeerLinkVlan field.
+func (o *LagsPutRequestLagValue) SetPeerLinkVlan(v int64) {
+	o.PeerLinkVlan.Set(&v)
+}
+
+// SetPeerLinkVlanNil sets the value for PeerLinkVlan to be an explicit nil
+func (o *LagsPutRequestLagValue) SetPeerLinkVlanNil() {
+	o.PeerLinkVlan.Set(nil)
+}
+
+// UnsetPeerLinkVlan ensures that no value is present for PeerLinkVlan, not even an explicit nil
+func (o *LagsPutRequestLagValue) UnsetPeerLinkVlan() {
+	o.PeerLinkVlan.Unset()
+}
+
+// GetUplink returns the Uplink field value if set, zero value otherwise.
+func (o *LagsPutRequestLagValue) GetUplink() bool {
+	if o == nil || IsNil(o.Uplink) {
+		var ret bool
+		return ret
+	}
+	return *o.Uplink
+}
+
+// GetUplinkOk returns a tuple with the Uplink field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LagsPutRequestLagValue) GetUplinkOk() (*bool, bool) {
+	if o == nil || IsNil(o.Uplink) {
+		return nil, false
+	}
+	return o.Uplink, true
+}
+
+// HasUplink returns a boolean if a field has been set.
+func (o *LagsPutRequestLagValue) HasUplink() bool {
+	if o != nil && !IsNil(o.Uplink) {
+		return true
+	}
+
+	return false
+}
+
+// SetUplink gets a reference to the given bool and assigns it to the Uplink field.
+func (o *LagsPutRequestLagValue) SetUplink(v bool) {
+	o.Uplink = &v
+}
+
 func (o LagsPutRequestLagValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -545,23 +547,14 @@ func (o LagsPutRequestLagValue) MarshalJSON() ([]byte, error) {
 
 func (o LagsPutRequestLagValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.Uplink) {
-		toSerialize["uplink"] = o.Uplink
-	}
-	if !IsNil(o.IsPeerLink) {
-		toSerialize["is_peer_link"] = o.IsPeerLink
-	}
 	if !IsNil(o.Color) {
 		toSerialize["color"] = o.Color
 	}
-	if !IsNil(o.Lacp) {
-		toSerialize["lacp"] = o.Lacp
+	if o.CrcFailureThreshold.IsSet() {
+		toSerialize["crc_failure_threshold"] = o.CrcFailureThreshold.Get()
+	}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
 	}
 	if !IsNil(o.EthPortProfile) {
 		toSerialize["eth_port_profile"] = o.EthPortProfile
@@ -569,20 +562,29 @@ func (o LagsPutRequestLagValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.EthPortProfileRefType) {
 		toSerialize["eth_port_profile_ref_type_"] = o.EthPortProfileRefType
 	}
-	if o.PeerLinkVlan.IsSet() {
-		toSerialize["peer_link_vlan"] = o.PeerLinkVlan.Get()
-	}
 	if !IsNil(o.Fallback) {
 		toSerialize["fallback"] = o.Fallback
 	}
 	if !IsNil(o.FastRate) {
 		toSerialize["fast_rate"] = o.FastRate
 	}
-	if o.CrcFailureThreshold.IsSet() {
-		toSerialize["crc_failure_threshold"] = o.CrcFailureThreshold.Get()
+	if !IsNil(o.IsPeerLink) {
+		toSerialize["is_peer_link"] = o.IsPeerLink
+	}
+	if !IsNil(o.Lacp) {
+		toSerialize["lacp"] = o.Lacp
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if o.PeerLinkVlan.IsSet() {
+		toSerialize["peer_link_vlan"] = o.PeerLinkVlan.Get()
+	}
+	if !IsNil(o.Uplink) {
+		toSerialize["uplink"] = o.Uplink
 	}
 	return toSerialize, nil
 }
@@ -622,5 +624,3 @@ func (v *NullableLagsPutRequestLagValue) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

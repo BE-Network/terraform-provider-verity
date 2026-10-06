@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -11,8 +11,8 @@ API version: 6.6
 package openapi
 
 import (
-	"encoding/json"
 	"bytes"
+	"encoding/json"
 	"fmt"
 )
 
@@ -21,10 +21,10 @@ var _ MappedNullable = &AuthPostRequestAuth{}
 
 // AuthPostRequestAuth struct for AuthPostRequestAuth
 type AuthPostRequestAuth struct {
-	// The username for authentication
-	Username string `json:"username"`
 	// The password for authentication
 	Password string `json:"password"`
+	// The username for authentication
+	Username string `json:"username"`
 }
 
 type _AuthPostRequestAuth AuthPostRequestAuth
@@ -33,10 +33,10 @@ type _AuthPostRequestAuth AuthPostRequestAuth
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAuthPostRequestAuth(username string, password string) *AuthPostRequestAuth {
+func NewAuthPostRequestAuth(password string, username string) *AuthPostRequestAuth {
 	this := AuthPostRequestAuth{}
-	this.Username = username
 	this.Password = password
+	this.Username = username
 	return &this
 }
 
@@ -46,30 +46,6 @@ func NewAuthPostRequestAuth(username string, password string) *AuthPostRequestAu
 func NewAuthPostRequestAuthWithDefaults() *AuthPostRequestAuth {
 	this := AuthPostRequestAuth{}
 	return &this
-}
-
-// GetUsername returns the Username field value
-func (o *AuthPostRequestAuth) GetUsername() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Username
-}
-
-// GetUsernameOk returns a tuple with the Username field value
-// and a boolean to check if the value has been set.
-func (o *AuthPostRequestAuth) GetUsernameOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Username, true
-}
-
-// SetUsername sets field value
-func (o *AuthPostRequestAuth) SetUsername(v string) {
-	o.Username = v
 }
 
 // GetPassword returns the Password field value
@@ -96,8 +72,32 @@ func (o *AuthPostRequestAuth) SetPassword(v string) {
 	o.Password = v
 }
 
+// GetUsername returns the Username field value
+func (o *AuthPostRequestAuth) GetUsername() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Username
+}
+
+// GetUsernameOk returns a tuple with the Username field value
+// and a boolean to check if the value has been set.
+func (o *AuthPostRequestAuth) GetUsernameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Username, true
+}
+
+// SetUsername sets field value
+func (o *AuthPostRequestAuth) SetUsername(v string) {
+	o.Username = v
+}
+
 func (o AuthPostRequestAuth) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -106,8 +106,8 @@ func (o AuthPostRequestAuth) MarshalJSON() ([]byte, error) {
 
 func (o AuthPostRequestAuth) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["username"] = o.Username
 	toSerialize["password"] = o.Password
+	toSerialize["username"] = o.Username
 	return toSerialize, nil
 }
 
@@ -116,8 +116,8 @@ func (o *AuthPostRequestAuth) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"username",
 		"password",
+		"username",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -125,10 +125,10 @@ func (o *AuthPostRequestAuth) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -184,5 +184,3 @@ func (v *NullableAuthPostRequestAuth) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

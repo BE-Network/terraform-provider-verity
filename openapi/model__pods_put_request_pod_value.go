@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,8 +19,6 @@ var _ MappedNullable = &PodsPutRequestPodValue{}
 
 // PodsPutRequestPodValue struct for PodsPutRequestPodValue
 type PodsPutRequestPodValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	// Number of spine switches expected in this pod
@@ -29,9 +27,11 @@ type PodsPutRequestPodValue struct {
 	Fabric *string `json:"fabric,omitempty"`
 	// Object type for fabric field
 	FabricRefType *string `json:"fabric_ref_type_,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                      `json:"name,omitempty"`
+	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 	// Position of the Switch
 	Position NullableFloat64 `json:"position,omitempty"`
-	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewPodsPutRequestPodValue instantiates a new PodsPutRequestPodValue object
@@ -40,14 +40,14 @@ type PodsPutRequestPodValue struct {
 // will change when the set of required properties is changed
 func NewPodsPutRequestPodValue() *PodsPutRequestPodValue {
 	this := PodsPutRequestPodValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
 	var expectedSpineCount int64 = 1
 	this.ExpectedSpineCount = *NewNullableInt64(&expectedSpineCount)
 	var fabric string = ""
 	this.Fabric = &fabric
+	var name string = ""
+	this.Name = &name
 	return &this
 }
 
@@ -56,47 +56,15 @@ func NewPodsPutRequestPodValue() *PodsPutRequestPodValue {
 // but it doesn't guarantee that properties required by API are set
 func NewPodsPutRequestPodValueWithDefaults() *PodsPutRequestPodValue {
 	this := PodsPutRequestPodValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
 	var expectedSpineCount int64 = 1
 	this.ExpectedSpineCount = *NewNullableInt64(&expectedSpineCount)
 	var fabric string = ""
 	this.Fabric = &fabric
+	var name string = ""
+	this.Name = &name
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *PodsPutRequestPodValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PodsPutRequestPodValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *PodsPutRequestPodValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *PodsPutRequestPodValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -163,6 +131,7 @@ func (o *PodsPutRequestPodValue) HasExpectedSpineCount() bool {
 func (o *PodsPutRequestPodValue) SetExpectedSpineCount(v int64) {
 	o.ExpectedSpineCount.Set(&v)
 }
+
 // SetExpectedSpineCountNil sets the value for ExpectedSpineCount to be an explicit nil
 func (o *PodsPutRequestPodValue) SetExpectedSpineCountNil() {
 	o.ExpectedSpineCount.Set(nil)
@@ -237,46 +206,36 @@ func (o *PodsPutRequestPodValue) SetFabricRefType(v string) {
 	o.FabricRefType = &v
 }
 
-// GetPosition returns the Position field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PodsPutRequestPodValue) GetPosition() float64 {
-	if o == nil || IsNil(o.Position.Get()) {
-		var ret float64
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *PodsPutRequestPodValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
 		return ret
 	}
-	return *o.Position.Get()
+	return *o.Name
 }
 
-// GetPositionOk returns a tuple with the Position field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PodsPutRequestPodValue) GetPositionOk() (*float64, bool) {
-	if o == nil {
+func (o *PodsPutRequestPodValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
-	return o.Position.Get(), o.Position.IsSet()
+	return o.Name, true
 }
 
-// HasPosition returns a boolean if a field has been set.
-func (o *PodsPutRequestPodValue) HasPosition() bool {
-	if o != nil && o.Position.IsSet() {
+// HasName returns a boolean if a field has been set.
+func (o *PodsPutRequestPodValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
 	return false
 }
 
-// SetPosition gets a reference to the given NullableFloat64 and assigns it to the Position field.
-func (o *PodsPutRequestPodValue) SetPosition(v float64) {
-	o.Position.Set(&v)
-}
-// SetPositionNil sets the value for Position to be an explicit nil
-func (o *PodsPutRequestPodValue) SetPositionNil() {
-	o.Position.Set(nil)
-}
-
-// UnsetPosition ensures that no value is present for Position, not even an explicit nil
-func (o *PodsPutRequestPodValue) UnsetPosition() {
-	o.Position.Unset()
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *PodsPutRequestPodValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -311,8 +270,51 @@ func (o *PodsPutRequestPodValue) SetObjectProperties(v AclsPutRequestIpFilterVal
 	o.ObjectProperties = &v
 }
 
+// GetPosition returns the Position field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PodsPutRequestPodValue) GetPosition() float64 {
+	if o == nil || IsNil(o.Position.Get()) {
+		var ret float64
+		return ret
+	}
+	return *o.Position.Get()
+}
+
+// GetPositionOk returns a tuple with the Position field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PodsPutRequestPodValue) GetPositionOk() (*float64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Position.Get(), o.Position.IsSet()
+}
+
+// HasPosition returns a boolean if a field has been set.
+func (o *PodsPutRequestPodValue) HasPosition() bool {
+	if o != nil && o.Position.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPosition gets a reference to the given NullableFloat64 and assigns it to the Position field.
+func (o *PodsPutRequestPodValue) SetPosition(v float64) {
+	o.Position.Set(&v)
+}
+
+// SetPositionNil sets the value for Position to be an explicit nil
+func (o *PodsPutRequestPodValue) SetPositionNil() {
+	o.Position.Set(nil)
+}
+
+// UnsetPosition ensures that no value is present for Position, not even an explicit nil
+func (o *PodsPutRequestPodValue) UnsetPosition() {
+	o.Position.Unset()
+}
+
 func (o PodsPutRequestPodValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -321,9 +323,6 @@ func (o PodsPutRequestPodValue) MarshalJSON() ([]byte, error) {
 
 func (o PodsPutRequestPodValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
@@ -336,11 +335,14 @@ func (o PodsPutRequestPodValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.FabricRefType) {
 		toSerialize["fabric_ref_type_"] = o.FabricRefType
 	}
-	if o.Position.IsSet() {
-		toSerialize["position"] = o.Position.Get()
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if o.Position.IsSet() {
+		toSerialize["position"] = o.Position.Get()
 	}
 	return toSerialize, nil
 }
@@ -380,5 +382,3 @@ func (v *NullablePodsPutRequestPodValue) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

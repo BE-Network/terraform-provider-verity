@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // IPv4ListFiltersAPIService IPv4ListFiltersAPI service
 type IPv4ListFiltersAPIService service
 
 type ApiIpv4listsDeleteRequest struct {
-	ctx context.Context
-	ApiService *IPv4ListFiltersAPIService
+	ctx                context.Context
+	ApiService         *IPv4ListFiltersAPIService
 	ipv4ListFilterName *[]string
-	changesetName *string
+	changesetName      *string
 }
 
 func (r ApiIpv4listsDeleteRequest) Ipv4ListFilterName(ipv4ListFilterName []string) ApiIpv4listsDeleteRequest {
@@ -49,23 +48,22 @@ Ipv4listsDelete Delete IPv4 List Filter
 
 Deletes an existing IPv4 List Filter from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiIpv4listsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiIpv4listsDeleteRequest
 */
 func (a *IPv4ListFiltersAPIService) Ipv4listsDelete(ctx context.Context) ApiIpv4listsDeleteRequest {
 	return ApiIpv4listsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *IPv4ListFiltersAPIService) Ipv4listsDeleteExecute(r ApiIpv4listsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IPv4ListFiltersAPIService.Ipv4listsDelete")
@@ -142,11 +140,11 @@ func (a *IPv4ListFiltersAPIService) Ipv4listsDeleteExecute(r ApiIpv4listsDeleteR
 }
 
 type ApiIpv4listsGetRequest struct {
-	ctx context.Context
-	ApiService *IPv4ListFiltersAPIService
+	ctx                context.Context
+	ApiService         *IPv4ListFiltersAPIService
 	ipv4ListFilterName *string
-	includeData *bool
-	changesetName *string
+	includeData        *bool
+	changesetName      *string
 }
 
 func (r ApiIpv4listsGetRequest) Ipv4ListFilterName(ipv4ListFilterName string) ApiIpv4listsGetRequest {
@@ -173,23 +171,22 @@ Ipv4listsGet Get all IPv4 List Filters
 
 Retrieves all IPv4 List Filters from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiIpv4listsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiIpv4listsGetRequest
 */
 func (a *IPv4ListFiltersAPIService) Ipv4listsGet(ctx context.Context) ApiIpv4listsGetRequest {
 	return ApiIpv4listsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *IPv4ListFiltersAPIService) Ipv4listsGetExecute(r ApiIpv4listsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IPv4ListFiltersAPIService.Ipv4listsGet")
@@ -258,9 +255,9 @@ func (a *IPv4ListFiltersAPIService) Ipv4listsGetExecute(r ApiIpv4listsGetRequest
 }
 
 type ApiIpv4listsPatchRequest struct {
-	ctx context.Context
-	ApiService *IPv4ListFiltersAPIService
-	changesetName *string
+	ctx                 context.Context
+	ApiService          *IPv4ListFiltersAPIService
+	changesetName       *string
 	ipv4listsPutRequest *Ipv4listsPutRequest
 }
 
@@ -283,23 +280,22 @@ Ipv4listsPatch Update IPv4 List Filter
 
 Update IPv4 List Filter into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiIpv4listsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiIpv4listsPatchRequest
 */
 func (a *IPv4ListFiltersAPIService) Ipv4listsPatch(ctx context.Context) ApiIpv4listsPatchRequest {
 	return ApiIpv4listsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *IPv4ListFiltersAPIService) Ipv4listsPatchExecute(r ApiIpv4listsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IPv4ListFiltersAPIService.Ipv4listsPatch")
@@ -364,9 +360,9 @@ func (a *IPv4ListFiltersAPIService) Ipv4listsPatchExecute(r ApiIpv4listsPatchReq
 }
 
 type ApiIpv4listsPutRequest struct {
-	ctx context.Context
-	ApiService *IPv4ListFiltersAPIService
-	changesetName *string
+	ctx                 context.Context
+	ApiService          *IPv4ListFiltersAPIService
+	changesetName       *string
 	ipv4listsPutRequest *Ipv4listsPutRequest
 }
 
@@ -389,23 +385,22 @@ Ipv4listsPut Create IPv4 List Filter
 
 Create IPv4 List Filter into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiIpv4listsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiIpv4listsPutRequest
 */
 func (a *IPv4ListFiltersAPIService) Ipv4listsPut(ctx context.Context) ApiIpv4listsPutRequest {
 	return ApiIpv4listsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *IPv4ListFiltersAPIService) Ipv4listsPutExecute(r ApiIpv4listsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "IPv4ListFiltersAPIService.Ipv4listsPut")

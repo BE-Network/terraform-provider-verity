@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // BundlesAPIService BundlesAPI service
 type BundlesAPIService service
 
 type ApiBundlesDeleteRequest struct {
-	ctx context.Context
-	ApiService *BundlesAPIService
-	bundleName *[]string
+	ctx           context.Context
+	ApiService    *BundlesAPIService
+	bundleName    *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ BundlesDelete Delete bundle
 
 Deletes an existing bundle from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiBundlesDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiBundlesDeleteRequest
 */
 func (a *BundlesAPIService) BundlesDelete(ctx context.Context) ApiBundlesDeleteRequest {
 	return ApiBundlesDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *BundlesAPIService) BundlesDeleteExecute(r ApiBundlesDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BundlesAPIService.BundlesDelete")
@@ -142,10 +140,10 @@ func (a *BundlesAPIService) BundlesDeleteExecute(r ApiBundlesDeleteRequest) (*ht
 }
 
 type ApiBundlesGetRequest struct {
-	ctx context.Context
-	ApiService *BundlesAPIService
-	bundleName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *BundlesAPIService
+	bundleName    *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ BundlesGet Get all bundles
 
 Retrieves all bundles from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiBundlesGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiBundlesGetRequest
 */
 func (a *BundlesAPIService) BundlesGet(ctx context.Context) ApiBundlesGetRequest {
 	return ApiBundlesGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *BundlesAPIService) BundlesGetExecute(r ApiBundlesGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BundlesAPIService.BundlesGet")
@@ -258,9 +255,9 @@ func (a *BundlesAPIService) BundlesGetExecute(r ApiBundlesGetRequest) (*http.Res
 }
 
 type ApiBundlesPatchRequest struct {
-	ctx context.Context
-	ApiService *BundlesAPIService
-	changesetName *string
+	ctx               context.Context
+	ApiService        *BundlesAPIService
+	changesetName     *string
 	bundlesPutRequest *BundlesPutRequest
 }
 
@@ -283,23 +280,22 @@ BundlesPatch Update bundle
 
 Update bundle into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiBundlesPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiBundlesPatchRequest
 */
 func (a *BundlesAPIService) BundlesPatch(ctx context.Context) ApiBundlesPatchRequest {
 	return ApiBundlesPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *BundlesAPIService) BundlesPatchExecute(r ApiBundlesPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BundlesAPIService.BundlesPatch")
@@ -364,9 +360,9 @@ func (a *BundlesAPIService) BundlesPatchExecute(r ApiBundlesPatchRequest) (*http
 }
 
 type ApiBundlesPutRequest struct {
-	ctx context.Context
-	ApiService *BundlesAPIService
-	changesetName *string
+	ctx               context.Context
+	ApiService        *BundlesAPIService
+	changesetName     *string
 	bundlesPutRequest *BundlesPutRequest
 }
 
@@ -389,23 +385,22 @@ BundlesPut Create bundle
 
 Create bundle into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiBundlesPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiBundlesPutRequest
 */
 func (a *BundlesAPIService) BundlesPut(ctx context.Context) ApiBundlesPutRequest {
 	return ApiBundlesPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *BundlesAPIService) BundlesPutExecute(r ApiBundlesPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BundlesAPIService.BundlesPut")

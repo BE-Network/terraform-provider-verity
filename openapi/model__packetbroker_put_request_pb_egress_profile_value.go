@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,14 @@ var _ MappedNullable = &PacketbrokerPutRequestPbEgressProfileValue{}
 
 // PacketbrokerPutRequestPbEgressProfileValue struct for PacketbrokerPutRequestPbEgressProfileValue
 type PacketbrokerPutRequestPbEgressProfileValue struct {
+	// Enable object.
+	Enable     *bool                                                     `json:"enable,omitempty"`
+	Ipv4Deny   []PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner `json:"ipv4_deny,omitempty"`
+	Ipv4Permit []PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner `json:"ipv4_permit,omitempty"`
+	Ipv6Deny   []PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner `json:"ipv6_deny,omitempty"`
+	Ipv6Permit []PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner `json:"ipv6_permit,omitempty"`
 	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
-	Ipv4Permit []PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner `json:"ipv4_permit,omitempty"`
-	Ipv4Deny []PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner `json:"ipv4_deny,omitempty"`
-	Ipv6Permit []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner `json:"ipv6_permit,omitempty"`
-	Ipv6Deny []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner `json:"ipv6_deny,omitempty"`
 }
 
 // NewPacketbrokerPutRequestPbEgressProfileValue instantiates a new PacketbrokerPutRequestPbEgressProfileValue object
@@ -35,10 +35,10 @@ type PacketbrokerPutRequestPbEgressProfileValue struct {
 // will change when the set of required properties is changed
 func NewPacketbrokerPutRequestPbEgressProfileValue() *PacketbrokerPutRequestPbEgressProfileValue {
 	this := PacketbrokerPutRequestPbEgressProfileValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	return &this
 }
 
@@ -47,43 +47,11 @@ func NewPacketbrokerPutRequestPbEgressProfileValue() *PacketbrokerPutRequestPbEg
 // but it doesn't guarantee that properties required by API are set
 func NewPacketbrokerPutRequestPbEgressProfileValueWithDefaults() *PacketbrokerPutRequestPbEgressProfileValue {
 	this := PacketbrokerPutRequestPbEgressProfileValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -118,42 +86,10 @@ func (o *PacketbrokerPutRequestPbEgressProfileValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetIpv4Permit returns the Ipv4Permit field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv4Permit() []PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
-	if o == nil || IsNil(o.Ipv4Permit) {
-		var ret []PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner
-		return ret
-	}
-	return o.Ipv4Permit
-}
-
-// GetIpv4PermitOk returns a tuple with the Ipv4Permit field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv4PermitOk() ([]PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, bool) {
-	if o == nil || IsNil(o.Ipv4Permit) {
-		return nil, false
-	}
-	return o.Ipv4Permit, true
-}
-
-// HasIpv4Permit returns a boolean if a field has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) HasIpv4Permit() bool {
-	if o != nil && !IsNil(o.Ipv4Permit) {
-		return true
-	}
-
-	return false
-}
-
-// SetIpv4Permit gets a reference to the given []PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner and assigns it to the Ipv4Permit field.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv4Permit(v []PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) {
-	o.Ipv4Permit = v
-}
-
 // GetIpv4Deny returns the Ipv4Deny field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv4Deny() []PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner {
+func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv4Deny() []PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner {
 	if o == nil || IsNil(o.Ipv4Deny) {
-		var ret []PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner
+		var ret []PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner
 		return ret
 	}
 	return o.Ipv4Deny
@@ -161,7 +97,7 @@ func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv4Deny() []Packetbroke
 
 // GetIpv4DenyOk returns a tuple with the Ipv4Deny field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv4DenyOk() ([]PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, bool) {
+func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv4DenyOk() ([]PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner, bool) {
 	if o == nil || IsNil(o.Ipv4Deny) {
 		return nil, false
 	}
@@ -177,47 +113,47 @@ func (o *PacketbrokerPutRequestPbEgressProfileValue) HasIpv4Deny() bool {
 	return false
 }
 
-// SetIpv4Deny gets a reference to the given []PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner and assigns it to the Ipv4Deny field.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv4Deny(v []PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) {
+// SetIpv4Deny gets a reference to the given []PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner and assigns it to the Ipv4Deny field.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv4Deny(v []PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner) {
 	o.Ipv4Deny = v
 }
 
-// GetIpv6Permit returns the Ipv6Permit field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Permit() []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
-	if o == nil || IsNil(o.Ipv6Permit) {
-		var ret []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner
+// GetIpv4Permit returns the Ipv4Permit field value if set, zero value otherwise.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv4Permit() []PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner {
+	if o == nil || IsNil(o.Ipv4Permit) {
+		var ret []PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner
 		return ret
 	}
-	return o.Ipv6Permit
+	return o.Ipv4Permit
 }
 
-// GetIpv6PermitOk returns a tuple with the Ipv6Permit field value if set, nil otherwise
+// GetIpv4PermitOk returns a tuple with the Ipv4Permit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6PermitOk() ([]PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, bool) {
-	if o == nil || IsNil(o.Ipv6Permit) {
+func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv4PermitOk() ([]PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner, bool) {
+	if o == nil || IsNil(o.Ipv4Permit) {
 		return nil, false
 	}
-	return o.Ipv6Permit, true
+	return o.Ipv4Permit, true
 }
 
-// HasIpv6Permit returns a boolean if a field has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) HasIpv6Permit() bool {
-	if o != nil && !IsNil(o.Ipv6Permit) {
+// HasIpv4Permit returns a boolean if a field has been set.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) HasIpv4Permit() bool {
+	if o != nil && !IsNil(o.Ipv4Permit) {
 		return true
 	}
 
 	return false
 }
 
-// SetIpv6Permit gets a reference to the given []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner and assigns it to the Ipv6Permit field.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv6Permit(v []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) {
-	o.Ipv6Permit = v
+// SetIpv4Permit gets a reference to the given []PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner and assigns it to the Ipv4Permit field.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv4Permit(v []PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner) {
+	o.Ipv4Permit = v
 }
 
 // GetIpv6Deny returns the Ipv6Deny field value if set, zero value otherwise.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Deny() []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner {
+func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Deny() []PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner {
 	if o == nil || IsNil(o.Ipv6Deny) {
-		var ret []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner
+		var ret []PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner
 		return ret
 	}
 	return o.Ipv6Deny
@@ -225,7 +161,7 @@ func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Deny() []Packetbroke
 
 // GetIpv6DenyOk returns a tuple with the Ipv6Deny field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6DenyOk() ([]PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, bool) {
+func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6DenyOk() ([]PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner, bool) {
 	if o == nil || IsNil(o.Ipv6Deny) {
 		return nil, false
 	}
@@ -241,13 +177,77 @@ func (o *PacketbrokerPutRequestPbEgressProfileValue) HasIpv6Deny() bool {
 	return false
 }
 
-// SetIpv6Deny gets a reference to the given []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner and assigns it to the Ipv6Deny field.
-func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv6Deny(v []PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) {
+// SetIpv6Deny gets a reference to the given []PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner and assigns it to the Ipv6Deny field.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv6Deny(v []PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner) {
 	o.Ipv6Deny = v
 }
 
+// GetIpv6Permit returns the Ipv6Permit field value if set, zero value otherwise.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6Permit() []PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner {
+	if o == nil || IsNil(o.Ipv6Permit) {
+		var ret []PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner
+		return ret
+	}
+	return o.Ipv6Permit
+}
+
+// GetIpv6PermitOk returns a tuple with the Ipv6Permit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) GetIpv6PermitOk() ([]PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner, bool) {
+	if o == nil || IsNil(o.Ipv6Permit) {
+		return nil, false
+	}
+	return o.Ipv6Permit, true
+}
+
+// HasIpv6Permit returns a boolean if a field has been set.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) HasIpv6Permit() bool {
+	if o != nil && !IsNil(o.Ipv6Permit) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpv6Permit gets a reference to the given []PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner and assigns it to the Ipv6Permit field.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) SetIpv6Permit(v []PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner) {
+	o.Ipv6Permit = v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *PacketbrokerPutRequestPbEgressProfileValue) SetName(v string) {
+	o.Name = &v
+}
+
 func (o PacketbrokerPutRequestPbEgressProfileValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -256,23 +256,23 @@ func (o PacketbrokerPutRequestPbEgressProfileValue) MarshalJSON() ([]byte, error
 
 func (o PacketbrokerPutRequestPbEgressProfileValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.Ipv4Permit) {
-		toSerialize["ipv4_permit"] = o.Ipv4Permit
 	}
 	if !IsNil(o.Ipv4Deny) {
 		toSerialize["ipv4_deny"] = o.Ipv4Deny
 	}
-	if !IsNil(o.Ipv6Permit) {
-		toSerialize["ipv6_permit"] = o.Ipv6Permit
+	if !IsNil(o.Ipv4Permit) {
+		toSerialize["ipv4_permit"] = o.Ipv4Permit
 	}
 	if !IsNil(o.Ipv6Deny) {
 		toSerialize["ipv6_deny"] = o.Ipv6Deny
+	}
+	if !IsNil(o.Ipv6Permit) {
+		toSerialize["ipv6_permit"] = o.Ipv6Permit
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	return toSerialize, nil
 }
@@ -312,5 +312,3 @@ func (v *NullablePacketbrokerPutRequestPbEgressProfileValue) UnmarshalJSON(src [
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

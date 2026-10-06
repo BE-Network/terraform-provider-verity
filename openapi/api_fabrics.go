@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // FabricsAPIService FabricsAPI service
 type FabricsAPIService service
 
 type ApiFabricsDeleteRequest struct {
-	ctx context.Context
-	ApiService *FabricsAPIService
-	fabricName *[]string
+	ctx           context.Context
+	ApiService    *FabricsAPIService
+	fabricName    *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ FabricsDelete Delete Fabric
 
 Deletes an existing Fabric from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiFabricsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiFabricsDeleteRequest
 */
 func (a *FabricsAPIService) FabricsDelete(ctx context.Context) ApiFabricsDeleteRequest {
 	return ApiFabricsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *FabricsAPIService) FabricsDeleteExecute(r ApiFabricsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FabricsAPIService.FabricsDelete")
@@ -142,10 +140,10 @@ func (a *FabricsAPIService) FabricsDeleteExecute(r ApiFabricsDeleteRequest) (*ht
 }
 
 type ApiFabricsGetRequest struct {
-	ctx context.Context
-	ApiService *FabricsAPIService
-	fabricName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *FabricsAPIService
+	fabricName    *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ FabricsGet Get all Fabrics
 
 Retrieves all Fabrics from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiFabricsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiFabricsGetRequest
 */
 func (a *FabricsAPIService) FabricsGet(ctx context.Context) ApiFabricsGetRequest {
 	return ApiFabricsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *FabricsAPIService) FabricsGetExecute(r ApiFabricsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FabricsAPIService.FabricsGet")
@@ -258,9 +255,9 @@ func (a *FabricsAPIService) FabricsGetExecute(r ApiFabricsGetRequest) (*http.Res
 }
 
 type ApiFabricsPatchRequest struct {
-	ctx context.Context
-	ApiService *FabricsAPIService
-	changesetName *string
+	ctx               context.Context
+	ApiService        *FabricsAPIService
+	changesetName     *string
 	fabricsPutRequest *FabricsPutRequest
 }
 
@@ -283,23 +280,22 @@ FabricsPatch Update Fabric
 
 Update Fabric into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiFabricsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiFabricsPatchRequest
 */
 func (a *FabricsAPIService) FabricsPatch(ctx context.Context) ApiFabricsPatchRequest {
 	return ApiFabricsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *FabricsAPIService) FabricsPatchExecute(r ApiFabricsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FabricsAPIService.FabricsPatch")
@@ -364,9 +360,9 @@ func (a *FabricsAPIService) FabricsPatchExecute(r ApiFabricsPatchRequest) (*http
 }
 
 type ApiFabricsPutRequest struct {
-	ctx context.Context
-	ApiService *FabricsAPIService
-	changesetName *string
+	ctx               context.Context
+	ApiService        *FabricsAPIService
+	changesetName     *string
 	fabricsPutRequest *FabricsPutRequest
 }
 
@@ -389,23 +385,22 @@ FabricsPut Create Fabric
 
 Create Fabric into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiFabricsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiFabricsPutRequest
 */
 func (a *FabricsAPIService) FabricsPut(ctx context.Context) ApiFabricsPutRequest {
 	return ApiFabricsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *FabricsAPIService) FabricsPutExecute(r ApiFabricsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FabricsAPIService.FabricsPut")

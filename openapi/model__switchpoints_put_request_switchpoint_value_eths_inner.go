@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -23,14 +23,14 @@ type SwitchpointsPutRequestSwitchpointValueEthsInner struct {
 	Breakout *string `json:"breakout,omitempty"`
 	// A Value between 1 and 4096
 	CustomerVlan *string `json:"customer_vlan,omitempty"`
+	// Enable port.
+	Enable *bool `json:"enable,omitempty"`
 	// Icon of this Eth Port
 	EthNumIcon *string `json:"eth_num_icon,omitempty"`
 	// Label of this Eth Port
 	EthNumLabel *string `json:"eth_num_label,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
-	// Enable port. 
-	Enable *bool `json:"enable,omitempty"`
 	// The name identifying the port. Used for reference only, it won't actually change the port name.
 	PortName *string `json:"port_name,omitempty"`
 }
@@ -45,12 +45,12 @@ func NewSwitchpointsPutRequestSwitchpointValueEthsInner() *SwitchpointsPutReques
 	this.Breakout = &breakout
 	var customerVlan string = ""
 	this.CustomerVlan = &customerVlan
+	var enable bool = true
+	this.Enable = &enable
 	var ethNumIcon string = "empty"
 	this.EthNumIcon = &ethNumIcon
 	var ethNumLabel string = ""
 	this.EthNumLabel = &ethNumLabel
-	var enable bool = true
-	this.Enable = &enable
 	return &this
 }
 
@@ -63,12 +63,12 @@ func NewSwitchpointsPutRequestSwitchpointValueEthsInnerWithDefaults() *Switchpoi
 	this.Breakout = &breakout
 	var customerVlan string = ""
 	this.CustomerVlan = &customerVlan
+	var enable bool = true
+	this.Enable = &enable
 	var ethNumIcon string = "empty"
 	this.EthNumIcon = &ethNumIcon
 	var ethNumLabel string = ""
 	this.EthNumLabel = &ethNumLabel
-	var enable bool = true
-	this.Enable = &enable
 	return &this
 }
 
@@ -134,6 +134,38 @@ func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasCustomerVlan() bool
 // SetCustomerVlan gets a reference to the given string and assigns it to the CustomerVlan field.
 func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetCustomerVlan(v string) {
 	o.CustomerVlan = &v
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetEnable(v bool) {
+	o.Enable = &v
 }
 
 // GetEthNumIcon returns the EthNumIcon field value if set, zero value otherwise.
@@ -232,38 +264,6 @@ func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetIndex(v int64) {
 	o.Index = &v
 }
 
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetEnable(v bool) {
-	o.Enable = &v
-}
-
 // GetPortName returns the PortName field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetPortName() string {
 	if o == nil || IsNil(o.PortName) {
@@ -297,7 +297,7 @@ func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetPortName(v string) 
 }
 
 func (o SwitchpointsPutRequestSwitchpointValueEthsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -312,6 +312,9 @@ func (o SwitchpointsPutRequestSwitchpointValueEthsInner) ToMap() (map[string]int
 	if !IsNil(o.CustomerVlan) {
 		toSerialize["customer_vlan"] = o.CustomerVlan
 	}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
+	}
 	if !IsNil(o.EthNumIcon) {
 		toSerialize["eth_num_icon"] = o.EthNumIcon
 	}
@@ -320,9 +323,6 @@ func (o SwitchpointsPutRequestSwitchpointValueEthsInner) ToMap() (map[string]int
 	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
-	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
 	}
 	if !IsNil(o.PortName) {
 		toSerialize["port_name"] = o.PortName
@@ -365,5 +365,3 @@ func (v *NullableSwitchpointsPutRequestSwitchpointValueEthsInner) UnmarshalJSON(
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

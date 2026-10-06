@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,10 +19,10 @@ var _ MappedNullable = &TacacsprofilesPutRequestTacacsProfileValue{}
 
 // TacacsprofilesPutRequestTacacsProfileValue struct for TacacsprofilesPutRequestTacacsProfileValue
 type TacacsprofilesPutRequestTacacsProfileValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
+	// Template Name. Must be unique within type.
+	Name          *string                                                        `json:"name,omitempty"`
 	TacacsServers []TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner `json:"tacacs_servers,omitempty"`
 }
 
@@ -32,10 +32,10 @@ type TacacsprofilesPutRequestTacacsProfileValue struct {
 // will change when the set of required properties is changed
 func NewTacacsprofilesPutRequestTacacsProfileValue() *TacacsprofilesPutRequestTacacsProfileValue {
 	this := TacacsprofilesPutRequestTacacsProfileValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	return &this
 }
 
@@ -44,43 +44,11 @@ func NewTacacsprofilesPutRequestTacacsProfileValue() *TacacsprofilesPutRequestTa
 // but it doesn't guarantee that properties required by API are set
 func NewTacacsprofilesPutRequestTacacsProfileValueWithDefaults() *TacacsprofilesPutRequestTacacsProfileValue {
 	this := TacacsprofilesPutRequestTacacsProfileValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *TacacsprofilesPutRequestTacacsProfileValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *TacacsprofilesPutRequestTacacsProfileValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *TacacsprofilesPutRequestTacacsProfileValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *TacacsprofilesPutRequestTacacsProfileValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -113,6 +81,38 @@ func (o *TacacsprofilesPutRequestTacacsProfileValue) HasEnable() bool {
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *TacacsprofilesPutRequestTacacsProfileValue) SetEnable(v bool) {
 	o.Enable = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *TacacsprofilesPutRequestTacacsProfileValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TacacsprofilesPutRequestTacacsProfileValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *TacacsprofilesPutRequestTacacsProfileValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *TacacsprofilesPutRequestTacacsProfileValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetTacacsServers returns the TacacsServers field value if set, zero value otherwise.
@@ -148,7 +148,7 @@ func (o *TacacsprofilesPutRequestTacacsProfileValue) SetTacacsServers(v []Tacacs
 }
 
 func (o TacacsprofilesPutRequestTacacsProfileValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -157,11 +157,11 @@ func (o TacacsprofilesPutRequestTacacsProfileValue) MarshalJSON() ([]byte, error
 
 func (o TacacsprofilesPutRequestTacacsProfileValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.TacacsServers) {
 		toSerialize["tacacs_servers"] = o.TacacsServers
@@ -204,5 +204,3 @@ func (v *NullableTacacsprofilesPutRequestTacacsProfileValue) UnmarshalJSON(src [
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

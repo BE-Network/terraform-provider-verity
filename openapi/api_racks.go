@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // RacksAPIService RacksAPI service
 type RacksAPIService service
 
 type ApiRacksDeleteRequest struct {
-	ctx context.Context
-	ApiService *RacksAPIService
-	rackName *[]string
+	ctx           context.Context
+	ApiService    *RacksAPIService
+	rackName      *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ RacksDelete Delete rack
 
 Deletes an existing rack from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRacksDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRacksDeleteRequest
 */
 func (a *RacksAPIService) RacksDelete(ctx context.Context) ApiRacksDeleteRequest {
 	return ApiRacksDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *RacksAPIService) RacksDeleteExecute(r ApiRacksDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RacksAPIService.RacksDelete")
@@ -142,10 +140,10 @@ func (a *RacksAPIService) RacksDeleteExecute(r ApiRacksDeleteRequest) (*http.Res
 }
 
 type ApiRacksGetRequest struct {
-	ctx context.Context
-	ApiService *RacksAPIService
-	rackName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *RacksAPIService
+	rackName      *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ RacksGet Get all racks
 
 Downloads all racks from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRacksGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRacksGetRequest
 */
 func (a *RacksAPIService) RacksGet(ctx context.Context) ApiRacksGetRequest {
 	return ApiRacksGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *RacksAPIService) RacksGetExecute(r ApiRacksGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RacksAPIService.RacksGet")
@@ -258,9 +255,9 @@ func (a *RacksAPIService) RacksGetExecute(r ApiRacksGetRequest) (*http.Response,
 }
 
 type ApiRacksPatchRequest struct {
-	ctx context.Context
-	ApiService *RacksAPIService
-	changesetName *string
+	ctx             context.Context
+	ApiService      *RacksAPIService
+	changesetName   *string
 	racksPutRequest *RacksPutRequest
 }
 
@@ -283,23 +280,22 @@ RacksPatch Update rack
 
 Update rack into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRacksPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRacksPatchRequest
 */
 func (a *RacksAPIService) RacksPatch(ctx context.Context) ApiRacksPatchRequest {
 	return ApiRacksPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *RacksAPIService) RacksPatchExecute(r ApiRacksPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RacksAPIService.RacksPatch")
@@ -364,9 +360,9 @@ func (a *RacksAPIService) RacksPatchExecute(r ApiRacksPatchRequest) (*http.Respo
 }
 
 type ApiRacksPutRequest struct {
-	ctx context.Context
-	ApiService *RacksAPIService
-	changesetName *string
+	ctx             context.Context
+	ApiService      *RacksAPIService
+	changesetName   *string
 	racksPutRequest *RacksPutRequest
 }
 
@@ -389,23 +385,22 @@ RacksPut Create rack
 
 Create rack into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRacksPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRacksPutRequest
 */
 func (a *RacksAPIService) RacksPut(ctx context.Context) ApiRacksPutRequest {
 	return ApiRacksPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *RacksAPIService) RacksPutExecute(r ApiRacksPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RacksAPIService.RacksPut")

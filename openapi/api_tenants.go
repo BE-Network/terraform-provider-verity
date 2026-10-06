@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // TenantsAPIService TenantsAPI service
 type TenantsAPIService service
 
 type ApiTenantsDeleteRequest struct {
-	ctx context.Context
-	ApiService *TenantsAPIService
-	tenantName *[]string
+	ctx           context.Context
+	ApiService    *TenantsAPIService
+	tenantName    *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ TenantsDelete Delete tenant
 
 Deletes an existing tenant from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiTenantsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiTenantsDeleteRequest
 */
 func (a *TenantsAPIService) TenantsDelete(ctx context.Context) ApiTenantsDeleteRequest {
 	return ApiTenantsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *TenantsAPIService) TenantsDeleteExecute(r ApiTenantsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TenantsAPIService.TenantsDelete")
@@ -142,10 +140,10 @@ func (a *TenantsAPIService) TenantsDeleteExecute(r ApiTenantsDeleteRequest) (*ht
 }
 
 type ApiTenantsGetRequest struct {
-	ctx context.Context
-	ApiService *TenantsAPIService
-	tenantName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *TenantsAPIService
+	tenantName    *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ TenantsGet Get all tenants
 
 Retrieves all tenants from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiTenantsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiTenantsGetRequest
 */
 func (a *TenantsAPIService) TenantsGet(ctx context.Context) ApiTenantsGetRequest {
 	return ApiTenantsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *TenantsAPIService) TenantsGetExecute(r ApiTenantsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TenantsAPIService.TenantsGet")
@@ -258,9 +255,9 @@ func (a *TenantsAPIService) TenantsGetExecute(r ApiTenantsGetRequest) (*http.Res
 }
 
 type ApiTenantsPatchRequest struct {
-	ctx context.Context
-	ApiService *TenantsAPIService
-	changesetName *string
+	ctx               context.Context
+	ApiService        *TenantsAPIService
+	changesetName     *string
 	tenantsPutRequest *TenantsPutRequest
 }
 
@@ -283,23 +280,22 @@ TenantsPatch Update tenant
 
 Update tenant into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiTenantsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiTenantsPatchRequest
 */
 func (a *TenantsAPIService) TenantsPatch(ctx context.Context) ApiTenantsPatchRequest {
 	return ApiTenantsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *TenantsAPIService) TenantsPatchExecute(r ApiTenantsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TenantsAPIService.TenantsPatch")
@@ -364,9 +360,9 @@ func (a *TenantsAPIService) TenantsPatchExecute(r ApiTenantsPatchRequest) (*http
 }
 
 type ApiTenantsPutRequest struct {
-	ctx context.Context
-	ApiService *TenantsAPIService
-	changesetName *string
+	ctx               context.Context
+	ApiService        *TenantsAPIService
+	changesetName     *string
 	tenantsPutRequest *TenantsPutRequest
 }
 
@@ -389,23 +385,22 @@ TenantsPut Create tenant
 
 Create tenant into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiTenantsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiTenantsPutRequest
 */
 func (a *TenantsAPIService) TenantsPut(ctx context.Context) ApiTenantsPutRequest {
 	return ApiTenantsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *TenantsAPIService) TenantsPutExecute(r ApiTenantsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TenantsAPIService.TenantsPut")

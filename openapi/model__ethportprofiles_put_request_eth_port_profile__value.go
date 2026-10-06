@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,20 +19,20 @@ var _ MappedNullable = &EthportprofilesPutRequestEthPortProfileValue{}
 
 // EthportprofilesPutRequestEthPortProfileValue struct for EthportprofilesPutRequestEthPortProfileValue
 type EthportprofilesPutRequestEthPortProfileValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
+	// Choose an egress access control list
+	EgressAcl *string `json:"egress_acl,omitempty"`
+	// Object type for egress_acl field
+	EgressAclRefType *string `json:"egress_acl_ref_type_,omitempty"`
 	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
 	// Choose an ingress access control list
 	IngressAcl *string `json:"ingress_acl,omitempty"`
 	// Object type for ingress_acl field
 	IngressAclRefType *string `json:"ingress_acl_ref_type_,omitempty"`
-	// Choose an egress access control list
-	EgressAcl *string `json:"egress_acl,omitempty"`
-	// Object type for egress_acl field
-	EgressAclRefType *string `json:"egress_acl_ref_type_,omitempty"`
-	Services []EthportprofilesPutRequestEthPortProfileValueServicesInner `json:"services,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                                       `json:"name,omitempty"`
 	ObjectProperties *EthportprofilesPutRequestEthPortProfileValueObjectProperties `json:"object_properties,omitempty"`
+	Services         []EthportprofilesPutRequestEthPortProfileValueServicesInner   `json:"services,omitempty"`
 	// Transparent LAN Service Trunk
 	Tls *bool `json:"tls,omitempty"`
 	// Choose a Service supporting Transparent LAN Service
@@ -49,14 +49,14 @@ type EthportprofilesPutRequestEthPortProfileValue struct {
 // will change when the set of required properties is changed
 func NewEthportprofilesPutRequestEthPortProfileValue() *EthportprofilesPutRequestEthPortProfileValue {
 	this := EthportprofilesPutRequestEthPortProfileValue{}
-	var name string = ""
-	this.Name = &name
+	var egressAcl string = ""
+	this.EgressAcl = &egressAcl
 	var enable bool = false
 	this.Enable = &enable
 	var ingressAcl string = ""
 	this.IngressAcl = &ingressAcl
-	var egressAcl string = ""
-	this.EgressAcl = &egressAcl
+	var name string = ""
+	this.Name = &name
 	var tls bool = false
 	this.Tls = &tls
 	var tlsService string = ""
@@ -71,14 +71,14 @@ func NewEthportprofilesPutRequestEthPortProfileValue() *EthportprofilesPutReques
 // but it doesn't guarantee that properties required by API are set
 func NewEthportprofilesPutRequestEthPortProfileValueWithDefaults() *EthportprofilesPutRequestEthPortProfileValue {
 	this := EthportprofilesPutRequestEthPortProfileValue{}
-	var name string = ""
-	this.Name = &name
+	var egressAcl string = ""
+	this.EgressAcl = &egressAcl
 	var enable bool = false
 	this.Enable = &enable
 	var ingressAcl string = ""
 	this.IngressAcl = &ingressAcl
-	var egressAcl string = ""
-	this.EgressAcl = &egressAcl
+	var name string = ""
+	this.Name = &name
 	var tls bool = false
 	this.Tls = &tls
 	var tlsService string = ""
@@ -88,36 +88,68 @@ func NewEthportprofilesPutRequestEthPortProfileValueWithDefaults() *Ethportprofi
 	return &this
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
+// GetEgressAcl returns the EgressAcl field value if set, zero value otherwise.
+func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAcl() string {
+	if o == nil || IsNil(o.EgressAcl) {
 		var ret string
 		return ret
 	}
-	return *o.Name
+	return *o.EgressAcl
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetEgressAclOk returns a tuple with the EgressAcl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
+func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAclOk() (*string, bool) {
+	if o == nil || IsNil(o.EgressAcl) {
 		return nil, false
 	}
-	return o.Name, true
+	return o.EgressAcl, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
+// HasEgressAcl returns a boolean if a field has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValue) HasEgressAcl() bool {
+	if o != nil && !IsNil(o.EgressAcl) {
 		return true
 	}
 
 	return false
 }
 
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *EthportprofilesPutRequestEthPortProfileValue) SetName(v string) {
-	o.Name = &v
+// SetEgressAcl gets a reference to the given string and assigns it to the EgressAcl field.
+func (o *EthportprofilesPutRequestEthPortProfileValue) SetEgressAcl(v string) {
+	o.EgressAcl = &v
+}
+
+// GetEgressAclRefType returns the EgressAclRefType field value if set, zero value otherwise.
+func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAclRefType() string {
+	if o == nil || IsNil(o.EgressAclRefType) {
+		var ret string
+		return ret
+	}
+	return *o.EgressAclRefType
+}
+
+// GetEgressAclRefTypeOk returns a tuple with the EgressAclRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAclRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.EgressAclRefType) {
+		return nil, false
+	}
+	return o.EgressAclRefType, true
+}
+
+// HasEgressAclRefType returns a boolean if a field has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValue) HasEgressAclRefType() bool {
+	if o != nil && !IsNil(o.EgressAclRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetEgressAclRefType gets a reference to the given string and assigns it to the EgressAclRefType field.
+func (o *EthportprofilesPutRequestEthPortProfileValue) SetEgressAclRefType(v string) {
+	o.EgressAclRefType = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -216,100 +248,36 @@ func (o *EthportprofilesPutRequestEthPortProfileValue) SetIngressAclRefType(v st
 	o.IngressAclRefType = &v
 }
 
-// GetEgressAcl returns the EgressAcl field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAcl() string {
-	if o == nil || IsNil(o.EgressAcl) {
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *EthportprofilesPutRequestEthPortProfileValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
-	return *o.EgressAcl
+	return *o.Name
 }
 
-// GetEgressAclOk returns a tuple with the EgressAcl field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAclOk() (*string, bool) {
-	if o == nil || IsNil(o.EgressAcl) {
+func (o *EthportprofilesPutRequestEthPortProfileValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
-	return o.EgressAcl, true
+	return o.Name, true
 }
 
-// HasEgressAcl returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) HasEgressAcl() bool {
-	if o != nil && !IsNil(o.EgressAcl) {
+// HasName returns a boolean if a field has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
 	return false
 }
 
-// SetEgressAcl gets a reference to the given string and assigns it to the EgressAcl field.
-func (o *EthportprofilesPutRequestEthPortProfileValue) SetEgressAcl(v string) {
-	o.EgressAcl = &v
-}
-
-// GetEgressAclRefType returns the EgressAclRefType field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAclRefType() string {
-	if o == nil || IsNil(o.EgressAclRefType) {
-		var ret string
-		return ret
-	}
-	return *o.EgressAclRefType
-}
-
-// GetEgressAclRefTypeOk returns a tuple with the EgressAclRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetEgressAclRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.EgressAclRefType) {
-		return nil, false
-	}
-	return o.EgressAclRefType, true
-}
-
-// HasEgressAclRefType returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) HasEgressAclRefType() bool {
-	if o != nil && !IsNil(o.EgressAclRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetEgressAclRefType gets a reference to the given string and assigns it to the EgressAclRefType field.
-func (o *EthportprofilesPutRequestEthPortProfileValue) SetEgressAclRefType(v string) {
-	o.EgressAclRefType = &v
-}
-
-// GetServices returns the Services field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetServices() []EthportprofilesPutRequestEthPortProfileValueServicesInner {
-	if o == nil || IsNil(o.Services) {
-		var ret []EthportprofilesPutRequestEthPortProfileValueServicesInner
-		return ret
-	}
-	return o.Services
-}
-
-// GetServicesOk returns a tuple with the Services field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) GetServicesOk() ([]EthportprofilesPutRequestEthPortProfileValueServicesInner, bool) {
-	if o == nil || IsNil(o.Services) {
-		return nil, false
-	}
-	return o.Services, true
-}
-
-// HasServices returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValue) HasServices() bool {
-	if o != nil && !IsNil(o.Services) {
-		return true
-	}
-
-	return false
-}
-
-// SetServices gets a reference to the given []EthportprofilesPutRequestEthPortProfileValueServicesInner and assigns it to the Services field.
-func (o *EthportprofilesPutRequestEthPortProfileValue) SetServices(v []EthportprofilesPutRequestEthPortProfileValueServicesInner) {
-	o.Services = v
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *EthportprofilesPutRequestEthPortProfileValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -342,6 +310,38 @@ func (o *EthportprofilesPutRequestEthPortProfileValue) HasObjectProperties() boo
 // SetObjectProperties gets a reference to the given EthportprofilesPutRequestEthPortProfileValueObjectProperties and assigns it to the ObjectProperties field.
 func (o *EthportprofilesPutRequestEthPortProfileValue) SetObjectProperties(v EthportprofilesPutRequestEthPortProfileValueObjectProperties) {
 	o.ObjectProperties = &v
+}
+
+// GetServices returns the Services field value if set, zero value otherwise.
+func (o *EthportprofilesPutRequestEthPortProfileValue) GetServices() []EthportprofilesPutRequestEthPortProfileValueServicesInner {
+	if o == nil || IsNil(o.Services) {
+		var ret []EthportprofilesPutRequestEthPortProfileValueServicesInner
+		return ret
+	}
+	return o.Services
+}
+
+// GetServicesOk returns a tuple with the Services field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValue) GetServicesOk() ([]EthportprofilesPutRequestEthPortProfileValueServicesInner, bool) {
+	if o == nil || IsNil(o.Services) {
+		return nil, false
+	}
+	return o.Services, true
+}
+
+// HasServices returns a boolean if a field has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValue) HasServices() bool {
+	if o != nil && !IsNil(o.Services) {
+		return true
+	}
+
+	return false
+}
+
+// SetServices gets a reference to the given []EthportprofilesPutRequestEthPortProfileValueServicesInner and assigns it to the Services field.
+func (o *EthportprofilesPutRequestEthPortProfileValue) SetServices(v []EthportprofilesPutRequestEthPortProfileValueServicesInner) {
+	o.Services = v
 }
 
 // GetTls returns the Tls field value if set, zero value otherwise.
@@ -473,7 +473,7 @@ func (o *EthportprofilesPutRequestEthPortProfileValue) SetTrustedPort(v bool) {
 }
 
 func (o EthportprofilesPutRequestEthPortProfileValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -482,8 +482,11 @@ func (o EthportprofilesPutRequestEthPortProfileValue) MarshalJSON() ([]byte, err
 
 func (o EthportprofilesPutRequestEthPortProfileValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
+	if !IsNil(o.EgressAcl) {
+		toSerialize["egress_acl"] = o.EgressAcl
+	}
+	if !IsNil(o.EgressAclRefType) {
+		toSerialize["egress_acl_ref_type_"] = o.EgressAclRefType
 	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
@@ -494,17 +497,14 @@ func (o EthportprofilesPutRequestEthPortProfileValue) ToMap() (map[string]interf
 	if !IsNil(o.IngressAclRefType) {
 		toSerialize["ingress_acl_ref_type_"] = o.IngressAclRefType
 	}
-	if !IsNil(o.EgressAcl) {
-		toSerialize["egress_acl"] = o.EgressAcl
-	}
-	if !IsNil(o.EgressAclRefType) {
-		toSerialize["egress_acl_ref_type_"] = o.EgressAclRefType
-	}
-	if !IsNil(o.Services) {
-		toSerialize["services"] = o.Services
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.Services) {
+		toSerialize["services"] = o.Services
 	}
 	if !IsNil(o.Tls) {
 		toSerialize["tls"] = o.Tls
@@ -556,5 +556,3 @@ func (v *NullableEthportprofilesPutRequestEthPortProfileValue) UnmarshalJSON(src
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

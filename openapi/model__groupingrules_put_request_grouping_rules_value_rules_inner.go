@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,6 +21,8 @@ var _ MappedNullable = &GroupingrulesPutRequestGroupingRulesValueRulesInner{}
 type GroupingrulesPutRequestGroupingRulesValueRulesInner struct {
 	// Enable
 	Enable *bool `json:"enable,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
 	// Invert the rule
 	RuleInvert *bool `json:"rule_invert,omitempty"`
 	// Which type of rule to apply
@@ -31,8 +33,6 @@ type GroupingrulesPutRequestGroupingRulesValueRulesInner struct {
 	RuleValuePath *string `json:"rule_value_path,omitempty"`
 	// Object type for rule_value_path field
 	RuleValuePathRefType *string `json:"rule_value_path_ref_type_,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
 }
 
 // NewGroupingrulesPutRequestGroupingRulesValueRulesInner instantiates a new GroupingrulesPutRequestGroupingRulesValueRulesInner object
@@ -102,6 +102,38 @@ func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) HasEnable() bool {
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) SetEnable(v bool) {
 	o.Enable = &v
+}
+
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetRuleInvert returns the RuleInvert field value if set, zero value otherwise.
@@ -264,40 +296,8 @@ func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) SetRuleValuePathRe
 	o.RuleValuePathRefType = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *GroupingrulesPutRequestGroupingRulesValueRulesInner) SetIndex(v int64) {
-	o.Index = &v
-}
-
 func (o GroupingrulesPutRequestGroupingRulesValueRulesInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -308,6 +308,9 @@ func (o GroupingrulesPutRequestGroupingRulesValueRulesInner) ToMap() (map[string
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
+	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	if !IsNil(o.RuleInvert) {
 		toSerialize["rule_invert"] = o.RuleInvert
@@ -323,9 +326,6 @@ func (o GroupingrulesPutRequestGroupingRulesValueRulesInner) ToMap() (map[string
 	}
 	if !IsNil(o.RuleValuePathRefType) {
 		toSerialize["rule_value_path_ref_type_"] = o.RuleValuePathRefType
-	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }
@@ -365,5 +365,3 @@ func (v *NullableGroupingrulesPutRequestGroupingRulesValueRulesInner) UnmarshalJ
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

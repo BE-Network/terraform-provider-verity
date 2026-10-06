@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,22 +19,22 @@ var _ MappedNullable = &ImageupdatesetsPatchRequestImageUpdateSetsValue{}
 
 // ImageupdatesetsPatchRequestImageUpdateSetsValue struct for ImageupdatesetsPatchRequestImageUpdateSetsValue
 type ImageupdatesetsPatchRequestImageUpdateSetsValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
-	// Show Upgrader Pie Chart on Summary
-	UpgraderOnSummary *bool `json:"upgrader_on_summary,omitempty"`
-	// Show Installation Pie Chart on Summary
-	InstallationOnSummary *bool `json:"installation_on_summary,omitempty"`
 	// Show Comm Pie Chart on Summary
 	CommOnSummary *bool `json:"comm_on_summary,omitempty"`
+	// Show Installation Pie Chart on Summary
+	InstallationOnSummary *bool `json:"installation_on_summary,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                                          `json:"name,omitempty"`
+	ObjectProperties *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties `json:"object_properties,omitempty"`
 	// Show Provisioning Pie Chart on Summary
-	ProvisioningOnSummary *bool `json:"provisioning_on_summary,omitempty"`
+	ProvisioningOnSummary *bool                                                                  `json:"provisioning_on_summary,omitempty"`
+	Section               []ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner          `json:"section,omitempty"`
+	SectionElse           []ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner      `json:"section_else,omitempty"`
+	SectionPointless      []ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner `json:"section_pointless,omitempty"`
 	// Type of Image Update Sets
 	Type *string `json:"type,omitempty"`
-	SectionPointless []ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner `json:"section_pointless,omitempty"`
-	Section []ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner `json:"section,omitempty"`
-	SectionElse []ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner `json:"section_else,omitempty"`
-	ObjectProperties *ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties `json:"object_properties,omitempty"`
+	// Show Upgrader Pie Chart on Summary
+	UpgraderOnSummary *bool `json:"upgrader_on_summary,omitempty"`
 }
 
 // NewImageupdatesetsPatchRequestImageUpdateSetsValue instantiates a new ImageupdatesetsPatchRequestImageUpdateSetsValue object
@@ -43,18 +43,18 @@ type ImageupdatesetsPatchRequestImageUpdateSetsValue struct {
 // will change when the set of required properties is changed
 func NewImageupdatesetsPatchRequestImageUpdateSetsValue() *ImageupdatesetsPatchRequestImageUpdateSetsValue {
 	this := ImageupdatesetsPatchRequestImageUpdateSetsValue{}
-	var name string = ""
-	this.Name = &name
-	var upgraderOnSummary bool = true
-	this.UpgraderOnSummary = &upgraderOnSummary
-	var installationOnSummary bool = true
-	this.InstallationOnSummary = &installationOnSummary
 	var commOnSummary bool = true
 	this.CommOnSummary = &commOnSummary
+	var installationOnSummary bool = true
+	this.InstallationOnSummary = &installationOnSummary
+	var name string = ""
+	this.Name = &name
 	var provisioningOnSummary bool = true
 	this.ProvisioningOnSummary = &provisioningOnSummary
 	var type_ string = "whitebox"
 	this.Type = &type_
+	var upgraderOnSummary bool = true
+	this.UpgraderOnSummary = &upgraderOnSummary
 	return &this
 }
 
@@ -63,115 +63,19 @@ func NewImageupdatesetsPatchRequestImageUpdateSetsValue() *ImageupdatesetsPatchR
 // but it doesn't guarantee that properties required by API are set
 func NewImageupdatesetsPatchRequestImageUpdateSetsValueWithDefaults() *ImageupdatesetsPatchRequestImageUpdateSetsValue {
 	this := ImageupdatesetsPatchRequestImageUpdateSetsValue{}
-	var name string = ""
-	this.Name = &name
-	var upgraderOnSummary bool = true
-	this.UpgraderOnSummary = &upgraderOnSummary
-	var installationOnSummary bool = true
-	this.InstallationOnSummary = &installationOnSummary
 	var commOnSummary bool = true
 	this.CommOnSummary = &commOnSummary
+	var installationOnSummary bool = true
+	this.InstallationOnSummary = &installationOnSummary
+	var name string = ""
+	this.Name = &name
 	var provisioningOnSummary bool = true
 	this.ProvisioningOnSummary = &provisioningOnSummary
 	var type_ string = "whitebox"
 	this.Type = &type_
+	var upgraderOnSummary bool = true
+	this.UpgraderOnSummary = &upgraderOnSummary
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetName(v string) {
-	o.Name = &v
-}
-
-// GetUpgraderOnSummary returns the UpgraderOnSummary field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetUpgraderOnSummary() bool {
-	if o == nil || IsNil(o.UpgraderOnSummary) {
-		var ret bool
-		return ret
-	}
-	return *o.UpgraderOnSummary
-}
-
-// GetUpgraderOnSummaryOk returns a tuple with the UpgraderOnSummary field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetUpgraderOnSummaryOk() (*bool, bool) {
-	if o == nil || IsNil(o.UpgraderOnSummary) {
-		return nil, false
-	}
-	return o.UpgraderOnSummary, true
-}
-
-// HasUpgraderOnSummary returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasUpgraderOnSummary() bool {
-	if o != nil && !IsNil(o.UpgraderOnSummary) {
-		return true
-	}
-
-	return false
-}
-
-// SetUpgraderOnSummary gets a reference to the given bool and assigns it to the UpgraderOnSummary field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetUpgraderOnSummary(v bool) {
-	o.UpgraderOnSummary = &v
-}
-
-// GetInstallationOnSummary returns the InstallationOnSummary field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetInstallationOnSummary() bool {
-	if o == nil || IsNil(o.InstallationOnSummary) {
-		var ret bool
-		return ret
-	}
-	return *o.InstallationOnSummary
-}
-
-// GetInstallationOnSummaryOk returns a tuple with the InstallationOnSummary field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetInstallationOnSummaryOk() (*bool, bool) {
-	if o == nil || IsNil(o.InstallationOnSummary) {
-		return nil, false
-	}
-	return o.InstallationOnSummary, true
-}
-
-// HasInstallationOnSummary returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasInstallationOnSummary() bool {
-	if o != nil && !IsNil(o.InstallationOnSummary) {
-		return true
-	}
-
-	return false
-}
-
-// SetInstallationOnSummary gets a reference to the given bool and assigns it to the InstallationOnSummary field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetInstallationOnSummary(v bool) {
-	o.InstallationOnSummary = &v
 }
 
 // GetCommOnSummary returns the CommOnSummary field value if set, zero value otherwise.
@@ -206,6 +110,102 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetCommOnSummary(v boo
 	o.CommOnSummary = &v
 }
 
+// GetInstallationOnSummary returns the InstallationOnSummary field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetInstallationOnSummary() bool {
+	if o == nil || IsNil(o.InstallationOnSummary) {
+		var ret bool
+		return ret
+	}
+	return *o.InstallationOnSummary
+}
+
+// GetInstallationOnSummaryOk returns a tuple with the InstallationOnSummary field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetInstallationOnSummaryOk() (*bool, bool) {
+	if o == nil || IsNil(o.InstallationOnSummary) {
+		return nil, false
+	}
+	return o.InstallationOnSummary, true
+}
+
+// HasInstallationOnSummary returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasInstallationOnSummary() bool {
+	if o != nil && !IsNil(o.InstallationOnSummary) {
+		return true
+	}
+
+	return false
+}
+
+// SetInstallationOnSummary gets a reference to the given bool and assigns it to the InstallationOnSummary field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetInstallationOnSummary(v bool) {
+	o.InstallationOnSummary = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetName(v string) {
+	o.Name = &v
+}
+
+// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetObjectProperties() ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties {
+	if o == nil || IsNil(o.ObjectProperties) {
+		var ret ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties
+		return ret
+	}
+	return *o.ObjectProperties
+}
+
+// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetObjectPropertiesOk() (*ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties, bool) {
+	if o == nil || IsNil(o.ObjectProperties) {
+		return nil, false
+	}
+	return o.ObjectProperties, true
+}
+
+// HasObjectProperties returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasObjectProperties() bool {
+	if o != nil && !IsNil(o.ObjectProperties) {
+		return true
+	}
+
+	return false
+}
+
+// SetObjectProperties gets a reference to the given ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetObjectProperties(v ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) {
+	o.ObjectProperties = &v
+}
+
 // GetProvisioningOnSummary returns the ProvisioningOnSummary field value if set, zero value otherwise.
 func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetProvisioningOnSummary() bool {
 	if o == nil || IsNil(o.ProvisioningOnSummary) {
@@ -236,70 +236,6 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasProvisioningOnSumma
 // SetProvisioningOnSummary gets a reference to the given bool and assigns it to the ProvisioningOnSummary field.
 func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetProvisioningOnSummary(v bool) {
 	o.ProvisioningOnSummary = &v
-}
-
-// GetType returns the Type field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetType() string {
-	if o == nil || IsNil(o.Type) {
-		var ret string
-		return ret
-	}
-	return *o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.Type) {
-		return nil, false
-	}
-	return o.Type, true
-}
-
-// HasType returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasType() bool {
-	if o != nil && !IsNil(o.Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetType(v string) {
-	o.Type = &v
-}
-
-// GetSectionPointless returns the SectionPointless field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetSectionPointless() []ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner {
-	if o == nil || IsNil(o.SectionPointless) {
-		var ret []ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner
-		return ret
-	}
-	return o.SectionPointless
-}
-
-// GetSectionPointlessOk returns a tuple with the SectionPointless field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetSectionPointlessOk() ([]ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner, bool) {
-	if o == nil || IsNil(o.SectionPointless) {
-		return nil, false
-	}
-	return o.SectionPointless, true
-}
-
-// HasSectionPointless returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasSectionPointless() bool {
-	if o != nil && !IsNil(o.SectionPointless) {
-		return true
-	}
-
-	return false
-}
-
-// SetSectionPointless gets a reference to the given []ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner and assigns it to the SectionPointless field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetSectionPointless(v []ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) {
-	o.SectionPointless = v
 }
 
 // GetSection returns the Section field value if set, zero value otherwise.
@@ -366,40 +302,104 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetSectionElse(v []Ima
 	o.SectionElse = v
 }
 
-// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetObjectProperties() ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties {
-	if o == nil || IsNil(o.ObjectProperties) {
-		var ret ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties
+// GetSectionPointless returns the SectionPointless field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetSectionPointless() []ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner {
+	if o == nil || IsNil(o.SectionPointless) {
+		var ret []ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner
 		return ret
 	}
-	return *o.ObjectProperties
+	return o.SectionPointless
 }
 
-// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
+// GetSectionPointlessOk returns a tuple with the SectionPointless field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetObjectPropertiesOk() (*ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties, bool) {
-	if o == nil || IsNil(o.ObjectProperties) {
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetSectionPointlessOk() ([]ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner, bool) {
+	if o == nil || IsNil(o.SectionPointless) {
 		return nil, false
 	}
-	return o.ObjectProperties, true
+	return o.SectionPointless, true
 }
 
-// HasObjectProperties returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasObjectProperties() bool {
-	if o != nil && !IsNil(o.ObjectProperties) {
+// HasSectionPointless returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasSectionPointless() bool {
+	if o != nil && !IsNil(o.SectionPointless) {
 		return true
 	}
 
 	return false
 }
 
-// SetObjectProperties gets a reference to the given ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetObjectProperties(v ImageupdatesetsPatchRequestImageUpdateSetsValueObjectProperties) {
-	o.ObjectProperties = &v
+// SetSectionPointless gets a reference to the given []ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner and assigns it to the SectionPointless field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetSectionPointless(v []ImageupdatesetsPatchRequestImageUpdateSetsValueSectionPointlessInner) {
+	o.SectionPointless = v
+}
+
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetType(v string) {
+	o.Type = &v
+}
+
+// GetUpgraderOnSummary returns the UpgraderOnSummary field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetUpgraderOnSummary() bool {
+	if o == nil || IsNil(o.UpgraderOnSummary) {
+		var ret bool
+		return ret
+	}
+	return *o.UpgraderOnSummary
+}
+
+// GetUpgraderOnSummaryOk returns a tuple with the UpgraderOnSummary field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) GetUpgraderOnSummaryOk() (*bool, bool) {
+	if o == nil || IsNil(o.UpgraderOnSummary) {
+		return nil, false
+	}
+	return o.UpgraderOnSummary, true
+}
+
+// HasUpgraderOnSummary returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) HasUpgraderOnSummary() bool {
+	if o != nil && !IsNil(o.UpgraderOnSummary) {
+		return true
+	}
+
+	return false
+}
+
+// SetUpgraderOnSummary gets a reference to the given bool and assigns it to the UpgraderOnSummary field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValue) SetUpgraderOnSummary(v bool) {
+	o.UpgraderOnSummary = &v
 }
 
 func (o ImageupdatesetsPatchRequestImageUpdateSetsValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -408,26 +408,20 @@ func (o ImageupdatesetsPatchRequestImageUpdateSetsValue) MarshalJSON() ([]byte, 
 
 func (o ImageupdatesetsPatchRequestImageUpdateSetsValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.UpgraderOnSummary) {
-		toSerialize["upgrader_on_summary"] = o.UpgraderOnSummary
+	if !IsNil(o.CommOnSummary) {
+		toSerialize["comm_on_summary"] = o.CommOnSummary
 	}
 	if !IsNil(o.InstallationOnSummary) {
 		toSerialize["installation_on_summary"] = o.InstallationOnSummary
 	}
-	if !IsNil(o.CommOnSummary) {
-		toSerialize["comm_on_summary"] = o.CommOnSummary
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.ObjectProperties) {
+		toSerialize["object_properties"] = o.ObjectProperties
 	}
 	if !IsNil(o.ProvisioningOnSummary) {
 		toSerialize["provisioning_on_summary"] = o.ProvisioningOnSummary
-	}
-	if !IsNil(o.Type) {
-		toSerialize["type"] = o.Type
-	}
-	if !IsNil(o.SectionPointless) {
-		toSerialize["section_pointless"] = o.SectionPointless
 	}
 	if !IsNil(o.Section) {
 		toSerialize["section"] = o.Section
@@ -435,8 +429,14 @@ func (o ImageupdatesetsPatchRequestImageUpdateSetsValue) ToMap() (map[string]int
 	if !IsNil(o.SectionElse) {
 		toSerialize["section_else"] = o.SectionElse
 	}
-	if !IsNil(o.ObjectProperties) {
-		toSerialize["object_properties"] = o.ObjectProperties
+	if !IsNil(o.SectionPointless) {
+		toSerialize["section_pointless"] = o.SectionPointless
+	}
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
+	}
+	if !IsNil(o.UpgraderOnSummary) {
+		toSerialize["upgrader_on_summary"] = o.UpgraderOnSummary
 	}
 	return toSerialize, nil
 }
@@ -476,5 +476,3 @@ func (v *NullableImageupdatesetsPatchRequestImageUpdateSetsValue) UnmarshalJSON(
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

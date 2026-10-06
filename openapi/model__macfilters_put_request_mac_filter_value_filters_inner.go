@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,12 +19,12 @@ var _ MappedNullable = &MacfiltersPutRequestMacFilterValueFiltersInner{}
 
 // MacfiltersPutRequestMacFilterValueFiltersInner struct for MacfiltersPutRequestMacFilterValueFiltersInner
 type MacfiltersPutRequestMacFilterValueFiltersInner struct {
+	// Enable of this MAC Filter
+	FilterNumEnable *bool `json:"filter_num_enable,omitempty"`
 	// MAC address descriptor including colons example 01:23:45:67:9a:ab. and * notation accepted example 12:*
 	FilterNumMac *string `json:"filter_num_mac,omitempty"`
 	// Hexidecimal mask including colons example ff:ff:fe:00:00:00. /n and * notation accepted example /16 or 12:*
 	FilterNumMask *string `json:"filter_num_mask,omitempty"`
-	// Enable of this MAC Filter 
-	FilterNumEnable *bool `json:"filter_num_enable,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
 }
@@ -35,12 +35,12 @@ type MacfiltersPutRequestMacFilterValueFiltersInner struct {
 // will change when the set of required properties is changed
 func NewMacfiltersPutRequestMacFilterValueFiltersInner() *MacfiltersPutRequestMacFilterValueFiltersInner {
 	this := MacfiltersPutRequestMacFilterValueFiltersInner{}
+	var filterNumEnable bool = false
+	this.FilterNumEnable = &filterNumEnable
 	var filterNumMac string = ""
 	this.FilterNumMac = &filterNumMac
 	var filterNumMask string = ""
 	this.FilterNumMask = &filterNumMask
-	var filterNumEnable bool = false
-	this.FilterNumEnable = &filterNumEnable
 	return &this
 }
 
@@ -49,13 +49,45 @@ func NewMacfiltersPutRequestMacFilterValueFiltersInner() *MacfiltersPutRequestMa
 // but it doesn't guarantee that properties required by API are set
 func NewMacfiltersPutRequestMacFilterValueFiltersInnerWithDefaults() *MacfiltersPutRequestMacFilterValueFiltersInner {
 	this := MacfiltersPutRequestMacFilterValueFiltersInner{}
+	var filterNumEnable bool = false
+	this.FilterNumEnable = &filterNumEnable
 	var filterNumMac string = ""
 	this.FilterNumMac = &filterNumMac
 	var filterNumMask string = ""
 	this.FilterNumMask = &filterNumMask
-	var filterNumEnable bool = false
-	this.FilterNumEnable = &filterNumEnable
 	return &this
+}
+
+// GetFilterNumEnable returns the FilterNumEnable field value if set, zero value otherwise.
+func (o *MacfiltersPutRequestMacFilterValueFiltersInner) GetFilterNumEnable() bool {
+	if o == nil || IsNil(o.FilterNumEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.FilterNumEnable
+}
+
+// GetFilterNumEnableOk returns a tuple with the FilterNumEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MacfiltersPutRequestMacFilterValueFiltersInner) GetFilterNumEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.FilterNumEnable) {
+		return nil, false
+	}
+	return o.FilterNumEnable, true
+}
+
+// HasFilterNumEnable returns a boolean if a field has been set.
+func (o *MacfiltersPutRequestMacFilterValueFiltersInner) HasFilterNumEnable() bool {
+	if o != nil && !IsNil(o.FilterNumEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetFilterNumEnable gets a reference to the given bool and assigns it to the FilterNumEnable field.
+func (o *MacfiltersPutRequestMacFilterValueFiltersInner) SetFilterNumEnable(v bool) {
+	o.FilterNumEnable = &v
 }
 
 // GetFilterNumMac returns the FilterNumMac field value if set, zero value otherwise.
@@ -122,38 +154,6 @@ func (o *MacfiltersPutRequestMacFilterValueFiltersInner) SetFilterNumMask(v stri
 	o.FilterNumMask = &v
 }
 
-// GetFilterNumEnable returns the FilterNumEnable field value if set, zero value otherwise.
-func (o *MacfiltersPutRequestMacFilterValueFiltersInner) GetFilterNumEnable() bool {
-	if o == nil || IsNil(o.FilterNumEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.FilterNumEnable
-}
-
-// GetFilterNumEnableOk returns a tuple with the FilterNumEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *MacfiltersPutRequestMacFilterValueFiltersInner) GetFilterNumEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.FilterNumEnable) {
-		return nil, false
-	}
-	return o.FilterNumEnable, true
-}
-
-// HasFilterNumEnable returns a boolean if a field has been set.
-func (o *MacfiltersPutRequestMacFilterValueFiltersInner) HasFilterNumEnable() bool {
-	if o != nil && !IsNil(o.FilterNumEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetFilterNumEnable gets a reference to the given bool and assigns it to the FilterNumEnable field.
-func (o *MacfiltersPutRequestMacFilterValueFiltersInner) SetFilterNumEnable(v bool) {
-	o.FilterNumEnable = &v
-}
-
 // GetIndex returns the Index field value if set, zero value otherwise.
 func (o *MacfiltersPutRequestMacFilterValueFiltersInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
@@ -187,7 +187,7 @@ func (o *MacfiltersPutRequestMacFilterValueFiltersInner) SetIndex(v int64) {
 }
 
 func (o MacfiltersPutRequestMacFilterValueFiltersInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -196,14 +196,14 @@ func (o MacfiltersPutRequestMacFilterValueFiltersInner) MarshalJSON() ([]byte, e
 
 func (o MacfiltersPutRequestMacFilterValueFiltersInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.FilterNumEnable) {
+		toSerialize["filter_num_enable"] = o.FilterNumEnable
+	}
 	if !IsNil(o.FilterNumMac) {
 		toSerialize["filter_num_mac"] = o.FilterNumMac
 	}
 	if !IsNil(o.FilterNumMask) {
 		toSerialize["filter_num_mask"] = o.FilterNumMask
-	}
-	if !IsNil(o.FilterNumEnable) {
-		toSerialize["filter_num_enable"] = o.FilterNumEnable
 	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
@@ -246,5 +246,3 @@ func (v *NullableMacfiltersPutRequestMacFilterValueFiltersInner) UnmarshalJSON(s
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

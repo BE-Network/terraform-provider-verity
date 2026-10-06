@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // SpinePlanesAPIService SpinePlanesAPI service
 type SpinePlanesAPIService service
 
 type ApiSpineplanesDeleteRequest struct {
-	ctx context.Context
-	ApiService *SpinePlanesAPIService
+	ctx            context.Context
+	ApiService     *SpinePlanesAPIService
 	spinePlaneName *[]string
-	changesetName *string
+	changesetName  *string
 }
 
 func (r ApiSpineplanesDeleteRequest) SpinePlaneName(spinePlaneName []string) ApiSpineplanesDeleteRequest {
@@ -49,23 +48,22 @@ SpineplanesDelete Delete Spine Plane
 
 Deletes an existing Spine Plane from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSpineplanesDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSpineplanesDeleteRequest
 */
 func (a *SpinePlanesAPIService) SpineplanesDelete(ctx context.Context) ApiSpineplanesDeleteRequest {
 	return ApiSpineplanesDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SpinePlanesAPIService) SpineplanesDeleteExecute(r ApiSpineplanesDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SpinePlanesAPIService.SpineplanesDelete")
@@ -142,11 +140,11 @@ func (a *SpinePlanesAPIService) SpineplanesDeleteExecute(r ApiSpineplanesDeleteR
 }
 
 type ApiSpineplanesGetRequest struct {
-	ctx context.Context
-	ApiService *SpinePlanesAPIService
+	ctx            context.Context
+	ApiService     *SpinePlanesAPIService
 	spinePlaneName *string
-	includeData *bool
-	changesetName *string
+	includeData    *bool
+	changesetName  *string
 }
 
 func (r ApiSpineplanesGetRequest) SpinePlaneName(spinePlaneName string) ApiSpineplanesGetRequest {
@@ -173,23 +171,22 @@ SpineplanesGet Get all Spine Planes
 
 Downloads all Spine Planes from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSpineplanesGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSpineplanesGetRequest
 */
 func (a *SpinePlanesAPIService) SpineplanesGet(ctx context.Context) ApiSpineplanesGetRequest {
 	return ApiSpineplanesGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SpinePlanesAPIService) SpineplanesGetExecute(r ApiSpineplanesGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SpinePlanesAPIService.SpineplanesGet")
@@ -258,9 +255,9 @@ func (a *SpinePlanesAPIService) SpineplanesGetExecute(r ApiSpineplanesGetRequest
 }
 
 type ApiSpineplanesPatchRequest struct {
-	ctx context.Context
-	ApiService *SpinePlanesAPIService
-	changesetName *string
+	ctx                   context.Context
+	ApiService            *SpinePlanesAPIService
+	changesetName         *string
 	spineplanesPutRequest *SpineplanesPutRequest
 }
 
@@ -283,23 +280,22 @@ SpineplanesPatch Update Spine Plane
 
 Update Spine Plane into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSpineplanesPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSpineplanesPatchRequest
 */
 func (a *SpinePlanesAPIService) SpineplanesPatch(ctx context.Context) ApiSpineplanesPatchRequest {
 	return ApiSpineplanesPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SpinePlanesAPIService) SpineplanesPatchExecute(r ApiSpineplanesPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SpinePlanesAPIService.SpineplanesPatch")
@@ -364,9 +360,9 @@ func (a *SpinePlanesAPIService) SpineplanesPatchExecute(r ApiSpineplanesPatchReq
 }
 
 type ApiSpineplanesPutRequest struct {
-	ctx context.Context
-	ApiService *SpinePlanesAPIService
-	changesetName *string
+	ctx                   context.Context
+	ApiService            *SpinePlanesAPIService
+	changesetName         *string
 	spineplanesPutRequest *SpineplanesPutRequest
 }
 
@@ -389,23 +385,22 @@ SpineplanesPut Create Spine Plane
 
 Create Spine Plane into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSpineplanesPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSpineplanesPutRequest
 */
 func (a *SpinePlanesAPIService) SpineplanesPut(ctx context.Context) ApiSpineplanesPutRequest {
 	return ApiSpineplanesPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SpinePlanesAPIService) SpineplanesPutExecute(r ApiSpineplanesPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SpinePlanesAPIService.SpineplanesPut")

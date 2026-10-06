@@ -400,35 +400,30 @@ func parameterToJson(obj interface{}) (string, error) {
 func (c *APIClient) callAPI(request *http.Request) (*http.Response, error) {
 	isAuthRequest := strings.HasSuffix(request.URL.Path, "/auth") || strings.Contains(request.URL.Path, "/auth/")
 	if c.cfg.Debug {
+		debugRequest := request.Clone(request.Context())
+		for _, name := range []string{"Authorization", "Proxy-Authorization", "Cookie"} {
+			if debugRequest.Header.Get(name) != "" {
+				debugRequest.Header.Set(name, "[REDACTED]")
+			}
+		}
+		if debugRequest.URL.User != nil {
+			debugRequest.URL.User = url.User("[REDACTED]")
+		}
+		if !isAuthRequest && request.Body != nil {
+			body, err := io.ReadAll(request.Body)
+			if err != nil {
+				return nil, err
+			}
+			request.Body = io.NopCloser(bytes.NewReader(body))
+			debugRequest.Body = io.NopCloser(bytes.NewReader(body))
+		}
+		dump, err := httputil.DumpRequestOut(debugRequest, !isAuthRequest)
+		if err != nil {
+			return nil, err
+		}
+		log.Printf("\n%s\n", string(dump))
 		if isAuthRequest {
-			// For auth requests, create a buffer to read the body
-			var bodyBytes []byte
-			if request.Body != nil {
-				bodyBytes, _ = io.ReadAll(request.Body)
-				// Restore the body for the actual request
-				request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-			}
-
-			// Generate debug output without the body content
-			dump, err := httputil.DumpRequestOut(request, false)
-			if err != nil {
-				return nil, err
-			}
-			log.Printf("\n%s\n[REDACTED AUTH REQUEST BODY]\n", string(dump))
-		} else {
-			// Normal debug output for non-auth requests
-			var bodyBytes []byte
-			if request.Body != nil {
-				bodyBytes, _ = io.ReadAll(request.Body)
-				// Restore the body for the actual request
-				request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-			}
-
-			dump, err := httputil.DumpRequestOut(request, true)
-			if err != nil {
-				return nil, err
-			}
-			log.Printf("\n%s\n", string(dump))
+			log.Printf("[REDACTED AUTH REQUEST BODY]\n")
 		}
 	}
 
@@ -436,19 +431,23 @@ func (c *APIClient) callAPI(request *http.Request) (*http.Response, error) {
 	if err != nil {
 		return resp, err
 	}
-
 	if c.cfg.Debug {
-		dump, err := httputil.DumpResponse(resp, !isAuthRequest)
+		debugResponse := *resp
+		debugResponse.Header = resp.Header.Clone()
+		if debugResponse.Header.Get("Set-Cookie") != "" {
+			debugResponse.Header.Set("Set-Cookie", "[REDACTED]")
+		}
+		dump, err := httputil.DumpResponse(&debugResponse, !isAuthRequest)
+		resp.Body = debugResponse.Body
 		if err != nil {
 			return resp, err
 		}
-		if isAuthRequest {
-			log.Printf("\n%s\n[REDACTED AUTH RESPONSE BODY]\n", string(dump))
-			return resp, err
-		}
 		log.Printf("\n%s\n", string(dump))
+		if isAuthRequest {
+			log.Printf("[REDACTED AUTH RESPONSE BODY]\n")
+		}
 	}
-	return resp, err
+	return resp, nil
 }
 
 // Allow modification of underlying config for alternate implementations and testing

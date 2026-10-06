@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,18 +19,18 @@ var _ MappedNullable = &BundlesPutRequestEndpointBundleValueRgServicesInner{}
 
 // BundlesPutRequestEndpointBundleValueRgServicesInner struct for BundlesPutRequestEndpointBundleValueRgServicesInner
 type BundlesPutRequestEndpointBundleValueRgServicesInner struct {
-	// Enable of this ONT application
-	RowAppEnable *bool `json:"row_app_enable,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
 	// Service connected to this ONT application
 	RowAppConnectedService *string `json:"row_app_connected_service,omitempty"`
 	// Object type for row_app_connected_service field
 	RowAppConnectedServiceRefType *string `json:"row_app_connected_service_ref_type_,omitempty"`
+	// Enable of this ONT application
+	RowAppEnable *bool `json:"row_app_enable,omitempty"`
 	// Type of ONT Application
 	RowAppType *string `json:"row_app_type,omitempty"`
 	// IP/Mask
 	RowIpMask *string `json:"row_ip_mask,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
 }
 
 // NewBundlesPutRequestEndpointBundleValueRgServicesInner instantiates a new BundlesPutRequestEndpointBundleValueRgServicesInner object
@@ -39,10 +39,10 @@ type BundlesPutRequestEndpointBundleValueRgServicesInner struct {
 // will change when the set of required properties is changed
 func NewBundlesPutRequestEndpointBundleValueRgServicesInner() *BundlesPutRequestEndpointBundleValueRgServicesInner {
 	this := BundlesPutRequestEndpointBundleValueRgServicesInner{}
-	var rowAppEnable bool = false
-	this.RowAppEnable = &rowAppEnable
 	var rowAppConnectedService string = ""
 	this.RowAppConnectedService = &rowAppConnectedService
+	var rowAppEnable bool = false
+	this.RowAppEnable = &rowAppEnable
 	var rowAppType string = ""
 	this.RowAppType = &rowAppType
 	var rowIpMask string = ""
@@ -55,10 +55,10 @@ func NewBundlesPutRequestEndpointBundleValueRgServicesInner() *BundlesPutRequest
 // but it doesn't guarantee that properties required by API are set
 func NewBundlesPutRequestEndpointBundleValueRgServicesInnerWithDefaults() *BundlesPutRequestEndpointBundleValueRgServicesInner {
 	this := BundlesPutRequestEndpointBundleValueRgServicesInner{}
-	var rowAppEnable bool = false
-	this.RowAppEnable = &rowAppEnable
 	var rowAppConnectedService string = ""
 	this.RowAppConnectedService = &rowAppConnectedService
+	var rowAppEnable bool = false
+	this.RowAppEnable = &rowAppEnable
 	var rowAppType string = ""
 	this.RowAppType = &rowAppType
 	var rowIpMask string = ""
@@ -66,36 +66,36 @@ func NewBundlesPutRequestEndpointBundleValueRgServicesInnerWithDefaults() *Bundl
 	return &this
 }
 
-// GetRowAppEnable returns the RowAppEnable field value if set, zero value otherwise.
-func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowAppEnable() bool {
-	if o == nil || IsNil(o.RowAppEnable) {
-		var ret bool
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
 		return ret
 	}
-	return *o.RowAppEnable
+	return *o.Index
 }
 
-// GetRowAppEnableOk returns a tuple with the RowAppEnable field value if set, nil otherwise
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowAppEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.RowAppEnable) {
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
-	return o.RowAppEnable, true
+	return o.Index, true
 }
 
-// HasRowAppEnable returns a boolean if a field has been set.
-func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) HasRowAppEnable() bool {
-	if o != nil && !IsNil(o.RowAppEnable) {
+// HasIndex returns a boolean if a field has been set.
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
 		return true
 	}
 
 	return false
 }
 
-// SetRowAppEnable gets a reference to the given bool and assigns it to the RowAppEnable field.
-func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) SetRowAppEnable(v bool) {
-	o.RowAppEnable = &v
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetRowAppConnectedService returns the RowAppConnectedService field value if set, zero value otherwise.
@@ -162,6 +162,38 @@ func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) SetRowAppConnected
 	o.RowAppConnectedServiceRefType = &v
 }
 
+// GetRowAppEnable returns the RowAppEnable field value if set, zero value otherwise.
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowAppEnable() bool {
+	if o == nil || IsNil(o.RowAppEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.RowAppEnable
+}
+
+// GetRowAppEnableOk returns a tuple with the RowAppEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowAppEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.RowAppEnable) {
+		return nil, false
+	}
+	return o.RowAppEnable, true
+}
+
+// HasRowAppEnable returns a boolean if a field has been set.
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) HasRowAppEnable() bool {
+	if o != nil && !IsNil(o.RowAppEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetRowAppEnable gets a reference to the given bool and assigns it to the RowAppEnable field.
+func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) SetRowAppEnable(v bool) {
+	o.RowAppEnable = &v
+}
+
 // GetRowAppType returns the RowAppType field value if set, zero value otherwise.
 func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetRowAppType() string {
 	if o == nil || IsNil(o.RowAppType) {
@@ -226,40 +258,8 @@ func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) SetRowIpMask(v str
 	o.RowIpMask = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *BundlesPutRequestEndpointBundleValueRgServicesInner) SetIndex(v int64) {
-	o.Index = &v
-}
-
 func (o BundlesPutRequestEndpointBundleValueRgServicesInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -268,8 +268,8 @@ func (o BundlesPutRequestEndpointBundleValueRgServicesInner) MarshalJSON() ([]by
 
 func (o BundlesPutRequestEndpointBundleValueRgServicesInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.RowAppEnable) {
-		toSerialize["row_app_enable"] = o.RowAppEnable
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	if !IsNil(o.RowAppConnectedService) {
 		toSerialize["row_app_connected_service"] = o.RowAppConnectedService
@@ -277,14 +277,14 @@ func (o BundlesPutRequestEndpointBundleValueRgServicesInner) ToMap() (map[string
 	if !IsNil(o.RowAppConnectedServiceRefType) {
 		toSerialize["row_app_connected_service_ref_type_"] = o.RowAppConnectedServiceRefType
 	}
+	if !IsNil(o.RowAppEnable) {
+		toSerialize["row_app_enable"] = o.RowAppEnable
+	}
 	if !IsNil(o.RowAppType) {
 		toSerialize["row_app_type"] = o.RowAppType
 	}
 	if !IsNil(o.RowIpMask) {
 		toSerialize["row_ip_mask"] = o.RowIpMask
-	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }
@@ -324,5 +324,3 @@ func (v *NullableBundlesPutRequestEndpointBundleValueRgServicesInner) UnmarshalJ
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

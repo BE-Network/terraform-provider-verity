@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // LAGsAPIService LAGsAPI service
 type LAGsAPIService service
 
 type ApiLagsDeleteRequest struct {
-	ctx context.Context
-	ApiService *LAGsAPIService
-	lagName *[]string
+	ctx           context.Context
+	ApiService    *LAGsAPIService
+	lagName       *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ LagsDelete Delete LAG
 
 Deletes an existing LAG from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiLagsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiLagsDeleteRequest
 */
 func (a *LAGsAPIService) LagsDelete(ctx context.Context) ApiLagsDeleteRequest {
 	return ApiLagsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *LAGsAPIService) LagsDeleteExecute(r ApiLagsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LAGsAPIService.LagsDelete")
@@ -142,10 +140,10 @@ func (a *LAGsAPIService) LagsDeleteExecute(r ApiLagsDeleteRequest) (*http.Respon
 }
 
 type ApiLagsGetRequest struct {
-	ctx context.Context
-	ApiService *LAGsAPIService
-	lagName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *LAGsAPIService
+	lagName       *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ LagsGet Get all LAGs
 
 Downloads all LAGs from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiLagsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiLagsGetRequest
 */
 func (a *LAGsAPIService) LagsGet(ctx context.Context) ApiLagsGetRequest {
 	return ApiLagsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *LAGsAPIService) LagsGetExecute(r ApiLagsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LAGsAPIService.LagsGet")
@@ -258,9 +255,9 @@ func (a *LAGsAPIService) LagsGetExecute(r ApiLagsGetRequest) (*http.Response, er
 }
 
 type ApiLagsPatchRequest struct {
-	ctx context.Context
-	ApiService *LAGsAPIService
-	changesetName *string
+	ctx            context.Context
+	ApiService     *LAGsAPIService
+	changesetName  *string
 	lagsPutRequest *LagsPutRequest
 }
 
@@ -283,23 +280,22 @@ LagsPatch Update LAG
 
 Update LAG into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiLagsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiLagsPatchRequest
 */
 func (a *LAGsAPIService) LagsPatch(ctx context.Context) ApiLagsPatchRequest {
 	return ApiLagsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *LAGsAPIService) LagsPatchExecute(r ApiLagsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LAGsAPIService.LagsPatch")
@@ -364,9 +360,9 @@ func (a *LAGsAPIService) LagsPatchExecute(r ApiLagsPatchRequest) (*http.Response
 }
 
 type ApiLagsPutRequest struct {
-	ctx context.Context
-	ApiService *LAGsAPIService
-	changesetName *string
+	ctx            context.Context
+	ApiService     *LAGsAPIService
+	changesetName  *string
 	lagsPutRequest *LagsPutRequest
 }
 
@@ -389,23 +385,22 @@ LagsPut Create LAG
 
 Create LAG into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiLagsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiLagsPutRequest
 */
 func (a *LAGsAPIService) LagsPut(ctx context.Context) ApiLagsPutRequest {
 	return ApiLagsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *LAGsAPIService) LagsPutExecute(r ApiLagsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LAGsAPIService.LagsPut")

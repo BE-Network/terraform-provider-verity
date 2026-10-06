@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,16 +19,16 @@ var _ MappedNullable = &SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{}
 
 // SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner struct for SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner
 type SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner struct {
-	// Enable
-	Enable *bool `json:"enable,omitempty"`
-	// Vendor
-	Vendor *string `json:"vendor,omitempty"`
-	// Part Number
-	PartNumber *string `json:"part_number,omitempty"`
 	// Breakout definition; defines number of ports of what speed this port is brokenout to.
 	Breakout *string `json:"breakout,omitempty"`
+	// Enable
+	Enable *bool `json:"enable,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
+	// Part Number
+	PartNumber *string `json:"part_number,omitempty"`
+	// Vendor
+	Vendor *string `json:"vendor,omitempty"`
 }
 
 // NewSfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner instantiates a new SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner object
@@ -37,14 +37,14 @@ type SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner struct {
 // will change when the set of required properties is changed
 func NewSfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner() *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner {
 	this := SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{}
-	var enable bool = false
-	this.Enable = &enable
-	var vendor string = ""
-	this.Vendor = &vendor
-	var partNumber string = ""
-	this.PartNumber = &partNumber
 	var breakout string = "1x100G"
 	this.Breakout = &breakout
+	var enable bool = false
+	this.Enable = &enable
+	var partNumber string = ""
+	this.PartNumber = &partNumber
+	var vendor string = ""
+	this.Vendor = &vendor
 	return &this
 }
 
@@ -53,111 +53,15 @@ func NewSfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner() *SfpbreakoutsPa
 // but it doesn't guarantee that properties required by API are set
 func NewSfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInnerWithDefaults() *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner {
 	this := SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner{}
-	var enable bool = false
-	this.Enable = &enable
-	var vendor string = ""
-	this.Vendor = &vendor
-	var partNumber string = ""
-	this.PartNumber = &partNumber
 	var breakout string = "1x100G"
 	this.Breakout = &breakout
+	var enable bool = false
+	this.Enable = &enable
+	var partNumber string = ""
+	this.PartNumber = &partNumber
+	var vendor string = ""
+	this.Vendor = &vendor
 	return &this
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) SetEnable(v bool) {
-	o.Enable = &v
-}
-
-// GetVendor returns the Vendor field value if set, zero value otherwise.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetVendor() string {
-	if o == nil || IsNil(o.Vendor) {
-		var ret string
-		return ret
-	}
-	return *o.Vendor
-}
-
-// GetVendorOk returns a tuple with the Vendor field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetVendorOk() (*string, bool) {
-	if o == nil || IsNil(o.Vendor) {
-		return nil, false
-	}
-	return o.Vendor, true
-}
-
-// HasVendor returns a boolean if a field has been set.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) HasVendor() bool {
-	if o != nil && !IsNil(o.Vendor) {
-		return true
-	}
-
-	return false
-}
-
-// SetVendor gets a reference to the given string and assigns it to the Vendor field.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) SetVendor(v string) {
-	o.Vendor = &v
-}
-
-// GetPartNumber returns the PartNumber field value if set, zero value otherwise.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetPartNumber() string {
-	if o == nil || IsNil(o.PartNumber) {
-		var ret string
-		return ret
-	}
-	return *o.PartNumber
-}
-
-// GetPartNumberOk returns a tuple with the PartNumber field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetPartNumberOk() (*string, bool) {
-	if o == nil || IsNil(o.PartNumber) {
-		return nil, false
-	}
-	return o.PartNumber, true
-}
-
-// HasPartNumber returns a boolean if a field has been set.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) HasPartNumber() bool {
-	if o != nil && !IsNil(o.PartNumber) {
-		return true
-	}
-
-	return false
-}
-
-// SetPartNumber gets a reference to the given string and assigns it to the PartNumber field.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) SetPartNumber(v string) {
-	o.PartNumber = &v
 }
 
 // GetBreakout returns the Breakout field value if set, zero value otherwise.
@@ -192,6 +96,38 @@ func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) SetBreakout(v s
 	o.Breakout = &v
 }
 
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) SetEnable(v bool) {
+	o.Enable = &v
+}
+
 // GetIndex returns the Index field value if set, zero value otherwise.
 func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
@@ -224,8 +160,72 @@ func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) SetIndex(v int6
 	o.Index = &v
 }
 
+// GetPartNumber returns the PartNumber field value if set, zero value otherwise.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetPartNumber() string {
+	if o == nil || IsNil(o.PartNumber) {
+		var ret string
+		return ret
+	}
+	return *o.PartNumber
+}
+
+// GetPartNumberOk returns a tuple with the PartNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetPartNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.PartNumber) {
+		return nil, false
+	}
+	return o.PartNumber, true
+}
+
+// HasPartNumber returns a boolean if a field has been set.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) HasPartNumber() bool {
+	if o != nil && !IsNil(o.PartNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetPartNumber gets a reference to the given string and assigns it to the PartNumber field.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) SetPartNumber(v string) {
+	o.PartNumber = &v
+}
+
+// GetVendor returns the Vendor field value if set, zero value otherwise.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetVendor() string {
+	if o == nil || IsNil(o.Vendor) {
+		var ret string
+		return ret
+	}
+	return *o.Vendor
+}
+
+// GetVendorOk returns a tuple with the Vendor field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) GetVendorOk() (*string, bool) {
+	if o == nil || IsNil(o.Vendor) {
+		return nil, false
+	}
+	return o.Vendor, true
+}
+
+// HasVendor returns a boolean if a field has been set.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) HasVendor() bool {
+	if o != nil && !IsNil(o.Vendor) {
+		return true
+	}
+
+	return false
+}
+
+// SetVendor gets a reference to the given string and assigns it to the Vendor field.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) SetVendor(v string) {
+	o.Vendor = &v
+}
+
 func (o SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -234,20 +234,20 @@ func (o SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) MarshalJSON() ([
 
 func (o SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Breakout) {
+		toSerialize["breakout"] = o.Breakout
+	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.Vendor) {
-		toSerialize["vendor"] = o.Vendor
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	if !IsNil(o.PartNumber) {
 		toSerialize["part_number"] = o.PartNumber
 	}
-	if !IsNil(o.Breakout) {
-		toSerialize["breakout"] = o.Breakout
-	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
+	if !IsNil(o.Vendor) {
+		toSerialize["vendor"] = o.Vendor
 	}
 	return toSerialize, nil
 }
@@ -287,5 +287,3 @@ func (v *NullableSfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) Unmarsh
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

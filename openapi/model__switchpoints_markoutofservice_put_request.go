@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -11,8 +11,8 @@ API version: 6.6
 package openapi
 
 import (
-	"encoding/json"
 	"bytes"
+	"encoding/json"
 	"fmt"
 )
 
@@ -21,9 +21,9 @@ var _ MappedNullable = &SwitchpointsMarkoutofservicePutRequest{}
 
 // SwitchpointsMarkoutofservicePutRequest struct for SwitchpointsMarkoutofservicePutRequest
 type SwitchpointsMarkoutofservicePutRequest struct {
+	DeviceNames []string `json:"device_names"`
 	// Mark all devices out of service or back in service
 	Mos *bool `json:"mos,omitempty"`
-	DeviceNames []string `json:"device_names"`
 }
 
 type _SwitchpointsMarkoutofservicePutRequest SwitchpointsMarkoutofservicePutRequest
@@ -34,9 +34,9 @@ type _SwitchpointsMarkoutofservicePutRequest SwitchpointsMarkoutofservicePutRequ
 // will change when the set of required properties is changed
 func NewSwitchpointsMarkoutofservicePutRequest(deviceNames []string) *SwitchpointsMarkoutofservicePutRequest {
 	this := SwitchpointsMarkoutofservicePutRequest{}
+	this.DeviceNames = deviceNames
 	var mos bool = true
 	this.Mos = &mos
-	this.DeviceNames = deviceNames
 	return &this
 }
 
@@ -48,6 +48,30 @@ func NewSwitchpointsMarkoutofservicePutRequestWithDefaults() *SwitchpointsMarkou
 	var mos bool = true
 	this.Mos = &mos
 	return &this
+}
+
+// GetDeviceNames returns the DeviceNames field value
+func (o *SwitchpointsMarkoutofservicePutRequest) GetDeviceNames() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+
+	return o.DeviceNames
+}
+
+// GetDeviceNamesOk returns a tuple with the DeviceNames field value
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsMarkoutofservicePutRequest) GetDeviceNamesOk() ([]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DeviceNames, true
+}
+
+// SetDeviceNames sets field value
+func (o *SwitchpointsMarkoutofservicePutRequest) SetDeviceNames(v []string) {
+	o.DeviceNames = v
 }
 
 // GetMos returns the Mos field value if set, zero value otherwise.
@@ -82,32 +106,8 @@ func (o *SwitchpointsMarkoutofservicePutRequest) SetMos(v bool) {
 	o.Mos = &v
 }
 
-// GetDeviceNames returns the DeviceNames field value
-func (o *SwitchpointsMarkoutofservicePutRequest) GetDeviceNames() []string {
-	if o == nil {
-		var ret []string
-		return ret
-	}
-
-	return o.DeviceNames
-}
-
-// GetDeviceNamesOk returns a tuple with the DeviceNames field value
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsMarkoutofservicePutRequest) GetDeviceNamesOk() ([]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.DeviceNames, true
-}
-
-// SetDeviceNames sets field value
-func (o *SwitchpointsMarkoutofservicePutRequest) SetDeviceNames(v []string) {
-	o.DeviceNames = v
-}
-
 func (o SwitchpointsMarkoutofservicePutRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -116,10 +116,10 @@ func (o SwitchpointsMarkoutofservicePutRequest) MarshalJSON() ([]byte, error) {
 
 func (o SwitchpointsMarkoutofservicePutRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	toSerialize["device_names"] = o.DeviceNames
 	if !IsNil(o.Mos) {
 		toSerialize["mos"] = o.Mos
 	}
-	toSerialize["device_names"] = o.DeviceNames
 	return toSerialize, nil
 }
 
@@ -136,10 +136,10 @@ func (o *SwitchpointsMarkoutofservicePutRequest) UnmarshalJSON(data []byte) (err
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -195,5 +195,3 @@ func (v *NullableSwitchpointsMarkoutofservicePutRequest) UnmarshalJSON(src []byt
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,20 +19,20 @@ var _ MappedNullable = &SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInne
 
 // SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner struct for SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner
 type SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner struct {
-	// Enable Traffic Mirror
-	TrafficMirrorNumEnable *bool `json:"traffic_mirror_num_enable,omitempty"`
-	// Source Port for Traffic Mirror
-	TrafficMirrorNumSourcePort *string `json:"traffic_mirror_num_source_port,omitempty"`
-	// Source LAG Indicator for Traffic Mirror
-	TrafficMirrorNumSourceLagIndicator *bool `json:"traffic_mirror_num_source_lag_indicator,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
 	// Destination Port for Traffic Mirror
 	TrafficMirrorNumDestinationPort *string `json:"traffic_mirror_num_destination_port,omitempty"`
+	// Enable Traffic Mirror
+	TrafficMirrorNumEnable *bool `json:"traffic_mirror_num_enable,omitempty"`
 	// Boolean value indicating if the mirror is for inbound traffic
 	TrafficMirrorNumInboundTraffic *bool `json:"traffic_mirror_num_inbound_traffic,omitempty"`
 	// Boolean value indicating if the mirror is for outbound traffic
 	TrafficMirrorNumOutboundTraffic *bool `json:"traffic_mirror_num_outbound_traffic,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
+	// Source LAG Indicator for Traffic Mirror
+	TrafficMirrorNumSourceLagIndicator *bool `json:"traffic_mirror_num_source_lag_indicator,omitempty"`
+	// Source Port for Traffic Mirror
+	TrafficMirrorNumSourcePort *string `json:"traffic_mirror_num_source_port,omitempty"`
 }
 
 // NewSwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner instantiates a new SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner object
@@ -41,18 +41,18 @@ type SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner struct {
 // will change when the set of required properties is changed
 func NewSwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner() *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner {
 	this := SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{}
-	var trafficMirrorNumEnable bool = false
-	this.TrafficMirrorNumEnable = &trafficMirrorNumEnable
-	var trafficMirrorNumSourcePort string = ""
-	this.TrafficMirrorNumSourcePort = &trafficMirrorNumSourcePort
-	var trafficMirrorNumSourceLagIndicator bool = false
-	this.TrafficMirrorNumSourceLagIndicator = &trafficMirrorNumSourceLagIndicator
 	var trafficMirrorNumDestinationPort string = ""
 	this.TrafficMirrorNumDestinationPort = &trafficMirrorNumDestinationPort
+	var trafficMirrorNumEnable bool = false
+	this.TrafficMirrorNumEnable = &trafficMirrorNumEnable
 	var trafficMirrorNumInboundTraffic bool = false
 	this.TrafficMirrorNumInboundTraffic = &trafficMirrorNumInboundTraffic
 	var trafficMirrorNumOutboundTraffic bool = false
 	this.TrafficMirrorNumOutboundTraffic = &trafficMirrorNumOutboundTraffic
+	var trafficMirrorNumSourceLagIndicator bool = false
+	this.TrafficMirrorNumSourceLagIndicator = &trafficMirrorNumSourceLagIndicator
+	var trafficMirrorNumSourcePort string = ""
+	this.TrafficMirrorNumSourcePort = &trafficMirrorNumSourcePort
 	return &this
 }
 
@@ -61,115 +61,51 @@ func NewSwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner() *Switchpoint
 // but it doesn't guarantee that properties required by API are set
 func NewSwitchpointsPutRequestSwitchpointValueTrafficMirrorsInnerWithDefaults() *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner {
 	this := SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner{}
-	var trafficMirrorNumEnable bool = false
-	this.TrafficMirrorNumEnable = &trafficMirrorNumEnable
-	var trafficMirrorNumSourcePort string = ""
-	this.TrafficMirrorNumSourcePort = &trafficMirrorNumSourcePort
-	var trafficMirrorNumSourceLagIndicator bool = false
-	this.TrafficMirrorNumSourceLagIndicator = &trafficMirrorNumSourceLagIndicator
 	var trafficMirrorNumDestinationPort string = ""
 	this.TrafficMirrorNumDestinationPort = &trafficMirrorNumDestinationPort
+	var trafficMirrorNumEnable bool = false
+	this.TrafficMirrorNumEnable = &trafficMirrorNumEnable
 	var trafficMirrorNumInboundTraffic bool = false
 	this.TrafficMirrorNumInboundTraffic = &trafficMirrorNumInboundTraffic
 	var trafficMirrorNumOutboundTraffic bool = false
 	this.TrafficMirrorNumOutboundTraffic = &trafficMirrorNumOutboundTraffic
+	var trafficMirrorNumSourceLagIndicator bool = false
+	this.TrafficMirrorNumSourceLagIndicator = &trafficMirrorNumSourceLagIndicator
+	var trafficMirrorNumSourcePort string = ""
+	this.TrafficMirrorNumSourcePort = &trafficMirrorNumSourcePort
 	return &this
 }
 
-// GetTrafficMirrorNumEnable returns the TrafficMirrorNumEnable field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumEnable() bool {
-	if o == nil || IsNil(o.TrafficMirrorNumEnable) {
-		var ret bool
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
 		return ret
 	}
-	return *o.TrafficMirrorNumEnable
+	return *o.Index
 }
 
-// GetTrafficMirrorNumEnableOk returns a tuple with the TrafficMirrorNumEnable field value if set, nil otherwise
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.TrafficMirrorNumEnable) {
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
-	return o.TrafficMirrorNumEnable, true
+	return o.Index, true
 }
 
-// HasTrafficMirrorNumEnable returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) HasTrafficMirrorNumEnable() bool {
-	if o != nil && !IsNil(o.TrafficMirrorNumEnable) {
+// HasIndex returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
 		return true
 	}
 
 	return false
 }
 
-// SetTrafficMirrorNumEnable gets a reference to the given bool and assigns it to the TrafficMirrorNumEnable field.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetTrafficMirrorNumEnable(v bool) {
-	o.TrafficMirrorNumEnable = &v
-}
-
-// GetTrafficMirrorNumSourcePort returns the TrafficMirrorNumSourcePort field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumSourcePort() string {
-	if o == nil || IsNil(o.TrafficMirrorNumSourcePort) {
-		var ret string
-		return ret
-	}
-	return *o.TrafficMirrorNumSourcePort
-}
-
-// GetTrafficMirrorNumSourcePortOk returns a tuple with the TrafficMirrorNumSourcePort field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumSourcePortOk() (*string, bool) {
-	if o == nil || IsNil(o.TrafficMirrorNumSourcePort) {
-		return nil, false
-	}
-	return o.TrafficMirrorNumSourcePort, true
-}
-
-// HasTrafficMirrorNumSourcePort returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) HasTrafficMirrorNumSourcePort() bool {
-	if o != nil && !IsNil(o.TrafficMirrorNumSourcePort) {
-		return true
-	}
-
-	return false
-}
-
-// SetTrafficMirrorNumSourcePort gets a reference to the given string and assigns it to the TrafficMirrorNumSourcePort field.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetTrafficMirrorNumSourcePort(v string) {
-	o.TrafficMirrorNumSourcePort = &v
-}
-
-// GetTrafficMirrorNumSourceLagIndicator returns the TrafficMirrorNumSourceLagIndicator field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumSourceLagIndicator() bool {
-	if o == nil || IsNil(o.TrafficMirrorNumSourceLagIndicator) {
-		var ret bool
-		return ret
-	}
-	return *o.TrafficMirrorNumSourceLagIndicator
-}
-
-// GetTrafficMirrorNumSourceLagIndicatorOk returns a tuple with the TrafficMirrorNumSourceLagIndicator field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumSourceLagIndicatorOk() (*bool, bool) {
-	if o == nil || IsNil(o.TrafficMirrorNumSourceLagIndicator) {
-		return nil, false
-	}
-	return o.TrafficMirrorNumSourceLagIndicator, true
-}
-
-// HasTrafficMirrorNumSourceLagIndicator returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) HasTrafficMirrorNumSourceLagIndicator() bool {
-	if o != nil && !IsNil(o.TrafficMirrorNumSourceLagIndicator) {
-		return true
-	}
-
-	return false
-}
-
-// SetTrafficMirrorNumSourceLagIndicator gets a reference to the given bool and assigns it to the TrafficMirrorNumSourceLagIndicator field.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetTrafficMirrorNumSourceLagIndicator(v bool) {
-	o.TrafficMirrorNumSourceLagIndicator = &v
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetTrafficMirrorNumDestinationPort returns the TrafficMirrorNumDestinationPort field value if set, zero value otherwise.
@@ -202,6 +138,38 @@ func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) HasTrafficMi
 // SetTrafficMirrorNumDestinationPort gets a reference to the given string and assigns it to the TrafficMirrorNumDestinationPort field.
 func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetTrafficMirrorNumDestinationPort(v string) {
 	o.TrafficMirrorNumDestinationPort = &v
+}
+
+// GetTrafficMirrorNumEnable returns the TrafficMirrorNumEnable field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumEnable() bool {
+	if o == nil || IsNil(o.TrafficMirrorNumEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.TrafficMirrorNumEnable
+}
+
+// GetTrafficMirrorNumEnableOk returns a tuple with the TrafficMirrorNumEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.TrafficMirrorNumEnable) {
+		return nil, false
+	}
+	return o.TrafficMirrorNumEnable, true
+}
+
+// HasTrafficMirrorNumEnable returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) HasTrafficMirrorNumEnable() bool {
+	if o != nil && !IsNil(o.TrafficMirrorNumEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrafficMirrorNumEnable gets a reference to the given bool and assigns it to the TrafficMirrorNumEnable field.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetTrafficMirrorNumEnable(v bool) {
+	o.TrafficMirrorNumEnable = &v
 }
 
 // GetTrafficMirrorNumInboundTraffic returns the TrafficMirrorNumInboundTraffic field value if set, zero value otherwise.
@@ -268,40 +236,72 @@ func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetTrafficMi
 	o.TrafficMirrorNumOutboundTraffic = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
+// GetTrafficMirrorNumSourceLagIndicator returns the TrafficMirrorNumSourceLagIndicator field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumSourceLagIndicator() bool {
+	if o == nil || IsNil(o.TrafficMirrorNumSourceLagIndicator) {
+		var ret bool
 		return ret
 	}
-	return *o.Index
+	return *o.TrafficMirrorNumSourceLagIndicator
 }
 
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// GetTrafficMirrorNumSourceLagIndicatorOk returns a tuple with the TrafficMirrorNumSourceLagIndicator field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumSourceLagIndicatorOk() (*bool, bool) {
+	if o == nil || IsNil(o.TrafficMirrorNumSourceLagIndicator) {
 		return nil, false
 	}
-	return o.Index, true
+	return o.TrafficMirrorNumSourceLagIndicator, true
 }
 
-// HasIndex returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
+// HasTrafficMirrorNumSourceLagIndicator returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) HasTrafficMirrorNumSourceLagIndicator() bool {
+	if o != nil && !IsNil(o.TrafficMirrorNumSourceLagIndicator) {
 		return true
 	}
 
 	return false
 }
 
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetIndex(v int64) {
-	o.Index = &v
+// SetTrafficMirrorNumSourceLagIndicator gets a reference to the given bool and assigns it to the TrafficMirrorNumSourceLagIndicator field.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetTrafficMirrorNumSourceLagIndicator(v bool) {
+	o.TrafficMirrorNumSourceLagIndicator = &v
+}
+
+// GetTrafficMirrorNumSourcePort returns the TrafficMirrorNumSourcePort field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumSourcePort() string {
+	if o == nil || IsNil(o.TrafficMirrorNumSourcePort) {
+		var ret string
+		return ret
+	}
+	return *o.TrafficMirrorNumSourcePort
+}
+
+// GetTrafficMirrorNumSourcePortOk returns a tuple with the TrafficMirrorNumSourcePort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumSourcePortOk() (*string, bool) {
+	if o == nil || IsNil(o.TrafficMirrorNumSourcePort) {
+		return nil, false
+	}
+	return o.TrafficMirrorNumSourcePort, true
+}
+
+// HasTrafficMirrorNumSourcePort returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) HasTrafficMirrorNumSourcePort() bool {
+	if o != nil && !IsNil(o.TrafficMirrorNumSourcePort) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrafficMirrorNumSourcePort gets a reference to the given string and assigns it to the TrafficMirrorNumSourcePort field.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetTrafficMirrorNumSourcePort(v string) {
+	o.TrafficMirrorNumSourcePort = &v
 }
 
 func (o SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -310,17 +310,14 @@ func (o SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) MarshalJSON()
 
 func (o SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.TrafficMirrorNumEnable) {
-		toSerialize["traffic_mirror_num_enable"] = o.TrafficMirrorNumEnable
-	}
-	if !IsNil(o.TrafficMirrorNumSourcePort) {
-		toSerialize["traffic_mirror_num_source_port"] = o.TrafficMirrorNumSourcePort
-	}
-	if !IsNil(o.TrafficMirrorNumSourceLagIndicator) {
-		toSerialize["traffic_mirror_num_source_lag_indicator"] = o.TrafficMirrorNumSourceLagIndicator
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	if !IsNil(o.TrafficMirrorNumDestinationPort) {
 		toSerialize["traffic_mirror_num_destination_port"] = o.TrafficMirrorNumDestinationPort
+	}
+	if !IsNil(o.TrafficMirrorNumEnable) {
+		toSerialize["traffic_mirror_num_enable"] = o.TrafficMirrorNumEnable
 	}
 	if !IsNil(o.TrafficMirrorNumInboundTraffic) {
 		toSerialize["traffic_mirror_num_inbound_traffic"] = o.TrafficMirrorNumInboundTraffic
@@ -328,8 +325,11 @@ func (o SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) ToMap() (map[
 	if !IsNil(o.TrafficMirrorNumOutboundTraffic) {
 		toSerialize["traffic_mirror_num_outbound_traffic"] = o.TrafficMirrorNumOutboundTraffic
 	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
+	if !IsNil(o.TrafficMirrorNumSourceLagIndicator) {
+		toSerialize["traffic_mirror_num_source_lag_indicator"] = o.TrafficMirrorNumSourceLagIndicator
+	}
+	if !IsNil(o.TrafficMirrorNumSourcePort) {
+		toSerialize["traffic_mirror_num_source_port"] = o.TrafficMirrorNumSourcePort
 	}
 	return toSerialize, nil
 }
@@ -369,5 +369,3 @@ func (v *NullableSwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) Unma
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

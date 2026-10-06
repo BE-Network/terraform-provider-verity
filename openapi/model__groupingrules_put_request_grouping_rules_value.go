@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,15 @@ var _ MappedNullable = &GroupingrulesPutRequestGroupingRulesValue{}
 
 // GroupingrulesPutRequestGroupingRulesValue struct for GroupingrulesPutRequestGroupingRulesValue
 type GroupingrulesPutRequestGroupingRulesValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
+	// Template Name. Must be unique within type.
+	Name *string `json:"name,omitempty"`
+	// How to combine rules
+	Operation *string                                               `json:"operation,omitempty"`
+	Rules     []GroupingrulesPutRequestGroupingRulesValueRulesInner `json:"rules,omitempty"`
 	// Type of elements to group
 	Type *string `json:"type,omitempty"`
-	// How to combine rules
-	Operation *string `json:"operation,omitempty"`
-	Rules []GroupingrulesPutRequestGroupingRulesValueRulesInner `json:"rules,omitempty"`
 }
 
 // NewGroupingrulesPutRequestGroupingRulesValue instantiates a new GroupingrulesPutRequestGroupingRulesValue object
@@ -36,14 +36,14 @@ type GroupingrulesPutRequestGroupingRulesValue struct {
 // will change when the set of required properties is changed
 func NewGroupingrulesPutRequestGroupingRulesValue() *GroupingrulesPutRequestGroupingRulesValue {
 	this := GroupingrulesPutRequestGroupingRulesValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
-	var type_ string = "device"
-	this.Type = &type_
+	var name string = ""
+	this.Name = &name
 	var operation string = "and"
 	this.Operation = &operation
+	var type_ string = "device"
+	this.Type = &type_
 	return &this
 }
 
@@ -52,47 +52,15 @@ func NewGroupingrulesPutRequestGroupingRulesValue() *GroupingrulesPutRequestGrou
 // but it doesn't guarantee that properties required by API are set
 func NewGroupingrulesPutRequestGroupingRulesValueWithDefaults() *GroupingrulesPutRequestGroupingRulesValue {
 	this := GroupingrulesPutRequestGroupingRulesValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
-	var type_ string = "device"
-	this.Type = &type_
+	var name string = ""
+	this.Name = &name
 	var operation string = "and"
 	this.Operation = &operation
+	var type_ string = "device"
+	this.Type = &type_
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *GroupingrulesPutRequestGroupingRulesValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GroupingrulesPutRequestGroupingRulesValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *GroupingrulesPutRequestGroupingRulesValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *GroupingrulesPutRequestGroupingRulesValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -127,36 +95,36 @@ func (o *GroupingrulesPutRequestGroupingRulesValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
-func (o *GroupingrulesPutRequestGroupingRulesValue) GetType() string {
-	if o == nil || IsNil(o.Type) {
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *GroupingrulesPutRequestGroupingRulesValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
-	return *o.Type
+	return *o.Name
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GroupingrulesPutRequestGroupingRulesValue) GetTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.Type) {
+func (o *GroupingrulesPutRequestGroupingRulesValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
-	return o.Type, true
+	return o.Name, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *GroupingrulesPutRequestGroupingRulesValue) HasType() bool {
-	if o != nil && !IsNil(o.Type) {
+// HasName returns a boolean if a field has been set.
+func (o *GroupingrulesPutRequestGroupingRulesValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
 	return false
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *GroupingrulesPutRequestGroupingRulesValue) SetType(v string) {
-	o.Type = &v
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *GroupingrulesPutRequestGroupingRulesValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetOperation returns the Operation field value if set, zero value otherwise.
@@ -223,8 +191,40 @@ func (o *GroupingrulesPutRequestGroupingRulesValue) SetRules(v []GroupingrulesPu
 	o.Rules = v
 }
 
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *GroupingrulesPutRequestGroupingRulesValue) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GroupingrulesPutRequestGroupingRulesValue) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *GroupingrulesPutRequestGroupingRulesValue) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *GroupingrulesPutRequestGroupingRulesValue) SetType(v string) {
+	o.Type = &v
+}
+
 func (o GroupingrulesPutRequestGroupingRulesValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -233,20 +233,20 @@ func (o GroupingrulesPutRequestGroupingRulesValue) MarshalJSON() ([]byte, error)
 
 func (o GroupingrulesPutRequestGroupingRulesValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.Type) {
-		toSerialize["type"] = o.Type
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.Operation) {
 		toSerialize["operation"] = o.Operation
 	}
 	if !IsNil(o.Rules) {
 		toSerialize["rules"] = o.Rules
+	}
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
 	}
 	return toSerialize, nil
 }
@@ -286,5 +286,3 @@ func (v *NullableGroupingrulesPutRequestGroupingRulesValue) UnmarshalJSON(src []
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

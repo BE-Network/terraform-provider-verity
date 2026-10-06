@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,13 +19,12 @@ import (
 	"reflect"
 )
 
-
 // SwitchpointsAPIService SwitchpointsAPI service
 type SwitchpointsAPIService service
 
 type ApiSwitchpointsCurrentconfigGetRequest struct {
-	ctx context.Context
-	ApiService *SwitchpointsAPIService
+	ctx             context.Context
+	ApiService      *SwitchpointsAPIService
 	switchpointName *string
 }
 
@@ -43,23 +42,22 @@ SwitchpointsCurrentconfigGet Get all Switchpoint current configs
 
 Retrieves all Switchpoint current configs from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSwitchpointsCurrentconfigGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSwitchpointsCurrentconfigGetRequest
 */
 func (a *SwitchpointsAPIService) SwitchpointsCurrentconfigGet(ctx context.Context) ApiSwitchpointsCurrentconfigGetRequest {
 	return ApiSwitchpointsCurrentconfigGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SwitchpointsAPIService) SwitchpointsCurrentconfigGetExecute(r ApiSwitchpointsCurrentconfigGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SwitchpointsAPIService.SwitchpointsCurrentconfigGet")
@@ -122,10 +120,10 @@ func (a *SwitchpointsAPIService) SwitchpointsCurrentconfigGetExecute(r ApiSwitch
 }
 
 type ApiSwitchpointsDeleteRequest struct {
-	ctx context.Context
-	ApiService *SwitchpointsAPIService
+	ctx             context.Context
+	ApiService      *SwitchpointsAPIService
 	switchpointName *[]string
-	changesetName *string
+	changesetName   *string
 }
 
 func (r ApiSwitchpointsDeleteRequest) SwitchpointName(switchpointName []string) ApiSwitchpointsDeleteRequest {
@@ -147,23 +145,22 @@ SwitchpointsDelete Delete Switchpoint
 
 Deletes an existing Switchpoint from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSwitchpointsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSwitchpointsDeleteRequest
 */
 func (a *SwitchpointsAPIService) SwitchpointsDelete(ctx context.Context) ApiSwitchpointsDeleteRequest {
 	return ApiSwitchpointsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SwitchpointsAPIService) SwitchpointsDeleteExecute(r ApiSwitchpointsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SwitchpointsAPIService.SwitchpointsDelete")
@@ -240,11 +237,11 @@ func (a *SwitchpointsAPIService) SwitchpointsDeleteExecute(r ApiSwitchpointsDele
 }
 
 type ApiSwitchpointsGetRequest struct {
-	ctx context.Context
-	ApiService *SwitchpointsAPIService
+	ctx             context.Context
+	ApiService      *SwitchpointsAPIService
 	switchpointName *string
-	includeData *bool
-	changesetName *string
+	includeData     *bool
+	changesetName   *string
 }
 
 func (r ApiSwitchpointsGetRequest) SwitchpointName(switchpointName string) ApiSwitchpointsGetRequest {
@@ -271,23 +268,22 @@ SwitchpointsGet Get all Switchpoints
 
 Retrieves all Switchpoints from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSwitchpointsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSwitchpointsGetRequest
 */
 func (a *SwitchpointsAPIService) SwitchpointsGet(ctx context.Context) ApiSwitchpointsGetRequest {
 	return ApiSwitchpointsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SwitchpointsAPIService) SwitchpointsGetExecute(r ApiSwitchpointsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SwitchpointsAPIService.SwitchpointsGet")
@@ -356,9 +352,9 @@ func (a *SwitchpointsAPIService) SwitchpointsGetExecute(r ApiSwitchpointsGetRequ
 }
 
 type ApiSwitchpointsMarkoutofserviceGetRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *SwitchpointsAPIService
-	mos *bool
+	mos        *bool
 }
 
 func (r ApiSwitchpointsMarkoutofserviceGetRequest) Mos(mos bool) ApiSwitchpointsMarkoutofserviceGetRequest {
@@ -375,23 +371,22 @@ SwitchpointsMarkoutofserviceGet Get all marked out of service Switchpoint names
 
 Retrieves all marked out of service Switchpoint names from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSwitchpointsMarkoutofserviceGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSwitchpointsMarkoutofserviceGetRequest
 */
 func (a *SwitchpointsAPIService) SwitchpointsMarkoutofserviceGet(ctx context.Context) ApiSwitchpointsMarkoutofserviceGetRequest {
 	return ApiSwitchpointsMarkoutofserviceGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SwitchpointsAPIService) SwitchpointsMarkoutofserviceGetExecute(r ApiSwitchpointsMarkoutofserviceGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SwitchpointsAPIService.SwitchpointsMarkoutofserviceGet")
@@ -454,8 +449,8 @@ func (a *SwitchpointsAPIService) SwitchpointsMarkoutofserviceGetExecute(r ApiSwi
 }
 
 type ApiSwitchpointsMarkoutofservicePutRequest struct {
-	ctx context.Context
-	ApiService *SwitchpointsAPIService
+	ctx                                    context.Context
+	ApiService                             *SwitchpointsAPIService
 	switchpointsMarkoutofservicePutRequest *SwitchpointsMarkoutofservicePutRequest
 }
 
@@ -473,23 +468,22 @@ SwitchpointsMarkoutofservicePut Mark switchpoints out of service or back in serv
 
 Mark switchpoints out of service or back in service.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSwitchpointsMarkoutofservicePutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSwitchpointsMarkoutofservicePutRequest
 */
 func (a *SwitchpointsAPIService) SwitchpointsMarkoutofservicePut(ctx context.Context) ApiSwitchpointsMarkoutofservicePutRequest {
 	return ApiSwitchpointsMarkoutofservicePutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SwitchpointsAPIService) SwitchpointsMarkoutofservicePutExecute(r ApiSwitchpointsMarkoutofservicePutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SwitchpointsAPIService.SwitchpointsMarkoutofservicePut")
@@ -554,9 +548,9 @@ func (a *SwitchpointsAPIService) SwitchpointsMarkoutofservicePutExecute(r ApiSwi
 }
 
 type ApiSwitchpointsPatchRequest struct {
-	ctx context.Context
-	ApiService *SwitchpointsAPIService
-	changesetName *string
+	ctx                    context.Context
+	ApiService             *SwitchpointsAPIService
+	changesetName          *string
 	switchpointsPutRequest *SwitchpointsPutRequest
 }
 
@@ -579,23 +573,22 @@ SwitchpointsPatch Update Switchpoint
 
 Update Switchpoint into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSwitchpointsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSwitchpointsPatchRequest
 */
 func (a *SwitchpointsAPIService) SwitchpointsPatch(ctx context.Context) ApiSwitchpointsPatchRequest {
 	return ApiSwitchpointsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SwitchpointsAPIService) SwitchpointsPatchExecute(r ApiSwitchpointsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SwitchpointsAPIService.SwitchpointsPatch")
@@ -660,9 +653,9 @@ func (a *SwitchpointsAPIService) SwitchpointsPatchExecute(r ApiSwitchpointsPatch
 }
 
 type ApiSwitchpointsPutRequest struct {
-	ctx context.Context
-	ApiService *SwitchpointsAPIService
-	changesetName *string
+	ctx                    context.Context
+	ApiService             *SwitchpointsAPIService
+	changesetName          *string
 	switchpointsPutRequest *SwitchpointsPutRequest
 }
 
@@ -685,23 +678,22 @@ SwitchpointsPut Create Switchpoint
 
 Create Switchpoint into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSwitchpointsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSwitchpointsPutRequest
 */
 func (a *SwitchpointsAPIService) SwitchpointsPut(ctx context.Context) ApiSwitchpointsPutRequest {
 	return ApiSwitchpointsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SwitchpointsAPIService) SwitchpointsPutExecute(r ApiSwitchpointsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SwitchpointsAPIService.SwitchpointsPut")
@@ -766,8 +758,8 @@ func (a *SwitchpointsAPIService) SwitchpointsPutExecute(r ApiSwitchpointsPutRequ
 }
 
 type ApiSwitchpointsUpgradePatchRequest struct {
-	ctx context.Context
-	ApiService *SwitchpointsAPIService
+	ctx                             context.Context
+	ApiService                      *SwitchpointsAPIService
 	switchpointsUpgradePatchRequest *SwitchpointsUpgradePatchRequest
 }
 
@@ -785,23 +777,22 @@ SwitchpointsUpgradePatch Update Switchpoint firmware version
 
 Update Switchpoint firmware to a specific version.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSwitchpointsUpgradePatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSwitchpointsUpgradePatchRequest
 */
 func (a *SwitchpointsAPIService) SwitchpointsUpgradePatch(ctx context.Context) ApiSwitchpointsUpgradePatchRequest {
 	return ApiSwitchpointsUpgradePatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SwitchpointsAPIService) SwitchpointsUpgradePatchExecute(r ApiSwitchpointsUpgradePatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SwitchpointsAPIService.SwitchpointsUpgradePatch")

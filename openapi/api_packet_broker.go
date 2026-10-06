@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // PacketBrokerAPIService PacketBrokerAPI service
 type PacketBrokerAPIService service
 
 type ApiPacketbrokerDeleteRequest struct {
-	ctx context.Context
-	ApiService *PacketBrokerAPIService
+	ctx                 context.Context
+	ApiService          *PacketBrokerAPIService
 	pbEgressProfileName *[]string
-	changesetName *string
+	changesetName       *string
 }
 
 func (r ApiPacketbrokerDeleteRequest) PbEgressProfileName(pbEgressProfileName []string) ApiPacketbrokerDeleteRequest {
@@ -49,23 +48,22 @@ PacketbrokerDelete Delete PB Egress Profile
 
 Deletes an existing PB Egress Profile from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPacketbrokerDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPacketbrokerDeleteRequest
 */
 func (a *PacketBrokerAPIService) PacketbrokerDelete(ctx context.Context) ApiPacketbrokerDeleteRequest {
 	return ApiPacketbrokerDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PacketBrokerAPIService) PacketbrokerDeleteExecute(r ApiPacketbrokerDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PacketBrokerAPIService.PacketbrokerDelete")
@@ -142,11 +140,11 @@ func (a *PacketBrokerAPIService) PacketbrokerDeleteExecute(r ApiPacketbrokerDele
 }
 
 type ApiPacketbrokerGetRequest struct {
-	ctx context.Context
-	ApiService *PacketBrokerAPIService
+	ctx                 context.Context
+	ApiService          *PacketBrokerAPIService
 	pbEgressProfileName *string
-	includeData *bool
-	changesetName *string
+	includeData         *bool
+	changesetName       *string
 }
 
 func (r ApiPacketbrokerGetRequest) PbEgressProfileName(pbEgressProfileName string) ApiPacketbrokerGetRequest {
@@ -173,23 +171,22 @@ PacketbrokerGet Get all PB Egress Profiles
 
 Retrieves all PB Egress Profiles from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPacketbrokerGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPacketbrokerGetRequest
 */
 func (a *PacketBrokerAPIService) PacketbrokerGet(ctx context.Context) ApiPacketbrokerGetRequest {
 	return ApiPacketbrokerGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PacketBrokerAPIService) PacketbrokerGetExecute(r ApiPacketbrokerGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PacketBrokerAPIService.PacketbrokerGet")
@@ -258,9 +255,9 @@ func (a *PacketBrokerAPIService) PacketbrokerGetExecute(r ApiPacketbrokerGetRequ
 }
 
 type ApiPacketbrokerPatchRequest struct {
-	ctx context.Context
-	ApiService *PacketBrokerAPIService
-	changesetName *string
+	ctx                    context.Context
+	ApiService             *PacketBrokerAPIService
+	changesetName          *string
 	packetbrokerPutRequest *PacketbrokerPutRequest
 }
 
@@ -283,23 +280,22 @@ PacketbrokerPatch Update PB Egress Profile
 
 Update PB Egress Profile into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPacketbrokerPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPacketbrokerPatchRequest
 */
 func (a *PacketBrokerAPIService) PacketbrokerPatch(ctx context.Context) ApiPacketbrokerPatchRequest {
 	return ApiPacketbrokerPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PacketBrokerAPIService) PacketbrokerPatchExecute(r ApiPacketbrokerPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PacketBrokerAPIService.PacketbrokerPatch")
@@ -364,9 +360,9 @@ func (a *PacketBrokerAPIService) PacketbrokerPatchExecute(r ApiPacketbrokerPatch
 }
 
 type ApiPacketbrokerPutRequest struct {
-	ctx context.Context
-	ApiService *PacketBrokerAPIService
-	changesetName *string
+	ctx                    context.Context
+	ApiService             *PacketBrokerAPIService
+	changesetName          *string
 	packetbrokerPutRequest *PacketbrokerPutRequest
 }
 
@@ -389,23 +385,22 @@ PacketbrokerPut Create PB Egress Profile
 
 Create PB Egress Profile into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPacketbrokerPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPacketbrokerPutRequest
 */
 func (a *PacketBrokerAPIService) PacketbrokerPut(ctx context.Context) ApiPacketbrokerPutRequest {
 	return ApiPacketbrokerPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PacketBrokerAPIService) PacketbrokerPutExecute(r ApiPacketbrokerPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PacketBrokerAPIService.PacketbrokerPut")

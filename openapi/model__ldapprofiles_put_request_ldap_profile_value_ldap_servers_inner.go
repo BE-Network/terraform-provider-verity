@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,20 +21,20 @@ var _ MappedNullable = &LdapprofilesPutRequestLdapProfileValueLdapServersInner{}
 type LdapprofilesPutRequestLdapProfileValueLdapServersInner struct {
 	// Enable this LDAP server entry
 	Enabled *bool `json:"enabled,omitempty"`
-	// IPv4, IPv6, or DNS hostname for LDAP server
-	Server *string `json:"server,omitempty"`
-	// Server port (overrides global default port)
-	Port NullableInt64 `json:"port,omitempty"`
-	// Which LDAP client(s) use this server
-	UseType *string `json:"use_type,omitempty"`
-	// Server priority (1-99, lower = higher priority)
-	Priority NullableInt64 `json:"priority,omitempty"`
-	// Per-server TLS mode (overrides global setting)
-	SslTlsMode *string `json:"ssl_tls_mode,omitempty"`
-	// Per-server retransmit attempts (0-10)
-	RetransmitAttempts NullableInt64 `json:"retransmit_attempts,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
+	// Server port (overrides global default port)
+	Port NullableInt64 `json:"port,omitempty"`
+	// Server priority (1-99, lower = higher priority)
+	Priority NullableInt64 `json:"priority,omitempty"`
+	// Per-server retransmit attempts (0-10)
+	RetransmitAttempts NullableInt64 `json:"retransmit_attempts,omitempty"`
+	// IPv4, IPv6, or DNS hostname for LDAP server
+	Server *string `json:"server,omitempty"`
+	// Per-server TLS mode (overrides global setting)
+	SslTlsMode *string `json:"ssl_tls_mode,omitempty"`
+	// Which LDAP client(s) use this server
+	UseType *string `json:"use_type,omitempty"`
 }
 
 // NewLdapprofilesPutRequestLdapProfileValueLdapServersInner instantiates a new LdapprofilesPutRequestLdapProfileValueLdapServersInner object
@@ -47,10 +47,10 @@ func NewLdapprofilesPutRequestLdapProfileValueLdapServersInner() *LdapprofilesPu
 	this.Enabled = &enabled
 	var server string = ""
 	this.Server = &server
-	var useType string = "all"
-	this.UseType = &useType
 	var sslTlsMode string = "off"
 	this.SslTlsMode = &sslTlsMode
+	var useType string = "all"
+	this.UseType = &useType
 	return &this
 }
 
@@ -63,10 +63,10 @@ func NewLdapprofilesPutRequestLdapProfileValueLdapServersInnerWithDefaults() *Ld
 	this.Enabled = &enabled
 	var server string = ""
 	this.Server = &server
-	var useType string = "all"
-	this.UseType = &useType
 	var sslTlsMode string = "off"
 	this.SslTlsMode = &sslTlsMode
+	var useType string = "all"
+	this.UseType = &useType
 	return &this
 }
 
@@ -102,36 +102,36 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetEnabled(v bo
 	o.Enabled = &v
 }
 
-// GetServer returns the Server field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetServer() string {
-	if o == nil || IsNil(o.Server) {
-		var ret string
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
 		return ret
 	}
-	return *o.Server
+	return *o.Index
 }
 
-// GetServerOk returns a tuple with the Server field value if set, nil otherwise
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetServerOk() (*string, bool) {
-	if o == nil || IsNil(o.Server) {
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
-	return o.Server, true
+	return o.Index, true
 }
 
-// HasServer returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasServer() bool {
-	if o != nil && !IsNil(o.Server) {
+// HasIndex returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
 		return true
 	}
 
 	return false
 }
 
-// SetServer gets a reference to the given string and assigns it to the Server field.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetServer(v string) {
-	o.Server = &v
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetPort returns the Port field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -166,6 +166,7 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasPort() bool 
 func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetPort(v int64) {
 	o.Port.Set(&v)
 }
+
 // SetPortNil sets the value for Port to be an explicit nil
 func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetPortNil() {
 	o.Port.Set(nil)
@@ -174,38 +175,6 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetPortNil() {
 // UnsetPort ensures that no value is present for Port, not even an explicit nil
 func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) UnsetPort() {
 	o.Port.Unset()
-}
-
-// GetUseType returns the UseType field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetUseType() string {
-	if o == nil || IsNil(o.UseType) {
-		var ret string
-		return ret
-	}
-	return *o.UseType
-}
-
-// GetUseTypeOk returns a tuple with the UseType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetUseTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.UseType) {
-		return nil, false
-	}
-	return o.UseType, true
-}
-
-// HasUseType returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasUseType() bool {
-	if o != nil && !IsNil(o.UseType) {
-		return true
-	}
-
-	return false
-}
-
-// SetUseType gets a reference to the given string and assigns it to the UseType field.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetUseType(v string) {
-	o.UseType = &v
 }
 
 // GetPriority returns the Priority field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -240,6 +209,7 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasPriority() b
 func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetPriority(v int64) {
 	o.Priority.Set(&v)
 }
+
 // SetPriorityNil sets the value for Priority to be an explicit nil
 func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetPriorityNil() {
 	o.Priority.Set(nil)
@@ -248,38 +218,6 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetPriorityNil(
 // UnsetPriority ensures that no value is present for Priority, not even an explicit nil
 func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) UnsetPriority() {
 	o.Priority.Unset()
-}
-
-// GetSslTlsMode returns the SslTlsMode field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetSslTlsMode() string {
-	if o == nil || IsNil(o.SslTlsMode) {
-		var ret string
-		return ret
-	}
-	return *o.SslTlsMode
-}
-
-// GetSslTlsModeOk returns a tuple with the SslTlsMode field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetSslTlsModeOk() (*string, bool) {
-	if o == nil || IsNil(o.SslTlsMode) {
-		return nil, false
-	}
-	return o.SslTlsMode, true
-}
-
-// HasSslTlsMode returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasSslTlsMode() bool {
-	if o != nil && !IsNil(o.SslTlsMode) {
-		return true
-	}
-
-	return false
-}
-
-// SetSslTlsMode gets a reference to the given string and assigns it to the SslTlsMode field.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetSslTlsMode(v string) {
-	o.SslTlsMode = &v
 }
 
 // GetRetransmitAttempts returns the RetransmitAttempts field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -314,6 +252,7 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasRetransmitAt
 func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetRetransmitAttempts(v int64) {
 	o.RetransmitAttempts.Set(&v)
 }
+
 // SetRetransmitAttemptsNil sets the value for RetransmitAttempts to be an explicit nil
 func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetRetransmitAttemptsNil() {
 	o.RetransmitAttempts.Set(nil)
@@ -324,40 +263,104 @@ func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) UnsetRetransmit
 	o.RetransmitAttempts.Unset()
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
+// GetServer returns the Server field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetServer() string {
+	if o == nil || IsNil(o.Server) {
+		var ret string
 		return ret
 	}
-	return *o.Index
+	return *o.Server
 }
 
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// GetServerOk returns a tuple with the Server field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetServerOk() (*string, bool) {
+	if o == nil || IsNil(o.Server) {
 		return nil, false
 	}
-	return o.Index, true
+	return o.Server, true
 }
 
-// HasIndex returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
+// HasServer returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasServer() bool {
+	if o != nil && !IsNil(o.Server) {
 		return true
 	}
 
 	return false
 }
 
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetIndex(v int64) {
-	o.Index = &v
+// SetServer gets a reference to the given string and assigns it to the Server field.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetServer(v string) {
+	o.Server = &v
+}
+
+// GetSslTlsMode returns the SslTlsMode field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetSslTlsMode() string {
+	if o == nil || IsNil(o.SslTlsMode) {
+		var ret string
+		return ret
+	}
+	return *o.SslTlsMode
+}
+
+// GetSslTlsModeOk returns a tuple with the SslTlsMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetSslTlsModeOk() (*string, bool) {
+	if o == nil || IsNil(o.SslTlsMode) {
+		return nil, false
+	}
+	return o.SslTlsMode, true
+}
+
+// HasSslTlsMode returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasSslTlsMode() bool {
+	if o != nil && !IsNil(o.SslTlsMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetSslTlsMode gets a reference to the given string and assigns it to the SslTlsMode field.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetSslTlsMode(v string) {
+	o.SslTlsMode = &v
+}
+
+// GetUseType returns the UseType field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetUseType() string {
+	if o == nil || IsNil(o.UseType) {
+		var ret string
+		return ret
+	}
+	return *o.UseType
+}
+
+// GetUseTypeOk returns a tuple with the UseType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) GetUseTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.UseType) {
+		return nil, false
+	}
+	return o.UseType, true
+}
+
+// HasUseType returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) HasUseType() bool {
+	if o != nil && !IsNil(o.UseType) {
+		return true
+	}
+
+	return false
+}
+
+// SetUseType gets a reference to the given string and assigns it to the UseType field.
+func (o *LdapprofilesPutRequestLdapProfileValueLdapServersInner) SetUseType(v string) {
+	o.UseType = &v
 }
 
 func (o LdapprofilesPutRequestLdapProfileValueLdapServersInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -369,26 +372,26 @@ func (o LdapprofilesPutRequestLdapProfileValueLdapServersInner) ToMap() (map[str
 	if !IsNil(o.Enabled) {
 		toSerialize["enabled"] = o.Enabled
 	}
-	if !IsNil(o.Server) {
-		toSerialize["server"] = o.Server
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	if o.Port.IsSet() {
 		toSerialize["port"] = o.Port.Get()
 	}
-	if !IsNil(o.UseType) {
-		toSerialize["use_type"] = o.UseType
-	}
 	if o.Priority.IsSet() {
 		toSerialize["priority"] = o.Priority.Get()
-	}
-	if !IsNil(o.SslTlsMode) {
-		toSerialize["ssl_tls_mode"] = o.SslTlsMode
 	}
 	if o.RetransmitAttempts.IsSet() {
 		toSerialize["retransmit_attempts"] = o.RetransmitAttempts.Get()
 	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
+	if !IsNil(o.Server) {
+		toSerialize["server"] = o.Server
+	}
+	if !IsNil(o.SslTlsMode) {
+		toSerialize["ssl_tls_mode"] = o.SslTlsMode
+	}
+	if !IsNil(o.UseType) {
+		toSerialize["use_type"] = o.UseType
 	}
 	return toSerialize, nil
 }
@@ -428,5 +431,3 @@ func (v *NullableLdapprofilesPutRequestLdapProfileValueLdapServersInner) Unmarsh
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

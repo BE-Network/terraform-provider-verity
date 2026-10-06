@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // TACACSProfilesAPIService TACACSProfilesAPI service
 type TACACSProfilesAPIService service
 
 type ApiTacacsprofilesDeleteRequest struct {
-	ctx context.Context
-	ApiService *TACACSProfilesAPIService
+	ctx               context.Context
+	ApiService        *TACACSProfilesAPIService
 	tacacsProfileName *[]string
-	changesetName *string
+	changesetName     *string
 }
 
 func (r ApiTacacsprofilesDeleteRequest) TacacsProfileName(tacacsProfileName []string) ApiTacacsprofilesDeleteRequest {
@@ -49,23 +48,22 @@ TacacsprofilesDelete Delete TACACS Profile
 
 Deletes an existing TACACS Profile from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiTacacsprofilesDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiTacacsprofilesDeleteRequest
 */
 func (a *TACACSProfilesAPIService) TacacsprofilesDelete(ctx context.Context) ApiTacacsprofilesDeleteRequest {
 	return ApiTacacsprofilesDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *TACACSProfilesAPIService) TacacsprofilesDeleteExecute(r ApiTacacsprofilesDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TACACSProfilesAPIService.TacacsprofilesDelete")
@@ -142,11 +140,11 @@ func (a *TACACSProfilesAPIService) TacacsprofilesDeleteExecute(r ApiTacacsprofil
 }
 
 type ApiTacacsprofilesGetRequest struct {
-	ctx context.Context
-	ApiService *TACACSProfilesAPIService
+	ctx               context.Context
+	ApiService        *TACACSProfilesAPIService
 	tacacsProfileName *string
-	includeData *bool
-	changesetName *string
+	includeData       *bool
+	changesetName     *string
 }
 
 func (r ApiTacacsprofilesGetRequest) TacacsProfileName(tacacsProfileName string) ApiTacacsprofilesGetRequest {
@@ -173,23 +171,22 @@ TacacsprofilesGet Get all TACACS Profiles
 
 Downloads all TACACS Profiles from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiTacacsprofilesGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiTacacsprofilesGetRequest
 */
 func (a *TACACSProfilesAPIService) TacacsprofilesGet(ctx context.Context) ApiTacacsprofilesGetRequest {
 	return ApiTacacsprofilesGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *TACACSProfilesAPIService) TacacsprofilesGetExecute(r ApiTacacsprofilesGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TACACSProfilesAPIService.TacacsprofilesGet")
@@ -258,9 +255,9 @@ func (a *TACACSProfilesAPIService) TacacsprofilesGetExecute(r ApiTacacsprofilesG
 }
 
 type ApiTacacsprofilesPatchRequest struct {
-	ctx context.Context
-	ApiService *TACACSProfilesAPIService
-	changesetName *string
+	ctx                      context.Context
+	ApiService               *TACACSProfilesAPIService
+	changesetName            *string
 	tacacsprofilesPutRequest *TacacsprofilesPutRequest
 }
 
@@ -283,23 +280,22 @@ TacacsprofilesPatch Update TACACS Profile
 
 Update TACACS Profile into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiTacacsprofilesPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiTacacsprofilesPatchRequest
 */
 func (a *TACACSProfilesAPIService) TacacsprofilesPatch(ctx context.Context) ApiTacacsprofilesPatchRequest {
 	return ApiTacacsprofilesPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *TACACSProfilesAPIService) TacacsprofilesPatchExecute(r ApiTacacsprofilesPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TACACSProfilesAPIService.TacacsprofilesPatch")
@@ -364,9 +360,9 @@ func (a *TACACSProfilesAPIService) TacacsprofilesPatchExecute(r ApiTacacsprofile
 }
 
 type ApiTacacsprofilesPutRequest struct {
-	ctx context.Context
-	ApiService *TACACSProfilesAPIService
-	changesetName *string
+	ctx                      context.Context
+	ApiService               *TACACSProfilesAPIService
+	changesetName            *string
 	tacacsprofilesPutRequest *TacacsprofilesPutRequest
 }
 
@@ -389,23 +385,22 @@ TacacsprofilesPut Create TACACS Profile
 
 Create TACACS Profile into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiTacacsprofilesPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiTacacsprofilesPutRequest
 */
 func (a *TACACSProfilesAPIService) TacacsprofilesPut(ctx context.Context) ApiTacacsprofilesPutRequest {
 	return ApiTacacsprofilesPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *TACACSProfilesAPIService) TacacsprofilesPutExecute(r ApiTacacsprofilesPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TACACSProfilesAPIService.TacacsprofilesPut")

@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,9 +19,9 @@ var _ MappedNullable = &SfpbreakoutsPatchRequestSfpBreakoutsValue{}
 
 // SfpbreakoutsPatchRequestSfpBreakoutsValue struct for SfpbreakoutsPatchRequestSfpBreakoutsValue
 type SfpbreakoutsPatchRequestSfpBreakoutsValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	Breakout []SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner `json:"breakout,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                `json:"name,omitempty"`
 	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
 }
 
@@ -44,38 +44,6 @@ func NewSfpbreakoutsPatchRequestSfpBreakoutsValueWithDefaults() *SfpbreakoutsPat
 	var name string = ""
 	this.Name = &name
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetBreakout returns the Breakout field value if set, zero value otherwise.
@@ -108,6 +76,38 @@ func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) HasBreakout() bool {
 // SetBreakout gets a reference to the given []SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner and assigns it to the Breakout field.
 func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) SetBreakout(v []SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) {
 	o.Breakout = v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -143,7 +143,7 @@ func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) SetObjectProperties(v map[st
 }
 
 func (o SfpbreakoutsPatchRequestSfpBreakoutsValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -152,11 +152,11 @@ func (o SfpbreakoutsPatchRequestSfpBreakoutsValue) MarshalJSON() ([]byte, error)
 
 func (o SfpbreakoutsPatchRequestSfpBreakoutsValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Breakout) {
 		toSerialize["breakout"] = o.Breakout
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
@@ -199,5 +199,3 @@ func (v *NullableSfpbreakoutsPatchRequestSfpBreakoutsValue) UnmarshalJSON(src []
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

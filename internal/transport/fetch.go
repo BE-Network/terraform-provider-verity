@@ -47,7 +47,13 @@ func FetchCollection(ctx context.Context, client *openapi.APIClient, label, endp
 	}
 	defer response.Body.Close()
 	if config.Debug {
-		dump, err := httputil.DumpResponse(response, true)
+		debugResponse := *response
+		debugResponse.Header = response.Header.Clone()
+		if debugResponse.Header.Get("Set-Cookie") != "" {
+			debugResponse.Header.Set("Set-Cookie", "[REDACTED]")
+		}
+		dump, err := httputil.DumpResponse(&debugResponse, true)
+		response.Body = debugResponse.Body
 		if err != nil {
 			return nil, fmt.Errorf("dump %s response: %w", label, err)
 		}

@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // PBRoutingACLAPIService PBRoutingACLAPI service
 type PBRoutingACLAPIService service
 
 type ApiPolicybasedroutingaclDeleteRequest struct {
-	ctx context.Context
-	ApiService *PBRoutingACLAPIService
+	ctx              context.Context
+	ApiService       *PBRoutingACLAPIService
 	pbRoutingAclName *[]string
-	changesetName *string
+	changesetName    *string
 }
 
 func (r ApiPolicybasedroutingaclDeleteRequest) PbRoutingAclName(pbRoutingAclName []string) ApiPolicybasedroutingaclDeleteRequest {
@@ -49,23 +48,22 @@ PolicybasedroutingaclDelete Delete PB Routing ACL
 
 Deletes an existing PB Routing ACL from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPolicybasedroutingaclDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPolicybasedroutingaclDeleteRequest
 */
 func (a *PBRoutingACLAPIService) PolicybasedroutingaclDelete(ctx context.Context) ApiPolicybasedroutingaclDeleteRequest {
 	return ApiPolicybasedroutingaclDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PBRoutingACLAPIService) PolicybasedroutingaclDeleteExecute(r ApiPolicybasedroutingaclDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PBRoutingACLAPIService.PolicybasedroutingaclDelete")
@@ -142,11 +140,11 @@ func (a *PBRoutingACLAPIService) PolicybasedroutingaclDeleteExecute(r ApiPolicyb
 }
 
 type ApiPolicybasedroutingaclGetRequest struct {
-	ctx context.Context
-	ApiService *PBRoutingACLAPIService
+	ctx              context.Context
+	ApiService       *PBRoutingACLAPIService
 	pbRoutingAclName *string
-	includeData *bool
-	changesetName *string
+	includeData      *bool
+	changesetName    *string
 }
 
 func (r ApiPolicybasedroutingaclGetRequest) PbRoutingAclName(pbRoutingAclName string) ApiPolicybasedroutingaclGetRequest {
@@ -173,23 +171,22 @@ PolicybasedroutingaclGet Get all PB Routing ACLs
 
 Downloads all PB Routing ACLs from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPolicybasedroutingaclGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPolicybasedroutingaclGetRequest
 */
 func (a *PBRoutingACLAPIService) PolicybasedroutingaclGet(ctx context.Context) ApiPolicybasedroutingaclGetRequest {
 	return ApiPolicybasedroutingaclGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PBRoutingACLAPIService) PolicybasedroutingaclGetExecute(r ApiPolicybasedroutingaclGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PBRoutingACLAPIService.PolicybasedroutingaclGet")
@@ -258,9 +255,9 @@ func (a *PBRoutingACLAPIService) PolicybasedroutingaclGetExecute(r ApiPolicybase
 }
 
 type ApiPolicybasedroutingaclPatchRequest struct {
-	ctx context.Context
-	ApiService *PBRoutingACLAPIService
-	changesetName *string
+	ctx                             context.Context
+	ApiService                      *PBRoutingACLAPIService
+	changesetName                   *string
 	policybasedroutingaclPutRequest *PolicybasedroutingaclPutRequest
 }
 
@@ -283,23 +280,22 @@ PolicybasedroutingaclPatch Update PB Routing ACL
 
 Update PB Routing ACL into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPolicybasedroutingaclPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPolicybasedroutingaclPatchRequest
 */
 func (a *PBRoutingACLAPIService) PolicybasedroutingaclPatch(ctx context.Context) ApiPolicybasedroutingaclPatchRequest {
 	return ApiPolicybasedroutingaclPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PBRoutingACLAPIService) PolicybasedroutingaclPatchExecute(r ApiPolicybasedroutingaclPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PBRoutingACLAPIService.PolicybasedroutingaclPatch")
@@ -364,9 +360,9 @@ func (a *PBRoutingACLAPIService) PolicybasedroutingaclPatchExecute(r ApiPolicyba
 }
 
 type ApiPolicybasedroutingaclPutRequest struct {
-	ctx context.Context
-	ApiService *PBRoutingACLAPIService
-	changesetName *string
+	ctx                             context.Context
+	ApiService                      *PBRoutingACLAPIService
+	changesetName                   *string
 	policybasedroutingaclPutRequest *PolicybasedroutingaclPutRequest
 }
 
@@ -389,23 +385,22 @@ PolicybasedroutingaclPut Create PB Routing ACL
 
 Create PB Routing ACL into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPolicybasedroutingaclPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPolicybasedroutingaclPutRequest
 */
 func (a *PBRoutingACLAPIService) PolicybasedroutingaclPut(ctx context.Context) ApiPolicybasedroutingaclPutRequest {
 	return ApiPolicybasedroutingaclPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PBRoutingACLAPIService) PolicybasedroutingaclPutExecute(r ApiPolicybasedroutingaclPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PBRoutingACLAPIService.PolicybasedroutingaclPut")

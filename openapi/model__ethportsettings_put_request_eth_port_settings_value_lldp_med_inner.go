@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,20 +19,20 @@ var _ MappedNullable = &EthportsettingsPutRequestEthPortSettingsValueLldpMedInne
 
 // EthportsettingsPutRequestEthPortSettingsValueLldpMedInner struct for EthportsettingsPutRequestEthPortSettingsValueLldpMedInner
 type EthportsettingsPutRequestEthPortSettingsValueLldpMedInner struct {
-	// Per LLDP Med row enable
-	LldpMedRowNumEnable *bool `json:"lldp_med_row_num_enable,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
 	// Advertised application
 	LldpMedRowNumAdvertisedApplicatio *string `json:"lldp_med_row_num_advertised_applicatio,omitempty"`
 	// Defines egress LLDP sent when a device is connected to this Eth-Port Settings allowing the device to auto-provision its DSCP marking.
 	LldpMedRowNumDscpMark NullableInt64 `json:"lldp_med_row_num_dscp_mark,omitempty"`
+	// Per LLDP Med row enable
+	LldpMedRowNumEnable *bool `json:"lldp_med_row_num_enable,omitempty"`
 	// LLDP Priority
 	LldpMedRowNumPriority NullableInt64 `json:"lldp_med_row_num_priority,omitempty"`
 	// LLDP Service
 	LldpMedRowNumService *string `json:"lldp_med_row_num_service,omitempty"`
 	// Object type for lldp_med_row_num_service field
 	LldpMedRowNumServiceRefType *string `json:"lldp_med_row_num_service_ref_type_,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
 }
 
 // NewEthportsettingsPutRequestEthPortSettingsValueLldpMedInner instantiates a new EthportsettingsPutRequestEthPortSettingsValueLldpMedInner object
@@ -41,12 +41,12 @@ type EthportsettingsPutRequestEthPortSettingsValueLldpMedInner struct {
 // will change when the set of required properties is changed
 func NewEthportsettingsPutRequestEthPortSettingsValueLldpMedInner() *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner {
 	this := EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
-	var lldpMedRowNumEnable bool = false
-	this.LldpMedRowNumEnable = &lldpMedRowNumEnable
 	var lldpMedRowNumAdvertisedApplicatio string = ""
 	this.LldpMedRowNumAdvertisedApplicatio = &lldpMedRowNumAdvertisedApplicatio
 	var lldpMedRowNumDscpMark int64 = 0
 	this.LldpMedRowNumDscpMark = *NewNullableInt64(&lldpMedRowNumDscpMark)
+	var lldpMedRowNumEnable bool = false
+	this.LldpMedRowNumEnable = &lldpMedRowNumEnable
 	var lldpMedRowNumPriority int64 = 0
 	this.LldpMedRowNumPriority = *NewNullableInt64(&lldpMedRowNumPriority)
 	var lldpMedRowNumService string = ""
@@ -59,12 +59,12 @@ func NewEthportsettingsPutRequestEthPortSettingsValueLldpMedInner() *Ethportsett
 // but it doesn't guarantee that properties required by API are set
 func NewEthportsettingsPutRequestEthPortSettingsValueLldpMedInnerWithDefaults() *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner {
 	this := EthportsettingsPutRequestEthPortSettingsValueLldpMedInner{}
-	var lldpMedRowNumEnable bool = false
-	this.LldpMedRowNumEnable = &lldpMedRowNumEnable
 	var lldpMedRowNumAdvertisedApplicatio string = ""
 	this.LldpMedRowNumAdvertisedApplicatio = &lldpMedRowNumAdvertisedApplicatio
 	var lldpMedRowNumDscpMark int64 = 0
 	this.LldpMedRowNumDscpMark = *NewNullableInt64(&lldpMedRowNumDscpMark)
+	var lldpMedRowNumEnable bool = false
+	this.LldpMedRowNumEnable = &lldpMedRowNumEnable
 	var lldpMedRowNumPriority int64 = 0
 	this.LldpMedRowNumPriority = *NewNullableInt64(&lldpMedRowNumPriority)
 	var lldpMedRowNumService string = ""
@@ -72,36 +72,36 @@ func NewEthportsettingsPutRequestEthPortSettingsValueLldpMedInnerWithDefaults() 
 	return &this
 }
 
-// GetLldpMedRowNumEnable returns the LldpMedRowNumEnable field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetLldpMedRowNumEnable() bool {
-	if o == nil || IsNil(o.LldpMedRowNumEnable) {
-		var ret bool
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
 		return ret
 	}
-	return *o.LldpMedRowNumEnable
+	return *o.Index
 }
 
-// GetLldpMedRowNumEnableOk returns a tuple with the LldpMedRowNumEnable field value if set, nil otherwise
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetLldpMedRowNumEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.LldpMedRowNumEnable) {
+func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
-	return o.LldpMedRowNumEnable, true
+	return o.Index, true
 }
 
-// HasLldpMedRowNumEnable returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) HasLldpMedRowNumEnable() bool {
-	if o != nil && !IsNil(o.LldpMedRowNumEnable) {
+// HasIndex returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
 		return true
 	}
 
 	return false
 }
 
-// SetLldpMedRowNumEnable gets a reference to the given bool and assigns it to the LldpMedRowNumEnable field.
-func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetLldpMedRowNumEnable(v bool) {
-	o.LldpMedRowNumEnable = &v
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetLldpMedRowNumAdvertisedApplicatio returns the LldpMedRowNumAdvertisedApplicatio field value if set, zero value otherwise.
@@ -168,6 +168,7 @@ func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) HasLldpMedRo
 func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetLldpMedRowNumDscpMark(v int64) {
 	o.LldpMedRowNumDscpMark.Set(&v)
 }
+
 // SetLldpMedRowNumDscpMarkNil sets the value for LldpMedRowNumDscpMark to be an explicit nil
 func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetLldpMedRowNumDscpMarkNil() {
 	o.LldpMedRowNumDscpMark.Set(nil)
@@ -176,6 +177,38 @@ func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetLldpMedRo
 // UnsetLldpMedRowNumDscpMark ensures that no value is present for LldpMedRowNumDscpMark, not even an explicit nil
 func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) UnsetLldpMedRowNumDscpMark() {
 	o.LldpMedRowNumDscpMark.Unset()
+}
+
+// GetLldpMedRowNumEnable returns the LldpMedRowNumEnable field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetLldpMedRowNumEnable() bool {
+	if o == nil || IsNil(o.LldpMedRowNumEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.LldpMedRowNumEnable
+}
+
+// GetLldpMedRowNumEnableOk returns a tuple with the LldpMedRowNumEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetLldpMedRowNumEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.LldpMedRowNumEnable) {
+		return nil, false
+	}
+	return o.LldpMedRowNumEnable, true
+}
+
+// HasLldpMedRowNumEnable returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) HasLldpMedRowNumEnable() bool {
+	if o != nil && !IsNil(o.LldpMedRowNumEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetLldpMedRowNumEnable gets a reference to the given bool and assigns it to the LldpMedRowNumEnable field.
+func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetLldpMedRowNumEnable(v bool) {
+	o.LldpMedRowNumEnable = &v
 }
 
 // GetLldpMedRowNumPriority returns the LldpMedRowNumPriority field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -210,6 +243,7 @@ func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) HasLldpMedRo
 func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetLldpMedRowNumPriority(v int64) {
 	o.LldpMedRowNumPriority.Set(&v)
 }
+
 // SetLldpMedRowNumPriorityNil sets the value for LldpMedRowNumPriority to be an explicit nil
 func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetLldpMedRowNumPriorityNil() {
 	o.LldpMedRowNumPriority.Set(nil)
@@ -284,40 +318,8 @@ func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetLldpMedRo
 	o.LldpMedRowNumServiceRefType = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) SetIndex(v int64) {
-	o.Index = &v
-}
-
 func (o EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -326,14 +328,17 @@ func (o EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) MarshalJSON()
 
 func (o EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.LldpMedRowNumEnable) {
-		toSerialize["lldp_med_row_num_enable"] = o.LldpMedRowNumEnable
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	if !IsNil(o.LldpMedRowNumAdvertisedApplicatio) {
 		toSerialize["lldp_med_row_num_advertised_applicatio"] = o.LldpMedRowNumAdvertisedApplicatio
 	}
 	if o.LldpMedRowNumDscpMark.IsSet() {
 		toSerialize["lldp_med_row_num_dscp_mark"] = o.LldpMedRowNumDscpMark.Get()
+	}
+	if !IsNil(o.LldpMedRowNumEnable) {
+		toSerialize["lldp_med_row_num_enable"] = o.LldpMedRowNumEnable
 	}
 	if o.LldpMedRowNumPriority.IsSet() {
 		toSerialize["lldp_med_row_num_priority"] = o.LldpMedRowNumPriority.Get()
@@ -343,9 +348,6 @@ func (o EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) ToMap() (map[
 	}
 	if !IsNil(o.LldpMedRowNumServiceRefType) {
 		toSerialize["lldp_med_row_num_service_ref_type_"] = o.LldpMedRowNumServiceRefType
-	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }
@@ -385,5 +387,3 @@ func (v *NullableEthportsettingsPutRequestEthPortSettingsValueLldpMedInner) Unma
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

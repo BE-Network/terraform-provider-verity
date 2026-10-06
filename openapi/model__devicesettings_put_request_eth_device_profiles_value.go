@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,56 +19,56 @@ var _ MappedNullable = &DevicesettingsPutRequestEthDeviceProfilesValue{}
 
 // DevicesettingsPutRequestEthDeviceProfilesValue struct for DevicesettingsPutRequestEthDeviceProfilesValue
 type DevicesettingsPutRequestEthDeviceProfilesValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
 	// CLI Commands
 	CliCommands *string `json:"cli_commands,omitempty"`
-	// Mode
-	Mode *string `json:"mode,omitempty"`
-	// Usage Threshold
-	UsageThreshold NullableFloat64 `json:"usage_threshold,omitempty"`
-	// External Battery Power Available
-	ExternalBatteryPowerAvailable NullableInt64 `json:"external_battery_power_available,omitempty"`
-	// External Power Available
-	ExternalPowerAvailable NullableInt64 `json:"external_power_available,omitempty"`
-	// Required for AVB, PTP and Cobranet Support for ONT Devices
-	DisableTcpUdpLearnedPacketAcceleration *bool `json:"disable_tcp_udp_learned_packet_acceleration,omitempty"`
-	// Packet Queue for device
-	PacketQueue *string `json:"packet_queue,omitempty"`
-	// Object type for packet_queue field
-	PacketQueueRefType *string `json:"packet_queue_ref_type_,omitempty"`
+	// Time delay in minutes to write the Switch configuration to flash after a change is made.                                                 <br>if the value is blank, commit will use default switch settings of 12 hours.                                                 <br>if the value is 0, commit will be turned off.
+	CommitToFlashInterval NullableInt64 `json:"commit_to_flash_interval,omitempty"`
+	// Enable Cut-through Switching on all Switches
+	CutThroughSwitching *bool `json:"cut_through_switching,omitempty"`
 	// Device AAA Profile for authentication settings
 	DeviceAaaProfile *string `json:"device_aaa_profile,omitempty"`
 	// Object type for device_aaa_profile field
 	DeviceAaaProfileRefType *string `json:"device_aaa_profile_ref_type_,omitempty"`
-	// Frequency in minutes of rereading this Switch running configuration and comparing it to expected values.                                                 <br>if the value is blank, audit will use default switch settings.                                                 <br>if the value is 0, audit will be turned off.                                                 
-	SecurityAuditInterval NullableInt64 `json:"security_audit_interval,omitempty"`
-	// Time delay in minutes to write the Switch configuration to flash after a change is made.                                                 <br>if the value is blank, commit will use default switch settings of 12 hours.                                                 <br>if the value is 0, commit will be turned off.
-	CommitToFlashInterval NullableInt64 `json:"commit_to_flash_interval,omitempty"`
-	// Enable RDMA over Converged Ethernet version 2 network protocol. Switches that are set to ROCE mode should already have their port breakouts set up and should not have any ports configured with LAGs.
-	Rocev2 *bool `json:"rocev2,omitempty"`
-	// Enable Cut-through Switching on all Switches
-	CutThroughSwitching *bool `json:"cut_through_switching,omitempty"`
+	// Required for AVB, PTP and Cobranet Support for ONT Devices
+	DisableTcpUdpLearnedPacketAcceleration *bool                                                           `json:"disable_tcp_udp_learned_packet_acceleration,omitempty"`
+	DnsServers                             []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner `json:"dns_servers,omitempty"`
+	// Enable object.
+	Enable *bool `json:"enable,omitempty"`
+	// External Battery Power Available
+	ExternalBatteryPowerAvailable NullableInt64 `json:"external_battery_power_available,omitempty"`
+	// External Power Available
+	ExternalPowerAvailable NullableInt64 `json:"external_power_available,omitempty"`
+	// Hold Timer
+	HoldTimer NullableInt64 `json:"hold_timer,omitempty"`
 	// Banner message displayed at login
 	LoginBanner *string `json:"login_banner,omitempty"`
-	DnsServers []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner `json:"dns_servers,omitempty"`
+	// Blank uses the Device's default; otherwise an integer between 1 to 1,000,000 seconds
+	MacAgingTimerOverride NullableInt64 `json:"mac_aging_timer_override,omitempty"`
+	// Mode
+	Mode *string `json:"mode,omitempty"`
+	// Template Name. Must be unique within type.
+	Name       *string                                                         `json:"name,omitempty"`
+	NtpServers []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner `json:"ntp_servers,omitempty"`
 	// VRF used for NTP Servers
 	NtpVrf *string `json:"ntp_vrf,omitempty"`
 	// Tenant used for NTP Servers
 	NtpVrfTenant *string `json:"ntp_vrf_tenant,omitempty"`
 	// Object type for ntp_vrf_tenant field
-	NtpVrfTenantRefType *string `json:"ntp_vrf_tenant_ref_type_,omitempty"`
-	NtpServers []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner `json:"ntp_servers,omitempty"`
-	SyslogServers []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner `json:"syslog_servers,omitempty"`
-	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
-	// Hold Timer
-	HoldTimer NullableInt64 `json:"hold_timer,omitempty"`
-	// Blank uses the Device's default; otherwise an integer between 1 to 1,000,000 seconds
-	MacAgingTimerOverride NullableInt64 `json:"mac_aging_timer_override,omitempty"`
+	NtpVrfTenantRefType *string                `json:"ntp_vrf_tenant_ref_type_,omitempty"`
+	ObjectProperties    map[string]interface{} `json:"object_properties,omitempty"`
+	// Packet Queue for device
+	PacketQueue *string `json:"packet_queue,omitempty"`
+	// Object type for packet_queue field
+	PacketQueueRefType *string `json:"packet_queue_ref_type_,omitempty"`
+	// Enable RDMA over Converged Ethernet version 2 network protocol. Switches that are set to ROCE mode should already have their port breakouts set up and should not have any ports configured with LAGs.
+	Rocev2 *bool `json:"rocev2,omitempty"`
+	// Frequency in minutes of rereading this Switch running configuration and comparing it to expected values.                                                 <br>if the value is blank, audit will use default switch settings.                                                 <br>if the value is 0, audit will be turned off.
+	SecurityAuditInterval NullableInt64 `json:"security_audit_interval,omitempty"`
 	// STP per switch, priority are in 4096 increments, the lower the number, the higher the priority.
-	SpanningTreePriority *string `json:"spanning_tree_priority,omitempty"`
+	SpanningTreePriority *string                                                            `json:"spanning_tree_priority,omitempty"`
+	SyslogServers        []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner `json:"syslog_servers,omitempty"`
+	// Usage Threshold
+	UsageThreshold NullableFloat64 `json:"usage_threshold,omitempty"`
 }
 
 // NewDevicesettingsPutRequestEthDeviceProfilesValue instantiates a new DevicesettingsPutRequestEthDeviceProfilesValue object
@@ -77,40 +77,40 @@ type DevicesettingsPutRequestEthDeviceProfilesValue struct {
 // will change when the set of required properties is changed
 func NewDevicesettingsPutRequestEthDeviceProfilesValue() *DevicesettingsPutRequestEthDeviceProfilesValue {
 	this := DevicesettingsPutRequestEthDeviceProfilesValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
 	var cliCommands string = ""
 	this.CliCommands = &cliCommands
-	var mode string = "IEEE 802.3af"
-	this.Mode = &mode
+	var commitToFlashInterval int64 = 60
+	this.CommitToFlashInterval = *NewNullableInt64(&commitToFlashInterval)
+	var cutThroughSwitching bool = false
+	this.CutThroughSwitching = &cutThroughSwitching
+	var deviceAaaProfile string = ""
+	this.DeviceAaaProfile = &deviceAaaProfile
+	var disableTcpUdpLearnedPacketAcceleration bool = false
+	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
+	var enable bool = false
+	this.Enable = &enable
 	var externalBatteryPowerAvailable int64 = 40
 	this.ExternalBatteryPowerAvailable = *NewNullableInt64(&externalBatteryPowerAvailable)
 	var externalPowerAvailable int64 = 75
 	this.ExternalPowerAvailable = *NewNullableInt64(&externalPowerAvailable)
-	var disableTcpUdpLearnedPacketAcceleration bool = false
-	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
-	var packetQueue string = ""
-	this.PacketQueue = &packetQueue
-	var deviceAaaProfile string = ""
-	this.DeviceAaaProfile = &deviceAaaProfile
-	var securityAuditInterval int64 = 60
-	this.SecurityAuditInterval = *NewNullableInt64(&securityAuditInterval)
-	var commitToFlashInterval int64 = 60
-	this.CommitToFlashInterval = *NewNullableInt64(&commitToFlashInterval)
-	var rocev2 bool = false
-	this.Rocev2 = &rocev2
-	var cutThroughSwitching bool = false
-	this.CutThroughSwitching = &cutThroughSwitching
+	var holdTimer int64 = 0
+	this.HoldTimer = *NewNullableInt64(&holdTimer)
 	var loginBanner string = ""
 	this.LoginBanner = &loginBanner
+	var mode string = "IEEE 802.3af"
+	this.Mode = &mode
+	var name string = ""
+	this.Name = &name
 	var ntpVrf string = "mgmt"
 	this.NtpVrf = &ntpVrf
 	var ntpVrfTenant string = ""
 	this.NtpVrfTenant = &ntpVrfTenant
-	var holdTimer int64 = 0
-	this.HoldTimer = *NewNullableInt64(&holdTimer)
+	var packetQueue string = ""
+	this.PacketQueue = &packetQueue
+	var rocev2 bool = false
+	this.Rocev2 = &rocev2
+	var securityAuditInterval int64 = 60
+	this.SecurityAuditInterval = *NewNullableInt64(&securityAuditInterval)
 	var spanningTreePriority string = "byLevel"
 	this.SpanningTreePriority = &spanningTreePriority
 	return &this
@@ -121,107 +121,43 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValue() *DevicesettingsPutReque
 // but it doesn't guarantee that properties required by API are set
 func NewDevicesettingsPutRequestEthDeviceProfilesValueWithDefaults() *DevicesettingsPutRequestEthDeviceProfilesValue {
 	this := DevicesettingsPutRequestEthDeviceProfilesValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
 	var cliCommands string = ""
 	this.CliCommands = &cliCommands
-	var mode string = "IEEE 802.3af"
-	this.Mode = &mode
+	var commitToFlashInterval int64 = 60
+	this.CommitToFlashInterval = *NewNullableInt64(&commitToFlashInterval)
+	var cutThroughSwitching bool = false
+	this.CutThroughSwitching = &cutThroughSwitching
+	var deviceAaaProfile string = ""
+	this.DeviceAaaProfile = &deviceAaaProfile
+	var disableTcpUdpLearnedPacketAcceleration bool = false
+	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
+	var enable bool = false
+	this.Enable = &enable
 	var externalBatteryPowerAvailable int64 = 40
 	this.ExternalBatteryPowerAvailable = *NewNullableInt64(&externalBatteryPowerAvailable)
 	var externalPowerAvailable int64 = 75
 	this.ExternalPowerAvailable = *NewNullableInt64(&externalPowerAvailable)
-	var disableTcpUdpLearnedPacketAcceleration bool = false
-	this.DisableTcpUdpLearnedPacketAcceleration = &disableTcpUdpLearnedPacketAcceleration
-	var packetQueue string = ""
-	this.PacketQueue = &packetQueue
-	var deviceAaaProfile string = ""
-	this.DeviceAaaProfile = &deviceAaaProfile
-	var securityAuditInterval int64 = 60
-	this.SecurityAuditInterval = *NewNullableInt64(&securityAuditInterval)
-	var commitToFlashInterval int64 = 60
-	this.CommitToFlashInterval = *NewNullableInt64(&commitToFlashInterval)
-	var rocev2 bool = false
-	this.Rocev2 = &rocev2
-	var cutThroughSwitching bool = false
-	this.CutThroughSwitching = &cutThroughSwitching
+	var holdTimer int64 = 0
+	this.HoldTimer = *NewNullableInt64(&holdTimer)
 	var loginBanner string = ""
 	this.LoginBanner = &loginBanner
+	var mode string = "IEEE 802.3af"
+	this.Mode = &mode
+	var name string = ""
+	this.Name = &name
 	var ntpVrf string = "mgmt"
 	this.NtpVrf = &ntpVrf
 	var ntpVrfTenant string = ""
 	this.NtpVrfTenant = &ntpVrfTenant
-	var holdTimer int64 = 0
-	this.HoldTimer = *NewNullableInt64(&holdTimer)
+	var packetQueue string = ""
+	this.PacketQueue = &packetQueue
+	var rocev2 bool = false
+	this.Rocev2 = &rocev2
+	var securityAuditInterval int64 = 60
+	this.SecurityAuditInterval = *NewNullableInt64(&securityAuditInterval)
 	var spanningTreePriority string = "byLevel"
 	this.SpanningTreePriority = &spanningTreePriority
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetName(v string) {
-	o.Name = &v
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetEnable(v bool) {
-	o.Enable = &v
 }
 
 // GetCliCommands returns the CliCommands field value if set, zero value otherwise.
@@ -256,258 +192,79 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetCliCommands(v string
 	o.CliCommands = &v
 }
 
-// GetMode returns the Mode field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetMode() string {
-	if o == nil || IsNil(o.Mode) {
-		var ret string
-		return ret
-	}
-	return *o.Mode
-}
-
-// GetModeOk returns a tuple with the Mode field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetModeOk() (*string, bool) {
-	if o == nil || IsNil(o.Mode) {
-		return nil, false
-	}
-	return o.Mode, true
-}
-
-// HasMode returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasMode() bool {
-	if o != nil && !IsNil(o.Mode) {
-		return true
-	}
-
-	return false
-}
-
-// SetMode gets a reference to the given string and assigns it to the Mode field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetMode(v string) {
-	o.Mode = &v
-}
-
-// GetUsageThreshold returns the UsageThreshold field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetUsageThreshold() float64 {
-	if o == nil || IsNil(o.UsageThreshold.Get()) {
-		var ret float64
-		return ret
-	}
-	return *o.UsageThreshold.Get()
-}
-
-// GetUsageThresholdOk returns a tuple with the UsageThreshold field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetUsageThresholdOk() (*float64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.UsageThreshold.Get(), o.UsageThreshold.IsSet()
-}
-
-// HasUsageThreshold returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasUsageThreshold() bool {
-	if o != nil && o.UsageThreshold.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetUsageThreshold gets a reference to the given NullableFloat64 and assigns it to the UsageThreshold field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetUsageThreshold(v float64) {
-	o.UsageThreshold.Set(&v)
-}
-// SetUsageThresholdNil sets the value for UsageThreshold to be an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetUsageThresholdNil() {
-	o.UsageThreshold.Set(nil)
-}
-
-// UnsetUsageThreshold ensures that no value is present for UsageThreshold, not even an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetUsageThreshold() {
-	o.UsageThreshold.Unset()
-}
-
-// GetExternalBatteryPowerAvailable returns the ExternalBatteryPowerAvailable field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalBatteryPowerAvailable() int64 {
-	if o == nil || IsNil(o.ExternalBatteryPowerAvailable.Get()) {
+// GetCommitToFlashInterval returns the CommitToFlashInterval field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCommitToFlashInterval() int64 {
+	if o == nil || IsNil(o.CommitToFlashInterval.Get()) {
 		var ret int64
 		return ret
 	}
-	return *o.ExternalBatteryPowerAvailable.Get()
+	return *o.CommitToFlashInterval.Get()
 }
 
-// GetExternalBatteryPowerAvailableOk returns a tuple with the ExternalBatteryPowerAvailable field value if set, nil otherwise
+// GetCommitToFlashIntervalOk returns a tuple with the CommitToFlashInterval field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalBatteryPowerAvailableOk() (*int64, bool) {
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCommitToFlashIntervalOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return o.ExternalBatteryPowerAvailable.Get(), o.ExternalBatteryPowerAvailable.IsSet()
+	return o.CommitToFlashInterval.Get(), o.CommitToFlashInterval.IsSet()
 }
 
-// HasExternalBatteryPowerAvailable returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasExternalBatteryPowerAvailable() bool {
-	if o != nil && o.ExternalBatteryPowerAvailable.IsSet() {
+// HasCommitToFlashInterval returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasCommitToFlashInterval() bool {
+	if o != nil && o.CommitToFlashInterval.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetExternalBatteryPowerAvailable gets a reference to the given NullableInt64 and assigns it to the ExternalBatteryPowerAvailable field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalBatteryPowerAvailable(v int64) {
-	o.ExternalBatteryPowerAvailable.Set(&v)
-}
-// SetExternalBatteryPowerAvailableNil sets the value for ExternalBatteryPowerAvailable to be an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalBatteryPowerAvailableNil() {
-	o.ExternalBatteryPowerAvailable.Set(nil)
+// SetCommitToFlashInterval gets a reference to the given NullableInt64 and assigns it to the CommitToFlashInterval field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetCommitToFlashInterval(v int64) {
+	o.CommitToFlashInterval.Set(&v)
 }
 
-// UnsetExternalBatteryPowerAvailable ensures that no value is present for ExternalBatteryPowerAvailable, not even an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetExternalBatteryPowerAvailable() {
-	o.ExternalBatteryPowerAvailable.Unset()
+// SetCommitToFlashIntervalNil sets the value for CommitToFlashInterval to be an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetCommitToFlashIntervalNil() {
+	o.CommitToFlashInterval.Set(nil)
 }
 
-// GetExternalPowerAvailable returns the ExternalPowerAvailable field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalPowerAvailable() int64 {
-	if o == nil || IsNil(o.ExternalPowerAvailable.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.ExternalPowerAvailable.Get()
+// UnsetCommitToFlashInterval ensures that no value is present for CommitToFlashInterval, not even an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetCommitToFlashInterval() {
+	o.CommitToFlashInterval.Unset()
 }
 
-// GetExternalPowerAvailableOk returns a tuple with the ExternalPowerAvailable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalPowerAvailableOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.ExternalPowerAvailable.Get(), o.ExternalPowerAvailable.IsSet()
-}
-
-// HasExternalPowerAvailable returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasExternalPowerAvailable() bool {
-	if o != nil && o.ExternalPowerAvailable.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetExternalPowerAvailable gets a reference to the given NullableInt64 and assigns it to the ExternalPowerAvailable field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalPowerAvailable(v int64) {
-	o.ExternalPowerAvailable.Set(&v)
-}
-// SetExternalPowerAvailableNil sets the value for ExternalPowerAvailable to be an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalPowerAvailableNil() {
-	o.ExternalPowerAvailable.Set(nil)
-}
-
-// UnsetExternalPowerAvailable ensures that no value is present for ExternalPowerAvailable, not even an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetExternalPowerAvailable() {
-	o.ExternalPowerAvailable.Unset()
-}
-
-// GetDisableTcpUdpLearnedPacketAcceleration returns the DisableTcpUdpLearnedPacketAcceleration field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDisableTcpUdpLearnedPacketAcceleration() bool {
-	if o == nil || IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
+// GetCutThroughSwitching returns the CutThroughSwitching field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCutThroughSwitching() bool {
+	if o == nil || IsNil(o.CutThroughSwitching) {
 		var ret bool
 		return ret
 	}
-	return *o.DisableTcpUdpLearnedPacketAcceleration
+	return *o.CutThroughSwitching
 }
 
-// GetDisableTcpUdpLearnedPacketAccelerationOk returns a tuple with the DisableTcpUdpLearnedPacketAcceleration field value if set, nil otherwise
+// GetCutThroughSwitchingOk returns a tuple with the CutThroughSwitching field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDisableTcpUdpLearnedPacketAccelerationOk() (*bool, bool) {
-	if o == nil || IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCutThroughSwitchingOk() (*bool, bool) {
+	if o == nil || IsNil(o.CutThroughSwitching) {
 		return nil, false
 	}
-	return o.DisableTcpUdpLearnedPacketAcceleration, true
+	return o.CutThroughSwitching, true
 }
 
-// HasDisableTcpUdpLearnedPacketAcceleration returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDisableTcpUdpLearnedPacketAcceleration() bool {
-	if o != nil && !IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
+// HasCutThroughSwitching returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasCutThroughSwitching() bool {
+	if o != nil && !IsNil(o.CutThroughSwitching) {
 		return true
 	}
 
 	return false
 }
 
-// SetDisableTcpUdpLearnedPacketAcceleration gets a reference to the given bool and assigns it to the DisableTcpUdpLearnedPacketAcceleration field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDisableTcpUdpLearnedPacketAcceleration(v bool) {
-	o.DisableTcpUdpLearnedPacketAcceleration = &v
-}
-
-// GetPacketQueue returns the PacketQueue field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueue() string {
-	if o == nil || IsNil(o.PacketQueue) {
-		var ret string
-		return ret
-	}
-	return *o.PacketQueue
-}
-
-// GetPacketQueueOk returns a tuple with the PacketQueue field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueOk() (*string, bool) {
-	if o == nil || IsNil(o.PacketQueue) {
-		return nil, false
-	}
-	return o.PacketQueue, true
-}
-
-// HasPacketQueue returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueue() bool {
-	if o != nil && !IsNil(o.PacketQueue) {
-		return true
-	}
-
-	return false
-}
-
-// SetPacketQueue gets a reference to the given string and assigns it to the PacketQueue field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueue(v string) {
-	o.PacketQueue = &v
-}
-
-// GetPacketQueueRefType returns the PacketQueueRefType field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueRefType() string {
-	if o == nil || IsNil(o.PacketQueueRefType) {
-		var ret string
-		return ret
-	}
-	return *o.PacketQueueRefType
-}
-
-// GetPacketQueueRefTypeOk returns a tuple with the PacketQueueRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.PacketQueueRefType) {
-		return nil, false
-	}
-	return o.PacketQueueRefType, true
-}
-
-// HasPacketQueueRefType returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueueRefType() bool {
-	if o != nil && !IsNil(o.PacketQueueRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetPacketQueueRefType gets a reference to the given string and assigns it to the PacketQueueRefType field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueueRefType(v string) {
-	o.PacketQueueRefType = &v
+// SetCutThroughSwitching gets a reference to the given bool and assigns it to the CutThroughSwitching field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetCutThroughSwitching(v bool) {
+	o.CutThroughSwitching = &v
 }
 
 // GetDeviceAaaProfile returns the DeviceAaaProfile field value if set, zero value otherwise.
@@ -574,152 +331,229 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDeviceAaaProfileRefT
 	o.DeviceAaaProfileRefType = &v
 }
 
-// GetSecurityAuditInterval returns the SecurityAuditInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSecurityAuditInterval() int64 {
-	if o == nil || IsNil(o.SecurityAuditInterval.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.SecurityAuditInterval.Get()
-}
-
-// GetSecurityAuditIntervalOk returns a tuple with the SecurityAuditInterval field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSecurityAuditIntervalOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.SecurityAuditInterval.Get(), o.SecurityAuditInterval.IsSet()
-}
-
-// HasSecurityAuditInterval returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasSecurityAuditInterval() bool {
-	if o != nil && o.SecurityAuditInterval.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetSecurityAuditInterval gets a reference to the given NullableInt64 and assigns it to the SecurityAuditInterval field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetSecurityAuditInterval(v int64) {
-	o.SecurityAuditInterval.Set(&v)
-}
-// SetSecurityAuditIntervalNil sets the value for SecurityAuditInterval to be an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetSecurityAuditIntervalNil() {
-	o.SecurityAuditInterval.Set(nil)
-}
-
-// UnsetSecurityAuditInterval ensures that no value is present for SecurityAuditInterval, not even an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetSecurityAuditInterval() {
-	o.SecurityAuditInterval.Unset()
-}
-
-// GetCommitToFlashInterval returns the CommitToFlashInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCommitToFlashInterval() int64 {
-	if o == nil || IsNil(o.CommitToFlashInterval.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.CommitToFlashInterval.Get()
-}
-
-// GetCommitToFlashIntervalOk returns a tuple with the CommitToFlashInterval field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCommitToFlashIntervalOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.CommitToFlashInterval.Get(), o.CommitToFlashInterval.IsSet()
-}
-
-// HasCommitToFlashInterval returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasCommitToFlashInterval() bool {
-	if o != nil && o.CommitToFlashInterval.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetCommitToFlashInterval gets a reference to the given NullableInt64 and assigns it to the CommitToFlashInterval field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetCommitToFlashInterval(v int64) {
-	o.CommitToFlashInterval.Set(&v)
-}
-// SetCommitToFlashIntervalNil sets the value for CommitToFlashInterval to be an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetCommitToFlashIntervalNil() {
-	o.CommitToFlashInterval.Set(nil)
-}
-
-// UnsetCommitToFlashInterval ensures that no value is present for CommitToFlashInterval, not even an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetCommitToFlashInterval() {
-	o.CommitToFlashInterval.Unset()
-}
-
-// GetRocev2 returns the Rocev2 field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetRocev2() bool {
-	if o == nil || IsNil(o.Rocev2) {
+// GetDisableTcpUdpLearnedPacketAcceleration returns the DisableTcpUdpLearnedPacketAcceleration field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDisableTcpUdpLearnedPacketAcceleration() bool {
+	if o == nil || IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
 		var ret bool
 		return ret
 	}
-	return *o.Rocev2
+	return *o.DisableTcpUdpLearnedPacketAcceleration
 }
 
-// GetRocev2Ok returns a tuple with the Rocev2 field value if set, nil otherwise
+// GetDisableTcpUdpLearnedPacketAccelerationOk returns a tuple with the DisableTcpUdpLearnedPacketAcceleration field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetRocev2Ok() (*bool, bool) {
-	if o == nil || IsNil(o.Rocev2) {
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDisableTcpUdpLearnedPacketAccelerationOk() (*bool, bool) {
+	if o == nil || IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
 		return nil, false
 	}
-	return o.Rocev2, true
+	return o.DisableTcpUdpLearnedPacketAcceleration, true
 }
 
-// HasRocev2 returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasRocev2() bool {
-	if o != nil && !IsNil(o.Rocev2) {
+// HasDisableTcpUdpLearnedPacketAcceleration returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDisableTcpUdpLearnedPacketAcceleration() bool {
+	if o != nil && !IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
 		return true
 	}
 
 	return false
 }
 
-// SetRocev2 gets a reference to the given bool and assigns it to the Rocev2 field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetRocev2(v bool) {
-	o.Rocev2 = &v
+// SetDisableTcpUdpLearnedPacketAcceleration gets a reference to the given bool and assigns it to the DisableTcpUdpLearnedPacketAcceleration field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDisableTcpUdpLearnedPacketAcceleration(v bool) {
+	o.DisableTcpUdpLearnedPacketAcceleration = &v
 }
 
-// GetCutThroughSwitching returns the CutThroughSwitching field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCutThroughSwitching() bool {
-	if o == nil || IsNil(o.CutThroughSwitching) {
+// GetDnsServers returns the DnsServers field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDnsServers() []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner {
+	if o == nil || IsNil(o.DnsServers) {
+		var ret []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner
+		return ret
+	}
+	return o.DnsServers
+}
+
+// GetDnsServersOk returns a tuple with the DnsServers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDnsServersOk() ([]DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner, bool) {
+	if o == nil || IsNil(o.DnsServers) {
+		return nil, false
+	}
+	return o.DnsServers, true
+}
+
+// HasDnsServers returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDnsServers() bool {
+	if o != nil && !IsNil(o.DnsServers) {
+		return true
+	}
+
+	return false
+}
+
+// SetDnsServers gets a reference to the given []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner and assigns it to the DnsServers field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDnsServers(v []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner) {
+	o.DnsServers = v
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
 		var ret bool
 		return ret
 	}
-	return *o.CutThroughSwitching
+	return *o.Enable
 }
 
-// GetCutThroughSwitchingOk returns a tuple with the CutThroughSwitching field value if set, nil otherwise
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetCutThroughSwitchingOk() (*bool, bool) {
-	if o == nil || IsNil(o.CutThroughSwitching) {
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
 		return nil, false
 	}
-	return o.CutThroughSwitching, true
+	return o.Enable, true
 }
 
-// HasCutThroughSwitching returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasCutThroughSwitching() bool {
-	if o != nil && !IsNil(o.CutThroughSwitching) {
+// HasEnable returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
 		return true
 	}
 
 	return false
 }
 
-// SetCutThroughSwitching gets a reference to the given bool and assigns it to the CutThroughSwitching field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetCutThroughSwitching(v bool) {
-	o.CutThroughSwitching = &v
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetEnable(v bool) {
+	o.Enable = &v
+}
+
+// GetExternalBatteryPowerAvailable returns the ExternalBatteryPowerAvailable field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalBatteryPowerAvailable() int64 {
+	if o == nil || IsNil(o.ExternalBatteryPowerAvailable.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.ExternalBatteryPowerAvailable.Get()
+}
+
+// GetExternalBatteryPowerAvailableOk returns a tuple with the ExternalBatteryPowerAvailable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalBatteryPowerAvailableOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ExternalBatteryPowerAvailable.Get(), o.ExternalBatteryPowerAvailable.IsSet()
+}
+
+// HasExternalBatteryPowerAvailable returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasExternalBatteryPowerAvailable() bool {
+	if o != nil && o.ExternalBatteryPowerAvailable.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetExternalBatteryPowerAvailable gets a reference to the given NullableInt64 and assigns it to the ExternalBatteryPowerAvailable field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalBatteryPowerAvailable(v int64) {
+	o.ExternalBatteryPowerAvailable.Set(&v)
+}
+
+// SetExternalBatteryPowerAvailableNil sets the value for ExternalBatteryPowerAvailable to be an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalBatteryPowerAvailableNil() {
+	o.ExternalBatteryPowerAvailable.Set(nil)
+}
+
+// UnsetExternalBatteryPowerAvailable ensures that no value is present for ExternalBatteryPowerAvailable, not even an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetExternalBatteryPowerAvailable() {
+	o.ExternalBatteryPowerAvailable.Unset()
+}
+
+// GetExternalPowerAvailable returns the ExternalPowerAvailable field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalPowerAvailable() int64 {
+	if o == nil || IsNil(o.ExternalPowerAvailable.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.ExternalPowerAvailable.Get()
+}
+
+// GetExternalPowerAvailableOk returns a tuple with the ExternalPowerAvailable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetExternalPowerAvailableOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ExternalPowerAvailable.Get(), o.ExternalPowerAvailable.IsSet()
+}
+
+// HasExternalPowerAvailable returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasExternalPowerAvailable() bool {
+	if o != nil && o.ExternalPowerAvailable.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetExternalPowerAvailable gets a reference to the given NullableInt64 and assigns it to the ExternalPowerAvailable field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalPowerAvailable(v int64) {
+	o.ExternalPowerAvailable.Set(&v)
+}
+
+// SetExternalPowerAvailableNil sets the value for ExternalPowerAvailable to be an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetExternalPowerAvailableNil() {
+	o.ExternalPowerAvailable.Set(nil)
+}
+
+// UnsetExternalPowerAvailable ensures that no value is present for ExternalPowerAvailable, not even an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetExternalPowerAvailable() {
+	o.ExternalPowerAvailable.Unset()
+}
+
+// GetHoldTimer returns the HoldTimer field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetHoldTimer() int64 {
+	if o == nil || IsNil(o.HoldTimer.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.HoldTimer.Get()
+}
+
+// GetHoldTimerOk returns a tuple with the HoldTimer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetHoldTimerOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.HoldTimer.Get(), o.HoldTimer.IsSet()
+}
+
+// HasHoldTimer returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasHoldTimer() bool {
+	if o != nil && o.HoldTimer.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetHoldTimer gets a reference to the given NullableInt64 and assigns it to the HoldTimer field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetHoldTimer(v int64) {
+	o.HoldTimer.Set(&v)
+}
+
+// SetHoldTimerNil sets the value for HoldTimer to be an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetHoldTimerNil() {
+	o.HoldTimer.Set(nil)
+}
+
+// UnsetHoldTimer ensures that no value is present for HoldTimer, not even an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetHoldTimer() {
+	o.HoldTimer.Unset()
 }
 
 // GetLoginBanner returns the LoginBanner field value if set, zero value otherwise.
@@ -754,36 +588,143 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetLoginBanner(v string
 	o.LoginBanner = &v
 }
 
-// GetDnsServers returns the DnsServers field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDnsServers() []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner {
-	if o == nil || IsNil(o.DnsServers) {
-		var ret []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner
+// GetMacAgingTimerOverride returns the MacAgingTimerOverride field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetMacAgingTimerOverride() int64 {
+	if o == nil || IsNil(o.MacAgingTimerOverride.Get()) {
+		var ret int64
 		return ret
 	}
-	return o.DnsServers
+	return *o.MacAgingTimerOverride.Get()
 }
 
-// GetDnsServersOk returns a tuple with the DnsServers field value if set, nil otherwise
+// GetMacAgingTimerOverrideOk returns a tuple with the MacAgingTimerOverride field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetDnsServersOk() ([]DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner, bool) {
-	if o == nil || IsNil(o.DnsServers) {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetMacAgingTimerOverrideOk() (*int64, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.DnsServers, true
+	return o.MacAgingTimerOverride.Get(), o.MacAgingTimerOverride.IsSet()
 }
 
-// HasDnsServers returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasDnsServers() bool {
-	if o != nil && !IsNil(o.DnsServers) {
+// HasMacAgingTimerOverride returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasMacAgingTimerOverride() bool {
+	if o != nil && o.MacAgingTimerOverride.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetDnsServers gets a reference to the given []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner and assigns it to the DnsServers field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetDnsServers(v []DevicesettingsPutRequestEthDeviceProfilesValueDnsServersInner) {
-	o.DnsServers = v
+// SetMacAgingTimerOverride gets a reference to the given NullableInt64 and assigns it to the MacAgingTimerOverride field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetMacAgingTimerOverride(v int64) {
+	o.MacAgingTimerOverride.Set(&v)
+}
+
+// SetMacAgingTimerOverrideNil sets the value for MacAgingTimerOverride to be an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetMacAgingTimerOverrideNil() {
+	o.MacAgingTimerOverride.Set(nil)
+}
+
+// UnsetMacAgingTimerOverride ensures that no value is present for MacAgingTimerOverride, not even an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetMacAgingTimerOverride() {
+	o.MacAgingTimerOverride.Unset()
+}
+
+// GetMode returns the Mode field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetMode() string {
+	if o == nil || IsNil(o.Mode) {
+		var ret string
+		return ret
+	}
+	return *o.Mode
+}
+
+// GetModeOk returns a tuple with the Mode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetModeOk() (*string, bool) {
+	if o == nil || IsNil(o.Mode) {
+		return nil, false
+	}
+	return o.Mode, true
+}
+
+// HasMode returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasMode() bool {
+	if o != nil && !IsNil(o.Mode) {
+		return true
+	}
+
+	return false
+}
+
+// SetMode gets a reference to the given string and assigns it to the Mode field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetMode(v string) {
+	o.Mode = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetName(v string) {
+	o.Name = &v
+}
+
+// GetNtpServers returns the NtpServers field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServers() []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner {
+	if o == nil || IsNil(o.NtpServers) {
+		var ret []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner
+		return ret
+	}
+	return o.NtpServers
+}
+
+// GetNtpServersOk returns a tuple with the NtpServers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServersOk() ([]DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner, bool) {
+	if o == nil || IsNil(o.NtpServers) {
+		return nil, false
+	}
+	return o.NtpServers, true
+}
+
+// HasNtpServers returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasNtpServers() bool {
+	if o != nil && !IsNil(o.NtpServers) {
+		return true
+	}
+
+	return false
+}
+
+// SetNtpServers gets a reference to the given []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner and assigns it to the NtpServers field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpServers(v []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) {
+	o.NtpServers = v
 }
 
 // GetNtpVrf returns the NtpVrf field value if set, zero value otherwise.
@@ -882,70 +823,6 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpVrfTenantRefType(
 	o.NtpVrfTenantRefType = &v
 }
 
-// GetNtpServers returns the NtpServers field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServers() []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner {
-	if o == nil || IsNil(o.NtpServers) {
-		var ret []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner
-		return ret
-	}
-	return o.NtpServers
-}
-
-// GetNtpServersOk returns a tuple with the NtpServers field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServersOk() ([]DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner, bool) {
-	if o == nil || IsNil(o.NtpServers) {
-		return nil, false
-	}
-	return o.NtpServers, true
-}
-
-// HasNtpServers returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasNtpServers() bool {
-	if o != nil && !IsNil(o.NtpServers) {
-		return true
-	}
-
-	return false
-}
-
-// SetNtpServers gets a reference to the given []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner and assigns it to the NtpServers field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetNtpServers(v []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) {
-	o.NtpServers = v
-}
-
-// GetSyslogServers returns the SyslogServers field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSyslogServers() []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner {
-	if o == nil || IsNil(o.SyslogServers) {
-		var ret []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner
-		return ret
-	}
-	return o.SyslogServers
-}
-
-// GetSyslogServersOk returns a tuple with the SyslogServers field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSyslogServersOk() ([]DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner, bool) {
-	if o == nil || IsNil(o.SyslogServers) {
-		return nil, false
-	}
-	return o.SyslogServers, true
-}
-
-// HasSyslogServers returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasSyslogServers() bool {
-	if o != nil && !IsNil(o.SyslogServers) {
-		return true
-	}
-
-	return false
-}
-
-// SetSyslogServers gets a reference to the given []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner and assigns it to the SyslogServers field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetSyslogServers(v []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) {
-	o.SyslogServers = v
-}
-
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetObjectProperties() map[string]interface{} {
 	if o == nil || IsNil(o.ObjectProperties) {
@@ -978,88 +855,143 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetObjectProperties(v m
 	o.ObjectProperties = v
 }
 
-// GetHoldTimer returns the HoldTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetHoldTimer() int64 {
-	if o == nil || IsNil(o.HoldTimer.Get()) {
-		var ret int64
+// GetPacketQueue returns the PacketQueue field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueue() string {
+	if o == nil || IsNil(o.PacketQueue) {
+		var ret string
 		return ret
 	}
-	return *o.HoldTimer.Get()
+	return *o.PacketQueue
 }
 
-// GetHoldTimerOk returns a tuple with the HoldTimer field value if set, nil otherwise
+// GetPacketQueueOk returns a tuple with the PacketQueue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetHoldTimerOk() (*int64, bool) {
-	if o == nil {
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueOk() (*string, bool) {
+	if o == nil || IsNil(o.PacketQueue) {
 		return nil, false
 	}
-	return o.HoldTimer.Get(), o.HoldTimer.IsSet()
+	return o.PacketQueue, true
 }
 
-// HasHoldTimer returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasHoldTimer() bool {
-	if o != nil && o.HoldTimer.IsSet() {
+// HasPacketQueue returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueue() bool {
+	if o != nil && !IsNil(o.PacketQueue) {
 		return true
 	}
 
 	return false
 }
 
-// SetHoldTimer gets a reference to the given NullableInt64 and assigns it to the HoldTimer field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetHoldTimer(v int64) {
-	o.HoldTimer.Set(&v)
-}
-// SetHoldTimerNil sets the value for HoldTimer to be an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetHoldTimerNil() {
-	o.HoldTimer.Set(nil)
+// SetPacketQueue gets a reference to the given string and assigns it to the PacketQueue field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueue(v string) {
+	o.PacketQueue = &v
 }
 
-// UnsetHoldTimer ensures that no value is present for HoldTimer, not even an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetHoldTimer() {
-	o.HoldTimer.Unset()
-}
-
-// GetMacAgingTimerOverride returns the MacAgingTimerOverride field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetMacAgingTimerOverride() int64 {
-	if o == nil || IsNil(o.MacAgingTimerOverride.Get()) {
-		var ret int64
+// GetPacketQueueRefType returns the PacketQueueRefType field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueRefType() string {
+	if o == nil || IsNil(o.PacketQueueRefType) {
+		var ret string
 		return ret
 	}
-	return *o.MacAgingTimerOverride.Get()
+	return *o.PacketQueueRefType
 }
 
-// GetMacAgingTimerOverrideOk returns a tuple with the MacAgingTimerOverride field value if set, nil otherwise
+// GetPacketQueueRefTypeOk returns a tuple with the PacketQueueRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetMacAgingTimerOverrideOk() (*int64, bool) {
-	if o == nil {
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetPacketQueueRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.PacketQueueRefType) {
 		return nil, false
 	}
-	return o.MacAgingTimerOverride.Get(), o.MacAgingTimerOverride.IsSet()
+	return o.PacketQueueRefType, true
 }
 
-// HasMacAgingTimerOverride returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasMacAgingTimerOverride() bool {
-	if o != nil && o.MacAgingTimerOverride.IsSet() {
+// HasPacketQueueRefType returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasPacketQueueRefType() bool {
+	if o != nil && !IsNil(o.PacketQueueRefType) {
 		return true
 	}
 
 	return false
 }
 
-// SetMacAgingTimerOverride gets a reference to the given NullableInt64 and assigns it to the MacAgingTimerOverride field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetMacAgingTimerOverride(v int64) {
-	o.MacAgingTimerOverride.Set(&v)
-}
-// SetMacAgingTimerOverrideNil sets the value for MacAgingTimerOverride to be an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetMacAgingTimerOverrideNil() {
-	o.MacAgingTimerOverride.Set(nil)
+// SetPacketQueueRefType gets a reference to the given string and assigns it to the PacketQueueRefType field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetPacketQueueRefType(v string) {
+	o.PacketQueueRefType = &v
 }
 
-// UnsetMacAgingTimerOverride ensures that no value is present for MacAgingTimerOverride, not even an explicit nil
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetMacAgingTimerOverride() {
-	o.MacAgingTimerOverride.Unset()
+// GetRocev2 returns the Rocev2 field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetRocev2() bool {
+	if o == nil || IsNil(o.Rocev2) {
+		var ret bool
+		return ret
+	}
+	return *o.Rocev2
+}
+
+// GetRocev2Ok returns a tuple with the Rocev2 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetRocev2Ok() (*bool, bool) {
+	if o == nil || IsNil(o.Rocev2) {
+		return nil, false
+	}
+	return o.Rocev2, true
+}
+
+// HasRocev2 returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasRocev2() bool {
+	if o != nil && !IsNil(o.Rocev2) {
+		return true
+	}
+
+	return false
+}
+
+// SetRocev2 gets a reference to the given bool and assigns it to the Rocev2 field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetRocev2(v bool) {
+	o.Rocev2 = &v
+}
+
+// GetSecurityAuditInterval returns the SecurityAuditInterval field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSecurityAuditInterval() int64 {
+	if o == nil || IsNil(o.SecurityAuditInterval.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.SecurityAuditInterval.Get()
+}
+
+// GetSecurityAuditIntervalOk returns a tuple with the SecurityAuditInterval field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSecurityAuditIntervalOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SecurityAuditInterval.Get(), o.SecurityAuditInterval.IsSet()
+}
+
+// HasSecurityAuditInterval returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasSecurityAuditInterval() bool {
+	if o != nil && o.SecurityAuditInterval.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSecurityAuditInterval gets a reference to the given NullableInt64 and assigns it to the SecurityAuditInterval field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetSecurityAuditInterval(v int64) {
+	o.SecurityAuditInterval.Set(&v)
+}
+
+// SetSecurityAuditIntervalNil sets the value for SecurityAuditInterval to be an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetSecurityAuditIntervalNil() {
+	o.SecurityAuditInterval.Set(nil)
+}
+
+// UnsetSecurityAuditInterval ensures that no value is present for SecurityAuditInterval, not even an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetSecurityAuditInterval() {
+	o.SecurityAuditInterval.Unset()
 }
 
 // GetSpanningTreePriority returns the SpanningTreePriority field value if set, zero value otherwise.
@@ -1094,8 +1026,83 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetSpanningTreePriority
 	o.SpanningTreePriority = &v
 }
 
+// GetSyslogServers returns the SyslogServers field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSyslogServers() []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner {
+	if o == nil || IsNil(o.SyslogServers) {
+		var ret []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner
+		return ret
+	}
+	return o.SyslogServers
+}
+
+// GetSyslogServersOk returns a tuple with the SyslogServers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetSyslogServersOk() ([]DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner, bool) {
+	if o == nil || IsNil(o.SyslogServers) {
+		return nil, false
+	}
+	return o.SyslogServers, true
+}
+
+// HasSyslogServers returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasSyslogServers() bool {
+	if o != nil && !IsNil(o.SyslogServers) {
+		return true
+	}
+
+	return false
+}
+
+// SetSyslogServers gets a reference to the given []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner and assigns it to the SyslogServers field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetSyslogServers(v []DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) {
+	o.SyslogServers = v
+}
+
+// GetUsageThreshold returns the UsageThreshold field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetUsageThreshold() float64 {
+	if o == nil || IsNil(o.UsageThreshold.Get()) {
+		var ret float64
+		return ret
+	}
+	return *o.UsageThreshold.Get()
+}
+
+// GetUsageThresholdOk returns a tuple with the UsageThreshold field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetUsageThresholdOk() (*float64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.UsageThreshold.Get(), o.UsageThreshold.IsSet()
+}
+
+// HasUsageThreshold returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasUsageThreshold() bool {
+	if o != nil && o.UsageThreshold.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetUsageThreshold gets a reference to the given NullableFloat64 and assigns it to the UsageThreshold field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetUsageThreshold(v float64) {
+	o.UsageThreshold.Set(&v)
+}
+
+// SetUsageThresholdNil sets the value for UsageThreshold to be an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetUsageThresholdNil() {
+	o.UsageThreshold.Set(nil)
+}
+
+// UnsetUsageThreshold ensures that no value is present for UsageThreshold, not even an explicit nil
+func (o *DevicesettingsPutRequestEthDeviceProfilesValue) UnsetUsageThreshold() {
+	o.UsageThreshold.Unset()
+}
+
 func (o DevicesettingsPutRequestEthDeviceProfilesValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1104,35 +1111,14 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValue) MarshalJSON() ([]byte, e
 
 func (o DevicesettingsPutRequestEthDeviceProfilesValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
 	if !IsNil(o.CliCommands) {
 		toSerialize["cli_commands"] = o.CliCommands
 	}
-	if !IsNil(o.Mode) {
-		toSerialize["mode"] = o.Mode
+	if o.CommitToFlashInterval.IsSet() {
+		toSerialize["commit_to_flash_interval"] = o.CommitToFlashInterval.Get()
 	}
-	if o.UsageThreshold.IsSet() {
-		toSerialize["usage_threshold"] = o.UsageThreshold.Get()
-	}
-	if o.ExternalBatteryPowerAvailable.IsSet() {
-		toSerialize["external_battery_power_available"] = o.ExternalBatteryPowerAvailable.Get()
-	}
-	if o.ExternalPowerAvailable.IsSet() {
-		toSerialize["external_power_available"] = o.ExternalPowerAvailable.Get()
-	}
-	if !IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
-		toSerialize["disable_tcp_udp_learned_packet_acceleration"] = o.DisableTcpUdpLearnedPacketAcceleration
-	}
-	if !IsNil(o.PacketQueue) {
-		toSerialize["packet_queue"] = o.PacketQueue
-	}
-	if !IsNil(o.PacketQueueRefType) {
-		toSerialize["packet_queue_ref_type_"] = o.PacketQueueRefType
+	if !IsNil(o.CutThroughSwitching) {
+		toSerialize["cut_through_switching"] = o.CutThroughSwitching
 	}
 	if !IsNil(o.DeviceAaaProfile) {
 		toSerialize["device_aaa_profile"] = o.DeviceAaaProfile
@@ -1140,23 +1126,38 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValue) ToMap() (map[string]inte
 	if !IsNil(o.DeviceAaaProfileRefType) {
 		toSerialize["device_aaa_profile_ref_type_"] = o.DeviceAaaProfileRefType
 	}
-	if o.SecurityAuditInterval.IsSet() {
-		toSerialize["security_audit_interval"] = o.SecurityAuditInterval.Get()
+	if !IsNil(o.DisableTcpUdpLearnedPacketAcceleration) {
+		toSerialize["disable_tcp_udp_learned_packet_acceleration"] = o.DisableTcpUdpLearnedPacketAcceleration
 	}
-	if o.CommitToFlashInterval.IsSet() {
-		toSerialize["commit_to_flash_interval"] = o.CommitToFlashInterval.Get()
+	if !IsNil(o.DnsServers) {
+		toSerialize["dns_servers"] = o.DnsServers
 	}
-	if !IsNil(o.Rocev2) {
-		toSerialize["rocev2"] = o.Rocev2
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.CutThroughSwitching) {
-		toSerialize["cut_through_switching"] = o.CutThroughSwitching
+	if o.ExternalBatteryPowerAvailable.IsSet() {
+		toSerialize["external_battery_power_available"] = o.ExternalBatteryPowerAvailable.Get()
+	}
+	if o.ExternalPowerAvailable.IsSet() {
+		toSerialize["external_power_available"] = o.ExternalPowerAvailable.Get()
+	}
+	if o.HoldTimer.IsSet() {
+		toSerialize["hold_timer"] = o.HoldTimer.Get()
 	}
 	if !IsNil(o.LoginBanner) {
 		toSerialize["login_banner"] = o.LoginBanner
 	}
-	if !IsNil(o.DnsServers) {
-		toSerialize["dns_servers"] = o.DnsServers
+	if o.MacAgingTimerOverride.IsSet() {
+		toSerialize["mac_aging_timer_override"] = o.MacAgingTimerOverride.Get()
+	}
+	if !IsNil(o.Mode) {
+		toSerialize["mode"] = o.Mode
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.NtpServers) {
+		toSerialize["ntp_servers"] = o.NtpServers
 	}
 	if !IsNil(o.NtpVrf) {
 		toSerialize["ntp_vrf"] = o.NtpVrf
@@ -1167,23 +1168,29 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValue) ToMap() (map[string]inte
 	if !IsNil(o.NtpVrfTenantRefType) {
 		toSerialize["ntp_vrf_tenant_ref_type_"] = o.NtpVrfTenantRefType
 	}
-	if !IsNil(o.NtpServers) {
-		toSerialize["ntp_servers"] = o.NtpServers
+	if !IsNil(o.ObjectProperties) {
+		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.PacketQueue) {
+		toSerialize["packet_queue"] = o.PacketQueue
+	}
+	if !IsNil(o.PacketQueueRefType) {
+		toSerialize["packet_queue_ref_type_"] = o.PacketQueueRefType
+	}
+	if !IsNil(o.Rocev2) {
+		toSerialize["rocev2"] = o.Rocev2
+	}
+	if o.SecurityAuditInterval.IsSet() {
+		toSerialize["security_audit_interval"] = o.SecurityAuditInterval.Get()
+	}
+	if !IsNil(o.SpanningTreePriority) {
+		toSerialize["spanning_tree_priority"] = o.SpanningTreePriority
 	}
 	if !IsNil(o.SyslogServers) {
 		toSerialize["syslog_servers"] = o.SyslogServers
 	}
-	if !IsNil(o.ObjectProperties) {
-		toSerialize["object_properties"] = o.ObjectProperties
-	}
-	if o.HoldTimer.IsSet() {
-		toSerialize["hold_timer"] = o.HoldTimer.Get()
-	}
-	if o.MacAgingTimerOverride.IsSet() {
-		toSerialize["mac_aging_timer_override"] = o.MacAgingTimerOverride.Get()
-	}
-	if !IsNil(o.SpanningTreePriority) {
-		toSerialize["spanning_tree_priority"] = o.SpanningTreePriority
+	if o.UsageThreshold.IsSet() {
+		toSerialize["usage_threshold"] = o.UsageThreshold.Get()
 	}
 	return toSerialize, nil
 }
@@ -1223,5 +1230,3 @@ func (v *NullableDevicesettingsPutRequestEthDeviceProfilesValue) UnmarshalJSON(s
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

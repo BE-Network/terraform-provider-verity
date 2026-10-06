@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,44 +21,44 @@ var _ MappedNullable = &ImageupdatesetsPatchRequestImageUpdateSetsValueSectionIn
 type ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner struct {
 	// The name of the Endpoint Set
 	EndpointSetNumName *string `json:"endpoint_set_num_name,omitempty"`
-	// The target SW version for member devices of the Endpoint Set
-	EndpointSetNumTargetUpgradeVersion *string `json:"endpoint_set_num_target_upgrade_version,omitempty"`
-	// Unique Identifier - not editable
-	EndpointSetNumUniqueIdentifier *string `json:"endpoint_set_num_unique_identifier,omitempty"`
 	// Include on the Summary
 	EndpointSetNumOnSummary *bool `json:"endpoint_set_num_on_summary,omitempty"`
-	// The time to update to the target SW version
-	EndpointSetNumTargetUpgradeVersionTime *string `json:"endpoint_set_num_target_upgrade_version_time,omitempty"`
 	// Subrule 1 Inverted of the Endpoint Set
 	EndpointSetNumSubrule1Inverted *bool `json:"endpoint_set_num_subrule_1_inverted,omitempty"`
-	// Subrule 1 Type of the Endpoint Set
-	EndpointSetNumSubrule1Type *string `json:"endpoint_set_num_subrule_1_type,omitempty"`
-	// Subrule 1 Value of the Endpoint Set
-	EndpointSetNumSubrule1Value *string `json:"endpoint_set_num_subrule_1_value,omitempty"`
 	// Subrule 1 Reference Path of the Endpoint Set
 	EndpointSetNumSubrule1ReferencePath *string `json:"endpoint_set_num_subrule_1_reference_path,omitempty"`
 	// Object type for endpoint_set_num_subrule_1_reference_path field
 	EndpointSetNumSubrule1ReferencePathRefType *string `json:"endpoint_set_num_subrule_1_reference_path_ref_type_,omitempty"`
+	// Subrule 1 Type of the Endpoint Set
+	EndpointSetNumSubrule1Type *string `json:"endpoint_set_num_subrule_1_type,omitempty"`
+	// Subrule 1 Value of the Endpoint Set
+	EndpointSetNumSubrule1Value *string `json:"endpoint_set_num_subrule_1_value,omitempty"`
 	// Subrule 2 Inverted of the Endpoint Set
 	EndpointSetNumSubrule2Inverted *bool `json:"endpoint_set_num_subrule_2_inverted,omitempty"`
-	// Subrule 2 Type of the Endpoint Set
-	EndpointSetNumSubrule2Type *string `json:"endpoint_set_num_subrule_2_type,omitempty"`
-	// Subrule 2 Value of the Endpoint Set
-	EndpointSetNumSubrule2Value *string `json:"endpoint_set_num_subrule_2_value,omitempty"`
 	// Subrule 2 Reference Path of the Endpoint Set
 	EndpointSetNumSubrule2ReferencePath *string `json:"endpoint_set_num_subrule_2_reference_path,omitempty"`
 	// Object type for endpoint_set_num_subrule_2_reference_path field
 	EndpointSetNumSubrule2ReferencePathRefType *string `json:"endpoint_set_num_subrule_2_reference_path_ref_type_,omitempty"`
+	// Subrule 2 Type of the Endpoint Set
+	EndpointSetNumSubrule2Type *string `json:"endpoint_set_num_subrule_2_type,omitempty"`
+	// Subrule 2 Value of the Endpoint Set
+	EndpointSetNumSubrule2Value *string `json:"endpoint_set_num_subrule_2_value,omitempty"`
 	// Subrule 3 Inverted of the Endpoint Set
 	EndpointSetNumSubrule3Inverted *bool `json:"endpoint_set_num_subrule_3_inverted,omitempty"`
-	// Subrule 3 Type of the Endpoint Set
-	EndpointSetNumSubrule3Type *string `json:"endpoint_set_num_subrule_3_type,omitempty"`
-	// Subrule 3 Value of the Endpoint Set
-	EndpointSetNumSubrule3Value *string `json:"endpoint_set_num_subrule_3_value,omitempty"`
 	// Subrule 3 Reference Path of the Endpoint Set
 	EndpointSetNumSubrule3ReferencePath *string `json:"endpoint_set_num_subrule_3_reference_path,omitempty"`
 	// Object type for endpoint_set_num_subrule_3_reference_path field
 	EndpointSetNumSubrule3ReferencePathRefType *string `json:"endpoint_set_num_subrule_3_reference_path_ref_type_,omitempty"`
+	// Subrule 3 Type of the Endpoint Set
+	EndpointSetNumSubrule3Type *string `json:"endpoint_set_num_subrule_3_type,omitempty"`
+	// Subrule 3 Value of the Endpoint Set
+	EndpointSetNumSubrule3Value *string `json:"endpoint_set_num_subrule_3_value,omitempty"`
+	// The target SW version for member devices of the Endpoint Set
+	EndpointSetNumTargetUpgradeVersion *string `json:"endpoint_set_num_target_upgrade_version,omitempty"`
+	// The time to update to the target SW version
+	EndpointSetNumTargetUpgradeVersionTime *string `json:"endpoint_set_num_target_upgrade_version_time,omitempty"`
+	// Unique Identifier - not editable
+	EndpointSetNumUniqueIdentifier *string `json:"endpoint_set_num_unique_identifier,omitempty"`
 }
 
 // NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner instantiates a new ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner object
@@ -69,38 +69,38 @@ func NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner() *Imageupda
 	this := ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner{}
 	var endpointSetNumName string = ""
 	this.EndpointSetNumName = &endpointSetNumName
-	var endpointSetNumTargetUpgradeVersion string = "unmanaged"
-	this.EndpointSetNumTargetUpgradeVersion = &endpointSetNumTargetUpgradeVersion
-	var endpointSetNumUniqueIdentifier string = "17884410761921"
-	this.EndpointSetNumUniqueIdentifier = &endpointSetNumUniqueIdentifier
 	var endpointSetNumOnSummary bool = true
 	this.EndpointSetNumOnSummary = &endpointSetNumOnSummary
-	var endpointSetNumTargetUpgradeVersionTime string = ""
-	this.EndpointSetNumTargetUpgradeVersionTime = &endpointSetNumTargetUpgradeVersionTime
 	var endpointSetNumSubrule1Inverted bool = false
 	this.EndpointSetNumSubrule1Inverted = &endpointSetNumSubrule1Inverted
+	var endpointSetNumSubrule1ReferencePath string = ""
+	this.EndpointSetNumSubrule1ReferencePath = &endpointSetNumSubrule1ReferencePath
 	var endpointSetNumSubrule1Type string = ""
 	this.EndpointSetNumSubrule1Type = &endpointSetNumSubrule1Type
 	var endpointSetNumSubrule1Value string = ""
 	this.EndpointSetNumSubrule1Value = &endpointSetNumSubrule1Value
-	var endpointSetNumSubrule1ReferencePath string = ""
-	this.EndpointSetNumSubrule1ReferencePath = &endpointSetNumSubrule1ReferencePath
 	var endpointSetNumSubrule2Inverted bool = false
 	this.EndpointSetNumSubrule2Inverted = &endpointSetNumSubrule2Inverted
+	var endpointSetNumSubrule2ReferencePath string = ""
+	this.EndpointSetNumSubrule2ReferencePath = &endpointSetNumSubrule2ReferencePath
 	var endpointSetNumSubrule2Type string = ""
 	this.EndpointSetNumSubrule2Type = &endpointSetNumSubrule2Type
 	var endpointSetNumSubrule2Value string = ""
 	this.EndpointSetNumSubrule2Value = &endpointSetNumSubrule2Value
-	var endpointSetNumSubrule2ReferencePath string = ""
-	this.EndpointSetNumSubrule2ReferencePath = &endpointSetNumSubrule2ReferencePath
 	var endpointSetNumSubrule3Inverted bool = false
 	this.EndpointSetNumSubrule3Inverted = &endpointSetNumSubrule3Inverted
+	var endpointSetNumSubrule3ReferencePath string = ""
+	this.EndpointSetNumSubrule3ReferencePath = &endpointSetNumSubrule3ReferencePath
 	var endpointSetNumSubrule3Type string = ""
 	this.EndpointSetNumSubrule3Type = &endpointSetNumSubrule3Type
 	var endpointSetNumSubrule3Value string = ""
 	this.EndpointSetNumSubrule3Value = &endpointSetNumSubrule3Value
-	var endpointSetNumSubrule3ReferencePath string = ""
-	this.EndpointSetNumSubrule3ReferencePath = &endpointSetNumSubrule3ReferencePath
+	var endpointSetNumTargetUpgradeVersion string = "unmanaged"
+	this.EndpointSetNumTargetUpgradeVersion = &endpointSetNumTargetUpgradeVersion
+	var endpointSetNumTargetUpgradeVersionTime string = ""
+	this.EndpointSetNumTargetUpgradeVersionTime = &endpointSetNumTargetUpgradeVersionTime
+	var endpointSetNumUniqueIdentifier string = "17884410761921"
+	this.EndpointSetNumUniqueIdentifier = &endpointSetNumUniqueIdentifier
 	return &this
 }
 
@@ -111,38 +111,38 @@ func NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionInnerWithDefaults(
 	this := ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner{}
 	var endpointSetNumName string = ""
 	this.EndpointSetNumName = &endpointSetNumName
-	var endpointSetNumTargetUpgradeVersion string = "unmanaged"
-	this.EndpointSetNumTargetUpgradeVersion = &endpointSetNumTargetUpgradeVersion
-	var endpointSetNumUniqueIdentifier string = "17884410761921"
-	this.EndpointSetNumUniqueIdentifier = &endpointSetNumUniqueIdentifier
 	var endpointSetNumOnSummary bool = true
 	this.EndpointSetNumOnSummary = &endpointSetNumOnSummary
-	var endpointSetNumTargetUpgradeVersionTime string = ""
-	this.EndpointSetNumTargetUpgradeVersionTime = &endpointSetNumTargetUpgradeVersionTime
 	var endpointSetNumSubrule1Inverted bool = false
 	this.EndpointSetNumSubrule1Inverted = &endpointSetNumSubrule1Inverted
+	var endpointSetNumSubrule1ReferencePath string = ""
+	this.EndpointSetNumSubrule1ReferencePath = &endpointSetNumSubrule1ReferencePath
 	var endpointSetNumSubrule1Type string = ""
 	this.EndpointSetNumSubrule1Type = &endpointSetNumSubrule1Type
 	var endpointSetNumSubrule1Value string = ""
 	this.EndpointSetNumSubrule1Value = &endpointSetNumSubrule1Value
-	var endpointSetNumSubrule1ReferencePath string = ""
-	this.EndpointSetNumSubrule1ReferencePath = &endpointSetNumSubrule1ReferencePath
 	var endpointSetNumSubrule2Inverted bool = false
 	this.EndpointSetNumSubrule2Inverted = &endpointSetNumSubrule2Inverted
+	var endpointSetNumSubrule2ReferencePath string = ""
+	this.EndpointSetNumSubrule2ReferencePath = &endpointSetNumSubrule2ReferencePath
 	var endpointSetNumSubrule2Type string = ""
 	this.EndpointSetNumSubrule2Type = &endpointSetNumSubrule2Type
 	var endpointSetNumSubrule2Value string = ""
 	this.EndpointSetNumSubrule2Value = &endpointSetNumSubrule2Value
-	var endpointSetNumSubrule2ReferencePath string = ""
-	this.EndpointSetNumSubrule2ReferencePath = &endpointSetNumSubrule2ReferencePath
 	var endpointSetNumSubrule3Inverted bool = false
 	this.EndpointSetNumSubrule3Inverted = &endpointSetNumSubrule3Inverted
+	var endpointSetNumSubrule3ReferencePath string = ""
+	this.EndpointSetNumSubrule3ReferencePath = &endpointSetNumSubrule3ReferencePath
 	var endpointSetNumSubrule3Type string = ""
 	this.EndpointSetNumSubrule3Type = &endpointSetNumSubrule3Type
 	var endpointSetNumSubrule3Value string = ""
 	this.EndpointSetNumSubrule3Value = &endpointSetNumSubrule3Value
-	var endpointSetNumSubrule3ReferencePath string = ""
-	this.EndpointSetNumSubrule3ReferencePath = &endpointSetNumSubrule3ReferencePath
+	var endpointSetNumTargetUpgradeVersion string = "unmanaged"
+	this.EndpointSetNumTargetUpgradeVersion = &endpointSetNumTargetUpgradeVersion
+	var endpointSetNumTargetUpgradeVersionTime string = ""
+	this.EndpointSetNumTargetUpgradeVersionTime = &endpointSetNumTargetUpgradeVersionTime
+	var endpointSetNumUniqueIdentifier string = "17884410761921"
+	this.EndpointSetNumUniqueIdentifier = &endpointSetNumUniqueIdentifier
 	return &this
 }
 
@@ -178,70 +178,6 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpoin
 	o.EndpointSetNumName = &v
 }
 
-// GetEndpointSetNumTargetUpgradeVersion returns the EndpointSetNumTargetUpgradeVersion field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumTargetUpgradeVersion() string {
-	if o == nil || IsNil(o.EndpointSetNumTargetUpgradeVersion) {
-		var ret string
-		return ret
-	}
-	return *o.EndpointSetNumTargetUpgradeVersion
-}
-
-// GetEndpointSetNumTargetUpgradeVersionOk returns a tuple with the EndpointSetNumTargetUpgradeVersion field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumTargetUpgradeVersionOk() (*string, bool) {
-	if o == nil || IsNil(o.EndpointSetNumTargetUpgradeVersion) {
-		return nil, false
-	}
-	return o.EndpointSetNumTargetUpgradeVersion, true
-}
-
-// HasEndpointSetNumTargetUpgradeVersion returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumTargetUpgradeVersion() bool {
-	if o != nil && !IsNil(o.EndpointSetNumTargetUpgradeVersion) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndpointSetNumTargetUpgradeVersion gets a reference to the given string and assigns it to the EndpointSetNumTargetUpgradeVersion field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumTargetUpgradeVersion(v string) {
-	o.EndpointSetNumTargetUpgradeVersion = &v
-}
-
-// GetEndpointSetNumUniqueIdentifier returns the EndpointSetNumUniqueIdentifier field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumUniqueIdentifier() string {
-	if o == nil || IsNil(o.EndpointSetNumUniqueIdentifier) {
-		var ret string
-		return ret
-	}
-	return *o.EndpointSetNumUniqueIdentifier
-}
-
-// GetEndpointSetNumUniqueIdentifierOk returns a tuple with the EndpointSetNumUniqueIdentifier field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumUniqueIdentifierOk() (*string, bool) {
-	if o == nil || IsNil(o.EndpointSetNumUniqueIdentifier) {
-		return nil, false
-	}
-	return o.EndpointSetNumUniqueIdentifier, true
-}
-
-// HasEndpointSetNumUniqueIdentifier returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumUniqueIdentifier() bool {
-	if o != nil && !IsNil(o.EndpointSetNumUniqueIdentifier) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndpointSetNumUniqueIdentifier gets a reference to the given string and assigns it to the EndpointSetNumUniqueIdentifier field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumUniqueIdentifier(v string) {
-	o.EndpointSetNumUniqueIdentifier = &v
-}
-
 // GetEndpointSetNumOnSummary returns the EndpointSetNumOnSummary field value if set, zero value otherwise.
 func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumOnSummary() bool {
 	if o == nil || IsNil(o.EndpointSetNumOnSummary) {
@@ -274,38 +210,6 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpoin
 	o.EndpointSetNumOnSummary = &v
 }
 
-// GetEndpointSetNumTargetUpgradeVersionTime returns the EndpointSetNumTargetUpgradeVersionTime field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumTargetUpgradeVersionTime() string {
-	if o == nil || IsNil(o.EndpointSetNumTargetUpgradeVersionTime) {
-		var ret string
-		return ret
-	}
-	return *o.EndpointSetNumTargetUpgradeVersionTime
-}
-
-// GetEndpointSetNumTargetUpgradeVersionTimeOk returns a tuple with the EndpointSetNumTargetUpgradeVersionTime field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumTargetUpgradeVersionTimeOk() (*string, bool) {
-	if o == nil || IsNil(o.EndpointSetNumTargetUpgradeVersionTime) {
-		return nil, false
-	}
-	return o.EndpointSetNumTargetUpgradeVersionTime, true
-}
-
-// HasEndpointSetNumTargetUpgradeVersionTime returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumTargetUpgradeVersionTime() bool {
-	if o != nil && !IsNil(o.EndpointSetNumTargetUpgradeVersionTime) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndpointSetNumTargetUpgradeVersionTime gets a reference to the given string and assigns it to the EndpointSetNumTargetUpgradeVersionTime field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumTargetUpgradeVersionTime(v string) {
-	o.EndpointSetNumTargetUpgradeVersionTime = &v
-}
-
 // GetEndpointSetNumSubrule1Inverted returns the EndpointSetNumSubrule1Inverted field value if set, zero value otherwise.
 func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule1Inverted() bool {
 	if o == nil || IsNil(o.EndpointSetNumSubrule1Inverted) {
@@ -336,70 +240,6 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpoin
 // SetEndpointSetNumSubrule1Inverted gets a reference to the given bool and assigns it to the EndpointSetNumSubrule1Inverted field.
 func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule1Inverted(v bool) {
 	o.EndpointSetNumSubrule1Inverted = &v
-}
-
-// GetEndpointSetNumSubrule1Type returns the EndpointSetNumSubrule1Type field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule1Type() string {
-	if o == nil || IsNil(o.EndpointSetNumSubrule1Type) {
-		var ret string
-		return ret
-	}
-	return *o.EndpointSetNumSubrule1Type
-}
-
-// GetEndpointSetNumSubrule1TypeOk returns a tuple with the EndpointSetNumSubrule1Type field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule1TypeOk() (*string, bool) {
-	if o == nil || IsNil(o.EndpointSetNumSubrule1Type) {
-		return nil, false
-	}
-	return o.EndpointSetNumSubrule1Type, true
-}
-
-// HasEndpointSetNumSubrule1Type returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumSubrule1Type() bool {
-	if o != nil && !IsNil(o.EndpointSetNumSubrule1Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndpointSetNumSubrule1Type gets a reference to the given string and assigns it to the EndpointSetNumSubrule1Type field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule1Type(v string) {
-	o.EndpointSetNumSubrule1Type = &v
-}
-
-// GetEndpointSetNumSubrule1Value returns the EndpointSetNumSubrule1Value field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule1Value() string {
-	if o == nil || IsNil(o.EndpointSetNumSubrule1Value) {
-		var ret string
-		return ret
-	}
-	return *o.EndpointSetNumSubrule1Value
-}
-
-// GetEndpointSetNumSubrule1ValueOk returns a tuple with the EndpointSetNumSubrule1Value field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule1ValueOk() (*string, bool) {
-	if o == nil || IsNil(o.EndpointSetNumSubrule1Value) {
-		return nil, false
-	}
-	return o.EndpointSetNumSubrule1Value, true
-}
-
-// HasEndpointSetNumSubrule1Value returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumSubrule1Value() bool {
-	if o != nil && !IsNil(o.EndpointSetNumSubrule1Value) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndpointSetNumSubrule1Value gets a reference to the given string and assigns it to the EndpointSetNumSubrule1Value field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule1Value(v string) {
-	o.EndpointSetNumSubrule1Value = &v
 }
 
 // GetEndpointSetNumSubrule1ReferencePath returns the EndpointSetNumSubrule1ReferencePath field value if set, zero value otherwise.
@@ -466,6 +306,70 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpoin
 	o.EndpointSetNumSubrule1ReferencePathRefType = &v
 }
 
+// GetEndpointSetNumSubrule1Type returns the EndpointSetNumSubrule1Type field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule1Type() string {
+	if o == nil || IsNil(o.EndpointSetNumSubrule1Type) {
+		var ret string
+		return ret
+	}
+	return *o.EndpointSetNumSubrule1Type
+}
+
+// GetEndpointSetNumSubrule1TypeOk returns a tuple with the EndpointSetNumSubrule1Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule1TypeOk() (*string, bool) {
+	if o == nil || IsNil(o.EndpointSetNumSubrule1Type) {
+		return nil, false
+	}
+	return o.EndpointSetNumSubrule1Type, true
+}
+
+// HasEndpointSetNumSubrule1Type returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumSubrule1Type() bool {
+	if o != nil && !IsNil(o.EndpointSetNumSubrule1Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpointSetNumSubrule1Type gets a reference to the given string and assigns it to the EndpointSetNumSubrule1Type field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule1Type(v string) {
+	o.EndpointSetNumSubrule1Type = &v
+}
+
+// GetEndpointSetNumSubrule1Value returns the EndpointSetNumSubrule1Value field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule1Value() string {
+	if o == nil || IsNil(o.EndpointSetNumSubrule1Value) {
+		var ret string
+		return ret
+	}
+	return *o.EndpointSetNumSubrule1Value
+}
+
+// GetEndpointSetNumSubrule1ValueOk returns a tuple with the EndpointSetNumSubrule1Value field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule1ValueOk() (*string, bool) {
+	if o == nil || IsNil(o.EndpointSetNumSubrule1Value) {
+		return nil, false
+	}
+	return o.EndpointSetNumSubrule1Value, true
+}
+
+// HasEndpointSetNumSubrule1Value returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumSubrule1Value() bool {
+	if o != nil && !IsNil(o.EndpointSetNumSubrule1Value) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpointSetNumSubrule1Value gets a reference to the given string and assigns it to the EndpointSetNumSubrule1Value field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule1Value(v string) {
+	o.EndpointSetNumSubrule1Value = &v
+}
+
 // GetEndpointSetNumSubrule2Inverted returns the EndpointSetNumSubrule2Inverted field value if set, zero value otherwise.
 func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule2Inverted() bool {
 	if o == nil || IsNil(o.EndpointSetNumSubrule2Inverted) {
@@ -496,70 +400,6 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpoin
 // SetEndpointSetNumSubrule2Inverted gets a reference to the given bool and assigns it to the EndpointSetNumSubrule2Inverted field.
 func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule2Inverted(v bool) {
 	o.EndpointSetNumSubrule2Inverted = &v
-}
-
-// GetEndpointSetNumSubrule2Type returns the EndpointSetNumSubrule2Type field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule2Type() string {
-	if o == nil || IsNil(o.EndpointSetNumSubrule2Type) {
-		var ret string
-		return ret
-	}
-	return *o.EndpointSetNumSubrule2Type
-}
-
-// GetEndpointSetNumSubrule2TypeOk returns a tuple with the EndpointSetNumSubrule2Type field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule2TypeOk() (*string, bool) {
-	if o == nil || IsNil(o.EndpointSetNumSubrule2Type) {
-		return nil, false
-	}
-	return o.EndpointSetNumSubrule2Type, true
-}
-
-// HasEndpointSetNumSubrule2Type returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumSubrule2Type() bool {
-	if o != nil && !IsNil(o.EndpointSetNumSubrule2Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndpointSetNumSubrule2Type gets a reference to the given string and assigns it to the EndpointSetNumSubrule2Type field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule2Type(v string) {
-	o.EndpointSetNumSubrule2Type = &v
-}
-
-// GetEndpointSetNumSubrule2Value returns the EndpointSetNumSubrule2Value field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule2Value() string {
-	if o == nil || IsNil(o.EndpointSetNumSubrule2Value) {
-		var ret string
-		return ret
-	}
-	return *o.EndpointSetNumSubrule2Value
-}
-
-// GetEndpointSetNumSubrule2ValueOk returns a tuple with the EndpointSetNumSubrule2Value field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule2ValueOk() (*string, bool) {
-	if o == nil || IsNil(o.EndpointSetNumSubrule2Value) {
-		return nil, false
-	}
-	return o.EndpointSetNumSubrule2Value, true
-}
-
-// HasEndpointSetNumSubrule2Value returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumSubrule2Value() bool {
-	if o != nil && !IsNil(o.EndpointSetNumSubrule2Value) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndpointSetNumSubrule2Value gets a reference to the given string and assigns it to the EndpointSetNumSubrule2Value field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule2Value(v string) {
-	o.EndpointSetNumSubrule2Value = &v
 }
 
 // GetEndpointSetNumSubrule2ReferencePath returns the EndpointSetNumSubrule2ReferencePath field value if set, zero value otherwise.
@@ -626,6 +466,70 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpoin
 	o.EndpointSetNumSubrule2ReferencePathRefType = &v
 }
 
+// GetEndpointSetNumSubrule2Type returns the EndpointSetNumSubrule2Type field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule2Type() string {
+	if o == nil || IsNil(o.EndpointSetNumSubrule2Type) {
+		var ret string
+		return ret
+	}
+	return *o.EndpointSetNumSubrule2Type
+}
+
+// GetEndpointSetNumSubrule2TypeOk returns a tuple with the EndpointSetNumSubrule2Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule2TypeOk() (*string, bool) {
+	if o == nil || IsNil(o.EndpointSetNumSubrule2Type) {
+		return nil, false
+	}
+	return o.EndpointSetNumSubrule2Type, true
+}
+
+// HasEndpointSetNumSubrule2Type returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumSubrule2Type() bool {
+	if o != nil && !IsNil(o.EndpointSetNumSubrule2Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpointSetNumSubrule2Type gets a reference to the given string and assigns it to the EndpointSetNumSubrule2Type field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule2Type(v string) {
+	o.EndpointSetNumSubrule2Type = &v
+}
+
+// GetEndpointSetNumSubrule2Value returns the EndpointSetNumSubrule2Value field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule2Value() string {
+	if o == nil || IsNil(o.EndpointSetNumSubrule2Value) {
+		var ret string
+		return ret
+	}
+	return *o.EndpointSetNumSubrule2Value
+}
+
+// GetEndpointSetNumSubrule2ValueOk returns a tuple with the EndpointSetNumSubrule2Value field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule2ValueOk() (*string, bool) {
+	if o == nil || IsNil(o.EndpointSetNumSubrule2Value) {
+		return nil, false
+	}
+	return o.EndpointSetNumSubrule2Value, true
+}
+
+// HasEndpointSetNumSubrule2Value returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumSubrule2Value() bool {
+	if o != nil && !IsNil(o.EndpointSetNumSubrule2Value) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpointSetNumSubrule2Value gets a reference to the given string and assigns it to the EndpointSetNumSubrule2Value field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule2Value(v string) {
+	o.EndpointSetNumSubrule2Value = &v
+}
+
 // GetEndpointSetNumSubrule3Inverted returns the EndpointSetNumSubrule3Inverted field value if set, zero value otherwise.
 func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule3Inverted() bool {
 	if o == nil || IsNil(o.EndpointSetNumSubrule3Inverted) {
@@ -656,70 +560,6 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpoin
 // SetEndpointSetNumSubrule3Inverted gets a reference to the given bool and assigns it to the EndpointSetNumSubrule3Inverted field.
 func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule3Inverted(v bool) {
 	o.EndpointSetNumSubrule3Inverted = &v
-}
-
-// GetEndpointSetNumSubrule3Type returns the EndpointSetNumSubrule3Type field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule3Type() string {
-	if o == nil || IsNil(o.EndpointSetNumSubrule3Type) {
-		var ret string
-		return ret
-	}
-	return *o.EndpointSetNumSubrule3Type
-}
-
-// GetEndpointSetNumSubrule3TypeOk returns a tuple with the EndpointSetNumSubrule3Type field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule3TypeOk() (*string, bool) {
-	if o == nil || IsNil(o.EndpointSetNumSubrule3Type) {
-		return nil, false
-	}
-	return o.EndpointSetNumSubrule3Type, true
-}
-
-// HasEndpointSetNumSubrule3Type returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumSubrule3Type() bool {
-	if o != nil && !IsNil(o.EndpointSetNumSubrule3Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndpointSetNumSubrule3Type gets a reference to the given string and assigns it to the EndpointSetNumSubrule3Type field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule3Type(v string) {
-	o.EndpointSetNumSubrule3Type = &v
-}
-
-// GetEndpointSetNumSubrule3Value returns the EndpointSetNumSubrule3Value field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule3Value() string {
-	if o == nil || IsNil(o.EndpointSetNumSubrule3Value) {
-		var ret string
-		return ret
-	}
-	return *o.EndpointSetNumSubrule3Value
-}
-
-// GetEndpointSetNumSubrule3ValueOk returns a tuple with the EndpointSetNumSubrule3Value field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule3ValueOk() (*string, bool) {
-	if o == nil || IsNil(o.EndpointSetNumSubrule3Value) {
-		return nil, false
-	}
-	return o.EndpointSetNumSubrule3Value, true
-}
-
-// HasEndpointSetNumSubrule3Value returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumSubrule3Value() bool {
-	if o != nil && !IsNil(o.EndpointSetNumSubrule3Value) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndpointSetNumSubrule3Value gets a reference to the given string and assigns it to the EndpointSetNumSubrule3Value field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule3Value(v string) {
-	o.EndpointSetNumSubrule3Value = &v
 }
 
 // GetEndpointSetNumSubrule3ReferencePath returns the EndpointSetNumSubrule3ReferencePath field value if set, zero value otherwise.
@@ -786,8 +626,168 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpoin
 	o.EndpointSetNumSubrule3ReferencePathRefType = &v
 }
 
+// GetEndpointSetNumSubrule3Type returns the EndpointSetNumSubrule3Type field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule3Type() string {
+	if o == nil || IsNil(o.EndpointSetNumSubrule3Type) {
+		var ret string
+		return ret
+	}
+	return *o.EndpointSetNumSubrule3Type
+}
+
+// GetEndpointSetNumSubrule3TypeOk returns a tuple with the EndpointSetNumSubrule3Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule3TypeOk() (*string, bool) {
+	if o == nil || IsNil(o.EndpointSetNumSubrule3Type) {
+		return nil, false
+	}
+	return o.EndpointSetNumSubrule3Type, true
+}
+
+// HasEndpointSetNumSubrule3Type returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumSubrule3Type() bool {
+	if o != nil && !IsNil(o.EndpointSetNumSubrule3Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpointSetNumSubrule3Type gets a reference to the given string and assigns it to the EndpointSetNumSubrule3Type field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule3Type(v string) {
+	o.EndpointSetNumSubrule3Type = &v
+}
+
+// GetEndpointSetNumSubrule3Value returns the EndpointSetNumSubrule3Value field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule3Value() string {
+	if o == nil || IsNil(o.EndpointSetNumSubrule3Value) {
+		var ret string
+		return ret
+	}
+	return *o.EndpointSetNumSubrule3Value
+}
+
+// GetEndpointSetNumSubrule3ValueOk returns a tuple with the EndpointSetNumSubrule3Value field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumSubrule3ValueOk() (*string, bool) {
+	if o == nil || IsNil(o.EndpointSetNumSubrule3Value) {
+		return nil, false
+	}
+	return o.EndpointSetNumSubrule3Value, true
+}
+
+// HasEndpointSetNumSubrule3Value returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumSubrule3Value() bool {
+	if o != nil && !IsNil(o.EndpointSetNumSubrule3Value) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpointSetNumSubrule3Value gets a reference to the given string and assigns it to the EndpointSetNumSubrule3Value field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumSubrule3Value(v string) {
+	o.EndpointSetNumSubrule3Value = &v
+}
+
+// GetEndpointSetNumTargetUpgradeVersion returns the EndpointSetNumTargetUpgradeVersion field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumTargetUpgradeVersion() string {
+	if o == nil || IsNil(o.EndpointSetNumTargetUpgradeVersion) {
+		var ret string
+		return ret
+	}
+	return *o.EndpointSetNumTargetUpgradeVersion
+}
+
+// GetEndpointSetNumTargetUpgradeVersionOk returns a tuple with the EndpointSetNumTargetUpgradeVersion field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumTargetUpgradeVersionOk() (*string, bool) {
+	if o == nil || IsNil(o.EndpointSetNumTargetUpgradeVersion) {
+		return nil, false
+	}
+	return o.EndpointSetNumTargetUpgradeVersion, true
+}
+
+// HasEndpointSetNumTargetUpgradeVersion returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumTargetUpgradeVersion() bool {
+	if o != nil && !IsNil(o.EndpointSetNumTargetUpgradeVersion) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpointSetNumTargetUpgradeVersion gets a reference to the given string and assigns it to the EndpointSetNumTargetUpgradeVersion field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumTargetUpgradeVersion(v string) {
+	o.EndpointSetNumTargetUpgradeVersion = &v
+}
+
+// GetEndpointSetNumTargetUpgradeVersionTime returns the EndpointSetNumTargetUpgradeVersionTime field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumTargetUpgradeVersionTime() string {
+	if o == nil || IsNil(o.EndpointSetNumTargetUpgradeVersionTime) {
+		var ret string
+		return ret
+	}
+	return *o.EndpointSetNumTargetUpgradeVersionTime
+}
+
+// GetEndpointSetNumTargetUpgradeVersionTimeOk returns a tuple with the EndpointSetNumTargetUpgradeVersionTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumTargetUpgradeVersionTimeOk() (*string, bool) {
+	if o == nil || IsNil(o.EndpointSetNumTargetUpgradeVersionTime) {
+		return nil, false
+	}
+	return o.EndpointSetNumTargetUpgradeVersionTime, true
+}
+
+// HasEndpointSetNumTargetUpgradeVersionTime returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumTargetUpgradeVersionTime() bool {
+	if o != nil && !IsNil(o.EndpointSetNumTargetUpgradeVersionTime) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpointSetNumTargetUpgradeVersionTime gets a reference to the given string and assigns it to the EndpointSetNumTargetUpgradeVersionTime field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumTargetUpgradeVersionTime(v string) {
+	o.EndpointSetNumTargetUpgradeVersionTime = &v
+}
+
+// GetEndpointSetNumUniqueIdentifier returns the EndpointSetNumUniqueIdentifier field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumUniqueIdentifier() string {
+	if o == nil || IsNil(o.EndpointSetNumUniqueIdentifier) {
+		var ret string
+		return ret
+	}
+	return *o.EndpointSetNumUniqueIdentifier
+}
+
+// GetEndpointSetNumUniqueIdentifierOk returns a tuple with the EndpointSetNumUniqueIdentifier field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) GetEndpointSetNumUniqueIdentifierOk() (*string, bool) {
+	if o == nil || IsNil(o.EndpointSetNumUniqueIdentifier) {
+		return nil, false
+	}
+	return o.EndpointSetNumUniqueIdentifier, true
+}
+
+// HasEndpointSetNumUniqueIdentifier returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) HasEndpointSetNumUniqueIdentifier() bool {
+	if o != nil && !IsNil(o.EndpointSetNumUniqueIdentifier) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpointSetNumUniqueIdentifier gets a reference to the given string and assigns it to the EndpointSetNumUniqueIdentifier field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) SetEndpointSetNumUniqueIdentifier(v string) {
+	o.EndpointSetNumUniqueIdentifier = &v
+}
+
 func (o ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -799,26 +799,11 @@ func (o ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) ToMap() (ma
 	if !IsNil(o.EndpointSetNumName) {
 		toSerialize["endpoint_set_num_name"] = o.EndpointSetNumName
 	}
-	if !IsNil(o.EndpointSetNumTargetUpgradeVersion) {
-		toSerialize["endpoint_set_num_target_upgrade_version"] = o.EndpointSetNumTargetUpgradeVersion
-	}
-	if !IsNil(o.EndpointSetNumUniqueIdentifier) {
-		toSerialize["endpoint_set_num_unique_identifier"] = o.EndpointSetNumUniqueIdentifier
-	}
 	if !IsNil(o.EndpointSetNumOnSummary) {
 		toSerialize["endpoint_set_num_on_summary"] = o.EndpointSetNumOnSummary
 	}
-	if !IsNil(o.EndpointSetNumTargetUpgradeVersionTime) {
-		toSerialize["endpoint_set_num_target_upgrade_version_time"] = o.EndpointSetNumTargetUpgradeVersionTime
-	}
 	if !IsNil(o.EndpointSetNumSubrule1Inverted) {
 		toSerialize["endpoint_set_num_subrule_1_inverted"] = o.EndpointSetNumSubrule1Inverted
-	}
-	if !IsNil(o.EndpointSetNumSubrule1Type) {
-		toSerialize["endpoint_set_num_subrule_1_type"] = o.EndpointSetNumSubrule1Type
-	}
-	if !IsNil(o.EndpointSetNumSubrule1Value) {
-		toSerialize["endpoint_set_num_subrule_1_value"] = o.EndpointSetNumSubrule1Value
 	}
 	if !IsNil(o.EndpointSetNumSubrule1ReferencePath) {
 		toSerialize["endpoint_set_num_subrule_1_reference_path"] = o.EndpointSetNumSubrule1ReferencePath
@@ -826,14 +811,14 @@ func (o ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) ToMap() (ma
 	if !IsNil(o.EndpointSetNumSubrule1ReferencePathRefType) {
 		toSerialize["endpoint_set_num_subrule_1_reference_path_ref_type_"] = o.EndpointSetNumSubrule1ReferencePathRefType
 	}
+	if !IsNil(o.EndpointSetNumSubrule1Type) {
+		toSerialize["endpoint_set_num_subrule_1_type"] = o.EndpointSetNumSubrule1Type
+	}
+	if !IsNil(o.EndpointSetNumSubrule1Value) {
+		toSerialize["endpoint_set_num_subrule_1_value"] = o.EndpointSetNumSubrule1Value
+	}
 	if !IsNil(o.EndpointSetNumSubrule2Inverted) {
 		toSerialize["endpoint_set_num_subrule_2_inverted"] = o.EndpointSetNumSubrule2Inverted
-	}
-	if !IsNil(o.EndpointSetNumSubrule2Type) {
-		toSerialize["endpoint_set_num_subrule_2_type"] = o.EndpointSetNumSubrule2Type
-	}
-	if !IsNil(o.EndpointSetNumSubrule2Value) {
-		toSerialize["endpoint_set_num_subrule_2_value"] = o.EndpointSetNumSubrule2Value
 	}
 	if !IsNil(o.EndpointSetNumSubrule2ReferencePath) {
 		toSerialize["endpoint_set_num_subrule_2_reference_path"] = o.EndpointSetNumSubrule2ReferencePath
@@ -841,8 +826,20 @@ func (o ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) ToMap() (ma
 	if !IsNil(o.EndpointSetNumSubrule2ReferencePathRefType) {
 		toSerialize["endpoint_set_num_subrule_2_reference_path_ref_type_"] = o.EndpointSetNumSubrule2ReferencePathRefType
 	}
+	if !IsNil(o.EndpointSetNumSubrule2Type) {
+		toSerialize["endpoint_set_num_subrule_2_type"] = o.EndpointSetNumSubrule2Type
+	}
+	if !IsNil(o.EndpointSetNumSubrule2Value) {
+		toSerialize["endpoint_set_num_subrule_2_value"] = o.EndpointSetNumSubrule2Value
+	}
 	if !IsNil(o.EndpointSetNumSubrule3Inverted) {
 		toSerialize["endpoint_set_num_subrule_3_inverted"] = o.EndpointSetNumSubrule3Inverted
+	}
+	if !IsNil(o.EndpointSetNumSubrule3ReferencePath) {
+		toSerialize["endpoint_set_num_subrule_3_reference_path"] = o.EndpointSetNumSubrule3ReferencePath
+	}
+	if !IsNil(o.EndpointSetNumSubrule3ReferencePathRefType) {
+		toSerialize["endpoint_set_num_subrule_3_reference_path_ref_type_"] = o.EndpointSetNumSubrule3ReferencePathRefType
 	}
 	if !IsNil(o.EndpointSetNumSubrule3Type) {
 		toSerialize["endpoint_set_num_subrule_3_type"] = o.EndpointSetNumSubrule3Type
@@ -850,11 +847,14 @@ func (o ImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) ToMap() (ma
 	if !IsNil(o.EndpointSetNumSubrule3Value) {
 		toSerialize["endpoint_set_num_subrule_3_value"] = o.EndpointSetNumSubrule3Value
 	}
-	if !IsNil(o.EndpointSetNumSubrule3ReferencePath) {
-		toSerialize["endpoint_set_num_subrule_3_reference_path"] = o.EndpointSetNumSubrule3ReferencePath
+	if !IsNil(o.EndpointSetNumTargetUpgradeVersion) {
+		toSerialize["endpoint_set_num_target_upgrade_version"] = o.EndpointSetNumTargetUpgradeVersion
 	}
-	if !IsNil(o.EndpointSetNumSubrule3ReferencePathRefType) {
-		toSerialize["endpoint_set_num_subrule_3_reference_path_ref_type_"] = o.EndpointSetNumSubrule3ReferencePathRefType
+	if !IsNil(o.EndpointSetNumTargetUpgradeVersionTime) {
+		toSerialize["endpoint_set_num_target_upgrade_version_time"] = o.EndpointSetNumTargetUpgradeVersionTime
+	}
+	if !IsNil(o.EndpointSetNumUniqueIdentifier) {
+		toSerialize["endpoint_set_num_unique_identifier"] = o.EndpointSetNumUniqueIdentifier
 	}
 	return toSerialize, nil
 }
@@ -894,5 +894,3 @@ func (v *NullableImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner) Un
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

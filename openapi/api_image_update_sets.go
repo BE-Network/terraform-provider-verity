@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -18,16 +18,15 @@ import (
 	"net/url"
 )
 
-
 // ImageUpdateSetsAPIService ImageUpdateSetsAPI service
 type ImageUpdateSetsAPIService service
 
 type ApiImageupdatesetsGetRequest struct {
-	ctx context.Context
-	ApiService *ImageUpdateSetsAPIService
+	ctx                context.Context
+	ApiService         *ImageUpdateSetsAPIService
 	imageUpdateSetName *string
-	includeData *bool
-	changesetName *string
+	includeData        *bool
+	changesetName      *string
 }
 
 func (r ApiImageupdatesetsGetRequest) ImageUpdateSetName(imageUpdateSetName string) ApiImageupdatesetsGetRequest {
@@ -54,23 +53,22 @@ ImageupdatesetsGet Get all Image Update Sets
 
 Retrieves all Image Update Sets from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiImageupdatesetsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiImageupdatesetsGetRequest
 */
 func (a *ImageUpdateSetsAPIService) ImageupdatesetsGet(ctx context.Context) ApiImageupdatesetsGetRequest {
 	return ApiImageupdatesetsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ImageUpdateSetsAPIService) ImageupdatesetsGetExecute(r ApiImageupdatesetsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ImageUpdateSetsAPIService.ImageupdatesetsGet")
@@ -139,9 +137,9 @@ func (a *ImageUpdateSetsAPIService) ImageupdatesetsGetExecute(r ApiImageupdatese
 }
 
 type ApiImageupdatesetsPatchRequest struct {
-	ctx context.Context
-	ApiService *ImageUpdateSetsAPIService
-	changesetName *string
+	ctx                         context.Context
+	ApiService                  *ImageUpdateSetsAPIService
+	changesetName               *string
 	imageupdatesetsPatchRequest *ImageupdatesetsPatchRequest
 }
 
@@ -164,23 +162,22 @@ ImageupdatesetsPatch Update Image Update Set
 
 Update Image Update Set into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiImageupdatesetsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiImageupdatesetsPatchRequest
 */
 func (a *ImageUpdateSetsAPIService) ImageupdatesetsPatch(ctx context.Context) ApiImageupdatesetsPatchRequest {
 	return ApiImageupdatesetsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ImageUpdateSetsAPIService) ImageupdatesetsPatchExecute(r ApiImageupdatesetsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ImageUpdateSetsAPIService.ImageupdatesetsPatch")

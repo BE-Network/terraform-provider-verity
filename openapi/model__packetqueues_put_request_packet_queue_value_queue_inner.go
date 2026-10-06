@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,12 +21,12 @@ var _ MappedNullable = &PacketqueuesPutRequestPacketQueueValueQueueInner{}
 type PacketqueuesPutRequestPacketQueueValueQueueInner struct {
 	// Percentage bandwidth allocated to Queue. 0 is no limit
 	BandwidthForQueue NullableInt64 `json:"bandwidth_for_queue,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
 	// Scheduler Type for Queue
 	SchedulerType *string `json:"scheduler_type,omitempty"`
 	// Weight associated with WRR or DWRR scheduler
 	SchedulerWeight NullableInt64 `json:"scheduler_weight,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
 }
 
 // NewPacketqueuesPutRequestPacketQueueValueQueueInner instantiates a new PacketqueuesPutRequestPacketQueueValueQueueInner object
@@ -90,6 +90,7 @@ func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) HasBandwidthForQueue(
 func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) SetBandwidthForQueue(v int64) {
 	o.BandwidthForQueue.Set(&v)
 }
+
 // SetBandwidthForQueueNil sets the value for BandwidthForQueue to be an explicit nil
 func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) SetBandwidthForQueueNil() {
 	o.BandwidthForQueue.Set(nil)
@@ -98,6 +99,38 @@ func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) SetBandwidthForQueueN
 // UnsetBandwidthForQueue ensures that no value is present for BandwidthForQueue, not even an explicit nil
 func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) UnsetBandwidthForQueue() {
 	o.BandwidthForQueue.Unset()
+}
+
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetSchedulerType returns the SchedulerType field value if set, zero value otherwise.
@@ -164,6 +197,7 @@ func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) HasSchedulerWeight() 
 func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) SetSchedulerWeight(v int64) {
 	o.SchedulerWeight.Set(&v)
 }
+
 // SetSchedulerWeightNil sets the value for SchedulerWeight to be an explicit nil
 func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) SetSchedulerWeightNil() {
 	o.SchedulerWeight.Set(nil)
@@ -174,40 +208,8 @@ func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) UnsetSchedulerWeight(
 	o.SchedulerWeight.Unset()
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *PacketqueuesPutRequestPacketQueueValueQueueInner) SetIndex(v int64) {
-	o.Index = &v
-}
-
 func (o PacketqueuesPutRequestPacketQueueValueQueueInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -219,14 +221,14 @@ func (o PacketqueuesPutRequestPacketQueueValueQueueInner) ToMap() (map[string]in
 	if o.BandwidthForQueue.IsSet() {
 		toSerialize["bandwidth_for_queue"] = o.BandwidthForQueue.Get()
 	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
+	}
 	if !IsNil(o.SchedulerType) {
 		toSerialize["scheduler_type"] = o.SchedulerType
 	}
 	if o.SchedulerWeight.IsSet() {
 		toSerialize["scheduler_weight"] = o.SchedulerWeight.Get()
-	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }
@@ -266,5 +268,3 @@ func (v *NullablePacketqueuesPutRequestPacketQueueValueQueueInner) UnmarshalJSON
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

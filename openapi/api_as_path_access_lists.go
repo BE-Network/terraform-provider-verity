@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // ASPathAccessListsAPIService ASPathAccessListsAPI service
 type ASPathAccessListsAPIService service
 
 type ApiAspathaccesslistsDeleteRequest struct {
-	ctx context.Context
-	ApiService *ASPathAccessListsAPIService
+	ctx                  context.Context
+	ApiService           *ASPathAccessListsAPIService
 	asPathAccessListName *[]string
-	changesetName *string
+	changesetName        *string
 }
 
 func (r ApiAspathaccesslistsDeleteRequest) AsPathAccessListName(asPathAccessListName []string) ApiAspathaccesslistsDeleteRequest {
@@ -49,23 +48,22 @@ AspathaccesslistsDelete Delete AS Path Access Lists
 
 Deletes an existing AS Path Access Lists from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAspathaccesslistsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAspathaccesslistsDeleteRequest
 */
 func (a *ASPathAccessListsAPIService) AspathaccesslistsDelete(ctx context.Context) ApiAspathaccesslistsDeleteRequest {
 	return ApiAspathaccesslistsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ASPathAccessListsAPIService) AspathaccesslistsDeleteExecute(r ApiAspathaccesslistsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ASPathAccessListsAPIService.AspathaccesslistsDelete")
@@ -142,11 +140,11 @@ func (a *ASPathAccessListsAPIService) AspathaccesslistsDeleteExecute(r ApiAspath
 }
 
 type ApiAspathaccesslistsGetRequest struct {
-	ctx context.Context
-	ApiService *ASPathAccessListsAPIService
+	ctx                  context.Context
+	ApiService           *ASPathAccessListsAPIService
 	asPathAccessListName *string
-	includeData *bool
-	changesetName *string
+	includeData          *bool
+	changesetName        *string
 }
 
 func (r ApiAspathaccesslistsGetRequest) AsPathAccessListName(asPathAccessListName string) ApiAspathaccesslistsGetRequest {
@@ -173,23 +171,22 @@ AspathaccesslistsGet Get all AS Path Access Lists
 
 Retrieves all AS Path Access Lists from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAspathaccesslistsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAspathaccesslistsGetRequest
 */
 func (a *ASPathAccessListsAPIService) AspathaccesslistsGet(ctx context.Context) ApiAspathaccesslistsGetRequest {
 	return ApiAspathaccesslistsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ASPathAccessListsAPIService) AspathaccesslistsGetExecute(r ApiAspathaccesslistsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ASPathAccessListsAPIService.AspathaccesslistsGet")
@@ -258,9 +255,9 @@ func (a *ASPathAccessListsAPIService) AspathaccesslistsGetExecute(r ApiAspathacc
 }
 
 type ApiAspathaccesslistsPatchRequest struct {
-	ctx context.Context
-	ApiService *ASPathAccessListsAPIService
-	changesetName *string
+	ctx                         context.Context
+	ApiService                  *ASPathAccessListsAPIService
+	changesetName               *string
 	aspathaccesslistsPutRequest *AspathaccesslistsPutRequest
 }
 
@@ -283,23 +280,22 @@ AspathaccesslistsPatch Update AS Path Access List
 
 Update AS Path Access List into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAspathaccesslistsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAspathaccesslistsPatchRequest
 */
 func (a *ASPathAccessListsAPIService) AspathaccesslistsPatch(ctx context.Context) ApiAspathaccesslistsPatchRequest {
 	return ApiAspathaccesslistsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ASPathAccessListsAPIService) AspathaccesslistsPatchExecute(r ApiAspathaccesslistsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ASPathAccessListsAPIService.AspathaccesslistsPatch")
@@ -364,9 +360,9 @@ func (a *ASPathAccessListsAPIService) AspathaccesslistsPatchExecute(r ApiAspatha
 }
 
 type ApiAspathaccesslistsPutRequest struct {
-	ctx context.Context
-	ApiService *ASPathAccessListsAPIService
-	changesetName *string
+	ctx                         context.Context
+	ApiService                  *ASPathAccessListsAPIService
+	changesetName               *string
 	aspathaccesslistsPutRequest *AspathaccesslistsPutRequest
 }
 
@@ -389,23 +385,22 @@ AspathaccesslistsPut Create AS Path Access List
 
 Create AS Path Access List into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAspathaccesslistsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAspathaccesslistsPutRequest
 */
 func (a *ASPathAccessListsAPIService) AspathaccesslistsPut(ctx context.Context) ApiAspathaccesslistsPutRequest {
 	return ApiAspathaccesslistsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ASPathAccessListsAPIService) AspathaccesslistsPutExecute(r ApiAspathaccesslistsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ASPathAccessListsAPIService.AspathaccesslistsPut")

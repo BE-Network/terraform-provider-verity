@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,14 +21,14 @@ var _ MappedNullable = &ThresholdgroupsPutRequestThresholdGroupValueThresholdsIn
 type ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner struct {
 	// Enable
 	Enable *bool `json:"enable,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
 	// Override the severity defined in the thereshold for this group only
 	SeverityOverride *string `json:"severity_override,omitempty"`
 	// Threshold to apply to this group
 	Threshold *string `json:"threshold,omitempty"`
 	// Object type for threshold field
 	ThresholdRefType *string `json:"threshold_ref_type_,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
 }
 
 // NewThresholdgroupsPutRequestThresholdGroupValueThresholdsInner instantiates a new ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner object
@@ -90,6 +90,38 @@ func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) HasEnable(
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) SetEnable(v bool) {
 	o.Enable = &v
+}
+
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetSeverityOverride returns the SeverityOverride field value if set, zero value otherwise.
@@ -188,40 +220,8 @@ func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) SetThresho
 	o.ThresholdRefType = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) SetIndex(v int64) {
-	o.Index = &v
-}
-
 func (o ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -233,6 +233,9 @@ func (o ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) ToMap() (ma
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
+	}
 	if !IsNil(o.SeverityOverride) {
 		toSerialize["severity_override"] = o.SeverityOverride
 	}
@@ -241,9 +244,6 @@ func (o ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) ToMap() (ma
 	}
 	if !IsNil(o.ThresholdRefType) {
 		toSerialize["threshold_ref_type_"] = o.ThresholdRefType
-	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }
@@ -283,5 +283,3 @@ func (v *NullableThresholdgroupsPutRequestThresholdGroupValueThresholdsInner) Un
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

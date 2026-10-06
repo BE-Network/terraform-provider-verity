@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,14 @@ var _ MappedNullable = &EthportprofilesPutRequestEthPortProfileValueObjectProper
 
 // EthportprofilesPutRequestEthPortProfileValueObjectProperties struct for EthportprofilesPutRequestEthPortProfileValueObjectProperties
 type EthportprofilesPutRequestEthPortProfileValueObjectProperties struct {
+	// Port Icon displayed ports provisioned with this Eth Port Profile but with no Port Icon defined in the endpoint
+	Icon *string `json:"icon,omitempty"`
+	// Port Label displayed ports provisioned with this Eth Port Profile but with no Port Label defined in the endpoint
+	Label *string `json:"label,omitempty"`
 	// Defines importance of Link Down on this port
 	PortMonitoring *string `json:"port_monitoring,omitempty"`
 	// Choose to sort by service name or by order of creation
 	SortByName *bool `json:"sort_by_name,omitempty"`
-	// Port Label displayed ports provisioned with this Eth Port Profile but with no Port Label defined in the endpoint
-	Label *string `json:"label,omitempty"`
-	// Port Icon displayed ports provisioned with this Eth Port Profile but with no Port Icon defined in the endpoint
-	Icon *string `json:"icon,omitempty"`
 }
 
 // NewEthportprofilesPutRequestEthPortProfileValueObjectProperties instantiates a new EthportprofilesPutRequestEthPortProfileValueObjectProperties object
@@ -35,14 +35,14 @@ type EthportprofilesPutRequestEthPortProfileValueObjectProperties struct {
 // will change when the set of required properties is changed
 func NewEthportprofilesPutRequestEthPortProfileValueObjectProperties() *EthportprofilesPutRequestEthPortProfileValueObjectProperties {
 	this := EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
+	var icon string = "empty"
+	this.Icon = &icon
+	var label string = ""
+	this.Label = &label
 	var portMonitoring string = ""
 	this.PortMonitoring = &portMonitoring
 	var sortByName bool = false
 	this.SortByName = &sortByName
-	var label string = ""
-	this.Label = &label
-	var icon string = "empty"
-	this.Icon = &icon
 	return &this
 }
 
@@ -51,15 +51,79 @@ func NewEthportprofilesPutRequestEthPortProfileValueObjectProperties() *Ethportp
 // but it doesn't guarantee that properties required by API are set
 func NewEthportprofilesPutRequestEthPortProfileValueObjectPropertiesWithDefaults() *EthportprofilesPutRequestEthPortProfileValueObjectProperties {
 	this := EthportprofilesPutRequestEthPortProfileValueObjectProperties{}
+	var icon string = "empty"
+	this.Icon = &icon
+	var label string = ""
+	this.Label = &label
 	var portMonitoring string = ""
 	this.PortMonitoring = &portMonitoring
 	var sortByName bool = false
 	this.SortByName = &sortByName
-	var label string = ""
-	this.Label = &label
-	var icon string = "empty"
-	this.Icon = &icon
 	return &this
+}
+
+// GetIcon returns the Icon field value if set, zero value otherwise.
+func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetIcon() string {
+	if o == nil || IsNil(o.Icon) {
+		var ret string
+		return ret
+	}
+	return *o.Icon
+}
+
+// GetIconOk returns a tuple with the Icon field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetIconOk() (*string, bool) {
+	if o == nil || IsNil(o.Icon) {
+		return nil, false
+	}
+	return o.Icon, true
+}
+
+// HasIcon returns a boolean if a field has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) HasIcon() bool {
+	if o != nil && !IsNil(o.Icon) {
+		return true
+	}
+
+	return false
+}
+
+// SetIcon gets a reference to the given string and assigns it to the Icon field.
+func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) SetIcon(v string) {
+	o.Icon = &v
+}
+
+// GetLabel returns the Label field value if set, zero value otherwise.
+func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetLabel() string {
+	if o == nil || IsNil(o.Label) {
+		var ret string
+		return ret
+	}
+	return *o.Label
+}
+
+// GetLabelOk returns a tuple with the Label field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetLabelOk() (*string, bool) {
+	if o == nil || IsNil(o.Label) {
+		return nil, false
+	}
+	return o.Label, true
+}
+
+// HasLabel returns a boolean if a field has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) HasLabel() bool {
+	if o != nil && !IsNil(o.Label) {
+		return true
+	}
+
+	return false
+}
+
+// SetLabel gets a reference to the given string and assigns it to the Label field.
+func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) SetLabel(v string) {
+	o.Label = &v
 }
 
 // GetPortMonitoring returns the PortMonitoring field value if set, zero value otherwise.
@@ -126,72 +190,8 @@ func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) SetSortBy
 	o.SortByName = &v
 }
 
-// GetLabel returns the Label field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetLabel() string {
-	if o == nil || IsNil(o.Label) {
-		var ret string
-		return ret
-	}
-	return *o.Label
-}
-
-// GetLabelOk returns a tuple with the Label field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetLabelOk() (*string, bool) {
-	if o == nil || IsNil(o.Label) {
-		return nil, false
-	}
-	return o.Label, true
-}
-
-// HasLabel returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) HasLabel() bool {
-	if o != nil && !IsNil(o.Label) {
-		return true
-	}
-
-	return false
-}
-
-// SetLabel gets a reference to the given string and assigns it to the Label field.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) SetLabel(v string) {
-	o.Label = &v
-}
-
-// GetIcon returns the Icon field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetIcon() string {
-	if o == nil || IsNil(o.Icon) {
-		var ret string
-		return ret
-	}
-	return *o.Icon
-}
-
-// GetIconOk returns a tuple with the Icon field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) GetIconOk() (*string, bool) {
-	if o == nil || IsNil(o.Icon) {
-		return nil, false
-	}
-	return o.Icon, true
-}
-
-// HasIcon returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) HasIcon() bool {
-	if o != nil && !IsNil(o.Icon) {
-		return true
-	}
-
-	return false
-}
-
-// SetIcon gets a reference to the given string and assigns it to the Icon field.
-func (o *EthportprofilesPutRequestEthPortProfileValueObjectProperties) SetIcon(v string) {
-	o.Icon = &v
-}
-
 func (o EthportprofilesPutRequestEthPortProfileValueObjectProperties) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -200,17 +200,17 @@ func (o EthportprofilesPutRequestEthPortProfileValueObjectProperties) MarshalJSO
 
 func (o EthportprofilesPutRequestEthPortProfileValueObjectProperties) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Icon) {
+		toSerialize["icon"] = o.Icon
+	}
+	if !IsNil(o.Label) {
+		toSerialize["label"] = o.Label
+	}
 	if !IsNil(o.PortMonitoring) {
 		toSerialize["port_monitoring"] = o.PortMonitoring
 	}
 	if !IsNil(o.SortByName) {
 		toSerialize["sort_by_name"] = o.SortByName
-	}
-	if !IsNil(o.Label) {
-		toSerialize["label"] = o.Label
-	}
-	if !IsNil(o.Icon) {
-		toSerialize["icon"] = o.Icon
 	}
 	return toSerialize, nil
 }
@@ -250,5 +250,3 @@ func (v *NullableEthportprofilesPutRequestEthPortProfileValueObjectProperties) U
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

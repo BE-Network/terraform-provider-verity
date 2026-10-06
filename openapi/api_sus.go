@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // SUsAPIService SUsAPI service
 type SUsAPIService service
 
 type ApiSusDeleteRequest struct {
-	ctx context.Context
-	ApiService *SUsAPIService
-	suName *[]string
+	ctx           context.Context
+	ApiService    *SUsAPIService
+	suName        *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ SusDelete Delete SU
 
 Deletes an existing SU from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSusDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSusDeleteRequest
 */
 func (a *SUsAPIService) SusDelete(ctx context.Context) ApiSusDeleteRequest {
 	return ApiSusDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SUsAPIService) SusDeleteExecute(r ApiSusDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SUsAPIService.SusDelete")
@@ -142,10 +140,10 @@ func (a *SUsAPIService) SusDeleteExecute(r ApiSusDeleteRequest) (*http.Response,
 }
 
 type ApiSusGetRequest struct {
-	ctx context.Context
-	ApiService *SUsAPIService
-	suName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *SUsAPIService
+	suName        *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ SusGet Get all SUs
 
 Downloads all SUs from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSusGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSusGetRequest
 */
 func (a *SUsAPIService) SusGet(ctx context.Context) ApiSusGetRequest {
 	return ApiSusGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SUsAPIService) SusGetExecute(r ApiSusGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SUsAPIService.SusGet")
@@ -258,8 +255,8 @@ func (a *SUsAPIService) SusGetExecute(r ApiSusGetRequest) (*http.Response, error
 }
 
 type ApiSusPatchRequest struct {
-	ctx context.Context
-	ApiService *SUsAPIService
+	ctx           context.Context
+	ApiService    *SUsAPIService
 	changesetName *string
 	susPutRequest *SusPutRequest
 }
@@ -283,23 +280,22 @@ SusPatch Update SU
 
 Update SU into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSusPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSusPatchRequest
 */
 func (a *SUsAPIService) SusPatch(ctx context.Context) ApiSusPatchRequest {
 	return ApiSusPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SUsAPIService) SusPatchExecute(r ApiSusPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SUsAPIService.SusPatch")
@@ -364,8 +360,8 @@ func (a *SUsAPIService) SusPatchExecute(r ApiSusPatchRequest) (*http.Response, e
 }
 
 type ApiSusPutRequest struct {
-	ctx context.Context
-	ApiService *SUsAPIService
+	ctx           context.Context
+	ApiService    *SUsAPIService
 	changesetName *string
 	susPutRequest *SusPutRequest
 }
@@ -389,23 +385,22 @@ SusPut Create SU
 
 Create SU into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSusPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSusPutRequest
 */
 func (a *SUsAPIService) SusPut(ctx context.Context) ApiSusPutRequest {
 	return ApiSusPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SUsAPIService) SusPutExecute(r ApiSusPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SUsAPIService.SusPut")

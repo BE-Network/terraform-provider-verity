@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,18 +19,18 @@ var _ MappedNullable = &ExtendedcommunitylistsPutRequestExtendedCommunityListVal
 
 // ExtendedcommunitylistsPutRequestExtendedCommunityListValue struct for ExtendedcommunitylistsPutRequestExtendedCommunityListValue
 type ExtendedcommunitylistsPutRequestExtendedCommunityListValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
-	// Action upon match of Community Strings.
-	PermitDeny *string `json:"permit_deny,omitempty"`
 	// BGP does not advertise any or all routes that do not match the Community String
 	AnyAll *string `json:"any_all,omitempty"`
+	// Enable object.
+	Enable *bool                                                                  `json:"enable,omitempty"`
+	Lists  []ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner `json:"lists,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                      `json:"name,omitempty"`
+	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
+	// Action upon match of Community Strings.
+	PermitDeny *string `json:"permit_deny,omitempty"`
 	// Used Community String or Expanded Expression
 	StandardExpanded *string `json:"standard_expanded,omitempty"`
-	Lists []ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner `json:"lists,omitempty"`
-	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewExtendedcommunitylistsPutRequestExtendedCommunityListValue instantiates a new ExtendedcommunitylistsPutRequestExtendedCommunityListValue object
@@ -39,14 +39,14 @@ type ExtendedcommunitylistsPutRequestExtendedCommunityListValue struct {
 // will change when the set of required properties is changed
 func NewExtendedcommunitylistsPutRequestExtendedCommunityListValue() *ExtendedcommunitylistsPutRequestExtendedCommunityListValue {
 	this := ExtendedcommunitylistsPutRequestExtendedCommunityListValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
-	var permitDeny string = "permit"
-	this.PermitDeny = &permitDeny
 	var anyAll string = "any"
 	this.AnyAll = &anyAll
+	var enable bool = false
+	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
+	var permitDeny string = "permit"
+	this.PermitDeny = &permitDeny
 	var standardExpanded string = "standard"
 	this.StandardExpanded = &standardExpanded
 	return &this
@@ -57,113 +57,17 @@ func NewExtendedcommunitylistsPutRequestExtendedCommunityListValue() *Extendedco
 // but it doesn't guarantee that properties required by API are set
 func NewExtendedcommunitylistsPutRequestExtendedCommunityListValueWithDefaults() *ExtendedcommunitylistsPutRequestExtendedCommunityListValue {
 	this := ExtendedcommunitylistsPutRequestExtendedCommunityListValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
-	var permitDeny string = "permit"
-	this.PermitDeny = &permitDeny
 	var anyAll string = "any"
 	this.AnyAll = &anyAll
+	var enable bool = false
+	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
+	var permitDeny string = "permit"
+	this.PermitDeny = &permitDeny
 	var standardExpanded string = "standard"
 	this.StandardExpanded = &standardExpanded
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) SetName(v string) {
-	o.Name = &v
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) SetEnable(v bool) {
-	o.Enable = &v
-}
-
-// GetPermitDeny returns the PermitDeny field value if set, zero value otherwise.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetPermitDeny() string {
-	if o == nil || IsNil(o.PermitDeny) {
-		var ret string
-		return ret
-	}
-	return *o.PermitDeny
-}
-
-// GetPermitDenyOk returns a tuple with the PermitDeny field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetPermitDenyOk() (*string, bool) {
-	if o == nil || IsNil(o.PermitDeny) {
-		return nil, false
-	}
-	return o.PermitDeny, true
-}
-
-// HasPermitDeny returns a boolean if a field has been set.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) HasPermitDeny() bool {
-	if o != nil && !IsNil(o.PermitDeny) {
-		return true
-	}
-
-	return false
-}
-
-// SetPermitDeny gets a reference to the given string and assigns it to the PermitDeny field.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) SetPermitDeny(v string) {
-	o.PermitDeny = &v
 }
 
 // GetAnyAll returns the AnyAll field value if set, zero value otherwise.
@@ -198,36 +102,36 @@ func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) SetAnyAll(v
 	o.AnyAll = &v
 }
 
-// GetStandardExpanded returns the StandardExpanded field value if set, zero value otherwise.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetStandardExpanded() string {
-	if o == nil || IsNil(o.StandardExpanded) {
-		var ret string
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
 		return ret
 	}
-	return *o.StandardExpanded
+	return *o.Enable
 }
 
-// GetStandardExpandedOk returns a tuple with the StandardExpanded field value if set, nil otherwise
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetStandardExpandedOk() (*string, bool) {
-	if o == nil || IsNil(o.StandardExpanded) {
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
 		return nil, false
 	}
-	return o.StandardExpanded, true
+	return o.Enable, true
 }
 
-// HasStandardExpanded returns a boolean if a field has been set.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) HasStandardExpanded() bool {
-	if o != nil && !IsNil(o.StandardExpanded) {
+// HasEnable returns a boolean if a field has been set.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
 		return true
 	}
 
 	return false
 }
 
-// SetStandardExpanded gets a reference to the given string and assigns it to the StandardExpanded field.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) SetStandardExpanded(v string) {
-	o.StandardExpanded = &v
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) SetEnable(v bool) {
+	o.Enable = &v
 }
 
 // GetLists returns the Lists field value if set, zero value otherwise.
@@ -262,6 +166,38 @@ func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) SetLists(v 
 	o.Lists = v
 }
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) SetName(v string) {
+	o.Name = &v
+}
+
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
 func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetObjectProperties() AclsPutRequestIpFilterValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
@@ -294,8 +230,72 @@ func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) SetObjectPr
 	o.ObjectProperties = &v
 }
 
+// GetPermitDeny returns the PermitDeny field value if set, zero value otherwise.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetPermitDeny() string {
+	if o == nil || IsNil(o.PermitDeny) {
+		var ret string
+		return ret
+	}
+	return *o.PermitDeny
+}
+
+// GetPermitDenyOk returns a tuple with the PermitDeny field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetPermitDenyOk() (*string, bool) {
+	if o == nil || IsNil(o.PermitDeny) {
+		return nil, false
+	}
+	return o.PermitDeny, true
+}
+
+// HasPermitDeny returns a boolean if a field has been set.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) HasPermitDeny() bool {
+	if o != nil && !IsNil(o.PermitDeny) {
+		return true
+	}
+
+	return false
+}
+
+// SetPermitDeny gets a reference to the given string and assigns it to the PermitDeny field.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) SetPermitDeny(v string) {
+	o.PermitDeny = &v
+}
+
+// GetStandardExpanded returns the StandardExpanded field value if set, zero value otherwise.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetStandardExpanded() string {
+	if o == nil || IsNil(o.StandardExpanded) {
+		var ret string
+		return ret
+	}
+	return *o.StandardExpanded
+}
+
+// GetStandardExpandedOk returns a tuple with the StandardExpanded field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) GetStandardExpandedOk() (*string, bool) {
+	if o == nil || IsNil(o.StandardExpanded) {
+		return nil, false
+	}
+	return o.StandardExpanded, true
+}
+
+// HasStandardExpanded returns a boolean if a field has been set.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) HasStandardExpanded() bool {
+	if o != nil && !IsNil(o.StandardExpanded) {
+		return true
+	}
+
+	return false
+}
+
+// SetStandardExpanded gets a reference to the given string and assigns it to the StandardExpanded field.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValue) SetStandardExpanded(v string) {
+	o.StandardExpanded = &v
+}
+
 func (o ExtendedcommunitylistsPutRequestExtendedCommunityListValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -304,26 +304,26 @@ func (o ExtendedcommunitylistsPutRequestExtendedCommunityListValue) MarshalJSON(
 
 func (o ExtendedcommunitylistsPutRequestExtendedCommunityListValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
+	if !IsNil(o.AnyAll) {
+		toSerialize["any_all"] = o.AnyAll
 	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.PermitDeny) {
-		toSerialize["permit_deny"] = o.PermitDeny
-	}
-	if !IsNil(o.AnyAll) {
-		toSerialize["any_all"] = o.AnyAll
-	}
-	if !IsNil(o.StandardExpanded) {
-		toSerialize["standard_expanded"] = o.StandardExpanded
-	}
 	if !IsNil(o.Lists) {
 		toSerialize["lists"] = o.Lists
 	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.PermitDeny) {
+		toSerialize["permit_deny"] = o.PermitDeny
+	}
+	if !IsNil(o.StandardExpanded) {
+		toSerialize["standard_expanded"] = o.StandardExpanded
 	}
 	return toSerialize, nil
 }
@@ -363,5 +363,3 @@ func (v *NullableExtendedcommunitylistsPutRequestExtendedCommunityListValue) Unm
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

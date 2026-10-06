@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,138 +19,138 @@ var _ MappedNullable = &FabricsPutRequestFabricValue{}
 
 // FabricsPutRequestFabricValue struct for FabricsPutRequestFabricValue
 type FabricsPutRequestFabricValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
-	// Default username for managed switches in this Fabric
-	SwitchUsername *string `json:"switch_username,omitempty"`
-	// Default password for managed switches in this Fabric
-	SwitchPassword *string `json:"switch_password,omitempty"`
-	// Default password for managed switches in this Fabric
-	SwitchPasswordEncrypted *string `json:"switch_password_encrypted,omitempty"`
-	// Default username for HGX devices in this Fabric
-	HgxUsername *string `json:"hgx_username,omitempty"`
-	// Default password for HGX devices in this Fabric
-	HgxPassword *string `json:"hgx_password,omitempty"`
-	// Default password for HGX devices in this Fabric
-	HgxPasswordEncrypted *string `json:"hgx_password_encrypted,omitempty"`
-	// Default switch management gateway IP for devices in this Fabric
-	SwitchGateway *string `json:"switch_gateway,omitempty"`
-	// Default Device Management VM gateway IP for devices in this Fabric
-	ControllerGateway *string `json:"controller_gateway,omitempty"`
-	// Number of planes in this Fabric
-	PlaneCount *string `json:"plane_count,omitempty"`
-	// Number of HGXs per SU
-	SuSize *string `json:"su_size,omitempty"`
-	// Support grouping leaf switches in SUs
-	SuSupport *bool `json:"su_support,omitempty"`
-	// GPU Architecture used within this Fabric
-	GpuArchitecture *string `json:"gpu_architecture,omitempty"`
-	// Support managing servers
-	ServerManagement *bool `json:"server_management,omitempty"`
+	// Fast Reporting of Switch Communications, Link Up/Down, and BGP Status
+	AggressiveReporting *bool `json:"aggressive_reporting,omitempty"`
 	// Allows underlay connections between PODs
 	AllowAllUnderlayConnections *bool `json:"allow_all_underlay_connections,omitempty"`
-	// Type of Fabric
-	FabricType *string `json:"fabric_type,omitempty"`
-	// Controls duplicate MAC address detection (DAD) Max Number of Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of moves (2 to 1000; default 5 if left blank)
-	DuplicateAddressDetectionMaxNumberOfMoves NullableInt64 `json:"duplicate_address_detection_max_number_of_moves,omitempty"`
-	// Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank)
-	DuplicateAddressDetectionTime NullableInt64 `json:"duplicate_address_detection_time,omitempty"`
-	// Polling interval values in seconds, set if aggressive reporting is not enabled
-	PortAdminPollingInterval NullableInt64 `json:"port_admin_polling_interval,omitempty"`
-	// Polling interval values in seconds, set if aggressive reporting is not enabled
-	PortStatusPollingInterval NullableInt64 `json:"port_status_polling_interval,omitempty"`
-	// Service for Fabric
-	ServiceForFabric *string `json:"service_for_fabric,omitempty"`
-	// Object type for service_for_fabric field
-	ServiceForFabricRefType *string `json:"service_for_fabric_ref_type_,omitempty"`
-	// Sets the spanning tree type for all Ports in this Fabric with Spanning Tree enabled
-	SpanningTreeType *string `json:"spanning_tree_type,omitempty"`
-	// Defines the logical boundary of the network. All switches in an MSTP region must have the same configured region name
-	RegionName *string `json:"region_name,omitempty"`
-	// A logical number that signifies a revision for the MSTP configuration. All switches in an MSTP region must have the same revision number
-	Revision NullableInt64 `json:"revision,omitempty"`
-	// Enable spanning tree on all fabric connections.  This overrides the Eth Port Settings for Fabric ports
-	ForceSpanningTreeOnFabricPorts *bool `json:"force_spanning_tree_on_fabric_ports,omitempty"`
-	// When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware
-	ReadOnlyMode *bool `json:"read_only_mode,omitempty"`
-	// Fabric Collection for Fabric
-	DomainForFabric *string `json:"domain_for_fabric,omitempty"`
-	// Object type for domain_for_fabric field
-	DomainForFabricRefType *string `json:"domain_for_fabric_ref_type_,omitempty"`
-	// Enable DSCP to p-bit/TC configuration. When enabled, DSCP to p-bit/TC mappings are applied.
-	EnableDscp *bool `json:"enable_dscp,omitempty"`
-	// For any Service that is using DSCP to p-bit map packet prioritization. A string of length 64 with a 0-7 in each position
-	DscpToPBitMap *string `json:"dscp_to_p_bit_map,omitempty"`
 	// Fabric Level MAC Address for Anycast
 	AnycastMacAddress *string `json:"anycast_mac_address,omitempty"`
 	// Whether or not the value in anycast_mac_address field has been automatically assigned or not. Set to false and change anycast_mac_address value to edit.
 	AnycastMacAddressAutoAssigned *bool `json:"anycast_mac_address_auto_assigned_,omitempty"`
-	// MAC Address Aging Time (between 1-100000)
-	MacAddressAgingTime NullableInt64 `json:"mac_address_aging_time,omitempty"`
-	// MLAG Delay Restore Timer
-	MlagDelayRestoreTimer NullableInt64 `json:"mlag_delay_restore_timer,omitempty"`
-	// Spine BGP Keepalive Timer
-	BgpKeepaliveTimer NullableInt64 `json:"bgp_keepalive_timer,omitempty"`
+	// Base BGP Autonomous System Number used for switches in the fabric
+	BaseBgpAsNumber *string `json:"base_bgp_as_number,omitempty"`
 	// Spine BGP Hold Down Timer
 	BgpHoldDownTimer NullableInt64 `json:"bgp_hold_down_timer,omitempty"`
-	// BGP Advertisement Interval for spines/superspines. Use \"0\" for immediate updates
-	SpineBgpAdvertisementInterval NullableInt64 `json:"spine_bgp_advertisement_interval,omitempty"`
-	// BGP Connect Timer
-	SpineBgpConnectTimer NullableInt64 `json:"spine_bgp_connect_timer,omitempty"`
-	// BGP AS number applied uniformly to all spine endpoints in this CLOS fabric on save. Leave blank to manage spine AS numbers individually.
-	SpineAsNumber NullableInt64 `json:"spine_as_number,omitempty"`
-	// Leaf BGP Keep Alive Timer
-	LeafBgpKeepAliveTimer NullableInt64 `json:"leaf_bgp_keep_alive_timer,omitempty"`
-	// Leaf BGP Hold Down Timer
-	LeafBgpHoldDownTimer NullableInt64 `json:"leaf_bgp_hold_down_timer,omitempty"`
+	// Spine BGP Keepalive Timer
+	BgpKeepaliveTimer NullableInt64 `json:"bgp_keepalive_timer,omitempty"`
+	// Default Device Management VM gateway IP for devices in this Fabric
+	ControllerGateway *string `json:"controller_gateway,omitempty"`
+	// Base IPv4 address for the Device Management VM IPs in this Fabric
+	ControllerIpBase *string `json:"controller_ip_base,omitempty"`
+	// Fabric Collection for Fabric
+	DomainForFabric *string `json:"domain_for_fabric,omitempty"`
+	// Object type for domain_for_fabric field
+	DomainForFabricRefType *string `json:"domain_for_fabric_ref_type_,omitempty"`
+	// For any Service that is using DSCP to p-bit map packet prioritization. A string of length 64 with a 0-7 in each position
+	DscpToPBitMap *string `json:"dscp_to_p_bit_map,omitempty"`
+	// Controls duplicate MAC address detection (DAD) Max Number of Moves for EVPN (Ethernet VPN) within the BGP address-family. Number of moves (2 to 1000; default 5 if left blank)
+	DuplicateAddressDetectionMaxNumberOfMoves NullableInt64 `json:"duplicate_address_detection_max_number_of_moves,omitempty"`
+	// Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank)
+	DuplicateAddressDetectionTime NullableInt64 `json:"duplicate_address_detection_time,omitempty"`
+	// Enable object.
+	Enable *bool `json:"enable,omitempty"`
+	// Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report.
+	EnableDhcpSnooping *bool `json:"enable_dhcp_snooping,omitempty"`
+	// Enable DSCP to p-bit/TC configuration. When enabled, DSCP to p-bit/TC mappings are applied.
+	EnableDscp *bool `json:"enable_dscp,omitempty"`
+	// MAC Holdtime
+	EvpnMacHoldtime NullableInt64 `json:"evpn_mac_holdtime,omitempty"`
+	// Startup Delay
+	EvpnMultihomingStartupDelay NullableInt64 `json:"evpn_multihoming_startup_delay,omitempty"`
+	// Type of Fabric
+	FabricType *string `json:"fabric_type,omitempty"`
+	// Enable spanning tree on all fabric connections.  This overrides the Eth Port Settings for Fabric ports
+	ForceSpanningTreeOnFabricPorts *bool `json:"force_spanning_tree_on_fabric_ports,omitempty"`
+	// GPU Architecture used within this Fabric
+	GpuArchitecture *string `json:"gpu_architecture,omitempty"`
+	// Default password for HGX devices in this Fabric
+	HgxPassword *string `json:"hgx_password,omitempty"`
+	// Default password for HGX devices in this Fabric
+	HgxPasswordEncrypted *string `json:"hgx_password_encrypted,omitempty"`
+	// Default username for HGX devices in this Fabric
+	HgxUsername *string `json:"hgx_username,omitempty"`
+	// On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings
+	IpSourceGuard *bool `json:"ip_source_guard,omitempty"`
 	// BGP Advertisement Interval for leafs. Use \"0\" for immediate updates
 	LeafBgpAdvertisementInterval NullableInt64 `json:"leaf_bgp_advertisement_interval,omitempty"`
 	// BGP Connect Timer
 	LeafBgpConnectTimer NullableInt64 `json:"leaf_bgp_connect_timer,omitempty"`
+	// Leaf BGP Hold Down Timer
+	LeafBgpHoldDownTimer NullableInt64 `json:"leaf_bgp_hold_down_timer,omitempty"`
+	// Leaf BGP Keep Alive Timer
+	LeafBgpKeepAliveTimer NullableInt64 `json:"leaf_bgp_keep_alive_timer,omitempty"`
 	// Link State Timeout Value
 	LinkStateTimeoutValue NullableInt64 `json:"link_state_timeout_value,omitempty"`
-	// Startup Delay
-	EvpnMultihomingStartupDelay NullableInt64 `json:"evpn_multihoming_startup_delay,omitempty"`
-	// MAC Holdtime
-	EvpnMacHoldtime NullableInt64 `json:"evpn_mac_holdtime,omitempty"`
-	// Fast Reporting of Switch Communications, Link Up/Down, and BGP Status
-	AggressiveReporting *bool `json:"aggressive_reporting,omitempty"`
-	// Base IPv4 address for switch IPs in this Fabric
-	SwitchIpBase *string `json:"switch_ip_base,omitempty"`
-	// Base IPv4 address for the Device Management VM IPs in this Fabric
-	ControllerIpBase *string `json:"controller_ip_base,omitempty"`
-	// Allow multiple tenants to HGX endpoints on this fabric.
-	MultiTenant *bool `json:"multi_tenant,omitempty"`
-	// Base BGP Autonomous System Number used for switches in the fabric 
-	BaseBgpAsNumber *string `json:"base_bgp_as_number,omitempty"`
-	// Router ID starting IP address 
-	RouterIdBasePrefix *string `json:"router_id_base_prefix,omitempty"`
-	// Vtep ID starting IP address 
-	VtepIdBasePrefix *string `json:"vtep_id_base_prefix,omitempty"`
-	// IP address range reserved for communication between paired switches 
-	PairedIpSubnet *string `json:"paired_ip_subnet,omitempty"`
-	// Max number Switches to support in this site 
-	MaxSwitches *string `json:"max_switches,omitempty"`
-	// Validation still runs, but validation alarms are not raised for this Fabric while enabled.
-	PauseValidationAlarms *bool `json:"pause_validation_alarms,omitempty"`
-	// Starting Octet for HGX Port IPs
-	StartingOctet NullableInt64 `json:"starting_octet,omitempty"`
-	// Maximum number of SUs allowed per POD
-	MaxSus NullableInt64 `json:"max_sus,omitempty"`
+	// MAC Address Aging Time (between 1-100000)
+	MacAddressAgingTime NullableInt64 `json:"mac_address_aging_time,omitempty"`
 	// Maximum number of PODs allowed in the Fabric
 	MaxPods NullableInt64 `json:"max_pods,omitempty"`
+	// Maximum number of SUs allowed per POD
+	MaxSus NullableInt64 `json:"max_sus,omitempty"`
+	// Max number Switches to support in this site
+	MaxSwitches *string `json:"max_switches,omitempty"`
+	// MLAG Delay Restore Timer
+	MlagDelayRestoreTimer NullableInt64 `json:"mlag_delay_restore_timer,omitempty"`
+	// Allow multiple tenants to HGX endpoints on this fabric.
+	MultiTenant *bool `json:"multi_tenant,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                       `json:"name,omitempty"`
 	ObjectProperties *FabricsPutRequestFabricValueObjectProperties `json:"object_properties,omitempty"`
+	// IP address range reserved for communication between paired switches
+	PairedIpSubnet *string `json:"paired_ip_subnet,omitempty"`
+	// Validation still runs, but validation alarms are not raised for this Fabric while enabled.
+	PauseValidationAlarms *bool `json:"pause_validation_alarms,omitempty"`
+	// Number of planes in this Fabric
+	PlaneCount *string `json:"plane_count,omitempty"`
+	// Polling interval values in seconds, set if aggressive reporting is not enabled
+	PortAdminPollingInterval NullableInt64 `json:"port_admin_polling_interval,omitempty"`
+	// Polling interval values in seconds, set if aggressive reporting is not enabled
+	PortStatusPollingInterval NullableInt64 `json:"port_status_polling_interval,omitempty"`
+	// When Read Only Mode is checked, vNetC will perform all functions except writing database updates to the target hardware
+	ReadOnlyMode *bool `json:"read_only_mode,omitempty"`
+	// Defines the logical boundary of the network. All switches in an MSTP region must have the same configured region name
+	RegionName *string `json:"region_name,omitempty"`
+	// A logical number that signifies a revision for the MSTP configuration. All switches in an MSTP region must have the same revision number
+	Revision NullableInt64 `json:"revision,omitempty"`
+	// Route Aggregation configuration for this fabric
+	RouteAggregation *string                                             `json:"route_aggregation,omitempty"`
+	RouteAggregators []FabricsPutRequestFabricValueRouteAggregatorsInner `json:"route_aggregators,omitempty"`
+	// Router ID starting IP address
+	RouterIdBasePrefix *string `json:"router_id_base_prefix,omitempty"`
+	// Support managing servers
+	ServerManagement *bool `json:"server_management,omitempty"`
+	// Service for Fabric
+	ServiceForFabric *string `json:"service_for_fabric,omitempty"`
+	// Object type for service_for_fabric field
+	ServiceForFabricRefType *string `json:"service_for_fabric_ref_type_,omitempty"`
 	// Enabling this will use the endpoint loopback0 address as the router ID for all BGP sessions on leaf switches
 	SetLeafRouterIdOnBgp *bool `json:"set_leaf_router_id_on_bgp,omitempty"`
-	// Route Aggregation configuration for this fabric
-	RouteAggregation *string `json:"route_aggregation,omitempty"`
-	RouteAggregators []FabricsPutRequestFabricValueRouteAggregatorsInner `json:"route_aggregators,omitempty"`
-	// On untrusted ports, only allow known traffic from known IP addresses. IP addresses are discovered via DHCP snooping or with static IP settings
-	IpSourceGuard *bool `json:"ip_source_guard,omitempty"`
-	// Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report.
-	EnableDhcpSnooping *bool `json:"enable_dhcp_snooping,omitempty"`
+	// Sets the spanning tree type for all Ports in this Fabric with Spanning Tree enabled
+	SpanningTreeType *string `json:"spanning_tree_type,omitempty"`
+	// BGP AS number applied uniformly to all spine endpoints in this CLOS fabric on save. Leave blank to manage spine AS numbers individually.
+	SpineAsNumber NullableInt64 `json:"spine_as_number,omitempty"`
+	// BGP Advertisement Interval for spines/superspines. Use \"0\" for immediate updates
+	SpineBgpAdvertisementInterval NullableInt64 `json:"spine_bgp_advertisement_interval,omitempty"`
+	// BGP Connect Timer
+	SpineBgpConnectTimer NullableInt64 `json:"spine_bgp_connect_timer,omitempty"`
+	// Starting Octet for HGX Port IPs
+	StartingOctet NullableInt64 `json:"starting_octet,omitempty"`
+	// Number of HGXs per SU
+	SuSize *string `json:"su_size,omitempty"`
+	// Support grouping leaf switches in SUs
+	SuSupport *bool `json:"su_support,omitempty"`
+	// Default switch management gateway IP for devices in this Fabric
+	SwitchGateway *string `json:"switch_gateway,omitempty"`
+	// Base IPv4 address for switch IPs in this Fabric
+	SwitchIpBase *string `json:"switch_ip_base,omitempty"`
+	// Default password for managed switches in this Fabric
+	SwitchPassword *string `json:"switch_password,omitempty"`
+	// Default password for managed switches in this Fabric
+	SwitchPasswordEncrypted *string `json:"switch_password_encrypted,omitempty"`
+	// Default username for managed switches in this Fabric
+	SwitchUsername *string `json:"switch_username,omitempty"`
+	// Vtep ID starting IP address
+	VtepIdBasePrefix *string `json:"vtep_id_base_prefix,omitempty"`
 }
 
 // NewFabricsPutRequestFabricValue instantiates a new FabricsPutRequestFabricValue object
@@ -159,122 +159,122 @@ type FabricsPutRequestFabricValue struct {
 // will change when the set of required properties is changed
 func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this := FabricsPutRequestFabricValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = true
-	this.Enable = &enable
-	var switchUsername string = ""
-	this.SwitchUsername = &switchUsername
-	var switchPassword string = ""
-	this.SwitchPassword = &switchPassword
-	var switchPasswordEncrypted string = ""
-	this.SwitchPasswordEncrypted = &switchPasswordEncrypted
-	var hgxUsername string = ""
-	this.HgxUsername = &hgxUsername
-	var hgxPassword string = ""
-	this.HgxPassword = &hgxPassword
-	var hgxPasswordEncrypted string = ""
-	this.HgxPasswordEncrypted = &hgxPasswordEncrypted
-	var switchGateway string = ""
-	this.SwitchGateway = &switchGateway
-	var controllerGateway string = ""
-	this.ControllerGateway = &controllerGateway
-	var planeCount string = "1"
-	this.PlaneCount = &planeCount
-	var suSize string = "32"
-	this.SuSize = &suSize
-	var suSupport bool = false
-	this.SuSupport = &suSupport
-	var gpuArchitecture string = "hgx"
-	this.GpuArchitecture = &gpuArchitecture
-	var serverManagement bool = true
-	this.ServerManagement = &serverManagement
+	var aggressiveReporting bool = true
+	this.AggressiveReporting = &aggressiveReporting
 	var allowAllUnderlayConnections bool = false
 	this.AllowAllUnderlayConnections = &allowAllUnderlayConnections
-	var fabricType string = "enterprise"
-	this.FabricType = &fabricType
+	var anycastMacAddress string = "(auto)"
+	this.AnycastMacAddress = &anycastMacAddress
+	var baseBgpAsNumber string = "61000"
+	this.BaseBgpAsNumber = &baseBgpAsNumber
+	var bgpHoldDownTimer int64 = 180
+	this.BgpHoldDownTimer = *NewNullableInt64(&bgpHoldDownTimer)
+	var bgpKeepaliveTimer int64 = 60
+	this.BgpKeepaliveTimer = *NewNullableInt64(&bgpKeepaliveTimer)
+	var controllerGateway string = ""
+	this.ControllerGateway = &controllerGateway
+	var controllerIpBase string = ""
+	this.ControllerIpBase = &controllerIpBase
+	var domainForFabric string = ""
+	this.DomainForFabric = &domainForFabric
+	var dscpToPBitMap string = "0000000011111111222222223333333344444444555555556666666677777777"
+	this.DscpToPBitMap = &dscpToPBitMap
 	var duplicateAddressDetectionMaxNumberOfMoves int64 = 5
 	this.DuplicateAddressDetectionMaxNumberOfMoves = *NewNullableInt64(&duplicateAddressDetectionMaxNumberOfMoves)
 	var duplicateAddressDetectionTime int64 = 180
 	this.DuplicateAddressDetectionTime = *NewNullableInt64(&duplicateAddressDetectionTime)
-	var portAdminPollingInterval int64 = 0
-	this.PortAdminPollingInterval = *NewNullableInt64(&portAdminPollingInterval)
-	var portStatusPollingInterval int64 = 0
-	this.PortStatusPollingInterval = *NewNullableInt64(&portStatusPollingInterval)
-	var serviceForFabric string = "(predefined):Management"
-	this.ServiceForFabric = &serviceForFabric
-	var spanningTreeType string = "pvst"
-	this.SpanningTreeType = &spanningTreeType
-	var regionName string = ""
-	this.RegionName = &regionName
-	var revision int64 = 0
-	this.Revision = *NewNullableInt64(&revision)
-	var forceSpanningTreeOnFabricPorts bool = false
-	this.ForceSpanningTreeOnFabricPorts = &forceSpanningTreeOnFabricPorts
-	var readOnlyMode bool = false
-	this.ReadOnlyMode = &readOnlyMode
-	var domainForFabric string = ""
-	this.DomainForFabric = &domainForFabric
+	var enable bool = true
+	this.Enable = &enable
+	var enableDhcpSnooping bool = false
+	this.EnableDhcpSnooping = &enableDhcpSnooping
 	var enableDscp bool = true
 	this.EnableDscp = &enableDscp
-	var dscpToPBitMap string = "0000000011111111222222223333333344444444555555556666666677777777"
-	this.DscpToPBitMap = &dscpToPBitMap
-	var anycastMacAddress string = "(auto)"
-	this.AnycastMacAddress = &anycastMacAddress
-	var macAddressAgingTime int64 = 600
-	this.MacAddressAgingTime = *NewNullableInt64(&macAddressAgingTime)
-	var mlagDelayRestoreTimer int64 = 300
-	this.MlagDelayRestoreTimer = *NewNullableInt64(&mlagDelayRestoreTimer)
-	var bgpKeepaliveTimer int64 = 60
-	this.BgpKeepaliveTimer = *NewNullableInt64(&bgpKeepaliveTimer)
-	var bgpHoldDownTimer int64 = 180
-	this.BgpHoldDownTimer = *NewNullableInt64(&bgpHoldDownTimer)
-	var spineBgpAdvertisementInterval int64 = 1
-	this.SpineBgpAdvertisementInterval = *NewNullableInt64(&spineBgpAdvertisementInterval)
-	var spineBgpConnectTimer int64 = 120
-	this.SpineBgpConnectTimer = *NewNullableInt64(&spineBgpConnectTimer)
-	var leafBgpKeepAliveTimer int64 = 60
-	this.LeafBgpKeepAliveTimer = *NewNullableInt64(&leafBgpKeepAliveTimer)
-	var leafBgpHoldDownTimer int64 = 180
-	this.LeafBgpHoldDownTimer = *NewNullableInt64(&leafBgpHoldDownTimer)
+	var evpnMacHoldtime int64 = 1080
+	this.EvpnMacHoldtime = *NewNullableInt64(&evpnMacHoldtime)
+	var evpnMultihomingStartupDelay int64 = 300
+	this.EvpnMultihomingStartupDelay = *NewNullableInt64(&evpnMultihomingStartupDelay)
+	var fabricType string = "enterprise"
+	this.FabricType = &fabricType
+	var forceSpanningTreeOnFabricPorts bool = false
+	this.ForceSpanningTreeOnFabricPorts = &forceSpanningTreeOnFabricPorts
+	var gpuArchitecture string = "hgx"
+	this.GpuArchitecture = &gpuArchitecture
+	var hgxPassword string = ""
+	this.HgxPassword = &hgxPassword
+	var hgxPasswordEncrypted string = ""
+	this.HgxPasswordEncrypted = &hgxPasswordEncrypted
+	var hgxUsername string = ""
+	this.HgxUsername = &hgxUsername
+	var ipSourceGuard bool = false
+	this.IpSourceGuard = &ipSourceGuard
 	var leafBgpAdvertisementInterval int64 = 1
 	this.LeafBgpAdvertisementInterval = *NewNullableInt64(&leafBgpAdvertisementInterval)
 	var leafBgpConnectTimer int64 = 120
 	this.LeafBgpConnectTimer = *NewNullableInt64(&leafBgpConnectTimer)
+	var leafBgpHoldDownTimer int64 = 180
+	this.LeafBgpHoldDownTimer = *NewNullableInt64(&leafBgpHoldDownTimer)
+	var leafBgpKeepAliveTimer int64 = 60
+	this.LeafBgpKeepAliveTimer = *NewNullableInt64(&leafBgpKeepAliveTimer)
 	var linkStateTimeoutValue int64 = 60
 	this.LinkStateTimeoutValue = *NewNullableInt64(&linkStateTimeoutValue)
-	var evpnMultihomingStartupDelay int64 = 300
-	this.EvpnMultihomingStartupDelay = *NewNullableInt64(&evpnMultihomingStartupDelay)
-	var evpnMacHoldtime int64 = 1080
-	this.EvpnMacHoldtime = *NewNullableInt64(&evpnMacHoldtime)
-	var aggressiveReporting bool = true
-	this.AggressiveReporting = &aggressiveReporting
-	var switchIpBase string = ""
-	this.SwitchIpBase = &switchIpBase
-	var controllerIpBase string = ""
-	this.ControllerIpBase = &controllerIpBase
-	var multiTenant bool = true
-	this.MultiTenant = &multiTenant
-	var baseBgpAsNumber string = "61000"
-	this.BaseBgpAsNumber = &baseBgpAsNumber
-	var routerIdBasePrefix string = "172.16.0.0"
-	this.RouterIdBasePrefix = &routerIdBasePrefix
-	var vtepIdBasePrefix string = "172.16.10.0"
-	this.VtepIdBasePrefix = &vtepIdBasePrefix
-	var pairedIpSubnet string = "192.168.254.0/24"
-	this.PairedIpSubnet = &pairedIpSubnet
+	var macAddressAgingTime int64 = 600
+	this.MacAddressAgingTime = *NewNullableInt64(&macAddressAgingTime)
 	var maxSwitches string = "2000"
 	this.MaxSwitches = &maxSwitches
+	var mlagDelayRestoreTimer int64 = 300
+	this.MlagDelayRestoreTimer = *NewNullableInt64(&mlagDelayRestoreTimer)
+	var multiTenant bool = true
+	this.MultiTenant = &multiTenant
+	var name string = ""
+	this.Name = &name
+	var pairedIpSubnet string = "192.168.254.0/24"
+	this.PairedIpSubnet = &pairedIpSubnet
 	var pauseValidationAlarms bool = false
 	this.PauseValidationAlarms = &pauseValidationAlarms
-	var setLeafRouterIdOnBgp bool = false
-	this.SetLeafRouterIdOnBgp = &setLeafRouterIdOnBgp
+	var planeCount string = "1"
+	this.PlaneCount = &planeCount
+	var portAdminPollingInterval int64 = 0
+	this.PortAdminPollingInterval = *NewNullableInt64(&portAdminPollingInterval)
+	var portStatusPollingInterval int64 = 0
+	this.PortStatusPollingInterval = *NewNullableInt64(&portStatusPollingInterval)
+	var readOnlyMode bool = false
+	this.ReadOnlyMode = &readOnlyMode
+	var regionName string = ""
+	this.RegionName = &regionName
+	var revision int64 = 0
+	this.Revision = *NewNullableInt64(&revision)
 	var routeAggregation string = ""
 	this.RouteAggregation = &routeAggregation
-	var ipSourceGuard bool = false
-	this.IpSourceGuard = &ipSourceGuard
-	var enableDhcpSnooping bool = false
-	this.EnableDhcpSnooping = &enableDhcpSnooping
+	var routerIdBasePrefix string = "172.16.0.0"
+	this.RouterIdBasePrefix = &routerIdBasePrefix
+	var serverManagement bool = true
+	this.ServerManagement = &serverManagement
+	var serviceForFabric string = "(predefined):Management"
+	this.ServiceForFabric = &serviceForFabric
+	var setLeafRouterIdOnBgp bool = false
+	this.SetLeafRouterIdOnBgp = &setLeafRouterIdOnBgp
+	var spanningTreeType string = "pvst"
+	this.SpanningTreeType = &spanningTreeType
+	var spineBgpAdvertisementInterval int64 = 1
+	this.SpineBgpAdvertisementInterval = *NewNullableInt64(&spineBgpAdvertisementInterval)
+	var spineBgpConnectTimer int64 = 120
+	this.SpineBgpConnectTimer = *NewNullableInt64(&spineBgpConnectTimer)
+	var suSize string = "32"
+	this.SuSize = &suSize
+	var suSupport bool = false
+	this.SuSupport = &suSupport
+	var switchGateway string = ""
+	this.SwitchGateway = &switchGateway
+	var switchIpBase string = ""
+	this.SwitchIpBase = &switchIpBase
+	var switchPassword string = ""
+	this.SwitchPassword = &switchPassword
+	var switchPasswordEncrypted string = ""
+	this.SwitchPasswordEncrypted = &switchPasswordEncrypted
+	var switchUsername string = ""
+	this.SwitchUsername = &switchUsername
+	var vtepIdBasePrefix string = "172.16.10.0"
+	this.VtepIdBasePrefix = &vtepIdBasePrefix
 	return &this
 }
 
@@ -283,603 +283,155 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 // but it doesn't guarantee that properties required by API are set
 func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue {
 	this := FabricsPutRequestFabricValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = true
-	this.Enable = &enable
-	var switchUsername string = ""
-	this.SwitchUsername = &switchUsername
-	var switchPassword string = ""
-	this.SwitchPassword = &switchPassword
-	var switchPasswordEncrypted string = ""
-	this.SwitchPasswordEncrypted = &switchPasswordEncrypted
-	var hgxUsername string = ""
-	this.HgxUsername = &hgxUsername
-	var hgxPassword string = ""
-	this.HgxPassword = &hgxPassword
-	var hgxPasswordEncrypted string = ""
-	this.HgxPasswordEncrypted = &hgxPasswordEncrypted
-	var switchGateway string = ""
-	this.SwitchGateway = &switchGateway
-	var controllerGateway string = ""
-	this.ControllerGateway = &controllerGateway
-	var planeCount string = "1"
-	this.PlaneCount = &planeCount
-	var suSize string = "32"
-	this.SuSize = &suSize
-	var suSupport bool = false
-	this.SuSupport = &suSupport
-	var gpuArchitecture string = "hgx"
-	this.GpuArchitecture = &gpuArchitecture
-	var serverManagement bool = true
-	this.ServerManagement = &serverManagement
+	var aggressiveReporting bool = true
+	this.AggressiveReporting = &aggressiveReporting
 	var allowAllUnderlayConnections bool = false
 	this.AllowAllUnderlayConnections = &allowAllUnderlayConnections
-	var fabricType string = "enterprise"
-	this.FabricType = &fabricType
+	var anycastMacAddress string = "(auto)"
+	this.AnycastMacAddress = &anycastMacAddress
+	var baseBgpAsNumber string = "61000"
+	this.BaseBgpAsNumber = &baseBgpAsNumber
+	var bgpHoldDownTimer int64 = 180
+	this.BgpHoldDownTimer = *NewNullableInt64(&bgpHoldDownTimer)
+	var bgpKeepaliveTimer int64 = 60
+	this.BgpKeepaliveTimer = *NewNullableInt64(&bgpKeepaliveTimer)
+	var controllerGateway string = ""
+	this.ControllerGateway = &controllerGateway
+	var controllerIpBase string = ""
+	this.ControllerIpBase = &controllerIpBase
+	var domainForFabric string = ""
+	this.DomainForFabric = &domainForFabric
+	var dscpToPBitMap string = "0000000011111111222222223333333344444444555555556666666677777777"
+	this.DscpToPBitMap = &dscpToPBitMap
 	var duplicateAddressDetectionMaxNumberOfMoves int64 = 5
 	this.DuplicateAddressDetectionMaxNumberOfMoves = *NewNullableInt64(&duplicateAddressDetectionMaxNumberOfMoves)
 	var duplicateAddressDetectionTime int64 = 180
 	this.DuplicateAddressDetectionTime = *NewNullableInt64(&duplicateAddressDetectionTime)
-	var portAdminPollingInterval int64 = 0
-	this.PortAdminPollingInterval = *NewNullableInt64(&portAdminPollingInterval)
-	var portStatusPollingInterval int64 = 0
-	this.PortStatusPollingInterval = *NewNullableInt64(&portStatusPollingInterval)
-	var serviceForFabric string = "(predefined):Management"
-	this.ServiceForFabric = &serviceForFabric
-	var spanningTreeType string = "pvst"
-	this.SpanningTreeType = &spanningTreeType
-	var regionName string = ""
-	this.RegionName = &regionName
-	var revision int64 = 0
-	this.Revision = *NewNullableInt64(&revision)
-	var forceSpanningTreeOnFabricPorts bool = false
-	this.ForceSpanningTreeOnFabricPorts = &forceSpanningTreeOnFabricPorts
-	var readOnlyMode bool = false
-	this.ReadOnlyMode = &readOnlyMode
-	var domainForFabric string = ""
-	this.DomainForFabric = &domainForFabric
+	var enable bool = true
+	this.Enable = &enable
+	var enableDhcpSnooping bool = false
+	this.EnableDhcpSnooping = &enableDhcpSnooping
 	var enableDscp bool = true
 	this.EnableDscp = &enableDscp
-	var dscpToPBitMap string = "0000000011111111222222223333333344444444555555556666666677777777"
-	this.DscpToPBitMap = &dscpToPBitMap
-	var anycastMacAddress string = "(auto)"
-	this.AnycastMacAddress = &anycastMacAddress
-	var macAddressAgingTime int64 = 600
-	this.MacAddressAgingTime = *NewNullableInt64(&macAddressAgingTime)
-	var mlagDelayRestoreTimer int64 = 300
-	this.MlagDelayRestoreTimer = *NewNullableInt64(&mlagDelayRestoreTimer)
-	var bgpKeepaliveTimer int64 = 60
-	this.BgpKeepaliveTimer = *NewNullableInt64(&bgpKeepaliveTimer)
-	var bgpHoldDownTimer int64 = 180
-	this.BgpHoldDownTimer = *NewNullableInt64(&bgpHoldDownTimer)
-	var spineBgpAdvertisementInterval int64 = 1
-	this.SpineBgpAdvertisementInterval = *NewNullableInt64(&spineBgpAdvertisementInterval)
-	var spineBgpConnectTimer int64 = 120
-	this.SpineBgpConnectTimer = *NewNullableInt64(&spineBgpConnectTimer)
-	var leafBgpKeepAliveTimer int64 = 60
-	this.LeafBgpKeepAliveTimer = *NewNullableInt64(&leafBgpKeepAliveTimer)
-	var leafBgpHoldDownTimer int64 = 180
-	this.LeafBgpHoldDownTimer = *NewNullableInt64(&leafBgpHoldDownTimer)
+	var evpnMacHoldtime int64 = 1080
+	this.EvpnMacHoldtime = *NewNullableInt64(&evpnMacHoldtime)
+	var evpnMultihomingStartupDelay int64 = 300
+	this.EvpnMultihomingStartupDelay = *NewNullableInt64(&evpnMultihomingStartupDelay)
+	var fabricType string = "enterprise"
+	this.FabricType = &fabricType
+	var forceSpanningTreeOnFabricPorts bool = false
+	this.ForceSpanningTreeOnFabricPorts = &forceSpanningTreeOnFabricPorts
+	var gpuArchitecture string = "hgx"
+	this.GpuArchitecture = &gpuArchitecture
+	var hgxPassword string = ""
+	this.HgxPassword = &hgxPassword
+	var hgxPasswordEncrypted string = ""
+	this.HgxPasswordEncrypted = &hgxPasswordEncrypted
+	var hgxUsername string = ""
+	this.HgxUsername = &hgxUsername
+	var ipSourceGuard bool = false
+	this.IpSourceGuard = &ipSourceGuard
 	var leafBgpAdvertisementInterval int64 = 1
 	this.LeafBgpAdvertisementInterval = *NewNullableInt64(&leafBgpAdvertisementInterval)
 	var leafBgpConnectTimer int64 = 120
 	this.LeafBgpConnectTimer = *NewNullableInt64(&leafBgpConnectTimer)
+	var leafBgpHoldDownTimer int64 = 180
+	this.LeafBgpHoldDownTimer = *NewNullableInt64(&leafBgpHoldDownTimer)
+	var leafBgpKeepAliveTimer int64 = 60
+	this.LeafBgpKeepAliveTimer = *NewNullableInt64(&leafBgpKeepAliveTimer)
 	var linkStateTimeoutValue int64 = 60
 	this.LinkStateTimeoutValue = *NewNullableInt64(&linkStateTimeoutValue)
-	var evpnMultihomingStartupDelay int64 = 300
-	this.EvpnMultihomingStartupDelay = *NewNullableInt64(&evpnMultihomingStartupDelay)
-	var evpnMacHoldtime int64 = 1080
-	this.EvpnMacHoldtime = *NewNullableInt64(&evpnMacHoldtime)
-	var aggressiveReporting bool = true
-	this.AggressiveReporting = &aggressiveReporting
-	var switchIpBase string = ""
-	this.SwitchIpBase = &switchIpBase
-	var controllerIpBase string = ""
-	this.ControllerIpBase = &controllerIpBase
-	var multiTenant bool = true
-	this.MultiTenant = &multiTenant
-	var baseBgpAsNumber string = "61000"
-	this.BaseBgpAsNumber = &baseBgpAsNumber
-	var routerIdBasePrefix string = "172.16.0.0"
-	this.RouterIdBasePrefix = &routerIdBasePrefix
-	var vtepIdBasePrefix string = "172.16.10.0"
-	this.VtepIdBasePrefix = &vtepIdBasePrefix
-	var pairedIpSubnet string = "192.168.254.0/24"
-	this.PairedIpSubnet = &pairedIpSubnet
+	var macAddressAgingTime int64 = 600
+	this.MacAddressAgingTime = *NewNullableInt64(&macAddressAgingTime)
 	var maxSwitches string = "2000"
 	this.MaxSwitches = &maxSwitches
+	var mlagDelayRestoreTimer int64 = 300
+	this.MlagDelayRestoreTimer = *NewNullableInt64(&mlagDelayRestoreTimer)
+	var multiTenant bool = true
+	this.MultiTenant = &multiTenant
+	var name string = ""
+	this.Name = &name
+	var pairedIpSubnet string = "192.168.254.0/24"
+	this.PairedIpSubnet = &pairedIpSubnet
 	var pauseValidationAlarms bool = false
 	this.PauseValidationAlarms = &pauseValidationAlarms
-	var setLeafRouterIdOnBgp bool = false
-	this.SetLeafRouterIdOnBgp = &setLeafRouterIdOnBgp
+	var planeCount string = "1"
+	this.PlaneCount = &planeCount
+	var portAdminPollingInterval int64 = 0
+	this.PortAdminPollingInterval = *NewNullableInt64(&portAdminPollingInterval)
+	var portStatusPollingInterval int64 = 0
+	this.PortStatusPollingInterval = *NewNullableInt64(&portStatusPollingInterval)
+	var readOnlyMode bool = false
+	this.ReadOnlyMode = &readOnlyMode
+	var regionName string = ""
+	this.RegionName = &regionName
+	var revision int64 = 0
+	this.Revision = *NewNullableInt64(&revision)
 	var routeAggregation string = ""
 	this.RouteAggregation = &routeAggregation
-	var ipSourceGuard bool = false
-	this.IpSourceGuard = &ipSourceGuard
-	var enableDhcpSnooping bool = false
-	this.EnableDhcpSnooping = &enableDhcpSnooping
+	var routerIdBasePrefix string = "172.16.0.0"
+	this.RouterIdBasePrefix = &routerIdBasePrefix
+	var serverManagement bool = true
+	this.ServerManagement = &serverManagement
+	var serviceForFabric string = "(predefined):Management"
+	this.ServiceForFabric = &serviceForFabric
+	var setLeafRouterIdOnBgp bool = false
+	this.SetLeafRouterIdOnBgp = &setLeafRouterIdOnBgp
+	var spanningTreeType string = "pvst"
+	this.SpanningTreeType = &spanningTreeType
+	var spineBgpAdvertisementInterval int64 = 1
+	this.SpineBgpAdvertisementInterval = *NewNullableInt64(&spineBgpAdvertisementInterval)
+	var spineBgpConnectTimer int64 = 120
+	this.SpineBgpConnectTimer = *NewNullableInt64(&spineBgpConnectTimer)
+	var suSize string = "32"
+	this.SuSize = &suSize
+	var suSupport bool = false
+	this.SuSupport = &suSupport
+	var switchGateway string = ""
+	this.SwitchGateway = &switchGateway
+	var switchIpBase string = ""
+	this.SwitchIpBase = &switchIpBase
+	var switchPassword string = ""
+	this.SwitchPassword = &switchPassword
+	var switchPasswordEncrypted string = ""
+	this.SwitchPasswordEncrypted = &switchPasswordEncrypted
+	var switchUsername string = ""
+	this.SwitchUsername = &switchUsername
+	var vtepIdBasePrefix string = "172.16.10.0"
+	this.VtepIdBasePrefix = &vtepIdBasePrefix
 	return &this
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *FabricsPutRequestFabricValue) SetName(v string) {
-	o.Name = &v
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
+// GetAggressiveReporting returns the AggressiveReporting field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetAggressiveReporting() bool {
+	if o == nil || IsNil(o.AggressiveReporting) {
 		var ret bool
 		return ret
 	}
-	return *o.Enable
+	return *o.AggressiveReporting
 }
 
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// GetAggressiveReportingOk returns a tuple with the AggressiveReporting field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
+func (o *FabricsPutRequestFabricValue) GetAggressiveReportingOk() (*bool, bool) {
+	if o == nil || IsNil(o.AggressiveReporting) {
 		return nil, false
 	}
-	return o.Enable, true
+	return o.AggressiveReporting, true
 }
 
-// HasEnable returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
+// HasAggressiveReporting returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasAggressiveReporting() bool {
+	if o != nil && !IsNil(o.AggressiveReporting) {
 		return true
 	}
 
 	return false
 }
 
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *FabricsPutRequestFabricValue) SetEnable(v bool) {
-	o.Enable = &v
-}
-
-// GetSwitchUsername returns the SwitchUsername field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetSwitchUsername() string {
-	if o == nil || IsNil(o.SwitchUsername) {
-		var ret string
-		return ret
-	}
-	return *o.SwitchUsername
-}
-
-// GetSwitchUsernameOk returns a tuple with the SwitchUsername field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetSwitchUsernameOk() (*string, bool) {
-	if o == nil || IsNil(o.SwitchUsername) {
-		return nil, false
-	}
-	return o.SwitchUsername, true
-}
-
-// HasSwitchUsername returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasSwitchUsername() bool {
-	if o != nil && !IsNil(o.SwitchUsername) {
-		return true
-	}
-
-	return false
-}
-
-// SetSwitchUsername gets a reference to the given string and assigns it to the SwitchUsername field.
-func (o *FabricsPutRequestFabricValue) SetSwitchUsername(v string) {
-	o.SwitchUsername = &v
-}
-
-// GetSwitchPassword returns the SwitchPassword field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetSwitchPassword() string {
-	if o == nil || IsNil(o.SwitchPassword) {
-		var ret string
-		return ret
-	}
-	return *o.SwitchPassword
-}
-
-// GetSwitchPasswordOk returns a tuple with the SwitchPassword field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetSwitchPasswordOk() (*string, bool) {
-	if o == nil || IsNil(o.SwitchPassword) {
-		return nil, false
-	}
-	return o.SwitchPassword, true
-}
-
-// HasSwitchPassword returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasSwitchPassword() bool {
-	if o != nil && !IsNil(o.SwitchPassword) {
-		return true
-	}
-
-	return false
-}
-
-// SetSwitchPassword gets a reference to the given string and assigns it to the SwitchPassword field.
-func (o *FabricsPutRequestFabricValue) SetSwitchPassword(v string) {
-	o.SwitchPassword = &v
-}
-
-// GetSwitchPasswordEncrypted returns the SwitchPasswordEncrypted field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetSwitchPasswordEncrypted() string {
-	if o == nil || IsNil(o.SwitchPasswordEncrypted) {
-		var ret string
-		return ret
-	}
-	return *o.SwitchPasswordEncrypted
-}
-
-// GetSwitchPasswordEncryptedOk returns a tuple with the SwitchPasswordEncrypted field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetSwitchPasswordEncryptedOk() (*string, bool) {
-	if o == nil || IsNil(o.SwitchPasswordEncrypted) {
-		return nil, false
-	}
-	return o.SwitchPasswordEncrypted, true
-}
-
-// HasSwitchPasswordEncrypted returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasSwitchPasswordEncrypted() bool {
-	if o != nil && !IsNil(o.SwitchPasswordEncrypted) {
-		return true
-	}
-
-	return false
-}
-
-// SetSwitchPasswordEncrypted gets a reference to the given string and assigns it to the SwitchPasswordEncrypted field.
-func (o *FabricsPutRequestFabricValue) SetSwitchPasswordEncrypted(v string) {
-	o.SwitchPasswordEncrypted = &v
-}
-
-// GetHgxUsername returns the HgxUsername field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetHgxUsername() string {
-	if o == nil || IsNil(o.HgxUsername) {
-		var ret string
-		return ret
-	}
-	return *o.HgxUsername
-}
-
-// GetHgxUsernameOk returns a tuple with the HgxUsername field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetHgxUsernameOk() (*string, bool) {
-	if o == nil || IsNil(o.HgxUsername) {
-		return nil, false
-	}
-	return o.HgxUsername, true
-}
-
-// HasHgxUsername returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasHgxUsername() bool {
-	if o != nil && !IsNil(o.HgxUsername) {
-		return true
-	}
-
-	return false
-}
-
-// SetHgxUsername gets a reference to the given string and assigns it to the HgxUsername field.
-func (o *FabricsPutRequestFabricValue) SetHgxUsername(v string) {
-	o.HgxUsername = &v
-}
-
-// GetHgxPassword returns the HgxPassword field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetHgxPassword() string {
-	if o == nil || IsNil(o.HgxPassword) {
-		var ret string
-		return ret
-	}
-	return *o.HgxPassword
-}
-
-// GetHgxPasswordOk returns a tuple with the HgxPassword field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetHgxPasswordOk() (*string, bool) {
-	if o == nil || IsNil(o.HgxPassword) {
-		return nil, false
-	}
-	return o.HgxPassword, true
-}
-
-// HasHgxPassword returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasHgxPassword() bool {
-	if o != nil && !IsNil(o.HgxPassword) {
-		return true
-	}
-
-	return false
-}
-
-// SetHgxPassword gets a reference to the given string and assigns it to the HgxPassword field.
-func (o *FabricsPutRequestFabricValue) SetHgxPassword(v string) {
-	o.HgxPassword = &v
-}
-
-// GetHgxPasswordEncrypted returns the HgxPasswordEncrypted field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetHgxPasswordEncrypted() string {
-	if o == nil || IsNil(o.HgxPasswordEncrypted) {
-		var ret string
-		return ret
-	}
-	return *o.HgxPasswordEncrypted
-}
-
-// GetHgxPasswordEncryptedOk returns a tuple with the HgxPasswordEncrypted field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetHgxPasswordEncryptedOk() (*string, bool) {
-	if o == nil || IsNil(o.HgxPasswordEncrypted) {
-		return nil, false
-	}
-	return o.HgxPasswordEncrypted, true
-}
-
-// HasHgxPasswordEncrypted returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasHgxPasswordEncrypted() bool {
-	if o != nil && !IsNil(o.HgxPasswordEncrypted) {
-		return true
-	}
-
-	return false
-}
-
-// SetHgxPasswordEncrypted gets a reference to the given string and assigns it to the HgxPasswordEncrypted field.
-func (o *FabricsPutRequestFabricValue) SetHgxPasswordEncrypted(v string) {
-	o.HgxPasswordEncrypted = &v
-}
-
-// GetSwitchGateway returns the SwitchGateway field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetSwitchGateway() string {
-	if o == nil || IsNil(o.SwitchGateway) {
-		var ret string
-		return ret
-	}
-	return *o.SwitchGateway
-}
-
-// GetSwitchGatewayOk returns a tuple with the SwitchGateway field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetSwitchGatewayOk() (*string, bool) {
-	if o == nil || IsNil(o.SwitchGateway) {
-		return nil, false
-	}
-	return o.SwitchGateway, true
-}
-
-// HasSwitchGateway returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasSwitchGateway() bool {
-	if o != nil && !IsNil(o.SwitchGateway) {
-		return true
-	}
-
-	return false
-}
-
-// SetSwitchGateway gets a reference to the given string and assigns it to the SwitchGateway field.
-func (o *FabricsPutRequestFabricValue) SetSwitchGateway(v string) {
-	o.SwitchGateway = &v
-}
-
-// GetControllerGateway returns the ControllerGateway field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetControllerGateway() string {
-	if o == nil || IsNil(o.ControllerGateway) {
-		var ret string
-		return ret
-	}
-	return *o.ControllerGateway
-}
-
-// GetControllerGatewayOk returns a tuple with the ControllerGateway field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetControllerGatewayOk() (*string, bool) {
-	if o == nil || IsNil(o.ControllerGateway) {
-		return nil, false
-	}
-	return o.ControllerGateway, true
-}
-
-// HasControllerGateway returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasControllerGateway() bool {
-	if o != nil && !IsNil(o.ControllerGateway) {
-		return true
-	}
-
-	return false
-}
-
-// SetControllerGateway gets a reference to the given string and assigns it to the ControllerGateway field.
-func (o *FabricsPutRequestFabricValue) SetControllerGateway(v string) {
-	o.ControllerGateway = &v
-}
-
-// GetPlaneCount returns the PlaneCount field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetPlaneCount() string {
-	if o == nil || IsNil(o.PlaneCount) {
-		var ret string
-		return ret
-	}
-	return *o.PlaneCount
-}
-
-// GetPlaneCountOk returns a tuple with the PlaneCount field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetPlaneCountOk() (*string, bool) {
-	if o == nil || IsNil(o.PlaneCount) {
-		return nil, false
-	}
-	return o.PlaneCount, true
-}
-
-// HasPlaneCount returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasPlaneCount() bool {
-	if o != nil && !IsNil(o.PlaneCount) {
-		return true
-	}
-
-	return false
-}
-
-// SetPlaneCount gets a reference to the given string and assigns it to the PlaneCount field.
-func (o *FabricsPutRequestFabricValue) SetPlaneCount(v string) {
-	o.PlaneCount = &v
-}
-
-// GetSuSize returns the SuSize field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetSuSize() string {
-	if o == nil || IsNil(o.SuSize) {
-		var ret string
-		return ret
-	}
-	return *o.SuSize
-}
-
-// GetSuSizeOk returns a tuple with the SuSize field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetSuSizeOk() (*string, bool) {
-	if o == nil || IsNil(o.SuSize) {
-		return nil, false
-	}
-	return o.SuSize, true
-}
-
-// HasSuSize returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasSuSize() bool {
-	if o != nil && !IsNil(o.SuSize) {
-		return true
-	}
-
-	return false
-}
-
-// SetSuSize gets a reference to the given string and assigns it to the SuSize field.
-func (o *FabricsPutRequestFabricValue) SetSuSize(v string) {
-	o.SuSize = &v
-}
-
-// GetSuSupport returns the SuSupport field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetSuSupport() bool {
-	if o == nil || IsNil(o.SuSupport) {
-		var ret bool
-		return ret
-	}
-	return *o.SuSupport
-}
-
-// GetSuSupportOk returns a tuple with the SuSupport field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetSuSupportOk() (*bool, bool) {
-	if o == nil || IsNil(o.SuSupport) {
-		return nil, false
-	}
-	return o.SuSupport, true
-}
-
-// HasSuSupport returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasSuSupport() bool {
-	if o != nil && !IsNil(o.SuSupport) {
-		return true
-	}
-
-	return false
-}
-
-// SetSuSupport gets a reference to the given bool and assigns it to the SuSupport field.
-func (o *FabricsPutRequestFabricValue) SetSuSupport(v bool) {
-	o.SuSupport = &v
-}
-
-// GetGpuArchitecture returns the GpuArchitecture field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetGpuArchitecture() string {
-	if o == nil || IsNil(o.GpuArchitecture) {
-		var ret string
-		return ret
-	}
-	return *o.GpuArchitecture
-}
-
-// GetGpuArchitectureOk returns a tuple with the GpuArchitecture field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetGpuArchitectureOk() (*string, bool) {
-	if o == nil || IsNil(o.GpuArchitecture) {
-		return nil, false
-	}
-	return o.GpuArchitecture, true
-}
-
-// HasGpuArchitecture returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasGpuArchitecture() bool {
-	if o != nil && !IsNil(o.GpuArchitecture) {
-		return true
-	}
-
-	return false
-}
-
-// SetGpuArchitecture gets a reference to the given string and assigns it to the GpuArchitecture field.
-func (o *FabricsPutRequestFabricValue) SetGpuArchitecture(v string) {
-	o.GpuArchitecture = &v
-}
-
-// GetServerManagement returns the ServerManagement field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetServerManagement() bool {
-	if o == nil || IsNil(o.ServerManagement) {
-		var ret bool
-		return ret
-	}
-	return *o.ServerManagement
-}
-
-// GetServerManagementOk returns a tuple with the ServerManagement field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetServerManagementOk() (*bool, bool) {
-	if o == nil || IsNil(o.ServerManagement) {
-		return nil, false
-	}
-	return o.ServerManagement, true
-}
-
-// HasServerManagement returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasServerManagement() bool {
-	if o != nil && !IsNil(o.ServerManagement) {
-		return true
-	}
-
-	return false
-}
-
-// SetServerManagement gets a reference to the given bool and assigns it to the ServerManagement field.
-func (o *FabricsPutRequestFabricValue) SetServerManagement(v bool) {
-	o.ServerManagement = &v
+// SetAggressiveReporting gets a reference to the given bool and assigns it to the AggressiveReporting field.
+func (o *FabricsPutRequestFabricValue) SetAggressiveReporting(v bool) {
+	o.AggressiveReporting = &v
 }
 
 // GetAllowAllUnderlayConnections returns the AllowAllUnderlayConnections field value if set, zero value otherwise.
@@ -912,568 +464,6 @@ func (o *FabricsPutRequestFabricValue) HasAllowAllUnderlayConnections() bool {
 // SetAllowAllUnderlayConnections gets a reference to the given bool and assigns it to the AllowAllUnderlayConnections field.
 func (o *FabricsPutRequestFabricValue) SetAllowAllUnderlayConnections(v bool) {
 	o.AllowAllUnderlayConnections = &v
-}
-
-// GetFabricType returns the FabricType field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetFabricType() string {
-	if o == nil || IsNil(o.FabricType) {
-		var ret string
-		return ret
-	}
-	return *o.FabricType
-}
-
-// GetFabricTypeOk returns a tuple with the FabricType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetFabricTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.FabricType) {
-		return nil, false
-	}
-	return o.FabricType, true
-}
-
-// HasFabricType returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasFabricType() bool {
-	if o != nil && !IsNil(o.FabricType) {
-		return true
-	}
-
-	return false
-}
-
-// SetFabricType gets a reference to the given string and assigns it to the FabricType field.
-func (o *FabricsPutRequestFabricValue) SetFabricType(v string) {
-	o.FabricType = &v
-}
-
-// GetDuplicateAddressDetectionMaxNumberOfMoves returns the DuplicateAddressDetectionMaxNumberOfMoves field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionMaxNumberOfMoves() int64 {
-	if o == nil || IsNil(o.DuplicateAddressDetectionMaxNumberOfMoves.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.DuplicateAddressDetectionMaxNumberOfMoves.Get()
-}
-
-// GetDuplicateAddressDetectionMaxNumberOfMovesOk returns a tuple with the DuplicateAddressDetectionMaxNumberOfMoves field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionMaxNumberOfMovesOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.DuplicateAddressDetectionMaxNumberOfMoves.Get(), o.DuplicateAddressDetectionMaxNumberOfMoves.IsSet()
-}
-
-// HasDuplicateAddressDetectionMaxNumberOfMoves returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasDuplicateAddressDetectionMaxNumberOfMoves() bool {
-	if o != nil && o.DuplicateAddressDetectionMaxNumberOfMoves.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetDuplicateAddressDetectionMaxNumberOfMoves gets a reference to the given NullableInt64 and assigns it to the DuplicateAddressDetectionMaxNumberOfMoves field.
-func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionMaxNumberOfMoves(v int64) {
-	o.DuplicateAddressDetectionMaxNumberOfMoves.Set(&v)
-}
-// SetDuplicateAddressDetectionMaxNumberOfMovesNil sets the value for DuplicateAddressDetectionMaxNumberOfMoves to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionMaxNumberOfMovesNil() {
-	o.DuplicateAddressDetectionMaxNumberOfMoves.Set(nil)
-}
-
-// UnsetDuplicateAddressDetectionMaxNumberOfMoves ensures that no value is present for DuplicateAddressDetectionMaxNumberOfMoves, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetDuplicateAddressDetectionMaxNumberOfMoves() {
-	o.DuplicateAddressDetectionMaxNumberOfMoves.Unset()
-}
-
-// GetDuplicateAddressDetectionTime returns the DuplicateAddressDetectionTime field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionTime() int64 {
-	if o == nil || IsNil(o.DuplicateAddressDetectionTime.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.DuplicateAddressDetectionTime.Get()
-}
-
-// GetDuplicateAddressDetectionTimeOk returns a tuple with the DuplicateAddressDetectionTime field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionTimeOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.DuplicateAddressDetectionTime.Get(), o.DuplicateAddressDetectionTime.IsSet()
-}
-
-// HasDuplicateAddressDetectionTime returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasDuplicateAddressDetectionTime() bool {
-	if o != nil && o.DuplicateAddressDetectionTime.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetDuplicateAddressDetectionTime gets a reference to the given NullableInt64 and assigns it to the DuplicateAddressDetectionTime field.
-func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionTime(v int64) {
-	o.DuplicateAddressDetectionTime.Set(&v)
-}
-// SetDuplicateAddressDetectionTimeNil sets the value for DuplicateAddressDetectionTime to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionTimeNil() {
-	o.DuplicateAddressDetectionTime.Set(nil)
-}
-
-// UnsetDuplicateAddressDetectionTime ensures that no value is present for DuplicateAddressDetectionTime, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetDuplicateAddressDetectionTime() {
-	o.DuplicateAddressDetectionTime.Unset()
-}
-
-// GetPortAdminPollingInterval returns the PortAdminPollingInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetPortAdminPollingInterval() int64 {
-	if o == nil || IsNil(o.PortAdminPollingInterval.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.PortAdminPollingInterval.Get()
-}
-
-// GetPortAdminPollingIntervalOk returns a tuple with the PortAdminPollingInterval field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetPortAdminPollingIntervalOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.PortAdminPollingInterval.Get(), o.PortAdminPollingInterval.IsSet()
-}
-
-// HasPortAdminPollingInterval returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasPortAdminPollingInterval() bool {
-	if o != nil && o.PortAdminPollingInterval.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetPortAdminPollingInterval gets a reference to the given NullableInt64 and assigns it to the PortAdminPollingInterval field.
-func (o *FabricsPutRequestFabricValue) SetPortAdminPollingInterval(v int64) {
-	o.PortAdminPollingInterval.Set(&v)
-}
-// SetPortAdminPollingIntervalNil sets the value for PortAdminPollingInterval to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetPortAdminPollingIntervalNil() {
-	o.PortAdminPollingInterval.Set(nil)
-}
-
-// UnsetPortAdminPollingInterval ensures that no value is present for PortAdminPollingInterval, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetPortAdminPollingInterval() {
-	o.PortAdminPollingInterval.Unset()
-}
-
-// GetPortStatusPollingInterval returns the PortStatusPollingInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetPortStatusPollingInterval() int64 {
-	if o == nil || IsNil(o.PortStatusPollingInterval.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.PortStatusPollingInterval.Get()
-}
-
-// GetPortStatusPollingIntervalOk returns a tuple with the PortStatusPollingInterval field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetPortStatusPollingIntervalOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.PortStatusPollingInterval.Get(), o.PortStatusPollingInterval.IsSet()
-}
-
-// HasPortStatusPollingInterval returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasPortStatusPollingInterval() bool {
-	if o != nil && o.PortStatusPollingInterval.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetPortStatusPollingInterval gets a reference to the given NullableInt64 and assigns it to the PortStatusPollingInterval field.
-func (o *FabricsPutRequestFabricValue) SetPortStatusPollingInterval(v int64) {
-	o.PortStatusPollingInterval.Set(&v)
-}
-// SetPortStatusPollingIntervalNil sets the value for PortStatusPollingInterval to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetPortStatusPollingIntervalNil() {
-	o.PortStatusPollingInterval.Set(nil)
-}
-
-// UnsetPortStatusPollingInterval ensures that no value is present for PortStatusPollingInterval, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetPortStatusPollingInterval() {
-	o.PortStatusPollingInterval.Unset()
-}
-
-// GetServiceForFabric returns the ServiceForFabric field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetServiceForFabric() string {
-	if o == nil || IsNil(o.ServiceForFabric) {
-		var ret string
-		return ret
-	}
-	return *o.ServiceForFabric
-}
-
-// GetServiceForFabricOk returns a tuple with the ServiceForFabric field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetServiceForFabricOk() (*string, bool) {
-	if o == nil || IsNil(o.ServiceForFabric) {
-		return nil, false
-	}
-	return o.ServiceForFabric, true
-}
-
-// HasServiceForFabric returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasServiceForFabric() bool {
-	if o != nil && !IsNil(o.ServiceForFabric) {
-		return true
-	}
-
-	return false
-}
-
-// SetServiceForFabric gets a reference to the given string and assigns it to the ServiceForFabric field.
-func (o *FabricsPutRequestFabricValue) SetServiceForFabric(v string) {
-	o.ServiceForFabric = &v
-}
-
-// GetServiceForFabricRefType returns the ServiceForFabricRefType field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetServiceForFabricRefType() string {
-	if o == nil || IsNil(o.ServiceForFabricRefType) {
-		var ret string
-		return ret
-	}
-	return *o.ServiceForFabricRefType
-}
-
-// GetServiceForFabricRefTypeOk returns a tuple with the ServiceForFabricRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetServiceForFabricRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.ServiceForFabricRefType) {
-		return nil, false
-	}
-	return o.ServiceForFabricRefType, true
-}
-
-// HasServiceForFabricRefType returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasServiceForFabricRefType() bool {
-	if o != nil && !IsNil(o.ServiceForFabricRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetServiceForFabricRefType gets a reference to the given string and assigns it to the ServiceForFabricRefType field.
-func (o *FabricsPutRequestFabricValue) SetServiceForFabricRefType(v string) {
-	o.ServiceForFabricRefType = &v
-}
-
-// GetSpanningTreeType returns the SpanningTreeType field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetSpanningTreeType() string {
-	if o == nil || IsNil(o.SpanningTreeType) {
-		var ret string
-		return ret
-	}
-	return *o.SpanningTreeType
-}
-
-// GetSpanningTreeTypeOk returns a tuple with the SpanningTreeType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetSpanningTreeTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.SpanningTreeType) {
-		return nil, false
-	}
-	return o.SpanningTreeType, true
-}
-
-// HasSpanningTreeType returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasSpanningTreeType() bool {
-	if o != nil && !IsNil(o.SpanningTreeType) {
-		return true
-	}
-
-	return false
-}
-
-// SetSpanningTreeType gets a reference to the given string and assigns it to the SpanningTreeType field.
-func (o *FabricsPutRequestFabricValue) SetSpanningTreeType(v string) {
-	o.SpanningTreeType = &v
-}
-
-// GetRegionName returns the RegionName field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetRegionName() string {
-	if o == nil || IsNil(o.RegionName) {
-		var ret string
-		return ret
-	}
-	return *o.RegionName
-}
-
-// GetRegionNameOk returns a tuple with the RegionName field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetRegionNameOk() (*string, bool) {
-	if o == nil || IsNil(o.RegionName) {
-		return nil, false
-	}
-	return o.RegionName, true
-}
-
-// HasRegionName returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasRegionName() bool {
-	if o != nil && !IsNil(o.RegionName) {
-		return true
-	}
-
-	return false
-}
-
-// SetRegionName gets a reference to the given string and assigns it to the RegionName field.
-func (o *FabricsPutRequestFabricValue) SetRegionName(v string) {
-	o.RegionName = &v
-}
-
-// GetRevision returns the Revision field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetRevision() int64 {
-	if o == nil || IsNil(o.Revision.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.Revision.Get()
-}
-
-// GetRevisionOk returns a tuple with the Revision field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetRevisionOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.Revision.Get(), o.Revision.IsSet()
-}
-
-// HasRevision returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasRevision() bool {
-	if o != nil && o.Revision.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetRevision gets a reference to the given NullableInt64 and assigns it to the Revision field.
-func (o *FabricsPutRequestFabricValue) SetRevision(v int64) {
-	o.Revision.Set(&v)
-}
-// SetRevisionNil sets the value for Revision to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetRevisionNil() {
-	o.Revision.Set(nil)
-}
-
-// UnsetRevision ensures that no value is present for Revision, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetRevision() {
-	o.Revision.Unset()
-}
-
-// GetForceSpanningTreeOnFabricPorts returns the ForceSpanningTreeOnFabricPorts field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetForceSpanningTreeOnFabricPorts() bool {
-	if o == nil || IsNil(o.ForceSpanningTreeOnFabricPorts) {
-		var ret bool
-		return ret
-	}
-	return *o.ForceSpanningTreeOnFabricPorts
-}
-
-// GetForceSpanningTreeOnFabricPortsOk returns a tuple with the ForceSpanningTreeOnFabricPorts field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetForceSpanningTreeOnFabricPortsOk() (*bool, bool) {
-	if o == nil || IsNil(o.ForceSpanningTreeOnFabricPorts) {
-		return nil, false
-	}
-	return o.ForceSpanningTreeOnFabricPorts, true
-}
-
-// HasForceSpanningTreeOnFabricPorts returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasForceSpanningTreeOnFabricPorts() bool {
-	if o != nil && !IsNil(o.ForceSpanningTreeOnFabricPorts) {
-		return true
-	}
-
-	return false
-}
-
-// SetForceSpanningTreeOnFabricPorts gets a reference to the given bool and assigns it to the ForceSpanningTreeOnFabricPorts field.
-func (o *FabricsPutRequestFabricValue) SetForceSpanningTreeOnFabricPorts(v bool) {
-	o.ForceSpanningTreeOnFabricPorts = &v
-}
-
-// GetReadOnlyMode returns the ReadOnlyMode field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetReadOnlyMode() bool {
-	if o == nil || IsNil(o.ReadOnlyMode) {
-		var ret bool
-		return ret
-	}
-	return *o.ReadOnlyMode
-}
-
-// GetReadOnlyModeOk returns a tuple with the ReadOnlyMode field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetReadOnlyModeOk() (*bool, bool) {
-	if o == nil || IsNil(o.ReadOnlyMode) {
-		return nil, false
-	}
-	return o.ReadOnlyMode, true
-}
-
-// HasReadOnlyMode returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasReadOnlyMode() bool {
-	if o != nil && !IsNil(o.ReadOnlyMode) {
-		return true
-	}
-
-	return false
-}
-
-// SetReadOnlyMode gets a reference to the given bool and assigns it to the ReadOnlyMode field.
-func (o *FabricsPutRequestFabricValue) SetReadOnlyMode(v bool) {
-	o.ReadOnlyMode = &v
-}
-
-// GetDomainForFabric returns the DomainForFabric field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetDomainForFabric() string {
-	if o == nil || IsNil(o.DomainForFabric) {
-		var ret string
-		return ret
-	}
-	return *o.DomainForFabric
-}
-
-// GetDomainForFabricOk returns a tuple with the DomainForFabric field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetDomainForFabricOk() (*string, bool) {
-	if o == nil || IsNil(o.DomainForFabric) {
-		return nil, false
-	}
-	return o.DomainForFabric, true
-}
-
-// HasDomainForFabric returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasDomainForFabric() bool {
-	if o != nil && !IsNil(o.DomainForFabric) {
-		return true
-	}
-
-	return false
-}
-
-// SetDomainForFabric gets a reference to the given string and assigns it to the DomainForFabric field.
-func (o *FabricsPutRequestFabricValue) SetDomainForFabric(v string) {
-	o.DomainForFabric = &v
-}
-
-// GetDomainForFabricRefType returns the DomainForFabricRefType field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetDomainForFabricRefType() string {
-	if o == nil || IsNil(o.DomainForFabricRefType) {
-		var ret string
-		return ret
-	}
-	return *o.DomainForFabricRefType
-}
-
-// GetDomainForFabricRefTypeOk returns a tuple with the DomainForFabricRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetDomainForFabricRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.DomainForFabricRefType) {
-		return nil, false
-	}
-	return o.DomainForFabricRefType, true
-}
-
-// HasDomainForFabricRefType returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasDomainForFabricRefType() bool {
-	if o != nil && !IsNil(o.DomainForFabricRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetDomainForFabricRefType gets a reference to the given string and assigns it to the DomainForFabricRefType field.
-func (o *FabricsPutRequestFabricValue) SetDomainForFabricRefType(v string) {
-	o.DomainForFabricRefType = &v
-}
-
-// GetEnableDscp returns the EnableDscp field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetEnableDscp() bool {
-	if o == nil || IsNil(o.EnableDscp) {
-		var ret bool
-		return ret
-	}
-	return *o.EnableDscp
-}
-
-// GetEnableDscpOk returns a tuple with the EnableDscp field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetEnableDscpOk() (*bool, bool) {
-	if o == nil || IsNil(o.EnableDscp) {
-		return nil, false
-	}
-	return o.EnableDscp, true
-}
-
-// HasEnableDscp returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasEnableDscp() bool {
-	if o != nil && !IsNil(o.EnableDscp) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnableDscp gets a reference to the given bool and assigns it to the EnableDscp field.
-func (o *FabricsPutRequestFabricValue) SetEnableDscp(v bool) {
-	o.EnableDscp = &v
-}
-
-// GetDscpToPBitMap returns the DscpToPBitMap field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetDscpToPBitMap() string {
-	if o == nil || IsNil(o.DscpToPBitMap) {
-		var ret string
-		return ret
-	}
-	return *o.DscpToPBitMap
-}
-
-// GetDscpToPBitMapOk returns a tuple with the DscpToPBitMap field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetDscpToPBitMapOk() (*string, bool) {
-	if o == nil || IsNil(o.DscpToPBitMap) {
-		return nil, false
-	}
-	return o.DscpToPBitMap, true
-}
-
-// HasDscpToPBitMap returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasDscpToPBitMap() bool {
-	if o != nil && !IsNil(o.DscpToPBitMap) {
-		return true
-	}
-
-	return false
-}
-
-// SetDscpToPBitMap gets a reference to the given string and assigns it to the DscpToPBitMap field.
-func (o *FabricsPutRequestFabricValue) SetDscpToPBitMap(v string) {
-	o.DscpToPBitMap = &v
 }
 
 // GetAnycastMacAddress returns the AnycastMacAddress field value if set, zero value otherwise.
@@ -1540,130 +530,36 @@ func (o *FabricsPutRequestFabricValue) SetAnycastMacAddressAutoAssigned(v bool) 
 	o.AnycastMacAddressAutoAssigned = &v
 }
 
-// GetMacAddressAgingTime returns the MacAddressAgingTime field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetMacAddressAgingTime() int64 {
-	if o == nil || IsNil(o.MacAddressAgingTime.Get()) {
-		var ret int64
+// GetBaseBgpAsNumber returns the BaseBgpAsNumber field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetBaseBgpAsNumber() string {
+	if o == nil || IsNil(o.BaseBgpAsNumber) {
+		var ret string
 		return ret
 	}
-	return *o.MacAddressAgingTime.Get()
+	return *o.BaseBgpAsNumber
 }
 
-// GetMacAddressAgingTimeOk returns a tuple with the MacAddressAgingTime field value if set, nil otherwise
+// GetBaseBgpAsNumberOk returns a tuple with the BaseBgpAsNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetMacAddressAgingTimeOk() (*int64, bool) {
-	if o == nil {
+func (o *FabricsPutRequestFabricValue) GetBaseBgpAsNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.BaseBgpAsNumber) {
 		return nil, false
 	}
-	return o.MacAddressAgingTime.Get(), o.MacAddressAgingTime.IsSet()
+	return o.BaseBgpAsNumber, true
 }
 
-// HasMacAddressAgingTime returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasMacAddressAgingTime() bool {
-	if o != nil && o.MacAddressAgingTime.IsSet() {
+// HasBaseBgpAsNumber returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasBaseBgpAsNumber() bool {
+	if o != nil && !IsNil(o.BaseBgpAsNumber) {
 		return true
 	}
 
 	return false
 }
 
-// SetMacAddressAgingTime gets a reference to the given NullableInt64 and assigns it to the MacAddressAgingTime field.
-func (o *FabricsPutRequestFabricValue) SetMacAddressAgingTime(v int64) {
-	o.MacAddressAgingTime.Set(&v)
-}
-// SetMacAddressAgingTimeNil sets the value for MacAddressAgingTime to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetMacAddressAgingTimeNil() {
-	o.MacAddressAgingTime.Set(nil)
-}
-
-// UnsetMacAddressAgingTime ensures that no value is present for MacAddressAgingTime, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetMacAddressAgingTime() {
-	o.MacAddressAgingTime.Unset()
-}
-
-// GetMlagDelayRestoreTimer returns the MlagDelayRestoreTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetMlagDelayRestoreTimer() int64 {
-	if o == nil || IsNil(o.MlagDelayRestoreTimer.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.MlagDelayRestoreTimer.Get()
-}
-
-// GetMlagDelayRestoreTimerOk returns a tuple with the MlagDelayRestoreTimer field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetMlagDelayRestoreTimerOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.MlagDelayRestoreTimer.Get(), o.MlagDelayRestoreTimer.IsSet()
-}
-
-// HasMlagDelayRestoreTimer returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasMlagDelayRestoreTimer() bool {
-	if o != nil && o.MlagDelayRestoreTimer.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMlagDelayRestoreTimer gets a reference to the given NullableInt64 and assigns it to the MlagDelayRestoreTimer field.
-func (o *FabricsPutRequestFabricValue) SetMlagDelayRestoreTimer(v int64) {
-	o.MlagDelayRestoreTimer.Set(&v)
-}
-// SetMlagDelayRestoreTimerNil sets the value for MlagDelayRestoreTimer to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetMlagDelayRestoreTimerNil() {
-	o.MlagDelayRestoreTimer.Set(nil)
-}
-
-// UnsetMlagDelayRestoreTimer ensures that no value is present for MlagDelayRestoreTimer, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetMlagDelayRestoreTimer() {
-	o.MlagDelayRestoreTimer.Unset()
-}
-
-// GetBgpKeepaliveTimer returns the BgpKeepaliveTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetBgpKeepaliveTimer() int64 {
-	if o == nil || IsNil(o.BgpKeepaliveTimer.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.BgpKeepaliveTimer.Get()
-}
-
-// GetBgpKeepaliveTimerOk returns a tuple with the BgpKeepaliveTimer field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetBgpKeepaliveTimerOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.BgpKeepaliveTimer.Get(), o.BgpKeepaliveTimer.IsSet()
-}
-
-// HasBgpKeepaliveTimer returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasBgpKeepaliveTimer() bool {
-	if o != nil && o.BgpKeepaliveTimer.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetBgpKeepaliveTimer gets a reference to the given NullableInt64 and assigns it to the BgpKeepaliveTimer field.
-func (o *FabricsPutRequestFabricValue) SetBgpKeepaliveTimer(v int64) {
-	o.BgpKeepaliveTimer.Set(&v)
-}
-// SetBgpKeepaliveTimerNil sets the value for BgpKeepaliveTimer to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetBgpKeepaliveTimerNil() {
-	o.BgpKeepaliveTimer.Set(nil)
-}
-
-// UnsetBgpKeepaliveTimer ensures that no value is present for BgpKeepaliveTimer, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetBgpKeepaliveTimer() {
-	o.BgpKeepaliveTimer.Unset()
+// SetBaseBgpAsNumber gets a reference to the given string and assigns it to the BaseBgpAsNumber field.
+func (o *FabricsPutRequestFabricValue) SetBaseBgpAsNumber(v string) {
+	o.BaseBgpAsNumber = &v
 }
 
 // GetBgpHoldDownTimer returns the BgpHoldDownTimer field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1698,6 +594,7 @@ func (o *FabricsPutRequestFabricValue) HasBgpHoldDownTimer() bool {
 func (o *FabricsPutRequestFabricValue) SetBgpHoldDownTimer(v int64) {
 	o.BgpHoldDownTimer.Set(&v)
 }
+
 // SetBgpHoldDownTimerNil sets the value for BgpHoldDownTimer to be an explicit nil
 func (o *FabricsPutRequestFabricValue) SetBgpHoldDownTimerNil() {
 	o.BgpHoldDownTimer.Set(nil)
@@ -1708,214 +605,699 @@ func (o *FabricsPutRequestFabricValue) UnsetBgpHoldDownTimer() {
 	o.BgpHoldDownTimer.Unset()
 }
 
-// GetSpineBgpAdvertisementInterval returns the SpineBgpAdvertisementInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetSpineBgpAdvertisementInterval() int64 {
-	if o == nil || IsNil(o.SpineBgpAdvertisementInterval.Get()) {
+// GetBgpKeepaliveTimer returns the BgpKeepaliveTimer field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetBgpKeepaliveTimer() int64 {
+	if o == nil || IsNil(o.BgpKeepaliveTimer.Get()) {
 		var ret int64
 		return ret
 	}
-	return *o.SpineBgpAdvertisementInterval.Get()
+	return *o.BgpKeepaliveTimer.Get()
 }
 
-// GetSpineBgpAdvertisementIntervalOk returns a tuple with the SpineBgpAdvertisementInterval field value if set, nil otherwise
+// GetBgpKeepaliveTimerOk returns a tuple with the BgpKeepaliveTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetSpineBgpAdvertisementIntervalOk() (*int64, bool) {
+func (o *FabricsPutRequestFabricValue) GetBgpKeepaliveTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return o.SpineBgpAdvertisementInterval.Get(), o.SpineBgpAdvertisementInterval.IsSet()
+	return o.BgpKeepaliveTimer.Get(), o.BgpKeepaliveTimer.IsSet()
 }
 
-// HasSpineBgpAdvertisementInterval returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasSpineBgpAdvertisementInterval() bool {
-	if o != nil && o.SpineBgpAdvertisementInterval.IsSet() {
+// HasBgpKeepaliveTimer returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasBgpKeepaliveTimer() bool {
+	if o != nil && o.BgpKeepaliveTimer.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetSpineBgpAdvertisementInterval gets a reference to the given NullableInt64 and assigns it to the SpineBgpAdvertisementInterval field.
-func (o *FabricsPutRequestFabricValue) SetSpineBgpAdvertisementInterval(v int64) {
-	o.SpineBgpAdvertisementInterval.Set(&v)
-}
-// SetSpineBgpAdvertisementIntervalNil sets the value for SpineBgpAdvertisementInterval to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetSpineBgpAdvertisementIntervalNil() {
-	o.SpineBgpAdvertisementInterval.Set(nil)
+// SetBgpKeepaliveTimer gets a reference to the given NullableInt64 and assigns it to the BgpKeepaliveTimer field.
+func (o *FabricsPutRequestFabricValue) SetBgpKeepaliveTimer(v int64) {
+	o.BgpKeepaliveTimer.Set(&v)
 }
 
-// UnsetSpineBgpAdvertisementInterval ensures that no value is present for SpineBgpAdvertisementInterval, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetSpineBgpAdvertisementInterval() {
-	o.SpineBgpAdvertisementInterval.Unset()
+// SetBgpKeepaliveTimerNil sets the value for BgpKeepaliveTimer to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetBgpKeepaliveTimerNil() {
+	o.BgpKeepaliveTimer.Set(nil)
 }
 
-// GetSpineBgpConnectTimer returns the SpineBgpConnectTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetSpineBgpConnectTimer() int64 {
-	if o == nil || IsNil(o.SpineBgpConnectTimer.Get()) {
-		var ret int64
+// UnsetBgpKeepaliveTimer ensures that no value is present for BgpKeepaliveTimer, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetBgpKeepaliveTimer() {
+	o.BgpKeepaliveTimer.Unset()
+}
+
+// GetControllerGateway returns the ControllerGateway field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetControllerGateway() string {
+	if o == nil || IsNil(o.ControllerGateway) {
+		var ret string
 		return ret
 	}
-	return *o.SpineBgpConnectTimer.Get()
+	return *o.ControllerGateway
 }
 
-// GetSpineBgpConnectTimerOk returns a tuple with the SpineBgpConnectTimer field value if set, nil otherwise
+// GetControllerGatewayOk returns a tuple with the ControllerGateway field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetSpineBgpConnectTimerOk() (*int64, bool) {
-	if o == nil {
+func (o *FabricsPutRequestFabricValue) GetControllerGatewayOk() (*string, bool) {
+	if o == nil || IsNil(o.ControllerGateway) {
 		return nil, false
 	}
-	return o.SpineBgpConnectTimer.Get(), o.SpineBgpConnectTimer.IsSet()
+	return o.ControllerGateway, true
 }
 
-// HasSpineBgpConnectTimer returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasSpineBgpConnectTimer() bool {
-	if o != nil && o.SpineBgpConnectTimer.IsSet() {
+// HasControllerGateway returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasControllerGateway() bool {
+	if o != nil && !IsNil(o.ControllerGateway) {
 		return true
 	}
 
 	return false
 }
 
-// SetSpineBgpConnectTimer gets a reference to the given NullableInt64 and assigns it to the SpineBgpConnectTimer field.
-func (o *FabricsPutRequestFabricValue) SetSpineBgpConnectTimer(v int64) {
-	o.SpineBgpConnectTimer.Set(&v)
-}
-// SetSpineBgpConnectTimerNil sets the value for SpineBgpConnectTimer to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetSpineBgpConnectTimerNil() {
-	o.SpineBgpConnectTimer.Set(nil)
+// SetControllerGateway gets a reference to the given string and assigns it to the ControllerGateway field.
+func (o *FabricsPutRequestFabricValue) SetControllerGateway(v string) {
+	o.ControllerGateway = &v
 }
 
-// UnsetSpineBgpConnectTimer ensures that no value is present for SpineBgpConnectTimer, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetSpineBgpConnectTimer() {
-	o.SpineBgpConnectTimer.Unset()
-}
-
-// GetSpineAsNumber returns the SpineAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetSpineAsNumber() int64 {
-	if o == nil || IsNil(o.SpineAsNumber.Get()) {
-		var ret int64
+// GetControllerIpBase returns the ControllerIpBase field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetControllerIpBase() string {
+	if o == nil || IsNil(o.ControllerIpBase) {
+		var ret string
 		return ret
 	}
-	return *o.SpineAsNumber.Get()
+	return *o.ControllerIpBase
 }
 
-// GetSpineAsNumberOk returns a tuple with the SpineAsNumber field value if set, nil otherwise
+// GetControllerIpBaseOk returns a tuple with the ControllerIpBase field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetSpineAsNumberOk() (*int64, bool) {
-	if o == nil {
+func (o *FabricsPutRequestFabricValue) GetControllerIpBaseOk() (*string, bool) {
+	if o == nil || IsNil(o.ControllerIpBase) {
 		return nil, false
 	}
-	return o.SpineAsNumber.Get(), o.SpineAsNumber.IsSet()
+	return o.ControllerIpBase, true
 }
 
-// HasSpineAsNumber returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasSpineAsNumber() bool {
-	if o != nil && o.SpineAsNumber.IsSet() {
+// HasControllerIpBase returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasControllerIpBase() bool {
+	if o != nil && !IsNil(o.ControllerIpBase) {
 		return true
 	}
 
 	return false
 }
 
-// SetSpineAsNumber gets a reference to the given NullableInt64 and assigns it to the SpineAsNumber field.
-func (o *FabricsPutRequestFabricValue) SetSpineAsNumber(v int64) {
-	o.SpineAsNumber.Set(&v)
-}
-// SetSpineAsNumberNil sets the value for SpineAsNumber to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetSpineAsNumberNil() {
-	o.SpineAsNumber.Set(nil)
+// SetControllerIpBase gets a reference to the given string and assigns it to the ControllerIpBase field.
+func (o *FabricsPutRequestFabricValue) SetControllerIpBase(v string) {
+	o.ControllerIpBase = &v
 }
 
-// UnsetSpineAsNumber ensures that no value is present for SpineAsNumber, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetSpineAsNumber() {
-	o.SpineAsNumber.Unset()
-}
-
-// GetLeafBgpKeepAliveTimer returns the LeafBgpKeepAliveTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetLeafBgpKeepAliveTimer() int64 {
-	if o == nil || IsNil(o.LeafBgpKeepAliveTimer.Get()) {
-		var ret int64
+// GetDomainForFabric returns the DomainForFabric field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetDomainForFabric() string {
+	if o == nil || IsNil(o.DomainForFabric) {
+		var ret string
 		return ret
 	}
-	return *o.LeafBgpKeepAliveTimer.Get()
+	return *o.DomainForFabric
 }
 
-// GetLeafBgpKeepAliveTimerOk returns a tuple with the LeafBgpKeepAliveTimer field value if set, nil otherwise
+// GetDomainForFabricOk returns a tuple with the DomainForFabric field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetLeafBgpKeepAliveTimerOk() (*int64, bool) {
-	if o == nil {
+func (o *FabricsPutRequestFabricValue) GetDomainForFabricOk() (*string, bool) {
+	if o == nil || IsNil(o.DomainForFabric) {
 		return nil, false
 	}
-	return o.LeafBgpKeepAliveTimer.Get(), o.LeafBgpKeepAliveTimer.IsSet()
+	return o.DomainForFabric, true
 }
 
-// HasLeafBgpKeepAliveTimer returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasLeafBgpKeepAliveTimer() bool {
-	if o != nil && o.LeafBgpKeepAliveTimer.IsSet() {
+// HasDomainForFabric returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasDomainForFabric() bool {
+	if o != nil && !IsNil(o.DomainForFabric) {
 		return true
 	}
 
 	return false
 }
 
-// SetLeafBgpKeepAliveTimer gets a reference to the given NullableInt64 and assigns it to the LeafBgpKeepAliveTimer field.
-func (o *FabricsPutRequestFabricValue) SetLeafBgpKeepAliveTimer(v int64) {
-	o.LeafBgpKeepAliveTimer.Set(&v)
-}
-// SetLeafBgpKeepAliveTimerNil sets the value for LeafBgpKeepAliveTimer to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetLeafBgpKeepAliveTimerNil() {
-	o.LeafBgpKeepAliveTimer.Set(nil)
+// SetDomainForFabric gets a reference to the given string and assigns it to the DomainForFabric field.
+func (o *FabricsPutRequestFabricValue) SetDomainForFabric(v string) {
+	o.DomainForFabric = &v
 }
 
-// UnsetLeafBgpKeepAliveTimer ensures that no value is present for LeafBgpKeepAliveTimer, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetLeafBgpKeepAliveTimer() {
-	o.LeafBgpKeepAliveTimer.Unset()
-}
-
-// GetLeafBgpHoldDownTimer returns the LeafBgpHoldDownTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetLeafBgpHoldDownTimer() int64 {
-	if o == nil || IsNil(o.LeafBgpHoldDownTimer.Get()) {
-		var ret int64
+// GetDomainForFabricRefType returns the DomainForFabricRefType field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetDomainForFabricRefType() string {
+	if o == nil || IsNil(o.DomainForFabricRefType) {
+		var ret string
 		return ret
 	}
-	return *o.LeafBgpHoldDownTimer.Get()
+	return *o.DomainForFabricRefType
 }
 
-// GetLeafBgpHoldDownTimerOk returns a tuple with the LeafBgpHoldDownTimer field value if set, nil otherwise
+// GetDomainForFabricRefTypeOk returns a tuple with the DomainForFabricRefType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetLeafBgpHoldDownTimerOk() (*int64, bool) {
-	if o == nil {
+func (o *FabricsPutRequestFabricValue) GetDomainForFabricRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.DomainForFabricRefType) {
 		return nil, false
 	}
-	return o.LeafBgpHoldDownTimer.Get(), o.LeafBgpHoldDownTimer.IsSet()
+	return o.DomainForFabricRefType, true
 }
 
-// HasLeafBgpHoldDownTimer returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasLeafBgpHoldDownTimer() bool {
-	if o != nil && o.LeafBgpHoldDownTimer.IsSet() {
+// HasDomainForFabricRefType returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasDomainForFabricRefType() bool {
+	if o != nil && !IsNil(o.DomainForFabricRefType) {
 		return true
 	}
 
 	return false
 }
 
-// SetLeafBgpHoldDownTimer gets a reference to the given NullableInt64 and assigns it to the LeafBgpHoldDownTimer field.
-func (o *FabricsPutRequestFabricValue) SetLeafBgpHoldDownTimer(v int64) {
-	o.LeafBgpHoldDownTimer.Set(&v)
-}
-// SetLeafBgpHoldDownTimerNil sets the value for LeafBgpHoldDownTimer to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetLeafBgpHoldDownTimerNil() {
-	o.LeafBgpHoldDownTimer.Set(nil)
+// SetDomainForFabricRefType gets a reference to the given string and assigns it to the DomainForFabricRefType field.
+func (o *FabricsPutRequestFabricValue) SetDomainForFabricRefType(v string) {
+	o.DomainForFabricRefType = &v
 }
 
-// UnsetLeafBgpHoldDownTimer ensures that no value is present for LeafBgpHoldDownTimer, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetLeafBgpHoldDownTimer() {
-	o.LeafBgpHoldDownTimer.Unset()
+// GetDscpToPBitMap returns the DscpToPBitMap field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetDscpToPBitMap() string {
+	if o == nil || IsNil(o.DscpToPBitMap) {
+		var ret string
+		return ret
+	}
+	return *o.DscpToPBitMap
+}
+
+// GetDscpToPBitMapOk returns a tuple with the DscpToPBitMap field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetDscpToPBitMapOk() (*string, bool) {
+	if o == nil || IsNil(o.DscpToPBitMap) {
+		return nil, false
+	}
+	return o.DscpToPBitMap, true
+}
+
+// HasDscpToPBitMap returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasDscpToPBitMap() bool {
+	if o != nil && !IsNil(o.DscpToPBitMap) {
+		return true
+	}
+
+	return false
+}
+
+// SetDscpToPBitMap gets a reference to the given string and assigns it to the DscpToPBitMap field.
+func (o *FabricsPutRequestFabricValue) SetDscpToPBitMap(v string) {
+	o.DscpToPBitMap = &v
+}
+
+// GetDuplicateAddressDetectionMaxNumberOfMoves returns the DuplicateAddressDetectionMaxNumberOfMoves field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionMaxNumberOfMoves() int64 {
+	if o == nil || IsNil(o.DuplicateAddressDetectionMaxNumberOfMoves.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.DuplicateAddressDetectionMaxNumberOfMoves.Get()
+}
+
+// GetDuplicateAddressDetectionMaxNumberOfMovesOk returns a tuple with the DuplicateAddressDetectionMaxNumberOfMoves field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionMaxNumberOfMovesOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DuplicateAddressDetectionMaxNumberOfMoves.Get(), o.DuplicateAddressDetectionMaxNumberOfMoves.IsSet()
+}
+
+// HasDuplicateAddressDetectionMaxNumberOfMoves returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasDuplicateAddressDetectionMaxNumberOfMoves() bool {
+	if o != nil && o.DuplicateAddressDetectionMaxNumberOfMoves.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDuplicateAddressDetectionMaxNumberOfMoves gets a reference to the given NullableInt64 and assigns it to the DuplicateAddressDetectionMaxNumberOfMoves field.
+func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionMaxNumberOfMoves(v int64) {
+	o.DuplicateAddressDetectionMaxNumberOfMoves.Set(&v)
+}
+
+// SetDuplicateAddressDetectionMaxNumberOfMovesNil sets the value for DuplicateAddressDetectionMaxNumberOfMoves to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionMaxNumberOfMovesNil() {
+	o.DuplicateAddressDetectionMaxNumberOfMoves.Set(nil)
+}
+
+// UnsetDuplicateAddressDetectionMaxNumberOfMoves ensures that no value is present for DuplicateAddressDetectionMaxNumberOfMoves, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetDuplicateAddressDetectionMaxNumberOfMoves() {
+	o.DuplicateAddressDetectionMaxNumberOfMoves.Unset()
+}
+
+// GetDuplicateAddressDetectionTime returns the DuplicateAddressDetectionTime field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionTime() int64 {
+	if o == nil || IsNil(o.DuplicateAddressDetectionTime.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.DuplicateAddressDetectionTime.Get()
+}
+
+// GetDuplicateAddressDetectionTimeOk returns a tuple with the DuplicateAddressDetectionTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetDuplicateAddressDetectionTimeOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DuplicateAddressDetectionTime.Get(), o.DuplicateAddressDetectionTime.IsSet()
+}
+
+// HasDuplicateAddressDetectionTime returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasDuplicateAddressDetectionTime() bool {
+	if o != nil && o.DuplicateAddressDetectionTime.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDuplicateAddressDetectionTime gets a reference to the given NullableInt64 and assigns it to the DuplicateAddressDetectionTime field.
+func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionTime(v int64) {
+	o.DuplicateAddressDetectionTime.Set(&v)
+}
+
+// SetDuplicateAddressDetectionTimeNil sets the value for DuplicateAddressDetectionTime to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionTimeNil() {
+	o.DuplicateAddressDetectionTime.Set(nil)
+}
+
+// UnsetDuplicateAddressDetectionTime ensures that no value is present for DuplicateAddressDetectionTime, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetDuplicateAddressDetectionTime() {
+	o.DuplicateAddressDetectionTime.Unset()
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *FabricsPutRequestFabricValue) SetEnable(v bool) {
+	o.Enable = &v
+}
+
+// GetEnableDhcpSnooping returns the EnableDhcpSnooping field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetEnableDhcpSnooping() bool {
+	if o == nil || IsNil(o.EnableDhcpSnooping) {
+		var ret bool
+		return ret
+	}
+	return *o.EnableDhcpSnooping
+}
+
+// GetEnableDhcpSnoopingOk returns a tuple with the EnableDhcpSnooping field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetEnableDhcpSnoopingOk() (*bool, bool) {
+	if o == nil || IsNil(o.EnableDhcpSnooping) {
+		return nil, false
+	}
+	return o.EnableDhcpSnooping, true
+}
+
+// HasEnableDhcpSnooping returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasEnableDhcpSnooping() bool {
+	if o != nil && !IsNil(o.EnableDhcpSnooping) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableDhcpSnooping gets a reference to the given bool and assigns it to the EnableDhcpSnooping field.
+func (o *FabricsPutRequestFabricValue) SetEnableDhcpSnooping(v bool) {
+	o.EnableDhcpSnooping = &v
+}
+
+// GetEnableDscp returns the EnableDscp field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetEnableDscp() bool {
+	if o == nil || IsNil(o.EnableDscp) {
+		var ret bool
+		return ret
+	}
+	return *o.EnableDscp
+}
+
+// GetEnableDscpOk returns a tuple with the EnableDscp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetEnableDscpOk() (*bool, bool) {
+	if o == nil || IsNil(o.EnableDscp) {
+		return nil, false
+	}
+	return o.EnableDscp, true
+}
+
+// HasEnableDscp returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasEnableDscp() bool {
+	if o != nil && !IsNil(o.EnableDscp) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableDscp gets a reference to the given bool and assigns it to the EnableDscp field.
+func (o *FabricsPutRequestFabricValue) SetEnableDscp(v bool) {
+	o.EnableDscp = &v
+}
+
+// GetEvpnMacHoldtime returns the EvpnMacHoldtime field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetEvpnMacHoldtime() int64 {
+	if o == nil || IsNil(o.EvpnMacHoldtime.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.EvpnMacHoldtime.Get()
+}
+
+// GetEvpnMacHoldtimeOk returns a tuple with the EvpnMacHoldtime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetEvpnMacHoldtimeOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.EvpnMacHoldtime.Get(), o.EvpnMacHoldtime.IsSet()
+}
+
+// HasEvpnMacHoldtime returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasEvpnMacHoldtime() bool {
+	if o != nil && o.EvpnMacHoldtime.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetEvpnMacHoldtime gets a reference to the given NullableInt64 and assigns it to the EvpnMacHoldtime field.
+func (o *FabricsPutRequestFabricValue) SetEvpnMacHoldtime(v int64) {
+	o.EvpnMacHoldtime.Set(&v)
+}
+
+// SetEvpnMacHoldtimeNil sets the value for EvpnMacHoldtime to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetEvpnMacHoldtimeNil() {
+	o.EvpnMacHoldtime.Set(nil)
+}
+
+// UnsetEvpnMacHoldtime ensures that no value is present for EvpnMacHoldtime, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetEvpnMacHoldtime() {
+	o.EvpnMacHoldtime.Unset()
+}
+
+// GetEvpnMultihomingStartupDelay returns the EvpnMultihomingStartupDelay field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetEvpnMultihomingStartupDelay() int64 {
+	if o == nil || IsNil(o.EvpnMultihomingStartupDelay.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.EvpnMultihomingStartupDelay.Get()
+}
+
+// GetEvpnMultihomingStartupDelayOk returns a tuple with the EvpnMultihomingStartupDelay field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetEvpnMultihomingStartupDelayOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.EvpnMultihomingStartupDelay.Get(), o.EvpnMultihomingStartupDelay.IsSet()
+}
+
+// HasEvpnMultihomingStartupDelay returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasEvpnMultihomingStartupDelay() bool {
+	if o != nil && o.EvpnMultihomingStartupDelay.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetEvpnMultihomingStartupDelay gets a reference to the given NullableInt64 and assigns it to the EvpnMultihomingStartupDelay field.
+func (o *FabricsPutRequestFabricValue) SetEvpnMultihomingStartupDelay(v int64) {
+	o.EvpnMultihomingStartupDelay.Set(&v)
+}
+
+// SetEvpnMultihomingStartupDelayNil sets the value for EvpnMultihomingStartupDelay to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetEvpnMultihomingStartupDelayNil() {
+	o.EvpnMultihomingStartupDelay.Set(nil)
+}
+
+// UnsetEvpnMultihomingStartupDelay ensures that no value is present for EvpnMultihomingStartupDelay, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetEvpnMultihomingStartupDelay() {
+	o.EvpnMultihomingStartupDelay.Unset()
+}
+
+// GetFabricType returns the FabricType field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetFabricType() string {
+	if o == nil || IsNil(o.FabricType) {
+		var ret string
+		return ret
+	}
+	return *o.FabricType
+}
+
+// GetFabricTypeOk returns a tuple with the FabricType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetFabricTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.FabricType) {
+		return nil, false
+	}
+	return o.FabricType, true
+}
+
+// HasFabricType returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasFabricType() bool {
+	if o != nil && !IsNil(o.FabricType) {
+		return true
+	}
+
+	return false
+}
+
+// SetFabricType gets a reference to the given string and assigns it to the FabricType field.
+func (o *FabricsPutRequestFabricValue) SetFabricType(v string) {
+	o.FabricType = &v
+}
+
+// GetForceSpanningTreeOnFabricPorts returns the ForceSpanningTreeOnFabricPorts field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetForceSpanningTreeOnFabricPorts() bool {
+	if o == nil || IsNil(o.ForceSpanningTreeOnFabricPorts) {
+		var ret bool
+		return ret
+	}
+	return *o.ForceSpanningTreeOnFabricPorts
+}
+
+// GetForceSpanningTreeOnFabricPortsOk returns a tuple with the ForceSpanningTreeOnFabricPorts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetForceSpanningTreeOnFabricPortsOk() (*bool, bool) {
+	if o == nil || IsNil(o.ForceSpanningTreeOnFabricPorts) {
+		return nil, false
+	}
+	return o.ForceSpanningTreeOnFabricPorts, true
+}
+
+// HasForceSpanningTreeOnFabricPorts returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasForceSpanningTreeOnFabricPorts() bool {
+	if o != nil && !IsNil(o.ForceSpanningTreeOnFabricPorts) {
+		return true
+	}
+
+	return false
+}
+
+// SetForceSpanningTreeOnFabricPorts gets a reference to the given bool and assigns it to the ForceSpanningTreeOnFabricPorts field.
+func (o *FabricsPutRequestFabricValue) SetForceSpanningTreeOnFabricPorts(v bool) {
+	o.ForceSpanningTreeOnFabricPorts = &v
+}
+
+// GetGpuArchitecture returns the GpuArchitecture field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetGpuArchitecture() string {
+	if o == nil || IsNil(o.GpuArchitecture) {
+		var ret string
+		return ret
+	}
+	return *o.GpuArchitecture
+}
+
+// GetGpuArchitectureOk returns a tuple with the GpuArchitecture field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetGpuArchitectureOk() (*string, bool) {
+	if o == nil || IsNil(o.GpuArchitecture) {
+		return nil, false
+	}
+	return o.GpuArchitecture, true
+}
+
+// HasGpuArchitecture returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasGpuArchitecture() bool {
+	if o != nil && !IsNil(o.GpuArchitecture) {
+		return true
+	}
+
+	return false
+}
+
+// SetGpuArchitecture gets a reference to the given string and assigns it to the GpuArchitecture field.
+func (o *FabricsPutRequestFabricValue) SetGpuArchitecture(v string) {
+	o.GpuArchitecture = &v
+}
+
+// GetHgxPassword returns the HgxPassword field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetHgxPassword() string {
+	if o == nil || IsNil(o.HgxPassword) {
+		var ret string
+		return ret
+	}
+	return *o.HgxPassword
+}
+
+// GetHgxPasswordOk returns a tuple with the HgxPassword field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetHgxPasswordOk() (*string, bool) {
+	if o == nil || IsNil(o.HgxPassword) {
+		return nil, false
+	}
+	return o.HgxPassword, true
+}
+
+// HasHgxPassword returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasHgxPassword() bool {
+	if o != nil && !IsNil(o.HgxPassword) {
+		return true
+	}
+
+	return false
+}
+
+// SetHgxPassword gets a reference to the given string and assigns it to the HgxPassword field.
+func (o *FabricsPutRequestFabricValue) SetHgxPassword(v string) {
+	o.HgxPassword = &v
+}
+
+// GetHgxPasswordEncrypted returns the HgxPasswordEncrypted field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetHgxPasswordEncrypted() string {
+	if o == nil || IsNil(o.HgxPasswordEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.HgxPasswordEncrypted
+}
+
+// GetHgxPasswordEncryptedOk returns a tuple with the HgxPasswordEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetHgxPasswordEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.HgxPasswordEncrypted) {
+		return nil, false
+	}
+	return o.HgxPasswordEncrypted, true
+}
+
+// HasHgxPasswordEncrypted returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasHgxPasswordEncrypted() bool {
+	if o != nil && !IsNil(o.HgxPasswordEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetHgxPasswordEncrypted gets a reference to the given string and assigns it to the HgxPasswordEncrypted field.
+func (o *FabricsPutRequestFabricValue) SetHgxPasswordEncrypted(v string) {
+	o.HgxPasswordEncrypted = &v
+}
+
+// GetHgxUsername returns the HgxUsername field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetHgxUsername() string {
+	if o == nil || IsNil(o.HgxUsername) {
+		var ret string
+		return ret
+	}
+	return *o.HgxUsername
+}
+
+// GetHgxUsernameOk returns a tuple with the HgxUsername field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetHgxUsernameOk() (*string, bool) {
+	if o == nil || IsNil(o.HgxUsername) {
+		return nil, false
+	}
+	return o.HgxUsername, true
+}
+
+// HasHgxUsername returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasHgxUsername() bool {
+	if o != nil && !IsNil(o.HgxUsername) {
+		return true
+	}
+
+	return false
+}
+
+// SetHgxUsername gets a reference to the given string and assigns it to the HgxUsername field.
+func (o *FabricsPutRequestFabricValue) SetHgxUsername(v string) {
+	o.HgxUsername = &v
+}
+
+// GetIpSourceGuard returns the IpSourceGuard field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetIpSourceGuard() bool {
+	if o == nil || IsNil(o.IpSourceGuard) {
+		var ret bool
+		return ret
+	}
+	return *o.IpSourceGuard
+}
+
+// GetIpSourceGuardOk returns a tuple with the IpSourceGuard field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetIpSourceGuardOk() (*bool, bool) {
+	if o == nil || IsNil(o.IpSourceGuard) {
+		return nil, false
+	}
+	return o.IpSourceGuard, true
+}
+
+// HasIpSourceGuard returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasIpSourceGuard() bool {
+	if o != nil && !IsNil(o.IpSourceGuard) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpSourceGuard gets a reference to the given bool and assigns it to the IpSourceGuard field.
+func (o *FabricsPutRequestFabricValue) SetIpSourceGuard(v bool) {
+	o.IpSourceGuard = &v
 }
 
 // GetLeafBgpAdvertisementInterval returns the LeafBgpAdvertisementInterval field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1950,6 +1332,7 @@ func (o *FabricsPutRequestFabricValue) HasLeafBgpAdvertisementInterval() bool {
 func (o *FabricsPutRequestFabricValue) SetLeafBgpAdvertisementInterval(v int64) {
 	o.LeafBgpAdvertisementInterval.Set(&v)
 }
+
 // SetLeafBgpAdvertisementIntervalNil sets the value for LeafBgpAdvertisementInterval to be an explicit nil
 func (o *FabricsPutRequestFabricValue) SetLeafBgpAdvertisementIntervalNil() {
 	o.LeafBgpAdvertisementInterval.Set(nil)
@@ -1992,6 +1375,7 @@ func (o *FabricsPutRequestFabricValue) HasLeafBgpConnectTimer() bool {
 func (o *FabricsPutRequestFabricValue) SetLeafBgpConnectTimer(v int64) {
 	o.LeafBgpConnectTimer.Set(&v)
 }
+
 // SetLeafBgpConnectTimerNil sets the value for LeafBgpConnectTimer to be an explicit nil
 func (o *FabricsPutRequestFabricValue) SetLeafBgpConnectTimerNil() {
 	o.LeafBgpConnectTimer.Set(nil)
@@ -2000,6 +1384,92 @@ func (o *FabricsPutRequestFabricValue) SetLeafBgpConnectTimerNil() {
 // UnsetLeafBgpConnectTimer ensures that no value is present for LeafBgpConnectTimer, not even an explicit nil
 func (o *FabricsPutRequestFabricValue) UnsetLeafBgpConnectTimer() {
 	o.LeafBgpConnectTimer.Unset()
+}
+
+// GetLeafBgpHoldDownTimer returns the LeafBgpHoldDownTimer field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetLeafBgpHoldDownTimer() int64 {
+	if o == nil || IsNil(o.LeafBgpHoldDownTimer.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.LeafBgpHoldDownTimer.Get()
+}
+
+// GetLeafBgpHoldDownTimerOk returns a tuple with the LeafBgpHoldDownTimer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetLeafBgpHoldDownTimerOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LeafBgpHoldDownTimer.Get(), o.LeafBgpHoldDownTimer.IsSet()
+}
+
+// HasLeafBgpHoldDownTimer returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasLeafBgpHoldDownTimer() bool {
+	if o != nil && o.LeafBgpHoldDownTimer.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLeafBgpHoldDownTimer gets a reference to the given NullableInt64 and assigns it to the LeafBgpHoldDownTimer field.
+func (o *FabricsPutRequestFabricValue) SetLeafBgpHoldDownTimer(v int64) {
+	o.LeafBgpHoldDownTimer.Set(&v)
+}
+
+// SetLeafBgpHoldDownTimerNil sets the value for LeafBgpHoldDownTimer to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetLeafBgpHoldDownTimerNil() {
+	o.LeafBgpHoldDownTimer.Set(nil)
+}
+
+// UnsetLeafBgpHoldDownTimer ensures that no value is present for LeafBgpHoldDownTimer, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetLeafBgpHoldDownTimer() {
+	o.LeafBgpHoldDownTimer.Unset()
+}
+
+// GetLeafBgpKeepAliveTimer returns the LeafBgpKeepAliveTimer field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetLeafBgpKeepAliveTimer() int64 {
+	if o == nil || IsNil(o.LeafBgpKeepAliveTimer.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.LeafBgpKeepAliveTimer.Get()
+}
+
+// GetLeafBgpKeepAliveTimerOk returns a tuple with the LeafBgpKeepAliveTimer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetLeafBgpKeepAliveTimerOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LeafBgpKeepAliveTimer.Get(), o.LeafBgpKeepAliveTimer.IsSet()
+}
+
+// HasLeafBgpKeepAliveTimer returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasLeafBgpKeepAliveTimer() bool {
+	if o != nil && o.LeafBgpKeepAliveTimer.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLeafBgpKeepAliveTimer gets a reference to the given NullableInt64 and assigns it to the LeafBgpKeepAliveTimer field.
+func (o *FabricsPutRequestFabricValue) SetLeafBgpKeepAliveTimer(v int64) {
+	o.LeafBgpKeepAliveTimer.Set(&v)
+}
+
+// SetLeafBgpKeepAliveTimerNil sets the value for LeafBgpKeepAliveTimer to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetLeafBgpKeepAliveTimerNil() {
+	o.LeafBgpKeepAliveTimer.Set(nil)
+}
+
+// UnsetLeafBgpKeepAliveTimer ensures that no value is present for LeafBgpKeepAliveTimer, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetLeafBgpKeepAliveTimer() {
+	o.LeafBgpKeepAliveTimer.Unset()
 }
 
 // GetLinkStateTimeoutValue returns the LinkStateTimeoutValue field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -2034,6 +1504,7 @@ func (o *FabricsPutRequestFabricValue) HasLinkStateTimeoutValue() bool {
 func (o *FabricsPutRequestFabricValue) SetLinkStateTimeoutValue(v int64) {
 	o.LinkStateTimeoutValue.Set(&v)
 }
+
 // SetLinkStateTimeoutValueNil sets the value for LinkStateTimeoutValue to be an explicit nil
 func (o *FabricsPutRequestFabricValue) SetLinkStateTimeoutValueNil() {
 	o.LinkStateTimeoutValue.Set(nil)
@@ -2044,492 +1515,47 @@ func (o *FabricsPutRequestFabricValue) UnsetLinkStateTimeoutValue() {
 	o.LinkStateTimeoutValue.Unset()
 }
 
-// GetEvpnMultihomingStartupDelay returns the EvpnMultihomingStartupDelay field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetEvpnMultihomingStartupDelay() int64 {
-	if o == nil || IsNil(o.EvpnMultihomingStartupDelay.Get()) {
+// GetMacAddressAgingTime returns the MacAddressAgingTime field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetMacAddressAgingTime() int64 {
+	if o == nil || IsNil(o.MacAddressAgingTime.Get()) {
 		var ret int64
 		return ret
 	}
-	return *o.EvpnMultihomingStartupDelay.Get()
+	return *o.MacAddressAgingTime.Get()
 }
 
-// GetEvpnMultihomingStartupDelayOk returns a tuple with the EvpnMultihomingStartupDelay field value if set, nil otherwise
+// GetMacAddressAgingTimeOk returns a tuple with the MacAddressAgingTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetEvpnMultihomingStartupDelayOk() (*int64, bool) {
+func (o *FabricsPutRequestFabricValue) GetMacAddressAgingTimeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return o.EvpnMultihomingStartupDelay.Get(), o.EvpnMultihomingStartupDelay.IsSet()
+	return o.MacAddressAgingTime.Get(), o.MacAddressAgingTime.IsSet()
 }
 
-// HasEvpnMultihomingStartupDelay returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasEvpnMultihomingStartupDelay() bool {
-	if o != nil && o.EvpnMultihomingStartupDelay.IsSet() {
+// HasMacAddressAgingTime returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasMacAddressAgingTime() bool {
+	if o != nil && o.MacAddressAgingTime.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetEvpnMultihomingStartupDelay gets a reference to the given NullableInt64 and assigns it to the EvpnMultihomingStartupDelay field.
-func (o *FabricsPutRequestFabricValue) SetEvpnMultihomingStartupDelay(v int64) {
-	o.EvpnMultihomingStartupDelay.Set(&v)
-}
-// SetEvpnMultihomingStartupDelayNil sets the value for EvpnMultihomingStartupDelay to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetEvpnMultihomingStartupDelayNil() {
-	o.EvpnMultihomingStartupDelay.Set(nil)
+// SetMacAddressAgingTime gets a reference to the given NullableInt64 and assigns it to the MacAddressAgingTime field.
+func (o *FabricsPutRequestFabricValue) SetMacAddressAgingTime(v int64) {
+	o.MacAddressAgingTime.Set(&v)
 }
 
-// UnsetEvpnMultihomingStartupDelay ensures that no value is present for EvpnMultihomingStartupDelay, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetEvpnMultihomingStartupDelay() {
-	o.EvpnMultihomingStartupDelay.Unset()
+// SetMacAddressAgingTimeNil sets the value for MacAddressAgingTime to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetMacAddressAgingTimeNil() {
+	o.MacAddressAgingTime.Set(nil)
 }
 
-// GetEvpnMacHoldtime returns the EvpnMacHoldtime field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetEvpnMacHoldtime() int64 {
-	if o == nil || IsNil(o.EvpnMacHoldtime.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.EvpnMacHoldtime.Get()
-}
-
-// GetEvpnMacHoldtimeOk returns a tuple with the EvpnMacHoldtime field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetEvpnMacHoldtimeOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.EvpnMacHoldtime.Get(), o.EvpnMacHoldtime.IsSet()
-}
-
-// HasEvpnMacHoldtime returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasEvpnMacHoldtime() bool {
-	if o != nil && o.EvpnMacHoldtime.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetEvpnMacHoldtime gets a reference to the given NullableInt64 and assigns it to the EvpnMacHoldtime field.
-func (o *FabricsPutRequestFabricValue) SetEvpnMacHoldtime(v int64) {
-	o.EvpnMacHoldtime.Set(&v)
-}
-// SetEvpnMacHoldtimeNil sets the value for EvpnMacHoldtime to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetEvpnMacHoldtimeNil() {
-	o.EvpnMacHoldtime.Set(nil)
-}
-
-// UnsetEvpnMacHoldtime ensures that no value is present for EvpnMacHoldtime, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetEvpnMacHoldtime() {
-	o.EvpnMacHoldtime.Unset()
-}
-
-// GetAggressiveReporting returns the AggressiveReporting field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetAggressiveReporting() bool {
-	if o == nil || IsNil(o.AggressiveReporting) {
-		var ret bool
-		return ret
-	}
-	return *o.AggressiveReporting
-}
-
-// GetAggressiveReportingOk returns a tuple with the AggressiveReporting field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetAggressiveReportingOk() (*bool, bool) {
-	if o == nil || IsNil(o.AggressiveReporting) {
-		return nil, false
-	}
-	return o.AggressiveReporting, true
-}
-
-// HasAggressiveReporting returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasAggressiveReporting() bool {
-	if o != nil && !IsNil(o.AggressiveReporting) {
-		return true
-	}
-
-	return false
-}
-
-// SetAggressiveReporting gets a reference to the given bool and assigns it to the AggressiveReporting field.
-func (o *FabricsPutRequestFabricValue) SetAggressiveReporting(v bool) {
-	o.AggressiveReporting = &v
-}
-
-// GetSwitchIpBase returns the SwitchIpBase field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetSwitchIpBase() string {
-	if o == nil || IsNil(o.SwitchIpBase) {
-		var ret string
-		return ret
-	}
-	return *o.SwitchIpBase
-}
-
-// GetSwitchIpBaseOk returns a tuple with the SwitchIpBase field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetSwitchIpBaseOk() (*string, bool) {
-	if o == nil || IsNil(o.SwitchIpBase) {
-		return nil, false
-	}
-	return o.SwitchIpBase, true
-}
-
-// HasSwitchIpBase returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasSwitchIpBase() bool {
-	if o != nil && !IsNil(o.SwitchIpBase) {
-		return true
-	}
-
-	return false
-}
-
-// SetSwitchIpBase gets a reference to the given string and assigns it to the SwitchIpBase field.
-func (o *FabricsPutRequestFabricValue) SetSwitchIpBase(v string) {
-	o.SwitchIpBase = &v
-}
-
-// GetControllerIpBase returns the ControllerIpBase field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetControllerIpBase() string {
-	if o == nil || IsNil(o.ControllerIpBase) {
-		var ret string
-		return ret
-	}
-	return *o.ControllerIpBase
-}
-
-// GetControllerIpBaseOk returns a tuple with the ControllerIpBase field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetControllerIpBaseOk() (*string, bool) {
-	if o == nil || IsNil(o.ControllerIpBase) {
-		return nil, false
-	}
-	return o.ControllerIpBase, true
-}
-
-// HasControllerIpBase returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasControllerIpBase() bool {
-	if o != nil && !IsNil(o.ControllerIpBase) {
-		return true
-	}
-
-	return false
-}
-
-// SetControllerIpBase gets a reference to the given string and assigns it to the ControllerIpBase field.
-func (o *FabricsPutRequestFabricValue) SetControllerIpBase(v string) {
-	o.ControllerIpBase = &v
-}
-
-// GetMultiTenant returns the MultiTenant field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetMultiTenant() bool {
-	if o == nil || IsNil(o.MultiTenant) {
-		var ret bool
-		return ret
-	}
-	return *o.MultiTenant
-}
-
-// GetMultiTenantOk returns a tuple with the MultiTenant field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetMultiTenantOk() (*bool, bool) {
-	if o == nil || IsNil(o.MultiTenant) {
-		return nil, false
-	}
-	return o.MultiTenant, true
-}
-
-// HasMultiTenant returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasMultiTenant() bool {
-	if o != nil && !IsNil(o.MultiTenant) {
-		return true
-	}
-
-	return false
-}
-
-// SetMultiTenant gets a reference to the given bool and assigns it to the MultiTenant field.
-func (o *FabricsPutRequestFabricValue) SetMultiTenant(v bool) {
-	o.MultiTenant = &v
-}
-
-// GetBaseBgpAsNumber returns the BaseBgpAsNumber field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetBaseBgpAsNumber() string {
-	if o == nil || IsNil(o.BaseBgpAsNumber) {
-		var ret string
-		return ret
-	}
-	return *o.BaseBgpAsNumber
-}
-
-// GetBaseBgpAsNumberOk returns a tuple with the BaseBgpAsNumber field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetBaseBgpAsNumberOk() (*string, bool) {
-	if o == nil || IsNil(o.BaseBgpAsNumber) {
-		return nil, false
-	}
-	return o.BaseBgpAsNumber, true
-}
-
-// HasBaseBgpAsNumber returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasBaseBgpAsNumber() bool {
-	if o != nil && !IsNil(o.BaseBgpAsNumber) {
-		return true
-	}
-
-	return false
-}
-
-// SetBaseBgpAsNumber gets a reference to the given string and assigns it to the BaseBgpAsNumber field.
-func (o *FabricsPutRequestFabricValue) SetBaseBgpAsNumber(v string) {
-	o.BaseBgpAsNumber = &v
-}
-
-// GetRouterIdBasePrefix returns the RouterIdBasePrefix field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetRouterIdBasePrefix() string {
-	if o == nil || IsNil(o.RouterIdBasePrefix) {
-		var ret string
-		return ret
-	}
-	return *o.RouterIdBasePrefix
-}
-
-// GetRouterIdBasePrefixOk returns a tuple with the RouterIdBasePrefix field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetRouterIdBasePrefixOk() (*string, bool) {
-	if o == nil || IsNil(o.RouterIdBasePrefix) {
-		return nil, false
-	}
-	return o.RouterIdBasePrefix, true
-}
-
-// HasRouterIdBasePrefix returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasRouterIdBasePrefix() bool {
-	if o != nil && !IsNil(o.RouterIdBasePrefix) {
-		return true
-	}
-
-	return false
-}
-
-// SetRouterIdBasePrefix gets a reference to the given string and assigns it to the RouterIdBasePrefix field.
-func (o *FabricsPutRequestFabricValue) SetRouterIdBasePrefix(v string) {
-	o.RouterIdBasePrefix = &v
-}
-
-// GetVtepIdBasePrefix returns the VtepIdBasePrefix field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetVtepIdBasePrefix() string {
-	if o == nil || IsNil(o.VtepIdBasePrefix) {
-		var ret string
-		return ret
-	}
-	return *o.VtepIdBasePrefix
-}
-
-// GetVtepIdBasePrefixOk returns a tuple with the VtepIdBasePrefix field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetVtepIdBasePrefixOk() (*string, bool) {
-	if o == nil || IsNil(o.VtepIdBasePrefix) {
-		return nil, false
-	}
-	return o.VtepIdBasePrefix, true
-}
-
-// HasVtepIdBasePrefix returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasVtepIdBasePrefix() bool {
-	if o != nil && !IsNil(o.VtepIdBasePrefix) {
-		return true
-	}
-
-	return false
-}
-
-// SetVtepIdBasePrefix gets a reference to the given string and assigns it to the VtepIdBasePrefix field.
-func (o *FabricsPutRequestFabricValue) SetVtepIdBasePrefix(v string) {
-	o.VtepIdBasePrefix = &v
-}
-
-// GetPairedIpSubnet returns the PairedIpSubnet field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetPairedIpSubnet() string {
-	if o == nil || IsNil(o.PairedIpSubnet) {
-		var ret string
-		return ret
-	}
-	return *o.PairedIpSubnet
-}
-
-// GetPairedIpSubnetOk returns a tuple with the PairedIpSubnet field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetPairedIpSubnetOk() (*string, bool) {
-	if o == nil || IsNil(o.PairedIpSubnet) {
-		return nil, false
-	}
-	return o.PairedIpSubnet, true
-}
-
-// HasPairedIpSubnet returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasPairedIpSubnet() bool {
-	if o != nil && !IsNil(o.PairedIpSubnet) {
-		return true
-	}
-
-	return false
-}
-
-// SetPairedIpSubnet gets a reference to the given string and assigns it to the PairedIpSubnet field.
-func (o *FabricsPutRequestFabricValue) SetPairedIpSubnet(v string) {
-	o.PairedIpSubnet = &v
-}
-
-// GetMaxSwitches returns the MaxSwitches field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetMaxSwitches() string {
-	if o == nil || IsNil(o.MaxSwitches) {
-		var ret string
-		return ret
-	}
-	return *o.MaxSwitches
-}
-
-// GetMaxSwitchesOk returns a tuple with the MaxSwitches field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetMaxSwitchesOk() (*string, bool) {
-	if o == nil || IsNil(o.MaxSwitches) {
-		return nil, false
-	}
-	return o.MaxSwitches, true
-}
-
-// HasMaxSwitches returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasMaxSwitches() bool {
-	if o != nil && !IsNil(o.MaxSwitches) {
-		return true
-	}
-
-	return false
-}
-
-// SetMaxSwitches gets a reference to the given string and assigns it to the MaxSwitches field.
-func (o *FabricsPutRequestFabricValue) SetMaxSwitches(v string) {
-	o.MaxSwitches = &v
-}
-
-// GetPauseValidationAlarms returns the PauseValidationAlarms field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetPauseValidationAlarms() bool {
-	if o == nil || IsNil(o.PauseValidationAlarms) {
-		var ret bool
-		return ret
-	}
-	return *o.PauseValidationAlarms
-}
-
-// GetPauseValidationAlarmsOk returns a tuple with the PauseValidationAlarms field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetPauseValidationAlarmsOk() (*bool, bool) {
-	if o == nil || IsNil(o.PauseValidationAlarms) {
-		return nil, false
-	}
-	return o.PauseValidationAlarms, true
-}
-
-// HasPauseValidationAlarms returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasPauseValidationAlarms() bool {
-	if o != nil && !IsNil(o.PauseValidationAlarms) {
-		return true
-	}
-
-	return false
-}
-
-// SetPauseValidationAlarms gets a reference to the given bool and assigns it to the PauseValidationAlarms field.
-func (o *FabricsPutRequestFabricValue) SetPauseValidationAlarms(v bool) {
-	o.PauseValidationAlarms = &v
-}
-
-// GetStartingOctet returns the StartingOctet field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetStartingOctet() int64 {
-	if o == nil || IsNil(o.StartingOctet.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.StartingOctet.Get()
-}
-
-// GetStartingOctetOk returns a tuple with the StartingOctet field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetStartingOctetOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.StartingOctet.Get(), o.StartingOctet.IsSet()
-}
-
-// HasStartingOctet returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasStartingOctet() bool {
-	if o != nil && o.StartingOctet.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetStartingOctet gets a reference to the given NullableInt64 and assigns it to the StartingOctet field.
-func (o *FabricsPutRequestFabricValue) SetStartingOctet(v int64) {
-	o.StartingOctet.Set(&v)
-}
-// SetStartingOctetNil sets the value for StartingOctet to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetStartingOctetNil() {
-	o.StartingOctet.Set(nil)
-}
-
-// UnsetStartingOctet ensures that no value is present for StartingOctet, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetStartingOctet() {
-	o.StartingOctet.Unset()
-}
-
-// GetMaxSus returns the MaxSus field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricsPutRequestFabricValue) GetMaxSus() int64 {
-	if o == nil || IsNil(o.MaxSus.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.MaxSus.Get()
-}
-
-// GetMaxSusOk returns a tuple with the MaxSus field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricsPutRequestFabricValue) GetMaxSusOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.MaxSus.Get(), o.MaxSus.IsSet()
-}
-
-// HasMaxSus returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasMaxSus() bool {
-	if o != nil && o.MaxSus.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMaxSus gets a reference to the given NullableInt64 and assigns it to the MaxSus field.
-func (o *FabricsPutRequestFabricValue) SetMaxSus(v int64) {
-	o.MaxSus.Set(&v)
-}
-// SetMaxSusNil sets the value for MaxSus to be an explicit nil
-func (o *FabricsPutRequestFabricValue) SetMaxSusNil() {
-	o.MaxSus.Set(nil)
-}
-
-// UnsetMaxSus ensures that no value is present for MaxSus, not even an explicit nil
-func (o *FabricsPutRequestFabricValue) UnsetMaxSus() {
-	o.MaxSus.Unset()
+// UnsetMacAddressAgingTime ensures that no value is present for MacAddressAgingTime, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetMacAddressAgingTime() {
+	o.MacAddressAgingTime.Unset()
 }
 
 // GetMaxPods returns the MaxPods field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -2564,6 +1590,7 @@ func (o *FabricsPutRequestFabricValue) HasMaxPods() bool {
 func (o *FabricsPutRequestFabricValue) SetMaxPods(v int64) {
 	o.MaxPods.Set(&v)
 }
+
 // SetMaxPodsNil sets the value for MaxPods to be an explicit nil
 func (o *FabricsPutRequestFabricValue) SetMaxPodsNil() {
 	o.MaxPods.Set(nil)
@@ -2572,6 +1599,188 @@ func (o *FabricsPutRequestFabricValue) SetMaxPodsNil() {
 // UnsetMaxPods ensures that no value is present for MaxPods, not even an explicit nil
 func (o *FabricsPutRequestFabricValue) UnsetMaxPods() {
 	o.MaxPods.Unset()
+}
+
+// GetMaxSus returns the MaxSus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetMaxSus() int64 {
+	if o == nil || IsNil(o.MaxSus.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.MaxSus.Get()
+}
+
+// GetMaxSusOk returns a tuple with the MaxSus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetMaxSusOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MaxSus.Get(), o.MaxSus.IsSet()
+}
+
+// HasMaxSus returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasMaxSus() bool {
+	if o != nil && o.MaxSus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxSus gets a reference to the given NullableInt64 and assigns it to the MaxSus field.
+func (o *FabricsPutRequestFabricValue) SetMaxSus(v int64) {
+	o.MaxSus.Set(&v)
+}
+
+// SetMaxSusNil sets the value for MaxSus to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetMaxSusNil() {
+	o.MaxSus.Set(nil)
+}
+
+// UnsetMaxSus ensures that no value is present for MaxSus, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetMaxSus() {
+	o.MaxSus.Unset()
+}
+
+// GetMaxSwitches returns the MaxSwitches field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetMaxSwitches() string {
+	if o == nil || IsNil(o.MaxSwitches) {
+		var ret string
+		return ret
+	}
+	return *o.MaxSwitches
+}
+
+// GetMaxSwitchesOk returns a tuple with the MaxSwitches field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetMaxSwitchesOk() (*string, bool) {
+	if o == nil || IsNil(o.MaxSwitches) {
+		return nil, false
+	}
+	return o.MaxSwitches, true
+}
+
+// HasMaxSwitches returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasMaxSwitches() bool {
+	if o != nil && !IsNil(o.MaxSwitches) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxSwitches gets a reference to the given string and assigns it to the MaxSwitches field.
+func (o *FabricsPutRequestFabricValue) SetMaxSwitches(v string) {
+	o.MaxSwitches = &v
+}
+
+// GetMlagDelayRestoreTimer returns the MlagDelayRestoreTimer field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetMlagDelayRestoreTimer() int64 {
+	if o == nil || IsNil(o.MlagDelayRestoreTimer.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.MlagDelayRestoreTimer.Get()
+}
+
+// GetMlagDelayRestoreTimerOk returns a tuple with the MlagDelayRestoreTimer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetMlagDelayRestoreTimerOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MlagDelayRestoreTimer.Get(), o.MlagDelayRestoreTimer.IsSet()
+}
+
+// HasMlagDelayRestoreTimer returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasMlagDelayRestoreTimer() bool {
+	if o != nil && o.MlagDelayRestoreTimer.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMlagDelayRestoreTimer gets a reference to the given NullableInt64 and assigns it to the MlagDelayRestoreTimer field.
+func (o *FabricsPutRequestFabricValue) SetMlagDelayRestoreTimer(v int64) {
+	o.MlagDelayRestoreTimer.Set(&v)
+}
+
+// SetMlagDelayRestoreTimerNil sets the value for MlagDelayRestoreTimer to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetMlagDelayRestoreTimerNil() {
+	o.MlagDelayRestoreTimer.Set(nil)
+}
+
+// UnsetMlagDelayRestoreTimer ensures that no value is present for MlagDelayRestoreTimer, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetMlagDelayRestoreTimer() {
+	o.MlagDelayRestoreTimer.Unset()
+}
+
+// GetMultiTenant returns the MultiTenant field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetMultiTenant() bool {
+	if o == nil || IsNil(o.MultiTenant) {
+		var ret bool
+		return ret
+	}
+	return *o.MultiTenant
+}
+
+// GetMultiTenantOk returns a tuple with the MultiTenant field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetMultiTenantOk() (*bool, bool) {
+	if o == nil || IsNil(o.MultiTenant) {
+		return nil, false
+	}
+	return o.MultiTenant, true
+}
+
+// HasMultiTenant returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasMultiTenant() bool {
+	if o != nil && !IsNil(o.MultiTenant) {
+		return true
+	}
+
+	return false
+}
+
+// SetMultiTenant gets a reference to the given bool and assigns it to the MultiTenant field.
+func (o *FabricsPutRequestFabricValue) SetMultiTenant(v bool) {
+	o.MultiTenant = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *FabricsPutRequestFabricValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -2606,36 +1815,293 @@ func (o *FabricsPutRequestFabricValue) SetObjectProperties(v FabricsPutRequestFa
 	o.ObjectProperties = &v
 }
 
-// GetSetLeafRouterIdOnBgp returns the SetLeafRouterIdOnBgp field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetSetLeafRouterIdOnBgp() bool {
-	if o == nil || IsNil(o.SetLeafRouterIdOnBgp) {
-		var ret bool
+// GetPairedIpSubnet returns the PairedIpSubnet field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetPairedIpSubnet() string {
+	if o == nil || IsNil(o.PairedIpSubnet) {
+		var ret string
 		return ret
 	}
-	return *o.SetLeafRouterIdOnBgp
+	return *o.PairedIpSubnet
 }
 
-// GetSetLeafRouterIdOnBgpOk returns a tuple with the SetLeafRouterIdOnBgp field value if set, nil otherwise
+// GetPairedIpSubnetOk returns a tuple with the PairedIpSubnet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetSetLeafRouterIdOnBgpOk() (*bool, bool) {
-	if o == nil || IsNil(o.SetLeafRouterIdOnBgp) {
+func (o *FabricsPutRequestFabricValue) GetPairedIpSubnetOk() (*string, bool) {
+	if o == nil || IsNil(o.PairedIpSubnet) {
 		return nil, false
 	}
-	return o.SetLeafRouterIdOnBgp, true
+	return o.PairedIpSubnet, true
 }
 
-// HasSetLeafRouterIdOnBgp returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasSetLeafRouterIdOnBgp() bool {
-	if o != nil && !IsNil(o.SetLeafRouterIdOnBgp) {
+// HasPairedIpSubnet returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasPairedIpSubnet() bool {
+	if o != nil && !IsNil(o.PairedIpSubnet) {
 		return true
 	}
 
 	return false
 }
 
-// SetSetLeafRouterIdOnBgp gets a reference to the given bool and assigns it to the SetLeafRouterIdOnBgp field.
-func (o *FabricsPutRequestFabricValue) SetSetLeafRouterIdOnBgp(v bool) {
-	o.SetLeafRouterIdOnBgp = &v
+// SetPairedIpSubnet gets a reference to the given string and assigns it to the PairedIpSubnet field.
+func (o *FabricsPutRequestFabricValue) SetPairedIpSubnet(v string) {
+	o.PairedIpSubnet = &v
+}
+
+// GetPauseValidationAlarms returns the PauseValidationAlarms field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetPauseValidationAlarms() bool {
+	if o == nil || IsNil(o.PauseValidationAlarms) {
+		var ret bool
+		return ret
+	}
+	return *o.PauseValidationAlarms
+}
+
+// GetPauseValidationAlarmsOk returns a tuple with the PauseValidationAlarms field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetPauseValidationAlarmsOk() (*bool, bool) {
+	if o == nil || IsNil(o.PauseValidationAlarms) {
+		return nil, false
+	}
+	return o.PauseValidationAlarms, true
+}
+
+// HasPauseValidationAlarms returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasPauseValidationAlarms() bool {
+	if o != nil && !IsNil(o.PauseValidationAlarms) {
+		return true
+	}
+
+	return false
+}
+
+// SetPauseValidationAlarms gets a reference to the given bool and assigns it to the PauseValidationAlarms field.
+func (o *FabricsPutRequestFabricValue) SetPauseValidationAlarms(v bool) {
+	o.PauseValidationAlarms = &v
+}
+
+// GetPlaneCount returns the PlaneCount field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetPlaneCount() string {
+	if o == nil || IsNil(o.PlaneCount) {
+		var ret string
+		return ret
+	}
+	return *o.PlaneCount
+}
+
+// GetPlaneCountOk returns a tuple with the PlaneCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetPlaneCountOk() (*string, bool) {
+	if o == nil || IsNil(o.PlaneCount) {
+		return nil, false
+	}
+	return o.PlaneCount, true
+}
+
+// HasPlaneCount returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasPlaneCount() bool {
+	if o != nil && !IsNil(o.PlaneCount) {
+		return true
+	}
+
+	return false
+}
+
+// SetPlaneCount gets a reference to the given string and assigns it to the PlaneCount field.
+func (o *FabricsPutRequestFabricValue) SetPlaneCount(v string) {
+	o.PlaneCount = &v
+}
+
+// GetPortAdminPollingInterval returns the PortAdminPollingInterval field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetPortAdminPollingInterval() int64 {
+	if o == nil || IsNil(o.PortAdminPollingInterval.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.PortAdminPollingInterval.Get()
+}
+
+// GetPortAdminPollingIntervalOk returns a tuple with the PortAdminPollingInterval field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetPortAdminPollingIntervalOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PortAdminPollingInterval.Get(), o.PortAdminPollingInterval.IsSet()
+}
+
+// HasPortAdminPollingInterval returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasPortAdminPollingInterval() bool {
+	if o != nil && o.PortAdminPollingInterval.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPortAdminPollingInterval gets a reference to the given NullableInt64 and assigns it to the PortAdminPollingInterval field.
+func (o *FabricsPutRequestFabricValue) SetPortAdminPollingInterval(v int64) {
+	o.PortAdminPollingInterval.Set(&v)
+}
+
+// SetPortAdminPollingIntervalNil sets the value for PortAdminPollingInterval to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetPortAdminPollingIntervalNil() {
+	o.PortAdminPollingInterval.Set(nil)
+}
+
+// UnsetPortAdminPollingInterval ensures that no value is present for PortAdminPollingInterval, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetPortAdminPollingInterval() {
+	o.PortAdminPollingInterval.Unset()
+}
+
+// GetPortStatusPollingInterval returns the PortStatusPollingInterval field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetPortStatusPollingInterval() int64 {
+	if o == nil || IsNil(o.PortStatusPollingInterval.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.PortStatusPollingInterval.Get()
+}
+
+// GetPortStatusPollingIntervalOk returns a tuple with the PortStatusPollingInterval field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetPortStatusPollingIntervalOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PortStatusPollingInterval.Get(), o.PortStatusPollingInterval.IsSet()
+}
+
+// HasPortStatusPollingInterval returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasPortStatusPollingInterval() bool {
+	if o != nil && o.PortStatusPollingInterval.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPortStatusPollingInterval gets a reference to the given NullableInt64 and assigns it to the PortStatusPollingInterval field.
+func (o *FabricsPutRequestFabricValue) SetPortStatusPollingInterval(v int64) {
+	o.PortStatusPollingInterval.Set(&v)
+}
+
+// SetPortStatusPollingIntervalNil sets the value for PortStatusPollingInterval to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetPortStatusPollingIntervalNil() {
+	o.PortStatusPollingInterval.Set(nil)
+}
+
+// UnsetPortStatusPollingInterval ensures that no value is present for PortStatusPollingInterval, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetPortStatusPollingInterval() {
+	o.PortStatusPollingInterval.Unset()
+}
+
+// GetReadOnlyMode returns the ReadOnlyMode field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetReadOnlyMode() bool {
+	if o == nil || IsNil(o.ReadOnlyMode) {
+		var ret bool
+		return ret
+	}
+	return *o.ReadOnlyMode
+}
+
+// GetReadOnlyModeOk returns a tuple with the ReadOnlyMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetReadOnlyModeOk() (*bool, bool) {
+	if o == nil || IsNil(o.ReadOnlyMode) {
+		return nil, false
+	}
+	return o.ReadOnlyMode, true
+}
+
+// HasReadOnlyMode returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasReadOnlyMode() bool {
+	if o != nil && !IsNil(o.ReadOnlyMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetReadOnlyMode gets a reference to the given bool and assigns it to the ReadOnlyMode field.
+func (o *FabricsPutRequestFabricValue) SetReadOnlyMode(v bool) {
+	o.ReadOnlyMode = &v
+}
+
+// GetRegionName returns the RegionName field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetRegionName() string {
+	if o == nil || IsNil(o.RegionName) {
+		var ret string
+		return ret
+	}
+	return *o.RegionName
+}
+
+// GetRegionNameOk returns a tuple with the RegionName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetRegionNameOk() (*string, bool) {
+	if o == nil || IsNil(o.RegionName) {
+		return nil, false
+	}
+	return o.RegionName, true
+}
+
+// HasRegionName returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasRegionName() bool {
+	if o != nil && !IsNil(o.RegionName) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegionName gets a reference to the given string and assigns it to the RegionName field.
+func (o *FabricsPutRequestFabricValue) SetRegionName(v string) {
+	o.RegionName = &v
+}
+
+// GetRevision returns the Revision field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetRevision() int64 {
+	if o == nil || IsNil(o.Revision.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.Revision.Get()
+}
+
+// GetRevisionOk returns a tuple with the Revision field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetRevisionOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Revision.Get(), o.Revision.IsSet()
+}
+
+// HasRevision returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasRevision() bool {
+	if o != nil && o.Revision.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRevision gets a reference to the given NullableInt64 and assigns it to the Revision field.
+func (o *FabricsPutRequestFabricValue) SetRevision(v int64) {
+	o.Revision.Set(&v)
+}
+
+// SetRevisionNil sets the value for Revision to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetRevisionNil() {
+	o.Revision.Set(nil)
+}
+
+// UnsetRevision ensures that no value is present for Revision, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetRevision() {
+	o.Revision.Unset()
 }
 
 // GetRouteAggregation returns the RouteAggregation field value if set, zero value otherwise.
@@ -2702,72 +2168,628 @@ func (o *FabricsPutRequestFabricValue) SetRouteAggregators(v []FabricsPutRequest
 	o.RouteAggregators = v
 }
 
-// GetIpSourceGuard returns the IpSourceGuard field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetIpSourceGuard() bool {
-	if o == nil || IsNil(o.IpSourceGuard) {
-		var ret bool
+// GetRouterIdBasePrefix returns the RouterIdBasePrefix field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetRouterIdBasePrefix() string {
+	if o == nil || IsNil(o.RouterIdBasePrefix) {
+		var ret string
 		return ret
 	}
-	return *o.IpSourceGuard
+	return *o.RouterIdBasePrefix
 }
 
-// GetIpSourceGuardOk returns a tuple with the IpSourceGuard field value if set, nil otherwise
+// GetRouterIdBasePrefixOk returns a tuple with the RouterIdBasePrefix field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetIpSourceGuardOk() (*bool, bool) {
-	if o == nil || IsNil(o.IpSourceGuard) {
+func (o *FabricsPutRequestFabricValue) GetRouterIdBasePrefixOk() (*string, bool) {
+	if o == nil || IsNil(o.RouterIdBasePrefix) {
 		return nil, false
 	}
-	return o.IpSourceGuard, true
+	return o.RouterIdBasePrefix, true
 }
 
-// HasIpSourceGuard returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasIpSourceGuard() bool {
-	if o != nil && !IsNil(o.IpSourceGuard) {
+// HasRouterIdBasePrefix returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasRouterIdBasePrefix() bool {
+	if o != nil && !IsNil(o.RouterIdBasePrefix) {
 		return true
 	}
 
 	return false
 }
 
-// SetIpSourceGuard gets a reference to the given bool and assigns it to the IpSourceGuard field.
-func (o *FabricsPutRequestFabricValue) SetIpSourceGuard(v bool) {
-	o.IpSourceGuard = &v
+// SetRouterIdBasePrefix gets a reference to the given string and assigns it to the RouterIdBasePrefix field.
+func (o *FabricsPutRequestFabricValue) SetRouterIdBasePrefix(v string) {
+	o.RouterIdBasePrefix = &v
 }
 
-// GetEnableDhcpSnooping returns the EnableDhcpSnooping field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetEnableDhcpSnooping() bool {
-	if o == nil || IsNil(o.EnableDhcpSnooping) {
+// GetServerManagement returns the ServerManagement field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetServerManagement() bool {
+	if o == nil || IsNil(o.ServerManagement) {
 		var ret bool
 		return ret
 	}
-	return *o.EnableDhcpSnooping
+	return *o.ServerManagement
 }
 
-// GetEnableDhcpSnoopingOk returns a tuple with the EnableDhcpSnooping field value if set, nil otherwise
+// GetServerManagementOk returns a tuple with the ServerManagement field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetEnableDhcpSnoopingOk() (*bool, bool) {
-	if o == nil || IsNil(o.EnableDhcpSnooping) {
+func (o *FabricsPutRequestFabricValue) GetServerManagementOk() (*bool, bool) {
+	if o == nil || IsNil(o.ServerManagement) {
 		return nil, false
 	}
-	return o.EnableDhcpSnooping, true
+	return o.ServerManagement, true
 }
 
-// HasEnableDhcpSnooping returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasEnableDhcpSnooping() bool {
-	if o != nil && !IsNil(o.EnableDhcpSnooping) {
+// HasServerManagement returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasServerManagement() bool {
+	if o != nil && !IsNil(o.ServerManagement) {
 		return true
 	}
 
 	return false
 }
 
-// SetEnableDhcpSnooping gets a reference to the given bool and assigns it to the EnableDhcpSnooping field.
-func (o *FabricsPutRequestFabricValue) SetEnableDhcpSnooping(v bool) {
-	o.EnableDhcpSnooping = &v
+// SetServerManagement gets a reference to the given bool and assigns it to the ServerManagement field.
+func (o *FabricsPutRequestFabricValue) SetServerManagement(v bool) {
+	o.ServerManagement = &v
+}
+
+// GetServiceForFabric returns the ServiceForFabric field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetServiceForFabric() string {
+	if o == nil || IsNil(o.ServiceForFabric) {
+		var ret string
+		return ret
+	}
+	return *o.ServiceForFabric
+}
+
+// GetServiceForFabricOk returns a tuple with the ServiceForFabric field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetServiceForFabricOk() (*string, bool) {
+	if o == nil || IsNil(o.ServiceForFabric) {
+		return nil, false
+	}
+	return o.ServiceForFabric, true
+}
+
+// HasServiceForFabric returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasServiceForFabric() bool {
+	if o != nil && !IsNil(o.ServiceForFabric) {
+		return true
+	}
+
+	return false
+}
+
+// SetServiceForFabric gets a reference to the given string and assigns it to the ServiceForFabric field.
+func (o *FabricsPutRequestFabricValue) SetServiceForFabric(v string) {
+	o.ServiceForFabric = &v
+}
+
+// GetServiceForFabricRefType returns the ServiceForFabricRefType field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetServiceForFabricRefType() string {
+	if o == nil || IsNil(o.ServiceForFabricRefType) {
+		var ret string
+		return ret
+	}
+	return *o.ServiceForFabricRefType
+}
+
+// GetServiceForFabricRefTypeOk returns a tuple with the ServiceForFabricRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetServiceForFabricRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ServiceForFabricRefType) {
+		return nil, false
+	}
+	return o.ServiceForFabricRefType, true
+}
+
+// HasServiceForFabricRefType returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasServiceForFabricRefType() bool {
+	if o != nil && !IsNil(o.ServiceForFabricRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetServiceForFabricRefType gets a reference to the given string and assigns it to the ServiceForFabricRefType field.
+func (o *FabricsPutRequestFabricValue) SetServiceForFabricRefType(v string) {
+	o.ServiceForFabricRefType = &v
+}
+
+// GetSetLeafRouterIdOnBgp returns the SetLeafRouterIdOnBgp field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetSetLeafRouterIdOnBgp() bool {
+	if o == nil || IsNil(o.SetLeafRouterIdOnBgp) {
+		var ret bool
+		return ret
+	}
+	return *o.SetLeafRouterIdOnBgp
+}
+
+// GetSetLeafRouterIdOnBgpOk returns a tuple with the SetLeafRouterIdOnBgp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetSetLeafRouterIdOnBgpOk() (*bool, bool) {
+	if o == nil || IsNil(o.SetLeafRouterIdOnBgp) {
+		return nil, false
+	}
+	return o.SetLeafRouterIdOnBgp, true
+}
+
+// HasSetLeafRouterIdOnBgp returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasSetLeafRouterIdOnBgp() bool {
+	if o != nil && !IsNil(o.SetLeafRouterIdOnBgp) {
+		return true
+	}
+
+	return false
+}
+
+// SetSetLeafRouterIdOnBgp gets a reference to the given bool and assigns it to the SetLeafRouterIdOnBgp field.
+func (o *FabricsPutRequestFabricValue) SetSetLeafRouterIdOnBgp(v bool) {
+	o.SetLeafRouterIdOnBgp = &v
+}
+
+// GetSpanningTreeType returns the SpanningTreeType field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetSpanningTreeType() string {
+	if o == nil || IsNil(o.SpanningTreeType) {
+		var ret string
+		return ret
+	}
+	return *o.SpanningTreeType
+}
+
+// GetSpanningTreeTypeOk returns a tuple with the SpanningTreeType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetSpanningTreeTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.SpanningTreeType) {
+		return nil, false
+	}
+	return o.SpanningTreeType, true
+}
+
+// HasSpanningTreeType returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasSpanningTreeType() bool {
+	if o != nil && !IsNil(o.SpanningTreeType) {
+		return true
+	}
+
+	return false
+}
+
+// SetSpanningTreeType gets a reference to the given string and assigns it to the SpanningTreeType field.
+func (o *FabricsPutRequestFabricValue) SetSpanningTreeType(v string) {
+	o.SpanningTreeType = &v
+}
+
+// GetSpineAsNumber returns the SpineAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetSpineAsNumber() int64 {
+	if o == nil || IsNil(o.SpineAsNumber.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.SpineAsNumber.Get()
+}
+
+// GetSpineAsNumberOk returns a tuple with the SpineAsNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetSpineAsNumberOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SpineAsNumber.Get(), o.SpineAsNumber.IsSet()
+}
+
+// HasSpineAsNumber returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasSpineAsNumber() bool {
+	if o != nil && o.SpineAsNumber.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSpineAsNumber gets a reference to the given NullableInt64 and assigns it to the SpineAsNumber field.
+func (o *FabricsPutRequestFabricValue) SetSpineAsNumber(v int64) {
+	o.SpineAsNumber.Set(&v)
+}
+
+// SetSpineAsNumberNil sets the value for SpineAsNumber to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetSpineAsNumberNil() {
+	o.SpineAsNumber.Set(nil)
+}
+
+// UnsetSpineAsNumber ensures that no value is present for SpineAsNumber, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetSpineAsNumber() {
+	o.SpineAsNumber.Unset()
+}
+
+// GetSpineBgpAdvertisementInterval returns the SpineBgpAdvertisementInterval field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetSpineBgpAdvertisementInterval() int64 {
+	if o == nil || IsNil(o.SpineBgpAdvertisementInterval.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.SpineBgpAdvertisementInterval.Get()
+}
+
+// GetSpineBgpAdvertisementIntervalOk returns a tuple with the SpineBgpAdvertisementInterval field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetSpineBgpAdvertisementIntervalOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SpineBgpAdvertisementInterval.Get(), o.SpineBgpAdvertisementInterval.IsSet()
+}
+
+// HasSpineBgpAdvertisementInterval returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasSpineBgpAdvertisementInterval() bool {
+	if o != nil && o.SpineBgpAdvertisementInterval.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSpineBgpAdvertisementInterval gets a reference to the given NullableInt64 and assigns it to the SpineBgpAdvertisementInterval field.
+func (o *FabricsPutRequestFabricValue) SetSpineBgpAdvertisementInterval(v int64) {
+	o.SpineBgpAdvertisementInterval.Set(&v)
+}
+
+// SetSpineBgpAdvertisementIntervalNil sets the value for SpineBgpAdvertisementInterval to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetSpineBgpAdvertisementIntervalNil() {
+	o.SpineBgpAdvertisementInterval.Set(nil)
+}
+
+// UnsetSpineBgpAdvertisementInterval ensures that no value is present for SpineBgpAdvertisementInterval, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetSpineBgpAdvertisementInterval() {
+	o.SpineBgpAdvertisementInterval.Unset()
+}
+
+// GetSpineBgpConnectTimer returns the SpineBgpConnectTimer field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetSpineBgpConnectTimer() int64 {
+	if o == nil || IsNil(o.SpineBgpConnectTimer.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.SpineBgpConnectTimer.Get()
+}
+
+// GetSpineBgpConnectTimerOk returns a tuple with the SpineBgpConnectTimer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetSpineBgpConnectTimerOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SpineBgpConnectTimer.Get(), o.SpineBgpConnectTimer.IsSet()
+}
+
+// HasSpineBgpConnectTimer returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasSpineBgpConnectTimer() bool {
+	if o != nil && o.SpineBgpConnectTimer.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSpineBgpConnectTimer gets a reference to the given NullableInt64 and assigns it to the SpineBgpConnectTimer field.
+func (o *FabricsPutRequestFabricValue) SetSpineBgpConnectTimer(v int64) {
+	o.SpineBgpConnectTimer.Set(&v)
+}
+
+// SetSpineBgpConnectTimerNil sets the value for SpineBgpConnectTimer to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetSpineBgpConnectTimerNil() {
+	o.SpineBgpConnectTimer.Set(nil)
+}
+
+// UnsetSpineBgpConnectTimer ensures that no value is present for SpineBgpConnectTimer, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetSpineBgpConnectTimer() {
+	o.SpineBgpConnectTimer.Unset()
+}
+
+// GetStartingOctet returns the StartingOctet field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetStartingOctet() int64 {
+	if o == nil || IsNil(o.StartingOctet.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.StartingOctet.Get()
+}
+
+// GetStartingOctetOk returns a tuple with the StartingOctet field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetStartingOctetOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.StartingOctet.Get(), o.StartingOctet.IsSet()
+}
+
+// HasStartingOctet returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasStartingOctet() bool {
+	if o != nil && o.StartingOctet.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetStartingOctet gets a reference to the given NullableInt64 and assigns it to the StartingOctet field.
+func (o *FabricsPutRequestFabricValue) SetStartingOctet(v int64) {
+	o.StartingOctet.Set(&v)
+}
+
+// SetStartingOctetNil sets the value for StartingOctet to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetStartingOctetNil() {
+	o.StartingOctet.Set(nil)
+}
+
+// UnsetStartingOctet ensures that no value is present for StartingOctet, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetStartingOctet() {
+	o.StartingOctet.Unset()
+}
+
+// GetSuSize returns the SuSize field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetSuSize() string {
+	if o == nil || IsNil(o.SuSize) {
+		var ret string
+		return ret
+	}
+	return *o.SuSize
+}
+
+// GetSuSizeOk returns a tuple with the SuSize field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetSuSizeOk() (*string, bool) {
+	if o == nil || IsNil(o.SuSize) {
+		return nil, false
+	}
+	return o.SuSize, true
+}
+
+// HasSuSize returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasSuSize() bool {
+	if o != nil && !IsNil(o.SuSize) {
+		return true
+	}
+
+	return false
+}
+
+// SetSuSize gets a reference to the given string and assigns it to the SuSize field.
+func (o *FabricsPutRequestFabricValue) SetSuSize(v string) {
+	o.SuSize = &v
+}
+
+// GetSuSupport returns the SuSupport field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetSuSupport() bool {
+	if o == nil || IsNil(o.SuSupport) {
+		var ret bool
+		return ret
+	}
+	return *o.SuSupport
+}
+
+// GetSuSupportOk returns a tuple with the SuSupport field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetSuSupportOk() (*bool, bool) {
+	if o == nil || IsNil(o.SuSupport) {
+		return nil, false
+	}
+	return o.SuSupport, true
+}
+
+// HasSuSupport returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasSuSupport() bool {
+	if o != nil && !IsNil(o.SuSupport) {
+		return true
+	}
+
+	return false
+}
+
+// SetSuSupport gets a reference to the given bool and assigns it to the SuSupport field.
+func (o *FabricsPutRequestFabricValue) SetSuSupport(v bool) {
+	o.SuSupport = &v
+}
+
+// GetSwitchGateway returns the SwitchGateway field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetSwitchGateway() string {
+	if o == nil || IsNil(o.SwitchGateway) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchGateway
+}
+
+// GetSwitchGatewayOk returns a tuple with the SwitchGateway field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetSwitchGatewayOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchGateway) {
+		return nil, false
+	}
+	return o.SwitchGateway, true
+}
+
+// HasSwitchGateway returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasSwitchGateway() bool {
+	if o != nil && !IsNil(o.SwitchGateway) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchGateway gets a reference to the given string and assigns it to the SwitchGateway field.
+func (o *FabricsPutRequestFabricValue) SetSwitchGateway(v string) {
+	o.SwitchGateway = &v
+}
+
+// GetSwitchIpBase returns the SwitchIpBase field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetSwitchIpBase() string {
+	if o == nil || IsNil(o.SwitchIpBase) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchIpBase
+}
+
+// GetSwitchIpBaseOk returns a tuple with the SwitchIpBase field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetSwitchIpBaseOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchIpBase) {
+		return nil, false
+	}
+	return o.SwitchIpBase, true
+}
+
+// HasSwitchIpBase returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasSwitchIpBase() bool {
+	if o != nil && !IsNil(o.SwitchIpBase) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchIpBase gets a reference to the given string and assigns it to the SwitchIpBase field.
+func (o *FabricsPutRequestFabricValue) SetSwitchIpBase(v string) {
+	o.SwitchIpBase = &v
+}
+
+// GetSwitchPassword returns the SwitchPassword field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetSwitchPassword() string {
+	if o == nil || IsNil(o.SwitchPassword) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchPassword
+}
+
+// GetSwitchPasswordOk returns a tuple with the SwitchPassword field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetSwitchPasswordOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchPassword) {
+		return nil, false
+	}
+	return o.SwitchPassword, true
+}
+
+// HasSwitchPassword returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasSwitchPassword() bool {
+	if o != nil && !IsNil(o.SwitchPassword) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchPassword gets a reference to the given string and assigns it to the SwitchPassword field.
+func (o *FabricsPutRequestFabricValue) SetSwitchPassword(v string) {
+	o.SwitchPassword = &v
+}
+
+// GetSwitchPasswordEncrypted returns the SwitchPasswordEncrypted field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetSwitchPasswordEncrypted() string {
+	if o == nil || IsNil(o.SwitchPasswordEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchPasswordEncrypted
+}
+
+// GetSwitchPasswordEncryptedOk returns a tuple with the SwitchPasswordEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetSwitchPasswordEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchPasswordEncrypted) {
+		return nil, false
+	}
+	return o.SwitchPasswordEncrypted, true
+}
+
+// HasSwitchPasswordEncrypted returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasSwitchPasswordEncrypted() bool {
+	if o != nil && !IsNil(o.SwitchPasswordEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchPasswordEncrypted gets a reference to the given string and assigns it to the SwitchPasswordEncrypted field.
+func (o *FabricsPutRequestFabricValue) SetSwitchPasswordEncrypted(v string) {
+	o.SwitchPasswordEncrypted = &v
+}
+
+// GetSwitchUsername returns the SwitchUsername field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetSwitchUsername() string {
+	if o == nil || IsNil(o.SwitchUsername) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchUsername
+}
+
+// GetSwitchUsernameOk returns a tuple with the SwitchUsername field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetSwitchUsernameOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchUsername) {
+		return nil, false
+	}
+	return o.SwitchUsername, true
+}
+
+// HasSwitchUsername returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasSwitchUsername() bool {
+	if o != nil && !IsNil(o.SwitchUsername) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchUsername gets a reference to the given string and assigns it to the SwitchUsername field.
+func (o *FabricsPutRequestFabricValue) SetSwitchUsername(v string) {
+	o.SwitchUsername = &v
+}
+
+// GetVtepIdBasePrefix returns the VtepIdBasePrefix field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetVtepIdBasePrefix() string {
+	if o == nil || IsNil(o.VtepIdBasePrefix) {
+		var ret string
+		return ret
+	}
+	return *o.VtepIdBasePrefix
+}
+
+// GetVtepIdBasePrefixOk returns a tuple with the VtepIdBasePrefix field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetVtepIdBasePrefixOk() (*string, bool) {
+	if o == nil || IsNil(o.VtepIdBasePrefix) {
+		return nil, false
+	}
+	return o.VtepIdBasePrefix, true
+}
+
+// HasVtepIdBasePrefix returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasVtepIdBasePrefix() bool {
+	if o != nil && !IsNil(o.VtepIdBasePrefix) {
+		return true
+	}
+
+	return false
+}
+
+// SetVtepIdBasePrefix gets a reference to the given string and assigns it to the VtepIdBasePrefix field.
+func (o *FabricsPutRequestFabricValue) SetVtepIdBasePrefix(v string) {
+	o.VtepIdBasePrefix = &v
 }
 
 func (o FabricsPutRequestFabricValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -2776,101 +2798,11 @@ func (o FabricsPutRequestFabricValue) MarshalJSON() ([]byte, error) {
 
 func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.SwitchUsername) {
-		toSerialize["switch_username"] = o.SwitchUsername
-	}
-	if !IsNil(o.SwitchPassword) {
-		toSerialize["switch_password"] = o.SwitchPassword
-	}
-	if !IsNil(o.SwitchPasswordEncrypted) {
-		toSerialize["switch_password_encrypted"] = o.SwitchPasswordEncrypted
-	}
-	if !IsNil(o.HgxUsername) {
-		toSerialize["hgx_username"] = o.HgxUsername
-	}
-	if !IsNil(o.HgxPassword) {
-		toSerialize["hgx_password"] = o.HgxPassword
-	}
-	if !IsNil(o.HgxPasswordEncrypted) {
-		toSerialize["hgx_password_encrypted"] = o.HgxPasswordEncrypted
-	}
-	if !IsNil(o.SwitchGateway) {
-		toSerialize["switch_gateway"] = o.SwitchGateway
-	}
-	if !IsNil(o.ControllerGateway) {
-		toSerialize["controller_gateway"] = o.ControllerGateway
-	}
-	if !IsNil(o.PlaneCount) {
-		toSerialize["plane_count"] = o.PlaneCount
-	}
-	if !IsNil(o.SuSize) {
-		toSerialize["su_size"] = o.SuSize
-	}
-	if !IsNil(o.SuSupport) {
-		toSerialize["su_support"] = o.SuSupport
-	}
-	if !IsNil(o.GpuArchitecture) {
-		toSerialize["gpu_architecture"] = o.GpuArchitecture
-	}
-	if !IsNil(o.ServerManagement) {
-		toSerialize["server_management"] = o.ServerManagement
+	if !IsNil(o.AggressiveReporting) {
+		toSerialize["aggressive_reporting"] = o.AggressiveReporting
 	}
 	if !IsNil(o.AllowAllUnderlayConnections) {
 		toSerialize["allow_all_underlay_connections"] = o.AllowAllUnderlayConnections
-	}
-	if !IsNil(o.FabricType) {
-		toSerialize["fabric_type"] = o.FabricType
-	}
-	if o.DuplicateAddressDetectionMaxNumberOfMoves.IsSet() {
-		toSerialize["duplicate_address_detection_max_number_of_moves"] = o.DuplicateAddressDetectionMaxNumberOfMoves.Get()
-	}
-	if o.DuplicateAddressDetectionTime.IsSet() {
-		toSerialize["duplicate_address_detection_time"] = o.DuplicateAddressDetectionTime.Get()
-	}
-	if o.PortAdminPollingInterval.IsSet() {
-		toSerialize["port_admin_polling_interval"] = o.PortAdminPollingInterval.Get()
-	}
-	if o.PortStatusPollingInterval.IsSet() {
-		toSerialize["port_status_polling_interval"] = o.PortStatusPollingInterval.Get()
-	}
-	if !IsNil(o.ServiceForFabric) {
-		toSerialize["service_for_fabric"] = o.ServiceForFabric
-	}
-	if !IsNil(o.ServiceForFabricRefType) {
-		toSerialize["service_for_fabric_ref_type_"] = o.ServiceForFabricRefType
-	}
-	if !IsNil(o.SpanningTreeType) {
-		toSerialize["spanning_tree_type"] = o.SpanningTreeType
-	}
-	if !IsNil(o.RegionName) {
-		toSerialize["region_name"] = o.RegionName
-	}
-	if o.Revision.IsSet() {
-		toSerialize["revision"] = o.Revision.Get()
-	}
-	if !IsNil(o.ForceSpanningTreeOnFabricPorts) {
-		toSerialize["force_spanning_tree_on_fabric_ports"] = o.ForceSpanningTreeOnFabricPorts
-	}
-	if !IsNil(o.ReadOnlyMode) {
-		toSerialize["read_only_mode"] = o.ReadOnlyMode
-	}
-	if !IsNil(o.DomainForFabric) {
-		toSerialize["domain_for_fabric"] = o.DomainForFabric
-	}
-	if !IsNil(o.DomainForFabricRefType) {
-		toSerialize["domain_for_fabric_ref_type_"] = o.DomainForFabricRefType
-	}
-	if !IsNil(o.EnableDscp) {
-		toSerialize["enable_dscp"] = o.EnableDscp
-	}
-	if !IsNil(o.DscpToPBitMap) {
-		toSerialize["dscp_to_p_bit_map"] = o.DscpToPBitMap
 	}
 	if !IsNil(o.AnycastMacAddress) {
 		toSerialize["anycast_mac_address"] = o.AnycastMacAddress
@@ -2878,32 +2810,71 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.AnycastMacAddressAutoAssigned) {
 		toSerialize["anycast_mac_address_auto_assigned_"] = o.AnycastMacAddressAutoAssigned
 	}
-	if o.MacAddressAgingTime.IsSet() {
-		toSerialize["mac_address_aging_time"] = o.MacAddressAgingTime.Get()
-	}
-	if o.MlagDelayRestoreTimer.IsSet() {
-		toSerialize["mlag_delay_restore_timer"] = o.MlagDelayRestoreTimer.Get()
-	}
-	if o.BgpKeepaliveTimer.IsSet() {
-		toSerialize["bgp_keepalive_timer"] = o.BgpKeepaliveTimer.Get()
+	if !IsNil(o.BaseBgpAsNumber) {
+		toSerialize["base_bgp_as_number"] = o.BaseBgpAsNumber
 	}
 	if o.BgpHoldDownTimer.IsSet() {
 		toSerialize["bgp_hold_down_timer"] = o.BgpHoldDownTimer.Get()
 	}
-	if o.SpineBgpAdvertisementInterval.IsSet() {
-		toSerialize["spine_bgp_advertisement_interval"] = o.SpineBgpAdvertisementInterval.Get()
+	if o.BgpKeepaliveTimer.IsSet() {
+		toSerialize["bgp_keepalive_timer"] = o.BgpKeepaliveTimer.Get()
 	}
-	if o.SpineBgpConnectTimer.IsSet() {
-		toSerialize["spine_bgp_connect_timer"] = o.SpineBgpConnectTimer.Get()
+	if !IsNil(o.ControllerGateway) {
+		toSerialize["controller_gateway"] = o.ControllerGateway
 	}
-	if o.SpineAsNumber.IsSet() {
-		toSerialize["spine_as_number"] = o.SpineAsNumber.Get()
+	if !IsNil(o.ControllerIpBase) {
+		toSerialize["controller_ip_base"] = o.ControllerIpBase
 	}
-	if o.LeafBgpKeepAliveTimer.IsSet() {
-		toSerialize["leaf_bgp_keep_alive_timer"] = o.LeafBgpKeepAliveTimer.Get()
+	if !IsNil(o.DomainForFabric) {
+		toSerialize["domain_for_fabric"] = o.DomainForFabric
 	}
-	if o.LeafBgpHoldDownTimer.IsSet() {
-		toSerialize["leaf_bgp_hold_down_timer"] = o.LeafBgpHoldDownTimer.Get()
+	if !IsNil(o.DomainForFabricRefType) {
+		toSerialize["domain_for_fabric_ref_type_"] = o.DomainForFabricRefType
+	}
+	if !IsNil(o.DscpToPBitMap) {
+		toSerialize["dscp_to_p_bit_map"] = o.DscpToPBitMap
+	}
+	if o.DuplicateAddressDetectionMaxNumberOfMoves.IsSet() {
+		toSerialize["duplicate_address_detection_max_number_of_moves"] = o.DuplicateAddressDetectionMaxNumberOfMoves.Get()
+	}
+	if o.DuplicateAddressDetectionTime.IsSet() {
+		toSerialize["duplicate_address_detection_time"] = o.DuplicateAddressDetectionTime.Get()
+	}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
+	}
+	if !IsNil(o.EnableDhcpSnooping) {
+		toSerialize["enable_dhcp_snooping"] = o.EnableDhcpSnooping
+	}
+	if !IsNil(o.EnableDscp) {
+		toSerialize["enable_dscp"] = o.EnableDscp
+	}
+	if o.EvpnMacHoldtime.IsSet() {
+		toSerialize["evpn_mac_holdtime"] = o.EvpnMacHoldtime.Get()
+	}
+	if o.EvpnMultihomingStartupDelay.IsSet() {
+		toSerialize["evpn_multihoming_startup_delay"] = o.EvpnMultihomingStartupDelay.Get()
+	}
+	if !IsNil(o.FabricType) {
+		toSerialize["fabric_type"] = o.FabricType
+	}
+	if !IsNil(o.ForceSpanningTreeOnFabricPorts) {
+		toSerialize["force_spanning_tree_on_fabric_ports"] = o.ForceSpanningTreeOnFabricPorts
+	}
+	if !IsNil(o.GpuArchitecture) {
+		toSerialize["gpu_architecture"] = o.GpuArchitecture
+	}
+	if !IsNil(o.HgxPassword) {
+		toSerialize["hgx_password"] = o.HgxPassword
+	}
+	if !IsNil(o.HgxPasswordEncrypted) {
+		toSerialize["hgx_password_encrypted"] = o.HgxPasswordEncrypted
+	}
+	if !IsNil(o.HgxUsername) {
+		toSerialize["hgx_username"] = o.HgxUsername
+	}
+	if !IsNil(o.IpSourceGuard) {
+		toSerialize["ip_source_guard"] = o.IpSourceGuard
 	}
 	if o.LeafBgpAdvertisementInterval.IsSet() {
 		toSerialize["leaf_bgp_advertisement_interval"] = o.LeafBgpAdvertisementInterval.Get()
@@ -2911,59 +2882,62 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	if o.LeafBgpConnectTimer.IsSet() {
 		toSerialize["leaf_bgp_connect_timer"] = o.LeafBgpConnectTimer.Get()
 	}
+	if o.LeafBgpHoldDownTimer.IsSet() {
+		toSerialize["leaf_bgp_hold_down_timer"] = o.LeafBgpHoldDownTimer.Get()
+	}
+	if o.LeafBgpKeepAliveTimer.IsSet() {
+		toSerialize["leaf_bgp_keep_alive_timer"] = o.LeafBgpKeepAliveTimer.Get()
+	}
 	if o.LinkStateTimeoutValue.IsSet() {
 		toSerialize["link_state_timeout_value"] = o.LinkStateTimeoutValue.Get()
 	}
-	if o.EvpnMultihomingStartupDelay.IsSet() {
-		toSerialize["evpn_multihoming_startup_delay"] = o.EvpnMultihomingStartupDelay.Get()
-	}
-	if o.EvpnMacHoldtime.IsSet() {
-		toSerialize["evpn_mac_holdtime"] = o.EvpnMacHoldtime.Get()
-	}
-	if !IsNil(o.AggressiveReporting) {
-		toSerialize["aggressive_reporting"] = o.AggressiveReporting
-	}
-	if !IsNil(o.SwitchIpBase) {
-		toSerialize["switch_ip_base"] = o.SwitchIpBase
-	}
-	if !IsNil(o.ControllerIpBase) {
-		toSerialize["controller_ip_base"] = o.ControllerIpBase
-	}
-	if !IsNil(o.MultiTenant) {
-		toSerialize["multi_tenant"] = o.MultiTenant
-	}
-	if !IsNil(o.BaseBgpAsNumber) {
-		toSerialize["base_bgp_as_number"] = o.BaseBgpAsNumber
-	}
-	if !IsNil(o.RouterIdBasePrefix) {
-		toSerialize["router_id_base_prefix"] = o.RouterIdBasePrefix
-	}
-	if !IsNil(o.VtepIdBasePrefix) {
-		toSerialize["vtep_id_base_prefix"] = o.VtepIdBasePrefix
-	}
-	if !IsNil(o.PairedIpSubnet) {
-		toSerialize["paired_ip_subnet"] = o.PairedIpSubnet
-	}
-	if !IsNil(o.MaxSwitches) {
-		toSerialize["max_switches"] = o.MaxSwitches
-	}
-	if !IsNil(o.PauseValidationAlarms) {
-		toSerialize["pause_validation_alarms"] = o.PauseValidationAlarms
-	}
-	if o.StartingOctet.IsSet() {
-		toSerialize["starting_octet"] = o.StartingOctet.Get()
-	}
-	if o.MaxSus.IsSet() {
-		toSerialize["max_sus"] = o.MaxSus.Get()
+	if o.MacAddressAgingTime.IsSet() {
+		toSerialize["mac_address_aging_time"] = o.MacAddressAgingTime.Get()
 	}
 	if o.MaxPods.IsSet() {
 		toSerialize["max_pods"] = o.MaxPods.Get()
 	}
+	if o.MaxSus.IsSet() {
+		toSerialize["max_sus"] = o.MaxSus.Get()
+	}
+	if !IsNil(o.MaxSwitches) {
+		toSerialize["max_switches"] = o.MaxSwitches
+	}
+	if o.MlagDelayRestoreTimer.IsSet() {
+		toSerialize["mlag_delay_restore_timer"] = o.MlagDelayRestoreTimer.Get()
+	}
+	if !IsNil(o.MultiTenant) {
+		toSerialize["multi_tenant"] = o.MultiTenant
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
 	}
-	if !IsNil(o.SetLeafRouterIdOnBgp) {
-		toSerialize["set_leaf_router_id_on_bgp"] = o.SetLeafRouterIdOnBgp
+	if !IsNil(o.PairedIpSubnet) {
+		toSerialize["paired_ip_subnet"] = o.PairedIpSubnet
+	}
+	if !IsNil(o.PauseValidationAlarms) {
+		toSerialize["pause_validation_alarms"] = o.PauseValidationAlarms
+	}
+	if !IsNil(o.PlaneCount) {
+		toSerialize["plane_count"] = o.PlaneCount
+	}
+	if o.PortAdminPollingInterval.IsSet() {
+		toSerialize["port_admin_polling_interval"] = o.PortAdminPollingInterval.Get()
+	}
+	if o.PortStatusPollingInterval.IsSet() {
+		toSerialize["port_status_polling_interval"] = o.PortStatusPollingInterval.Get()
+	}
+	if !IsNil(o.ReadOnlyMode) {
+		toSerialize["read_only_mode"] = o.ReadOnlyMode
+	}
+	if !IsNil(o.RegionName) {
+		toSerialize["region_name"] = o.RegionName
+	}
+	if o.Revision.IsSet() {
+		toSerialize["revision"] = o.Revision.Get()
 	}
 	if !IsNil(o.RouteAggregation) {
 		toSerialize["route_aggregation"] = o.RouteAggregation
@@ -2971,11 +2945,59 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.RouteAggregators) {
 		toSerialize["route_aggregators"] = o.RouteAggregators
 	}
-	if !IsNil(o.IpSourceGuard) {
-		toSerialize["ip_source_guard"] = o.IpSourceGuard
+	if !IsNil(o.RouterIdBasePrefix) {
+		toSerialize["router_id_base_prefix"] = o.RouterIdBasePrefix
 	}
-	if !IsNil(o.EnableDhcpSnooping) {
-		toSerialize["enable_dhcp_snooping"] = o.EnableDhcpSnooping
+	if !IsNil(o.ServerManagement) {
+		toSerialize["server_management"] = o.ServerManagement
+	}
+	if !IsNil(o.ServiceForFabric) {
+		toSerialize["service_for_fabric"] = o.ServiceForFabric
+	}
+	if !IsNil(o.ServiceForFabricRefType) {
+		toSerialize["service_for_fabric_ref_type_"] = o.ServiceForFabricRefType
+	}
+	if !IsNil(o.SetLeafRouterIdOnBgp) {
+		toSerialize["set_leaf_router_id_on_bgp"] = o.SetLeafRouterIdOnBgp
+	}
+	if !IsNil(o.SpanningTreeType) {
+		toSerialize["spanning_tree_type"] = o.SpanningTreeType
+	}
+	if o.SpineAsNumber.IsSet() {
+		toSerialize["spine_as_number"] = o.SpineAsNumber.Get()
+	}
+	if o.SpineBgpAdvertisementInterval.IsSet() {
+		toSerialize["spine_bgp_advertisement_interval"] = o.SpineBgpAdvertisementInterval.Get()
+	}
+	if o.SpineBgpConnectTimer.IsSet() {
+		toSerialize["spine_bgp_connect_timer"] = o.SpineBgpConnectTimer.Get()
+	}
+	if o.StartingOctet.IsSet() {
+		toSerialize["starting_octet"] = o.StartingOctet.Get()
+	}
+	if !IsNil(o.SuSize) {
+		toSerialize["su_size"] = o.SuSize
+	}
+	if !IsNil(o.SuSupport) {
+		toSerialize["su_support"] = o.SuSupport
+	}
+	if !IsNil(o.SwitchGateway) {
+		toSerialize["switch_gateway"] = o.SwitchGateway
+	}
+	if !IsNil(o.SwitchIpBase) {
+		toSerialize["switch_ip_base"] = o.SwitchIpBase
+	}
+	if !IsNil(o.SwitchPassword) {
+		toSerialize["switch_password"] = o.SwitchPassword
+	}
+	if !IsNil(o.SwitchPasswordEncrypted) {
+		toSerialize["switch_password_encrypted"] = o.SwitchPasswordEncrypted
+	}
+	if !IsNil(o.SwitchUsername) {
+		toSerialize["switch_username"] = o.SwitchUsername
+	}
+	if !IsNil(o.VtepIdBasePrefix) {
+		toSerialize["vtep_id_base_prefix"] = o.VtepIdBasePrefix
 	}
 	return toSerialize, nil
 }
@@ -3015,5 +3037,3 @@ func (v *NullableFabricsPutRequestFabricValue) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

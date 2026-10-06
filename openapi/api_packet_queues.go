@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // PacketQueuesAPIService PacketQueuesAPI service
 type PacketQueuesAPIService service
 
 type ApiPacketqueuesDeleteRequest struct {
-	ctx context.Context
-	ApiService *PacketQueuesAPIService
+	ctx             context.Context
+	ApiService      *PacketQueuesAPIService
 	packetQueueName *[]string
-	changesetName *string
+	changesetName   *string
 }
 
 func (r ApiPacketqueuesDeleteRequest) PacketQueueName(packetQueueName []string) ApiPacketqueuesDeleteRequest {
@@ -49,23 +48,22 @@ PacketqueuesDelete Delete Packet Queue
 
 Deletes an existing Packet Queue from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPacketqueuesDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPacketqueuesDeleteRequest
 */
 func (a *PacketQueuesAPIService) PacketqueuesDelete(ctx context.Context) ApiPacketqueuesDeleteRequest {
 	return ApiPacketqueuesDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PacketQueuesAPIService) PacketqueuesDeleteExecute(r ApiPacketqueuesDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PacketQueuesAPIService.PacketqueuesDelete")
@@ -142,11 +140,11 @@ func (a *PacketQueuesAPIService) PacketqueuesDeleteExecute(r ApiPacketqueuesDele
 }
 
 type ApiPacketqueuesGetRequest struct {
-	ctx context.Context
-	ApiService *PacketQueuesAPIService
+	ctx             context.Context
+	ApiService      *PacketQueuesAPIService
 	packetQueueName *string
-	includeData *bool
-	changesetName *string
+	includeData     *bool
+	changesetName   *string
 }
 
 func (r ApiPacketqueuesGetRequest) PacketQueueName(packetQueueName string) ApiPacketqueuesGetRequest {
@@ -173,23 +171,22 @@ PacketqueuesGet Get all Packet Queues
 
 Retrieves all Packet Queues from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPacketqueuesGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPacketqueuesGetRequest
 */
 func (a *PacketQueuesAPIService) PacketqueuesGet(ctx context.Context) ApiPacketqueuesGetRequest {
 	return ApiPacketqueuesGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PacketQueuesAPIService) PacketqueuesGetExecute(r ApiPacketqueuesGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PacketQueuesAPIService.PacketqueuesGet")
@@ -258,9 +255,9 @@ func (a *PacketQueuesAPIService) PacketqueuesGetExecute(r ApiPacketqueuesGetRequ
 }
 
 type ApiPacketqueuesPatchRequest struct {
-	ctx context.Context
-	ApiService *PacketQueuesAPIService
-	changesetName *string
+	ctx                    context.Context
+	ApiService             *PacketQueuesAPIService
+	changesetName          *string
 	packetqueuesPutRequest *PacketqueuesPutRequest
 }
 
@@ -283,23 +280,22 @@ PacketqueuesPatch Update Packet Queue
 
 Update Packet Queue into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPacketqueuesPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPacketqueuesPatchRequest
 */
 func (a *PacketQueuesAPIService) PacketqueuesPatch(ctx context.Context) ApiPacketqueuesPatchRequest {
 	return ApiPacketqueuesPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PacketQueuesAPIService) PacketqueuesPatchExecute(r ApiPacketqueuesPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PacketQueuesAPIService.PacketqueuesPatch")
@@ -364,9 +360,9 @@ func (a *PacketQueuesAPIService) PacketqueuesPatchExecute(r ApiPacketqueuesPatch
 }
 
 type ApiPacketqueuesPutRequest struct {
-	ctx context.Context
-	ApiService *PacketQueuesAPIService
-	changesetName *string
+	ctx                    context.Context
+	ApiService             *PacketQueuesAPIService
+	changesetName          *string
 	packetqueuesPutRequest *PacketqueuesPutRequest
 }
 
@@ -389,23 +385,22 @@ PacketqueuesPut Create Packet Queue
 
 Create Packet Queue into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPacketqueuesPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPacketqueuesPutRequest
 */
 func (a *PacketQueuesAPIService) PacketqueuesPut(ctx context.Context) ApiPacketqueuesPutRequest {
 	return ApiPacketqueuesPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PacketQueuesAPIService) PacketqueuesPutExecute(r ApiPacketqueuesPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PacketQueuesAPIService.PacketqueuesPut")

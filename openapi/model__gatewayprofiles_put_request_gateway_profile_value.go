@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,11 +19,11 @@ var _ MappedNullable = &GatewayprofilesPutRequestGatewayProfileValue{}
 
 // GatewayprofilesPutRequestGatewayProfileValue struct for GatewayprofilesPutRequestGatewayProfileValue
 type GatewayprofilesPutRequestGatewayProfileValue struct {
+	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
+	Enable           *bool                                                               `json:"enable,omitempty"`
+	ExternalGateways []GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner `json:"external_gateways,omitempty"`
 	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
-	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
-	Enable *bool `json:"enable,omitempty"`
-	ExternalGateways []GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner `json:"external_gateways,omitempty"`
 }
 
 // NewGatewayprofilesPutRequestGatewayProfileValue instantiates a new GatewayprofilesPutRequestGatewayProfileValue object
@@ -32,10 +32,10 @@ type GatewayprofilesPutRequestGatewayProfileValue struct {
 // will change when the set of required properties is changed
 func NewGatewayprofilesPutRequestGatewayProfileValue() *GatewayprofilesPutRequestGatewayProfileValue {
 	this := GatewayprofilesPutRequestGatewayProfileValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	return &this
 }
 
@@ -44,43 +44,11 @@ func NewGatewayprofilesPutRequestGatewayProfileValue() *GatewayprofilesPutReques
 // but it doesn't guarantee that properties required by API are set
 func NewGatewayprofilesPutRequestGatewayProfileValueWithDefaults() *GatewayprofilesPutRequestGatewayProfileValue {
 	this := GatewayprofilesPutRequestGatewayProfileValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *GatewayprofilesPutRequestGatewayProfileValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewayprofilesPutRequestGatewayProfileValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *GatewayprofilesPutRequestGatewayProfileValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *GatewayprofilesPutRequestGatewayProfileValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -147,8 +115,40 @@ func (o *GatewayprofilesPutRequestGatewayProfileValue) SetExternalGateways(v []G
 	o.ExternalGateways = v
 }
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *GatewayprofilesPutRequestGatewayProfileValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewayprofilesPutRequestGatewayProfileValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *GatewayprofilesPutRequestGatewayProfileValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *GatewayprofilesPutRequestGatewayProfileValue) SetName(v string) {
+	o.Name = &v
+}
+
 func (o GatewayprofilesPutRequestGatewayProfileValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -157,14 +157,14 @@ func (o GatewayprofilesPutRequestGatewayProfileValue) MarshalJSON() ([]byte, err
 
 func (o GatewayprofilesPutRequestGatewayProfileValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
 	if !IsNil(o.ExternalGateways) {
 		toSerialize["external_gateways"] = o.ExternalGateways
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	return toSerialize, nil
 }
@@ -204,5 +204,3 @@ func (v *NullableGatewayprofilesPutRequestGatewayProfileValue) UnmarshalJSON(src
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

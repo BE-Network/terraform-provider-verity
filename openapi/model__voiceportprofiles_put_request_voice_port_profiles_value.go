@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,75 +19,75 @@ var _ MappedNullable = &VoiceportprofilesPutRequestVoicePortProfilesValue{}
 
 // VoiceportprofilesPutRequestVoicePortProfilesValue struct for VoiceportprofilesPutRequestVoicePortProfilesValue
 type VoiceportprofilesPutRequestVoicePortProfilesValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
-	// Voice Protocol: MGCP or SIP
-	Protocol *string `json:"protocol,omitempty"`
-	// Dial Plan
-	DigitMap *string `json:"digit_map,omitempty"`
-	// Enable three way calling
-	CallThreeWayEnable *bool `json:"call_three_way_enable,omitempty"`
-	// Caller ID
-	CallerIdEnable *bool `json:"caller_id_enable,omitempty"`
-	// Caller ID Name
-	CallerIdNameEnable *bool `json:"caller_id_name_enable,omitempty"`
-	// Call Waiting
-	CallWaitingEnable *bool `json:"call_waiting_enable,omitempty"`
-	// Call Forward Unconditional
-	CallForwardUnconditionalEnable *bool `json:"call_forward_unconditional_enable,omitempty"`
+	// Block all anonymous calls
+	AnonymousCallBlockEnable *bool `json:"anonymous_call_block_enable,omitempty"`
+	// Audio Message Waiting Indicator
+	AudioMwiEnable *bool `json:"audio_mwi_enable,omitempty"`
 	// Call Forward On Busy
 	CallForwardOnBusyEnable *bool `json:"call_forward_on_busy_enable,omitempty"`
 	// Call Forward on number of rings
 	CallForwardOnNoAnswerRingCount NullableInt64 `json:"call_forward_on_no_answer_ring_count,omitempty"`
-	// Call Transfer
-	CallTransferEnable *bool `json:"call_transfer_enable,omitempty"`
-	// Audio Message Waiting Indicator
-	AudioMwiEnable *bool `json:"audio_mwi_enable,omitempty"`
-	// Block all anonymous calls
-	AnonymousCallBlockEnable *bool `json:"anonymous_call_block_enable,omitempty"`
-	// Do not disturb
-	DoNotDisturbEnable *bool `json:"do_not_disturb_enable,omitempty"`
-	// CID Blocking
-	CidBlockingEnable *bool `json:"cid_blocking_enable,omitempty"`
-	// CID Number Presentation
-	CidNumPresentationStatus *string `json:"cid_num_presentation_status,omitempty"`
-	// CID Name Presentation
-	CidNamePresentationStatus *string `json:"cid_name_presentation_status,omitempty"`
-	// Call Waiting Caller ID
-	CallWaitingCallerIdEnable *bool `json:"call_waiting_caller_id_enable,omitempty"`
+	// Call Forward Unconditional
+	CallForwardUnconditionalEnable *bool `json:"call_forward_unconditional_enable,omitempty"`
 	// Call Hold
 	CallHoldEnable *bool `json:"call_hold_enable,omitempty"`
-	// Visual Message Waiting Indicator
-	VisualMwiEnable *bool `json:"visual_mwi_enable,omitempty"`
-	// Message Waiting Indicator Refresh
-	MwiRefreshTimer NullableInt64 `json:"mwi_refresh_timer,omitempty"`
-	// Direct Connect
-	HotlineEnable *bool `json:"hotline_enable,omitempty"`
+	// Enable three way calling
+	CallThreeWayEnable *bool `json:"call_three_way_enable,omitempty"`
+	// Call Transfer
+	CallTransferEnable *bool `json:"call_transfer_enable,omitempty"`
+	// Call Waiting Caller ID
+	CallWaitingCallerIdEnable *bool `json:"call_waiting_caller_id_enable,omitempty"`
+	// Call Waiting
+	CallWaitingEnable *bool `json:"call_waiting_enable,omitempty"`
+	// Caller ID
+	CallerIdEnable *bool `json:"caller_id_enable,omitempty"`
+	// Caller ID Name
+	CallerIdNameEnable *bool `json:"caller_id_name_enable,omitempty"`
+	// CID Blocking
+	CidBlockingEnable *bool `json:"cid_blocking_enable,omitempty"`
+	// CID Name Presentation
+	CidNamePresentationStatus *string `json:"cid_name_presentation_status,omitempty"`
+	// CID Number Presentation
+	CidNumPresentationStatus *string `json:"cid_num_presentation_status,omitempty"`
 	// Dial Tone Feature Delay
 	DialToneFeatureDelay NullableInt64 `json:"dial_tone_feature_delay,omitempty"`
+	// Dial Plan
+	DigitMap *string `json:"digit_map,omitempty"`
+	// Do not disturb
+	DoNotDisturbEnable *bool `json:"do_not_disturb_enable,omitempty"`
+	// Echo Cancellation Enable
+	EchoCancellationEnable *bool `json:"echo_cancellation_enable,omitempty"`
+	// Enable object.
+	Enable *bool `json:"enable,omitempty"`
+	// Direct Connect
+	HotlineEnable *bool `json:"hotline_enable,omitempty"`
 	// Intercom
 	IntercomEnable *bool `json:"intercom_enable,omitempty"`
 	// Intercom Transfer
 	IntercomTransferEnable *bool `json:"intercom_transfer_enable,omitempty"`
-	// Transmit Gain in tenths of a dB.Example -30 would equal -3.0db
-	TransmitGain NullableInt64 `json:"transmit_gain,omitempty"`
-	// Receive Gainin tenths of a dB. Example -30 would equal -3.0db
-	ReceiveGain NullableInt64 `json:"receive_gain,omitempty"`
-	// Echo Cancellation Enable
-	EchoCancellationEnable *bool `json:"echo_cancellation_enable,omitempty"`
-	// The target value of the jitter buffer in milliseconds
-	JitterTarget NullableInt64 `json:"jitter_target,omitempty"`
 	// The maximum depth of the jitter buffer in milliseconds
 	JitterBufferMax NullableInt64 `json:"jitter_buffer_max,omitempty"`
-	// Signaling Code
-	SignalingCode *string `json:"signaling_code,omitempty"`
+	// The target value of the jitter buffer in milliseconds
+	JitterTarget NullableInt64 `json:"jitter_target,omitempty"`
+	// Message Waiting Indicator Refresh
+	MwiRefreshTimer NullableInt64 `json:"mwi_refresh_timer,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                                            `json:"name,omitempty"`
+	ObjectProperties *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties `json:"object_properties,omitempty"`
+	// Voice Protocol: MGCP or SIP
+	Protocol *string `json:"protocol,omitempty"`
+	// Receive Gainin tenths of a dB. Example -30 would equal -3.0db
+	ReceiveGain NullableInt64 `json:"receive_gain,omitempty"`
 	// Release timer defined in seconds. The default value of this attribute is 10 seconds
 	ReleaseTimer NullableInt64 `json:"release_timer,omitempty"`
 	// Time in seconds for the receiver is off-hook before ROH tone is applied. The value 0 disables ROH timing. The default value is 15 seconds
 	RohTimer NullableInt64 `json:"roh_timer,omitempty"`
-	ObjectProperties *VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties `json:"object_properties,omitempty"`
+	// Signaling Code
+	SignalingCode *string `json:"signaling_code,omitempty"`
+	// Transmit Gain in tenths of a dB.Example -30 would equal -3.0db
+	TransmitGain NullableInt64 `json:"transmit_gain,omitempty"`
+	// Visual Message Waiting Indicator
+	VisualMwiEnable *bool `json:"visual_mwi_enable,omitempty"`
 }
 
 // NewVoiceportprofilesPutRequestVoicePortProfilesValue instantiates a new VoiceportprofilesPutRequestVoicePortProfilesValue object
@@ -96,74 +96,74 @@ type VoiceportprofilesPutRequestVoicePortProfilesValue struct {
 // will change when the set of required properties is changed
 func NewVoiceportprofilesPutRequestVoicePortProfilesValue() *VoiceportprofilesPutRequestVoicePortProfilesValue {
 	this := VoiceportprofilesPutRequestVoicePortProfilesValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
-	var protocol string = "SIP"
-	this.Protocol = &protocol
-	var digitMap string = "(T)"
-	this.DigitMap = &digitMap
-	var callThreeWayEnable bool = false
-	this.CallThreeWayEnable = &callThreeWayEnable
-	var callerIdEnable bool = false
-	this.CallerIdEnable = &callerIdEnable
-	var callerIdNameEnable bool = false
-	this.CallerIdNameEnable = &callerIdNameEnable
-	var callWaitingEnable bool = false
-	this.CallWaitingEnable = &callWaitingEnable
-	var callForwardUnconditionalEnable bool = false
-	this.CallForwardUnconditionalEnable = &callForwardUnconditionalEnable
+	var anonymousCallBlockEnable bool = false
+	this.AnonymousCallBlockEnable = &anonymousCallBlockEnable
+	var audioMwiEnable bool = false
+	this.AudioMwiEnable = &audioMwiEnable
 	var callForwardOnBusyEnable bool = false
 	this.CallForwardOnBusyEnable = &callForwardOnBusyEnable
 	var callForwardOnNoAnswerRingCount int64 = 4
 	this.CallForwardOnNoAnswerRingCount = *NewNullableInt64(&callForwardOnNoAnswerRingCount)
-	var callTransferEnable bool = false
-	this.CallTransferEnable = &callTransferEnable
-	var audioMwiEnable bool = false
-	this.AudioMwiEnable = &audioMwiEnable
-	var anonymousCallBlockEnable bool = false
-	this.AnonymousCallBlockEnable = &anonymousCallBlockEnable
-	var doNotDisturbEnable bool = false
-	this.DoNotDisturbEnable = &doNotDisturbEnable
-	var cidBlockingEnable bool = false
-	this.CidBlockingEnable = &cidBlockingEnable
-	var cidNumPresentationStatus string = "Public"
-	this.CidNumPresentationStatus = &cidNumPresentationStatus
-	var cidNamePresentationStatus string = "Public"
-	this.CidNamePresentationStatus = &cidNamePresentationStatus
-	var callWaitingCallerIdEnable bool = false
-	this.CallWaitingCallerIdEnable = &callWaitingCallerIdEnable
+	var callForwardUnconditionalEnable bool = false
+	this.CallForwardUnconditionalEnable = &callForwardUnconditionalEnable
 	var callHoldEnable bool = false
 	this.CallHoldEnable = &callHoldEnable
-	var visualMwiEnable bool = false
-	this.VisualMwiEnable = &visualMwiEnable
-	var mwiRefreshTimer int64 = 30
-	this.MwiRefreshTimer = *NewNullableInt64(&mwiRefreshTimer)
-	var hotlineEnable bool = false
-	this.HotlineEnable = &hotlineEnable
+	var callThreeWayEnable bool = false
+	this.CallThreeWayEnable = &callThreeWayEnable
+	var callTransferEnable bool = false
+	this.CallTransferEnable = &callTransferEnable
+	var callWaitingCallerIdEnable bool = false
+	this.CallWaitingCallerIdEnable = &callWaitingCallerIdEnable
+	var callWaitingEnable bool = false
+	this.CallWaitingEnable = &callWaitingEnable
+	var callerIdEnable bool = false
+	this.CallerIdEnable = &callerIdEnable
+	var callerIdNameEnable bool = false
+	this.CallerIdNameEnable = &callerIdNameEnable
+	var cidBlockingEnable bool = false
+	this.CidBlockingEnable = &cidBlockingEnable
+	var cidNamePresentationStatus string = "Public"
+	this.CidNamePresentationStatus = &cidNamePresentationStatus
+	var cidNumPresentationStatus string = "Public"
+	this.CidNumPresentationStatus = &cidNumPresentationStatus
 	var dialToneFeatureDelay int64 = 4
 	this.DialToneFeatureDelay = *NewNullableInt64(&dialToneFeatureDelay)
+	var digitMap string = "(T)"
+	this.DigitMap = &digitMap
+	var doNotDisturbEnable bool = false
+	this.DoNotDisturbEnable = &doNotDisturbEnable
+	var echoCancellationEnable bool = true
+	this.EchoCancellationEnable = &echoCancellationEnable
+	var enable bool = false
+	this.Enable = &enable
+	var hotlineEnable bool = false
+	this.HotlineEnable = &hotlineEnable
 	var intercomEnable bool = false
 	this.IntercomEnable = &intercomEnable
 	var intercomTransferEnable bool = false
 	this.IntercomTransferEnable = &intercomTransferEnable
-	var transmitGain int64 = -30
-	this.TransmitGain = *NewNullableInt64(&transmitGain)
-	var receiveGain int64 = -30
-	this.ReceiveGain = *NewNullableInt64(&receiveGain)
-	var echoCancellationEnable bool = true
-	this.EchoCancellationEnable = &echoCancellationEnable
-	var jitterTarget int64 = 40
-	this.JitterTarget = *NewNullableInt64(&jitterTarget)
 	var jitterBufferMax int64 = 180
 	this.JitterBufferMax = *NewNullableInt64(&jitterBufferMax)
-	var signalingCode string = "LoopStart"
-	this.SignalingCode = &signalingCode
+	var jitterTarget int64 = 40
+	this.JitterTarget = *NewNullableInt64(&jitterTarget)
+	var mwiRefreshTimer int64 = 30
+	this.MwiRefreshTimer = *NewNullableInt64(&mwiRefreshTimer)
+	var name string = ""
+	this.Name = &name
+	var protocol string = "SIP"
+	this.Protocol = &protocol
+	var receiveGain int64 = -30
+	this.ReceiveGain = *NewNullableInt64(&receiveGain)
 	var releaseTimer int64 = 10
 	this.ReleaseTimer = *NewNullableInt64(&releaseTimer)
 	var rohTimer int64 = 15
 	this.RohTimer = *NewNullableInt64(&rohTimer)
+	var signalingCode string = "LoopStart"
+	this.SignalingCode = &signalingCode
+	var transmitGain int64 = -30
+	this.TransmitGain = *NewNullableInt64(&transmitGain)
+	var visualMwiEnable bool = false
+	this.VisualMwiEnable = &visualMwiEnable
 	return &this
 }
 
@@ -172,363 +172,139 @@ func NewVoiceportprofilesPutRequestVoicePortProfilesValue() *VoiceportprofilesPu
 // but it doesn't guarantee that properties required by API are set
 func NewVoiceportprofilesPutRequestVoicePortProfilesValueWithDefaults() *VoiceportprofilesPutRequestVoicePortProfilesValue {
 	this := VoiceportprofilesPutRequestVoicePortProfilesValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
-	var protocol string = "SIP"
-	this.Protocol = &protocol
-	var digitMap string = "(T)"
-	this.DigitMap = &digitMap
-	var callThreeWayEnable bool = false
-	this.CallThreeWayEnable = &callThreeWayEnable
-	var callerIdEnable bool = false
-	this.CallerIdEnable = &callerIdEnable
-	var callerIdNameEnable bool = false
-	this.CallerIdNameEnable = &callerIdNameEnable
-	var callWaitingEnable bool = false
-	this.CallWaitingEnable = &callWaitingEnable
-	var callForwardUnconditionalEnable bool = false
-	this.CallForwardUnconditionalEnable = &callForwardUnconditionalEnable
+	var anonymousCallBlockEnable bool = false
+	this.AnonymousCallBlockEnable = &anonymousCallBlockEnable
+	var audioMwiEnable bool = false
+	this.AudioMwiEnable = &audioMwiEnable
 	var callForwardOnBusyEnable bool = false
 	this.CallForwardOnBusyEnable = &callForwardOnBusyEnable
 	var callForwardOnNoAnswerRingCount int64 = 4
 	this.CallForwardOnNoAnswerRingCount = *NewNullableInt64(&callForwardOnNoAnswerRingCount)
-	var callTransferEnable bool = false
-	this.CallTransferEnable = &callTransferEnable
-	var audioMwiEnable bool = false
-	this.AudioMwiEnable = &audioMwiEnable
-	var anonymousCallBlockEnable bool = false
-	this.AnonymousCallBlockEnable = &anonymousCallBlockEnable
-	var doNotDisturbEnable bool = false
-	this.DoNotDisturbEnable = &doNotDisturbEnable
-	var cidBlockingEnable bool = false
-	this.CidBlockingEnable = &cidBlockingEnable
-	var cidNumPresentationStatus string = "Public"
-	this.CidNumPresentationStatus = &cidNumPresentationStatus
-	var cidNamePresentationStatus string = "Public"
-	this.CidNamePresentationStatus = &cidNamePresentationStatus
-	var callWaitingCallerIdEnable bool = false
-	this.CallWaitingCallerIdEnable = &callWaitingCallerIdEnable
+	var callForwardUnconditionalEnable bool = false
+	this.CallForwardUnconditionalEnable = &callForwardUnconditionalEnable
 	var callHoldEnable bool = false
 	this.CallHoldEnable = &callHoldEnable
-	var visualMwiEnable bool = false
-	this.VisualMwiEnable = &visualMwiEnable
-	var mwiRefreshTimer int64 = 30
-	this.MwiRefreshTimer = *NewNullableInt64(&mwiRefreshTimer)
-	var hotlineEnable bool = false
-	this.HotlineEnable = &hotlineEnable
+	var callThreeWayEnable bool = false
+	this.CallThreeWayEnable = &callThreeWayEnable
+	var callTransferEnable bool = false
+	this.CallTransferEnable = &callTransferEnable
+	var callWaitingCallerIdEnable bool = false
+	this.CallWaitingCallerIdEnable = &callWaitingCallerIdEnable
+	var callWaitingEnable bool = false
+	this.CallWaitingEnable = &callWaitingEnable
+	var callerIdEnable bool = false
+	this.CallerIdEnable = &callerIdEnable
+	var callerIdNameEnable bool = false
+	this.CallerIdNameEnable = &callerIdNameEnable
+	var cidBlockingEnable bool = false
+	this.CidBlockingEnable = &cidBlockingEnable
+	var cidNamePresentationStatus string = "Public"
+	this.CidNamePresentationStatus = &cidNamePresentationStatus
+	var cidNumPresentationStatus string = "Public"
+	this.CidNumPresentationStatus = &cidNumPresentationStatus
 	var dialToneFeatureDelay int64 = 4
 	this.DialToneFeatureDelay = *NewNullableInt64(&dialToneFeatureDelay)
+	var digitMap string = "(T)"
+	this.DigitMap = &digitMap
+	var doNotDisturbEnable bool = false
+	this.DoNotDisturbEnable = &doNotDisturbEnable
+	var echoCancellationEnable bool = true
+	this.EchoCancellationEnable = &echoCancellationEnable
+	var enable bool = false
+	this.Enable = &enable
+	var hotlineEnable bool = false
+	this.HotlineEnable = &hotlineEnable
 	var intercomEnable bool = false
 	this.IntercomEnable = &intercomEnable
 	var intercomTransferEnable bool = false
 	this.IntercomTransferEnable = &intercomTransferEnable
-	var transmitGain int64 = -30
-	this.TransmitGain = *NewNullableInt64(&transmitGain)
-	var receiveGain int64 = -30
-	this.ReceiveGain = *NewNullableInt64(&receiveGain)
-	var echoCancellationEnable bool = true
-	this.EchoCancellationEnable = &echoCancellationEnable
-	var jitterTarget int64 = 40
-	this.JitterTarget = *NewNullableInt64(&jitterTarget)
 	var jitterBufferMax int64 = 180
 	this.JitterBufferMax = *NewNullableInt64(&jitterBufferMax)
-	var signalingCode string = "LoopStart"
-	this.SignalingCode = &signalingCode
+	var jitterTarget int64 = 40
+	this.JitterTarget = *NewNullableInt64(&jitterTarget)
+	var mwiRefreshTimer int64 = 30
+	this.MwiRefreshTimer = *NewNullableInt64(&mwiRefreshTimer)
+	var name string = ""
+	this.Name = &name
+	var protocol string = "SIP"
+	this.Protocol = &protocol
+	var receiveGain int64 = -30
+	this.ReceiveGain = *NewNullableInt64(&receiveGain)
 	var releaseTimer int64 = 10
 	this.ReleaseTimer = *NewNullableInt64(&releaseTimer)
 	var rohTimer int64 = 15
 	this.RohTimer = *NewNullableInt64(&rohTimer)
+	var signalingCode string = "LoopStart"
+	this.SignalingCode = &signalingCode
+	var transmitGain int64 = -30
+	this.TransmitGain = *NewNullableInt64(&transmitGain)
+	var visualMwiEnable bool = false
+	this.VisualMwiEnable = &visualMwiEnable
 	return &this
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetName(v string) {
-	o.Name = &v
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
+// GetAnonymousCallBlockEnable returns the AnonymousCallBlockEnable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetAnonymousCallBlockEnable() bool {
+	if o == nil || IsNil(o.AnonymousCallBlockEnable) {
 		var ret bool
 		return ret
 	}
-	return *o.Enable
+	return *o.AnonymousCallBlockEnable
 }
 
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// GetAnonymousCallBlockEnableOk returns a tuple with the AnonymousCallBlockEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetAnonymousCallBlockEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.AnonymousCallBlockEnable) {
 		return nil, false
 	}
-	return o.Enable, true
+	return o.AnonymousCallBlockEnable, true
 }
 
-// HasEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
+// HasAnonymousCallBlockEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasAnonymousCallBlockEnable() bool {
+	if o != nil && !IsNil(o.AnonymousCallBlockEnable) {
 		return true
 	}
 
 	return false
 }
 
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetEnable(v bool) {
-	o.Enable = &v
+// SetAnonymousCallBlockEnable gets a reference to the given bool and assigns it to the AnonymousCallBlockEnable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetAnonymousCallBlockEnable(v bool) {
+	o.AnonymousCallBlockEnable = &v
 }
 
-// GetProtocol returns the Protocol field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetProtocol() string {
-	if o == nil || IsNil(o.Protocol) {
-		var ret string
-		return ret
-	}
-	return *o.Protocol
-}
-
-// GetProtocolOk returns a tuple with the Protocol field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetProtocolOk() (*string, bool) {
-	if o == nil || IsNil(o.Protocol) {
-		return nil, false
-	}
-	return o.Protocol, true
-}
-
-// HasProtocol returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasProtocol() bool {
-	if o != nil && !IsNil(o.Protocol) {
-		return true
-	}
-
-	return false
-}
-
-// SetProtocol gets a reference to the given string and assigns it to the Protocol field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetProtocol(v string) {
-	o.Protocol = &v
-}
-
-// GetDigitMap returns the DigitMap field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDigitMap() string {
-	if o == nil || IsNil(o.DigitMap) {
-		var ret string
-		return ret
-	}
-	return *o.DigitMap
-}
-
-// GetDigitMapOk returns a tuple with the DigitMap field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDigitMapOk() (*string, bool) {
-	if o == nil || IsNil(o.DigitMap) {
-		return nil, false
-	}
-	return o.DigitMap, true
-}
-
-// HasDigitMap returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasDigitMap() bool {
-	if o != nil && !IsNil(o.DigitMap) {
-		return true
-	}
-
-	return false
-}
-
-// SetDigitMap gets a reference to the given string and assigns it to the DigitMap field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetDigitMap(v string) {
-	o.DigitMap = &v
-}
-
-// GetCallThreeWayEnable returns the CallThreeWayEnable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallThreeWayEnable() bool {
-	if o == nil || IsNil(o.CallThreeWayEnable) {
+// GetAudioMwiEnable returns the AudioMwiEnable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetAudioMwiEnable() bool {
+	if o == nil || IsNil(o.AudioMwiEnable) {
 		var ret bool
 		return ret
 	}
-	return *o.CallThreeWayEnable
+	return *o.AudioMwiEnable
 }
 
-// GetCallThreeWayEnableOk returns a tuple with the CallThreeWayEnable field value if set, nil otherwise
+// GetAudioMwiEnableOk returns a tuple with the AudioMwiEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallThreeWayEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.CallThreeWayEnable) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetAudioMwiEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.AudioMwiEnable) {
 		return nil, false
 	}
-	return o.CallThreeWayEnable, true
+	return o.AudioMwiEnable, true
 }
 
-// HasCallThreeWayEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallThreeWayEnable() bool {
-	if o != nil && !IsNil(o.CallThreeWayEnable) {
+// HasAudioMwiEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasAudioMwiEnable() bool {
+	if o != nil && !IsNil(o.AudioMwiEnable) {
 		return true
 	}
 
 	return false
 }
 
-// SetCallThreeWayEnable gets a reference to the given bool and assigns it to the CallThreeWayEnable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallThreeWayEnable(v bool) {
-	o.CallThreeWayEnable = &v
-}
-
-// GetCallerIdEnable returns the CallerIdEnable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallerIdEnable() bool {
-	if o == nil || IsNil(o.CallerIdEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.CallerIdEnable
-}
-
-// GetCallerIdEnableOk returns a tuple with the CallerIdEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallerIdEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.CallerIdEnable) {
-		return nil, false
-	}
-	return o.CallerIdEnable, true
-}
-
-// HasCallerIdEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallerIdEnable() bool {
-	if o != nil && !IsNil(o.CallerIdEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetCallerIdEnable gets a reference to the given bool and assigns it to the CallerIdEnable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallerIdEnable(v bool) {
-	o.CallerIdEnable = &v
-}
-
-// GetCallerIdNameEnable returns the CallerIdNameEnable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallerIdNameEnable() bool {
-	if o == nil || IsNil(o.CallerIdNameEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.CallerIdNameEnable
-}
-
-// GetCallerIdNameEnableOk returns a tuple with the CallerIdNameEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallerIdNameEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.CallerIdNameEnable) {
-		return nil, false
-	}
-	return o.CallerIdNameEnable, true
-}
-
-// HasCallerIdNameEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallerIdNameEnable() bool {
-	if o != nil && !IsNil(o.CallerIdNameEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetCallerIdNameEnable gets a reference to the given bool and assigns it to the CallerIdNameEnable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallerIdNameEnable(v bool) {
-	o.CallerIdNameEnable = &v
-}
-
-// GetCallWaitingEnable returns the CallWaitingEnable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallWaitingEnable() bool {
-	if o == nil || IsNil(o.CallWaitingEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.CallWaitingEnable
-}
-
-// GetCallWaitingEnableOk returns a tuple with the CallWaitingEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallWaitingEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.CallWaitingEnable) {
-		return nil, false
-	}
-	return o.CallWaitingEnable, true
-}
-
-// HasCallWaitingEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallWaitingEnable() bool {
-	if o != nil && !IsNil(o.CallWaitingEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetCallWaitingEnable gets a reference to the given bool and assigns it to the CallWaitingEnable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallWaitingEnable(v bool) {
-	o.CallWaitingEnable = &v
-}
-
-// GetCallForwardUnconditionalEnable returns the CallForwardUnconditionalEnable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallForwardUnconditionalEnable() bool {
-	if o == nil || IsNil(o.CallForwardUnconditionalEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.CallForwardUnconditionalEnable
-}
-
-// GetCallForwardUnconditionalEnableOk returns a tuple with the CallForwardUnconditionalEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallForwardUnconditionalEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.CallForwardUnconditionalEnable) {
-		return nil, false
-	}
-	return o.CallForwardUnconditionalEnable, true
-}
-
-// HasCallForwardUnconditionalEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallForwardUnconditionalEnable() bool {
-	if o != nil && !IsNil(o.CallForwardUnconditionalEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetCallForwardUnconditionalEnable gets a reference to the given bool and assigns it to the CallForwardUnconditionalEnable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallForwardUnconditionalEnable(v bool) {
-	o.CallForwardUnconditionalEnable = &v
+// SetAudioMwiEnable gets a reference to the given bool and assigns it to the AudioMwiEnable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetAudioMwiEnable(v bool) {
+	o.AudioMwiEnable = &v
 }
 
 // GetCallForwardOnBusyEnable returns the CallForwardOnBusyEnable field value if set, zero value otherwise.
@@ -595,6 +371,7 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallForwardOnNoAn
 func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallForwardOnNoAnswerRingCount(v int64) {
 	o.CallForwardOnNoAnswerRingCount.Set(&v)
 }
+
 // SetCallForwardOnNoAnswerRingCountNil sets the value for CallForwardOnNoAnswerRingCount to be an explicit nil
 func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallForwardOnNoAnswerRingCountNil() {
 	o.CallForwardOnNoAnswerRingCount.Set(nil)
@@ -605,260 +382,36 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetCallForwardOnNo
 	o.CallForwardOnNoAnswerRingCount.Unset()
 }
 
-// GetCallTransferEnable returns the CallTransferEnable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallTransferEnable() bool {
-	if o == nil || IsNil(o.CallTransferEnable) {
+// GetCallForwardUnconditionalEnable returns the CallForwardUnconditionalEnable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallForwardUnconditionalEnable() bool {
+	if o == nil || IsNil(o.CallForwardUnconditionalEnable) {
 		var ret bool
 		return ret
 	}
-	return *o.CallTransferEnable
+	return *o.CallForwardUnconditionalEnable
 }
 
-// GetCallTransferEnableOk returns a tuple with the CallTransferEnable field value if set, nil otherwise
+// GetCallForwardUnconditionalEnableOk returns a tuple with the CallForwardUnconditionalEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallTransferEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.CallTransferEnable) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallForwardUnconditionalEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.CallForwardUnconditionalEnable) {
 		return nil, false
 	}
-	return o.CallTransferEnable, true
+	return o.CallForwardUnconditionalEnable, true
 }
 
-// HasCallTransferEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallTransferEnable() bool {
-	if o != nil && !IsNil(o.CallTransferEnable) {
+// HasCallForwardUnconditionalEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallForwardUnconditionalEnable() bool {
+	if o != nil && !IsNil(o.CallForwardUnconditionalEnable) {
 		return true
 	}
 
 	return false
 }
 
-// SetCallTransferEnable gets a reference to the given bool and assigns it to the CallTransferEnable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallTransferEnable(v bool) {
-	o.CallTransferEnable = &v
-}
-
-// GetAudioMwiEnable returns the AudioMwiEnable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetAudioMwiEnable() bool {
-	if o == nil || IsNil(o.AudioMwiEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.AudioMwiEnable
-}
-
-// GetAudioMwiEnableOk returns a tuple with the AudioMwiEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetAudioMwiEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.AudioMwiEnable) {
-		return nil, false
-	}
-	return o.AudioMwiEnable, true
-}
-
-// HasAudioMwiEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasAudioMwiEnable() bool {
-	if o != nil && !IsNil(o.AudioMwiEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetAudioMwiEnable gets a reference to the given bool and assigns it to the AudioMwiEnable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetAudioMwiEnable(v bool) {
-	o.AudioMwiEnable = &v
-}
-
-// GetAnonymousCallBlockEnable returns the AnonymousCallBlockEnable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetAnonymousCallBlockEnable() bool {
-	if o == nil || IsNil(o.AnonymousCallBlockEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.AnonymousCallBlockEnable
-}
-
-// GetAnonymousCallBlockEnableOk returns a tuple with the AnonymousCallBlockEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetAnonymousCallBlockEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.AnonymousCallBlockEnable) {
-		return nil, false
-	}
-	return o.AnonymousCallBlockEnable, true
-}
-
-// HasAnonymousCallBlockEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasAnonymousCallBlockEnable() bool {
-	if o != nil && !IsNil(o.AnonymousCallBlockEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetAnonymousCallBlockEnable gets a reference to the given bool and assigns it to the AnonymousCallBlockEnable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetAnonymousCallBlockEnable(v bool) {
-	o.AnonymousCallBlockEnable = &v
-}
-
-// GetDoNotDisturbEnable returns the DoNotDisturbEnable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDoNotDisturbEnable() bool {
-	if o == nil || IsNil(o.DoNotDisturbEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.DoNotDisturbEnable
-}
-
-// GetDoNotDisturbEnableOk returns a tuple with the DoNotDisturbEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDoNotDisturbEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.DoNotDisturbEnable) {
-		return nil, false
-	}
-	return o.DoNotDisturbEnable, true
-}
-
-// HasDoNotDisturbEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasDoNotDisturbEnable() bool {
-	if o != nil && !IsNil(o.DoNotDisturbEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetDoNotDisturbEnable gets a reference to the given bool and assigns it to the DoNotDisturbEnable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetDoNotDisturbEnable(v bool) {
-	o.DoNotDisturbEnable = &v
-}
-
-// GetCidBlockingEnable returns the CidBlockingEnable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCidBlockingEnable() bool {
-	if o == nil || IsNil(o.CidBlockingEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.CidBlockingEnable
-}
-
-// GetCidBlockingEnableOk returns a tuple with the CidBlockingEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCidBlockingEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.CidBlockingEnable) {
-		return nil, false
-	}
-	return o.CidBlockingEnable, true
-}
-
-// HasCidBlockingEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCidBlockingEnable() bool {
-	if o != nil && !IsNil(o.CidBlockingEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetCidBlockingEnable gets a reference to the given bool and assigns it to the CidBlockingEnable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCidBlockingEnable(v bool) {
-	o.CidBlockingEnable = &v
-}
-
-// GetCidNumPresentationStatus returns the CidNumPresentationStatus field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCidNumPresentationStatus() string {
-	if o == nil || IsNil(o.CidNumPresentationStatus) {
-		var ret string
-		return ret
-	}
-	return *o.CidNumPresentationStatus
-}
-
-// GetCidNumPresentationStatusOk returns a tuple with the CidNumPresentationStatus field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCidNumPresentationStatusOk() (*string, bool) {
-	if o == nil || IsNil(o.CidNumPresentationStatus) {
-		return nil, false
-	}
-	return o.CidNumPresentationStatus, true
-}
-
-// HasCidNumPresentationStatus returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCidNumPresentationStatus() bool {
-	if o != nil && !IsNil(o.CidNumPresentationStatus) {
-		return true
-	}
-
-	return false
-}
-
-// SetCidNumPresentationStatus gets a reference to the given string and assigns it to the CidNumPresentationStatus field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCidNumPresentationStatus(v string) {
-	o.CidNumPresentationStatus = &v
-}
-
-// GetCidNamePresentationStatus returns the CidNamePresentationStatus field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCidNamePresentationStatus() string {
-	if o == nil || IsNil(o.CidNamePresentationStatus) {
-		var ret string
-		return ret
-	}
-	return *o.CidNamePresentationStatus
-}
-
-// GetCidNamePresentationStatusOk returns a tuple with the CidNamePresentationStatus field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCidNamePresentationStatusOk() (*string, bool) {
-	if o == nil || IsNil(o.CidNamePresentationStatus) {
-		return nil, false
-	}
-	return o.CidNamePresentationStatus, true
-}
-
-// HasCidNamePresentationStatus returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCidNamePresentationStatus() bool {
-	if o != nil && !IsNil(o.CidNamePresentationStatus) {
-		return true
-	}
-
-	return false
-}
-
-// SetCidNamePresentationStatus gets a reference to the given string and assigns it to the CidNamePresentationStatus field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCidNamePresentationStatus(v string) {
-	o.CidNamePresentationStatus = &v
-}
-
-// GetCallWaitingCallerIdEnable returns the CallWaitingCallerIdEnable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallWaitingCallerIdEnable() bool {
-	if o == nil || IsNil(o.CallWaitingCallerIdEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.CallWaitingCallerIdEnable
-}
-
-// GetCallWaitingCallerIdEnableOk returns a tuple with the CallWaitingCallerIdEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallWaitingCallerIdEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.CallWaitingCallerIdEnable) {
-		return nil, false
-	}
-	return o.CallWaitingCallerIdEnable, true
-}
-
-// HasCallWaitingCallerIdEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallWaitingCallerIdEnable() bool {
-	if o != nil && !IsNil(o.CallWaitingCallerIdEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetCallWaitingCallerIdEnable gets a reference to the given bool and assigns it to the CallWaitingCallerIdEnable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallWaitingCallerIdEnable(v bool) {
-	o.CallWaitingCallerIdEnable = &v
+// SetCallForwardUnconditionalEnable gets a reference to the given bool and assigns it to the CallForwardUnconditionalEnable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallForwardUnconditionalEnable(v bool) {
+	o.CallForwardUnconditionalEnable = &v
 }
 
 // GetCallHoldEnable returns the CallHoldEnable field value if set, zero value otherwise.
@@ -893,110 +446,292 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallHoldEnable(v 
 	o.CallHoldEnable = &v
 }
 
-// GetVisualMwiEnable returns the VisualMwiEnable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetVisualMwiEnable() bool {
-	if o == nil || IsNil(o.VisualMwiEnable) {
+// GetCallThreeWayEnable returns the CallThreeWayEnable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallThreeWayEnable() bool {
+	if o == nil || IsNil(o.CallThreeWayEnable) {
 		var ret bool
 		return ret
 	}
-	return *o.VisualMwiEnable
+	return *o.CallThreeWayEnable
 }
 
-// GetVisualMwiEnableOk returns a tuple with the VisualMwiEnable field value if set, nil otherwise
+// GetCallThreeWayEnableOk returns a tuple with the CallThreeWayEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetVisualMwiEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.VisualMwiEnable) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallThreeWayEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.CallThreeWayEnable) {
 		return nil, false
 	}
-	return o.VisualMwiEnable, true
+	return o.CallThreeWayEnable, true
 }
 
-// HasVisualMwiEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasVisualMwiEnable() bool {
-	if o != nil && !IsNil(o.VisualMwiEnable) {
+// HasCallThreeWayEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallThreeWayEnable() bool {
+	if o != nil && !IsNil(o.CallThreeWayEnable) {
 		return true
 	}
 
 	return false
 }
 
-// SetVisualMwiEnable gets a reference to the given bool and assigns it to the VisualMwiEnable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetVisualMwiEnable(v bool) {
-	o.VisualMwiEnable = &v
+// SetCallThreeWayEnable gets a reference to the given bool and assigns it to the CallThreeWayEnable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallThreeWayEnable(v bool) {
+	o.CallThreeWayEnable = &v
 }
 
-// GetMwiRefreshTimer returns the MwiRefreshTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetMwiRefreshTimer() int64 {
-	if o == nil || IsNil(o.MwiRefreshTimer.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.MwiRefreshTimer.Get()
-}
-
-// GetMwiRefreshTimerOk returns a tuple with the MwiRefreshTimer field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetMwiRefreshTimerOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.MwiRefreshTimer.Get(), o.MwiRefreshTimer.IsSet()
-}
-
-// HasMwiRefreshTimer returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasMwiRefreshTimer() bool {
-	if o != nil && o.MwiRefreshTimer.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMwiRefreshTimer gets a reference to the given NullableInt64 and assigns it to the MwiRefreshTimer field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetMwiRefreshTimer(v int64) {
-	o.MwiRefreshTimer.Set(&v)
-}
-// SetMwiRefreshTimerNil sets the value for MwiRefreshTimer to be an explicit nil
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetMwiRefreshTimerNil() {
-	o.MwiRefreshTimer.Set(nil)
-}
-
-// UnsetMwiRefreshTimer ensures that no value is present for MwiRefreshTimer, not even an explicit nil
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetMwiRefreshTimer() {
-	o.MwiRefreshTimer.Unset()
-}
-
-// GetHotlineEnable returns the HotlineEnable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetHotlineEnable() bool {
-	if o == nil || IsNil(o.HotlineEnable) {
+// GetCallTransferEnable returns the CallTransferEnable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallTransferEnable() bool {
+	if o == nil || IsNil(o.CallTransferEnable) {
 		var ret bool
 		return ret
 	}
-	return *o.HotlineEnable
+	return *o.CallTransferEnable
 }
 
-// GetHotlineEnableOk returns a tuple with the HotlineEnable field value if set, nil otherwise
+// GetCallTransferEnableOk returns a tuple with the CallTransferEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetHotlineEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.HotlineEnable) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallTransferEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.CallTransferEnable) {
 		return nil, false
 	}
-	return o.HotlineEnable, true
+	return o.CallTransferEnable, true
 }
 
-// HasHotlineEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasHotlineEnable() bool {
-	if o != nil && !IsNil(o.HotlineEnable) {
+// HasCallTransferEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallTransferEnable() bool {
+	if o != nil && !IsNil(o.CallTransferEnable) {
 		return true
 	}
 
 	return false
 }
 
-// SetHotlineEnable gets a reference to the given bool and assigns it to the HotlineEnable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetHotlineEnable(v bool) {
-	o.HotlineEnable = &v
+// SetCallTransferEnable gets a reference to the given bool and assigns it to the CallTransferEnable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallTransferEnable(v bool) {
+	o.CallTransferEnable = &v
+}
+
+// GetCallWaitingCallerIdEnable returns the CallWaitingCallerIdEnable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallWaitingCallerIdEnable() bool {
+	if o == nil || IsNil(o.CallWaitingCallerIdEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.CallWaitingCallerIdEnable
+}
+
+// GetCallWaitingCallerIdEnableOk returns a tuple with the CallWaitingCallerIdEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallWaitingCallerIdEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.CallWaitingCallerIdEnable) {
+		return nil, false
+	}
+	return o.CallWaitingCallerIdEnable, true
+}
+
+// HasCallWaitingCallerIdEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallWaitingCallerIdEnable() bool {
+	if o != nil && !IsNil(o.CallWaitingCallerIdEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallWaitingCallerIdEnable gets a reference to the given bool and assigns it to the CallWaitingCallerIdEnable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallWaitingCallerIdEnable(v bool) {
+	o.CallWaitingCallerIdEnable = &v
+}
+
+// GetCallWaitingEnable returns the CallWaitingEnable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallWaitingEnable() bool {
+	if o == nil || IsNil(o.CallWaitingEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.CallWaitingEnable
+}
+
+// GetCallWaitingEnableOk returns a tuple with the CallWaitingEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallWaitingEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.CallWaitingEnable) {
+		return nil, false
+	}
+	return o.CallWaitingEnable, true
+}
+
+// HasCallWaitingEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallWaitingEnable() bool {
+	if o != nil && !IsNil(o.CallWaitingEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallWaitingEnable gets a reference to the given bool and assigns it to the CallWaitingEnable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallWaitingEnable(v bool) {
+	o.CallWaitingEnable = &v
+}
+
+// GetCallerIdEnable returns the CallerIdEnable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallerIdEnable() bool {
+	if o == nil || IsNil(o.CallerIdEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.CallerIdEnable
+}
+
+// GetCallerIdEnableOk returns a tuple with the CallerIdEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallerIdEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.CallerIdEnable) {
+		return nil, false
+	}
+	return o.CallerIdEnable, true
+}
+
+// HasCallerIdEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallerIdEnable() bool {
+	if o != nil && !IsNil(o.CallerIdEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallerIdEnable gets a reference to the given bool and assigns it to the CallerIdEnable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallerIdEnable(v bool) {
+	o.CallerIdEnable = &v
+}
+
+// GetCallerIdNameEnable returns the CallerIdNameEnable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallerIdNameEnable() bool {
+	if o == nil || IsNil(o.CallerIdNameEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.CallerIdNameEnable
+}
+
+// GetCallerIdNameEnableOk returns a tuple with the CallerIdNameEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCallerIdNameEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.CallerIdNameEnable) {
+		return nil, false
+	}
+	return o.CallerIdNameEnable, true
+}
+
+// HasCallerIdNameEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCallerIdNameEnable() bool {
+	if o != nil && !IsNil(o.CallerIdNameEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallerIdNameEnable gets a reference to the given bool and assigns it to the CallerIdNameEnable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCallerIdNameEnable(v bool) {
+	o.CallerIdNameEnable = &v
+}
+
+// GetCidBlockingEnable returns the CidBlockingEnable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCidBlockingEnable() bool {
+	if o == nil || IsNil(o.CidBlockingEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.CidBlockingEnable
+}
+
+// GetCidBlockingEnableOk returns a tuple with the CidBlockingEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCidBlockingEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.CidBlockingEnable) {
+		return nil, false
+	}
+	return o.CidBlockingEnable, true
+}
+
+// HasCidBlockingEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCidBlockingEnable() bool {
+	if o != nil && !IsNil(o.CidBlockingEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetCidBlockingEnable gets a reference to the given bool and assigns it to the CidBlockingEnable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCidBlockingEnable(v bool) {
+	o.CidBlockingEnable = &v
+}
+
+// GetCidNamePresentationStatus returns the CidNamePresentationStatus field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCidNamePresentationStatus() string {
+	if o == nil || IsNil(o.CidNamePresentationStatus) {
+		var ret string
+		return ret
+	}
+	return *o.CidNamePresentationStatus
+}
+
+// GetCidNamePresentationStatusOk returns a tuple with the CidNamePresentationStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCidNamePresentationStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.CidNamePresentationStatus) {
+		return nil, false
+	}
+	return o.CidNamePresentationStatus, true
+}
+
+// HasCidNamePresentationStatus returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCidNamePresentationStatus() bool {
+	if o != nil && !IsNil(o.CidNamePresentationStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetCidNamePresentationStatus gets a reference to the given string and assigns it to the CidNamePresentationStatus field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCidNamePresentationStatus(v string) {
+	o.CidNamePresentationStatus = &v
+}
+
+// GetCidNumPresentationStatus returns the CidNumPresentationStatus field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCidNumPresentationStatus() string {
+	if o == nil || IsNil(o.CidNumPresentationStatus) {
+		var ret string
+		return ret
+	}
+	return *o.CidNumPresentationStatus
+}
+
+// GetCidNumPresentationStatusOk returns a tuple with the CidNumPresentationStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetCidNumPresentationStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.CidNumPresentationStatus) {
+		return nil, false
+	}
+	return o.CidNumPresentationStatus, true
+}
+
+// HasCidNumPresentationStatus returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasCidNumPresentationStatus() bool {
+	if o != nil && !IsNil(o.CidNumPresentationStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetCidNumPresentationStatus gets a reference to the given string and assigns it to the CidNumPresentationStatus field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetCidNumPresentationStatus(v string) {
+	o.CidNumPresentationStatus = &v
 }
 
 // GetDialToneFeatureDelay returns the DialToneFeatureDelay field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1031,6 +766,7 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasDialToneFeatureDe
 func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetDialToneFeatureDelay(v int64) {
 	o.DialToneFeatureDelay.Set(&v)
 }
+
 // SetDialToneFeatureDelayNil sets the value for DialToneFeatureDelay to be an explicit nil
 func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetDialToneFeatureDelayNil() {
 	o.DialToneFeatureDelay.Set(nil)
@@ -1039,6 +775,166 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetDialToneFeatureDe
 // UnsetDialToneFeatureDelay ensures that no value is present for DialToneFeatureDelay, not even an explicit nil
 func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetDialToneFeatureDelay() {
 	o.DialToneFeatureDelay.Unset()
+}
+
+// GetDigitMap returns the DigitMap field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDigitMap() string {
+	if o == nil || IsNil(o.DigitMap) {
+		var ret string
+		return ret
+	}
+	return *o.DigitMap
+}
+
+// GetDigitMapOk returns a tuple with the DigitMap field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDigitMapOk() (*string, bool) {
+	if o == nil || IsNil(o.DigitMap) {
+		return nil, false
+	}
+	return o.DigitMap, true
+}
+
+// HasDigitMap returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasDigitMap() bool {
+	if o != nil && !IsNil(o.DigitMap) {
+		return true
+	}
+
+	return false
+}
+
+// SetDigitMap gets a reference to the given string and assigns it to the DigitMap field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetDigitMap(v string) {
+	o.DigitMap = &v
+}
+
+// GetDoNotDisturbEnable returns the DoNotDisturbEnable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDoNotDisturbEnable() bool {
+	if o == nil || IsNil(o.DoNotDisturbEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.DoNotDisturbEnable
+}
+
+// GetDoNotDisturbEnableOk returns a tuple with the DoNotDisturbEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetDoNotDisturbEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.DoNotDisturbEnable) {
+		return nil, false
+	}
+	return o.DoNotDisturbEnable, true
+}
+
+// HasDoNotDisturbEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasDoNotDisturbEnable() bool {
+	if o != nil && !IsNil(o.DoNotDisturbEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetDoNotDisturbEnable gets a reference to the given bool and assigns it to the DoNotDisturbEnable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetDoNotDisturbEnable(v bool) {
+	o.DoNotDisturbEnable = &v
+}
+
+// GetEchoCancellationEnable returns the EchoCancellationEnable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetEchoCancellationEnable() bool {
+	if o == nil || IsNil(o.EchoCancellationEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.EchoCancellationEnable
+}
+
+// GetEchoCancellationEnableOk returns a tuple with the EchoCancellationEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetEchoCancellationEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.EchoCancellationEnable) {
+		return nil, false
+	}
+	return o.EchoCancellationEnable, true
+}
+
+// HasEchoCancellationEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasEchoCancellationEnable() bool {
+	if o != nil && !IsNil(o.EchoCancellationEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEchoCancellationEnable gets a reference to the given bool and assigns it to the EchoCancellationEnable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetEchoCancellationEnable(v bool) {
+	o.EchoCancellationEnable = &v
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetEnable(v bool) {
+	o.Enable = &v
+}
+
+// GetHotlineEnable returns the HotlineEnable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetHotlineEnable() bool {
+	if o == nil || IsNil(o.HotlineEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.HotlineEnable
+}
+
+// GetHotlineEnableOk returns a tuple with the HotlineEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetHotlineEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.HotlineEnable) {
+		return nil, false
+	}
+	return o.HotlineEnable, true
+}
+
+// HasHotlineEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasHotlineEnable() bool {
+	if o != nil && !IsNil(o.HotlineEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetHotlineEnable gets a reference to the given bool and assigns it to the HotlineEnable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetHotlineEnable(v bool) {
+	o.HotlineEnable = &v
 }
 
 // GetIntercomEnable returns the IntercomEnable field value if set, zero value otherwise.
@@ -1105,120 +1001,47 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetIntercomTransferE
 	o.IntercomTransferEnable = &v
 }
 
-// GetTransmitGain returns the TransmitGain field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetTransmitGain() int64 {
-	if o == nil || IsNil(o.TransmitGain.Get()) {
+// GetJitterBufferMax returns the JitterBufferMax field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterBufferMax() int64 {
+	if o == nil || IsNil(o.JitterBufferMax.Get()) {
 		var ret int64
 		return ret
 	}
-	return *o.TransmitGain.Get()
+	return *o.JitterBufferMax.Get()
 }
 
-// GetTransmitGainOk returns a tuple with the TransmitGain field value if set, nil otherwise
+// GetJitterBufferMaxOk returns a tuple with the JitterBufferMax field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetTransmitGainOk() (*int64, bool) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterBufferMaxOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return o.TransmitGain.Get(), o.TransmitGain.IsSet()
+	return o.JitterBufferMax.Get(), o.JitterBufferMax.IsSet()
 }
 
-// HasTransmitGain returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasTransmitGain() bool {
-	if o != nil && o.TransmitGain.IsSet() {
+// HasJitterBufferMax returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasJitterBufferMax() bool {
+	if o != nil && o.JitterBufferMax.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetTransmitGain gets a reference to the given NullableInt64 and assigns it to the TransmitGain field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetTransmitGain(v int64) {
-	o.TransmitGain.Set(&v)
-}
-// SetTransmitGainNil sets the value for TransmitGain to be an explicit nil
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetTransmitGainNil() {
-	o.TransmitGain.Set(nil)
+// SetJitterBufferMax gets a reference to the given NullableInt64 and assigns it to the JitterBufferMax field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetJitterBufferMax(v int64) {
+	o.JitterBufferMax.Set(&v)
 }
 
-// UnsetTransmitGain ensures that no value is present for TransmitGain, not even an explicit nil
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetTransmitGain() {
-	o.TransmitGain.Unset()
+// SetJitterBufferMaxNil sets the value for JitterBufferMax to be an explicit nil
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetJitterBufferMaxNil() {
+	o.JitterBufferMax.Set(nil)
 }
 
-// GetReceiveGain returns the ReceiveGain field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReceiveGain() int64 {
-	if o == nil || IsNil(o.ReceiveGain.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.ReceiveGain.Get()
-}
-
-// GetReceiveGainOk returns a tuple with the ReceiveGain field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReceiveGainOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.ReceiveGain.Get(), o.ReceiveGain.IsSet()
-}
-
-// HasReceiveGain returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasReceiveGain() bool {
-	if o != nil && o.ReceiveGain.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetReceiveGain gets a reference to the given NullableInt64 and assigns it to the ReceiveGain field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetReceiveGain(v int64) {
-	o.ReceiveGain.Set(&v)
-}
-// SetReceiveGainNil sets the value for ReceiveGain to be an explicit nil
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetReceiveGainNil() {
-	o.ReceiveGain.Set(nil)
-}
-
-// UnsetReceiveGain ensures that no value is present for ReceiveGain, not even an explicit nil
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetReceiveGain() {
-	o.ReceiveGain.Unset()
-}
-
-// GetEchoCancellationEnable returns the EchoCancellationEnable field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetEchoCancellationEnable() bool {
-	if o == nil || IsNil(o.EchoCancellationEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.EchoCancellationEnable
-}
-
-// GetEchoCancellationEnableOk returns a tuple with the EchoCancellationEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetEchoCancellationEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.EchoCancellationEnable) {
-		return nil, false
-	}
-	return o.EchoCancellationEnable, true
-}
-
-// HasEchoCancellationEnable returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasEchoCancellationEnable() bool {
-	if o != nil && !IsNil(o.EchoCancellationEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEchoCancellationEnable gets a reference to the given bool and assigns it to the EchoCancellationEnable field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetEchoCancellationEnable(v bool) {
-	o.EchoCancellationEnable = &v
+// UnsetJitterBufferMax ensures that no value is present for JitterBufferMax, not even an explicit nil
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetJitterBufferMax() {
+	o.JitterBufferMax.Unset()
 }
 
 // GetJitterTarget returns the JitterTarget field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1253,6 +1076,7 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasJitterTarget() bo
 func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetJitterTarget(v int64) {
 	o.JitterTarget.Set(&v)
 }
+
 // SetJitterTargetNil sets the value for JitterTarget to be an explicit nil
 func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetJitterTargetNil() {
 	o.JitterTarget.Set(nil)
@@ -1263,78 +1087,186 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetJitterTarget() 
 	o.JitterTarget.Unset()
 }
 
-// GetJitterBufferMax returns the JitterBufferMax field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterBufferMax() int64 {
-	if o == nil || IsNil(o.JitterBufferMax.Get()) {
+// GetMwiRefreshTimer returns the MwiRefreshTimer field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetMwiRefreshTimer() int64 {
+	if o == nil || IsNil(o.MwiRefreshTimer.Get()) {
 		var ret int64
 		return ret
 	}
-	return *o.JitterBufferMax.Get()
+	return *o.MwiRefreshTimer.Get()
 }
 
-// GetJitterBufferMaxOk returns a tuple with the JitterBufferMax field value if set, nil otherwise
+// GetMwiRefreshTimerOk returns a tuple with the MwiRefreshTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetJitterBufferMaxOk() (*int64, bool) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetMwiRefreshTimerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return o.JitterBufferMax.Get(), o.JitterBufferMax.IsSet()
+	return o.MwiRefreshTimer.Get(), o.MwiRefreshTimer.IsSet()
 }
 
-// HasJitterBufferMax returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasJitterBufferMax() bool {
-	if o != nil && o.JitterBufferMax.IsSet() {
+// HasMwiRefreshTimer returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasMwiRefreshTimer() bool {
+	if o != nil && o.MwiRefreshTimer.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetJitterBufferMax gets a reference to the given NullableInt64 and assigns it to the JitterBufferMax field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetJitterBufferMax(v int64) {
-	o.JitterBufferMax.Set(&v)
-}
-// SetJitterBufferMaxNil sets the value for JitterBufferMax to be an explicit nil
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetJitterBufferMaxNil() {
-	o.JitterBufferMax.Set(nil)
+// SetMwiRefreshTimer gets a reference to the given NullableInt64 and assigns it to the MwiRefreshTimer field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetMwiRefreshTimer(v int64) {
+	o.MwiRefreshTimer.Set(&v)
 }
 
-// UnsetJitterBufferMax ensures that no value is present for JitterBufferMax, not even an explicit nil
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetJitterBufferMax() {
-	o.JitterBufferMax.Unset()
+// SetMwiRefreshTimerNil sets the value for MwiRefreshTimer to be an explicit nil
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetMwiRefreshTimerNil() {
+	o.MwiRefreshTimer.Set(nil)
 }
 
-// GetSignalingCode returns the SignalingCode field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetSignalingCode() string {
-	if o == nil || IsNil(o.SignalingCode) {
+// UnsetMwiRefreshTimer ensures that no value is present for MwiRefreshTimer, not even an explicit nil
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetMwiRefreshTimer() {
+	o.MwiRefreshTimer.Unset()
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
-	return *o.SignalingCode
+	return *o.Name
 }
 
-// GetSignalingCodeOk returns a tuple with the SignalingCode field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetSignalingCodeOk() (*string, bool) {
-	if o == nil || IsNil(o.SignalingCode) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
-	return o.SignalingCode, true
+	return o.Name, true
 }
 
-// HasSignalingCode returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasSignalingCode() bool {
-	if o != nil && !IsNil(o.SignalingCode) {
+// HasName returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
 	return false
 }
 
-// SetSignalingCode gets a reference to the given string and assigns it to the SignalingCode field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetSignalingCode(v string) {
-	o.SignalingCode = &v
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetName(v string) {
+	o.Name = &v
+}
+
+// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetObjectProperties() VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties {
+	if o == nil || IsNil(o.ObjectProperties) {
+		var ret VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties
+		return ret
+	}
+	return *o.ObjectProperties
+}
+
+// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetObjectPropertiesOk() (*VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties, bool) {
+	if o == nil || IsNil(o.ObjectProperties) {
+		return nil, false
+	}
+	return o.ObjectProperties, true
+}
+
+// HasObjectProperties returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasObjectProperties() bool {
+	if o != nil && !IsNil(o.ObjectProperties) {
+		return true
+	}
+
+	return false
+}
+
+// SetObjectProperties gets a reference to the given VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetObjectProperties(v VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) {
+	o.ObjectProperties = &v
+}
+
+// GetProtocol returns the Protocol field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetProtocol() string {
+	if o == nil || IsNil(o.Protocol) {
+		var ret string
+		return ret
+	}
+	return *o.Protocol
+}
+
+// GetProtocolOk returns a tuple with the Protocol field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetProtocolOk() (*string, bool) {
+	if o == nil || IsNil(o.Protocol) {
+		return nil, false
+	}
+	return o.Protocol, true
+}
+
+// HasProtocol returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasProtocol() bool {
+	if o != nil && !IsNil(o.Protocol) {
+		return true
+	}
+
+	return false
+}
+
+// SetProtocol gets a reference to the given string and assigns it to the Protocol field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetProtocol(v string) {
+	o.Protocol = &v
+}
+
+// GetReceiveGain returns the ReceiveGain field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReceiveGain() int64 {
+	if o == nil || IsNil(o.ReceiveGain.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.ReceiveGain.Get()
+}
+
+// GetReceiveGainOk returns a tuple with the ReceiveGain field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetReceiveGainOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ReceiveGain.Get(), o.ReceiveGain.IsSet()
+}
+
+// HasReceiveGain returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasReceiveGain() bool {
+	if o != nil && o.ReceiveGain.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetReceiveGain gets a reference to the given NullableInt64 and assigns it to the ReceiveGain field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetReceiveGain(v int64) {
+	o.ReceiveGain.Set(&v)
+}
+
+// SetReceiveGainNil sets the value for ReceiveGain to be an explicit nil
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetReceiveGainNil() {
+	o.ReceiveGain.Set(nil)
+}
+
+// UnsetReceiveGain ensures that no value is present for ReceiveGain, not even an explicit nil
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetReceiveGain() {
+	o.ReceiveGain.Unset()
 }
 
 // GetReleaseTimer returns the ReleaseTimer field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1369,6 +1301,7 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasReleaseTimer() bo
 func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetReleaseTimer(v int64) {
 	o.ReleaseTimer.Set(&v)
 }
+
 // SetReleaseTimerNil sets the value for ReleaseTimer to be an explicit nil
 func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetReleaseTimerNil() {
 	o.ReleaseTimer.Set(nil)
@@ -1411,6 +1344,7 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasRohTimer() bool {
 func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetRohTimer(v int64) {
 	o.RohTimer.Set(&v)
 }
+
 // SetRohTimerNil sets the value for RohTimer to be an explicit nil
 func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetRohTimerNil() {
 	o.RohTimer.Set(nil)
@@ -1421,40 +1355,115 @@ func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetRohTimer() {
 	o.RohTimer.Unset()
 }
 
-// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetObjectProperties() VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties {
-	if o == nil || IsNil(o.ObjectProperties) {
-		var ret VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties
+// GetSignalingCode returns the SignalingCode field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetSignalingCode() string {
+	if o == nil || IsNil(o.SignalingCode) {
+		var ret string
 		return ret
 	}
-	return *o.ObjectProperties
+	return *o.SignalingCode
 }
 
-// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
+// GetSignalingCodeOk returns a tuple with the SignalingCode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetObjectPropertiesOk() (*VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties, bool) {
-	if o == nil || IsNil(o.ObjectProperties) {
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetSignalingCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.SignalingCode) {
 		return nil, false
 	}
-	return o.ObjectProperties, true
+	return o.SignalingCode, true
 }
 
-// HasObjectProperties returns a boolean if a field has been set.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasObjectProperties() bool {
-	if o != nil && !IsNil(o.ObjectProperties) {
+// HasSignalingCode returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasSignalingCode() bool {
+	if o != nil && !IsNil(o.SignalingCode) {
 		return true
 	}
 
 	return false
 }
 
-// SetObjectProperties gets a reference to the given VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetObjectProperties(v VoiceportprofilesPutRequestVoicePortProfilesValueObjectProperties) {
-	o.ObjectProperties = &v
+// SetSignalingCode gets a reference to the given string and assigns it to the SignalingCode field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetSignalingCode(v string) {
+	o.SignalingCode = &v
+}
+
+// GetTransmitGain returns the TransmitGain field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetTransmitGain() int64 {
+	if o == nil || IsNil(o.TransmitGain.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.TransmitGain.Get()
+}
+
+// GetTransmitGainOk returns a tuple with the TransmitGain field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetTransmitGainOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.TransmitGain.Get(), o.TransmitGain.IsSet()
+}
+
+// HasTransmitGain returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasTransmitGain() bool {
+	if o != nil && o.TransmitGain.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTransmitGain gets a reference to the given NullableInt64 and assigns it to the TransmitGain field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetTransmitGain(v int64) {
+	o.TransmitGain.Set(&v)
+}
+
+// SetTransmitGainNil sets the value for TransmitGain to be an explicit nil
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetTransmitGainNil() {
+	o.TransmitGain.Set(nil)
+}
+
+// UnsetTransmitGain ensures that no value is present for TransmitGain, not even an explicit nil
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) UnsetTransmitGain() {
+	o.TransmitGain.Unset()
+}
+
+// GetVisualMwiEnable returns the VisualMwiEnable field value if set, zero value otherwise.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetVisualMwiEnable() bool {
+	if o == nil || IsNil(o.VisualMwiEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.VisualMwiEnable
+}
+
+// GetVisualMwiEnableOk returns a tuple with the VisualMwiEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) GetVisualMwiEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.VisualMwiEnable) {
+		return nil, false
+	}
+	return o.VisualMwiEnable, true
+}
+
+// HasVisualMwiEnable returns a boolean if a field has been set.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) HasVisualMwiEnable() bool {
+	if o != nil && !IsNil(o.VisualMwiEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetVisualMwiEnable gets a reference to the given bool and assigns it to the VisualMwiEnable field.
+func (o *VoiceportprofilesPutRequestVoicePortProfilesValue) SetVisualMwiEnable(v bool) {
+	o.VisualMwiEnable = &v
 }
 
 func (o VoiceportprofilesPutRequestVoicePortProfilesValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1463,32 +1472,11 @@ func (o VoiceportprofilesPutRequestVoicePortProfilesValue) MarshalJSON() ([]byte
 
 func (o VoiceportprofilesPutRequestVoicePortProfilesValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
+	if !IsNil(o.AnonymousCallBlockEnable) {
+		toSerialize["anonymous_call_block_enable"] = o.AnonymousCallBlockEnable
 	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.Protocol) {
-		toSerialize["protocol"] = o.Protocol
-	}
-	if !IsNil(o.DigitMap) {
-		toSerialize["digit_map"] = o.DigitMap
-	}
-	if !IsNil(o.CallThreeWayEnable) {
-		toSerialize["call_three_way_enable"] = o.CallThreeWayEnable
-	}
-	if !IsNil(o.CallerIdEnable) {
-		toSerialize["caller_id_enable"] = o.CallerIdEnable
-	}
-	if !IsNil(o.CallerIdNameEnable) {
-		toSerialize["caller_id_name_enable"] = o.CallerIdNameEnable
-	}
-	if !IsNil(o.CallWaitingEnable) {
-		toSerialize["call_waiting_enable"] = o.CallWaitingEnable
-	}
-	if !IsNil(o.CallForwardUnconditionalEnable) {
-		toSerialize["call_forward_unconditional_enable"] = o.CallForwardUnconditionalEnable
+	if !IsNil(o.AudioMwiEnable) {
+		toSerialize["audio_mwi_enable"] = o.AudioMwiEnable
 	}
 	if !IsNil(o.CallForwardOnBusyEnable) {
 		toSerialize["call_forward_on_busy_enable"] = o.CallForwardOnBusyEnable
@@ -1496,44 +1484,56 @@ func (o VoiceportprofilesPutRequestVoicePortProfilesValue) ToMap() (map[string]i
 	if o.CallForwardOnNoAnswerRingCount.IsSet() {
 		toSerialize["call_forward_on_no_answer_ring_count"] = o.CallForwardOnNoAnswerRingCount.Get()
 	}
-	if !IsNil(o.CallTransferEnable) {
-		toSerialize["call_transfer_enable"] = o.CallTransferEnable
-	}
-	if !IsNil(o.AudioMwiEnable) {
-		toSerialize["audio_mwi_enable"] = o.AudioMwiEnable
-	}
-	if !IsNil(o.AnonymousCallBlockEnable) {
-		toSerialize["anonymous_call_block_enable"] = o.AnonymousCallBlockEnable
-	}
-	if !IsNil(o.DoNotDisturbEnable) {
-		toSerialize["do_not_disturb_enable"] = o.DoNotDisturbEnable
-	}
-	if !IsNil(o.CidBlockingEnable) {
-		toSerialize["cid_blocking_enable"] = o.CidBlockingEnable
-	}
-	if !IsNil(o.CidNumPresentationStatus) {
-		toSerialize["cid_num_presentation_status"] = o.CidNumPresentationStatus
-	}
-	if !IsNil(o.CidNamePresentationStatus) {
-		toSerialize["cid_name_presentation_status"] = o.CidNamePresentationStatus
-	}
-	if !IsNil(o.CallWaitingCallerIdEnable) {
-		toSerialize["call_waiting_caller_id_enable"] = o.CallWaitingCallerIdEnable
+	if !IsNil(o.CallForwardUnconditionalEnable) {
+		toSerialize["call_forward_unconditional_enable"] = o.CallForwardUnconditionalEnable
 	}
 	if !IsNil(o.CallHoldEnable) {
 		toSerialize["call_hold_enable"] = o.CallHoldEnable
 	}
-	if !IsNil(o.VisualMwiEnable) {
-		toSerialize["visual_mwi_enable"] = o.VisualMwiEnable
+	if !IsNil(o.CallThreeWayEnable) {
+		toSerialize["call_three_way_enable"] = o.CallThreeWayEnable
 	}
-	if o.MwiRefreshTimer.IsSet() {
-		toSerialize["mwi_refresh_timer"] = o.MwiRefreshTimer.Get()
+	if !IsNil(o.CallTransferEnable) {
+		toSerialize["call_transfer_enable"] = o.CallTransferEnable
 	}
-	if !IsNil(o.HotlineEnable) {
-		toSerialize["hotline_enable"] = o.HotlineEnable
+	if !IsNil(o.CallWaitingCallerIdEnable) {
+		toSerialize["call_waiting_caller_id_enable"] = o.CallWaitingCallerIdEnable
+	}
+	if !IsNil(o.CallWaitingEnable) {
+		toSerialize["call_waiting_enable"] = o.CallWaitingEnable
+	}
+	if !IsNil(o.CallerIdEnable) {
+		toSerialize["caller_id_enable"] = o.CallerIdEnable
+	}
+	if !IsNil(o.CallerIdNameEnable) {
+		toSerialize["caller_id_name_enable"] = o.CallerIdNameEnable
+	}
+	if !IsNil(o.CidBlockingEnable) {
+		toSerialize["cid_blocking_enable"] = o.CidBlockingEnable
+	}
+	if !IsNil(o.CidNamePresentationStatus) {
+		toSerialize["cid_name_presentation_status"] = o.CidNamePresentationStatus
+	}
+	if !IsNil(o.CidNumPresentationStatus) {
+		toSerialize["cid_num_presentation_status"] = o.CidNumPresentationStatus
 	}
 	if o.DialToneFeatureDelay.IsSet() {
 		toSerialize["dial_tone_feature_delay"] = o.DialToneFeatureDelay.Get()
+	}
+	if !IsNil(o.DigitMap) {
+		toSerialize["digit_map"] = o.DigitMap
+	}
+	if !IsNil(o.DoNotDisturbEnable) {
+		toSerialize["do_not_disturb_enable"] = o.DoNotDisturbEnable
+	}
+	if !IsNil(o.EchoCancellationEnable) {
+		toSerialize["echo_cancellation_enable"] = o.EchoCancellationEnable
+	}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
+	}
+	if !IsNil(o.HotlineEnable) {
+		toSerialize["hotline_enable"] = o.HotlineEnable
 	}
 	if !IsNil(o.IntercomEnable) {
 		toSerialize["intercom_enable"] = o.IntercomEnable
@@ -1541,23 +1541,26 @@ func (o VoiceportprofilesPutRequestVoicePortProfilesValue) ToMap() (map[string]i
 	if !IsNil(o.IntercomTransferEnable) {
 		toSerialize["intercom_transfer_enable"] = o.IntercomTransferEnable
 	}
-	if o.TransmitGain.IsSet() {
-		toSerialize["transmit_gain"] = o.TransmitGain.Get()
-	}
-	if o.ReceiveGain.IsSet() {
-		toSerialize["receive_gain"] = o.ReceiveGain.Get()
-	}
-	if !IsNil(o.EchoCancellationEnable) {
-		toSerialize["echo_cancellation_enable"] = o.EchoCancellationEnable
+	if o.JitterBufferMax.IsSet() {
+		toSerialize["jitter_buffer_max"] = o.JitterBufferMax.Get()
 	}
 	if o.JitterTarget.IsSet() {
 		toSerialize["jitter_target"] = o.JitterTarget.Get()
 	}
-	if o.JitterBufferMax.IsSet() {
-		toSerialize["jitter_buffer_max"] = o.JitterBufferMax.Get()
+	if o.MwiRefreshTimer.IsSet() {
+		toSerialize["mwi_refresh_timer"] = o.MwiRefreshTimer.Get()
 	}
-	if !IsNil(o.SignalingCode) {
-		toSerialize["signaling_code"] = o.SignalingCode
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.ObjectProperties) {
+		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.Protocol) {
+		toSerialize["protocol"] = o.Protocol
+	}
+	if o.ReceiveGain.IsSet() {
+		toSerialize["receive_gain"] = o.ReceiveGain.Get()
 	}
 	if o.ReleaseTimer.IsSet() {
 		toSerialize["release_timer"] = o.ReleaseTimer.Get()
@@ -1565,8 +1568,14 @@ func (o VoiceportprofilesPutRequestVoicePortProfilesValue) ToMap() (map[string]i
 	if o.RohTimer.IsSet() {
 		toSerialize["roh_timer"] = o.RohTimer.Get()
 	}
-	if !IsNil(o.ObjectProperties) {
-		toSerialize["object_properties"] = o.ObjectProperties
+	if !IsNil(o.SignalingCode) {
+		toSerialize["signaling_code"] = o.SignalingCode
+	}
+	if o.TransmitGain.IsSet() {
+		toSerialize["transmit_gain"] = o.TransmitGain.Get()
+	}
+	if !IsNil(o.VisualMwiEnable) {
+		toSerialize["visual_mwi_enable"] = o.VisualMwiEnable
 	}
 	return toSerialize, nil
 }
@@ -1606,5 +1615,3 @@ func (v *NullableVoiceportprofilesPutRequestVoicePortProfilesValue) UnmarshalJSO
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

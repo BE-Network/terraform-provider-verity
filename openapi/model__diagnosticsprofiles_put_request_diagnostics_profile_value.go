@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,36 +19,36 @@ var _ MappedNullable = &DiagnosticsprofilesPutRequestDiagnosticsProfileValue{}
 
 // DiagnosticsprofilesPutRequestDiagnosticsProfileValue struct for DiagnosticsprofilesPutRequestDiagnosticsProfileValue
 type DiagnosticsprofilesPutRequestDiagnosticsProfileValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
-	// Enable sFlow for this Diagnostics Profile 
+	// Enable sFlow for this Diagnostics Profile
 	EnableSflow *bool `json:"enable_sflow,omitempty"`
-	// Use the internal Collector as the flow collector
-	UseInternalCollector *bool `json:"use_internal_collector,omitempty"`
-	// Flow Collector for this Diagnostics Profile 
-	FlowCollector *string `json:"flow_collector,omitempty"`
-	// Object type for flow_collector field
-	FlowCollectorRefType *string `json:"flow_collector_ref_type_,omitempty"`
-	// The sampling rate for sFlow polling (seconds)
-	PollInterval NullableInt64 `json:"poll_interval,omitempty"`
-	// Management or Underlay
-	VrfType *string `json:"vrf_type,omitempty"`
-	// Monitoring ACL whose Service VLANs are mirrored to the ERSPAN destination
-	MonitoringAcl *string `json:"monitoring_acl,omitempty"`
-	// Object type for monitoring_acl field
-	MonitoringAclRefType *string `json:"monitoring_acl_ref_type_,omitempty"`
 	// IPv4 address of the remote ERSPAN collector
 	ErspanDestinationIp *string `json:"erspan_destination_ip,omitempty"`
 	// DSCP value for ERSPAN packets (0-63)
 	ErspanDscp NullableInt64 `json:"erspan_dscp,omitempty"`
-	// Time-to-live value for ERSPAN packets (0-255)
-	ErspanTtl NullableInt64 `json:"erspan_ttl,omitempty"`
 	// GRE protocol type as a 0x-prefixed hexadecimal value
 	ErspanGreType *string `json:"erspan_gre_type,omitempty"`
 	// Output queue for ERSPAN packets (0-63)
 	ErspanQueue NullableInt64 `json:"erspan_queue,omitempty"`
+	// Time-to-live value for ERSPAN packets (0-255)
+	ErspanTtl NullableInt64 `json:"erspan_ttl,omitempty"`
+	// Flow Collector for this Diagnostics Profile
+	FlowCollector *string `json:"flow_collector,omitempty"`
+	// Object type for flow_collector field
+	FlowCollectorRefType *string `json:"flow_collector_ref_type_,omitempty"`
+	// Monitoring ACL whose Service VLANs are mirrored to the ERSPAN destination
+	MonitoringAcl *string `json:"monitoring_acl,omitempty"`
+	// Object type for monitoring_acl field
+	MonitoringAclRefType *string `json:"monitoring_acl_ref_type_,omitempty"`
+	// Template Name. Must be unique within type.
+	Name *string `json:"name,omitempty"`
+	// The sampling rate for sFlow polling (seconds)
+	PollInterval NullableInt64 `json:"poll_interval,omitempty"`
+	// Use the internal Collector as the flow collector
+	UseInternalCollector *bool `json:"use_internal_collector,omitempty"`
+	// Management or Underlay
+	VrfType *string `json:"vrf_type,omitempty"`
 }
 
 // NewDiagnosticsprofilesPutRequestDiagnosticsProfileValue instantiates a new DiagnosticsprofilesPutRequestDiagnosticsProfileValue object
@@ -57,26 +57,26 @@ type DiagnosticsprofilesPutRequestDiagnosticsProfileValue struct {
 // will change when the set of required properties is changed
 func NewDiagnosticsprofilesPutRequestDiagnosticsProfileValue() *DiagnosticsprofilesPutRequestDiagnosticsProfileValue {
 	this := DiagnosticsprofilesPutRequestDiagnosticsProfileValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
 	var enableSflow bool = false
 	this.EnableSflow = &enableSflow
-	var useInternalCollector bool = false
-	this.UseInternalCollector = &useInternalCollector
-	var flowCollector string = ""
-	this.FlowCollector = &flowCollector
-	var pollInterval int64 = 20
-	this.PollInterval = *NewNullableInt64(&pollInterval)
-	var vrfType string = "management"
-	this.VrfType = &vrfType
-	var monitoringAcl string = ""
-	this.MonitoringAcl = &monitoringAcl
 	var erspanDestinationIp string = ""
 	this.ErspanDestinationIp = &erspanDestinationIp
 	var erspanGreType string = ""
 	this.ErspanGreType = &erspanGreType
+	var flowCollector string = ""
+	this.FlowCollector = &flowCollector
+	var monitoringAcl string = ""
+	this.MonitoringAcl = &monitoringAcl
+	var name string = ""
+	this.Name = &name
+	var pollInterval int64 = 20
+	this.PollInterval = *NewNullableInt64(&pollInterval)
+	var useInternalCollector bool = false
+	this.UseInternalCollector = &useInternalCollector
+	var vrfType string = "management"
+	this.VrfType = &vrfType
 	return &this
 }
 
@@ -85,59 +85,27 @@ func NewDiagnosticsprofilesPutRequestDiagnosticsProfileValue() *Diagnosticsprofi
 // but it doesn't guarantee that properties required by API are set
 func NewDiagnosticsprofilesPutRequestDiagnosticsProfileValueWithDefaults() *DiagnosticsprofilesPutRequestDiagnosticsProfileValue {
 	this := DiagnosticsprofilesPutRequestDiagnosticsProfileValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
 	var enableSflow bool = false
 	this.EnableSflow = &enableSflow
-	var useInternalCollector bool = false
-	this.UseInternalCollector = &useInternalCollector
-	var flowCollector string = ""
-	this.FlowCollector = &flowCollector
-	var pollInterval int64 = 20
-	this.PollInterval = *NewNullableInt64(&pollInterval)
-	var vrfType string = "management"
-	this.VrfType = &vrfType
-	var monitoringAcl string = ""
-	this.MonitoringAcl = &monitoringAcl
 	var erspanDestinationIp string = ""
 	this.ErspanDestinationIp = &erspanDestinationIp
 	var erspanGreType string = ""
 	this.ErspanGreType = &erspanGreType
+	var flowCollector string = ""
+	this.FlowCollector = &flowCollector
+	var monitoringAcl string = ""
+	this.MonitoringAcl = &monitoringAcl
+	var name string = ""
+	this.Name = &name
+	var pollInterval int64 = 20
+	this.PollInterval = *NewNullableInt64(&pollInterval)
+	var useInternalCollector bool = false
+	this.UseInternalCollector = &useInternalCollector
+	var vrfType string = "management"
+	this.VrfType = &vrfType
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -204,240 +172,6 @@ func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetEnableSflow(v 
 	o.EnableSflow = &v
 }
 
-// GetUseInternalCollector returns the UseInternalCollector field value if set, zero value otherwise.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetUseInternalCollector() bool {
-	if o == nil || IsNil(o.UseInternalCollector) {
-		var ret bool
-		return ret
-	}
-	return *o.UseInternalCollector
-}
-
-// GetUseInternalCollectorOk returns a tuple with the UseInternalCollector field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetUseInternalCollectorOk() (*bool, bool) {
-	if o == nil || IsNil(o.UseInternalCollector) {
-		return nil, false
-	}
-	return o.UseInternalCollector, true
-}
-
-// HasUseInternalCollector returns a boolean if a field has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasUseInternalCollector() bool {
-	if o != nil && !IsNil(o.UseInternalCollector) {
-		return true
-	}
-
-	return false
-}
-
-// SetUseInternalCollector gets a reference to the given bool and assigns it to the UseInternalCollector field.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetUseInternalCollector(v bool) {
-	o.UseInternalCollector = &v
-}
-
-// GetFlowCollector returns the FlowCollector field value if set, zero value otherwise.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetFlowCollector() string {
-	if o == nil || IsNil(o.FlowCollector) {
-		var ret string
-		return ret
-	}
-	return *o.FlowCollector
-}
-
-// GetFlowCollectorOk returns a tuple with the FlowCollector field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetFlowCollectorOk() (*string, bool) {
-	if o == nil || IsNil(o.FlowCollector) {
-		return nil, false
-	}
-	return o.FlowCollector, true
-}
-
-// HasFlowCollector returns a boolean if a field has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasFlowCollector() bool {
-	if o != nil && !IsNil(o.FlowCollector) {
-		return true
-	}
-
-	return false
-}
-
-// SetFlowCollector gets a reference to the given string and assigns it to the FlowCollector field.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetFlowCollector(v string) {
-	o.FlowCollector = &v
-}
-
-// GetFlowCollectorRefType returns the FlowCollectorRefType field value if set, zero value otherwise.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetFlowCollectorRefType() string {
-	if o == nil || IsNil(o.FlowCollectorRefType) {
-		var ret string
-		return ret
-	}
-	return *o.FlowCollectorRefType
-}
-
-// GetFlowCollectorRefTypeOk returns a tuple with the FlowCollectorRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetFlowCollectorRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.FlowCollectorRefType) {
-		return nil, false
-	}
-	return o.FlowCollectorRefType, true
-}
-
-// HasFlowCollectorRefType returns a boolean if a field has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasFlowCollectorRefType() bool {
-	if o != nil && !IsNil(o.FlowCollectorRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetFlowCollectorRefType gets a reference to the given string and assigns it to the FlowCollectorRefType field.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetFlowCollectorRefType(v string) {
-	o.FlowCollectorRefType = &v
-}
-
-// GetPollInterval returns the PollInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollInterval() int64 {
-	if o == nil || IsNil(o.PollInterval.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.PollInterval.Get()
-}
-
-// GetPollIntervalOk returns a tuple with the PollInterval field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollIntervalOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.PollInterval.Get(), o.PollInterval.IsSet()
-}
-
-// HasPollInterval returns a boolean if a field has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasPollInterval() bool {
-	if o != nil && o.PollInterval.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetPollInterval gets a reference to the given NullableInt64 and assigns it to the PollInterval field.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetPollInterval(v int64) {
-	o.PollInterval.Set(&v)
-}
-// SetPollIntervalNil sets the value for PollInterval to be an explicit nil
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetPollIntervalNil() {
-	o.PollInterval.Set(nil)
-}
-
-// UnsetPollInterval ensures that no value is present for PollInterval, not even an explicit nil
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) UnsetPollInterval() {
-	o.PollInterval.Unset()
-}
-
-// GetVrfType returns the VrfType field value if set, zero value otherwise.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetVrfType() string {
-	if o == nil || IsNil(o.VrfType) {
-		var ret string
-		return ret
-	}
-	return *o.VrfType
-}
-
-// GetVrfTypeOk returns a tuple with the VrfType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetVrfTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.VrfType) {
-		return nil, false
-	}
-	return o.VrfType, true
-}
-
-// HasVrfType returns a boolean if a field has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasVrfType() bool {
-	if o != nil && !IsNil(o.VrfType) {
-		return true
-	}
-
-	return false
-}
-
-// SetVrfType gets a reference to the given string and assigns it to the VrfType field.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetVrfType(v string) {
-	o.VrfType = &v
-}
-
-// GetMonitoringAcl returns the MonitoringAcl field value if set, zero value otherwise.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAcl() string {
-	if o == nil || IsNil(o.MonitoringAcl) {
-		var ret string
-		return ret
-	}
-	return *o.MonitoringAcl
-}
-
-// GetMonitoringAclOk returns a tuple with the MonitoringAcl field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAclOk() (*string, bool) {
-	if o == nil || IsNil(o.MonitoringAcl) {
-		return nil, false
-	}
-	return o.MonitoringAcl, true
-}
-
-// HasMonitoringAcl returns a boolean if a field has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasMonitoringAcl() bool {
-	if o != nil && !IsNil(o.MonitoringAcl) {
-		return true
-	}
-
-	return false
-}
-
-// SetMonitoringAcl gets a reference to the given string and assigns it to the MonitoringAcl field.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetMonitoringAcl(v string) {
-	o.MonitoringAcl = &v
-}
-
-// GetMonitoringAclRefType returns the MonitoringAclRefType field value if set, zero value otherwise.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAclRefType() string {
-	if o == nil || IsNil(o.MonitoringAclRefType) {
-		var ret string
-		return ret
-	}
-	return *o.MonitoringAclRefType
-}
-
-// GetMonitoringAclRefTypeOk returns a tuple with the MonitoringAclRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAclRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.MonitoringAclRefType) {
-		return nil, false
-	}
-	return o.MonitoringAclRefType, true
-}
-
-// HasMonitoringAclRefType returns a boolean if a field has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasMonitoringAclRefType() bool {
-	if o != nil && !IsNil(o.MonitoringAclRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetMonitoringAclRefType gets a reference to the given string and assigns it to the MonitoringAclRefType field.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetMonitoringAclRefType(v string) {
-	o.MonitoringAclRefType = &v
-}
-
 // GetErspanDestinationIp returns the ErspanDestinationIp field value if set, zero value otherwise.
 func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanDestinationIp() string {
 	if o == nil || IsNil(o.ErspanDestinationIp) {
@@ -502,6 +236,7 @@ func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasErspanDscp() b
 func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanDscp(v int64) {
 	o.ErspanDscp.Set(&v)
 }
+
 // SetErspanDscpNil sets the value for ErspanDscp to be an explicit nil
 func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanDscpNil() {
 	o.ErspanDscp.Set(nil)
@@ -510,48 +245,6 @@ func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanDscpNil(
 // UnsetErspanDscp ensures that no value is present for ErspanDscp, not even an explicit nil
 func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) UnsetErspanDscp() {
 	o.ErspanDscp.Unset()
-}
-
-// GetErspanTtl returns the ErspanTtl field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanTtl() int64 {
-	if o == nil || IsNil(o.ErspanTtl.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.ErspanTtl.Get()
-}
-
-// GetErspanTtlOk returns a tuple with the ErspanTtl field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanTtlOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.ErspanTtl.Get(), o.ErspanTtl.IsSet()
-}
-
-// HasErspanTtl returns a boolean if a field has been set.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasErspanTtl() bool {
-	if o != nil && o.ErspanTtl.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetErspanTtl gets a reference to the given NullableInt64 and assigns it to the ErspanTtl field.
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanTtl(v int64) {
-	o.ErspanTtl.Set(&v)
-}
-// SetErspanTtlNil sets the value for ErspanTtl to be an explicit nil
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanTtlNil() {
-	o.ErspanTtl.Set(nil)
-}
-
-// UnsetErspanTtl ensures that no value is present for ErspanTtl, not even an explicit nil
-func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) UnsetErspanTtl() {
-	o.ErspanTtl.Unset()
 }
 
 // GetErspanGreType returns the ErspanGreType field value if set, zero value otherwise.
@@ -618,6 +311,7 @@ func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasErspanQueue() 
 func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanQueue(v int64) {
 	o.ErspanQueue.Set(&v)
 }
+
 // SetErspanQueueNil sets the value for ErspanQueue to be an explicit nil
 func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanQueueNil() {
 	o.ErspanQueue.Set(nil)
@@ -628,8 +322,318 @@ func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) UnsetErspanQueue(
 	o.ErspanQueue.Unset()
 }
 
+// GetErspanTtl returns the ErspanTtl field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanTtl() int64 {
+	if o == nil || IsNil(o.ErspanTtl.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.ErspanTtl.Get()
+}
+
+// GetErspanTtlOk returns a tuple with the ErspanTtl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetErspanTtlOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ErspanTtl.Get(), o.ErspanTtl.IsSet()
+}
+
+// HasErspanTtl returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasErspanTtl() bool {
+	if o != nil && o.ErspanTtl.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetErspanTtl gets a reference to the given NullableInt64 and assigns it to the ErspanTtl field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanTtl(v int64) {
+	o.ErspanTtl.Set(&v)
+}
+
+// SetErspanTtlNil sets the value for ErspanTtl to be an explicit nil
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetErspanTtlNil() {
+	o.ErspanTtl.Set(nil)
+}
+
+// UnsetErspanTtl ensures that no value is present for ErspanTtl, not even an explicit nil
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) UnsetErspanTtl() {
+	o.ErspanTtl.Unset()
+}
+
+// GetFlowCollector returns the FlowCollector field value if set, zero value otherwise.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetFlowCollector() string {
+	if o == nil || IsNil(o.FlowCollector) {
+		var ret string
+		return ret
+	}
+	return *o.FlowCollector
+}
+
+// GetFlowCollectorOk returns a tuple with the FlowCollector field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetFlowCollectorOk() (*string, bool) {
+	if o == nil || IsNil(o.FlowCollector) {
+		return nil, false
+	}
+	return o.FlowCollector, true
+}
+
+// HasFlowCollector returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasFlowCollector() bool {
+	if o != nil && !IsNil(o.FlowCollector) {
+		return true
+	}
+
+	return false
+}
+
+// SetFlowCollector gets a reference to the given string and assigns it to the FlowCollector field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetFlowCollector(v string) {
+	o.FlowCollector = &v
+}
+
+// GetFlowCollectorRefType returns the FlowCollectorRefType field value if set, zero value otherwise.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetFlowCollectorRefType() string {
+	if o == nil || IsNil(o.FlowCollectorRefType) {
+		var ret string
+		return ret
+	}
+	return *o.FlowCollectorRefType
+}
+
+// GetFlowCollectorRefTypeOk returns a tuple with the FlowCollectorRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetFlowCollectorRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.FlowCollectorRefType) {
+		return nil, false
+	}
+	return o.FlowCollectorRefType, true
+}
+
+// HasFlowCollectorRefType returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasFlowCollectorRefType() bool {
+	if o != nil && !IsNil(o.FlowCollectorRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetFlowCollectorRefType gets a reference to the given string and assigns it to the FlowCollectorRefType field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetFlowCollectorRefType(v string) {
+	o.FlowCollectorRefType = &v
+}
+
+// GetMonitoringAcl returns the MonitoringAcl field value if set, zero value otherwise.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAcl() string {
+	if o == nil || IsNil(o.MonitoringAcl) {
+		var ret string
+		return ret
+	}
+	return *o.MonitoringAcl
+}
+
+// GetMonitoringAclOk returns a tuple with the MonitoringAcl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAclOk() (*string, bool) {
+	if o == nil || IsNil(o.MonitoringAcl) {
+		return nil, false
+	}
+	return o.MonitoringAcl, true
+}
+
+// HasMonitoringAcl returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasMonitoringAcl() bool {
+	if o != nil && !IsNil(o.MonitoringAcl) {
+		return true
+	}
+
+	return false
+}
+
+// SetMonitoringAcl gets a reference to the given string and assigns it to the MonitoringAcl field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetMonitoringAcl(v string) {
+	o.MonitoringAcl = &v
+}
+
+// GetMonitoringAclRefType returns the MonitoringAclRefType field value if set, zero value otherwise.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAclRefType() string {
+	if o == nil || IsNil(o.MonitoringAclRefType) {
+		var ret string
+		return ret
+	}
+	return *o.MonitoringAclRefType
+}
+
+// GetMonitoringAclRefTypeOk returns a tuple with the MonitoringAclRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetMonitoringAclRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.MonitoringAclRefType) {
+		return nil, false
+	}
+	return o.MonitoringAclRefType, true
+}
+
+// HasMonitoringAclRefType returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasMonitoringAclRefType() bool {
+	if o != nil && !IsNil(o.MonitoringAclRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetMonitoringAclRefType gets a reference to the given string and assigns it to the MonitoringAclRefType field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetMonitoringAclRefType(v string) {
+	o.MonitoringAclRefType = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetName(v string) {
+	o.Name = &v
+}
+
+// GetPollInterval returns the PollInterval field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollInterval() int64 {
+	if o == nil || IsNil(o.PollInterval.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.PollInterval.Get()
+}
+
+// GetPollIntervalOk returns a tuple with the PollInterval field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetPollIntervalOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PollInterval.Get(), o.PollInterval.IsSet()
+}
+
+// HasPollInterval returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasPollInterval() bool {
+	if o != nil && o.PollInterval.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPollInterval gets a reference to the given NullableInt64 and assigns it to the PollInterval field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetPollInterval(v int64) {
+	o.PollInterval.Set(&v)
+}
+
+// SetPollIntervalNil sets the value for PollInterval to be an explicit nil
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetPollIntervalNil() {
+	o.PollInterval.Set(nil)
+}
+
+// UnsetPollInterval ensures that no value is present for PollInterval, not even an explicit nil
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) UnsetPollInterval() {
+	o.PollInterval.Unset()
+}
+
+// GetUseInternalCollector returns the UseInternalCollector field value if set, zero value otherwise.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetUseInternalCollector() bool {
+	if o == nil || IsNil(o.UseInternalCollector) {
+		var ret bool
+		return ret
+	}
+	return *o.UseInternalCollector
+}
+
+// GetUseInternalCollectorOk returns a tuple with the UseInternalCollector field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetUseInternalCollectorOk() (*bool, bool) {
+	if o == nil || IsNil(o.UseInternalCollector) {
+		return nil, false
+	}
+	return o.UseInternalCollector, true
+}
+
+// HasUseInternalCollector returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasUseInternalCollector() bool {
+	if o != nil && !IsNil(o.UseInternalCollector) {
+		return true
+	}
+
+	return false
+}
+
+// SetUseInternalCollector gets a reference to the given bool and assigns it to the UseInternalCollector field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetUseInternalCollector(v bool) {
+	o.UseInternalCollector = &v
+}
+
+// GetVrfType returns the VrfType field value if set, zero value otherwise.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetVrfType() string {
+	if o == nil || IsNil(o.VrfType) {
+		var ret string
+		return ret
+	}
+	return *o.VrfType
+}
+
+// GetVrfTypeOk returns a tuple with the VrfType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) GetVrfTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.VrfType) {
+		return nil, false
+	}
+	return o.VrfType, true
+}
+
+// HasVrfType returns a boolean if a field has been set.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) HasVrfType() bool {
+	if o != nil && !IsNil(o.VrfType) {
+		return true
+	}
+
+	return false
+}
+
+// SetVrfType gets a reference to the given string and assigns it to the VrfType field.
+func (o *DiagnosticsprofilesPutRequestDiagnosticsProfileValue) SetVrfType(v string) {
+	o.VrfType = &v
+}
+
 func (o DiagnosticsprofilesPutRequestDiagnosticsProfileValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -638,35 +642,11 @@ func (o DiagnosticsprofilesPutRequestDiagnosticsProfileValue) MarshalJSON() ([]b
 
 func (o DiagnosticsprofilesPutRequestDiagnosticsProfileValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
 	if !IsNil(o.EnableSflow) {
 		toSerialize["enable_sflow"] = o.EnableSflow
-	}
-	if !IsNil(o.UseInternalCollector) {
-		toSerialize["use_internal_collector"] = o.UseInternalCollector
-	}
-	if !IsNil(o.FlowCollector) {
-		toSerialize["flow_collector"] = o.FlowCollector
-	}
-	if !IsNil(o.FlowCollectorRefType) {
-		toSerialize["flow_collector_ref_type_"] = o.FlowCollectorRefType
-	}
-	if o.PollInterval.IsSet() {
-		toSerialize["poll_interval"] = o.PollInterval.Get()
-	}
-	if !IsNil(o.VrfType) {
-		toSerialize["vrf_type"] = o.VrfType
-	}
-	if !IsNil(o.MonitoringAcl) {
-		toSerialize["monitoring_acl"] = o.MonitoringAcl
-	}
-	if !IsNil(o.MonitoringAclRefType) {
-		toSerialize["monitoring_acl_ref_type_"] = o.MonitoringAclRefType
 	}
 	if !IsNil(o.ErspanDestinationIp) {
 		toSerialize["erspan_destination_ip"] = o.ErspanDestinationIp
@@ -674,14 +654,38 @@ func (o DiagnosticsprofilesPutRequestDiagnosticsProfileValue) ToMap() (map[strin
 	if o.ErspanDscp.IsSet() {
 		toSerialize["erspan_dscp"] = o.ErspanDscp.Get()
 	}
-	if o.ErspanTtl.IsSet() {
-		toSerialize["erspan_ttl"] = o.ErspanTtl.Get()
-	}
 	if !IsNil(o.ErspanGreType) {
 		toSerialize["erspan_gre_type"] = o.ErspanGreType
 	}
 	if o.ErspanQueue.IsSet() {
 		toSerialize["erspan_queue"] = o.ErspanQueue.Get()
+	}
+	if o.ErspanTtl.IsSet() {
+		toSerialize["erspan_ttl"] = o.ErspanTtl.Get()
+	}
+	if !IsNil(o.FlowCollector) {
+		toSerialize["flow_collector"] = o.FlowCollector
+	}
+	if !IsNil(o.FlowCollectorRefType) {
+		toSerialize["flow_collector_ref_type_"] = o.FlowCollectorRefType
+	}
+	if !IsNil(o.MonitoringAcl) {
+		toSerialize["monitoring_acl"] = o.MonitoringAcl
+	}
+	if !IsNil(o.MonitoringAclRefType) {
+		toSerialize["monitoring_acl_ref_type_"] = o.MonitoringAclRefType
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
+	if o.PollInterval.IsSet() {
+		toSerialize["poll_interval"] = o.PollInterval.Get()
+	}
+	if !IsNil(o.UseInternalCollector) {
+		toSerialize["use_internal_collector"] = o.UseInternalCollector
+	}
+	if !IsNil(o.VrfType) {
+		toSerialize["vrf_type"] = o.VrfType
 	}
 	return toSerialize, nil
 }
@@ -721,5 +725,3 @@ func (v *NullableDiagnosticsprofilesPutRequestDiagnosticsProfileValue) Unmarshal
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

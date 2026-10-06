@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,12 +19,12 @@ var _ MappedNullable = &FabricsPutRequestFabricValueRouteAggregatorsInner{}
 
 // FabricsPutRequestFabricValueRouteAggregatorsInner struct for FabricsPutRequestFabricValueRouteAggregatorsInner
 type FabricsPutRequestFabricValueRouteAggregatorsInner struct {
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
 	// Enable
 	RouteAggregationNumEnable *bool `json:"route_aggregation_num_enable,omitempty"`
 	// IP address and mask for route aggregation
 	RouteAggregationNumIpAndMask *string `json:"route_aggregation_num_ip_and_mask,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
 }
 
 // NewFabricsPutRequestFabricValueRouteAggregatorsInner instantiates a new FabricsPutRequestFabricValueRouteAggregatorsInner object
@@ -50,6 +50,38 @@ func NewFabricsPutRequestFabricValueRouteAggregatorsInnerWithDefaults() *Fabrics
 	var routeAggregationNumIpAndMask string = ""
 	this.RouteAggregationNumIpAndMask = &routeAggregationNumIpAndMask
 	return &this
+}
+
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValueRouteAggregatorsInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValueRouteAggregatorsInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValueRouteAggregatorsInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *FabricsPutRequestFabricValueRouteAggregatorsInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetRouteAggregationNumEnable returns the RouteAggregationNumEnable field value if set, zero value otherwise.
@@ -116,40 +148,8 @@ func (o *FabricsPutRequestFabricValueRouteAggregatorsInner) SetRouteAggregationN
 	o.RouteAggregationNumIpAndMask = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValueRouteAggregatorsInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValueRouteAggregatorsInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValueRouteAggregatorsInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *FabricsPutRequestFabricValueRouteAggregatorsInner) SetIndex(v int64) {
-	o.Index = &v
-}
-
 func (o FabricsPutRequestFabricValueRouteAggregatorsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -158,14 +158,14 @@ func (o FabricsPutRequestFabricValueRouteAggregatorsInner) MarshalJSON() ([]byte
 
 func (o FabricsPutRequestFabricValueRouteAggregatorsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
+	}
 	if !IsNil(o.RouteAggregationNumEnable) {
 		toSerialize["route_aggregation_num_enable"] = o.RouteAggregationNumEnable
 	}
 	if !IsNil(o.RouteAggregationNumIpAndMask) {
 		toSerialize["route_aggregation_num_ip_and_mask"] = o.RouteAggregationNumIpAndMask
-	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }
@@ -205,5 +205,3 @@ func (v *NullableFabricsPutRequestFabricValueRouteAggregatorsInner) UnmarshalJSO
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

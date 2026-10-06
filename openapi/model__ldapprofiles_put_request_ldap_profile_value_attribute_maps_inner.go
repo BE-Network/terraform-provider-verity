@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,14 +21,14 @@ var _ MappedNullable = &LdapprofilesPutRequestLdapProfileValueAttributeMapsInner
 type LdapprofilesPutRequestLdapProfileValueAttributeMapsInner struct {
 	// Enable this mapping entry
 	Enabled *bool `json:"enabled,omitempty"`
-	// Category of mapping override
-	MapName *string `json:"map_name,omitempty"`
 	// Original RFC2307 attribute or class name to map from
 	From *string `json:"from,omitempty"`
-	// Replacement attribute/class name or value to map to
-	To *string `json:"to,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
+	// Category of mapping override
+	MapName *string `json:"map_name,omitempty"`
+	// Replacement attribute/class name or value to map to
+	To *string `json:"to,omitempty"`
 }
 
 // NewLdapprofilesPutRequestLdapProfileValueAttributeMapsInner instantiates a new LdapprofilesPutRequestLdapProfileValueAttributeMapsInner object
@@ -39,10 +39,10 @@ func NewLdapprofilesPutRequestLdapProfileValueAttributeMapsInner() *Ldapprofiles
 	this := LdapprofilesPutRequestLdapProfileValueAttributeMapsInner{}
 	var enabled bool = false
 	this.Enabled = &enabled
-	var mapName string = "attribute"
-	this.MapName = &mapName
 	var from string = ""
 	this.From = &from
+	var mapName string = "attribute"
+	this.MapName = &mapName
 	var to string = ""
 	this.To = &to
 	return &this
@@ -55,10 +55,10 @@ func NewLdapprofilesPutRequestLdapProfileValueAttributeMapsInnerWithDefaults() *
 	this := LdapprofilesPutRequestLdapProfileValueAttributeMapsInner{}
 	var enabled bool = false
 	this.Enabled = &enabled
-	var mapName string = "attribute"
-	this.MapName = &mapName
 	var from string = ""
 	this.From = &from
+	var mapName string = "attribute"
+	this.MapName = &mapName
 	var to string = ""
 	this.To = &to
 	return &this
@@ -96,38 +96,6 @@ func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) SetEnabled(v 
 	o.Enabled = &v
 }
 
-// GetMapName returns the MapName field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) GetMapName() string {
-	if o == nil || IsNil(o.MapName) {
-		var ret string
-		return ret
-	}
-	return *o.MapName
-}
-
-// GetMapNameOk returns a tuple with the MapName field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) GetMapNameOk() (*string, bool) {
-	if o == nil || IsNil(o.MapName) {
-		return nil, false
-	}
-	return o.MapName, true
-}
-
-// HasMapName returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) HasMapName() bool {
-	if o != nil && !IsNil(o.MapName) {
-		return true
-	}
-
-	return false
-}
-
-// SetMapName gets a reference to the given string and assigns it to the MapName field.
-func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) SetMapName(v string) {
-	o.MapName = &v
-}
-
 // GetFrom returns the From field value if set, zero value otherwise.
 func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) GetFrom() string {
 	if o == nil || IsNil(o.From) {
@@ -158,38 +126,6 @@ func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) HasFrom() boo
 // SetFrom gets a reference to the given string and assigns it to the From field.
 func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) SetFrom(v string) {
 	o.From = &v
-}
-
-// GetTo returns the To field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) GetTo() string {
-	if o == nil || IsNil(o.To) {
-		var ret string
-		return ret
-	}
-	return *o.To
-}
-
-// GetToOk returns a tuple with the To field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) GetToOk() (*string, bool) {
-	if o == nil || IsNil(o.To) {
-		return nil, false
-	}
-	return o.To, true
-}
-
-// HasTo returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) HasTo() bool {
-	if o != nil && !IsNil(o.To) {
-		return true
-	}
-
-	return false
-}
-
-// SetTo gets a reference to the given string and assigns it to the To field.
-func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) SetTo(v string) {
-	o.To = &v
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
@@ -224,8 +160,72 @@ func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) SetIndex(v in
 	o.Index = &v
 }
 
+// GetMapName returns the MapName field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) GetMapName() string {
+	if o == nil || IsNil(o.MapName) {
+		var ret string
+		return ret
+	}
+	return *o.MapName
+}
+
+// GetMapNameOk returns a tuple with the MapName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) GetMapNameOk() (*string, bool) {
+	if o == nil || IsNil(o.MapName) {
+		return nil, false
+	}
+	return o.MapName, true
+}
+
+// HasMapName returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) HasMapName() bool {
+	if o != nil && !IsNil(o.MapName) {
+		return true
+	}
+
+	return false
+}
+
+// SetMapName gets a reference to the given string and assigns it to the MapName field.
+func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) SetMapName(v string) {
+	o.MapName = &v
+}
+
+// GetTo returns the To field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) GetTo() string {
+	if o == nil || IsNil(o.To) {
+		var ret string
+		return ret
+	}
+	return *o.To
+}
+
+// GetToOk returns a tuple with the To field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) GetToOk() (*string, bool) {
+	if o == nil || IsNil(o.To) {
+		return nil, false
+	}
+	return o.To, true
+}
+
+// HasTo returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) HasTo() bool {
+	if o != nil && !IsNil(o.To) {
+		return true
+	}
+
+	return false
+}
+
+// SetTo gets a reference to the given string and assigns it to the To field.
+func (o *LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) SetTo(v string) {
+	o.To = &v
+}
+
 func (o LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -237,17 +237,17 @@ func (o LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) ToMap() (map[s
 	if !IsNil(o.Enabled) {
 		toSerialize["enabled"] = o.Enabled
 	}
-	if !IsNil(o.MapName) {
-		toSerialize["map_name"] = o.MapName
-	}
 	if !IsNil(o.From) {
 		toSerialize["from"] = o.From
 	}
-	if !IsNil(o.To) {
-		toSerialize["to"] = o.To
-	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
+	}
+	if !IsNil(o.MapName) {
+		toSerialize["map_name"] = o.MapName
+	}
+	if !IsNil(o.To) {
+		toSerialize["to"] = o.To
 	}
 	return toSerialize, nil
 }
@@ -287,5 +287,3 @@ func (v *NullableLdapprofilesPutRequestLdapProfileValueAttributeMapsInner) Unmar
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

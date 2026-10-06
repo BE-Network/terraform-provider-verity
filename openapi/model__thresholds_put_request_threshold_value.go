@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,33 +19,33 @@ var _ MappedNullable = &ThresholdsPutRequestThresholdValue{}
 
 // ThresholdsPutRequestThresholdValue struct for ThresholdsPutRequestThresholdValue
 type ThresholdsPutRequestThresholdValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
+	// Value to compare the metric to
+	CriticalEscalationValue *string `json:"critical_escalation_value,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
-	// Type of elements threshold applies to
-	Type *string `json:"type,omitempty"`
-	// How to combine rules
-	Operation *string `json:"operation,omitempty"`
-	// Severity of the alarm when the threshold is met
-	Severity *string `json:"severity,omitempty"`
-	// Duration in minutes the threshold must be met before firing the alarm
-	For *string `json:"for,omitempty"`
-	// Duration in minutes to keep firing the alarm after the threshold is no longer met
-	KeepFiringFor *string `json:"keep_firing_for,omitempty"`
+	// Value to compare the metric to
+	ErrorEscalationValue *string `json:"error_escalation_value,omitempty"`
 	// Metric threshold is on
 	EscalationMetric *string `json:"escalation_metric,omitempty"`
 	// How to compare the metric to the value
 	EscalationOperation *string `json:"escalation_operation,omitempty"`
-	// Value to compare the metric to
-	CriticalEscalationValue *string `json:"critical_escalation_value,omitempty"`
-	// Value to compare the metric to
-	ErrorEscalationValue *string `json:"error_escalation_value,omitempty"`
-	// Value to compare the metric to
-	WarningEscalationValue *string `json:"warning_escalation_value,omitempty"`
+	// Duration in minutes the threshold must be met before firing the alarm
+	For *string `json:"for,omitempty"`
+	// Duration in minutes to keep firing the alarm after the threshold is no longer met
+	KeepFiringFor *string `json:"keep_firing_for,omitempty"`
+	// Template Name. Must be unique within type.
+	Name *string `json:"name,omitempty"`
 	// Value to compare the metric to
 	NoticeEscalationValue *string `json:"notice_escalation_value,omitempty"`
-	Rules []ThresholdsPutRequestThresholdValueRulesInner `json:"rules,omitempty"`
+	// How to combine rules
+	Operation *string                                        `json:"operation,omitempty"`
+	Rules     []ThresholdsPutRequestThresholdValueRulesInner `json:"rules,omitempty"`
+	// Severity of the alarm when the threshold is met
+	Severity *string `json:"severity,omitempty"`
+	// Type of elements threshold applies to
+	Type *string `json:"type,omitempty"`
+	// Value to compare the metric to
+	WarningEscalationValue *string `json:"warning_escalation_value,omitempty"`
 }
 
 // NewThresholdsPutRequestThresholdValue instantiates a new ThresholdsPutRequestThresholdValue object
@@ -54,32 +54,32 @@ type ThresholdsPutRequestThresholdValue struct {
 // will change when the set of required properties is changed
 func NewThresholdsPutRequestThresholdValue() *ThresholdsPutRequestThresholdValue {
 	this := ThresholdsPutRequestThresholdValue{}
-	var name string = ""
-	this.Name = &name
+	var criticalEscalationValue string = ""
+	this.CriticalEscalationValue = &criticalEscalationValue
 	var enable bool = false
 	this.Enable = &enable
-	var type_ string = "device"
-	this.Type = &type_
-	var operation string = "and"
-	this.Operation = &operation
-	var severity string = "notice"
-	this.Severity = &severity
-	var for_ string = "5"
-	this.For = &for_
-	var keepFiringFor string = "5"
-	this.KeepFiringFor = &keepFiringFor
+	var errorEscalationValue string = ""
+	this.ErrorEscalationValue = &errorEscalationValue
 	var escalationMetric string = ""
 	this.EscalationMetric = &escalationMetric
 	var escalationOperation string = "eq"
 	this.EscalationOperation = &escalationOperation
-	var criticalEscalationValue string = ""
-	this.CriticalEscalationValue = &criticalEscalationValue
-	var errorEscalationValue string = ""
-	this.ErrorEscalationValue = &errorEscalationValue
-	var warningEscalationValue string = ""
-	this.WarningEscalationValue = &warningEscalationValue
+	var for_ string = "5"
+	this.For = &for_
+	var keepFiringFor string = "5"
+	this.KeepFiringFor = &keepFiringFor
+	var name string = ""
+	this.Name = &name
 	var noticeEscalationValue string = ""
 	this.NoticeEscalationValue = &noticeEscalationValue
+	var operation string = "and"
+	this.Operation = &operation
+	var severity string = "notice"
+	this.Severity = &severity
+	var type_ string = "device"
+	this.Type = &type_
+	var warningEscalationValue string = ""
+	this.WarningEscalationValue = &warningEscalationValue
 	return &this
 }
 
@@ -88,65 +88,65 @@ func NewThresholdsPutRequestThresholdValue() *ThresholdsPutRequestThresholdValue
 // but it doesn't guarantee that properties required by API are set
 func NewThresholdsPutRequestThresholdValueWithDefaults() *ThresholdsPutRequestThresholdValue {
 	this := ThresholdsPutRequestThresholdValue{}
-	var name string = ""
-	this.Name = &name
+	var criticalEscalationValue string = ""
+	this.CriticalEscalationValue = &criticalEscalationValue
 	var enable bool = false
 	this.Enable = &enable
-	var type_ string = "device"
-	this.Type = &type_
-	var operation string = "and"
-	this.Operation = &operation
-	var severity string = "notice"
-	this.Severity = &severity
-	var for_ string = "5"
-	this.For = &for_
-	var keepFiringFor string = "5"
-	this.KeepFiringFor = &keepFiringFor
+	var errorEscalationValue string = ""
+	this.ErrorEscalationValue = &errorEscalationValue
 	var escalationMetric string = ""
 	this.EscalationMetric = &escalationMetric
 	var escalationOperation string = "eq"
 	this.EscalationOperation = &escalationOperation
-	var criticalEscalationValue string = ""
-	this.CriticalEscalationValue = &criticalEscalationValue
-	var errorEscalationValue string = ""
-	this.ErrorEscalationValue = &errorEscalationValue
-	var warningEscalationValue string = ""
-	this.WarningEscalationValue = &warningEscalationValue
+	var for_ string = "5"
+	this.For = &for_
+	var keepFiringFor string = "5"
+	this.KeepFiringFor = &keepFiringFor
+	var name string = ""
+	this.Name = &name
 	var noticeEscalationValue string = ""
 	this.NoticeEscalationValue = &noticeEscalationValue
+	var operation string = "and"
+	this.Operation = &operation
+	var severity string = "notice"
+	this.Severity = &severity
+	var type_ string = "device"
+	this.Type = &type_
+	var warningEscalationValue string = ""
+	this.WarningEscalationValue = &warningEscalationValue
 	return &this
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *ThresholdsPutRequestThresholdValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
+// GetCriticalEscalationValue returns the CriticalEscalationValue field value if set, zero value otherwise.
+func (o *ThresholdsPutRequestThresholdValue) GetCriticalEscalationValue() string {
+	if o == nil || IsNil(o.CriticalEscalationValue) {
 		var ret string
 		return ret
 	}
-	return *o.Name
+	return *o.CriticalEscalationValue
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetCriticalEscalationValueOk returns a tuple with the CriticalEscalationValue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ThresholdsPutRequestThresholdValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
+func (o *ThresholdsPutRequestThresholdValue) GetCriticalEscalationValueOk() (*string, bool) {
+	if o == nil || IsNil(o.CriticalEscalationValue) {
 		return nil, false
 	}
-	return o.Name, true
+	return o.CriticalEscalationValue, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *ThresholdsPutRequestThresholdValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
+// HasCriticalEscalationValue returns a boolean if a field has been set.
+func (o *ThresholdsPutRequestThresholdValue) HasCriticalEscalationValue() bool {
+	if o != nil && !IsNil(o.CriticalEscalationValue) {
 		return true
 	}
 
 	return false
 }
 
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *ThresholdsPutRequestThresholdValue) SetName(v string) {
-	o.Name = &v
+// SetCriticalEscalationValue gets a reference to the given string and assigns it to the CriticalEscalationValue field.
+func (o *ThresholdsPutRequestThresholdValue) SetCriticalEscalationValue(v string) {
+	o.CriticalEscalationValue = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -181,164 +181,36 @@ func (o *ThresholdsPutRequestThresholdValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
-func (o *ThresholdsPutRequestThresholdValue) GetType() string {
-	if o == nil || IsNil(o.Type) {
+// GetErrorEscalationValue returns the ErrorEscalationValue field value if set, zero value otherwise.
+func (o *ThresholdsPutRequestThresholdValue) GetErrorEscalationValue() string {
+	if o == nil || IsNil(o.ErrorEscalationValue) {
 		var ret string
 		return ret
 	}
-	return *o.Type
+	return *o.ErrorEscalationValue
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetErrorEscalationValueOk returns a tuple with the ErrorEscalationValue field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ThresholdsPutRequestThresholdValue) GetTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.Type) {
+func (o *ThresholdsPutRequestThresholdValue) GetErrorEscalationValueOk() (*string, bool) {
+	if o == nil || IsNil(o.ErrorEscalationValue) {
 		return nil, false
 	}
-	return o.Type, true
+	return o.ErrorEscalationValue, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *ThresholdsPutRequestThresholdValue) HasType() bool {
-	if o != nil && !IsNil(o.Type) {
+// HasErrorEscalationValue returns a boolean if a field has been set.
+func (o *ThresholdsPutRequestThresholdValue) HasErrorEscalationValue() bool {
+	if o != nil && !IsNil(o.ErrorEscalationValue) {
 		return true
 	}
 
 	return false
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *ThresholdsPutRequestThresholdValue) SetType(v string) {
-	o.Type = &v
-}
-
-// GetOperation returns the Operation field value if set, zero value otherwise.
-func (o *ThresholdsPutRequestThresholdValue) GetOperation() string {
-	if o == nil || IsNil(o.Operation) {
-		var ret string
-		return ret
-	}
-	return *o.Operation
-}
-
-// GetOperationOk returns a tuple with the Operation field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ThresholdsPutRequestThresholdValue) GetOperationOk() (*string, bool) {
-	if o == nil || IsNil(o.Operation) {
-		return nil, false
-	}
-	return o.Operation, true
-}
-
-// HasOperation returns a boolean if a field has been set.
-func (o *ThresholdsPutRequestThresholdValue) HasOperation() bool {
-	if o != nil && !IsNil(o.Operation) {
-		return true
-	}
-
-	return false
-}
-
-// SetOperation gets a reference to the given string and assigns it to the Operation field.
-func (o *ThresholdsPutRequestThresholdValue) SetOperation(v string) {
-	o.Operation = &v
-}
-
-// GetSeverity returns the Severity field value if set, zero value otherwise.
-func (o *ThresholdsPutRequestThresholdValue) GetSeverity() string {
-	if o == nil || IsNil(o.Severity) {
-		var ret string
-		return ret
-	}
-	return *o.Severity
-}
-
-// GetSeverityOk returns a tuple with the Severity field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ThresholdsPutRequestThresholdValue) GetSeverityOk() (*string, bool) {
-	if o == nil || IsNil(o.Severity) {
-		return nil, false
-	}
-	return o.Severity, true
-}
-
-// HasSeverity returns a boolean if a field has been set.
-func (o *ThresholdsPutRequestThresholdValue) HasSeverity() bool {
-	if o != nil && !IsNil(o.Severity) {
-		return true
-	}
-
-	return false
-}
-
-// SetSeverity gets a reference to the given string and assigns it to the Severity field.
-func (o *ThresholdsPutRequestThresholdValue) SetSeverity(v string) {
-	o.Severity = &v
-}
-
-// GetFor returns the For field value if set, zero value otherwise.
-func (o *ThresholdsPutRequestThresholdValue) GetFor() string {
-	if o == nil || IsNil(o.For) {
-		var ret string
-		return ret
-	}
-	return *o.For
-}
-
-// GetForOk returns a tuple with the For field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ThresholdsPutRequestThresholdValue) GetForOk() (*string, bool) {
-	if o == nil || IsNil(o.For) {
-		return nil, false
-	}
-	return o.For, true
-}
-
-// HasFor returns a boolean if a field has been set.
-func (o *ThresholdsPutRequestThresholdValue) HasFor() bool {
-	if o != nil && !IsNil(o.For) {
-		return true
-	}
-
-	return false
-}
-
-// SetFor gets a reference to the given string and assigns it to the For field.
-func (o *ThresholdsPutRequestThresholdValue) SetFor(v string) {
-	o.For = &v
-}
-
-// GetKeepFiringFor returns the KeepFiringFor field value if set, zero value otherwise.
-func (o *ThresholdsPutRequestThresholdValue) GetKeepFiringFor() string {
-	if o == nil || IsNil(o.KeepFiringFor) {
-		var ret string
-		return ret
-	}
-	return *o.KeepFiringFor
-}
-
-// GetKeepFiringForOk returns a tuple with the KeepFiringFor field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ThresholdsPutRequestThresholdValue) GetKeepFiringForOk() (*string, bool) {
-	if o == nil || IsNil(o.KeepFiringFor) {
-		return nil, false
-	}
-	return o.KeepFiringFor, true
-}
-
-// HasKeepFiringFor returns a boolean if a field has been set.
-func (o *ThresholdsPutRequestThresholdValue) HasKeepFiringFor() bool {
-	if o != nil && !IsNil(o.KeepFiringFor) {
-		return true
-	}
-
-	return false
-}
-
-// SetKeepFiringFor gets a reference to the given string and assigns it to the KeepFiringFor field.
-func (o *ThresholdsPutRequestThresholdValue) SetKeepFiringFor(v string) {
-	o.KeepFiringFor = &v
+// SetErrorEscalationValue gets a reference to the given string and assigns it to the ErrorEscalationValue field.
+func (o *ThresholdsPutRequestThresholdValue) SetErrorEscalationValue(v string) {
+	o.ErrorEscalationValue = &v
 }
 
 // GetEscalationMetric returns the EscalationMetric field value if set, zero value otherwise.
@@ -405,100 +277,100 @@ func (o *ThresholdsPutRequestThresholdValue) SetEscalationOperation(v string) {
 	o.EscalationOperation = &v
 }
 
-// GetCriticalEscalationValue returns the CriticalEscalationValue field value if set, zero value otherwise.
-func (o *ThresholdsPutRequestThresholdValue) GetCriticalEscalationValue() string {
-	if o == nil || IsNil(o.CriticalEscalationValue) {
+// GetFor returns the For field value if set, zero value otherwise.
+func (o *ThresholdsPutRequestThresholdValue) GetFor() string {
+	if o == nil || IsNil(o.For) {
 		var ret string
 		return ret
 	}
-	return *o.CriticalEscalationValue
+	return *o.For
 }
 
-// GetCriticalEscalationValueOk returns a tuple with the CriticalEscalationValue field value if set, nil otherwise
+// GetForOk returns a tuple with the For field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ThresholdsPutRequestThresholdValue) GetCriticalEscalationValueOk() (*string, bool) {
-	if o == nil || IsNil(o.CriticalEscalationValue) {
+func (o *ThresholdsPutRequestThresholdValue) GetForOk() (*string, bool) {
+	if o == nil || IsNil(o.For) {
 		return nil, false
 	}
-	return o.CriticalEscalationValue, true
+	return o.For, true
 }
 
-// HasCriticalEscalationValue returns a boolean if a field has been set.
-func (o *ThresholdsPutRequestThresholdValue) HasCriticalEscalationValue() bool {
-	if o != nil && !IsNil(o.CriticalEscalationValue) {
+// HasFor returns a boolean if a field has been set.
+func (o *ThresholdsPutRequestThresholdValue) HasFor() bool {
+	if o != nil && !IsNil(o.For) {
 		return true
 	}
 
 	return false
 }
 
-// SetCriticalEscalationValue gets a reference to the given string and assigns it to the CriticalEscalationValue field.
-func (o *ThresholdsPutRequestThresholdValue) SetCriticalEscalationValue(v string) {
-	o.CriticalEscalationValue = &v
+// SetFor gets a reference to the given string and assigns it to the For field.
+func (o *ThresholdsPutRequestThresholdValue) SetFor(v string) {
+	o.For = &v
 }
 
-// GetErrorEscalationValue returns the ErrorEscalationValue field value if set, zero value otherwise.
-func (o *ThresholdsPutRequestThresholdValue) GetErrorEscalationValue() string {
-	if o == nil || IsNil(o.ErrorEscalationValue) {
+// GetKeepFiringFor returns the KeepFiringFor field value if set, zero value otherwise.
+func (o *ThresholdsPutRequestThresholdValue) GetKeepFiringFor() string {
+	if o == nil || IsNil(o.KeepFiringFor) {
 		var ret string
 		return ret
 	}
-	return *o.ErrorEscalationValue
+	return *o.KeepFiringFor
 }
 
-// GetErrorEscalationValueOk returns a tuple with the ErrorEscalationValue field value if set, nil otherwise
+// GetKeepFiringForOk returns a tuple with the KeepFiringFor field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ThresholdsPutRequestThresholdValue) GetErrorEscalationValueOk() (*string, bool) {
-	if o == nil || IsNil(o.ErrorEscalationValue) {
+func (o *ThresholdsPutRequestThresholdValue) GetKeepFiringForOk() (*string, bool) {
+	if o == nil || IsNil(o.KeepFiringFor) {
 		return nil, false
 	}
-	return o.ErrorEscalationValue, true
+	return o.KeepFiringFor, true
 }
 
-// HasErrorEscalationValue returns a boolean if a field has been set.
-func (o *ThresholdsPutRequestThresholdValue) HasErrorEscalationValue() bool {
-	if o != nil && !IsNil(o.ErrorEscalationValue) {
+// HasKeepFiringFor returns a boolean if a field has been set.
+func (o *ThresholdsPutRequestThresholdValue) HasKeepFiringFor() bool {
+	if o != nil && !IsNil(o.KeepFiringFor) {
 		return true
 	}
 
 	return false
 }
 
-// SetErrorEscalationValue gets a reference to the given string and assigns it to the ErrorEscalationValue field.
-func (o *ThresholdsPutRequestThresholdValue) SetErrorEscalationValue(v string) {
-	o.ErrorEscalationValue = &v
+// SetKeepFiringFor gets a reference to the given string and assigns it to the KeepFiringFor field.
+func (o *ThresholdsPutRequestThresholdValue) SetKeepFiringFor(v string) {
+	o.KeepFiringFor = &v
 }
 
-// GetWarningEscalationValue returns the WarningEscalationValue field value if set, zero value otherwise.
-func (o *ThresholdsPutRequestThresholdValue) GetWarningEscalationValue() string {
-	if o == nil || IsNil(o.WarningEscalationValue) {
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *ThresholdsPutRequestThresholdValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
-	return *o.WarningEscalationValue
+	return *o.Name
 }
 
-// GetWarningEscalationValueOk returns a tuple with the WarningEscalationValue field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ThresholdsPutRequestThresholdValue) GetWarningEscalationValueOk() (*string, bool) {
-	if o == nil || IsNil(o.WarningEscalationValue) {
+func (o *ThresholdsPutRequestThresholdValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
-	return o.WarningEscalationValue, true
+	return o.Name, true
 }
 
-// HasWarningEscalationValue returns a boolean if a field has been set.
-func (o *ThresholdsPutRequestThresholdValue) HasWarningEscalationValue() bool {
-	if o != nil && !IsNil(o.WarningEscalationValue) {
+// HasName returns a boolean if a field has been set.
+func (o *ThresholdsPutRequestThresholdValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
 	return false
 }
 
-// SetWarningEscalationValue gets a reference to the given string and assigns it to the WarningEscalationValue field.
-func (o *ThresholdsPutRequestThresholdValue) SetWarningEscalationValue(v string) {
-	o.WarningEscalationValue = &v
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *ThresholdsPutRequestThresholdValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetNoticeEscalationValue returns the NoticeEscalationValue field value if set, zero value otherwise.
@@ -533,6 +405,38 @@ func (o *ThresholdsPutRequestThresholdValue) SetNoticeEscalationValue(v string) 
 	o.NoticeEscalationValue = &v
 }
 
+// GetOperation returns the Operation field value if set, zero value otherwise.
+func (o *ThresholdsPutRequestThresholdValue) GetOperation() string {
+	if o == nil || IsNil(o.Operation) {
+		var ret string
+		return ret
+	}
+	return *o.Operation
+}
+
+// GetOperationOk returns a tuple with the Operation field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ThresholdsPutRequestThresholdValue) GetOperationOk() (*string, bool) {
+	if o == nil || IsNil(o.Operation) {
+		return nil, false
+	}
+	return o.Operation, true
+}
+
+// HasOperation returns a boolean if a field has been set.
+func (o *ThresholdsPutRequestThresholdValue) HasOperation() bool {
+	if o != nil && !IsNil(o.Operation) {
+		return true
+	}
+
+	return false
+}
+
+// SetOperation gets a reference to the given string and assigns it to the Operation field.
+func (o *ThresholdsPutRequestThresholdValue) SetOperation(v string) {
+	o.Operation = &v
+}
+
 // GetRules returns the Rules field value if set, zero value otherwise.
 func (o *ThresholdsPutRequestThresholdValue) GetRules() []ThresholdsPutRequestThresholdValueRulesInner {
 	if o == nil || IsNil(o.Rules) {
@@ -565,8 +469,104 @@ func (o *ThresholdsPutRequestThresholdValue) SetRules(v []ThresholdsPutRequestTh
 	o.Rules = v
 }
 
+// GetSeverity returns the Severity field value if set, zero value otherwise.
+func (o *ThresholdsPutRequestThresholdValue) GetSeverity() string {
+	if o == nil || IsNil(o.Severity) {
+		var ret string
+		return ret
+	}
+	return *o.Severity
+}
+
+// GetSeverityOk returns a tuple with the Severity field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ThresholdsPutRequestThresholdValue) GetSeverityOk() (*string, bool) {
+	if o == nil || IsNil(o.Severity) {
+		return nil, false
+	}
+	return o.Severity, true
+}
+
+// HasSeverity returns a boolean if a field has been set.
+func (o *ThresholdsPutRequestThresholdValue) HasSeverity() bool {
+	if o != nil && !IsNil(o.Severity) {
+		return true
+	}
+
+	return false
+}
+
+// SetSeverity gets a reference to the given string and assigns it to the Severity field.
+func (o *ThresholdsPutRequestThresholdValue) SetSeverity(v string) {
+	o.Severity = &v
+}
+
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *ThresholdsPutRequestThresholdValue) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ThresholdsPutRequestThresholdValue) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *ThresholdsPutRequestThresholdValue) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *ThresholdsPutRequestThresholdValue) SetType(v string) {
+	o.Type = &v
+}
+
+// GetWarningEscalationValue returns the WarningEscalationValue field value if set, zero value otherwise.
+func (o *ThresholdsPutRequestThresholdValue) GetWarningEscalationValue() string {
+	if o == nil || IsNil(o.WarningEscalationValue) {
+		var ret string
+		return ret
+	}
+	return *o.WarningEscalationValue
+}
+
+// GetWarningEscalationValueOk returns a tuple with the WarningEscalationValue field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ThresholdsPutRequestThresholdValue) GetWarningEscalationValueOk() (*string, bool) {
+	if o == nil || IsNil(o.WarningEscalationValue) {
+		return nil, false
+	}
+	return o.WarningEscalationValue, true
+}
+
+// HasWarningEscalationValue returns a boolean if a field has been set.
+func (o *ThresholdsPutRequestThresholdValue) HasWarningEscalationValue() bool {
+	if o != nil && !IsNil(o.WarningEscalationValue) {
+		return true
+	}
+
+	return false
+}
+
+// SetWarningEscalationValue gets a reference to the given string and assigns it to the WarningEscalationValue field.
+func (o *ThresholdsPutRequestThresholdValue) SetWarningEscalationValue(v string) {
+	o.WarningEscalationValue = &v
+}
+
 func (o ThresholdsPutRequestThresholdValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -575,26 +575,14 @@ func (o ThresholdsPutRequestThresholdValue) MarshalJSON() ([]byte, error) {
 
 func (o ThresholdsPutRequestThresholdValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
+	if !IsNil(o.CriticalEscalationValue) {
+		toSerialize["critical_escalation_value"] = o.CriticalEscalationValue
 	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.Type) {
-		toSerialize["type"] = o.Type
-	}
-	if !IsNil(o.Operation) {
-		toSerialize["operation"] = o.Operation
-	}
-	if !IsNil(o.Severity) {
-		toSerialize["severity"] = o.Severity
-	}
-	if !IsNil(o.For) {
-		toSerialize["for"] = o.For
-	}
-	if !IsNil(o.KeepFiringFor) {
-		toSerialize["keep_firing_for"] = o.KeepFiringFor
+	if !IsNil(o.ErrorEscalationValue) {
+		toSerialize["error_escalation_value"] = o.ErrorEscalationValue
 	}
 	if !IsNil(o.EscalationMetric) {
 		toSerialize["escalation_metric"] = o.EscalationMetric
@@ -602,20 +590,32 @@ func (o ThresholdsPutRequestThresholdValue) ToMap() (map[string]interface{}, err
 	if !IsNil(o.EscalationOperation) {
 		toSerialize["escalation_operation"] = o.EscalationOperation
 	}
-	if !IsNil(o.CriticalEscalationValue) {
-		toSerialize["critical_escalation_value"] = o.CriticalEscalationValue
+	if !IsNil(o.For) {
+		toSerialize["for"] = o.For
 	}
-	if !IsNil(o.ErrorEscalationValue) {
-		toSerialize["error_escalation_value"] = o.ErrorEscalationValue
+	if !IsNil(o.KeepFiringFor) {
+		toSerialize["keep_firing_for"] = o.KeepFiringFor
 	}
-	if !IsNil(o.WarningEscalationValue) {
-		toSerialize["warning_escalation_value"] = o.WarningEscalationValue
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.NoticeEscalationValue) {
 		toSerialize["notice_escalation_value"] = o.NoticeEscalationValue
 	}
+	if !IsNil(o.Operation) {
+		toSerialize["operation"] = o.Operation
+	}
 	if !IsNil(o.Rules) {
 		toSerialize["rules"] = o.Rules
+	}
+	if !IsNil(o.Severity) {
+		toSerialize["severity"] = o.Severity
+	}
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
+	}
+	if !IsNil(o.WarningEscalationValue) {
+		toSerialize["warning_escalation_value"] = o.WarningEscalationValue
 	}
 	return toSerialize, nil
 }
@@ -655,5 +655,3 @@ func (v *NullableThresholdsPutRequestThresholdValue) UnmarshalJSON(src []byte) e
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

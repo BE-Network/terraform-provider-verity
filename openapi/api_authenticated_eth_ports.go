@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // AuthenticatedEthPortsAPIService AuthenticatedEthPortsAPI service
 type AuthenticatedEthPortsAPIService service
 
 type ApiAuthenticatedethportsDeleteRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatedEthPortsAPIService
+	ctx                      context.Context
+	ApiService               *AuthenticatedEthPortsAPIService
 	authenticatedEthPortName *[]string
-	changesetName *string
+	changesetName            *string
 }
 
 func (r ApiAuthenticatedethportsDeleteRequest) AuthenticatedEthPortName(authenticatedEthPortName []string) ApiAuthenticatedethportsDeleteRequest {
@@ -49,23 +48,22 @@ AuthenticatedethportsDelete Delete Authenticated Eth-Port
 
 Deletes an existing Authenticated Eth-Port from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatedethportsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatedethportsDeleteRequest
 */
 func (a *AuthenticatedEthPortsAPIService) AuthenticatedethportsDelete(ctx context.Context) ApiAuthenticatedethportsDeleteRequest {
 	return ApiAuthenticatedethportsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatedEthPortsAPIService) AuthenticatedethportsDeleteExecute(r ApiAuthenticatedethportsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatedEthPortsAPIService.AuthenticatedethportsDelete")
@@ -142,11 +140,11 @@ func (a *AuthenticatedEthPortsAPIService) AuthenticatedethportsDeleteExecute(r A
 }
 
 type ApiAuthenticatedethportsGetRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatedEthPortsAPIService
+	ctx                      context.Context
+	ApiService               *AuthenticatedEthPortsAPIService
 	authenticatedEthPortName *string
-	includeData *bool
-	changesetName *string
+	includeData              *bool
+	changesetName            *string
 }
 
 func (r ApiAuthenticatedethportsGetRequest) AuthenticatedEthPortName(authenticatedEthPortName string) ApiAuthenticatedethportsGetRequest {
@@ -173,23 +171,22 @@ AuthenticatedethportsGet Get all Authenticated Eth-Ports
 
 Retrieves all Authenticated Eth-Ports from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatedethportsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatedethportsGetRequest
 */
 func (a *AuthenticatedEthPortsAPIService) AuthenticatedethportsGet(ctx context.Context) ApiAuthenticatedethportsGetRequest {
 	return ApiAuthenticatedethportsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatedEthPortsAPIService) AuthenticatedethportsGetExecute(r ApiAuthenticatedethportsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatedEthPortsAPIService.AuthenticatedethportsGet")
@@ -258,9 +255,9 @@ func (a *AuthenticatedEthPortsAPIService) AuthenticatedethportsGetExecute(r ApiA
 }
 
 type ApiAuthenticatedethportsPatchRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatedEthPortsAPIService
-	changesetName *string
+	ctx                             context.Context
+	ApiService                      *AuthenticatedEthPortsAPIService
+	changesetName                   *string
 	authenticatedethportsPutRequest *AuthenticatedethportsPutRequest
 }
 
@@ -283,23 +280,22 @@ AuthenticatedethportsPatch Update Authenticated Eth-Port
 
 Update Authenticated Eth-Port into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatedethportsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatedethportsPatchRequest
 */
 func (a *AuthenticatedEthPortsAPIService) AuthenticatedethportsPatch(ctx context.Context) ApiAuthenticatedethportsPatchRequest {
 	return ApiAuthenticatedethportsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatedEthPortsAPIService) AuthenticatedethportsPatchExecute(r ApiAuthenticatedethportsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatedEthPortsAPIService.AuthenticatedethportsPatch")
@@ -364,9 +360,9 @@ func (a *AuthenticatedEthPortsAPIService) AuthenticatedethportsPatchExecute(r Ap
 }
 
 type ApiAuthenticatedethportsPutRequest struct {
-	ctx context.Context
-	ApiService *AuthenticatedEthPortsAPIService
-	changesetName *string
+	ctx                             context.Context
+	ApiService                      *AuthenticatedEthPortsAPIService
+	changesetName                   *string
 	authenticatedethportsPutRequest *AuthenticatedethportsPutRequest
 }
 
@@ -389,23 +385,22 @@ AuthenticatedethportsPut Create Authenticated Eth-Port
 
 Create Authenticated Eth-Port into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthenticatedethportsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthenticatedethportsPutRequest
 */
 func (a *AuthenticatedEthPortsAPIService) AuthenticatedethportsPut(ctx context.Context) ApiAuthenticatedethportsPutRequest {
 	return ApiAuthenticatedethportsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *AuthenticatedEthPortsAPIService) AuthenticatedethportsPutExecute(r ApiAuthenticatedethportsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthenticatedEthPortsAPIService.AuthenticatedethportsPut")

@@ -3542,18 +3542,18 @@ func (packetBrokerAdapter) ResourceValue(object WireObject) (interface{}, error)
 	return value, nil
 }
 
-func packetBrokerIpv4DenyValue(wire WireValue, target *[]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) error {
+func packetBrokerIpv4DenyValue(wire WireValue, target *[]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner) error {
 	entries, err := wireList(wire)
 	if err != nil {
 		return err
 	}
-	values := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, 0, len(entries))
+	values := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner, 0, len(entries))
 	for position, entry := range entries {
 		members, err := wireObject(entry)
 		if err != nil {
 			return fmt.Errorf("[%d]: %w", position, err)
 		}
-		var value openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner
+		var value openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner
 		for name, member := range members {
 			switch name {
 			case "enable":
@@ -3573,7 +3573,7 @@ func packetBrokerIpv4DenyValue(wire WireValue, target *[]openapi.PacketbrokerPut
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
 			default:
-				return fmt.Errorf("PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner has no field %q", name)
+				return fmt.Errorf("PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner has no field %q", name)
 			}
 		}
 		values = append(values, value)
@@ -3582,18 +3582,18 @@ func packetBrokerIpv4DenyValue(wire WireValue, target *[]openapi.PacketbrokerPut
 	return nil
 }
 
-func packetBrokerIpv4PermitValue(wire WireValue, target *[]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner) error {
+func packetBrokerIpv4PermitValue(wire WireValue, target *[]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner) error {
 	entries, err := wireList(wire)
 	if err != nil {
 		return err
 	}
-	values := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner, 0, len(entries))
+	values := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner, 0, len(entries))
 	for position, entry := range entries {
 		members, err := wireObject(entry)
 		if err != nil {
 			return fmt.Errorf("[%d]: %w", position, err)
 		}
-		var value openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner
+		var value openapi.PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner
 		for name, member := range members {
 			switch name {
 			case "enable":
@@ -3613,7 +3613,7 @@ func packetBrokerIpv4PermitValue(wire WireValue, target *[]openapi.PacketbrokerP
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
 			default:
-				return fmt.Errorf("PacketbrokerPutRequestPbEgressProfileValueIpv4PermitInner has no field %q", name)
+				return fmt.Errorf("PacketbrokerPutRequestPbEgressProfileValueIpv4DenyInner has no field %q", name)
 			}
 		}
 		values = append(values, value)
@@ -3622,18 +3622,18 @@ func packetBrokerIpv4PermitValue(wire WireValue, target *[]openapi.PacketbrokerP
 	return nil
 }
 
-func packetBrokerIpv6DenyValue(wire WireValue, target *[]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) error {
+func packetBrokerIpv6DenyValue(wire WireValue, target *[]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner) error {
 	entries, err := wireList(wire)
 	if err != nil {
 		return err
 	}
-	values := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, 0, len(entries))
+	values := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner, 0, len(entries))
 	for position, entry := range entries {
 		members, err := wireObject(entry)
 		if err != nil {
 			return fmt.Errorf("[%d]: %w", position, err)
 		}
-		var value openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner
+		var value openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner
 		for name, member := range members {
 			switch name {
 			case "enable":
@@ -3653,7 +3653,7 @@ func packetBrokerIpv6DenyValue(wire WireValue, target *[]openapi.PacketbrokerPut
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
 			default:
-				return fmt.Errorf("PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner has no field %q", name)
+				return fmt.Errorf("PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner has no field %q", name)
 			}
 		}
 		values = append(values, value)
@@ -3662,18 +3662,18 @@ func packetBrokerIpv6DenyValue(wire WireValue, target *[]openapi.PacketbrokerPut
 	return nil
 }
 
-func packetBrokerIpv6PermitValue(wire WireValue, target *[]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner) error {
+func packetBrokerIpv6PermitValue(wire WireValue, target *[]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner) error {
 	entries, err := wireList(wire)
 	if err != nil {
 		return err
 	}
-	values := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner, 0, len(entries))
+	values := make([]openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner, 0, len(entries))
 	for position, entry := range entries {
 		members, err := wireObject(entry)
 		if err != nil {
 			return fmt.Errorf("[%d]: %w", position, err)
 		}
-		var value openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner
+		var value openapi.PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner
 		for name, member := range members {
 			switch name {
 			case "enable":
@@ -3693,7 +3693,7 @@ func packetBrokerIpv6PermitValue(wire WireValue, target *[]openapi.PacketbrokerP
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
 			default:
-				return fmt.Errorf("PacketbrokerPutRequestPbEgressProfileValueIpv6PermitInner has no field %q", name)
+				return fmt.Errorf("PacketbrokerPutRequestPbEgressProfileValueIpv6DenyInner has no field %q", name)
 			}
 		}
 		values = append(values, value)
@@ -3962,18 +3962,18 @@ func (pbRoutingAclAdapter) ResourceValue(object WireObject) (interface{}, error)
 	return value, nil
 }
 
-func pbRoutingAclIpv4DenyValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner) error {
+func pbRoutingAclIpv4DenyValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner) error {
 	entries, err := wireList(wire)
 	if err != nil {
 		return err
 	}
-	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, 0, len(entries))
+	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner, 0, len(entries))
 	for position, entry := range entries {
 		members, err := wireObject(entry)
 		if err != nil {
 			return fmt.Errorf("[%d]: %w", position, err)
 		}
-		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner
+		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner
 		for name, member := range members {
 			switch name {
 			case "enable":
@@ -3993,7 +3993,7 @@ func pbRoutingAclIpv4DenyValue(wire WireValue, target *[]openapi.Policybasedrout
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
 			default:
-				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner has no field %q", name)
+				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner has no field %q", name)
 			}
 		}
 		values = append(values, value)
@@ -4002,18 +4002,18 @@ func pbRoutingAclIpv4DenyValue(wire WireValue, target *[]openapi.Policybasedrout
 	return nil
 }
 
-func pbRoutingAclIpv4PermitValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner) error {
+func pbRoutingAclIpv4PermitValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner) error {
 	entries, err := wireList(wire)
 	if err != nil {
 		return err
 	}
-	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, 0, len(entries))
+	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner, 0, len(entries))
 	for position, entry := range entries {
 		members, err := wireObject(entry)
 		if err != nil {
 			return fmt.Errorf("[%d]: %w", position, err)
 		}
-		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner
+		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner
 		for name, member := range members {
 			switch name {
 			case "enable":
@@ -4033,7 +4033,7 @@ func pbRoutingAclIpv4PermitValue(wire WireValue, target *[]openapi.Policybasedro
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
 			default:
-				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner has no field %q", name)
+				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner has no field %q", name)
 			}
 		}
 		values = append(values, value)
@@ -4042,18 +4042,18 @@ func pbRoutingAclIpv4PermitValue(wire WireValue, target *[]openapi.Policybasedro
 	return nil
 }
 
-func pbRoutingAclIpv6DenyValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) error {
+func pbRoutingAclIpv6DenyValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner) error {
 	entries, err := wireList(wire)
 	if err != nil {
 		return err
 	}
-	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, 0, len(entries))
+	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner, 0, len(entries))
 	for position, entry := range entries {
 		members, err := wireObject(entry)
 		if err != nil {
 			return fmt.Errorf("[%d]: %w", position, err)
 		}
-		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner
+		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner
 		for name, member := range members {
 			switch name {
 			case "enable":
@@ -4073,7 +4073,7 @@ func pbRoutingAclIpv6DenyValue(wire WireValue, target *[]openapi.Policybasedrout
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
 			default:
-				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner has no field %q", name)
+				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner has no field %q", name)
 			}
 		}
 		values = append(values, value)
@@ -4082,18 +4082,18 @@ func pbRoutingAclIpv6DenyValue(wire WireValue, target *[]openapi.Policybasedrout
 	return nil
 }
 
-func pbRoutingAclIpv6PermitValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) error {
+func pbRoutingAclIpv6PermitValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner) error {
 	entries, err := wireList(wire)
 	if err != nil {
 		return err
 	}
-	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, 0, len(entries))
+	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner, 0, len(entries))
 	for position, entry := range entries {
 		members, err := wireObject(entry)
 		if err != nil {
 			return fmt.Errorf("[%d]: %w", position, err)
 		}
-		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner
+		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner
 		for name, member := range members {
 			switch name {
 			case "enable":
@@ -4113,7 +4113,7 @@ func pbRoutingAclIpv6PermitValue(wire WireValue, target *[]openapi.Policybasedro
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
 			default:
-				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner has no field %q", name)
+				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner has no field %q", name)
 			}
 		}
 		values = append(values, value)
@@ -4277,18 +4277,18 @@ func (portAclAdapter) ResourceValue(object WireObject) (interface{}, error) {
 	return value, nil
 }
 
-func portAclIpv4DenyValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner) error {
+func portAclIpv4DenyValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner) error {
 	entries, err := wireList(wire)
 	if err != nil {
 		return err
 	}
-	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, 0, len(entries))
+	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner, 0, len(entries))
 	for position, entry := range entries {
 		members, err := wireObject(entry)
 		if err != nil {
 			return fmt.Errorf("[%d]: %w", position, err)
 		}
-		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner
+		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner
 		for name, member := range members {
 			switch name {
 			case "enable":
@@ -4308,7 +4308,7 @@ func portAclIpv4DenyValue(wire WireValue, target *[]openapi.Policybasedroutingac
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
 			default:
-				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner has no field %q", name)
+				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner has no field %q", name)
 			}
 		}
 		values = append(values, value)
@@ -4317,18 +4317,18 @@ func portAclIpv4DenyValue(wire WireValue, target *[]openapi.Policybasedroutingac
 	return nil
 }
 
-func portAclIpv4PermitValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner) error {
+func portAclIpv4PermitValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner) error {
 	entries, err := wireList(wire)
 	if err != nil {
 		return err
 	}
-	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner, 0, len(entries))
+	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner, 0, len(entries))
 	for position, entry := range entries {
 		members, err := wireObject(entry)
 		if err != nil {
 			return fmt.Errorf("[%d]: %w", position, err)
 		}
-		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner
+		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner
 		for name, member := range members {
 			switch name {
 			case "enable":
@@ -4348,7 +4348,7 @@ func portAclIpv4PermitValue(wire WireValue, target *[]openapi.Policybasedrouting
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
 			default:
-				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4PermitInner has no field %q", name)
+				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner has no field %q", name)
 			}
 		}
 		values = append(values, value)
@@ -4357,18 +4357,18 @@ func portAclIpv4PermitValue(wire WireValue, target *[]openapi.Policybasedrouting
 	return nil
 }
 
-func portAclIpv6DenyValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) error {
+func portAclIpv6DenyValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner) error {
 	entries, err := wireList(wire)
 	if err != nil {
 		return err
 	}
-	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, 0, len(entries))
+	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner, 0, len(entries))
 	for position, entry := range entries {
 		members, err := wireObject(entry)
 		if err != nil {
 			return fmt.Errorf("[%d]: %w", position, err)
 		}
-		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner
+		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner
 		for name, member := range members {
 			switch name {
 			case "enable":
@@ -4388,7 +4388,7 @@ func portAclIpv6DenyValue(wire WireValue, target *[]openapi.Policybasedroutingac
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
 			default:
-				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner has no field %q", name)
+				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner has no field %q", name)
 			}
 		}
 		values = append(values, value)
@@ -4397,18 +4397,18 @@ func portAclIpv6DenyValue(wire WireValue, target *[]openapi.Policybasedroutingac
 	return nil
 }
 
-func portAclIpv6PermitValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner) error {
+func portAclIpv6PermitValue(wire WireValue, target *[]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner) error {
 	entries, err := wireList(wire)
 	if err != nil {
 		return err
 	}
-	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner, 0, len(entries))
+	values := make([]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner, 0, len(entries))
 	for position, entry := range entries {
 		members, err := wireObject(entry)
 		if err != nil {
 			return fmt.Errorf("[%d]: %w", position, err)
 		}
-		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner
+		var value openapi.PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner
 		for name, member := range members {
 			switch name {
 			case "enable":
@@ -4428,7 +4428,7 @@ func portAclIpv6PermitValue(wire WireValue, target *[]openapi.Policybasedrouting
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
 			default:
-				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6PermitInner has no field %q", name)
+				return fmt.Errorf("PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner has no field %q", name)
 			}
 		}
 		values = append(values, value)

@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,13 +19,12 @@ import (
 	"reflect"
 )
 
-
 // ThresholdsAPIService ThresholdsAPI service
 type ThresholdsAPIService service
 
 type ApiThresholdsDeleteRequest struct {
-	ctx context.Context
-	ApiService *ThresholdsAPIService
+	ctx           context.Context
+	ApiService    *ThresholdsAPIService
 	thresholdName *[]string
 	changesetName *string
 }
@@ -49,23 +48,22 @@ ThresholdsDelete Delete Threshold
 
 Deletes an existing Threshold from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiThresholdsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiThresholdsDeleteRequest
 */
 func (a *ThresholdsAPIService) ThresholdsDelete(ctx context.Context) ApiThresholdsDeleteRequest {
 	return ApiThresholdsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ThresholdsAPIService) ThresholdsDeleteExecute(r ApiThresholdsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ThresholdsAPIService.ThresholdsDelete")
@@ -142,10 +140,10 @@ func (a *ThresholdsAPIService) ThresholdsDeleteExecute(r ApiThresholdsDeleteRequ
 }
 
 type ApiThresholdsGetRequest struct {
-	ctx context.Context
-	ApiService *ThresholdsAPIService
+	ctx           context.Context
+	ApiService    *ThresholdsAPIService
 	thresholdName *string
-	includeData *bool
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ ThresholdsGet Get all Thresholds
 
 Downloads all Thresholds from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiThresholdsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiThresholdsGetRequest
 */
 func (a *ThresholdsAPIService) ThresholdsGet(ctx context.Context) ApiThresholdsGetRequest {
 	return ApiThresholdsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ThresholdsAPIService) ThresholdsGetExecute(r ApiThresholdsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ThresholdsAPIService.ThresholdsGet")
@@ -258,9 +255,9 @@ func (a *ThresholdsAPIService) ThresholdsGetExecute(r ApiThresholdsGetRequest) (
 }
 
 type ApiThresholdsPatchRequest struct {
-	ctx context.Context
-	ApiService *ThresholdsAPIService
-	changesetName *string
+	ctx                  context.Context
+	ApiService           *ThresholdsAPIService
+	changesetName        *string
 	thresholdsPutRequest *ThresholdsPutRequest
 }
 
@@ -283,23 +280,22 @@ ThresholdsPatch Update Threshold
 
 Update Threshold into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiThresholdsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiThresholdsPatchRequest
 */
 func (a *ThresholdsAPIService) ThresholdsPatch(ctx context.Context) ApiThresholdsPatchRequest {
 	return ApiThresholdsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ThresholdsAPIService) ThresholdsPatchExecute(r ApiThresholdsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ThresholdsAPIService.ThresholdsPatch")
@@ -364,9 +360,9 @@ func (a *ThresholdsAPIService) ThresholdsPatchExecute(r ApiThresholdsPatchReques
 }
 
 type ApiThresholdsPutRequest struct {
-	ctx context.Context
-	ApiService *ThresholdsAPIService
-	changesetName *string
+	ctx                  context.Context
+	ApiService           *ThresholdsAPIService
+	changesetName        *string
 	thresholdsPutRequest *ThresholdsPutRequest
 }
 
@@ -389,23 +385,22 @@ ThresholdsPut Create Threshold
 
 Create Threshold into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiThresholdsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiThresholdsPutRequest
 */
 func (a *ThresholdsAPIService) ThresholdsPut(ctx context.Context) ApiThresholdsPutRequest {
 	return ApiThresholdsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ThresholdsAPIService) ThresholdsPutExecute(r ApiThresholdsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ThresholdsAPIService.ThresholdsPut")

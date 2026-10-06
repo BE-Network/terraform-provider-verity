@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // GroupingRulesAPIService GroupingRulesAPI service
 type GroupingRulesAPIService service
 
 type ApiGroupingrulesDeleteRequest struct {
-	ctx context.Context
-	ApiService *GroupingRulesAPIService
+	ctx               context.Context
+	ApiService        *GroupingRulesAPIService
 	groupingRulesName *[]string
-	changesetName *string
+	changesetName     *string
 }
 
 func (r ApiGroupingrulesDeleteRequest) GroupingRulesName(groupingRulesName []string) ApiGroupingrulesDeleteRequest {
@@ -49,23 +48,22 @@ GroupingrulesDelete Delete Grouping Rule
 
 Deletes an existing Grouping Rule from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGroupingrulesDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGroupingrulesDeleteRequest
 */
 func (a *GroupingRulesAPIService) GroupingrulesDelete(ctx context.Context) ApiGroupingrulesDeleteRequest {
 	return ApiGroupingrulesDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *GroupingRulesAPIService) GroupingrulesDeleteExecute(r ApiGroupingrulesDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GroupingRulesAPIService.GroupingrulesDelete")
@@ -142,11 +140,11 @@ func (a *GroupingRulesAPIService) GroupingrulesDeleteExecute(r ApiGroupingrulesD
 }
 
 type ApiGroupingrulesGetRequest struct {
-	ctx context.Context
-	ApiService *GroupingRulesAPIService
+	ctx               context.Context
+	ApiService        *GroupingRulesAPIService
 	groupingRulesName *string
-	includeData *bool
-	changesetName *string
+	includeData       *bool
+	changesetName     *string
 }
 
 func (r ApiGroupingrulesGetRequest) GroupingRulesName(groupingRulesName string) ApiGroupingrulesGetRequest {
@@ -173,23 +171,22 @@ GroupingrulesGet Get all Grouping Rules
 
 Downloads all Grouping Rules from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGroupingrulesGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGroupingrulesGetRequest
 */
 func (a *GroupingRulesAPIService) GroupingrulesGet(ctx context.Context) ApiGroupingrulesGetRequest {
 	return ApiGroupingrulesGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *GroupingRulesAPIService) GroupingrulesGetExecute(r ApiGroupingrulesGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GroupingRulesAPIService.GroupingrulesGet")
@@ -258,9 +255,9 @@ func (a *GroupingRulesAPIService) GroupingrulesGetExecute(r ApiGroupingrulesGetR
 }
 
 type ApiGroupingrulesPatchRequest struct {
-	ctx context.Context
-	ApiService *GroupingRulesAPIService
-	changesetName *string
+	ctx                     context.Context
+	ApiService              *GroupingRulesAPIService
+	changesetName           *string
 	groupingrulesPutRequest *GroupingrulesPutRequest
 }
 
@@ -283,23 +280,22 @@ GroupingrulesPatch Update Grouping Rule
 
 Update Grouping Rule into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGroupingrulesPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGroupingrulesPatchRequest
 */
 func (a *GroupingRulesAPIService) GroupingrulesPatch(ctx context.Context) ApiGroupingrulesPatchRequest {
 	return ApiGroupingrulesPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *GroupingRulesAPIService) GroupingrulesPatchExecute(r ApiGroupingrulesPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GroupingRulesAPIService.GroupingrulesPatch")
@@ -364,9 +360,9 @@ func (a *GroupingRulesAPIService) GroupingrulesPatchExecute(r ApiGroupingrulesPa
 }
 
 type ApiGroupingrulesPutRequest struct {
-	ctx context.Context
-	ApiService *GroupingRulesAPIService
-	changesetName *string
+	ctx                     context.Context
+	ApiService              *GroupingRulesAPIService
+	changesetName           *string
 	groupingrulesPutRequest *GroupingrulesPutRequest
 }
 
@@ -389,23 +385,22 @@ GroupingrulesPut Create Grouping Rule
 
 Create Grouping Rule into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGroupingrulesPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGroupingrulesPutRequest
 */
 func (a *GroupingRulesAPIService) GroupingrulesPut(ctx context.Context) ApiGroupingrulesPutRequest {
 	return ApiGroupingrulesPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *GroupingRulesAPIService) GroupingrulesPutExecute(r ApiGroupingrulesPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GroupingRulesAPIService.GroupingrulesPut")

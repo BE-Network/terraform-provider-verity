@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -11,8 +11,8 @@ API version: 6.6
 package openapi
 
 import (
-	"encoding/json"
 	"bytes"
+	"encoding/json"
 	"fmt"
 )
 
@@ -21,9 +21,9 @@ var _ MappedNullable = &SwitchpointsUpgradePatchRequest{}
 
 // SwitchpointsUpgradePatchRequest struct for SwitchpointsUpgradePatchRequest
 type SwitchpointsUpgradePatchRequest struct {
+	DeviceNames []string `json:"device_names"`
 	// Version to upgrade to
 	PackageVersion string `json:"package_version"`
-	DeviceNames []string `json:"device_names"`
 }
 
 type _SwitchpointsUpgradePatchRequest SwitchpointsUpgradePatchRequest
@@ -32,10 +32,10 @@ type _SwitchpointsUpgradePatchRequest SwitchpointsUpgradePatchRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSwitchpointsUpgradePatchRequest(packageVersion string, deviceNames []string) *SwitchpointsUpgradePatchRequest {
+func NewSwitchpointsUpgradePatchRequest(deviceNames []string, packageVersion string) *SwitchpointsUpgradePatchRequest {
 	this := SwitchpointsUpgradePatchRequest{}
-	this.PackageVersion = packageVersion
 	this.DeviceNames = deviceNames
+	this.PackageVersion = packageVersion
 	return &this
 }
 
@@ -47,30 +47,6 @@ func NewSwitchpointsUpgradePatchRequestWithDefaults() *SwitchpointsUpgradePatchR
 	var packageVersion string = ""
 	this.PackageVersion = packageVersion
 	return &this
-}
-
-// GetPackageVersion returns the PackageVersion field value
-func (o *SwitchpointsUpgradePatchRequest) GetPackageVersion() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.PackageVersion
-}
-
-// GetPackageVersionOk returns a tuple with the PackageVersion field value
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsUpgradePatchRequest) GetPackageVersionOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.PackageVersion, true
-}
-
-// SetPackageVersion sets field value
-func (o *SwitchpointsUpgradePatchRequest) SetPackageVersion(v string) {
-	o.PackageVersion = v
 }
 
 // GetDeviceNames returns the DeviceNames field value
@@ -97,8 +73,32 @@ func (o *SwitchpointsUpgradePatchRequest) SetDeviceNames(v []string) {
 	o.DeviceNames = v
 }
 
+// GetPackageVersion returns the PackageVersion field value
+func (o *SwitchpointsUpgradePatchRequest) GetPackageVersion() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.PackageVersion
+}
+
+// GetPackageVersionOk returns a tuple with the PackageVersion field value
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsUpgradePatchRequest) GetPackageVersionOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.PackageVersion, true
+}
+
+// SetPackageVersion sets field value
+func (o *SwitchpointsUpgradePatchRequest) SetPackageVersion(v string) {
+	o.PackageVersion = v
+}
+
 func (o SwitchpointsUpgradePatchRequest) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -107,8 +107,8 @@ func (o SwitchpointsUpgradePatchRequest) MarshalJSON() ([]byte, error) {
 
 func (o SwitchpointsUpgradePatchRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["package_version"] = o.PackageVersion
 	toSerialize["device_names"] = o.DeviceNames
+	toSerialize["package_version"] = o.PackageVersion
 	return toSerialize, nil
 }
 
@@ -117,8 +117,8 @@ func (o *SwitchpointsUpgradePatchRequest) UnmarshalJSON(data []byte) (err error)
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"package_version",
 		"device_names",
+		"package_version",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -126,10 +126,10 @@ func (o *SwitchpointsUpgradePatchRequest) UnmarshalJSON(data []byte) (err error)
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -185,5 +185,3 @@ func (v *NullableSwitchpointsUpgradePatchRequest) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

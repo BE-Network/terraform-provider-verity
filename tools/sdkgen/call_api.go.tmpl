@@ -1,0 +1,54 @@
+package openapi
+
+func (c *APIClient) callAPI(request *http.Request) (*http.Response, error) {
+	isAuthRequest := strings.HasSuffix(request.URL.Path, "/auth") || strings.Contains(request.URL.Path, "/auth/")
+	if c.cfg.Debug {
+		debugRequest := request.Clone(request.Context())
+		for _, name := range []string{"Authorization", "Proxy-Authorization", "Cookie"} {
+			if debugRequest.Header.Get(name) != "" {
+				debugRequest.Header.Set(name, "[REDACTED]")
+			}
+		}
+		if debugRequest.URL.User != nil {
+			debugRequest.URL.User = url.User("[REDACTED]")
+		}
+		if !isAuthRequest && request.Body != nil {
+			body, err := io.ReadAll(request.Body)
+			if err != nil {
+				return nil, err
+			}
+			request.Body = io.NopCloser(bytes.NewReader(body))
+			debugRequest.Body = io.NopCloser(bytes.NewReader(body))
+		}
+		dump, err := httputil.DumpRequestOut(debugRequest, !isAuthRequest)
+		if err != nil {
+			return nil, err
+		}
+		log.Printf("\n%s\n", string(dump))
+		if isAuthRequest {
+			log.Printf("[REDACTED AUTH REQUEST BODY]\n")
+		}
+	}
+
+	resp, err := c.cfg.HTTPClient.Do(request)
+	if err != nil {
+		return resp, err
+	}
+	if c.cfg.Debug {
+		debugResponse := *resp
+		debugResponse.Header = resp.Header.Clone()
+		if debugResponse.Header.Get("Set-Cookie") != "" {
+			debugResponse.Header.Set("Set-Cookie", "[REDACTED]")
+		}
+		dump, err := httputil.DumpResponse(&debugResponse, !isAuthRequest)
+		resp.Body = debugResponse.Body
+		if err != nil {
+			return resp, err
+		}
+		log.Printf("\n%s\n", string(dump))
+		if isAuthRequest {
+			log.Printf("[REDACTED AUTH RESPONSE BODY]\n")
+		}
+	}
+	return resp, nil
+}

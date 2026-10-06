@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,12 +19,16 @@ var _ MappedNullable = &ServiceportprofilesPutRequestServicePortProfileValue{}
 
 // ServiceportprofilesPutRequestServicePortProfileValue struct for ServiceportprofilesPutRequestServicePortProfileValue
 type ServiceportprofilesPutRequestServicePortProfileValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
+	// IP/Mask
+	IpMask *string `json:"ip_mask,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                                               `json:"name,omitempty"`
+	ObjectProperties *ServiceportprofilesPutRequestServicePortProfileValueObjectProperties `json:"object_properties,omitempty"`
 	// Determines what Service are provisioned on the port and if those Services are propagated upstream<ul><li>* \"Upstream Switchport\" Services specified below.  Services are not propagated.</li><li>* \"Downstream Switchport\" Services specified below. Services are propagated.</li><li>* \"Crosslink Switchport\" Services is union of all Services on each switch.  Services are not propagated.</li><li>* \"Upstream L3 (L2/L3 Switches Only\" No Services.</li></ul>
-	PortType *string `json:"port_type,omitempty"`
+	PortType *string                                                             `json:"port_type,omitempty"`
+	Services []ServiceportprofilesPutRequestServicePortProfileValueServicesInner `json:"services,omitempty"`
 	// Speed of ingress (Mbps) for TLS (Transparent LAN Service)
 	TlsLimitIn NullableInt64 `json:"tls_limit_in,omitempty"`
 	// Service used for TLS (Transparent LAN Service)
@@ -33,10 +37,6 @@ type ServiceportprofilesPutRequestServicePortProfileValue struct {
 	TlsServiceRefType *string `json:"tls_service_ref_type_,omitempty"`
 	// Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks.
 	TrustedPort *bool `json:"trusted_port,omitempty"`
-	// IP/Mask
-	IpMask *string `json:"ip_mask,omitempty"`
-	Services []ServiceportprofilesPutRequestServicePortProfileValueServicesInner `json:"services,omitempty"`
-	ObjectProperties *ServiceportprofilesPutRequestServicePortProfileValueObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewServiceportprofilesPutRequestServicePortProfileValue instantiates a new ServiceportprofilesPutRequestServicePortProfileValue object
@@ -45,10 +45,12 @@ type ServiceportprofilesPutRequestServicePortProfileValue struct {
 // will change when the set of required properties is changed
 func NewServiceportprofilesPutRequestServicePortProfileValue() *ServiceportprofilesPutRequestServicePortProfileValue {
 	this := ServiceportprofilesPutRequestServicePortProfileValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var ipMask string = ""
+	this.IpMask = &ipMask
+	var name string = ""
+	this.Name = &name
 	var portType string = "up"
 	this.PortType = &portType
 	var tlsLimitIn int64 = 1000
@@ -57,8 +59,6 @@ func NewServiceportprofilesPutRequestServicePortProfileValue() *Serviceportprofi
 	this.TlsService = &tlsService
 	var trustedPort bool = false
 	this.TrustedPort = &trustedPort
-	var ipMask string = ""
-	this.IpMask = &ipMask
 	return &this
 }
 
@@ -67,10 +67,12 @@ func NewServiceportprofilesPutRequestServicePortProfileValue() *Serviceportprofi
 // but it doesn't guarantee that properties required by API are set
 func NewServiceportprofilesPutRequestServicePortProfileValueWithDefaults() *ServiceportprofilesPutRequestServicePortProfileValue {
 	this := ServiceportprofilesPutRequestServicePortProfileValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var ipMask string = ""
+	this.IpMask = &ipMask
+	var name string = ""
+	this.Name = &name
 	var portType string = "up"
 	this.PortType = &portType
 	var tlsLimitIn int64 = 1000
@@ -79,41 +81,7 @@ func NewServiceportprofilesPutRequestServicePortProfileValueWithDefaults() *Serv
 	this.TlsService = &tlsService
 	var trustedPort bool = false
 	this.TrustedPort = &trustedPort
-	var ipMask string = ""
-	this.IpMask = &ipMask
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -148,6 +116,102 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetEnable(v bool)
 	o.Enable = &v
 }
 
+// GetIpMask returns the IpMask field value if set, zero value otherwise.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetIpMask() string {
+	if o == nil || IsNil(o.IpMask) {
+		var ret string
+		return ret
+	}
+	return *o.IpMask
+}
+
+// GetIpMaskOk returns a tuple with the IpMask field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetIpMaskOk() (*string, bool) {
+	if o == nil || IsNil(o.IpMask) {
+		return nil, false
+	}
+	return o.IpMask, true
+}
+
+// HasIpMask returns a boolean if a field has been set.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) HasIpMask() bool {
+	if o != nil && !IsNil(o.IpMask) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpMask gets a reference to the given string and assigns it to the IpMask field.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetIpMask(v string) {
+	o.IpMask = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetName(v string) {
+	o.Name = &v
+}
+
+// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetObjectProperties() ServiceportprofilesPutRequestServicePortProfileValueObjectProperties {
+	if o == nil || IsNil(o.ObjectProperties) {
+		var ret ServiceportprofilesPutRequestServicePortProfileValueObjectProperties
+		return ret
+	}
+	return *o.ObjectProperties
+}
+
+// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetObjectPropertiesOk() (*ServiceportprofilesPutRequestServicePortProfileValueObjectProperties, bool) {
+	if o == nil || IsNil(o.ObjectProperties) {
+		return nil, false
+	}
+	return o.ObjectProperties, true
+}
+
+// HasObjectProperties returns a boolean if a field has been set.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) HasObjectProperties() bool {
+	if o != nil && !IsNil(o.ObjectProperties) {
+		return true
+	}
+
+	return false
+}
+
+// SetObjectProperties gets a reference to the given ServiceportprofilesPutRequestServicePortProfileValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetObjectProperties(v ServiceportprofilesPutRequestServicePortProfileValueObjectProperties) {
+	o.ObjectProperties = &v
+}
+
 // GetPortType returns the PortType field value if set, zero value otherwise.
 func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetPortType() string {
 	if o == nil || IsNil(o.PortType) {
@@ -178,6 +242,38 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValue) HasPortType() boo
 // SetPortType gets a reference to the given string and assigns it to the PortType field.
 func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetPortType(v string) {
 	o.PortType = &v
+}
+
+// GetServices returns the Services field value if set, zero value otherwise.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetServices() []ServiceportprofilesPutRequestServicePortProfileValueServicesInner {
+	if o == nil || IsNil(o.Services) {
+		var ret []ServiceportprofilesPutRequestServicePortProfileValueServicesInner
+		return ret
+	}
+	return o.Services
+}
+
+// GetServicesOk returns a tuple with the Services field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetServicesOk() ([]ServiceportprofilesPutRequestServicePortProfileValueServicesInner, bool) {
+	if o == nil || IsNil(o.Services) {
+		return nil, false
+	}
+	return o.Services, true
+}
+
+// HasServices returns a boolean if a field has been set.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) HasServices() bool {
+	if o != nil && !IsNil(o.Services) {
+		return true
+	}
+
+	return false
+}
+
+// SetServices gets a reference to the given []ServiceportprofilesPutRequestServicePortProfileValueServicesInner and assigns it to the Services field.
+func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetServices(v []ServiceportprofilesPutRequestServicePortProfileValueServicesInner) {
+	o.Services = v
 }
 
 // GetTlsLimitIn returns the TlsLimitIn field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -212,6 +308,7 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValue) HasTlsLimitIn() b
 func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetTlsLimitIn(v int64) {
 	o.TlsLimitIn.Set(&v)
 }
+
 // SetTlsLimitInNil sets the value for TlsLimitIn to be an explicit nil
 func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetTlsLimitInNil() {
 	o.TlsLimitIn.Set(nil)
@@ -318,104 +415,8 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetTrustedPort(v 
 	o.TrustedPort = &v
 }
 
-// GetIpMask returns the IpMask field value if set, zero value otherwise.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetIpMask() string {
-	if o == nil || IsNil(o.IpMask) {
-		var ret string
-		return ret
-	}
-	return *o.IpMask
-}
-
-// GetIpMaskOk returns a tuple with the IpMask field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetIpMaskOk() (*string, bool) {
-	if o == nil || IsNil(o.IpMask) {
-		return nil, false
-	}
-	return o.IpMask, true
-}
-
-// HasIpMask returns a boolean if a field has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) HasIpMask() bool {
-	if o != nil && !IsNil(o.IpMask) {
-		return true
-	}
-
-	return false
-}
-
-// SetIpMask gets a reference to the given string and assigns it to the IpMask field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetIpMask(v string) {
-	o.IpMask = &v
-}
-
-// GetServices returns the Services field value if set, zero value otherwise.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetServices() []ServiceportprofilesPutRequestServicePortProfileValueServicesInner {
-	if o == nil || IsNil(o.Services) {
-		var ret []ServiceportprofilesPutRequestServicePortProfileValueServicesInner
-		return ret
-	}
-	return o.Services
-}
-
-// GetServicesOk returns a tuple with the Services field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetServicesOk() ([]ServiceportprofilesPutRequestServicePortProfileValueServicesInner, bool) {
-	if o == nil || IsNil(o.Services) {
-		return nil, false
-	}
-	return o.Services, true
-}
-
-// HasServices returns a boolean if a field has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) HasServices() bool {
-	if o != nil && !IsNil(o.Services) {
-		return true
-	}
-
-	return false
-}
-
-// SetServices gets a reference to the given []ServiceportprofilesPutRequestServicePortProfileValueServicesInner and assigns it to the Services field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetServices(v []ServiceportprofilesPutRequestServicePortProfileValueServicesInner) {
-	o.Services = v
-}
-
-// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetObjectProperties() ServiceportprofilesPutRequestServicePortProfileValueObjectProperties {
-	if o == nil || IsNil(o.ObjectProperties) {
-		var ret ServiceportprofilesPutRequestServicePortProfileValueObjectProperties
-		return ret
-	}
-	return *o.ObjectProperties
-}
-
-// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetObjectPropertiesOk() (*ServiceportprofilesPutRequestServicePortProfileValueObjectProperties, bool) {
-	if o == nil || IsNil(o.ObjectProperties) {
-		return nil, false
-	}
-	return o.ObjectProperties, true
-}
-
-// HasObjectProperties returns a boolean if a field has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) HasObjectProperties() bool {
-	if o != nil && !IsNil(o.ObjectProperties) {
-		return true
-	}
-
-	return false
-}
-
-// SetObjectProperties gets a reference to the given ServiceportprofilesPutRequestServicePortProfileValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetObjectProperties(v ServiceportprofilesPutRequestServicePortProfileValueObjectProperties) {
-	o.ObjectProperties = &v
-}
-
 func (o ServiceportprofilesPutRequestServicePortProfileValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -424,14 +425,23 @@ func (o ServiceportprofilesPutRequestServicePortProfileValue) MarshalJSON() ([]b
 
 func (o ServiceportprofilesPutRequestServicePortProfileValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
+	if !IsNil(o.IpMask) {
+		toSerialize["ip_mask"] = o.IpMask
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.ObjectProperties) {
+		toSerialize["object_properties"] = o.ObjectProperties
+	}
 	if !IsNil(o.PortType) {
 		toSerialize["port_type"] = o.PortType
+	}
+	if !IsNil(o.Services) {
+		toSerialize["services"] = o.Services
 	}
 	if o.TlsLimitIn.IsSet() {
 		toSerialize["tls_limit_in"] = o.TlsLimitIn.Get()
@@ -444,15 +454,6 @@ func (o ServiceportprofilesPutRequestServicePortProfileValue) ToMap() (map[strin
 	}
 	if !IsNil(o.TrustedPort) {
 		toSerialize["trusted_port"] = o.TrustedPort
-	}
-	if !IsNil(o.IpMask) {
-		toSerialize["ip_mask"] = o.IpMask
-	}
-	if !IsNil(o.Services) {
-		toSerialize["services"] = o.Services
-	}
-	if !IsNil(o.ObjectProperties) {
-		toSerialize["object_properties"] = o.ObjectProperties
 	}
 	return toSerialize, nil
 }
@@ -492,5 +493,3 @@ func (v *NullableServiceportprofilesPutRequestServicePortProfileValue) Unmarshal
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

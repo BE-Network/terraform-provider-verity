@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // DeviceSettingsAPIService DeviceSettingsAPI service
 type DeviceSettingsAPIService service
 
 type ApiDevicesettingsDeleteRequest struct {
-	ctx context.Context
-	ApiService *DeviceSettingsAPIService
+	ctx                   context.Context
+	ApiService            *DeviceSettingsAPIService
 	ethDeviceProfilesName *[]string
-	changesetName *string
+	changesetName         *string
 }
 
 func (r ApiDevicesettingsDeleteRequest) EthDeviceProfilesName(ethDeviceProfilesName []string) ApiDevicesettingsDeleteRequest {
@@ -49,23 +48,22 @@ DevicesettingsDelete Delete Device Settings
 
 Deletes an existing Device Settings from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDevicesettingsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiDevicesettingsDeleteRequest
 */
 func (a *DeviceSettingsAPIService) DevicesettingsDelete(ctx context.Context) ApiDevicesettingsDeleteRequest {
 	return ApiDevicesettingsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *DeviceSettingsAPIService) DevicesettingsDeleteExecute(r ApiDevicesettingsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceSettingsAPIService.DevicesettingsDelete")
@@ -142,11 +140,11 @@ func (a *DeviceSettingsAPIService) DevicesettingsDeleteExecute(r ApiDevicesettin
 }
 
 type ApiDevicesettingsGetRequest struct {
-	ctx context.Context
-	ApiService *DeviceSettingsAPIService
+	ctx                   context.Context
+	ApiService            *DeviceSettingsAPIService
 	ethDeviceProfilesName *string
-	includeData *bool
-	changesetName *string
+	includeData           *bool
+	changesetName         *string
 }
 
 func (r ApiDevicesettingsGetRequest) EthDeviceProfilesName(ethDeviceProfilesName string) ApiDevicesettingsGetRequest {
@@ -173,23 +171,22 @@ DevicesettingsGet Get all Device Settings
 
 Retrieves all Device Settings from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDevicesettingsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiDevicesettingsGetRequest
 */
 func (a *DeviceSettingsAPIService) DevicesettingsGet(ctx context.Context) ApiDevicesettingsGetRequest {
 	return ApiDevicesettingsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *DeviceSettingsAPIService) DevicesettingsGetExecute(r ApiDevicesettingsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceSettingsAPIService.DevicesettingsGet")
@@ -258,9 +255,9 @@ func (a *DeviceSettingsAPIService) DevicesettingsGetExecute(r ApiDevicesettingsG
 }
 
 type ApiDevicesettingsPatchRequest struct {
-	ctx context.Context
-	ApiService *DeviceSettingsAPIService
-	changesetName *string
+	ctx                      context.Context
+	ApiService               *DeviceSettingsAPIService
+	changesetName            *string
 	devicesettingsPutRequest *DevicesettingsPutRequest
 }
 
@@ -283,23 +280,22 @@ DevicesettingsPatch Update Device Settings
 
 Update Device Settings into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDevicesettingsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiDevicesettingsPatchRequest
 */
 func (a *DeviceSettingsAPIService) DevicesettingsPatch(ctx context.Context) ApiDevicesettingsPatchRequest {
 	return ApiDevicesettingsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *DeviceSettingsAPIService) DevicesettingsPatchExecute(r ApiDevicesettingsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceSettingsAPIService.DevicesettingsPatch")
@@ -364,9 +360,9 @@ func (a *DeviceSettingsAPIService) DevicesettingsPatchExecute(r ApiDevicesetting
 }
 
 type ApiDevicesettingsPutRequest struct {
-	ctx context.Context
-	ApiService *DeviceSettingsAPIService
-	changesetName *string
+	ctx                      context.Context
+	ApiService               *DeviceSettingsAPIService
+	changesetName            *string
 	devicesettingsPutRequest *DevicesettingsPutRequest
 }
 
@@ -389,23 +385,22 @@ DevicesettingsPut Create Device Settings
 
 Create Device Settings into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDevicesettingsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiDevicesettingsPutRequest
 */
 func (a *DeviceSettingsAPIService) DevicesettingsPut(ctx context.Context) ApiDevicesettingsPutRequest {
 	return ApiDevicesettingsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *DeviceSettingsAPIService) DevicesettingsPutExecute(r ApiDevicesettingsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceSettingsAPIService.DevicesettingsPut")

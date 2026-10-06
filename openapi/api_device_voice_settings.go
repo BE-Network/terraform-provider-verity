@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // DeviceVoiceSettingsAPIService DeviceVoiceSettingsAPI service
 type DeviceVoiceSettingsAPIService service
 
 type ApiDevicevoicesettingsDeleteRequest struct {
-	ctx context.Context
-	ApiService *DeviceVoiceSettingsAPIService
+	ctx                     context.Context
+	ApiService              *DeviceVoiceSettingsAPIService
 	deviceVoiceSettingsName *[]string
-	changesetName *string
+	changesetName           *string
 }
 
 func (r ApiDevicevoicesettingsDeleteRequest) DeviceVoiceSettingsName(deviceVoiceSettingsName []string) ApiDevicevoicesettingsDeleteRequest {
@@ -49,23 +48,22 @@ DevicevoicesettingsDelete Delete tenant
 
 Deletes an existing Device Voice Setting from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDevicevoicesettingsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiDevicevoicesettingsDeleteRequest
 */
 func (a *DeviceVoiceSettingsAPIService) DevicevoicesettingsDelete(ctx context.Context) ApiDevicevoicesettingsDeleteRequest {
 	return ApiDevicevoicesettingsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *DeviceVoiceSettingsAPIService) DevicevoicesettingsDeleteExecute(r ApiDevicevoicesettingsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceVoiceSettingsAPIService.DevicevoicesettingsDelete")
@@ -142,11 +140,11 @@ func (a *DeviceVoiceSettingsAPIService) DevicevoicesettingsDeleteExecute(r ApiDe
 }
 
 type ApiDevicevoicesettingsGetRequest struct {
-	ctx context.Context
-	ApiService *DeviceVoiceSettingsAPIService
+	ctx                     context.Context
+	ApiService              *DeviceVoiceSettingsAPIService
 	deviceVoiceSettingsName *string
-	includeData *bool
-	changesetName *string
+	includeData             *bool
+	changesetName           *string
 }
 
 func (r ApiDevicevoicesettingsGetRequest) DeviceVoiceSettingsName(deviceVoiceSettingsName string) ApiDevicevoicesettingsGetRequest {
@@ -173,23 +171,22 @@ DevicevoicesettingsGet Get all Device Voice Settings
 
 Retrieves all Device Voice Settings from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDevicevoicesettingsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiDevicevoicesettingsGetRequest
 */
 func (a *DeviceVoiceSettingsAPIService) DevicevoicesettingsGet(ctx context.Context) ApiDevicevoicesettingsGetRequest {
 	return ApiDevicevoicesettingsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *DeviceVoiceSettingsAPIService) DevicevoicesettingsGetExecute(r ApiDevicevoicesettingsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceVoiceSettingsAPIService.DevicevoicesettingsGet")
@@ -258,9 +255,9 @@ func (a *DeviceVoiceSettingsAPIService) DevicevoicesettingsGetExecute(r ApiDevic
 }
 
 type ApiDevicevoicesettingsPatchRequest struct {
-	ctx context.Context
-	ApiService *DeviceVoiceSettingsAPIService
-	changesetName *string
+	ctx                           context.Context
+	ApiService                    *DeviceVoiceSettingsAPIService
+	changesetName                 *string
 	devicevoicesettingsPutRequest *DevicevoicesettingsPutRequest
 }
 
@@ -283,23 +280,22 @@ DevicevoicesettingsPatch Update Device Voice Setting
 
 Update Device Voice Setting into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDevicevoicesettingsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiDevicevoicesettingsPatchRequest
 */
 func (a *DeviceVoiceSettingsAPIService) DevicevoicesettingsPatch(ctx context.Context) ApiDevicevoicesettingsPatchRequest {
 	return ApiDevicevoicesettingsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *DeviceVoiceSettingsAPIService) DevicevoicesettingsPatchExecute(r ApiDevicevoicesettingsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceVoiceSettingsAPIService.DevicevoicesettingsPatch")
@@ -364,9 +360,9 @@ func (a *DeviceVoiceSettingsAPIService) DevicevoicesettingsPatchExecute(r ApiDev
 }
 
 type ApiDevicevoicesettingsPutRequest struct {
-	ctx context.Context
-	ApiService *DeviceVoiceSettingsAPIService
-	changesetName *string
+	ctx                           context.Context
+	ApiService                    *DeviceVoiceSettingsAPIService
+	changesetName                 *string
 	devicevoicesettingsPutRequest *DevicevoicesettingsPutRequest
 }
 
@@ -389,23 +385,22 @@ DevicevoicesettingsPut Create Device Voice Setting
 
 Create Device Voice Setting into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiDevicevoicesettingsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiDevicevoicesettingsPutRequest
 */
 func (a *DeviceVoiceSettingsAPIService) DevicevoicesettingsPut(ctx context.Context) ApiDevicevoicesettingsPutRequest {
 	return ApiDevicevoicesettingsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *DeviceVoiceSettingsAPIService) DevicevoicesettingsPutExecute(r ApiDevicevoicesettingsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DeviceVoiceSettingsAPIService.DevicevoicesettingsPut")

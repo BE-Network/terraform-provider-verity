@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,20 +19,20 @@ var _ MappedNullable = &ServiceportprofilesPutRequestServicePortProfileValueServ
 
 // ServiceportprofilesPutRequestServicePortProfileValueServicesInner struct for ServiceportprofilesPutRequestServicePortProfileValueServicesInner
 type ServiceportprofilesPutRequestServicePortProfileValueServicesInner struct {
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
 	// Enable row
 	RowNumEnable *bool `json:"row_num_enable,omitempty"`
-	// Connect a Service
-	RowNumService *string `json:"row_num_service,omitempty"`
-	// Object type for row_num_service field
-	RowNumServiceRefType *string `json:"row_num_service_ref_type_,omitempty"`
 	// Choose an external vlan
 	RowNumExternalVlan NullableInt64 `json:"row_num_external_vlan,omitempty"`
 	// Speed of ingress (Mbps)
 	RowNumLimitIn NullableInt64 `json:"row_num_limit_in,omitempty"`
 	// Speed of egress (Mbps)
 	RowNumLimitOut NullableInt64 `json:"row_num_limit_out,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
+	// Connect a Service
+	RowNumService *string `json:"row_num_service,omitempty"`
+	// Object type for row_num_service field
+	RowNumServiceRefType *string `json:"row_num_service_ref_type_,omitempty"`
 }
 
 // NewServiceportprofilesPutRequestServicePortProfileValueServicesInner instantiates a new ServiceportprofilesPutRequestServicePortProfileValueServicesInner object
@@ -43,10 +43,10 @@ func NewServiceportprofilesPutRequestServicePortProfileValueServicesInner() *Ser
 	this := ServiceportprofilesPutRequestServicePortProfileValueServicesInner{}
 	var rowNumEnable bool = false
 	this.RowNumEnable = &rowNumEnable
-	var rowNumService string = ""
-	this.RowNumService = &rowNumService
 	var rowNumLimitOut int64 = 1000
 	this.RowNumLimitOut = *NewNullableInt64(&rowNumLimitOut)
+	var rowNumService string = ""
+	this.RowNumService = &rowNumService
 	return &this
 }
 
@@ -57,11 +57,43 @@ func NewServiceportprofilesPutRequestServicePortProfileValueServicesInnerWithDef
 	this := ServiceportprofilesPutRequestServicePortProfileValueServicesInner{}
 	var rowNumEnable bool = false
 	this.RowNumEnable = &rowNumEnable
-	var rowNumService string = ""
-	this.RowNumService = &rowNumService
 	var rowNumLimitOut int64 = 1000
 	this.RowNumLimitOut = *NewNullableInt64(&rowNumLimitOut)
+	var rowNumService string = ""
+	this.RowNumService = &rowNumService
 	return &this
+}
+
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetRowNumEnable returns the RowNumEnable field value if set, zero value otherwise.
@@ -94,6 +126,135 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) HasR
 // SetRowNumEnable gets a reference to the given bool and assigns it to the RowNumEnable field.
 func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumEnable(v bool) {
 	o.RowNumEnable = &v
+}
+
+// GetRowNumExternalVlan returns the RowNumExternalVlan field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumExternalVlan() int64 {
+	if o == nil || IsNil(o.RowNumExternalVlan.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.RowNumExternalVlan.Get()
+}
+
+// GetRowNumExternalVlanOk returns a tuple with the RowNumExternalVlan field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumExternalVlanOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RowNumExternalVlan.Get(), o.RowNumExternalVlan.IsSet()
+}
+
+// HasRowNumExternalVlan returns a boolean if a field has been set.
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) HasRowNumExternalVlan() bool {
+	if o != nil && o.RowNumExternalVlan.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRowNumExternalVlan gets a reference to the given NullableInt64 and assigns it to the RowNumExternalVlan field.
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumExternalVlan(v int64) {
+	o.RowNumExternalVlan.Set(&v)
+}
+
+// SetRowNumExternalVlanNil sets the value for RowNumExternalVlan to be an explicit nil
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumExternalVlanNil() {
+	o.RowNumExternalVlan.Set(nil)
+}
+
+// UnsetRowNumExternalVlan ensures that no value is present for RowNumExternalVlan, not even an explicit nil
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) UnsetRowNumExternalVlan() {
+	o.RowNumExternalVlan.Unset()
+}
+
+// GetRowNumLimitIn returns the RowNumLimitIn field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitIn() int64 {
+	if o == nil || IsNil(o.RowNumLimitIn.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.RowNumLimitIn.Get()
+}
+
+// GetRowNumLimitInOk returns a tuple with the RowNumLimitIn field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitInOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RowNumLimitIn.Get(), o.RowNumLimitIn.IsSet()
+}
+
+// HasRowNumLimitIn returns a boolean if a field has been set.
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) HasRowNumLimitIn() bool {
+	if o != nil && o.RowNumLimitIn.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRowNumLimitIn gets a reference to the given NullableInt64 and assigns it to the RowNumLimitIn field.
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitIn(v int64) {
+	o.RowNumLimitIn.Set(&v)
+}
+
+// SetRowNumLimitInNil sets the value for RowNumLimitIn to be an explicit nil
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitInNil() {
+	o.RowNumLimitIn.Set(nil)
+}
+
+// UnsetRowNumLimitIn ensures that no value is present for RowNumLimitIn, not even an explicit nil
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) UnsetRowNumLimitIn() {
+	o.RowNumLimitIn.Unset()
+}
+
+// GetRowNumLimitOut returns the RowNumLimitOut field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitOut() int64 {
+	if o == nil || IsNil(o.RowNumLimitOut.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.RowNumLimitOut.Get()
+}
+
+// GetRowNumLimitOutOk returns a tuple with the RowNumLimitOut field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitOutOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RowNumLimitOut.Get(), o.RowNumLimitOut.IsSet()
+}
+
+// HasRowNumLimitOut returns a boolean if a field has been set.
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) HasRowNumLimitOut() bool {
+	if o != nil && o.RowNumLimitOut.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRowNumLimitOut gets a reference to the given NullableInt64 and assigns it to the RowNumLimitOut field.
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitOut(v int64) {
+	o.RowNumLimitOut.Set(&v)
+}
+
+// SetRowNumLimitOutNil sets the value for RowNumLimitOut to be an explicit nil
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitOutNil() {
+	o.RowNumLimitOut.Set(nil)
+}
+
+// UnsetRowNumLimitOut ensures that no value is present for RowNumLimitOut, not even an explicit nil
+func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) UnsetRowNumLimitOut() {
+	o.RowNumLimitOut.Unset()
 }
 
 // GetRowNumService returns the RowNumService field value if set, zero value otherwise.
@@ -160,166 +321,8 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetR
 	o.RowNumServiceRefType = &v
 }
 
-// GetRowNumExternalVlan returns the RowNumExternalVlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumExternalVlan() int64 {
-	if o == nil || IsNil(o.RowNumExternalVlan.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.RowNumExternalVlan.Get()
-}
-
-// GetRowNumExternalVlanOk returns a tuple with the RowNumExternalVlan field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumExternalVlanOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.RowNumExternalVlan.Get(), o.RowNumExternalVlan.IsSet()
-}
-
-// HasRowNumExternalVlan returns a boolean if a field has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) HasRowNumExternalVlan() bool {
-	if o != nil && o.RowNumExternalVlan.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetRowNumExternalVlan gets a reference to the given NullableInt64 and assigns it to the RowNumExternalVlan field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumExternalVlan(v int64) {
-	o.RowNumExternalVlan.Set(&v)
-}
-// SetRowNumExternalVlanNil sets the value for RowNumExternalVlan to be an explicit nil
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumExternalVlanNil() {
-	o.RowNumExternalVlan.Set(nil)
-}
-
-// UnsetRowNumExternalVlan ensures that no value is present for RowNumExternalVlan, not even an explicit nil
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) UnsetRowNumExternalVlan() {
-	o.RowNumExternalVlan.Unset()
-}
-
-// GetRowNumLimitIn returns the RowNumLimitIn field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitIn() int64 {
-	if o == nil || IsNil(o.RowNumLimitIn.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.RowNumLimitIn.Get()
-}
-
-// GetRowNumLimitInOk returns a tuple with the RowNumLimitIn field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitInOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.RowNumLimitIn.Get(), o.RowNumLimitIn.IsSet()
-}
-
-// HasRowNumLimitIn returns a boolean if a field has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) HasRowNumLimitIn() bool {
-	if o != nil && o.RowNumLimitIn.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetRowNumLimitIn gets a reference to the given NullableInt64 and assigns it to the RowNumLimitIn field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitIn(v int64) {
-	o.RowNumLimitIn.Set(&v)
-}
-// SetRowNumLimitInNil sets the value for RowNumLimitIn to be an explicit nil
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitInNil() {
-	o.RowNumLimitIn.Set(nil)
-}
-
-// UnsetRowNumLimitIn ensures that no value is present for RowNumLimitIn, not even an explicit nil
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) UnsetRowNumLimitIn() {
-	o.RowNumLimitIn.Unset()
-}
-
-// GetRowNumLimitOut returns the RowNumLimitOut field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitOut() int64 {
-	if o == nil || IsNil(o.RowNumLimitOut.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.RowNumLimitOut.Get()
-}
-
-// GetRowNumLimitOutOk returns a tuple with the RowNumLimitOut field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetRowNumLimitOutOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.RowNumLimitOut.Get(), o.RowNumLimitOut.IsSet()
-}
-
-// HasRowNumLimitOut returns a boolean if a field has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) HasRowNumLimitOut() bool {
-	if o != nil && o.RowNumLimitOut.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetRowNumLimitOut gets a reference to the given NullableInt64 and assigns it to the RowNumLimitOut field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitOut(v int64) {
-	o.RowNumLimitOut.Set(&v)
-}
-// SetRowNumLimitOutNil sets the value for RowNumLimitOut to be an explicit nil
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetRowNumLimitOutNil() {
-	o.RowNumLimitOut.Set(nil)
-}
-
-// UnsetRowNumLimitOut ensures that no value is present for RowNumLimitOut, not even an explicit nil
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) UnsetRowNumLimitOut() {
-	o.RowNumLimitOut.Unset()
-}
-
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValueServicesInner) SetIndex(v int64) {
-	o.Index = &v
-}
-
 func (o ServiceportprofilesPutRequestServicePortProfileValueServicesInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -328,14 +331,11 @@ func (o ServiceportprofilesPutRequestServicePortProfileValueServicesInner) Marsh
 
 func (o ServiceportprofilesPutRequestServicePortProfileValueServicesInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
+	}
 	if !IsNil(o.RowNumEnable) {
 		toSerialize["row_num_enable"] = o.RowNumEnable
-	}
-	if !IsNil(o.RowNumService) {
-		toSerialize["row_num_service"] = o.RowNumService
-	}
-	if !IsNil(o.RowNumServiceRefType) {
-		toSerialize["row_num_service_ref_type_"] = o.RowNumServiceRefType
 	}
 	if o.RowNumExternalVlan.IsSet() {
 		toSerialize["row_num_external_vlan"] = o.RowNumExternalVlan.Get()
@@ -346,8 +346,11 @@ func (o ServiceportprofilesPutRequestServicePortProfileValueServicesInner) ToMap
 	if o.RowNumLimitOut.IsSet() {
 		toSerialize["row_num_limit_out"] = o.RowNumLimitOut.Get()
 	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
+	if !IsNil(o.RowNumService) {
+		toSerialize["row_num_service"] = o.RowNumService
+	}
+	if !IsNil(o.RowNumServiceRefType) {
+		toSerialize["row_num_service_ref_type_"] = o.RowNumServiceRefType
 	}
 	return toSerialize, nil
 }
@@ -387,5 +390,3 @@ func (v *NullableServiceportprofilesPutRequestServicePortProfileValueServicesInn
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

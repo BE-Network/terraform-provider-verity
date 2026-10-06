@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -18,12 +18,11 @@ import (
 	"net/url"
 )
 
-
 // VersionAPIService VersionAPI service
 type VersionAPIService service
 
 type ApiVersionGetRequest struct {
-	ctx context.Context
+	ctx        context.Context
 	ApiService *VersionAPIService
 }
 
@@ -36,23 +35,22 @@ VersionGet Get vNetC version
 
 Get vNetC version.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiVersionGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiVersionGetRequest
 */
 func (a *VersionAPIService) VersionGet(ctx context.Context) ApiVersionGetRequest {
 	return ApiVersionGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *VersionAPIService) VersionGetExecute(r ApiVersionGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VersionAPIService.VersionGet")

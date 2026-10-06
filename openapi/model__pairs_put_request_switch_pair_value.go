@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,10 +19,16 @@ var _ MappedNullable = &PairsPutRequestSwitchPairValue{}
 
 // PairsPutRequestSwitchPairValue struct for PairsPutRequestSwitchPairValue
 type PairsPutRequestSwitchPairValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
+	// Is Whitebox Pair
+	IsWhiteboxPair *bool `json:"is_whitebox_pair,omitempty"`
+	// LAG
+	Lag *string `json:"lag,omitempty"`
+	// Object type for lag field
+	LagRefType *string `json:"lag_ref_type_,omitempty"`
+	// Template Name. Must be unique within type.
+	Name *string `json:"name,omitempty"`
 	// Switchpoint
 	Switchpoint1 *string `json:"switchpoint_1,omitempty"`
 	// Object type for switchpoint_1 field
@@ -31,12 +37,6 @@ type PairsPutRequestSwitchPairValue struct {
 	Switchpoint2 *string `json:"switchpoint_2,omitempty"`
 	// Object type for switchpoint_2 field
 	Switchpoint2RefType *string `json:"switchpoint_2_ref_type_,omitempty"`
-	// LAG
-	Lag *string `json:"lag,omitempty"`
-	// Object type for lag field
-	LagRefType *string `json:"lag_ref_type_,omitempty"`
-	// Is Whitebox Pair
-	IsWhiteboxPair *bool `json:"is_whitebox_pair,omitempty"`
 }
 
 // NewPairsPutRequestSwitchPairValue instantiates a new PairsPutRequestSwitchPairValue object
@@ -45,18 +45,18 @@ type PairsPutRequestSwitchPairValue struct {
 // will change when the set of required properties is changed
 func NewPairsPutRequestSwitchPairValue() *PairsPutRequestSwitchPairValue {
 	this := PairsPutRequestSwitchPairValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
+	var isWhiteboxPair bool = false
+	this.IsWhiteboxPair = &isWhiteboxPair
+	var lag string = ""
+	this.Lag = &lag
+	var name string = ""
+	this.Name = &name
 	var switchpoint1 string = ""
 	this.Switchpoint1 = &switchpoint1
 	var switchpoint2 string = ""
 	this.Switchpoint2 = &switchpoint2
-	var lag string = ""
-	this.Lag = &lag
-	var isWhiteboxPair bool = false
-	this.IsWhiteboxPair = &isWhiteboxPair
 	return &this
 }
 
@@ -65,51 +65,19 @@ func NewPairsPutRequestSwitchPairValue() *PairsPutRequestSwitchPairValue {
 // but it doesn't guarantee that properties required by API are set
 func NewPairsPutRequestSwitchPairValueWithDefaults() *PairsPutRequestSwitchPairValue {
 	this := PairsPutRequestSwitchPairValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
+	var isWhiteboxPair bool = false
+	this.IsWhiteboxPair = &isWhiteboxPair
+	var lag string = ""
+	this.Lag = &lag
+	var name string = ""
+	this.Name = &name
 	var switchpoint1 string = ""
 	this.Switchpoint1 = &switchpoint1
 	var switchpoint2 string = ""
 	this.Switchpoint2 = &switchpoint2
-	var lag string = ""
-	this.Lag = &lag
-	var isWhiteboxPair bool = false
-	this.IsWhiteboxPair = &isWhiteboxPair
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *PairsPutRequestSwitchPairValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PairsPutRequestSwitchPairValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *PairsPutRequestSwitchPairValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *PairsPutRequestSwitchPairValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -142,6 +110,134 @@ func (o *PairsPutRequestSwitchPairValue) HasEnable() bool {
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *PairsPutRequestSwitchPairValue) SetEnable(v bool) {
 	o.Enable = &v
+}
+
+// GetIsWhiteboxPair returns the IsWhiteboxPair field value if set, zero value otherwise.
+func (o *PairsPutRequestSwitchPairValue) GetIsWhiteboxPair() bool {
+	if o == nil || IsNil(o.IsWhiteboxPair) {
+		var ret bool
+		return ret
+	}
+	return *o.IsWhiteboxPair
+}
+
+// GetIsWhiteboxPairOk returns a tuple with the IsWhiteboxPair field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PairsPutRequestSwitchPairValue) GetIsWhiteboxPairOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsWhiteboxPair) {
+		return nil, false
+	}
+	return o.IsWhiteboxPair, true
+}
+
+// HasIsWhiteboxPair returns a boolean if a field has been set.
+func (o *PairsPutRequestSwitchPairValue) HasIsWhiteboxPair() bool {
+	if o != nil && !IsNil(o.IsWhiteboxPair) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsWhiteboxPair gets a reference to the given bool and assigns it to the IsWhiteboxPair field.
+func (o *PairsPutRequestSwitchPairValue) SetIsWhiteboxPair(v bool) {
+	o.IsWhiteboxPair = &v
+}
+
+// GetLag returns the Lag field value if set, zero value otherwise.
+func (o *PairsPutRequestSwitchPairValue) GetLag() string {
+	if o == nil || IsNil(o.Lag) {
+		var ret string
+		return ret
+	}
+	return *o.Lag
+}
+
+// GetLagOk returns a tuple with the Lag field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PairsPutRequestSwitchPairValue) GetLagOk() (*string, bool) {
+	if o == nil || IsNil(o.Lag) {
+		return nil, false
+	}
+	return o.Lag, true
+}
+
+// HasLag returns a boolean if a field has been set.
+func (o *PairsPutRequestSwitchPairValue) HasLag() bool {
+	if o != nil && !IsNil(o.Lag) {
+		return true
+	}
+
+	return false
+}
+
+// SetLag gets a reference to the given string and assigns it to the Lag field.
+func (o *PairsPutRequestSwitchPairValue) SetLag(v string) {
+	o.Lag = &v
+}
+
+// GetLagRefType returns the LagRefType field value if set, zero value otherwise.
+func (o *PairsPutRequestSwitchPairValue) GetLagRefType() string {
+	if o == nil || IsNil(o.LagRefType) {
+		var ret string
+		return ret
+	}
+	return *o.LagRefType
+}
+
+// GetLagRefTypeOk returns a tuple with the LagRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PairsPutRequestSwitchPairValue) GetLagRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.LagRefType) {
+		return nil, false
+	}
+	return o.LagRefType, true
+}
+
+// HasLagRefType returns a boolean if a field has been set.
+func (o *PairsPutRequestSwitchPairValue) HasLagRefType() bool {
+	if o != nil && !IsNil(o.LagRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetLagRefType gets a reference to the given string and assigns it to the LagRefType field.
+func (o *PairsPutRequestSwitchPairValue) SetLagRefType(v string) {
+	o.LagRefType = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *PairsPutRequestSwitchPairValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PairsPutRequestSwitchPairValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *PairsPutRequestSwitchPairValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *PairsPutRequestSwitchPairValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetSwitchpoint1 returns the Switchpoint1 field value if set, zero value otherwise.
@@ -272,104 +368,8 @@ func (o *PairsPutRequestSwitchPairValue) SetSwitchpoint2RefType(v string) {
 	o.Switchpoint2RefType = &v
 }
 
-// GetLag returns the Lag field value if set, zero value otherwise.
-func (o *PairsPutRequestSwitchPairValue) GetLag() string {
-	if o == nil || IsNil(o.Lag) {
-		var ret string
-		return ret
-	}
-	return *o.Lag
-}
-
-// GetLagOk returns a tuple with the Lag field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PairsPutRequestSwitchPairValue) GetLagOk() (*string, bool) {
-	if o == nil || IsNil(o.Lag) {
-		return nil, false
-	}
-	return o.Lag, true
-}
-
-// HasLag returns a boolean if a field has been set.
-func (o *PairsPutRequestSwitchPairValue) HasLag() bool {
-	if o != nil && !IsNil(o.Lag) {
-		return true
-	}
-
-	return false
-}
-
-// SetLag gets a reference to the given string and assigns it to the Lag field.
-func (o *PairsPutRequestSwitchPairValue) SetLag(v string) {
-	o.Lag = &v
-}
-
-// GetLagRefType returns the LagRefType field value if set, zero value otherwise.
-func (o *PairsPutRequestSwitchPairValue) GetLagRefType() string {
-	if o == nil || IsNil(o.LagRefType) {
-		var ret string
-		return ret
-	}
-	return *o.LagRefType
-}
-
-// GetLagRefTypeOk returns a tuple with the LagRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PairsPutRequestSwitchPairValue) GetLagRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.LagRefType) {
-		return nil, false
-	}
-	return o.LagRefType, true
-}
-
-// HasLagRefType returns a boolean if a field has been set.
-func (o *PairsPutRequestSwitchPairValue) HasLagRefType() bool {
-	if o != nil && !IsNil(o.LagRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetLagRefType gets a reference to the given string and assigns it to the LagRefType field.
-func (o *PairsPutRequestSwitchPairValue) SetLagRefType(v string) {
-	o.LagRefType = &v
-}
-
-// GetIsWhiteboxPair returns the IsWhiteboxPair field value if set, zero value otherwise.
-func (o *PairsPutRequestSwitchPairValue) GetIsWhiteboxPair() bool {
-	if o == nil || IsNil(o.IsWhiteboxPair) {
-		var ret bool
-		return ret
-	}
-	return *o.IsWhiteboxPair
-}
-
-// GetIsWhiteboxPairOk returns a tuple with the IsWhiteboxPair field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PairsPutRequestSwitchPairValue) GetIsWhiteboxPairOk() (*bool, bool) {
-	if o == nil || IsNil(o.IsWhiteboxPair) {
-		return nil, false
-	}
-	return o.IsWhiteboxPair, true
-}
-
-// HasIsWhiteboxPair returns a boolean if a field has been set.
-func (o *PairsPutRequestSwitchPairValue) HasIsWhiteboxPair() bool {
-	if o != nil && !IsNil(o.IsWhiteboxPair) {
-		return true
-	}
-
-	return false
-}
-
-// SetIsWhiteboxPair gets a reference to the given bool and assigns it to the IsWhiteboxPair field.
-func (o *PairsPutRequestSwitchPairValue) SetIsWhiteboxPair(v bool) {
-	o.IsWhiteboxPair = &v
-}
-
 func (o PairsPutRequestSwitchPairValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -378,11 +378,20 @@ func (o PairsPutRequestSwitchPairValue) MarshalJSON() ([]byte, error) {
 
 func (o PairsPutRequestSwitchPairValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
+	}
+	if !IsNil(o.IsWhiteboxPair) {
+		toSerialize["is_whitebox_pair"] = o.IsWhiteboxPair
+	}
+	if !IsNil(o.Lag) {
+		toSerialize["lag"] = o.Lag
+	}
+	if !IsNil(o.LagRefType) {
+		toSerialize["lag_ref_type_"] = o.LagRefType
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.Switchpoint1) {
 		toSerialize["switchpoint_1"] = o.Switchpoint1
@@ -395,15 +404,6 @@ func (o PairsPutRequestSwitchPairValue) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.Switchpoint2RefType) {
 		toSerialize["switchpoint_2_ref_type_"] = o.Switchpoint2RefType
-	}
-	if !IsNil(o.Lag) {
-		toSerialize["lag"] = o.Lag
-	}
-	if !IsNil(o.LagRefType) {
-		toSerialize["lag_ref_type_"] = o.LagRefType
-	}
-	if !IsNil(o.IsWhiteboxPair) {
-		toSerialize["is_whitebox_pair"] = o.IsWhiteboxPair
 	}
 	return toSerialize, nil
 }
@@ -443,5 +443,3 @@ func (v *NullablePairsPutRequestSwitchPairValue) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

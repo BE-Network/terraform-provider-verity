@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -18,13 +18,12 @@ import (
 	"net/url"
 )
 
-
 // AuthorizationAPIService AuthorizationAPI service
 type AuthorizationAPIService service
 
 type ApiAuthPostRequest struct {
-	ctx context.Context
-	ApiService *AuthorizationAPIService
+	ctx             context.Context
+	ApiService      *AuthorizationAPIService
 	authPostRequest *AuthPostRequest
 }
 
@@ -41,28 +40,29 @@ func (r ApiAuthPostRequest) Execute() (*http.Response, error) {
 AuthPost User authorization
 
 Authenticates a user using username and password.
-            On successful authentication a cookie named "nbi_auth" is set for browser clients.
-            For non-browser/scripted clients the response body returns a JSON `token` field containing the same session value.
-            Include that token in subsequent requests by sending the cookie header "Cookie: nbi_auth=<token>".
-            The session cookie expires after 20 minutes.
-        
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAuthPostRequest
+	           On successful authentication a cookie named "nbi_auth" is set for browser clients.
+	           For non-browser/scripted clients the response body returns a JSON `token` field containing the same session value.
+	           Include that token in subsequent requests by sending the cookie header "Cookie: nbi_auth=<token>".
+	           The session cookie expires after 20 minutes.
+
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiAuthPostRequest
 */
 func (a *AuthorizationAPIService) AuthPost(ctx context.Context) ApiAuthPostRequest {
 	return ApiAuthPostRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *AuthorizationAPIService) AuthPostExecute(r ApiAuthPostRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPost
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "AuthorizationAPIService.AuthPost")

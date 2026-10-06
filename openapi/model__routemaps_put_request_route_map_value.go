@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,12 +19,12 @@ var _ MappedNullable = &RoutemapsPutRequestRouteMapValue{}
 
 // RoutemapsPutRequestRouteMapValue struct for RoutemapsPutRequestRouteMapValue
 type RoutemapsPutRequestRouteMapValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
-	RouteMapClauses []RoutemapsPutRequestRouteMapValueRouteMapClausesInner `json:"route_map_clauses,omitempty"`
-	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                                `json:"name,omitempty"`
+	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties           `json:"object_properties,omitempty"`
+	RouteMapClauses  []RoutemapsPutRequestRouteMapValueRouteMapClausesInner `json:"route_map_clauses,omitempty"`
 }
 
 // NewRoutemapsPutRequestRouteMapValue instantiates a new RoutemapsPutRequestRouteMapValue object
@@ -33,10 +33,10 @@ type RoutemapsPutRequestRouteMapValue struct {
 // will change when the set of required properties is changed
 func NewRoutemapsPutRequestRouteMapValue() *RoutemapsPutRequestRouteMapValue {
 	this := RoutemapsPutRequestRouteMapValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	return &this
 }
 
@@ -45,43 +45,11 @@ func NewRoutemapsPutRequestRouteMapValue() *RoutemapsPutRequestRouteMapValue {
 // but it doesn't guarantee that properties required by API are set
 func NewRoutemapsPutRequestRouteMapValueWithDefaults() *RoutemapsPutRequestRouteMapValue {
 	this := RoutemapsPutRequestRouteMapValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *RoutemapsPutRequestRouteMapValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RoutemapsPutRequestRouteMapValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *RoutemapsPutRequestRouteMapValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *RoutemapsPutRequestRouteMapValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -116,36 +84,36 @@ func (o *RoutemapsPutRequestRouteMapValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetRouteMapClauses returns the RouteMapClauses field value if set, zero value otherwise.
-func (o *RoutemapsPutRequestRouteMapValue) GetRouteMapClauses() []RoutemapsPutRequestRouteMapValueRouteMapClausesInner {
-	if o == nil || IsNil(o.RouteMapClauses) {
-		var ret []RoutemapsPutRequestRouteMapValueRouteMapClausesInner
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *RoutemapsPutRequestRouteMapValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
 		return ret
 	}
-	return o.RouteMapClauses
+	return *o.Name
 }
 
-// GetRouteMapClausesOk returns a tuple with the RouteMapClauses field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RoutemapsPutRequestRouteMapValue) GetRouteMapClausesOk() ([]RoutemapsPutRequestRouteMapValueRouteMapClausesInner, bool) {
-	if o == nil || IsNil(o.RouteMapClauses) {
+func (o *RoutemapsPutRequestRouteMapValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
-	return o.RouteMapClauses, true
+	return o.Name, true
 }
 
-// HasRouteMapClauses returns a boolean if a field has been set.
-func (o *RoutemapsPutRequestRouteMapValue) HasRouteMapClauses() bool {
-	if o != nil && !IsNil(o.RouteMapClauses) {
+// HasName returns a boolean if a field has been set.
+func (o *RoutemapsPutRequestRouteMapValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
 	return false
 }
 
-// SetRouteMapClauses gets a reference to the given []RoutemapsPutRequestRouteMapValueRouteMapClausesInner and assigns it to the RouteMapClauses field.
-func (o *RoutemapsPutRequestRouteMapValue) SetRouteMapClauses(v []RoutemapsPutRequestRouteMapValueRouteMapClausesInner) {
-	o.RouteMapClauses = v
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *RoutemapsPutRequestRouteMapValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -180,8 +148,40 @@ func (o *RoutemapsPutRequestRouteMapValue) SetObjectProperties(v AclsPutRequestI
 	o.ObjectProperties = &v
 }
 
+// GetRouteMapClauses returns the RouteMapClauses field value if set, zero value otherwise.
+func (o *RoutemapsPutRequestRouteMapValue) GetRouteMapClauses() []RoutemapsPutRequestRouteMapValueRouteMapClausesInner {
+	if o == nil || IsNil(o.RouteMapClauses) {
+		var ret []RoutemapsPutRequestRouteMapValueRouteMapClausesInner
+		return ret
+	}
+	return o.RouteMapClauses
+}
+
+// GetRouteMapClausesOk returns a tuple with the RouteMapClauses field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoutemapsPutRequestRouteMapValue) GetRouteMapClausesOk() ([]RoutemapsPutRequestRouteMapValueRouteMapClausesInner, bool) {
+	if o == nil || IsNil(o.RouteMapClauses) {
+		return nil, false
+	}
+	return o.RouteMapClauses, true
+}
+
+// HasRouteMapClauses returns a boolean if a field has been set.
+func (o *RoutemapsPutRequestRouteMapValue) HasRouteMapClauses() bool {
+	if o != nil && !IsNil(o.RouteMapClauses) {
+		return true
+	}
+
+	return false
+}
+
+// SetRouteMapClauses gets a reference to the given []RoutemapsPutRequestRouteMapValueRouteMapClausesInner and assigns it to the RouteMapClauses field.
+func (o *RoutemapsPutRequestRouteMapValue) SetRouteMapClauses(v []RoutemapsPutRequestRouteMapValueRouteMapClausesInner) {
+	o.RouteMapClauses = v
+}
+
 func (o RoutemapsPutRequestRouteMapValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -190,17 +190,17 @@ func (o RoutemapsPutRequestRouteMapValue) MarshalJSON() ([]byte, error) {
 
 func (o RoutemapsPutRequestRouteMapValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.RouteMapClauses) {
-		toSerialize["route_map_clauses"] = o.RouteMapClauses
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.RouteMapClauses) {
+		toSerialize["route_map_clauses"] = o.RouteMapClauses
 	}
 	return toSerialize, nil
 }
@@ -240,5 +240,3 @@ func (v *NullableRoutemapsPutRequestRouteMapValue) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

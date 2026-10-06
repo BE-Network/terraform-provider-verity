@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,10 +21,10 @@ var _ MappedNullable = &DevicesettingsPutRequestEthDeviceProfilesValueNtpServers
 type DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner struct {
 	// Enable NTP server
 	Enabled *bool `json:"enabled,omitempty"`
-	// IPv4, IPv6, or DNS name for NTP server
-	Server *string `json:"server,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
+	// IPv4, IPv6, or DNS name for NTP server
+	Server *string `json:"server,omitempty"`
 }
 
 // NewDevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner instantiates a new DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner object
@@ -84,38 +84,6 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) SetEnabl
 	o.Enabled = &v
 }
 
-// GetServer returns the Server field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) GetServer() string {
-	if o == nil || IsNil(o.Server) {
-		var ret string
-		return ret
-	}
-	return *o.Server
-}
-
-// GetServerOk returns a tuple with the Server field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) GetServerOk() (*string, bool) {
-	if o == nil || IsNil(o.Server) {
-		return nil, false
-	}
-	return o.Server, true
-}
-
-// HasServer returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) HasServer() bool {
-	if o != nil && !IsNil(o.Server) {
-		return true
-	}
-
-	return false
-}
-
-// SetServer gets a reference to the given string and assigns it to the Server field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) SetServer(v string) {
-	o.Server = &v
-}
-
 // GetIndex returns the Index field value if set, zero value otherwise.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
@@ -148,8 +116,40 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) SetIndex
 	o.Index = &v
 }
 
+// GetServer returns the Server field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) GetServer() string {
+	if o == nil || IsNil(o.Server) {
+		var ret string
+		return ret
+	}
+	return *o.Server
+}
+
+// GetServerOk returns a tuple with the Server field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) GetServerOk() (*string, bool) {
+	if o == nil || IsNil(o.Server) {
+		return nil, false
+	}
+	return o.Server, true
+}
+
+// HasServer returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) HasServer() bool {
+	if o != nil && !IsNil(o.Server) {
+		return true
+	}
+
+	return false
+}
+
+// SetServer gets a reference to the given string and assigns it to the Server field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) SetServer(v string) {
+	o.Server = &v
+}
+
 func (o DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -161,11 +161,11 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) ToMap() (
 	if !IsNil(o.Enabled) {
 		toSerialize["enabled"] = o.Enabled
 	}
-	if !IsNil(o.Server) {
-		toSerialize["server"] = o.Server
-	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
+	}
+	if !IsNil(o.Server) {
+		toSerialize["server"] = o.Server
 	}
 	return toSerialize, nil
 }
@@ -205,5 +205,3 @@ func (v *NullableDevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner) 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

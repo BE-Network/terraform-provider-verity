@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,22 +19,22 @@ var _ MappedNullable = &SwitchpointsPutRequestSwitchpointValueObjectProperties{}
 
 // SwitchpointsPutRequestSwitchpointValueObjectProperties struct for SwitchpointsPutRequestSwitchpointValueObjectProperties
 type SwitchpointsPutRequestSwitchpointValueObjectProperties struct {
-	// Notes writen by User about the fabric
-	UserNotes *string `json:"user_notes,omitempty"`
+	// For Switch Endpoints. Denotes switch aggregated with all of its sub switches
+	Aggregate *bool `json:"aggregate,omitempty"`
+	// Turn on to display the switch as an edge device instead of as a switch
+	DrawAsEdgeDevice *bool `json:"draw_as_edge_device,omitempty"`
+	// Emulate RF Video Port
+	EmulateRfVideoPort *bool `json:"emulate_rf_video_port,omitempty"`
 	// Expected Parent Endpoint
 	ExpectedParentEndpoint *string `json:"expected_parent_endpoint,omitempty"`
 	// Object type for expected_parent_endpoint field
 	ExpectedParentEndpointRefType *string `json:"expected_parent_endpoint_ref_type_,omitempty"`
-	// Number of Multipoints
-	NumberOfMultipoints NullableInt64 `json:"number_of_multipoints,omitempty"`
-	// For Switch Endpoints. Denotes switch aggregated with all of its sub switches
-	Aggregate *bool `json:"aggregate,omitempty"`
 	// For Switch Endpoints. Denotes the Host Switch
 	IsHost *bool `json:"is_host,omitempty"`
-	// Emulate RF Video Port
-	EmulateRfVideoPort *bool `json:"emulate_rf_video_port,omitempty"`
-	// Turn on to display the switch as an edge device instead of as a switch
-	DrawAsEdgeDevice *bool `json:"draw_as_edge_device,omitempty"`
+	// Number of Multipoints
+	NumberOfMultipoints NullableInt64 `json:"number_of_multipoints,omitempty"`
+	// Notes writen by User about the fabric
+	UserNotes *string `json:"user_notes,omitempty"`
 }
 
 // NewSwitchpointsPutRequestSwitchpointValueObjectProperties instantiates a new SwitchpointsPutRequestSwitchpointValueObjectProperties object
@@ -43,20 +43,20 @@ type SwitchpointsPutRequestSwitchpointValueObjectProperties struct {
 // will change when the set of required properties is changed
 func NewSwitchpointsPutRequestSwitchpointValueObjectProperties() *SwitchpointsPutRequestSwitchpointValueObjectProperties {
 	this := SwitchpointsPutRequestSwitchpointValueObjectProperties{}
-	var userNotes string = ""
-	this.UserNotes = &userNotes
-	var expectedParentEndpoint string = ""
-	this.ExpectedParentEndpoint = &expectedParentEndpoint
-	var numberOfMultipoints int64 = 0
-	this.NumberOfMultipoints = *NewNullableInt64(&numberOfMultipoints)
 	var aggregate bool = false
 	this.Aggregate = &aggregate
-	var isHost bool = false
-	this.IsHost = &isHost
-	var emulateRfVideoPort bool = false
-	this.EmulateRfVideoPort = &emulateRfVideoPort
 	var drawAsEdgeDevice bool = false
 	this.DrawAsEdgeDevice = &drawAsEdgeDevice
+	var emulateRfVideoPort bool = false
+	this.EmulateRfVideoPort = &emulateRfVideoPort
+	var expectedParentEndpoint string = ""
+	this.ExpectedParentEndpoint = &expectedParentEndpoint
+	var isHost bool = false
+	this.IsHost = &isHost
+	var numberOfMultipoints int64 = 0
+	this.NumberOfMultipoints = *NewNullableInt64(&numberOfMultipoints)
+	var userNotes string = ""
+	this.UserNotes = &userNotes
 	return &this
 }
 
@@ -65,53 +65,117 @@ func NewSwitchpointsPutRequestSwitchpointValueObjectProperties() *SwitchpointsPu
 // but it doesn't guarantee that properties required by API are set
 func NewSwitchpointsPutRequestSwitchpointValueObjectPropertiesWithDefaults() *SwitchpointsPutRequestSwitchpointValueObjectProperties {
 	this := SwitchpointsPutRequestSwitchpointValueObjectProperties{}
-	var userNotes string = ""
-	this.UserNotes = &userNotes
-	var expectedParentEndpoint string = ""
-	this.ExpectedParentEndpoint = &expectedParentEndpoint
-	var numberOfMultipoints int64 = 0
-	this.NumberOfMultipoints = *NewNullableInt64(&numberOfMultipoints)
 	var aggregate bool = false
 	this.Aggregate = &aggregate
-	var isHost bool = false
-	this.IsHost = &isHost
-	var emulateRfVideoPort bool = false
-	this.EmulateRfVideoPort = &emulateRfVideoPort
 	var drawAsEdgeDevice bool = false
 	this.DrawAsEdgeDevice = &drawAsEdgeDevice
+	var emulateRfVideoPort bool = false
+	this.EmulateRfVideoPort = &emulateRfVideoPort
+	var expectedParentEndpoint string = ""
+	this.ExpectedParentEndpoint = &expectedParentEndpoint
+	var isHost bool = false
+	this.IsHost = &isHost
+	var numberOfMultipoints int64 = 0
+	this.NumberOfMultipoints = *NewNullableInt64(&numberOfMultipoints)
+	var userNotes string = ""
+	this.UserNotes = &userNotes
 	return &this
 }
 
-// GetUserNotes returns the UserNotes field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetUserNotes() string {
-	if o == nil || IsNil(o.UserNotes) {
-		var ret string
+// GetAggregate returns the Aggregate field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetAggregate() bool {
+	if o == nil || IsNil(o.Aggregate) {
+		var ret bool
 		return ret
 	}
-	return *o.UserNotes
+	return *o.Aggregate
 }
 
-// GetUserNotesOk returns a tuple with the UserNotes field value if set, nil otherwise
+// GetAggregateOk returns a tuple with the Aggregate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetUserNotesOk() (*string, bool) {
-	if o == nil || IsNil(o.UserNotes) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetAggregateOk() (*bool, bool) {
+	if o == nil || IsNil(o.Aggregate) {
 		return nil, false
 	}
-	return o.UserNotes, true
+	return o.Aggregate, true
 }
 
-// HasUserNotes returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasUserNotes() bool {
-	if o != nil && !IsNil(o.UserNotes) {
+// HasAggregate returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasAggregate() bool {
+	if o != nil && !IsNil(o.Aggregate) {
 		return true
 	}
 
 	return false
 }
 
-// SetUserNotes gets a reference to the given string and assigns it to the UserNotes field.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetUserNotes(v string) {
-	o.UserNotes = &v
+// SetAggregate gets a reference to the given bool and assigns it to the Aggregate field.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetAggregate(v bool) {
+	o.Aggregate = &v
+}
+
+// GetDrawAsEdgeDevice returns the DrawAsEdgeDevice field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetDrawAsEdgeDevice() bool {
+	if o == nil || IsNil(o.DrawAsEdgeDevice) {
+		var ret bool
+		return ret
+	}
+	return *o.DrawAsEdgeDevice
+}
+
+// GetDrawAsEdgeDeviceOk returns a tuple with the DrawAsEdgeDevice field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetDrawAsEdgeDeviceOk() (*bool, bool) {
+	if o == nil || IsNil(o.DrawAsEdgeDevice) {
+		return nil, false
+	}
+	return o.DrawAsEdgeDevice, true
+}
+
+// HasDrawAsEdgeDevice returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasDrawAsEdgeDevice() bool {
+	if o != nil && !IsNil(o.DrawAsEdgeDevice) {
+		return true
+	}
+
+	return false
+}
+
+// SetDrawAsEdgeDevice gets a reference to the given bool and assigns it to the DrawAsEdgeDevice field.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetDrawAsEdgeDevice(v bool) {
+	o.DrawAsEdgeDevice = &v
+}
+
+// GetEmulateRfVideoPort returns the EmulateRfVideoPort field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEmulateRfVideoPort() bool {
+	if o == nil || IsNil(o.EmulateRfVideoPort) {
+		var ret bool
+		return ret
+	}
+	return *o.EmulateRfVideoPort
+}
+
+// GetEmulateRfVideoPortOk returns a tuple with the EmulateRfVideoPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEmulateRfVideoPortOk() (*bool, bool) {
+	if o == nil || IsNil(o.EmulateRfVideoPort) {
+		return nil, false
+	}
+	return o.EmulateRfVideoPort, true
+}
+
+// HasEmulateRfVideoPort returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasEmulateRfVideoPort() bool {
+	if o != nil && !IsNil(o.EmulateRfVideoPort) {
+		return true
+	}
+
+	return false
+}
+
+// SetEmulateRfVideoPort gets a reference to the given bool and assigns it to the EmulateRfVideoPort field.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetEmulateRfVideoPort(v bool) {
+	o.EmulateRfVideoPort = &v
 }
 
 // GetExpectedParentEndpoint returns the ExpectedParentEndpoint field value if set, zero value otherwise.
@@ -178,80 +242,6 @@ func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetExpectedPare
 	o.ExpectedParentEndpointRefType = &v
 }
 
-// GetNumberOfMultipoints returns the NumberOfMultipoints field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMultipoints() int64 {
-	if o == nil || IsNil(o.NumberOfMultipoints.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.NumberOfMultipoints.Get()
-}
-
-// GetNumberOfMultipointsOk returns a tuple with the NumberOfMultipoints field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMultipointsOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.NumberOfMultipoints.Get(), o.NumberOfMultipoints.IsSet()
-}
-
-// HasNumberOfMultipoints returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasNumberOfMultipoints() bool {
-	if o != nil && o.NumberOfMultipoints.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetNumberOfMultipoints gets a reference to the given NullableInt64 and assigns it to the NumberOfMultipoints field.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetNumberOfMultipoints(v int64) {
-	o.NumberOfMultipoints.Set(&v)
-}
-// SetNumberOfMultipointsNil sets the value for NumberOfMultipoints to be an explicit nil
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetNumberOfMultipointsNil() {
-	o.NumberOfMultipoints.Set(nil)
-}
-
-// UnsetNumberOfMultipoints ensures that no value is present for NumberOfMultipoints, not even an explicit nil
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) UnsetNumberOfMultipoints() {
-	o.NumberOfMultipoints.Unset()
-}
-
-// GetAggregate returns the Aggregate field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetAggregate() bool {
-	if o == nil || IsNil(o.Aggregate) {
-		var ret bool
-		return ret
-	}
-	return *o.Aggregate
-}
-
-// GetAggregateOk returns a tuple with the Aggregate field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetAggregateOk() (*bool, bool) {
-	if o == nil || IsNil(o.Aggregate) {
-		return nil, false
-	}
-	return o.Aggregate, true
-}
-
-// HasAggregate returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasAggregate() bool {
-	if o != nil && !IsNil(o.Aggregate) {
-		return true
-	}
-
-	return false
-}
-
-// SetAggregate gets a reference to the given bool and assigns it to the Aggregate field.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetAggregate(v bool) {
-	o.Aggregate = &v
-}
-
 // GetIsHost returns the IsHost field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetIsHost() bool {
 	if o == nil || IsNil(o.IsHost) {
@@ -284,72 +274,83 @@ func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetIsHost(v boo
 	o.IsHost = &v
 }
 
-// GetEmulateRfVideoPort returns the EmulateRfVideoPort field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEmulateRfVideoPort() bool {
-	if o == nil || IsNil(o.EmulateRfVideoPort) {
-		var ret bool
+// GetNumberOfMultipoints returns the NumberOfMultipoints field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMultipoints() int64 {
+	if o == nil || IsNil(o.NumberOfMultipoints.Get()) {
+		var ret int64
 		return ret
 	}
-	return *o.EmulateRfVideoPort
+	return *o.NumberOfMultipoints.Get()
 }
 
-// GetEmulateRfVideoPortOk returns a tuple with the EmulateRfVideoPort field value if set, nil otherwise
+// GetNumberOfMultipointsOk returns a tuple with the NumberOfMultipoints field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetEmulateRfVideoPortOk() (*bool, bool) {
-	if o == nil || IsNil(o.EmulateRfVideoPort) {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetNumberOfMultipointsOk() (*int64, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.EmulateRfVideoPort, true
+	return o.NumberOfMultipoints.Get(), o.NumberOfMultipoints.IsSet()
 }
 
-// HasEmulateRfVideoPort returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasEmulateRfVideoPort() bool {
-	if o != nil && !IsNil(o.EmulateRfVideoPort) {
+// HasNumberOfMultipoints returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasNumberOfMultipoints() bool {
+	if o != nil && o.NumberOfMultipoints.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetEmulateRfVideoPort gets a reference to the given bool and assigns it to the EmulateRfVideoPort field.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetEmulateRfVideoPort(v bool) {
-	o.EmulateRfVideoPort = &v
+// SetNumberOfMultipoints gets a reference to the given NullableInt64 and assigns it to the NumberOfMultipoints field.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetNumberOfMultipoints(v int64) {
+	o.NumberOfMultipoints.Set(&v)
 }
 
-// GetDrawAsEdgeDevice returns the DrawAsEdgeDevice field value if set, zero value otherwise.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetDrawAsEdgeDevice() bool {
-	if o == nil || IsNil(o.DrawAsEdgeDevice) {
-		var ret bool
+// SetNumberOfMultipointsNil sets the value for NumberOfMultipoints to be an explicit nil
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetNumberOfMultipointsNil() {
+	o.NumberOfMultipoints.Set(nil)
+}
+
+// UnsetNumberOfMultipoints ensures that no value is present for NumberOfMultipoints, not even an explicit nil
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) UnsetNumberOfMultipoints() {
+	o.NumberOfMultipoints.Unset()
+}
+
+// GetUserNotes returns the UserNotes field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetUserNotes() string {
+	if o == nil || IsNil(o.UserNotes) {
+		var ret string
 		return ret
 	}
-	return *o.DrawAsEdgeDevice
+	return *o.UserNotes
 }
 
-// GetDrawAsEdgeDeviceOk returns a tuple with the DrawAsEdgeDevice field value if set, nil otherwise
+// GetUserNotesOk returns a tuple with the UserNotes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetDrawAsEdgeDeviceOk() (*bool, bool) {
-	if o == nil || IsNil(o.DrawAsEdgeDevice) {
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) GetUserNotesOk() (*string, bool) {
+	if o == nil || IsNil(o.UserNotes) {
 		return nil, false
 	}
-	return o.DrawAsEdgeDevice, true
+	return o.UserNotes, true
 }
 
-// HasDrawAsEdgeDevice returns a boolean if a field has been set.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasDrawAsEdgeDevice() bool {
-	if o != nil && !IsNil(o.DrawAsEdgeDevice) {
+// HasUserNotes returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) HasUserNotes() bool {
+	if o != nil && !IsNil(o.UserNotes) {
 		return true
 	}
 
 	return false
 }
 
-// SetDrawAsEdgeDevice gets a reference to the given bool and assigns it to the DrawAsEdgeDevice field.
-func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetDrawAsEdgeDevice(v bool) {
-	o.DrawAsEdgeDevice = &v
+// SetUserNotes gets a reference to the given string and assigns it to the UserNotes field.
+func (o *SwitchpointsPutRequestSwitchpointValueObjectProperties) SetUserNotes(v string) {
+	o.UserNotes = &v
 }
 
 func (o SwitchpointsPutRequestSwitchpointValueObjectProperties) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -358,8 +359,14 @@ func (o SwitchpointsPutRequestSwitchpointValueObjectProperties) MarshalJSON() ([
 
 func (o SwitchpointsPutRequestSwitchpointValueObjectProperties) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.UserNotes) {
-		toSerialize["user_notes"] = o.UserNotes
+	if !IsNil(o.Aggregate) {
+		toSerialize["aggregate"] = o.Aggregate
+	}
+	if !IsNil(o.DrawAsEdgeDevice) {
+		toSerialize["draw_as_edge_device"] = o.DrawAsEdgeDevice
+	}
+	if !IsNil(o.EmulateRfVideoPort) {
+		toSerialize["emulate_rf_video_port"] = o.EmulateRfVideoPort
 	}
 	if !IsNil(o.ExpectedParentEndpoint) {
 		toSerialize["expected_parent_endpoint"] = o.ExpectedParentEndpoint
@@ -367,20 +374,14 @@ func (o SwitchpointsPutRequestSwitchpointValueObjectProperties) ToMap() (map[str
 	if !IsNil(o.ExpectedParentEndpointRefType) {
 		toSerialize["expected_parent_endpoint_ref_type_"] = o.ExpectedParentEndpointRefType
 	}
-	if o.NumberOfMultipoints.IsSet() {
-		toSerialize["number_of_multipoints"] = o.NumberOfMultipoints.Get()
-	}
-	if !IsNil(o.Aggregate) {
-		toSerialize["aggregate"] = o.Aggregate
-	}
 	if !IsNil(o.IsHost) {
 		toSerialize["is_host"] = o.IsHost
 	}
-	if !IsNil(o.EmulateRfVideoPort) {
-		toSerialize["emulate_rf_video_port"] = o.EmulateRfVideoPort
+	if o.NumberOfMultipoints.IsSet() {
+		toSerialize["number_of_multipoints"] = o.NumberOfMultipoints.Get()
 	}
-	if !IsNil(o.DrawAsEdgeDevice) {
-		toSerialize["draw_as_edge_device"] = o.DrawAsEdgeDevice
+	if !IsNil(o.UserNotes) {
+		toSerialize["user_notes"] = o.UserNotes
 	}
 	return toSerialize, nil
 }
@@ -420,5 +421,3 @@ func (v *NullableSwitchpointsPutRequestSwitchpointValueObjectProperties) Unmarsh
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

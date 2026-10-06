@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // ServicePortProfilesAPIService ServicePortProfilesAPI service
 type ServicePortProfilesAPIService service
 
 type ApiServiceportprofilesDeleteRequest struct {
-	ctx context.Context
-	ApiService *ServicePortProfilesAPIService
+	ctx                    context.Context
+	ApiService             *ServicePortProfilesAPIService
 	servicePortProfileName *[]string
-	changesetName *string
+	changesetName          *string
 }
 
 func (r ApiServiceportprofilesDeleteRequest) ServicePortProfileName(servicePortProfileName []string) ApiServiceportprofilesDeleteRequest {
@@ -49,23 +48,22 @@ ServiceportprofilesDelete Delete Service Port Profile
 
 Deletes an existing Service Port Profile from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiServiceportprofilesDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiServiceportprofilesDeleteRequest
 */
 func (a *ServicePortProfilesAPIService) ServiceportprofilesDelete(ctx context.Context) ApiServiceportprofilesDeleteRequest {
 	return ApiServiceportprofilesDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ServicePortProfilesAPIService) ServiceportprofilesDeleteExecute(r ApiServiceportprofilesDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServicePortProfilesAPIService.ServiceportprofilesDelete")
@@ -142,11 +140,11 @@ func (a *ServicePortProfilesAPIService) ServiceportprofilesDeleteExecute(r ApiSe
 }
 
 type ApiServiceportprofilesGetRequest struct {
-	ctx context.Context
-	ApiService *ServicePortProfilesAPIService
+	ctx                    context.Context
+	ApiService             *ServicePortProfilesAPIService
 	servicePortProfileName *string
-	includeData *bool
-	changesetName *string
+	includeData            *bool
+	changesetName          *string
 }
 
 func (r ApiServiceportprofilesGetRequest) ServicePortProfileName(servicePortProfileName string) ApiServiceportprofilesGetRequest {
@@ -173,23 +171,22 @@ ServiceportprofilesGet Get all Service Port Profiles
 
 Retrieves all Service Port Profiles from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiServiceportprofilesGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiServiceportprofilesGetRequest
 */
 func (a *ServicePortProfilesAPIService) ServiceportprofilesGet(ctx context.Context) ApiServiceportprofilesGetRequest {
 	return ApiServiceportprofilesGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ServicePortProfilesAPIService) ServiceportprofilesGetExecute(r ApiServiceportprofilesGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServicePortProfilesAPIService.ServiceportprofilesGet")
@@ -258,9 +255,9 @@ func (a *ServicePortProfilesAPIService) ServiceportprofilesGetExecute(r ApiServi
 }
 
 type ApiServiceportprofilesPatchRequest struct {
-	ctx context.Context
-	ApiService *ServicePortProfilesAPIService
-	changesetName *string
+	ctx                           context.Context
+	ApiService                    *ServicePortProfilesAPIService
+	changesetName                 *string
 	serviceportprofilesPutRequest *ServiceportprofilesPutRequest
 }
 
@@ -283,23 +280,22 @@ ServiceportprofilesPatch Update Service Port Profile
 
 Update Service Port Profile into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiServiceportprofilesPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiServiceportprofilesPatchRequest
 */
 func (a *ServicePortProfilesAPIService) ServiceportprofilesPatch(ctx context.Context) ApiServiceportprofilesPatchRequest {
 	return ApiServiceportprofilesPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ServicePortProfilesAPIService) ServiceportprofilesPatchExecute(r ApiServiceportprofilesPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServicePortProfilesAPIService.ServiceportprofilesPatch")
@@ -364,9 +360,9 @@ func (a *ServicePortProfilesAPIService) ServiceportprofilesPatchExecute(r ApiSer
 }
 
 type ApiServiceportprofilesPutRequest struct {
-	ctx context.Context
-	ApiService *ServicePortProfilesAPIService
-	changesetName *string
+	ctx                           context.Context
+	ApiService                    *ServicePortProfilesAPIService
+	changesetName                 *string
 	serviceportprofilesPutRequest *ServiceportprofilesPutRequest
 }
 
@@ -389,23 +385,22 @@ ServiceportprofilesPut Create Service Port Profile
 
 Create Service Port Profiles into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiServiceportprofilesPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiServiceportprofilesPutRequest
 */
 func (a *ServicePortProfilesAPIService) ServiceportprofilesPut(ctx context.Context) ApiServiceportprofilesPutRequest {
 	return ApiServiceportprofilesPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ServicePortProfilesAPIService) ServiceportprofilesPutExecute(r ApiServiceportprofilesPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServicePortProfilesAPIService.ServiceportprofilesPut")

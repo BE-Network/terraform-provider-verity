@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,16 +19,16 @@ var _ MappedNullable = &ImageupdatesetsPatchRequestImageUpdateSetsValueSectionEl
 
 // ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner struct for ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner
 type ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner struct {
-	// The name of the Endpoint Set
-	EndpointSetNumName *string `json:"endpoint_set_num_name,omitempty"`
 	// The target SW version for member devices of the Endpoint Set
 	EndpointSetForAllOthersTargetUpgradeVersion *string `json:"endpoint_set_for_all_others_target_upgrade_version,omitempty"`
-	// Unique Identifier - not editable
-	EndpointSetForAllOthersUniqueIdentifier *string `json:"endpoint_set_for_all_others_unique_identifier,omitempty"`
-	// Include on the Summary
-	EndpointSetNumOnSummary *bool `json:"endpoint_set_num_on_summary,omitempty"`
 	// The time to update to the target SW version
 	EndpointSetForAllOthersTargetUpgradeVersionTime *string `json:"endpoint_set_for_all_others_target_upgrade_version_time,omitempty"`
+	// Unique Identifier - not editable
+	EndpointSetForAllOthersUniqueIdentifier *string `json:"endpoint_set_for_all_others_unique_identifier,omitempty"`
+	// The name of the Endpoint Set
+	EndpointSetNumName *string `json:"endpoint_set_num_name,omitempty"`
+	// Include on the Summary
+	EndpointSetNumOnSummary *bool `json:"endpoint_set_num_on_summary,omitempty"`
 }
 
 // NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner instantiates a new ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner object
@@ -37,16 +37,16 @@ type ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner struct {
 // will change when the set of required properties is changed
 func NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner() *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner {
 	this := ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner{}
-	var endpointSetNumName string = "All Others"
-	this.EndpointSetNumName = &endpointSetNumName
 	var endpointSetForAllOthersTargetUpgradeVersion string = "unmanaged"
 	this.EndpointSetForAllOthersTargetUpgradeVersion = &endpointSetForAllOthersTargetUpgradeVersion
-	var endpointSetForAllOthersUniqueIdentifier string = "else"
-	this.EndpointSetForAllOthersUniqueIdentifier = &endpointSetForAllOthersUniqueIdentifier
-	var endpointSetNumOnSummary bool = true
-	this.EndpointSetNumOnSummary = &endpointSetNumOnSummary
 	var endpointSetForAllOthersTargetUpgradeVersionTime string = ""
 	this.EndpointSetForAllOthersTargetUpgradeVersionTime = &endpointSetForAllOthersTargetUpgradeVersionTime
+	var endpointSetForAllOthersUniqueIdentifier string = "else"
+	this.EndpointSetForAllOthersUniqueIdentifier = &endpointSetForAllOthersUniqueIdentifier
+	var endpointSetNumName string = "All Others"
+	this.EndpointSetNumName = &endpointSetNumName
+	var endpointSetNumOnSummary bool = true
+	this.EndpointSetNumOnSummary = &endpointSetNumOnSummary
 	return &this
 }
 
@@ -55,49 +55,17 @@ func NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner() *Image
 // but it doesn't guarantee that properties required by API are set
 func NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInnerWithDefaults() *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner {
 	this := ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner{}
-	var endpointSetNumName string = "All Others"
-	this.EndpointSetNumName = &endpointSetNumName
 	var endpointSetForAllOthersTargetUpgradeVersion string = "unmanaged"
 	this.EndpointSetForAllOthersTargetUpgradeVersion = &endpointSetForAllOthersTargetUpgradeVersion
-	var endpointSetForAllOthersUniqueIdentifier string = "else"
-	this.EndpointSetForAllOthersUniqueIdentifier = &endpointSetForAllOthersUniqueIdentifier
-	var endpointSetNumOnSummary bool = true
-	this.EndpointSetNumOnSummary = &endpointSetNumOnSummary
 	var endpointSetForAllOthersTargetUpgradeVersionTime string = ""
 	this.EndpointSetForAllOthersTargetUpgradeVersionTime = &endpointSetForAllOthersTargetUpgradeVersionTime
+	var endpointSetForAllOthersUniqueIdentifier string = "else"
+	this.EndpointSetForAllOthersUniqueIdentifier = &endpointSetForAllOthersUniqueIdentifier
+	var endpointSetNumName string = "All Others"
+	this.EndpointSetNumName = &endpointSetNumName
+	var endpointSetNumOnSummary bool = true
+	this.EndpointSetNumOnSummary = &endpointSetNumOnSummary
 	return &this
-}
-
-// GetEndpointSetNumName returns the EndpointSetNumName field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) GetEndpointSetNumName() string {
-	if o == nil || IsNil(o.EndpointSetNumName) {
-		var ret string
-		return ret
-	}
-	return *o.EndpointSetNumName
-}
-
-// GetEndpointSetNumNameOk returns a tuple with the EndpointSetNumName field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) GetEndpointSetNumNameOk() (*string, bool) {
-	if o == nil || IsNil(o.EndpointSetNumName) {
-		return nil, false
-	}
-	return o.EndpointSetNumName, true
-}
-
-// HasEndpointSetNumName returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) HasEndpointSetNumName() bool {
-	if o != nil && !IsNil(o.EndpointSetNumName) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndpointSetNumName gets a reference to the given string and assigns it to the EndpointSetNumName field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) SetEndpointSetNumName(v string) {
-	o.EndpointSetNumName = &v
 }
 
 // GetEndpointSetForAllOthersTargetUpgradeVersion returns the EndpointSetForAllOthersTargetUpgradeVersion field value if set, zero value otherwise.
@@ -132,6 +100,38 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) SetEnd
 	o.EndpointSetForAllOthersTargetUpgradeVersion = &v
 }
 
+// GetEndpointSetForAllOthersTargetUpgradeVersionTime returns the EndpointSetForAllOthersTargetUpgradeVersionTime field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) GetEndpointSetForAllOthersTargetUpgradeVersionTime() string {
+	if o == nil || IsNil(o.EndpointSetForAllOthersTargetUpgradeVersionTime) {
+		var ret string
+		return ret
+	}
+	return *o.EndpointSetForAllOthersTargetUpgradeVersionTime
+}
+
+// GetEndpointSetForAllOthersTargetUpgradeVersionTimeOk returns a tuple with the EndpointSetForAllOthersTargetUpgradeVersionTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) GetEndpointSetForAllOthersTargetUpgradeVersionTimeOk() (*string, bool) {
+	if o == nil || IsNil(o.EndpointSetForAllOthersTargetUpgradeVersionTime) {
+		return nil, false
+	}
+	return o.EndpointSetForAllOthersTargetUpgradeVersionTime, true
+}
+
+// HasEndpointSetForAllOthersTargetUpgradeVersionTime returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) HasEndpointSetForAllOthersTargetUpgradeVersionTime() bool {
+	if o != nil && !IsNil(o.EndpointSetForAllOthersTargetUpgradeVersionTime) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpointSetForAllOthersTargetUpgradeVersionTime gets a reference to the given string and assigns it to the EndpointSetForAllOthersTargetUpgradeVersionTime field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) SetEndpointSetForAllOthersTargetUpgradeVersionTime(v string) {
+	o.EndpointSetForAllOthersTargetUpgradeVersionTime = &v
+}
+
 // GetEndpointSetForAllOthersUniqueIdentifier returns the EndpointSetForAllOthersUniqueIdentifier field value if set, zero value otherwise.
 func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) GetEndpointSetForAllOthersUniqueIdentifier() string {
 	if o == nil || IsNil(o.EndpointSetForAllOthersUniqueIdentifier) {
@@ -162,6 +162,38 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) HasEnd
 // SetEndpointSetForAllOthersUniqueIdentifier gets a reference to the given string and assigns it to the EndpointSetForAllOthersUniqueIdentifier field.
 func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) SetEndpointSetForAllOthersUniqueIdentifier(v string) {
 	o.EndpointSetForAllOthersUniqueIdentifier = &v
+}
+
+// GetEndpointSetNumName returns the EndpointSetNumName field value if set, zero value otherwise.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) GetEndpointSetNumName() string {
+	if o == nil || IsNil(o.EndpointSetNumName) {
+		var ret string
+		return ret
+	}
+	return *o.EndpointSetNumName
+}
+
+// GetEndpointSetNumNameOk returns a tuple with the EndpointSetNumName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) GetEndpointSetNumNameOk() (*string, bool) {
+	if o == nil || IsNil(o.EndpointSetNumName) {
+		return nil, false
+	}
+	return o.EndpointSetNumName, true
+}
+
+// HasEndpointSetNumName returns a boolean if a field has been set.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) HasEndpointSetNumName() bool {
+	if o != nil && !IsNil(o.EndpointSetNumName) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpointSetNumName gets a reference to the given string and assigns it to the EndpointSetNumName field.
+func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) SetEndpointSetNumName(v string) {
+	o.EndpointSetNumName = &v
 }
 
 // GetEndpointSetNumOnSummary returns the EndpointSetNumOnSummary field value if set, zero value otherwise.
@@ -196,40 +228,8 @@ func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) SetEnd
 	o.EndpointSetNumOnSummary = &v
 }
 
-// GetEndpointSetForAllOthersTargetUpgradeVersionTime returns the EndpointSetForAllOthersTargetUpgradeVersionTime field value if set, zero value otherwise.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) GetEndpointSetForAllOthersTargetUpgradeVersionTime() string {
-	if o == nil || IsNil(o.EndpointSetForAllOthersTargetUpgradeVersionTime) {
-		var ret string
-		return ret
-	}
-	return *o.EndpointSetForAllOthersTargetUpgradeVersionTime
-}
-
-// GetEndpointSetForAllOthersTargetUpgradeVersionTimeOk returns a tuple with the EndpointSetForAllOthersTargetUpgradeVersionTime field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) GetEndpointSetForAllOthersTargetUpgradeVersionTimeOk() (*string, bool) {
-	if o == nil || IsNil(o.EndpointSetForAllOthersTargetUpgradeVersionTime) {
-		return nil, false
-	}
-	return o.EndpointSetForAllOthersTargetUpgradeVersionTime, true
-}
-
-// HasEndpointSetForAllOthersTargetUpgradeVersionTime returns a boolean if a field has been set.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) HasEndpointSetForAllOthersTargetUpgradeVersionTime() bool {
-	if o != nil && !IsNil(o.EndpointSetForAllOthersTargetUpgradeVersionTime) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndpointSetForAllOthersTargetUpgradeVersionTime gets a reference to the given string and assigns it to the EndpointSetForAllOthersTargetUpgradeVersionTime field.
-func (o *ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) SetEndpointSetForAllOthersTargetUpgradeVersionTime(v string) {
-	o.EndpointSetForAllOthersTargetUpgradeVersionTime = &v
-}
-
 func (o ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -238,20 +238,20 @@ func (o ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) Marshal
 
 func (o ImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.EndpointSetNumName) {
-		toSerialize["endpoint_set_num_name"] = o.EndpointSetNumName
-	}
 	if !IsNil(o.EndpointSetForAllOthersTargetUpgradeVersion) {
 		toSerialize["endpoint_set_for_all_others_target_upgrade_version"] = o.EndpointSetForAllOthersTargetUpgradeVersion
+	}
+	if !IsNil(o.EndpointSetForAllOthersTargetUpgradeVersionTime) {
+		toSerialize["endpoint_set_for_all_others_target_upgrade_version_time"] = o.EndpointSetForAllOthersTargetUpgradeVersionTime
 	}
 	if !IsNil(o.EndpointSetForAllOthersUniqueIdentifier) {
 		toSerialize["endpoint_set_for_all_others_unique_identifier"] = o.EndpointSetForAllOthersUniqueIdentifier
 	}
+	if !IsNil(o.EndpointSetNumName) {
+		toSerialize["endpoint_set_num_name"] = o.EndpointSetNumName
+	}
 	if !IsNil(o.EndpointSetNumOnSummary) {
 		toSerialize["endpoint_set_num_on_summary"] = o.EndpointSetNumOnSummary
-	}
-	if !IsNil(o.EndpointSetForAllOthersTargetUpgradeVersionTime) {
-		toSerialize["endpoint_set_for_all_others_target_upgrade_version_time"] = o.EndpointSetForAllOthersTargetUpgradeVersionTime
 	}
 	return toSerialize, nil
 }
@@ -291,5 +291,3 @@ func (v *NullableImageupdatesetsPatchRequestImageUpdateSetsValueSectionElseInner
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

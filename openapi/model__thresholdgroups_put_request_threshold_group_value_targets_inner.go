@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,24 +19,24 @@ var _ MappedNullable = &ThresholdgroupsPutRequestThresholdGroupValueTargetsInner
 
 // ThresholdgroupsPutRequestThresholdGroupValueTargetsInner struct for ThresholdgroupsPutRequestThresholdGroupValueTargetsInner
 type ThresholdgroupsPutRequestThresholdGroupValueTargetsInner struct {
-	// Enable
-	Enable *bool `json:"enable,omitempty"`
-	// Specific element or Grouping Rules to apply thresholds to
-	Type *string `json:"type,omitempty"`
-	// Elements to apply thresholds to
-	GroupingRules *string `json:"grouping_rules,omitempty"`
-	// Object type for grouping_rules field
-	GroupingRulesRefType *string `json:"grouping_rules_ref_type_,omitempty"`
 	// Element to apply thresholds to
 	Element *string `json:"element,omitempty"`
 	// Object type for element field
 	ElementRefType *string `json:"element_ref_type_,omitempty"`
-	// SDLC to apply thresholds to
-	Sdlc *string `json:"sdlc,omitempty"`
-	// Port to apply thresholds to
-	Port *string `json:"port,omitempty"`
+	// Enable
+	Enable *bool `json:"enable,omitempty"`
+	// Elements to apply thresholds to
+	GroupingRules *string `json:"grouping_rules,omitempty"`
+	// Object type for grouping_rules field
+	GroupingRulesRefType *string `json:"grouping_rules_ref_type_,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
+	// Port to apply thresholds to
+	Port *string `json:"port,omitempty"`
+	// SDLC to apply thresholds to
+	Sdlc *string `json:"sdlc,omitempty"`
+	// Specific element or Grouping Rules to apply thresholds to
+	Type *string `json:"type,omitempty"`
 }
 
 // NewThresholdgroupsPutRequestThresholdGroupValueTargetsInner instantiates a new ThresholdgroupsPutRequestThresholdGroupValueTargetsInner object
@@ -45,18 +45,18 @@ type ThresholdgroupsPutRequestThresholdGroupValueTargetsInner struct {
 // will change when the set of required properties is changed
 func NewThresholdgroupsPutRequestThresholdGroupValueTargetsInner() *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner {
 	this := ThresholdgroupsPutRequestThresholdGroupValueTargetsInner{}
-	var enable bool = false
-	this.Enable = &enable
-	var type_ string = "grouping_rules"
-	this.Type = &type_
-	var groupingRules string = ""
-	this.GroupingRules = &groupingRules
 	var element string = ""
 	this.Element = &element
-	var sdlc string = ""
-	this.Sdlc = &sdlc
+	var enable bool = false
+	this.Enable = &enable
+	var groupingRules string = ""
+	this.GroupingRules = &groupingRules
 	var port string = ""
 	this.Port = &port
+	var sdlc string = ""
+	this.Sdlc = &sdlc
+	var type_ string = "grouping_rules"
+	this.Type = &type_
 	return &this
 }
 
@@ -65,147 +65,19 @@ func NewThresholdgroupsPutRequestThresholdGroupValueTargetsInner() *Thresholdgro
 // but it doesn't guarantee that properties required by API are set
 func NewThresholdgroupsPutRequestThresholdGroupValueTargetsInnerWithDefaults() *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner {
 	this := ThresholdgroupsPutRequestThresholdGroupValueTargetsInner{}
-	var enable bool = false
-	this.Enable = &enable
-	var type_ string = "grouping_rules"
-	this.Type = &type_
-	var groupingRules string = ""
-	this.GroupingRules = &groupingRules
 	var element string = ""
 	this.Element = &element
-	var sdlc string = ""
-	this.Sdlc = &sdlc
+	var enable bool = false
+	this.Enable = &enable
+	var groupingRules string = ""
+	this.GroupingRules = &groupingRules
 	var port string = ""
 	this.Port = &port
+	var sdlc string = ""
+	this.Sdlc = &sdlc
+	var type_ string = "grouping_rules"
+	this.Type = &type_
 	return &this
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetEnable(v bool) {
-	o.Enable = &v
-}
-
-// GetType returns the Type field value if set, zero value otherwise.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetType() string {
-	if o == nil || IsNil(o.Type) {
-		var ret string
-		return ret
-	}
-	return *o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.Type) {
-		return nil, false
-	}
-	return o.Type, true
-}
-
-// HasType returns a boolean if a field has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasType() bool {
-	if o != nil && !IsNil(o.Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetType(v string) {
-	o.Type = &v
-}
-
-// GetGroupingRules returns the GroupingRules field value if set, zero value otherwise.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetGroupingRules() string {
-	if o == nil || IsNil(o.GroupingRules) {
-		var ret string
-		return ret
-	}
-	return *o.GroupingRules
-}
-
-// GetGroupingRulesOk returns a tuple with the GroupingRules field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetGroupingRulesOk() (*string, bool) {
-	if o == nil || IsNil(o.GroupingRules) {
-		return nil, false
-	}
-	return o.GroupingRules, true
-}
-
-// HasGroupingRules returns a boolean if a field has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasGroupingRules() bool {
-	if o != nil && !IsNil(o.GroupingRules) {
-		return true
-	}
-
-	return false
-}
-
-// SetGroupingRules gets a reference to the given string and assigns it to the GroupingRules field.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetGroupingRules(v string) {
-	o.GroupingRules = &v
-}
-
-// GetGroupingRulesRefType returns the GroupingRulesRefType field value if set, zero value otherwise.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetGroupingRulesRefType() string {
-	if o == nil || IsNil(o.GroupingRulesRefType) {
-		var ret string
-		return ret
-	}
-	return *o.GroupingRulesRefType
-}
-
-// GetGroupingRulesRefTypeOk returns a tuple with the GroupingRulesRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetGroupingRulesRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.GroupingRulesRefType) {
-		return nil, false
-	}
-	return o.GroupingRulesRefType, true
-}
-
-// HasGroupingRulesRefType returns a boolean if a field has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasGroupingRulesRefType() bool {
-	if o != nil && !IsNil(o.GroupingRulesRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetGroupingRulesRefType gets a reference to the given string and assigns it to the GroupingRulesRefType field.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetGroupingRulesRefType(v string) {
-	o.GroupingRulesRefType = &v
 }
 
 // GetElement returns the Element field value if set, zero value otherwise.
@@ -272,68 +144,100 @@ func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetElementRef
 	o.ElementRefType = &v
 }
 
-// GetSdlc returns the Sdlc field value if set, zero value otherwise.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSdlc() string {
-	if o == nil || IsNil(o.Sdlc) {
-		var ret string
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
 		return ret
 	}
-	return *o.Sdlc
+	return *o.Enable
 }
 
-// GetSdlcOk returns a tuple with the Sdlc field value if set, nil otherwise
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSdlcOk() (*string, bool) {
-	if o == nil || IsNil(o.Sdlc) {
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
 		return nil, false
 	}
-	return o.Sdlc, true
+	return o.Enable, true
 }
 
-// HasSdlc returns a boolean if a field has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasSdlc() bool {
-	if o != nil && !IsNil(o.Sdlc) {
+// HasEnable returns a boolean if a field has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
 		return true
 	}
 
 	return false
 }
 
-// SetSdlc gets a reference to the given string and assigns it to the Sdlc field.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetSdlc(v string) {
-	o.Sdlc = &v
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetEnable(v bool) {
+	o.Enable = &v
 }
 
-// GetPort returns the Port field value if set, zero value otherwise.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetPort() string {
-	if o == nil || IsNil(o.Port) {
+// GetGroupingRules returns the GroupingRules field value if set, zero value otherwise.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetGroupingRules() string {
+	if o == nil || IsNil(o.GroupingRules) {
 		var ret string
 		return ret
 	}
-	return *o.Port
+	return *o.GroupingRules
 }
 
-// GetPortOk returns a tuple with the Port field value if set, nil otherwise
+// GetGroupingRulesOk returns a tuple with the GroupingRules field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetPortOk() (*string, bool) {
-	if o == nil || IsNil(o.Port) {
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetGroupingRulesOk() (*string, bool) {
+	if o == nil || IsNil(o.GroupingRules) {
 		return nil, false
 	}
-	return o.Port, true
+	return o.GroupingRules, true
 }
 
-// HasPort returns a boolean if a field has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasPort() bool {
-	if o != nil && !IsNil(o.Port) {
+// HasGroupingRules returns a boolean if a field has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasGroupingRules() bool {
+	if o != nil && !IsNil(o.GroupingRules) {
 		return true
 	}
 
 	return false
 }
 
-// SetPort gets a reference to the given string and assigns it to the Port field.
-func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetPort(v string) {
-	o.Port = &v
+// SetGroupingRules gets a reference to the given string and assigns it to the GroupingRules field.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetGroupingRules(v string) {
+	o.GroupingRules = &v
+}
+
+// GetGroupingRulesRefType returns the GroupingRulesRefType field value if set, zero value otherwise.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetGroupingRulesRefType() string {
+	if o == nil || IsNil(o.GroupingRulesRefType) {
+		var ret string
+		return ret
+	}
+	return *o.GroupingRulesRefType
+}
+
+// GetGroupingRulesRefTypeOk returns a tuple with the GroupingRulesRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetGroupingRulesRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.GroupingRulesRefType) {
+		return nil, false
+	}
+	return o.GroupingRulesRefType, true
+}
+
+// HasGroupingRulesRefType returns a boolean if a field has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasGroupingRulesRefType() bool {
+	if o != nil && !IsNil(o.GroupingRulesRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetGroupingRulesRefType gets a reference to the given string and assigns it to the GroupingRulesRefType field.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetGroupingRulesRefType(v string) {
+	o.GroupingRulesRefType = &v
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
@@ -368,8 +272,104 @@ func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetIndex(v in
 	o.Index = &v
 }
 
+// GetPort returns the Port field value if set, zero value otherwise.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetPort() string {
+	if o == nil || IsNil(o.Port) {
+		var ret string
+		return ret
+	}
+	return *o.Port
+}
+
+// GetPortOk returns a tuple with the Port field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetPortOk() (*string, bool) {
+	if o == nil || IsNil(o.Port) {
+		return nil, false
+	}
+	return o.Port, true
+}
+
+// HasPort returns a boolean if a field has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasPort() bool {
+	if o != nil && !IsNil(o.Port) {
+		return true
+	}
+
+	return false
+}
+
+// SetPort gets a reference to the given string and assigns it to the Port field.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetPort(v string) {
+	o.Port = &v
+}
+
+// GetSdlc returns the Sdlc field value if set, zero value otherwise.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSdlc() string {
+	if o == nil || IsNil(o.Sdlc) {
+		var ret string
+		return ret
+	}
+	return *o.Sdlc
+}
+
+// GetSdlcOk returns a tuple with the Sdlc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetSdlcOk() (*string, bool) {
+	if o == nil || IsNil(o.Sdlc) {
+		return nil, false
+	}
+	return o.Sdlc, true
+}
+
+// HasSdlc returns a boolean if a field has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasSdlc() bool {
+	if o != nil && !IsNil(o.Sdlc) {
+		return true
+	}
+
+	return false
+}
+
+// SetSdlc gets a reference to the given string and assigns it to the Sdlc field.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetSdlc(v string) {
+	o.Sdlc = &v
+}
+
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) SetType(v string) {
+	o.Type = &v
+}
+
 func (o ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -378,11 +378,14 @@ func (o ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) MarshalJSON() 
 
 func (o ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Element) {
+		toSerialize["element"] = o.Element
+	}
+	if !IsNil(o.ElementRefType) {
+		toSerialize["element_ref_type_"] = o.ElementRefType
+	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.Type) {
-		toSerialize["type"] = o.Type
 	}
 	if !IsNil(o.GroupingRules) {
 		toSerialize["grouping_rules"] = o.GroupingRules
@@ -390,20 +393,17 @@ func (o ThresholdgroupsPutRequestThresholdGroupValueTargetsInner) ToMap() (map[s
 	if !IsNil(o.GroupingRulesRefType) {
 		toSerialize["grouping_rules_ref_type_"] = o.GroupingRulesRefType
 	}
-	if !IsNil(o.Element) {
-		toSerialize["element"] = o.Element
-	}
-	if !IsNil(o.ElementRefType) {
-		toSerialize["element_ref_type_"] = o.ElementRefType
-	}
-	if !IsNil(o.Sdlc) {
-		toSerialize["sdlc"] = o.Sdlc
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	if !IsNil(o.Port) {
 		toSerialize["port"] = o.Port
 	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
+	if !IsNil(o.Sdlc) {
+		toSerialize["sdlc"] = o.Sdlc
+	}
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
 	}
 	return toSerialize, nil
 }
@@ -443,5 +443,3 @@ func (v *NullableThresholdgroupsPutRequestThresholdGroupValueTargetsInner) Unmar
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

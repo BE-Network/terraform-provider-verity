@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // RouteMapClausesAPIService RouteMapClausesAPI service
 type RouteMapClausesAPIService service
 
 type ApiRoutemapclausesDeleteRequest struct {
-	ctx context.Context
-	ApiService *RouteMapClausesAPIService
+	ctx                context.Context
+	ApiService         *RouteMapClausesAPIService
 	routeMapClauseName *[]string
-	changesetName *string
+	changesetName      *string
 }
 
 func (r ApiRoutemapclausesDeleteRequest) RouteMapClauseName(routeMapClauseName []string) ApiRoutemapclausesDeleteRequest {
@@ -49,23 +48,22 @@ RoutemapclausesDelete Delete Route Map Clause
 
 Deletes an existing Route Map Clause from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRoutemapclausesDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRoutemapclausesDeleteRequest
 */
 func (a *RouteMapClausesAPIService) RoutemapclausesDelete(ctx context.Context) ApiRoutemapclausesDeleteRequest {
 	return ApiRoutemapclausesDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *RouteMapClausesAPIService) RoutemapclausesDeleteExecute(r ApiRoutemapclausesDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RouteMapClausesAPIService.RoutemapclausesDelete")
@@ -142,11 +140,11 @@ func (a *RouteMapClausesAPIService) RoutemapclausesDeleteExecute(r ApiRoutemapcl
 }
 
 type ApiRoutemapclausesGetRequest struct {
-	ctx context.Context
-	ApiService *RouteMapClausesAPIService
+	ctx                context.Context
+	ApiService         *RouteMapClausesAPIService
 	routeMapClauseName *string
-	includeData *bool
-	changesetName *string
+	includeData        *bool
+	changesetName      *string
 }
 
 func (r ApiRoutemapclausesGetRequest) RouteMapClauseName(routeMapClauseName string) ApiRoutemapclausesGetRequest {
@@ -173,23 +171,22 @@ RoutemapclausesGet Get all Route Map Clauses
 
 Retrieves all Route Map Clauses from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRoutemapclausesGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRoutemapclausesGetRequest
 */
 func (a *RouteMapClausesAPIService) RoutemapclausesGet(ctx context.Context) ApiRoutemapclausesGetRequest {
 	return ApiRoutemapclausesGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *RouteMapClausesAPIService) RoutemapclausesGetExecute(r ApiRoutemapclausesGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RouteMapClausesAPIService.RoutemapclausesGet")
@@ -258,9 +255,9 @@ func (a *RouteMapClausesAPIService) RoutemapclausesGetExecute(r ApiRoutemapclaus
 }
 
 type ApiRoutemapclausesPatchRequest struct {
-	ctx context.Context
-	ApiService *RouteMapClausesAPIService
-	changesetName *string
+	ctx                       context.Context
+	ApiService                *RouteMapClausesAPIService
+	changesetName             *string
 	routemapclausesPutRequest *RoutemapclausesPutRequest
 }
 
@@ -283,23 +280,22 @@ RoutemapclausesPatch Update Route Map Clause
 
 Update Route Map Clause into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRoutemapclausesPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRoutemapclausesPatchRequest
 */
 func (a *RouteMapClausesAPIService) RoutemapclausesPatch(ctx context.Context) ApiRoutemapclausesPatchRequest {
 	return ApiRoutemapclausesPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *RouteMapClausesAPIService) RoutemapclausesPatchExecute(r ApiRoutemapclausesPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RouteMapClausesAPIService.RoutemapclausesPatch")
@@ -364,9 +360,9 @@ func (a *RouteMapClausesAPIService) RoutemapclausesPatchExecute(r ApiRoutemapcla
 }
 
 type ApiRoutemapclausesPutRequest struct {
-	ctx context.Context
-	ApiService *RouteMapClausesAPIService
-	changesetName *string
+	ctx                       context.Context
+	ApiService                *RouteMapClausesAPIService
+	changesetName             *string
 	routemapclausesPutRequest *RoutemapclausesPutRequest
 }
 
@@ -389,23 +385,22 @@ RoutemapclausesPut Create Route Map Clause
 
 Create Route Map Clause into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiRoutemapclausesPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRoutemapclausesPutRequest
 */
 func (a *RouteMapClausesAPIService) RoutemapclausesPut(ctx context.Context) ApiRoutemapclausesPutRequest {
 	return ApiRoutemapclausesPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *RouteMapClausesAPIService) RoutemapclausesPutExecute(r ApiRoutemapclausesPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RouteMapClausesAPIService.RoutemapclausesPut")

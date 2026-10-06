@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // ThresholdGroupsAPIService ThresholdGroupsAPI service
 type ThresholdGroupsAPIService service
 
 type ApiThresholdgroupsDeleteRequest struct {
-	ctx context.Context
-	ApiService *ThresholdGroupsAPIService
+	ctx                context.Context
+	ApiService         *ThresholdGroupsAPIService
 	thresholdGroupName *[]string
-	changesetName *string
+	changesetName      *string
 }
 
 func (r ApiThresholdgroupsDeleteRequest) ThresholdGroupName(thresholdGroupName []string) ApiThresholdgroupsDeleteRequest {
@@ -49,23 +48,22 @@ ThresholdgroupsDelete Delete Threshold Group
 
 Deletes an existing Threshold Group from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiThresholdgroupsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiThresholdgroupsDeleteRequest
 */
 func (a *ThresholdGroupsAPIService) ThresholdgroupsDelete(ctx context.Context) ApiThresholdgroupsDeleteRequest {
 	return ApiThresholdgroupsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ThresholdGroupsAPIService) ThresholdgroupsDeleteExecute(r ApiThresholdgroupsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ThresholdGroupsAPIService.ThresholdgroupsDelete")
@@ -142,11 +140,11 @@ func (a *ThresholdGroupsAPIService) ThresholdgroupsDeleteExecute(r ApiThresholdg
 }
 
 type ApiThresholdgroupsGetRequest struct {
-	ctx context.Context
-	ApiService *ThresholdGroupsAPIService
+	ctx                context.Context
+	ApiService         *ThresholdGroupsAPIService
 	thresholdGroupName *string
-	includeData *bool
-	changesetName *string
+	includeData        *bool
+	changesetName      *string
 }
 
 func (r ApiThresholdgroupsGetRequest) ThresholdGroupName(thresholdGroupName string) ApiThresholdgroupsGetRequest {
@@ -173,23 +171,22 @@ ThresholdgroupsGet Get all Threshold Groups
 
 Downloads all Threshold Groups from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiThresholdgroupsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiThresholdgroupsGetRequest
 */
 func (a *ThresholdGroupsAPIService) ThresholdgroupsGet(ctx context.Context) ApiThresholdgroupsGetRequest {
 	return ApiThresholdgroupsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ThresholdGroupsAPIService) ThresholdgroupsGetExecute(r ApiThresholdgroupsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ThresholdGroupsAPIService.ThresholdgroupsGet")
@@ -258,9 +255,9 @@ func (a *ThresholdGroupsAPIService) ThresholdgroupsGetExecute(r ApiThresholdgrou
 }
 
 type ApiThresholdgroupsPatchRequest struct {
-	ctx context.Context
-	ApiService *ThresholdGroupsAPIService
-	changesetName *string
+	ctx                       context.Context
+	ApiService                *ThresholdGroupsAPIService
+	changesetName             *string
 	thresholdgroupsPutRequest *ThresholdgroupsPutRequest
 }
 
@@ -283,23 +280,22 @@ ThresholdgroupsPatch Update Threshold Group
 
 Update Threshold Group into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiThresholdgroupsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiThresholdgroupsPatchRequest
 */
 func (a *ThresholdGroupsAPIService) ThresholdgroupsPatch(ctx context.Context) ApiThresholdgroupsPatchRequest {
 	return ApiThresholdgroupsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ThresholdGroupsAPIService) ThresholdgroupsPatchExecute(r ApiThresholdgroupsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ThresholdGroupsAPIService.ThresholdgroupsPatch")
@@ -364,9 +360,9 @@ func (a *ThresholdGroupsAPIService) ThresholdgroupsPatchExecute(r ApiThresholdgr
 }
 
 type ApiThresholdgroupsPutRequest struct {
-	ctx context.Context
-	ApiService *ThresholdGroupsAPIService
-	changesetName *string
+	ctx                       context.Context
+	ApiService                *ThresholdGroupsAPIService
+	changesetName             *string
 	thresholdgroupsPutRequest *ThresholdgroupsPutRequest
 }
 
@@ -389,23 +385,22 @@ ThresholdgroupsPut Create Threshold Group
 
 Create Threshold Group into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiThresholdgroupsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiThresholdgroupsPutRequest
 */
 func (a *ThresholdGroupsAPIService) ThresholdgroupsPut(ctx context.Context) ApiThresholdgroupsPutRequest {
 	return ApiThresholdgroupsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ThresholdGroupsAPIService) ThresholdgroupsPutExecute(r ApiThresholdgroupsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ThresholdGroupsAPIService.ThresholdgroupsPut")

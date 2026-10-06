@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,14 +21,14 @@ var _ MappedNullable = &DevicesettingsPutRequestEthDeviceProfilesValueSyslogServ
 type DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner struct {
 	// Enable syslog server
 	Enabled *bool `json:"enabled,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
+	// Syslog server port
+	Port *string `json:"port,omitempty"`
 	// Syslog connection scheme
 	Scheme *string `json:"scheme,omitempty"`
 	// IPv4, IPv6, or DNS name for syslog server
 	Server *string `json:"server,omitempty"`
-	// Syslog server port
-	Port *string `json:"port,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
 }
 
 // NewDevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner instantiates a new DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner object
@@ -39,12 +39,12 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner() *Devi
 	this := DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner{}
 	var enabled bool = false
 	this.Enabled = &enabled
+	var port string = ""
+	this.Port = &port
 	var scheme string = "udp_bsd"
 	this.Scheme = &scheme
 	var server string = ""
 	this.Server = &server
-	var port string = ""
-	this.Port = &port
 	return &this
 }
 
@@ -55,12 +55,12 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInnerWithDefa
 	this := DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner{}
 	var enabled bool = false
 	this.Enabled = &enabled
+	var port string = ""
+	this.Port = &port
 	var scheme string = "udp_bsd"
 	this.Scheme = &scheme
 	var server string = ""
 	this.Server = &server
-	var port string = ""
-	this.Port = &port
 	return &this
 }
 
@@ -94,6 +94,70 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) HasEn
 // SetEnabled gets a reference to the given bool and assigns it to the Enabled field.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) SetEnabled(v bool) {
 	o.Enabled = &v
+}
+
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) SetIndex(v int64) {
+	o.Index = &v
+}
+
+// GetPort returns the Port field value if set, zero value otherwise.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) GetPort() string {
+	if o == nil || IsNil(o.Port) {
+		var ret string
+		return ret
+	}
+	return *o.Port
+}
+
+// GetPortOk returns a tuple with the Port field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) GetPortOk() (*string, bool) {
+	if o == nil || IsNil(o.Port) {
+		return nil, false
+	}
+	return o.Port, true
+}
+
+// HasPort returns a boolean if a field has been set.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) HasPort() bool {
+	if o != nil && !IsNil(o.Port) {
+		return true
+	}
+
+	return false
+}
+
+// SetPort gets a reference to the given string and assigns it to the Port field.
+func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) SetPort(v string) {
+	o.Port = &v
 }
 
 // GetScheme returns the Scheme field value if set, zero value otherwise.
@@ -160,72 +224,8 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) SetSe
 	o.Server = &v
 }
 
-// GetPort returns the Port field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) GetPort() string {
-	if o == nil || IsNil(o.Port) {
-		var ret string
-		return ret
-	}
-	return *o.Port
-}
-
-// GetPortOk returns a tuple with the Port field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) GetPortOk() (*string, bool) {
-	if o == nil || IsNil(o.Port) {
-		return nil, false
-	}
-	return o.Port, true
-}
-
-// HasPort returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) HasPort() bool {
-	if o != nil && !IsNil(o.Port) {
-		return true
-	}
-
-	return false
-}
-
-// SetPort gets a reference to the given string and assigns it to the Port field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) SetPort(v string) {
-	o.Port = &v
-}
-
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) SetIndex(v int64) {
-	o.Index = &v
-}
-
 func (o DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -237,17 +237,17 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInner) ToMap(
 	if !IsNil(o.Enabled) {
 		toSerialize["enabled"] = o.Enabled
 	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
+	}
+	if !IsNil(o.Port) {
+		toSerialize["port"] = o.Port
+	}
 	if !IsNil(o.Scheme) {
 		toSerialize["scheme"] = o.Scheme
 	}
 	if !IsNil(o.Server) {
 		toSerialize["server"] = o.Server
-	}
-	if !IsNil(o.Port) {
-		toSerialize["port"] = o.Port
-	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }
@@ -287,5 +287,3 @@ func (v *NullableDevicesettingsPutRequestEthDeviceProfilesValueSyslogServersInne
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

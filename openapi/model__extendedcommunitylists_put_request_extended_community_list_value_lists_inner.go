@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,12 +21,12 @@ var _ MappedNullable = &ExtendedcommunitylistsPutRequestExtendedCommunityListVal
 type ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner struct {
 	// Enable of this Extended Community List
 	Enable *bool `json:"enable,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
 	// Mode
 	Mode *string `json:"mode,omitempty"`
 	// Match against a BGP extended community of type Route Target
 	RouteTargetExpandedExpression *string `json:"route_target_expanded_expression,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
 }
 
 // NewExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner instantiates a new ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner object
@@ -88,6 +88,38 @@ func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) H
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) SetEnable(v bool) {
 	o.Enable = &v
+}
+
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetMode returns the Mode field value if set, zero value otherwise.
@@ -154,40 +186,8 @@ func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) S
 	o.RouteTargetExpandedExpression = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) SetIndex(v int64) {
-	o.Index = &v
-}
-
 func (o ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -199,14 +199,14 @@ func (o ExtendedcommunitylistsPutRequestExtendedCommunityListValueListsInner) To
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
+	}
 	if !IsNil(o.Mode) {
 		toSerialize["mode"] = o.Mode
 	}
 	if !IsNil(o.RouteTargetExpandedExpression) {
 		toSerialize["route_target_expanded_expression"] = o.RouteTargetExpandedExpression
-	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }
@@ -246,5 +246,3 @@ func (v *NullableExtendedcommunitylistsPutRequestExtendedCommunityListValueLists
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

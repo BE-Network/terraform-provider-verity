@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,14 @@ var _ MappedNullable = &CommunitylistsPutRequestCommunityListValueListsInner{}
 
 // CommunitylistsPutRequestCommunityListValueListsInner struct for CommunitylistsPutRequestCommunityListValueListsInner
 type CommunitylistsPutRequestCommunityListValueListsInner struct {
-	// Enable of this Community List
-	Enable *bool `json:"enable,omitempty"`
-	// Mode
-	Mode *string `json:"mode,omitempty"`
 	// Community String in standard mode and Expanded Expression in Expanded mode
 	CommunityStringExpandedExpression *string `json:"community_string_expanded_expression,omitempty"`
+	// Enable of this Community List
+	Enable *bool `json:"enable,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
+	// Mode
+	Mode *string `json:"mode,omitempty"`
 }
 
 // NewCommunitylistsPutRequestCommunityListValueListsInner instantiates a new CommunitylistsPutRequestCommunityListValueListsInner object
@@ -35,12 +35,12 @@ type CommunitylistsPutRequestCommunityListValueListsInner struct {
 // will change when the set of required properties is changed
 func NewCommunitylistsPutRequestCommunityListValueListsInner() *CommunitylistsPutRequestCommunityListValueListsInner {
 	this := CommunitylistsPutRequestCommunityListValueListsInner{}
+	var communityStringExpandedExpression string = ""
+	this.CommunityStringExpandedExpression = &communityStringExpandedExpression
 	var enable bool = false
 	this.Enable = &enable
 	var mode string = "community"
 	this.Mode = &mode
-	var communityStringExpandedExpression string = ""
-	this.CommunityStringExpandedExpression = &communityStringExpandedExpression
 	return &this
 }
 
@@ -49,77 +49,13 @@ func NewCommunitylistsPutRequestCommunityListValueListsInner() *CommunitylistsPu
 // but it doesn't guarantee that properties required by API are set
 func NewCommunitylistsPutRequestCommunityListValueListsInnerWithDefaults() *CommunitylistsPutRequestCommunityListValueListsInner {
 	this := CommunitylistsPutRequestCommunityListValueListsInner{}
+	var communityStringExpandedExpression string = ""
+	this.CommunityStringExpandedExpression = &communityStringExpandedExpression
 	var enable bool = false
 	this.Enable = &enable
 	var mode string = "community"
 	this.Mode = &mode
-	var communityStringExpandedExpression string = ""
-	this.CommunityStringExpandedExpression = &communityStringExpandedExpression
 	return &this
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *CommunitylistsPutRequestCommunityListValueListsInner) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CommunitylistsPutRequestCommunityListValueListsInner) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *CommunitylistsPutRequestCommunityListValueListsInner) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *CommunitylistsPutRequestCommunityListValueListsInner) SetEnable(v bool) {
-	o.Enable = &v
-}
-
-// GetMode returns the Mode field value if set, zero value otherwise.
-func (o *CommunitylistsPutRequestCommunityListValueListsInner) GetMode() string {
-	if o == nil || IsNil(o.Mode) {
-		var ret string
-		return ret
-	}
-	return *o.Mode
-}
-
-// GetModeOk returns a tuple with the Mode field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CommunitylistsPutRequestCommunityListValueListsInner) GetModeOk() (*string, bool) {
-	if o == nil || IsNil(o.Mode) {
-		return nil, false
-	}
-	return o.Mode, true
-}
-
-// HasMode returns a boolean if a field has been set.
-func (o *CommunitylistsPutRequestCommunityListValueListsInner) HasMode() bool {
-	if o != nil && !IsNil(o.Mode) {
-		return true
-	}
-
-	return false
-}
-
-// SetMode gets a reference to the given string and assigns it to the Mode field.
-func (o *CommunitylistsPutRequestCommunityListValueListsInner) SetMode(v string) {
-	o.Mode = &v
 }
 
 // GetCommunityStringExpandedExpression returns the CommunityStringExpandedExpression field value if set, zero value otherwise.
@@ -154,6 +90,38 @@ func (o *CommunitylistsPutRequestCommunityListValueListsInner) SetCommunityStrin
 	o.CommunityStringExpandedExpression = &v
 }
 
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *CommunitylistsPutRequestCommunityListValueListsInner) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CommunitylistsPutRequestCommunityListValueListsInner) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *CommunitylistsPutRequestCommunityListValueListsInner) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *CommunitylistsPutRequestCommunityListValueListsInner) SetEnable(v bool) {
+	o.Enable = &v
+}
+
 // GetIndex returns the Index field value if set, zero value otherwise.
 func (o *CommunitylistsPutRequestCommunityListValueListsInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
@@ -186,8 +154,40 @@ func (o *CommunitylistsPutRequestCommunityListValueListsInner) SetIndex(v int64)
 	o.Index = &v
 }
 
+// GetMode returns the Mode field value if set, zero value otherwise.
+func (o *CommunitylistsPutRequestCommunityListValueListsInner) GetMode() string {
+	if o == nil || IsNil(o.Mode) {
+		var ret string
+		return ret
+	}
+	return *o.Mode
+}
+
+// GetModeOk returns a tuple with the Mode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CommunitylistsPutRequestCommunityListValueListsInner) GetModeOk() (*string, bool) {
+	if o == nil || IsNil(o.Mode) {
+		return nil, false
+	}
+	return o.Mode, true
+}
+
+// HasMode returns a boolean if a field has been set.
+func (o *CommunitylistsPutRequestCommunityListValueListsInner) HasMode() bool {
+	if o != nil && !IsNil(o.Mode) {
+		return true
+	}
+
+	return false
+}
+
+// SetMode gets a reference to the given string and assigns it to the Mode field.
+func (o *CommunitylistsPutRequestCommunityListValueListsInner) SetMode(v string) {
+	o.Mode = &v
+}
+
 func (o CommunitylistsPutRequestCommunityListValueListsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -196,17 +196,17 @@ func (o CommunitylistsPutRequestCommunityListValueListsInner) MarshalJSON() ([]b
 
 func (o CommunitylistsPutRequestCommunityListValueListsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.Mode) {
-		toSerialize["mode"] = o.Mode
-	}
 	if !IsNil(o.CommunityStringExpandedExpression) {
 		toSerialize["community_string_expanded_expression"] = o.CommunityStringExpandedExpression
 	}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
+	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
+	}
+	if !IsNil(o.Mode) {
+		toSerialize["mode"] = o.Mode
 	}
 	return toSerialize, nil
 }
@@ -246,5 +246,3 @@ func (v *NullableCommunitylistsPutRequestCommunityListValueListsInner) Unmarshal
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

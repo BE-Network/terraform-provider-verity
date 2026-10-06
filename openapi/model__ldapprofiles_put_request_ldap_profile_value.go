@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,63 +19,63 @@ var _ MappedNullable = &LdapprofilesPutRequestLdapProfileValue{}
 
 // LdapprofilesPutRequestLdapProfileValue struct for LdapprofilesPutRequestLdapProfileValue
 type LdapprofilesPutRequestLdapProfileValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
+	AttributeMaps []LdapprofilesPutRequestLdapProfileValueAttributeMapsInner `json:"attribute_maps,omitempty"`
 	// Base Distinguished Name to use for LDAP searches
 	BaseDn *string `json:"base_dn,omitempty"`
 	// Distinguished Name with which to bind to the LDAP server. Empty value means anonymous bind.
 	BindDn *string `json:"bind_dn,omitempty"`
 	// Credentials with which to bind to the LDAP server. Only used together with Bind DN.
 	BindPassword *string `json:"bind_password,omitempty"`
-	// System-generated encrypted version of Bind Password
-	EncryptedBindPassword *string `json:"encrypted_bind_password,omitempty"`
-	// LDAP protocol version
-	LdapVersion *string `json:"ldap_version,omitempty"`
-	// Global TLS mode for LDAP connections
-	SslTlsMode *string `json:"ssl_tls_mode,omitempty"`
-	// Default LDAP server port (389 for plain/StartTLS, 636 for LDAPS)
-	DefaultPort NullableInt64 `json:"default_port,omitempty"`
-	// Search time limit, in seconds
-	SearchTimeLimit NullableInt64 `json:"search_time_limit,omitempty"`
 	// Bind/connect time limit, in seconds
 	BindTimeLimit NullableInt64 `json:"bind_time_limit,omitempty"`
+	// Default LDAP server port (389 for plain/StartTLS, 636 for LDAPS)
+	DefaultPort NullableInt64 `json:"default_port,omitempty"`
+	// Enable object.
+	Enable *bool `json:"enable,omitempty"`
+	// System-generated encrypted version of Bind Password
+	EncryptedBindPassword *string `json:"encrypted_bind_password,omitempty"`
 	// NSS idle connection time limit, in seconds
-	IdleTimeLimit NullableInt64 `json:"idle_time_limit,omitempty"`
-	// Number of retransmit attempts (0-10)
-	RetransmitAttempts NullableInt64 `json:"retransmit_attempts,omitempty"`
-	// Default LDAP search scope
-	SearchScope *string `json:"search_scope,omitempty"`
-	// NSS search base for passwd map
-	NssBasePasswd *string `json:"nss_base_passwd,omitempty"`
+	IdleTimeLimit NullableInt64                                            `json:"idle_time_limit,omitempty"`
+	LdapServers   []LdapprofilesPutRequestLdapProfileValueLdapServersInner `json:"ldap_servers,omitempty"`
+	// LDAP protocol version
+	LdapVersion *string `json:"ldap_version,omitempty"`
+	// Template Name. Must be unique within type.
+	Name *string `json:"name,omitempty"`
 	// NSS search base for group map
 	NssBaseGroup *string `json:"nss_base_group,omitempty"`
-	// NSS search base for shadow map
-	NssBaseShadow *string `json:"nss_base_shadow,omitempty"`
 	// NSS search base for netgroup map
 	NssBaseNetgroup *string `json:"nss_base_netgroup,omitempty"`
+	// NSS search base for passwd map
+	NssBasePasswd *string `json:"nss_base_passwd,omitempty"`
+	// NSS search base for shadow map
+	NssBaseShadow *string `json:"nss_base_shadow,omitempty"`
 	// NSS search base for sudoers map
 	NssBaseSudoers *string `json:"nss_base_sudoers,omitempty"`
 	// Comma-separated list of users for which initgroups() lookups are skipped
 	NssInitgroupsIgnoreUsers *string `json:"nss_initgroups_ignore_users,omitempty"`
 	// If true, the group entry is returned without member attributes
-	NssSkipMembers *bool `json:"nss_skip_members,omitempty"`
+	NssSkipMembers   *bool                  `json:"nss_skip_members,omitempty"`
+	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
 	// PAM search filter for retrieving user info
 	PamFilter *string `json:"pam_filter,omitempty"`
-	// Attribute used to construct the assertion for the user's login name
-	PamLoginAttribute *string `json:"pam_login_attribute,omitempty"`
 	// DN of a group a user must belong to for login authorization to succeed
 	PamGroupDn *string `json:"pam_group_dn,omitempty"`
+	// Attribute used to construct the assertion for the user's login name
+	PamLoginAttribute *string `json:"pam_login_attribute,omitempty"`
 	// Attribute used to test a user's membership of the PAM group DN
 	PamMemberAttribute *string `json:"pam_member_attribute,omitempty"`
+	// Number of retransmit attempts (0-10)
+	RetransmitAttempts NullableInt64 `json:"retransmit_attempts,omitempty"`
+	// Default LDAP search scope
+	SearchScope *string `json:"search_scope,omitempty"`
+	// Search time limit, in seconds
+	SearchTimeLimit NullableInt64 `json:"search_time_limit,omitempty"`
+	// Global TLS mode for LDAP connections
+	SslTlsMode *string `json:"ssl_tls_mode,omitempty"`
 	// Base DN for sudo LDAP queries
 	SudoersBase *string `json:"sudoers_base,omitempty"`
 	// LDAP filter used to restrict records returned for sudo LDAP queries
 	SudoersSearchFilter *string `json:"sudoers_search_filter,omitempty"`
-	LdapServers []LdapprofilesPutRequestLdapProfileValueLdapServersInner `json:"ldap_servers,omitempty"`
-	AttributeMaps []LdapprofilesPutRequestLdapProfileValueAttributeMapsInner `json:"attribute_maps,omitempty"`
-	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
 }
 
 // NewLdapprofilesPutRequestLdapProfileValue instantiates a new LdapprofilesPutRequestLdapProfileValue object
@@ -84,32 +84,28 @@ type LdapprofilesPutRequestLdapProfileValue struct {
 // will change when the set of required properties is changed
 func NewLdapprofilesPutRequestLdapProfileValue() *LdapprofilesPutRequestLdapProfileValue {
 	this := LdapprofilesPutRequestLdapProfileValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
 	var baseDn string = ""
 	this.BaseDn = &baseDn
 	var bindDn string = ""
 	this.BindDn = &bindDn
 	var bindPassword string = ""
 	this.BindPassword = &bindPassword
+	var enable bool = false
+	this.Enable = &enable
 	var encryptedBindPassword string = ""
 	this.EncryptedBindPassword = &encryptedBindPassword
 	var ldapVersion string = "3"
 	this.LdapVersion = &ldapVersion
-	var sslTlsMode string = "off"
-	this.SslTlsMode = &sslTlsMode
-	var searchScope string = "sub"
-	this.SearchScope = &searchScope
-	var nssBasePasswd string = ""
-	this.NssBasePasswd = &nssBasePasswd
+	var name string = ""
+	this.Name = &name
 	var nssBaseGroup string = ""
 	this.NssBaseGroup = &nssBaseGroup
-	var nssBaseShadow string = ""
-	this.NssBaseShadow = &nssBaseShadow
 	var nssBaseNetgroup string = ""
 	this.NssBaseNetgroup = &nssBaseNetgroup
+	var nssBasePasswd string = ""
+	this.NssBasePasswd = &nssBasePasswd
+	var nssBaseShadow string = ""
+	this.NssBaseShadow = &nssBaseShadow
 	var nssBaseSudoers string = ""
 	this.NssBaseSudoers = &nssBaseSudoers
 	var nssInitgroupsIgnoreUsers string = ""
@@ -118,12 +114,16 @@ func NewLdapprofilesPutRequestLdapProfileValue() *LdapprofilesPutRequestLdapProf
 	this.NssSkipMembers = &nssSkipMembers
 	var pamFilter string = ""
 	this.PamFilter = &pamFilter
-	var pamLoginAttribute string = ""
-	this.PamLoginAttribute = &pamLoginAttribute
 	var pamGroupDn string = ""
 	this.PamGroupDn = &pamGroupDn
+	var pamLoginAttribute string = ""
+	this.PamLoginAttribute = &pamLoginAttribute
 	var pamMemberAttribute string = ""
 	this.PamMemberAttribute = &pamMemberAttribute
+	var searchScope string = "sub"
+	this.SearchScope = &searchScope
+	var sslTlsMode string = "off"
+	this.SslTlsMode = &sslTlsMode
 	var sudoersBase string = ""
 	this.SudoersBase = &sudoersBase
 	var sudoersSearchFilter string = ""
@@ -136,32 +136,28 @@ func NewLdapprofilesPutRequestLdapProfileValue() *LdapprofilesPutRequestLdapProf
 // but it doesn't guarantee that properties required by API are set
 func NewLdapprofilesPutRequestLdapProfileValueWithDefaults() *LdapprofilesPutRequestLdapProfileValue {
 	this := LdapprofilesPutRequestLdapProfileValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
 	var baseDn string = ""
 	this.BaseDn = &baseDn
 	var bindDn string = ""
 	this.BindDn = &bindDn
 	var bindPassword string = ""
 	this.BindPassword = &bindPassword
+	var enable bool = false
+	this.Enable = &enable
 	var encryptedBindPassword string = ""
 	this.EncryptedBindPassword = &encryptedBindPassword
 	var ldapVersion string = "3"
 	this.LdapVersion = &ldapVersion
-	var sslTlsMode string = "off"
-	this.SslTlsMode = &sslTlsMode
-	var searchScope string = "sub"
-	this.SearchScope = &searchScope
-	var nssBasePasswd string = ""
-	this.NssBasePasswd = &nssBasePasswd
+	var name string = ""
+	this.Name = &name
 	var nssBaseGroup string = ""
 	this.NssBaseGroup = &nssBaseGroup
-	var nssBaseShadow string = ""
-	this.NssBaseShadow = &nssBaseShadow
 	var nssBaseNetgroup string = ""
 	this.NssBaseNetgroup = &nssBaseNetgroup
+	var nssBasePasswd string = ""
+	this.NssBasePasswd = &nssBasePasswd
+	var nssBaseShadow string = ""
+	this.NssBaseShadow = &nssBaseShadow
 	var nssBaseSudoers string = ""
 	this.NssBaseSudoers = &nssBaseSudoers
 	var nssInitgroupsIgnoreUsers string = ""
@@ -170,12 +166,16 @@ func NewLdapprofilesPutRequestLdapProfileValueWithDefaults() *LdapprofilesPutReq
 	this.NssSkipMembers = &nssSkipMembers
 	var pamFilter string = ""
 	this.PamFilter = &pamFilter
-	var pamLoginAttribute string = ""
-	this.PamLoginAttribute = &pamLoginAttribute
 	var pamGroupDn string = ""
 	this.PamGroupDn = &pamGroupDn
+	var pamLoginAttribute string = ""
+	this.PamLoginAttribute = &pamLoginAttribute
 	var pamMemberAttribute string = ""
 	this.PamMemberAttribute = &pamMemberAttribute
+	var searchScope string = "sub"
+	this.SearchScope = &searchScope
+	var sslTlsMode string = "off"
+	this.SslTlsMode = &sslTlsMode
 	var sudoersBase string = ""
 	this.SudoersBase = &sudoersBase
 	var sudoersSearchFilter string = ""
@@ -183,68 +183,36 @@ func NewLdapprofilesPutRequestLdapProfileValueWithDefaults() *LdapprofilesPutReq
 	return &this
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
+// GetAttributeMaps returns the AttributeMaps field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetAttributeMaps() []LdapprofilesPutRequestLdapProfileValueAttributeMapsInner {
+	if o == nil || IsNil(o.AttributeMaps) {
+		var ret []LdapprofilesPutRequestLdapProfileValueAttributeMapsInner
 		return ret
 	}
-	return *o.Name
+	return o.AttributeMaps
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetAttributeMapsOk returns a tuple with the AttributeMaps field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetAttributeMapsOk() ([]LdapprofilesPutRequestLdapProfileValueAttributeMapsInner, bool) {
+	if o == nil || IsNil(o.AttributeMaps) {
 		return nil, false
 	}
-	return o.Name, true
+	return o.AttributeMaps, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
+// HasAttributeMaps returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasAttributeMaps() bool {
+	if o != nil && !IsNil(o.AttributeMaps) {
 		return true
 	}
 
 	return false
 }
 
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetName(v string) {
-	o.Name = &v
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetEnable(v bool) {
-	o.Enable = &v
+// SetAttributeMaps gets a reference to the given []LdapprofilesPutRequestLdapProfileValueAttributeMapsInner and assigns it to the AttributeMaps field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetAttributeMaps(v []LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) {
+	o.AttributeMaps = v
 }
 
 // GetBaseDn returns the BaseDn field value if set, zero value otherwise.
@@ -343,100 +311,47 @@ func (o *LdapprofilesPutRequestLdapProfileValue) SetBindPassword(v string) {
 	o.BindPassword = &v
 }
 
-// GetEncryptedBindPassword returns the EncryptedBindPassword field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetEncryptedBindPassword() string {
-	if o == nil || IsNil(o.EncryptedBindPassword) {
-		var ret string
+// GetBindTimeLimit returns the BindTimeLimit field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *LdapprofilesPutRequestLdapProfileValue) GetBindTimeLimit() int64 {
+	if o == nil || IsNil(o.BindTimeLimit.Get()) {
+		var ret int64
 		return ret
 	}
-	return *o.EncryptedBindPassword
+	return *o.BindTimeLimit.Get()
 }
 
-// GetEncryptedBindPasswordOk returns a tuple with the EncryptedBindPassword field value if set, nil otherwise
+// GetBindTimeLimitOk returns a tuple with the BindTimeLimit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetEncryptedBindPasswordOk() (*string, bool) {
-	if o == nil || IsNil(o.EncryptedBindPassword) {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LdapprofilesPutRequestLdapProfileValue) GetBindTimeLimitOk() (*int64, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.EncryptedBindPassword, true
+	return o.BindTimeLimit.Get(), o.BindTimeLimit.IsSet()
 }
 
-// HasEncryptedBindPassword returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasEncryptedBindPassword() bool {
-	if o != nil && !IsNil(o.EncryptedBindPassword) {
+// HasBindTimeLimit returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasBindTimeLimit() bool {
+	if o != nil && o.BindTimeLimit.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetEncryptedBindPassword gets a reference to the given string and assigns it to the EncryptedBindPassword field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetEncryptedBindPassword(v string) {
-	o.EncryptedBindPassword = &v
+// SetBindTimeLimit gets a reference to the given NullableInt64 and assigns it to the BindTimeLimit field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetBindTimeLimit(v int64) {
+	o.BindTimeLimit.Set(&v)
 }
 
-// GetLdapVersion returns the LdapVersion field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetLdapVersion() string {
-	if o == nil || IsNil(o.LdapVersion) {
-		var ret string
-		return ret
-	}
-	return *o.LdapVersion
+// SetBindTimeLimitNil sets the value for BindTimeLimit to be an explicit nil
+func (o *LdapprofilesPutRequestLdapProfileValue) SetBindTimeLimitNil() {
+	o.BindTimeLimit.Set(nil)
 }
 
-// GetLdapVersionOk returns a tuple with the LdapVersion field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetLdapVersionOk() (*string, bool) {
-	if o == nil || IsNil(o.LdapVersion) {
-		return nil, false
-	}
-	return o.LdapVersion, true
-}
-
-// HasLdapVersion returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasLdapVersion() bool {
-	if o != nil && !IsNil(o.LdapVersion) {
-		return true
-	}
-
-	return false
-}
-
-// SetLdapVersion gets a reference to the given string and assigns it to the LdapVersion field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetLdapVersion(v string) {
-	o.LdapVersion = &v
-}
-
-// GetSslTlsMode returns the SslTlsMode field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetSslTlsMode() string {
-	if o == nil || IsNil(o.SslTlsMode) {
-		var ret string
-		return ret
-	}
-	return *o.SslTlsMode
-}
-
-// GetSslTlsModeOk returns a tuple with the SslTlsMode field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetSslTlsModeOk() (*string, bool) {
-	if o == nil || IsNil(o.SslTlsMode) {
-		return nil, false
-	}
-	return o.SslTlsMode, true
-}
-
-// HasSslTlsMode returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasSslTlsMode() bool {
-	if o != nil && !IsNil(o.SslTlsMode) {
-		return true
-	}
-
-	return false
-}
-
-// SetSslTlsMode gets a reference to the given string and assigns it to the SslTlsMode field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetSslTlsMode(v string) {
-	o.SslTlsMode = &v
+// UnsetBindTimeLimit ensures that no value is present for BindTimeLimit, not even an explicit nil
+func (o *LdapprofilesPutRequestLdapProfileValue) UnsetBindTimeLimit() {
+	o.BindTimeLimit.Unset()
 }
 
 // GetDefaultPort returns the DefaultPort field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -471,6 +386,7 @@ func (o *LdapprofilesPutRequestLdapProfileValue) HasDefaultPort() bool {
 func (o *LdapprofilesPutRequestLdapProfileValue) SetDefaultPort(v int64) {
 	o.DefaultPort.Set(&v)
 }
+
 // SetDefaultPortNil sets the value for DefaultPort to be an explicit nil
 func (o *LdapprofilesPutRequestLdapProfileValue) SetDefaultPortNil() {
 	o.DefaultPort.Set(nil)
@@ -481,88 +397,68 @@ func (o *LdapprofilesPutRequestLdapProfileValue) UnsetDefaultPort() {
 	o.DefaultPort.Unset()
 }
 
-// GetSearchTimeLimit returns the SearchTimeLimit field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchTimeLimit() int64 {
-	if o == nil || IsNil(o.SearchTimeLimit.Get()) {
-		var ret int64
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
 		return ret
 	}
-	return *o.SearchTimeLimit.Get()
+	return *o.Enable
 }
 
-// GetSearchTimeLimitOk returns a tuple with the SearchTimeLimit field value if set, nil otherwise
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchTimeLimitOk() (*int64, bool) {
-	if o == nil {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
 		return nil, false
 	}
-	return o.SearchTimeLimit.Get(), o.SearchTimeLimit.IsSet()
+	return o.Enable, true
 }
 
-// HasSearchTimeLimit returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasSearchTimeLimit() bool {
-	if o != nil && o.SearchTimeLimit.IsSet() {
+// HasEnable returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
 		return true
 	}
 
 	return false
 }
 
-// SetSearchTimeLimit gets a reference to the given NullableInt64 and assigns it to the SearchTimeLimit field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetSearchTimeLimit(v int64) {
-	o.SearchTimeLimit.Set(&v)
-}
-// SetSearchTimeLimitNil sets the value for SearchTimeLimit to be an explicit nil
-func (o *LdapprofilesPutRequestLdapProfileValue) SetSearchTimeLimitNil() {
-	o.SearchTimeLimit.Set(nil)
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetEnable(v bool) {
+	o.Enable = &v
 }
 
-// UnsetSearchTimeLimit ensures that no value is present for SearchTimeLimit, not even an explicit nil
-func (o *LdapprofilesPutRequestLdapProfileValue) UnsetSearchTimeLimit() {
-	o.SearchTimeLimit.Unset()
-}
-
-// GetBindTimeLimit returns the BindTimeLimit field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LdapprofilesPutRequestLdapProfileValue) GetBindTimeLimit() int64 {
-	if o == nil || IsNil(o.BindTimeLimit.Get()) {
-		var ret int64
+// GetEncryptedBindPassword returns the EncryptedBindPassword field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetEncryptedBindPassword() string {
+	if o == nil || IsNil(o.EncryptedBindPassword) {
+		var ret string
 		return ret
 	}
-	return *o.BindTimeLimit.Get()
+	return *o.EncryptedBindPassword
 }
 
-// GetBindTimeLimitOk returns a tuple with the BindTimeLimit field value if set, nil otherwise
+// GetEncryptedBindPasswordOk returns a tuple with the EncryptedBindPassword field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LdapprofilesPutRequestLdapProfileValue) GetBindTimeLimitOk() (*int64, bool) {
-	if o == nil {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetEncryptedBindPasswordOk() (*string, bool) {
+	if o == nil || IsNil(o.EncryptedBindPassword) {
 		return nil, false
 	}
-	return o.BindTimeLimit.Get(), o.BindTimeLimit.IsSet()
+	return o.EncryptedBindPassword, true
 }
 
-// HasBindTimeLimit returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasBindTimeLimit() bool {
-	if o != nil && o.BindTimeLimit.IsSet() {
+// HasEncryptedBindPassword returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasEncryptedBindPassword() bool {
+	if o != nil && !IsNil(o.EncryptedBindPassword) {
 		return true
 	}
 
 	return false
 }
 
-// SetBindTimeLimit gets a reference to the given NullableInt64 and assigns it to the BindTimeLimit field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetBindTimeLimit(v int64) {
-	o.BindTimeLimit.Set(&v)
-}
-// SetBindTimeLimitNil sets the value for BindTimeLimit to be an explicit nil
-func (o *LdapprofilesPutRequestLdapProfileValue) SetBindTimeLimitNil() {
-	o.BindTimeLimit.Set(nil)
-}
-
-// UnsetBindTimeLimit ensures that no value is present for BindTimeLimit, not even an explicit nil
-func (o *LdapprofilesPutRequestLdapProfileValue) UnsetBindTimeLimit() {
-	o.BindTimeLimit.Unset()
+// SetEncryptedBindPassword gets a reference to the given string and assigns it to the EncryptedBindPassword field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetEncryptedBindPassword(v string) {
+	o.EncryptedBindPassword = &v
 }
 
 // GetIdleTimeLimit returns the IdleTimeLimit field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -597,6 +493,7 @@ func (o *LdapprofilesPutRequestLdapProfileValue) HasIdleTimeLimit() bool {
 func (o *LdapprofilesPutRequestLdapProfileValue) SetIdleTimeLimit(v int64) {
 	o.IdleTimeLimit.Set(&v)
 }
+
 // SetIdleTimeLimitNil sets the value for IdleTimeLimit to be an explicit nil
 func (o *LdapprofilesPutRequestLdapProfileValue) SetIdleTimeLimitNil() {
 	o.IdleTimeLimit.Set(nil)
@@ -607,110 +504,100 @@ func (o *LdapprofilesPutRequestLdapProfileValue) UnsetIdleTimeLimit() {
 	o.IdleTimeLimit.Unset()
 }
 
-// GetRetransmitAttempts returns the RetransmitAttempts field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LdapprofilesPutRequestLdapProfileValue) GetRetransmitAttempts() int64 {
-	if o == nil || IsNil(o.RetransmitAttempts.Get()) {
-		var ret int64
+// GetLdapServers returns the LdapServers field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetLdapServers() []LdapprofilesPutRequestLdapProfileValueLdapServersInner {
+	if o == nil || IsNil(o.LdapServers) {
+		var ret []LdapprofilesPutRequestLdapProfileValueLdapServersInner
 		return ret
 	}
-	return *o.RetransmitAttempts.Get()
+	return o.LdapServers
 }
 
-// GetRetransmitAttemptsOk returns a tuple with the RetransmitAttempts field value if set, nil otherwise
+// GetLdapServersOk returns a tuple with the LdapServers field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LdapprofilesPutRequestLdapProfileValue) GetRetransmitAttemptsOk() (*int64, bool) {
-	if o == nil {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetLdapServersOk() ([]LdapprofilesPutRequestLdapProfileValueLdapServersInner, bool) {
+	if o == nil || IsNil(o.LdapServers) {
 		return nil, false
 	}
-	return o.RetransmitAttempts.Get(), o.RetransmitAttempts.IsSet()
+	return o.LdapServers, true
 }
 
-// HasRetransmitAttempts returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasRetransmitAttempts() bool {
-	if o != nil && o.RetransmitAttempts.IsSet() {
+// HasLdapServers returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasLdapServers() bool {
+	if o != nil && !IsNil(o.LdapServers) {
 		return true
 	}
 
 	return false
 }
 
-// SetRetransmitAttempts gets a reference to the given NullableInt64 and assigns it to the RetransmitAttempts field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetRetransmitAttempts(v int64) {
-	o.RetransmitAttempts.Set(&v)
-}
-// SetRetransmitAttemptsNil sets the value for RetransmitAttempts to be an explicit nil
-func (o *LdapprofilesPutRequestLdapProfileValue) SetRetransmitAttemptsNil() {
-	o.RetransmitAttempts.Set(nil)
+// SetLdapServers gets a reference to the given []LdapprofilesPutRequestLdapProfileValueLdapServersInner and assigns it to the LdapServers field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetLdapServers(v []LdapprofilesPutRequestLdapProfileValueLdapServersInner) {
+	o.LdapServers = v
 }
 
-// UnsetRetransmitAttempts ensures that no value is present for RetransmitAttempts, not even an explicit nil
-func (o *LdapprofilesPutRequestLdapProfileValue) UnsetRetransmitAttempts() {
-	o.RetransmitAttempts.Unset()
-}
-
-// GetSearchScope returns the SearchScope field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchScope() string {
-	if o == nil || IsNil(o.SearchScope) {
+// GetLdapVersion returns the LdapVersion field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetLdapVersion() string {
+	if o == nil || IsNil(o.LdapVersion) {
 		var ret string
 		return ret
 	}
-	return *o.SearchScope
+	return *o.LdapVersion
 }
 
-// GetSearchScopeOk returns a tuple with the SearchScope field value if set, nil otherwise
+// GetLdapVersionOk returns a tuple with the LdapVersion field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchScopeOk() (*string, bool) {
-	if o == nil || IsNil(o.SearchScope) {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetLdapVersionOk() (*string, bool) {
+	if o == nil || IsNil(o.LdapVersion) {
 		return nil, false
 	}
-	return o.SearchScope, true
+	return o.LdapVersion, true
 }
 
-// HasSearchScope returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasSearchScope() bool {
-	if o != nil && !IsNil(o.SearchScope) {
+// HasLdapVersion returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasLdapVersion() bool {
+	if o != nil && !IsNil(o.LdapVersion) {
 		return true
 	}
 
 	return false
 }
 
-// SetSearchScope gets a reference to the given string and assigns it to the SearchScope field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetSearchScope(v string) {
-	o.SearchScope = &v
+// SetLdapVersion gets a reference to the given string and assigns it to the LdapVersion field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetLdapVersion(v string) {
+	o.LdapVersion = &v
 }
 
-// GetNssBasePasswd returns the NssBasePasswd field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetNssBasePasswd() string {
-	if o == nil || IsNil(o.NssBasePasswd) {
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
-	return *o.NssBasePasswd
+	return *o.Name
 }
 
-// GetNssBasePasswdOk returns a tuple with the NssBasePasswd field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetNssBasePasswdOk() (*string, bool) {
-	if o == nil || IsNil(o.NssBasePasswd) {
+func (o *LdapprofilesPutRequestLdapProfileValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
-	return o.NssBasePasswd, true
+	return o.Name, true
 }
 
-// HasNssBasePasswd returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasNssBasePasswd() bool {
-	if o != nil && !IsNil(o.NssBasePasswd) {
+// HasName returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
 	return false
 }
 
-// SetNssBasePasswd gets a reference to the given string and assigns it to the NssBasePasswd field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetNssBasePasswd(v string) {
-	o.NssBasePasswd = &v
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetNssBaseGroup returns the NssBaseGroup field value if set, zero value otherwise.
@@ -745,38 +632,6 @@ func (o *LdapprofilesPutRequestLdapProfileValue) SetNssBaseGroup(v string) {
 	o.NssBaseGroup = &v
 }
 
-// GetNssBaseShadow returns the NssBaseShadow field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetNssBaseShadow() string {
-	if o == nil || IsNil(o.NssBaseShadow) {
-		var ret string
-		return ret
-	}
-	return *o.NssBaseShadow
-}
-
-// GetNssBaseShadowOk returns a tuple with the NssBaseShadow field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetNssBaseShadowOk() (*string, bool) {
-	if o == nil || IsNil(o.NssBaseShadow) {
-		return nil, false
-	}
-	return o.NssBaseShadow, true
-}
-
-// HasNssBaseShadow returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasNssBaseShadow() bool {
-	if o != nil && !IsNil(o.NssBaseShadow) {
-		return true
-	}
-
-	return false
-}
-
-// SetNssBaseShadow gets a reference to the given string and assigns it to the NssBaseShadow field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetNssBaseShadow(v string) {
-	o.NssBaseShadow = &v
-}
-
 // GetNssBaseNetgroup returns the NssBaseNetgroup field value if set, zero value otherwise.
 func (o *LdapprofilesPutRequestLdapProfileValue) GetNssBaseNetgroup() string {
 	if o == nil || IsNil(o.NssBaseNetgroup) {
@@ -807,6 +662,70 @@ func (o *LdapprofilesPutRequestLdapProfileValue) HasNssBaseNetgroup() bool {
 // SetNssBaseNetgroup gets a reference to the given string and assigns it to the NssBaseNetgroup field.
 func (o *LdapprofilesPutRequestLdapProfileValue) SetNssBaseNetgroup(v string) {
 	o.NssBaseNetgroup = &v
+}
+
+// GetNssBasePasswd returns the NssBasePasswd field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetNssBasePasswd() string {
+	if o == nil || IsNil(o.NssBasePasswd) {
+		var ret string
+		return ret
+	}
+	return *o.NssBasePasswd
+}
+
+// GetNssBasePasswdOk returns a tuple with the NssBasePasswd field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetNssBasePasswdOk() (*string, bool) {
+	if o == nil || IsNil(o.NssBasePasswd) {
+		return nil, false
+	}
+	return o.NssBasePasswd, true
+}
+
+// HasNssBasePasswd returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasNssBasePasswd() bool {
+	if o != nil && !IsNil(o.NssBasePasswd) {
+		return true
+	}
+
+	return false
+}
+
+// SetNssBasePasswd gets a reference to the given string and assigns it to the NssBasePasswd field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetNssBasePasswd(v string) {
+	o.NssBasePasswd = &v
+}
+
+// GetNssBaseShadow returns the NssBaseShadow field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetNssBaseShadow() string {
+	if o == nil || IsNil(o.NssBaseShadow) {
+		var ret string
+		return ret
+	}
+	return *o.NssBaseShadow
+}
+
+// GetNssBaseShadowOk returns a tuple with the NssBaseShadow field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetNssBaseShadowOk() (*string, bool) {
+	if o == nil || IsNil(o.NssBaseShadow) {
+		return nil, false
+	}
+	return o.NssBaseShadow, true
+}
+
+// HasNssBaseShadow returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasNssBaseShadow() bool {
+	if o != nil && !IsNil(o.NssBaseShadow) {
+		return true
+	}
+
+	return false
+}
+
+// SetNssBaseShadow gets a reference to the given string and assigns it to the NssBaseShadow field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetNssBaseShadow(v string) {
+	o.NssBaseShadow = &v
 }
 
 // GetNssBaseSudoers returns the NssBaseSudoers field value if set, zero value otherwise.
@@ -905,6 +824,38 @@ func (o *LdapprofilesPutRequestLdapProfileValue) SetNssSkipMembers(v bool) {
 	o.NssSkipMembers = &v
 }
 
+// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetObjectProperties() map[string]interface{} {
+	if o == nil || IsNil(o.ObjectProperties) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.ObjectProperties
+}
+
+// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetObjectPropertiesOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.ObjectProperties) {
+		return map[string]interface{}{}, false
+	}
+	return o.ObjectProperties, true
+}
+
+// HasObjectProperties returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasObjectProperties() bool {
+	if o != nil && !IsNil(o.ObjectProperties) {
+		return true
+	}
+
+	return false
+}
+
+// SetObjectProperties gets a reference to the given map[string]interface{} and assigns it to the ObjectProperties field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetObjectProperties(v map[string]interface{}) {
+	o.ObjectProperties = v
+}
+
 // GetPamFilter returns the PamFilter field value if set, zero value otherwise.
 func (o *LdapprofilesPutRequestLdapProfileValue) GetPamFilter() string {
 	if o == nil || IsNil(o.PamFilter) {
@@ -935,38 +886,6 @@ func (o *LdapprofilesPutRequestLdapProfileValue) HasPamFilter() bool {
 // SetPamFilter gets a reference to the given string and assigns it to the PamFilter field.
 func (o *LdapprofilesPutRequestLdapProfileValue) SetPamFilter(v string) {
 	o.PamFilter = &v
-}
-
-// GetPamLoginAttribute returns the PamLoginAttribute field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetPamLoginAttribute() string {
-	if o == nil || IsNil(o.PamLoginAttribute) {
-		var ret string
-		return ret
-	}
-	return *o.PamLoginAttribute
-}
-
-// GetPamLoginAttributeOk returns a tuple with the PamLoginAttribute field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetPamLoginAttributeOk() (*string, bool) {
-	if o == nil || IsNil(o.PamLoginAttribute) {
-		return nil, false
-	}
-	return o.PamLoginAttribute, true
-}
-
-// HasPamLoginAttribute returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasPamLoginAttribute() bool {
-	if o != nil && !IsNil(o.PamLoginAttribute) {
-		return true
-	}
-
-	return false
-}
-
-// SetPamLoginAttribute gets a reference to the given string and assigns it to the PamLoginAttribute field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetPamLoginAttribute(v string) {
-	o.PamLoginAttribute = &v
 }
 
 // GetPamGroupDn returns the PamGroupDn field value if set, zero value otherwise.
@@ -1001,6 +920,38 @@ func (o *LdapprofilesPutRequestLdapProfileValue) SetPamGroupDn(v string) {
 	o.PamGroupDn = &v
 }
 
+// GetPamLoginAttribute returns the PamLoginAttribute field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetPamLoginAttribute() string {
+	if o == nil || IsNil(o.PamLoginAttribute) {
+		var ret string
+		return ret
+	}
+	return *o.PamLoginAttribute
+}
+
+// GetPamLoginAttributeOk returns a tuple with the PamLoginAttribute field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetPamLoginAttributeOk() (*string, bool) {
+	if o == nil || IsNil(o.PamLoginAttribute) {
+		return nil, false
+	}
+	return o.PamLoginAttribute, true
+}
+
+// HasPamLoginAttribute returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasPamLoginAttribute() bool {
+	if o != nil && !IsNil(o.PamLoginAttribute) {
+		return true
+	}
+
+	return false
+}
+
+// SetPamLoginAttribute gets a reference to the given string and assigns it to the PamLoginAttribute field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetPamLoginAttribute(v string) {
+	o.PamLoginAttribute = &v
+}
+
 // GetPamMemberAttribute returns the PamMemberAttribute field value if set, zero value otherwise.
 func (o *LdapprofilesPutRequestLdapProfileValue) GetPamMemberAttribute() string {
 	if o == nil || IsNil(o.PamMemberAttribute) {
@@ -1031,6 +982,156 @@ func (o *LdapprofilesPutRequestLdapProfileValue) HasPamMemberAttribute() bool {
 // SetPamMemberAttribute gets a reference to the given string and assigns it to the PamMemberAttribute field.
 func (o *LdapprofilesPutRequestLdapProfileValue) SetPamMemberAttribute(v string) {
 	o.PamMemberAttribute = &v
+}
+
+// GetRetransmitAttempts returns the RetransmitAttempts field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *LdapprofilesPutRequestLdapProfileValue) GetRetransmitAttempts() int64 {
+	if o == nil || IsNil(o.RetransmitAttempts.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.RetransmitAttempts.Get()
+}
+
+// GetRetransmitAttemptsOk returns a tuple with the RetransmitAttempts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LdapprofilesPutRequestLdapProfileValue) GetRetransmitAttemptsOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RetransmitAttempts.Get(), o.RetransmitAttempts.IsSet()
+}
+
+// HasRetransmitAttempts returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasRetransmitAttempts() bool {
+	if o != nil && o.RetransmitAttempts.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRetransmitAttempts gets a reference to the given NullableInt64 and assigns it to the RetransmitAttempts field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetRetransmitAttempts(v int64) {
+	o.RetransmitAttempts.Set(&v)
+}
+
+// SetRetransmitAttemptsNil sets the value for RetransmitAttempts to be an explicit nil
+func (o *LdapprofilesPutRequestLdapProfileValue) SetRetransmitAttemptsNil() {
+	o.RetransmitAttempts.Set(nil)
+}
+
+// UnsetRetransmitAttempts ensures that no value is present for RetransmitAttempts, not even an explicit nil
+func (o *LdapprofilesPutRequestLdapProfileValue) UnsetRetransmitAttempts() {
+	o.RetransmitAttempts.Unset()
+}
+
+// GetSearchScope returns the SearchScope field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchScope() string {
+	if o == nil || IsNil(o.SearchScope) {
+		var ret string
+		return ret
+	}
+	return *o.SearchScope
+}
+
+// GetSearchScopeOk returns a tuple with the SearchScope field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchScopeOk() (*string, bool) {
+	if o == nil || IsNil(o.SearchScope) {
+		return nil, false
+	}
+	return o.SearchScope, true
+}
+
+// HasSearchScope returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasSearchScope() bool {
+	if o != nil && !IsNil(o.SearchScope) {
+		return true
+	}
+
+	return false
+}
+
+// SetSearchScope gets a reference to the given string and assigns it to the SearchScope field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetSearchScope(v string) {
+	o.SearchScope = &v
+}
+
+// GetSearchTimeLimit returns the SearchTimeLimit field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchTimeLimit() int64 {
+	if o == nil || IsNil(o.SearchTimeLimit.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.SearchTimeLimit.Get()
+}
+
+// GetSearchTimeLimitOk returns a tuple with the SearchTimeLimit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LdapprofilesPutRequestLdapProfileValue) GetSearchTimeLimitOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SearchTimeLimit.Get(), o.SearchTimeLimit.IsSet()
+}
+
+// HasSearchTimeLimit returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasSearchTimeLimit() bool {
+	if o != nil && o.SearchTimeLimit.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSearchTimeLimit gets a reference to the given NullableInt64 and assigns it to the SearchTimeLimit field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetSearchTimeLimit(v int64) {
+	o.SearchTimeLimit.Set(&v)
+}
+
+// SetSearchTimeLimitNil sets the value for SearchTimeLimit to be an explicit nil
+func (o *LdapprofilesPutRequestLdapProfileValue) SetSearchTimeLimitNil() {
+	o.SearchTimeLimit.Set(nil)
+}
+
+// UnsetSearchTimeLimit ensures that no value is present for SearchTimeLimit, not even an explicit nil
+func (o *LdapprofilesPutRequestLdapProfileValue) UnsetSearchTimeLimit() {
+	o.SearchTimeLimit.Unset()
+}
+
+// GetSslTlsMode returns the SslTlsMode field value if set, zero value otherwise.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetSslTlsMode() string {
+	if o == nil || IsNil(o.SslTlsMode) {
+		var ret string
+		return ret
+	}
+	return *o.SslTlsMode
+}
+
+// GetSslTlsModeOk returns a tuple with the SslTlsMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) GetSslTlsModeOk() (*string, bool) {
+	if o == nil || IsNil(o.SslTlsMode) {
+		return nil, false
+	}
+	return o.SslTlsMode, true
+}
+
+// HasSslTlsMode returns a boolean if a field has been set.
+func (o *LdapprofilesPutRequestLdapProfileValue) HasSslTlsMode() bool {
+	if o != nil && !IsNil(o.SslTlsMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetSslTlsMode gets a reference to the given string and assigns it to the SslTlsMode field.
+func (o *LdapprofilesPutRequestLdapProfileValue) SetSslTlsMode(v string) {
+	o.SslTlsMode = &v
 }
 
 // GetSudoersBase returns the SudoersBase field value if set, zero value otherwise.
@@ -1097,104 +1198,8 @@ func (o *LdapprofilesPutRequestLdapProfileValue) SetSudoersSearchFilter(v string
 	o.SudoersSearchFilter = &v
 }
 
-// GetLdapServers returns the LdapServers field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetLdapServers() []LdapprofilesPutRequestLdapProfileValueLdapServersInner {
-	if o == nil || IsNil(o.LdapServers) {
-		var ret []LdapprofilesPutRequestLdapProfileValueLdapServersInner
-		return ret
-	}
-	return o.LdapServers
-}
-
-// GetLdapServersOk returns a tuple with the LdapServers field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetLdapServersOk() ([]LdapprofilesPutRequestLdapProfileValueLdapServersInner, bool) {
-	if o == nil || IsNil(o.LdapServers) {
-		return nil, false
-	}
-	return o.LdapServers, true
-}
-
-// HasLdapServers returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasLdapServers() bool {
-	if o != nil && !IsNil(o.LdapServers) {
-		return true
-	}
-
-	return false
-}
-
-// SetLdapServers gets a reference to the given []LdapprofilesPutRequestLdapProfileValueLdapServersInner and assigns it to the LdapServers field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetLdapServers(v []LdapprofilesPutRequestLdapProfileValueLdapServersInner) {
-	o.LdapServers = v
-}
-
-// GetAttributeMaps returns the AttributeMaps field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetAttributeMaps() []LdapprofilesPutRequestLdapProfileValueAttributeMapsInner {
-	if o == nil || IsNil(o.AttributeMaps) {
-		var ret []LdapprofilesPutRequestLdapProfileValueAttributeMapsInner
-		return ret
-	}
-	return o.AttributeMaps
-}
-
-// GetAttributeMapsOk returns a tuple with the AttributeMaps field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetAttributeMapsOk() ([]LdapprofilesPutRequestLdapProfileValueAttributeMapsInner, bool) {
-	if o == nil || IsNil(o.AttributeMaps) {
-		return nil, false
-	}
-	return o.AttributeMaps, true
-}
-
-// HasAttributeMaps returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasAttributeMaps() bool {
-	if o != nil && !IsNil(o.AttributeMaps) {
-		return true
-	}
-
-	return false
-}
-
-// SetAttributeMaps gets a reference to the given []LdapprofilesPutRequestLdapProfileValueAttributeMapsInner and assigns it to the AttributeMaps field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetAttributeMaps(v []LdapprofilesPutRequestLdapProfileValueAttributeMapsInner) {
-	o.AttributeMaps = v
-}
-
-// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetObjectProperties() map[string]interface{} {
-	if o == nil || IsNil(o.ObjectProperties) {
-		var ret map[string]interface{}
-		return ret
-	}
-	return o.ObjectProperties
-}
-
-// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetObjectPropertiesOk() (map[string]interface{}, bool) {
-	if o == nil || IsNil(o.ObjectProperties) {
-		return map[string]interface{}{}, false
-	}
-	return o.ObjectProperties, true
-}
-
-// HasObjectProperties returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasObjectProperties() bool {
-	if o != nil && !IsNil(o.ObjectProperties) {
-		return true
-	}
-
-	return false
-}
-
-// SetObjectProperties gets a reference to the given map[string]interface{} and assigns it to the ObjectProperties field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetObjectProperties(v map[string]interface{}) {
-	o.ObjectProperties = v
-}
-
 func (o LdapprofilesPutRequestLdapProfileValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1203,11 +1208,8 @@ func (o LdapprofilesPutRequestLdapProfileValue) MarshalJSON() ([]byte, error) {
 
 func (o LdapprofilesPutRequestLdapProfileValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
+	if !IsNil(o.AttributeMaps) {
+		toSerialize["attribute_maps"] = o.AttributeMaps
 	}
 	if !IsNil(o.BaseDn) {
 		toSerialize["base_dn"] = o.BaseDn
@@ -1218,44 +1220,41 @@ func (o LdapprofilesPutRequestLdapProfileValue) ToMap() (map[string]interface{},
 	if !IsNil(o.BindPassword) {
 		toSerialize["bind_password"] = o.BindPassword
 	}
-	if !IsNil(o.EncryptedBindPassword) {
-		toSerialize["encrypted_bind_password"] = o.EncryptedBindPassword
-	}
-	if !IsNil(o.LdapVersion) {
-		toSerialize["ldap_version"] = o.LdapVersion
-	}
-	if !IsNil(o.SslTlsMode) {
-		toSerialize["ssl_tls_mode"] = o.SslTlsMode
+	if o.BindTimeLimit.IsSet() {
+		toSerialize["bind_time_limit"] = o.BindTimeLimit.Get()
 	}
 	if o.DefaultPort.IsSet() {
 		toSerialize["default_port"] = o.DefaultPort.Get()
 	}
-	if o.SearchTimeLimit.IsSet() {
-		toSerialize["search_time_limit"] = o.SearchTimeLimit.Get()
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
 	}
-	if o.BindTimeLimit.IsSet() {
-		toSerialize["bind_time_limit"] = o.BindTimeLimit.Get()
+	if !IsNil(o.EncryptedBindPassword) {
+		toSerialize["encrypted_bind_password"] = o.EncryptedBindPassword
 	}
 	if o.IdleTimeLimit.IsSet() {
 		toSerialize["idle_time_limit"] = o.IdleTimeLimit.Get()
 	}
-	if o.RetransmitAttempts.IsSet() {
-		toSerialize["retransmit_attempts"] = o.RetransmitAttempts.Get()
+	if !IsNil(o.LdapServers) {
+		toSerialize["ldap_servers"] = o.LdapServers
 	}
-	if !IsNil(o.SearchScope) {
-		toSerialize["search_scope"] = o.SearchScope
+	if !IsNil(o.LdapVersion) {
+		toSerialize["ldap_version"] = o.LdapVersion
 	}
-	if !IsNil(o.NssBasePasswd) {
-		toSerialize["nss_base_passwd"] = o.NssBasePasswd
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.NssBaseGroup) {
 		toSerialize["nss_base_group"] = o.NssBaseGroup
 	}
-	if !IsNil(o.NssBaseShadow) {
-		toSerialize["nss_base_shadow"] = o.NssBaseShadow
-	}
 	if !IsNil(o.NssBaseNetgroup) {
 		toSerialize["nss_base_netgroup"] = o.NssBaseNetgroup
+	}
+	if !IsNil(o.NssBasePasswd) {
+		toSerialize["nss_base_passwd"] = o.NssBasePasswd
+	}
+	if !IsNil(o.NssBaseShadow) {
+		toSerialize["nss_base_shadow"] = o.NssBaseShadow
 	}
 	if !IsNil(o.NssBaseSudoers) {
 		toSerialize["nss_base_sudoers"] = o.NssBaseSudoers
@@ -1266,32 +1265,38 @@ func (o LdapprofilesPutRequestLdapProfileValue) ToMap() (map[string]interface{},
 	if !IsNil(o.NssSkipMembers) {
 		toSerialize["nss_skip_members"] = o.NssSkipMembers
 	}
+	if !IsNil(o.ObjectProperties) {
+		toSerialize["object_properties"] = o.ObjectProperties
+	}
 	if !IsNil(o.PamFilter) {
 		toSerialize["pam_filter"] = o.PamFilter
-	}
-	if !IsNil(o.PamLoginAttribute) {
-		toSerialize["pam_login_attribute"] = o.PamLoginAttribute
 	}
 	if !IsNil(o.PamGroupDn) {
 		toSerialize["pam_group_dn"] = o.PamGroupDn
 	}
+	if !IsNil(o.PamLoginAttribute) {
+		toSerialize["pam_login_attribute"] = o.PamLoginAttribute
+	}
 	if !IsNil(o.PamMemberAttribute) {
 		toSerialize["pam_member_attribute"] = o.PamMemberAttribute
+	}
+	if o.RetransmitAttempts.IsSet() {
+		toSerialize["retransmit_attempts"] = o.RetransmitAttempts.Get()
+	}
+	if !IsNil(o.SearchScope) {
+		toSerialize["search_scope"] = o.SearchScope
+	}
+	if o.SearchTimeLimit.IsSet() {
+		toSerialize["search_time_limit"] = o.SearchTimeLimit.Get()
+	}
+	if !IsNil(o.SslTlsMode) {
+		toSerialize["ssl_tls_mode"] = o.SslTlsMode
 	}
 	if !IsNil(o.SudoersBase) {
 		toSerialize["sudoers_base"] = o.SudoersBase
 	}
 	if !IsNil(o.SudoersSearchFilter) {
 		toSerialize["sudoers_search_filter"] = o.SudoersSearchFilter
-	}
-	if !IsNil(o.LdapServers) {
-		toSerialize["ldap_servers"] = o.LdapServers
-	}
-	if !IsNil(o.AttributeMaps) {
-		toSerialize["attribute_maps"] = o.AttributeMaps
-	}
-	if !IsNil(o.ObjectProperties) {
-		toSerialize["object_properties"] = o.ObjectProperties
 	}
 	return toSerialize, nil
 }
@@ -1331,5 +1336,3 @@ func (v *NullableLdapprofilesPutRequestLdapProfileValue) UnmarshalJSON(src []byt
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

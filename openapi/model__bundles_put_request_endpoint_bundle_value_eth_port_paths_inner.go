@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,6 +19,10 @@ var _ MappedNullable = &BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
 
 // BundlesPutRequestEndpointBundleValueEthPortPathsInner struct for BundlesPutRequestEndpointBundleValueEthPortPathsInner
 type BundlesPutRequestEndpointBundleValueEthPortPathsInner struct {
+	// Diagnostics Port Profile for port
+	EthPortNumDiagnosticsPortProfile *string `json:"eth_port_num_diagnostics_port_profile,omitempty"`
+	// Object type for eth_port_num_diagnostics_port_profile field
+	EthPortNumDiagnosticsPortProfileRefType *string `json:"eth_port_num_diagnostics_port_profile_ref_type_,omitempty"`
 	// Eth Port Profile Or LAG for Eth Port
 	EthPortNumEthPortProfile *string `json:"eth_port_num_eth_port_profile,omitempty"`
 	// Object type for eth_port_num_eth_port_profile field
@@ -31,10 +35,6 @@ type BundlesPutRequestEndpointBundleValueEthPortPathsInner struct {
 	EthPortNumGatewayProfile *string `json:"eth_port_num_gateway_profile,omitempty"`
 	// Object type for eth_port_num_gateway_profile field
 	EthPortNumGatewayProfileRefType *string `json:"eth_port_num_gateway_profile_ref_type_,omitempty"`
-	// Diagnostics Port Profile for port
-	EthPortNumDiagnosticsPortProfile *string `json:"eth_port_num_diagnostics_port_profile,omitempty"`
-	// Object type for eth_port_num_diagnostics_port_profile field
-	EthPortNumDiagnosticsPortProfileRefType *string `json:"eth_port_num_diagnostics_port_profile_ref_type_,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
 	// The name identifying the port. Used for reference only, it won't actually change the port name.
@@ -47,14 +47,14 @@ type BundlesPutRequestEndpointBundleValueEthPortPathsInner struct {
 // will change when the set of required properties is changed
 func NewBundlesPutRequestEndpointBundleValueEthPortPathsInner() *BundlesPutRequestEndpointBundleValueEthPortPathsInner {
 	this := BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
+	var ethPortNumDiagnosticsPortProfile string = ""
+	this.EthPortNumDiagnosticsPortProfile = &ethPortNumDiagnosticsPortProfile
 	var ethPortNumEthPortProfile string = ""
 	this.EthPortNumEthPortProfile = &ethPortNumEthPortProfile
 	var ethPortNumEthPortSettings string = ""
 	this.EthPortNumEthPortSettings = &ethPortNumEthPortSettings
 	var ethPortNumGatewayProfile string = ""
 	this.EthPortNumGatewayProfile = &ethPortNumGatewayProfile
-	var ethPortNumDiagnosticsPortProfile string = ""
-	this.EthPortNumDiagnosticsPortProfile = &ethPortNumDiagnosticsPortProfile
 	return &this
 }
 
@@ -63,15 +63,79 @@ func NewBundlesPutRequestEndpointBundleValueEthPortPathsInner() *BundlesPutReque
 // but it doesn't guarantee that properties required by API are set
 func NewBundlesPutRequestEndpointBundleValueEthPortPathsInnerWithDefaults() *BundlesPutRequestEndpointBundleValueEthPortPathsInner {
 	this := BundlesPutRequestEndpointBundleValueEthPortPathsInner{}
+	var ethPortNumDiagnosticsPortProfile string = ""
+	this.EthPortNumDiagnosticsPortProfile = &ethPortNumDiagnosticsPortProfile
 	var ethPortNumEthPortProfile string = ""
 	this.EthPortNumEthPortProfile = &ethPortNumEthPortProfile
 	var ethPortNumEthPortSettings string = ""
 	this.EthPortNumEthPortSettings = &ethPortNumEthPortSettings
 	var ethPortNumGatewayProfile string = ""
 	this.EthPortNumGatewayProfile = &ethPortNumGatewayProfile
-	var ethPortNumDiagnosticsPortProfile string = ""
-	this.EthPortNumDiagnosticsPortProfile = &ethPortNumDiagnosticsPortProfile
 	return &this
+}
+
+// GetEthPortNumDiagnosticsPortProfile returns the EthPortNumDiagnosticsPortProfile field value if set, zero value otherwise.
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumDiagnosticsPortProfile() string {
+	if o == nil || IsNil(o.EthPortNumDiagnosticsPortProfile) {
+		var ret string
+		return ret
+	}
+	return *o.EthPortNumDiagnosticsPortProfile
+}
+
+// GetEthPortNumDiagnosticsPortProfileOk returns a tuple with the EthPortNumDiagnosticsPortProfile field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumDiagnosticsPortProfileOk() (*string, bool) {
+	if o == nil || IsNil(o.EthPortNumDiagnosticsPortProfile) {
+		return nil, false
+	}
+	return o.EthPortNumDiagnosticsPortProfile, true
+}
+
+// HasEthPortNumDiagnosticsPortProfile returns a boolean if a field has been set.
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumDiagnosticsPortProfile() bool {
+	if o != nil && !IsNil(o.EthPortNumDiagnosticsPortProfile) {
+		return true
+	}
+
+	return false
+}
+
+// SetEthPortNumDiagnosticsPortProfile gets a reference to the given string and assigns it to the EthPortNumDiagnosticsPortProfile field.
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumDiagnosticsPortProfile(v string) {
+	o.EthPortNumDiagnosticsPortProfile = &v
+}
+
+// GetEthPortNumDiagnosticsPortProfileRefType returns the EthPortNumDiagnosticsPortProfileRefType field value if set, zero value otherwise.
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumDiagnosticsPortProfileRefType() string {
+	if o == nil || IsNil(o.EthPortNumDiagnosticsPortProfileRefType) {
+		var ret string
+		return ret
+	}
+	return *o.EthPortNumDiagnosticsPortProfileRefType
+}
+
+// GetEthPortNumDiagnosticsPortProfileRefTypeOk returns a tuple with the EthPortNumDiagnosticsPortProfileRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumDiagnosticsPortProfileRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.EthPortNumDiagnosticsPortProfileRefType) {
+		return nil, false
+	}
+	return o.EthPortNumDiagnosticsPortProfileRefType, true
+}
+
+// HasEthPortNumDiagnosticsPortProfileRefType returns a boolean if a field has been set.
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumDiagnosticsPortProfileRefType() bool {
+	if o != nil && !IsNil(o.EthPortNumDiagnosticsPortProfileRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetEthPortNumDiagnosticsPortProfileRefType gets a reference to the given string and assigns it to the EthPortNumDiagnosticsPortProfileRefType field.
+func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumDiagnosticsPortProfileRefType(v string) {
+	o.EthPortNumDiagnosticsPortProfileRefType = &v
 }
 
 // GetEthPortNumEthPortProfile returns the EthPortNumEthPortProfile field value if set, zero value otherwise.
@@ -266,70 +330,6 @@ func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumGat
 	o.EthPortNumGatewayProfileRefType = &v
 }
 
-// GetEthPortNumDiagnosticsPortProfile returns the EthPortNumDiagnosticsPortProfile field value if set, zero value otherwise.
-func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumDiagnosticsPortProfile() string {
-	if o == nil || IsNil(o.EthPortNumDiagnosticsPortProfile) {
-		var ret string
-		return ret
-	}
-	return *o.EthPortNumDiagnosticsPortProfile
-}
-
-// GetEthPortNumDiagnosticsPortProfileOk returns a tuple with the EthPortNumDiagnosticsPortProfile field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumDiagnosticsPortProfileOk() (*string, bool) {
-	if o == nil || IsNil(o.EthPortNumDiagnosticsPortProfile) {
-		return nil, false
-	}
-	return o.EthPortNumDiagnosticsPortProfile, true
-}
-
-// HasEthPortNumDiagnosticsPortProfile returns a boolean if a field has been set.
-func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumDiagnosticsPortProfile() bool {
-	if o != nil && !IsNil(o.EthPortNumDiagnosticsPortProfile) {
-		return true
-	}
-
-	return false
-}
-
-// SetEthPortNumDiagnosticsPortProfile gets a reference to the given string and assigns it to the EthPortNumDiagnosticsPortProfile field.
-func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumDiagnosticsPortProfile(v string) {
-	o.EthPortNumDiagnosticsPortProfile = &v
-}
-
-// GetEthPortNumDiagnosticsPortProfileRefType returns the EthPortNumDiagnosticsPortProfileRefType field value if set, zero value otherwise.
-func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumDiagnosticsPortProfileRefType() string {
-	if o == nil || IsNil(o.EthPortNumDiagnosticsPortProfileRefType) {
-		var ret string
-		return ret
-	}
-	return *o.EthPortNumDiagnosticsPortProfileRefType
-}
-
-// GetEthPortNumDiagnosticsPortProfileRefTypeOk returns a tuple with the EthPortNumDiagnosticsPortProfileRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetEthPortNumDiagnosticsPortProfileRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.EthPortNumDiagnosticsPortProfileRefType) {
-		return nil, false
-	}
-	return o.EthPortNumDiagnosticsPortProfileRefType, true
-}
-
-// HasEthPortNumDiagnosticsPortProfileRefType returns a boolean if a field has been set.
-func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) HasEthPortNumDiagnosticsPortProfileRefType() bool {
-	if o != nil && !IsNil(o.EthPortNumDiagnosticsPortProfileRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetEthPortNumDiagnosticsPortProfileRefType gets a reference to the given string and assigns it to the EthPortNumDiagnosticsPortProfileRefType field.
-func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetEthPortNumDiagnosticsPortProfileRefType(v string) {
-	o.EthPortNumDiagnosticsPortProfileRefType = &v
-}
-
 // GetIndex returns the Index field value if set, zero value otherwise.
 func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
@@ -395,7 +395,7 @@ func (o *BundlesPutRequestEndpointBundleValueEthPortPathsInner) SetPortName(v st
 }
 
 func (o BundlesPutRequestEndpointBundleValueEthPortPathsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -404,6 +404,12 @@ func (o BundlesPutRequestEndpointBundleValueEthPortPathsInner) MarshalJSON() ([]
 
 func (o BundlesPutRequestEndpointBundleValueEthPortPathsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.EthPortNumDiagnosticsPortProfile) {
+		toSerialize["eth_port_num_diagnostics_port_profile"] = o.EthPortNumDiagnosticsPortProfile
+	}
+	if !IsNil(o.EthPortNumDiagnosticsPortProfileRefType) {
+		toSerialize["eth_port_num_diagnostics_port_profile_ref_type_"] = o.EthPortNumDiagnosticsPortProfileRefType
+	}
 	if !IsNil(o.EthPortNumEthPortProfile) {
 		toSerialize["eth_port_num_eth_port_profile"] = o.EthPortNumEthPortProfile
 	}
@@ -421,12 +427,6 @@ func (o BundlesPutRequestEndpointBundleValueEthPortPathsInner) ToMap() (map[stri
 	}
 	if !IsNil(o.EthPortNumGatewayProfileRefType) {
 		toSerialize["eth_port_num_gateway_profile_ref_type_"] = o.EthPortNumGatewayProfileRefType
-	}
-	if !IsNil(o.EthPortNumDiagnosticsPortProfile) {
-		toSerialize["eth_port_num_diagnostics_port_profile"] = o.EthPortNumDiagnosticsPortProfile
-	}
-	if !IsNil(o.EthPortNumDiagnosticsPortProfileRefType) {
-		toSerialize["eth_port_num_diagnostics_port_profile_ref_type_"] = o.EthPortNumDiagnosticsPortProfileRefType
 	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
@@ -472,5 +472,3 @@ func (v *NullableBundlesPutRequestEndpointBundleValueEthPortPathsInner) Unmarsha
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

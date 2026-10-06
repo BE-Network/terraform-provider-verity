@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // PortACLsAPIService PortACLsAPI service
 type PortACLsAPIService service
 
 type ApiPortaclsDeleteRequest struct {
-	ctx context.Context
-	ApiService *PortACLsAPIService
-	portAclName *[]string
+	ctx           context.Context
+	ApiService    *PortACLsAPIService
+	portAclName   *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ PortaclsDelete Delete Port ACL
 
 Deletes an existing Port ACL from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPortaclsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPortaclsDeleteRequest
 */
 func (a *PortACLsAPIService) PortaclsDelete(ctx context.Context) ApiPortaclsDeleteRequest {
 	return ApiPortaclsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PortACLsAPIService) PortaclsDeleteExecute(r ApiPortaclsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PortACLsAPIService.PortaclsDelete")
@@ -142,10 +140,10 @@ func (a *PortACLsAPIService) PortaclsDeleteExecute(r ApiPortaclsDeleteRequest) (
 }
 
 type ApiPortaclsGetRequest struct {
-	ctx context.Context
-	ApiService *PortACLsAPIService
-	portAclName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *PortACLsAPIService
+	portAclName   *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ PortaclsGet Get all Port ACLs
 
 Downloads all Port ACLs from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPortaclsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPortaclsGetRequest
 */
 func (a *PortACLsAPIService) PortaclsGet(ctx context.Context) ApiPortaclsGetRequest {
 	return ApiPortaclsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PortACLsAPIService) PortaclsGetExecute(r ApiPortaclsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PortACLsAPIService.PortaclsGet")
@@ -258,9 +255,9 @@ func (a *PortACLsAPIService) PortaclsGetExecute(r ApiPortaclsGetRequest) (*http.
 }
 
 type ApiPortaclsPatchRequest struct {
-	ctx context.Context
-	ApiService *PortACLsAPIService
-	changesetName *string
+	ctx                context.Context
+	ApiService         *PortACLsAPIService
+	changesetName      *string
 	portaclsPutRequest *PortaclsPutRequest
 }
 
@@ -283,23 +280,22 @@ PortaclsPatch Update Port ACL
 
 Update Port ACL into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPortaclsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPortaclsPatchRequest
 */
 func (a *PortACLsAPIService) PortaclsPatch(ctx context.Context) ApiPortaclsPatchRequest {
 	return ApiPortaclsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PortACLsAPIService) PortaclsPatchExecute(r ApiPortaclsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PortACLsAPIService.PortaclsPatch")
@@ -364,9 +360,9 @@ func (a *PortACLsAPIService) PortaclsPatchExecute(r ApiPortaclsPatchRequest) (*h
 }
 
 type ApiPortaclsPutRequest struct {
-	ctx context.Context
-	ApiService *PortACLsAPIService
-	changesetName *string
+	ctx                context.Context
+	ApiService         *PortACLsAPIService
+	changesetName      *string
 	portaclsPutRequest *PortaclsPutRequest
 }
 
@@ -389,23 +385,22 @@ PortaclsPut Create Port ACL
 
 Create Port ACL into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPortaclsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPortaclsPutRequest
 */
 func (a *PortACLsAPIService) PortaclsPut(ctx context.Context) ApiPortaclsPutRequest {
 	return ApiPortaclsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PortACLsAPIService) PortaclsPutExecute(r ApiPortaclsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PortACLsAPIService.PortaclsPut")

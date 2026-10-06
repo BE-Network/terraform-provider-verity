@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // LDAPProfilesAPIService LDAPProfilesAPI service
 type LDAPProfilesAPIService service
 
 type ApiLdapprofilesDeleteRequest struct {
-	ctx context.Context
-	ApiService *LDAPProfilesAPIService
+	ctx             context.Context
+	ApiService      *LDAPProfilesAPIService
 	ldapProfileName *[]string
-	changesetName *string
+	changesetName   *string
 }
 
 func (r ApiLdapprofilesDeleteRequest) LdapProfileName(ldapProfileName []string) ApiLdapprofilesDeleteRequest {
@@ -49,23 +48,22 @@ LdapprofilesDelete Delete LDAP Profile
 
 Deletes an existing LDAP Profile from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiLdapprofilesDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiLdapprofilesDeleteRequest
 */
 func (a *LDAPProfilesAPIService) LdapprofilesDelete(ctx context.Context) ApiLdapprofilesDeleteRequest {
 	return ApiLdapprofilesDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *LDAPProfilesAPIService) LdapprofilesDeleteExecute(r ApiLdapprofilesDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LDAPProfilesAPIService.LdapprofilesDelete")
@@ -142,11 +140,11 @@ func (a *LDAPProfilesAPIService) LdapprofilesDeleteExecute(r ApiLdapprofilesDele
 }
 
 type ApiLdapprofilesGetRequest struct {
-	ctx context.Context
-	ApiService *LDAPProfilesAPIService
+	ctx             context.Context
+	ApiService      *LDAPProfilesAPIService
 	ldapProfileName *string
-	includeData *bool
-	changesetName *string
+	includeData     *bool
+	changesetName   *string
 }
 
 func (r ApiLdapprofilesGetRequest) LdapProfileName(ldapProfileName string) ApiLdapprofilesGetRequest {
@@ -173,23 +171,22 @@ LdapprofilesGet Get all LDAP Profiles
 
 Downloads all LDAP Profiles from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiLdapprofilesGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiLdapprofilesGetRequest
 */
 func (a *LDAPProfilesAPIService) LdapprofilesGet(ctx context.Context) ApiLdapprofilesGetRequest {
 	return ApiLdapprofilesGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *LDAPProfilesAPIService) LdapprofilesGetExecute(r ApiLdapprofilesGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LDAPProfilesAPIService.LdapprofilesGet")
@@ -258,9 +255,9 @@ func (a *LDAPProfilesAPIService) LdapprofilesGetExecute(r ApiLdapprofilesGetRequ
 }
 
 type ApiLdapprofilesPatchRequest struct {
-	ctx context.Context
-	ApiService *LDAPProfilesAPIService
-	changesetName *string
+	ctx                    context.Context
+	ApiService             *LDAPProfilesAPIService
+	changesetName          *string
 	ldapprofilesPutRequest *LdapprofilesPutRequest
 }
 
@@ -283,23 +280,22 @@ LdapprofilesPatch Update LDAP Profile
 
 Update LDAP Profile into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiLdapprofilesPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiLdapprofilesPatchRequest
 */
 func (a *LDAPProfilesAPIService) LdapprofilesPatch(ctx context.Context) ApiLdapprofilesPatchRequest {
 	return ApiLdapprofilesPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *LDAPProfilesAPIService) LdapprofilesPatchExecute(r ApiLdapprofilesPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LDAPProfilesAPIService.LdapprofilesPatch")
@@ -364,9 +360,9 @@ func (a *LDAPProfilesAPIService) LdapprofilesPatchExecute(r ApiLdapprofilesPatch
 }
 
 type ApiLdapprofilesPutRequest struct {
-	ctx context.Context
-	ApiService *LDAPProfilesAPIService
-	changesetName *string
+	ctx                    context.Context
+	ApiService             *LDAPProfilesAPIService
+	changesetName          *string
 	ldapprofilesPutRequest *LdapprofilesPutRequest
 }
 
@@ -389,23 +385,22 @@ LdapprofilesPut Create LDAP Profile
 
 Create LDAP Profile into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiLdapprofilesPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiLdapprofilesPutRequest
 */
 func (a *LDAPProfilesAPIService) LdapprofilesPut(ctx context.Context) ApiLdapprofilesPutRequest {
 	return ApiLdapprofilesPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *LDAPProfilesAPIService) LdapprofilesPutExecute(r ApiLdapprofilesPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LDAPProfilesAPIService.LdapprofilesPut")

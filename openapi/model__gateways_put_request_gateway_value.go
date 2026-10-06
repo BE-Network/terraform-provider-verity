@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,93 +19,93 @@ var _ MappedNullable = &GatewaysPutRequestGatewayValue{}
 
 // GatewaysPutRequestGatewayValue struct for GatewaysPutRequestGatewayValue
 type GatewaysPutRequestGatewayValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
-	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
-	Enable *bool `json:"enable,omitempty"`
-	// Indicates the entered password is a switch encrypted password.
-	SwitchEncryptedMd5Password *bool `json:"switch_encrypted_md5_password,omitempty"`
-	// MD5 Password Encrypted used in the BGP session
-	Md5PasswordEncrypted *string `json:"md5_password_encrypted,omitempty"`
-	// Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor.
-	DefaultOriginate *bool `json:"default_originate,omitempty"`
-	// Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers.
-	BfdMultihop *bool `json:"bfd_multihop,omitempty"`
-	// Tenant
-	Tenant *string `json:"tenant,omitempty"`
-	// Object type for tenant field
-	TenantRefType *string `json:"tenant_ref_type_,omitempty"`
-	// Fabric this Gateway is assigned to
-	Fabric *string `json:"fabric,omitempty"`
-	// Object type for fabric field
-	FabricRefType *string `json:"fabric_ref_type_,omitempty"`
-	// Gateway classification
-	Type *string `json:"type,omitempty"`
-	// IP address of remote BGP peer
-	NeighborIpAddress *string `json:"neighbor_ip_address,omitempty"`
-	// Autonomous System Number of remote BGP peer 
-	NeighborAsNumber NullableInt64 `json:"neighbor_as_number,omitempty"`
-	// 
-	FabricInterconnect *bool `json:"fabric_interconnect,omitempty"`
-	// Interval in seconds between Keepalive messages sent to remote BGP peer
-	KeepaliveTimer NullableInt64 `json:"keepalive_timer,omitempty"`
-	// Time, in seconds,  used to determine failure of session Keepalive messages received from remote BGP peer 
-	HoldTimer NullableInt64 `json:"hold_timer,omitempty"`
-	// Time in seconds between sucessive attempts to Establish BGP session
-	ConnectTimer NullableInt64 `json:"connect_timer,omitempty"`
-	// The minimum time in seconds between sending route updates to BGP neighbor 
+	// The minimum time in seconds between sending route updates to BGP neighbor
 	AdvertisementInterval NullableInt64 `json:"advertisement_interval,omitempty"`
-	// Allows external BGP neighbors to establish peering session multiple network hops away. 
-	EbgpMultihop NullableInt64 `json:"ebgp_multihop,omitempty"`
-	// VLAN used to carry BGP TCP session
-	EgressVlan NullableInt64 `json:"egress_vlan,omitempty"`
-	// Source IP address used to override the default source address calculation for BGP TCP session
-	SourceIpAddress *string `json:"source_ip_address,omitempty"`
-	// The Anycast Address can be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router.
-	AnycastIpMask *string `json:"anycast_ip_mask,omitempty"`
-	// MD5 Password used in the BGP session
-	Md5Password *string `json:"md5_password,omitempty"`
-	// A Route Map applied to routes imported into the tenant from the neighbor BGP router with the purpose of filtering or modifying the routes
-	ImportRouteMap *string `json:"import_route_map,omitempty"`
-	// Object type for import_route_map field
-	ImportRouteMapRefType *string `json:"import_route_map_ref_type_,omitempty"`
-	// A route-map applied to routes exported from the tenant to the neighbor BGP router with the purpose of filtering or modifying the routes
-	ExportRouteMap *string `json:"export_route_map,omitempty"`
-	// Object type for export_route_map field
-	ExportRouteMapRefType *string `json:"export_route_map_ref_type_,omitempty"`
-	// Gateway Mode is the method used for defining routes for the Tenant
-	GatewayMode *string `json:"gateway_mode,omitempty"`
-	// Override the switch's AS number used in the Tenant router definition where this Gateway is applied
-	BgpInstanceAsNumber NullableInt64 `json:"bgp_instance_as_number,omitempty"`
-	// Local AS Number to use as an override to switch AS number
-	LocalAsNumber NullableInt64 `json:"local_as_number,omitempty"`
-	// Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set.
-	LocalAsNoPrepend *bool `json:"local_as_no_prepend,omitempty"`
-	// Remove all private AS numbers from AS-PATH attributes for routes advertised through this BGP gateway.
-	RemovePrivateAs *bool `json:"remove_private_as,omitempty"`
-	// Prepend only Local AS in updates to EBGP peers.
-	ReplaceAs *bool `json:"replace_as,omitempty"`
-	// Allow routes with the local AS number in the AS-path, specifying the maximum occurrences permitted before declaring a routing loop. Leave blank or '0' to disable.
-	MaxLocalAsOccurrences NullableInt64 `json:"max_local_as_occurrences,omitempty"`
 	// Only accept the current AS in the as-path if the route was originated in the Local AS
 	AllowasInOrigin *bool `json:"allowas_in_origin,omitempty"`
-	// Dynamic BGP Subnet
-	DynamicBgpSubnet *string `json:"dynamic_bgp_subnet,omitempty"`
-	// Dynamic BGP Limits
-	DynamicBgpLimits NullableInt64 `json:"dynamic_bgp_limits,omitempty"`
-	// Neighbor Next Hop IP Address is used as the next hop to reach the BGP peer in the case it is not a direct connection
-	HelperHopIpAddress *string `json:"helper_hop_ip_address,omitempty"`
-	// Enable BFD(Bi-Directional Forwarding)
-	EnableBfd *bool `json:"enable_bfd,omitempty"`
+	// The Anycast Address can be used to enable an IP routing redundancy mechanism designed to allow for transparent failover across a leaf pair at the first-hop IP router.
+	AnycastIpMask *string `json:"anycast_ip_mask,omitempty"`
+	// Configure the detection multiplier to determine packet loss
+	BfdDetectMultiplier NullableInt64 `json:"bfd_detect_multiplier,omitempty"`
+	// Enable BFD Multi-Hop for Neighbor. This is used to detect failures in the forwarding path between the BGP peers.
+	BfdMultihop *bool `json:"bfd_multihop,omitempty"`
 	// Configure the minimum interval during which the system can receive BFD control packets
 	BfdReceiveInterval NullableInt64 `json:"bfd_receive_interval,omitempty"`
 	// Configure the minimum transmission interval during which the system can send BFD control packets
 	BfdTransmissionInterval NullableInt64 `json:"bfd_transmission_interval,omitempty"`
-	// Configure the detection multiplier to determine packet loss
-	BfdDetectMultiplier NullableInt64 `json:"bfd_detect_multiplier,omitempty"`
+	// Override the switch's AS number used in the Tenant router definition where this Gateway is applied
+	BgpInstanceAsNumber NullableInt64 `json:"bgp_instance_as_number,omitempty"`
+	// Time in seconds between sucessive attempts to Establish BGP session
+	ConnectTimer NullableInt64 `json:"connect_timer,omitempty"`
+	// Instructs BGP to generate and send a default route 0.0.0.0/0 to the specified neighbor.
+	DefaultOriginate *bool `json:"default_originate,omitempty"`
+	// Dynamic BGP Limits
+	DynamicBgpLimits NullableInt64 `json:"dynamic_bgp_limits,omitempty"`
+	// Dynamic BGP Subnet
+	DynamicBgpSubnet *string `json:"dynamic_bgp_subnet,omitempty"`
+	// Allows external BGP neighbors to establish peering session multiple network hops away.
+	EbgpMultihop NullableInt64 `json:"ebgp_multihop,omitempty"`
+	// VLAN used to carry BGP TCP session
+	EgressVlan NullableInt64 `json:"egress_vlan,omitempty"`
+	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
+	Enable *bool `json:"enable,omitempty"`
+	// Enable BFD(Bi-Directional Forwarding)
+	EnableBfd *bool `json:"enable_bfd,omitempty"`
+	// A route-map applied to routes exported from the tenant to the neighbor BGP router with the purpose of filtering or modifying the routes
+	ExportRouteMap *string `json:"export_route_map,omitempty"`
+	// Object type for export_route_map field
+	ExportRouteMapRefType *string `json:"export_route_map_ref_type_,omitempty"`
+	// Fabric this Gateway is assigned to
+	Fabric *string `json:"fabric,omitempty"`
+	//
+	FabricInterconnect *bool `json:"fabric_interconnect,omitempty"`
+	// Object type for fabric field
+	FabricRefType *string `json:"fabric_ref_type_,omitempty"`
+	// Gateway Mode is the method used for defining routes for the Tenant
+	GatewayMode *string `json:"gateway_mode,omitempty"`
+	// Neighbor Next Hop IP Address is used as the next hop to reach the BGP peer in the case it is not a direct connection
+	HelperHopIpAddress *string `json:"helper_hop_ip_address,omitempty"`
+	// Time, in seconds,  used to determine failure of session Keepalive messages received from remote BGP peer
+	HoldTimer NullableInt64 `json:"hold_timer,omitempty"`
+	// A Route Map applied to routes imported into the tenant from the neighbor BGP router with the purpose of filtering or modifying the routes
+	ImportRouteMap *string `json:"import_route_map,omitempty"`
+	// Object type for import_route_map field
+	ImportRouteMapRefType *string `json:"import_route_map_ref_type_,omitempty"`
+	// Interval in seconds between Keepalive messages sent to remote BGP peer
+	KeepaliveTimer NullableInt64 `json:"keepalive_timer,omitempty"`
+	// Do not prepend the local-as number to the AS-PATH for routes advertised through this BGP gateway. The Local AS Number must be set for this to be able to be set.
+	LocalAsNoPrepend *bool `json:"local_as_no_prepend,omitempty"`
+	// Local AS Number to use as an override to switch AS number
+	LocalAsNumber NullableInt64 `json:"local_as_number,omitempty"`
+	// Allow routes with the local AS number in the AS-path, specifying the maximum occurrences permitted before declaring a routing loop. Leave blank or '0' to disable.
+	MaxLocalAsOccurrences NullableInt64 `json:"max_local_as_occurrences,omitempty"`
+	// MD5 Password used in the BGP session
+	Md5Password *string `json:"md5_password,omitempty"`
+	// MD5 Password Encrypted used in the BGP session
+	Md5PasswordEncrypted *string `json:"md5_password_encrypted,omitempty"`
+	// Template Name. Must be unique within type.
+	Name *string `json:"name,omitempty"`
+	// Autonomous System Number of remote BGP peer
+	NeighborAsNumber NullableInt64 `json:"neighbor_as_number,omitempty"`
+	// IP address of remote BGP peer
+	NeighborIpAddress *string `json:"neighbor_ip_address,omitempty"`
 	// Optional attribute that disables the normal BGP calculation of next-hops for advertised routes and instead sets the next-hops for advertised routes to the IP address of the switch itself.
 	NextHopSelf *bool `json:"next_hop_self,omitempty"`
-	StaticRoutes []GatewaysPutRequestGatewayValueStaticRoutesInner `json:"static_routes,omitempty"`
+	// Remove all private AS numbers from AS-PATH attributes for routes advertised through this BGP gateway.
+	RemovePrivateAs *bool `json:"remove_private_as,omitempty"`
+	// Prepend only Local AS in updates to EBGP peers.
+	ReplaceAs *bool `json:"replace_as,omitempty"`
+	// Source IP address used to override the default source address calculation for BGP TCP session
+	SourceIpAddress *string                                           `json:"source_ip_address,omitempty"`
+	StaticRoutes    []GatewaysPutRequestGatewayValueStaticRoutesInner `json:"static_routes,omitempty"`
+	// Indicates the entered password is a switch encrypted password.
+	SwitchEncryptedMd5Password *bool `json:"switch_encrypted_md5_password,omitempty"`
+	// Tenant
+	Tenant *string `json:"tenant,omitempty"`
+	// Object type for tenant field
+	TenantRefType *string `json:"tenant_ref_type_,omitempty"`
+	// Gateway classification
+	Type *string `json:"type,omitempty"`
 }
 
 // NewGatewaysPutRequestGatewayValue instantiates a new GatewaysPutRequestGatewayValue object
@@ -114,76 +114,76 @@ type GatewaysPutRequestGatewayValue struct {
 // will change when the set of required properties is changed
 func NewGatewaysPutRequestGatewayValue() *GatewaysPutRequestGatewayValue {
 	this := GatewaysPutRequestGatewayValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
-	var switchEncryptedMd5Password bool = false
-	this.SwitchEncryptedMd5Password = &switchEncryptedMd5Password
-	var md5PasswordEncrypted string = ""
-	this.Md5PasswordEncrypted = &md5PasswordEncrypted
-	var defaultOriginate bool = false
-	this.DefaultOriginate = &defaultOriginate
-	var bfdMultihop bool = false
-	this.BfdMultihop = &bfdMultihop
-	var tenant string = ""
-	this.Tenant = &tenant
-	var fabric string = ""
-	this.Fabric = &fabric
-	var type_ string = "tenant"
-	this.Type = &type_
-	var neighborIpAddress string = ""
-	this.NeighborIpAddress = &neighborIpAddress
-	var fabricInterconnect bool = false
-	this.FabricInterconnect = &fabricInterconnect
-	var keepaliveTimer int64 = 60
-	this.KeepaliveTimer = *NewNullableInt64(&keepaliveTimer)
-	var holdTimer int64 = 180
-	this.HoldTimer = *NewNullableInt64(&holdTimer)
-	var connectTimer int64 = 120
-	this.ConnectTimer = *NewNullableInt64(&connectTimer)
 	var advertisementInterval int64 = 30
 	this.AdvertisementInterval = *NewNullableInt64(&advertisementInterval)
-	var ebgpMultihop int64 = 255
-	this.EbgpMultihop = *NewNullableInt64(&ebgpMultihop)
-	var sourceIpAddress string = ""
-	this.SourceIpAddress = &sourceIpAddress
-	var anycastIpMask string = ""
-	this.AnycastIpMask = &anycastIpMask
-	var md5Password string = ""
-	this.Md5Password = &md5Password
-	var importRouteMap string = ""
-	this.ImportRouteMap = &importRouteMap
-	var exportRouteMap string = ""
-	this.ExportRouteMap = &exportRouteMap
-	var gatewayMode string = "Static BGP"
-	this.GatewayMode = &gatewayMode
-	var localAsNoPrepend bool = false
-	this.LocalAsNoPrepend = &localAsNoPrepend
-	var removePrivateAs bool = false
-	this.RemovePrivateAs = &removePrivateAs
-	var replaceAs bool = false
-	this.ReplaceAs = &replaceAs
-	var maxLocalAsOccurrences int64 = 0
-	this.MaxLocalAsOccurrences = *NewNullableInt64(&maxLocalAsOccurrences)
 	var allowasInOrigin bool = false
 	this.AllowasInOrigin = &allowasInOrigin
-	var dynamicBgpSubnet string = ""
-	this.DynamicBgpSubnet = &dynamicBgpSubnet
-	var dynamicBgpLimits int64 = 0
-	this.DynamicBgpLimits = *NewNullableInt64(&dynamicBgpLimits)
-	var helperHopIpAddress string = ""
-	this.HelperHopIpAddress = &helperHopIpAddress
-	var enableBfd bool = false
-	this.EnableBfd = &enableBfd
+	var anycastIpMask string = ""
+	this.AnycastIpMask = &anycastIpMask
+	var bfdDetectMultiplier int64 = 3
+	this.BfdDetectMultiplier = *NewNullableInt64(&bfdDetectMultiplier)
+	var bfdMultihop bool = false
+	this.BfdMultihop = &bfdMultihop
 	var bfdReceiveInterval int64 = 300
 	this.BfdReceiveInterval = *NewNullableInt64(&bfdReceiveInterval)
 	var bfdTransmissionInterval int64 = 300
 	this.BfdTransmissionInterval = *NewNullableInt64(&bfdTransmissionInterval)
-	var bfdDetectMultiplier int64 = 3
-	this.BfdDetectMultiplier = *NewNullableInt64(&bfdDetectMultiplier)
+	var connectTimer int64 = 120
+	this.ConnectTimer = *NewNullableInt64(&connectTimer)
+	var defaultOriginate bool = false
+	this.DefaultOriginate = &defaultOriginate
+	var dynamicBgpLimits int64 = 0
+	this.DynamicBgpLimits = *NewNullableInt64(&dynamicBgpLimits)
+	var dynamicBgpSubnet string = ""
+	this.DynamicBgpSubnet = &dynamicBgpSubnet
+	var ebgpMultihop int64 = 255
+	this.EbgpMultihop = *NewNullableInt64(&ebgpMultihop)
+	var enable bool = false
+	this.Enable = &enable
+	var enableBfd bool = false
+	this.EnableBfd = &enableBfd
+	var exportRouteMap string = ""
+	this.ExportRouteMap = &exportRouteMap
+	var fabric string = ""
+	this.Fabric = &fabric
+	var fabricInterconnect bool = false
+	this.FabricInterconnect = &fabricInterconnect
+	var gatewayMode string = "Static BGP"
+	this.GatewayMode = &gatewayMode
+	var helperHopIpAddress string = ""
+	this.HelperHopIpAddress = &helperHopIpAddress
+	var holdTimer int64 = 180
+	this.HoldTimer = *NewNullableInt64(&holdTimer)
+	var importRouteMap string = ""
+	this.ImportRouteMap = &importRouteMap
+	var keepaliveTimer int64 = 60
+	this.KeepaliveTimer = *NewNullableInt64(&keepaliveTimer)
+	var localAsNoPrepend bool = false
+	this.LocalAsNoPrepend = &localAsNoPrepend
+	var maxLocalAsOccurrences int64 = 0
+	this.MaxLocalAsOccurrences = *NewNullableInt64(&maxLocalAsOccurrences)
+	var md5Password string = ""
+	this.Md5Password = &md5Password
+	var md5PasswordEncrypted string = ""
+	this.Md5PasswordEncrypted = &md5PasswordEncrypted
+	var name string = ""
+	this.Name = &name
+	var neighborIpAddress string = ""
+	this.NeighborIpAddress = &neighborIpAddress
 	var nextHopSelf bool = false
 	this.NextHopSelf = &nextHopSelf
+	var removePrivateAs bool = false
+	this.RemovePrivateAs = &removePrivateAs
+	var replaceAs bool = false
+	this.ReplaceAs = &replaceAs
+	var sourceIpAddress string = ""
+	this.SourceIpAddress = &sourceIpAddress
+	var switchEncryptedMd5Password bool = false
+	this.SwitchEncryptedMd5Password = &switchEncryptedMd5Password
+	var tenant string = ""
+	this.Tenant = &tenant
+	var type_ string = "tenant"
+	this.Type = &type_
 	return &this
 }
 
@@ -192,661 +192,77 @@ func NewGatewaysPutRequestGatewayValue() *GatewaysPutRequestGatewayValue {
 // but it doesn't guarantee that properties required by API are set
 func NewGatewaysPutRequestGatewayValueWithDefaults() *GatewaysPutRequestGatewayValue {
 	this := GatewaysPutRequestGatewayValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
-	var switchEncryptedMd5Password bool = false
-	this.SwitchEncryptedMd5Password = &switchEncryptedMd5Password
-	var md5PasswordEncrypted string = ""
-	this.Md5PasswordEncrypted = &md5PasswordEncrypted
-	var defaultOriginate bool = false
-	this.DefaultOriginate = &defaultOriginate
-	var bfdMultihop bool = false
-	this.BfdMultihop = &bfdMultihop
-	var tenant string = ""
-	this.Tenant = &tenant
-	var fabric string = ""
-	this.Fabric = &fabric
-	var type_ string = "tenant"
-	this.Type = &type_
-	var neighborIpAddress string = ""
-	this.NeighborIpAddress = &neighborIpAddress
-	var fabricInterconnect bool = false
-	this.FabricInterconnect = &fabricInterconnect
-	var keepaliveTimer int64 = 60
-	this.KeepaliveTimer = *NewNullableInt64(&keepaliveTimer)
-	var holdTimer int64 = 180
-	this.HoldTimer = *NewNullableInt64(&holdTimer)
-	var connectTimer int64 = 120
-	this.ConnectTimer = *NewNullableInt64(&connectTimer)
 	var advertisementInterval int64 = 30
 	this.AdvertisementInterval = *NewNullableInt64(&advertisementInterval)
-	var ebgpMultihop int64 = 255
-	this.EbgpMultihop = *NewNullableInt64(&ebgpMultihop)
-	var sourceIpAddress string = ""
-	this.SourceIpAddress = &sourceIpAddress
-	var anycastIpMask string = ""
-	this.AnycastIpMask = &anycastIpMask
-	var md5Password string = ""
-	this.Md5Password = &md5Password
-	var importRouteMap string = ""
-	this.ImportRouteMap = &importRouteMap
-	var exportRouteMap string = ""
-	this.ExportRouteMap = &exportRouteMap
-	var gatewayMode string = "Static BGP"
-	this.GatewayMode = &gatewayMode
-	var localAsNoPrepend bool = false
-	this.LocalAsNoPrepend = &localAsNoPrepend
-	var removePrivateAs bool = false
-	this.RemovePrivateAs = &removePrivateAs
-	var replaceAs bool = false
-	this.ReplaceAs = &replaceAs
-	var maxLocalAsOccurrences int64 = 0
-	this.MaxLocalAsOccurrences = *NewNullableInt64(&maxLocalAsOccurrences)
 	var allowasInOrigin bool = false
 	this.AllowasInOrigin = &allowasInOrigin
-	var dynamicBgpSubnet string = ""
-	this.DynamicBgpSubnet = &dynamicBgpSubnet
-	var dynamicBgpLimits int64 = 0
-	this.DynamicBgpLimits = *NewNullableInt64(&dynamicBgpLimits)
-	var helperHopIpAddress string = ""
-	this.HelperHopIpAddress = &helperHopIpAddress
-	var enableBfd bool = false
-	this.EnableBfd = &enableBfd
+	var anycastIpMask string = ""
+	this.AnycastIpMask = &anycastIpMask
+	var bfdDetectMultiplier int64 = 3
+	this.BfdDetectMultiplier = *NewNullableInt64(&bfdDetectMultiplier)
+	var bfdMultihop bool = false
+	this.BfdMultihop = &bfdMultihop
 	var bfdReceiveInterval int64 = 300
 	this.BfdReceiveInterval = *NewNullableInt64(&bfdReceiveInterval)
 	var bfdTransmissionInterval int64 = 300
 	this.BfdTransmissionInterval = *NewNullableInt64(&bfdTransmissionInterval)
-	var bfdDetectMultiplier int64 = 3
-	this.BfdDetectMultiplier = *NewNullableInt64(&bfdDetectMultiplier)
+	var connectTimer int64 = 120
+	this.ConnectTimer = *NewNullableInt64(&connectTimer)
+	var defaultOriginate bool = false
+	this.DefaultOriginate = &defaultOriginate
+	var dynamicBgpLimits int64 = 0
+	this.DynamicBgpLimits = *NewNullableInt64(&dynamicBgpLimits)
+	var dynamicBgpSubnet string = ""
+	this.DynamicBgpSubnet = &dynamicBgpSubnet
+	var ebgpMultihop int64 = 255
+	this.EbgpMultihop = *NewNullableInt64(&ebgpMultihop)
+	var enable bool = false
+	this.Enable = &enable
+	var enableBfd bool = false
+	this.EnableBfd = &enableBfd
+	var exportRouteMap string = ""
+	this.ExportRouteMap = &exportRouteMap
+	var fabric string = ""
+	this.Fabric = &fabric
+	var fabricInterconnect bool = false
+	this.FabricInterconnect = &fabricInterconnect
+	var gatewayMode string = "Static BGP"
+	this.GatewayMode = &gatewayMode
+	var helperHopIpAddress string = ""
+	this.HelperHopIpAddress = &helperHopIpAddress
+	var holdTimer int64 = 180
+	this.HoldTimer = *NewNullableInt64(&holdTimer)
+	var importRouteMap string = ""
+	this.ImportRouteMap = &importRouteMap
+	var keepaliveTimer int64 = 60
+	this.KeepaliveTimer = *NewNullableInt64(&keepaliveTimer)
+	var localAsNoPrepend bool = false
+	this.LocalAsNoPrepend = &localAsNoPrepend
+	var maxLocalAsOccurrences int64 = 0
+	this.MaxLocalAsOccurrences = *NewNullableInt64(&maxLocalAsOccurrences)
+	var md5Password string = ""
+	this.Md5Password = &md5Password
+	var md5PasswordEncrypted string = ""
+	this.Md5PasswordEncrypted = &md5PasswordEncrypted
+	var name string = ""
+	this.Name = &name
+	var neighborIpAddress string = ""
+	this.NeighborIpAddress = &neighborIpAddress
 	var nextHopSelf bool = false
 	this.NextHopSelf = &nextHopSelf
+	var removePrivateAs bool = false
+	this.RemovePrivateAs = &removePrivateAs
+	var replaceAs bool = false
+	this.ReplaceAs = &replaceAs
+	var sourceIpAddress string = ""
+	this.SourceIpAddress = &sourceIpAddress
+	var switchEncryptedMd5Password bool = false
+	this.SwitchEncryptedMd5Password = &switchEncryptedMd5Password
+	var tenant string = ""
+	this.Tenant = &tenant
+	var type_ string = "tenant"
+	this.Type = &type_
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *GatewaysPutRequestGatewayValue) SetName(v string) {
-	o.Name = &v
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *GatewaysPutRequestGatewayValue) SetEnable(v bool) {
-	o.Enable = &v
-}
-
-// GetSwitchEncryptedMd5Password returns the SwitchEncryptedMd5Password field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetSwitchEncryptedMd5Password() bool {
-	if o == nil || IsNil(o.SwitchEncryptedMd5Password) {
-		var ret bool
-		return ret
-	}
-	return *o.SwitchEncryptedMd5Password
-}
-
-// GetSwitchEncryptedMd5PasswordOk returns a tuple with the SwitchEncryptedMd5Password field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetSwitchEncryptedMd5PasswordOk() (*bool, bool) {
-	if o == nil || IsNil(o.SwitchEncryptedMd5Password) {
-		return nil, false
-	}
-	return o.SwitchEncryptedMd5Password, true
-}
-
-// HasSwitchEncryptedMd5Password returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasSwitchEncryptedMd5Password() bool {
-	if o != nil && !IsNil(o.SwitchEncryptedMd5Password) {
-		return true
-	}
-
-	return false
-}
-
-// SetSwitchEncryptedMd5Password gets a reference to the given bool and assigns it to the SwitchEncryptedMd5Password field.
-func (o *GatewaysPutRequestGatewayValue) SetSwitchEncryptedMd5Password(v bool) {
-	o.SwitchEncryptedMd5Password = &v
-}
-
-// GetMd5PasswordEncrypted returns the Md5PasswordEncrypted field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetMd5PasswordEncrypted() string {
-	if o == nil || IsNil(o.Md5PasswordEncrypted) {
-		var ret string
-		return ret
-	}
-	return *o.Md5PasswordEncrypted
-}
-
-// GetMd5PasswordEncryptedOk returns a tuple with the Md5PasswordEncrypted field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetMd5PasswordEncryptedOk() (*string, bool) {
-	if o == nil || IsNil(o.Md5PasswordEncrypted) {
-		return nil, false
-	}
-	return o.Md5PasswordEncrypted, true
-}
-
-// HasMd5PasswordEncrypted returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasMd5PasswordEncrypted() bool {
-	if o != nil && !IsNil(o.Md5PasswordEncrypted) {
-		return true
-	}
-
-	return false
-}
-
-// SetMd5PasswordEncrypted gets a reference to the given string and assigns it to the Md5PasswordEncrypted field.
-func (o *GatewaysPutRequestGatewayValue) SetMd5PasswordEncrypted(v string) {
-	o.Md5PasswordEncrypted = &v
-}
-
-// GetDefaultOriginate returns the DefaultOriginate field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetDefaultOriginate() bool {
-	if o == nil || IsNil(o.DefaultOriginate) {
-		var ret bool
-		return ret
-	}
-	return *o.DefaultOriginate
-}
-
-// GetDefaultOriginateOk returns a tuple with the DefaultOriginate field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetDefaultOriginateOk() (*bool, bool) {
-	if o == nil || IsNil(o.DefaultOriginate) {
-		return nil, false
-	}
-	return o.DefaultOriginate, true
-}
-
-// HasDefaultOriginate returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasDefaultOriginate() bool {
-	if o != nil && !IsNil(o.DefaultOriginate) {
-		return true
-	}
-
-	return false
-}
-
-// SetDefaultOriginate gets a reference to the given bool and assigns it to the DefaultOriginate field.
-func (o *GatewaysPutRequestGatewayValue) SetDefaultOriginate(v bool) {
-	o.DefaultOriginate = &v
-}
-
-// GetBfdMultihop returns the BfdMultihop field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetBfdMultihop() bool {
-	if o == nil || IsNil(o.BfdMultihop) {
-		var ret bool
-		return ret
-	}
-	return *o.BfdMultihop
-}
-
-// GetBfdMultihopOk returns a tuple with the BfdMultihop field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetBfdMultihopOk() (*bool, bool) {
-	if o == nil || IsNil(o.BfdMultihop) {
-		return nil, false
-	}
-	return o.BfdMultihop, true
-}
-
-// HasBfdMultihop returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasBfdMultihop() bool {
-	if o != nil && !IsNil(o.BfdMultihop) {
-		return true
-	}
-
-	return false
-}
-
-// SetBfdMultihop gets a reference to the given bool and assigns it to the BfdMultihop field.
-func (o *GatewaysPutRequestGatewayValue) SetBfdMultihop(v bool) {
-	o.BfdMultihop = &v
-}
-
-// GetTenant returns the Tenant field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetTenant() string {
-	if o == nil || IsNil(o.Tenant) {
-		var ret string
-		return ret
-	}
-	return *o.Tenant
-}
-
-// GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetTenantOk() (*string, bool) {
-	if o == nil || IsNil(o.Tenant) {
-		return nil, false
-	}
-	return o.Tenant, true
-}
-
-// HasTenant returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasTenant() bool {
-	if o != nil && !IsNil(o.Tenant) {
-		return true
-	}
-
-	return false
-}
-
-// SetTenant gets a reference to the given string and assigns it to the Tenant field.
-func (o *GatewaysPutRequestGatewayValue) SetTenant(v string) {
-	o.Tenant = &v
-}
-
-// GetTenantRefType returns the TenantRefType field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetTenantRefType() string {
-	if o == nil || IsNil(o.TenantRefType) {
-		var ret string
-		return ret
-	}
-	return *o.TenantRefType
-}
-
-// GetTenantRefTypeOk returns a tuple with the TenantRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetTenantRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.TenantRefType) {
-		return nil, false
-	}
-	return o.TenantRefType, true
-}
-
-// HasTenantRefType returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasTenantRefType() bool {
-	if o != nil && !IsNil(o.TenantRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetTenantRefType gets a reference to the given string and assigns it to the TenantRefType field.
-func (o *GatewaysPutRequestGatewayValue) SetTenantRefType(v string) {
-	o.TenantRefType = &v
-}
-
-// GetFabric returns the Fabric field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetFabric() string {
-	if o == nil || IsNil(o.Fabric) {
-		var ret string
-		return ret
-	}
-	return *o.Fabric
-}
-
-// GetFabricOk returns a tuple with the Fabric field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetFabricOk() (*string, bool) {
-	if o == nil || IsNil(o.Fabric) {
-		return nil, false
-	}
-	return o.Fabric, true
-}
-
-// HasFabric returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasFabric() bool {
-	if o != nil && !IsNil(o.Fabric) {
-		return true
-	}
-
-	return false
-}
-
-// SetFabric gets a reference to the given string and assigns it to the Fabric field.
-func (o *GatewaysPutRequestGatewayValue) SetFabric(v string) {
-	o.Fabric = &v
-}
-
-// GetFabricRefType returns the FabricRefType field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetFabricRefType() string {
-	if o == nil || IsNil(o.FabricRefType) {
-		var ret string
-		return ret
-	}
-	return *o.FabricRefType
-}
-
-// GetFabricRefTypeOk returns a tuple with the FabricRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetFabricRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.FabricRefType) {
-		return nil, false
-	}
-	return o.FabricRefType, true
-}
-
-// HasFabricRefType returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasFabricRefType() bool {
-	if o != nil && !IsNil(o.FabricRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetFabricRefType gets a reference to the given string and assigns it to the FabricRefType field.
-func (o *GatewaysPutRequestGatewayValue) SetFabricRefType(v string) {
-	o.FabricRefType = &v
-}
-
-// GetType returns the Type field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetType() string {
-	if o == nil || IsNil(o.Type) {
-		var ret string
-		return ret
-	}
-	return *o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.Type) {
-		return nil, false
-	}
-	return o.Type, true
-}
-
-// HasType returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasType() bool {
-	if o != nil && !IsNil(o.Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *GatewaysPutRequestGatewayValue) SetType(v string) {
-	o.Type = &v
-}
-
-// GetNeighborIpAddress returns the NeighborIpAddress field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetNeighborIpAddress() string {
-	if o == nil || IsNil(o.NeighborIpAddress) {
-		var ret string
-		return ret
-	}
-	return *o.NeighborIpAddress
-}
-
-// GetNeighborIpAddressOk returns a tuple with the NeighborIpAddress field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetNeighborIpAddressOk() (*string, bool) {
-	if o == nil || IsNil(o.NeighborIpAddress) {
-		return nil, false
-	}
-	return o.NeighborIpAddress, true
-}
-
-// HasNeighborIpAddress returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasNeighborIpAddress() bool {
-	if o != nil && !IsNil(o.NeighborIpAddress) {
-		return true
-	}
-
-	return false
-}
-
-// SetNeighborIpAddress gets a reference to the given string and assigns it to the NeighborIpAddress field.
-func (o *GatewaysPutRequestGatewayValue) SetNeighborIpAddress(v string) {
-	o.NeighborIpAddress = &v
-}
-
-// GetNeighborAsNumber returns the NeighborAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetNeighborAsNumber() int64 {
-	if o == nil || IsNil(o.NeighborAsNumber.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.NeighborAsNumber.Get()
-}
-
-// GetNeighborAsNumberOk returns a tuple with the NeighborAsNumber field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetNeighborAsNumberOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.NeighborAsNumber.Get(), o.NeighborAsNumber.IsSet()
-}
-
-// HasNeighborAsNumber returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasNeighborAsNumber() bool {
-	if o != nil && o.NeighborAsNumber.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetNeighborAsNumber gets a reference to the given NullableInt64 and assigns it to the NeighborAsNumber field.
-func (o *GatewaysPutRequestGatewayValue) SetNeighborAsNumber(v int64) {
-	o.NeighborAsNumber.Set(&v)
-}
-// SetNeighborAsNumberNil sets the value for NeighborAsNumber to be an explicit nil
-func (o *GatewaysPutRequestGatewayValue) SetNeighborAsNumberNil() {
-	o.NeighborAsNumber.Set(nil)
-}
-
-// UnsetNeighborAsNumber ensures that no value is present for NeighborAsNumber, not even an explicit nil
-func (o *GatewaysPutRequestGatewayValue) UnsetNeighborAsNumber() {
-	o.NeighborAsNumber.Unset()
-}
-
-// GetFabricInterconnect returns the FabricInterconnect field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetFabricInterconnect() bool {
-	if o == nil || IsNil(o.FabricInterconnect) {
-		var ret bool
-		return ret
-	}
-	return *o.FabricInterconnect
-}
-
-// GetFabricInterconnectOk returns a tuple with the FabricInterconnect field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetFabricInterconnectOk() (*bool, bool) {
-	if o == nil || IsNil(o.FabricInterconnect) {
-		return nil, false
-	}
-	return o.FabricInterconnect, true
-}
-
-// HasFabricInterconnect returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasFabricInterconnect() bool {
-	if o != nil && !IsNil(o.FabricInterconnect) {
-		return true
-	}
-
-	return false
-}
-
-// SetFabricInterconnect gets a reference to the given bool and assigns it to the FabricInterconnect field.
-func (o *GatewaysPutRequestGatewayValue) SetFabricInterconnect(v bool) {
-	o.FabricInterconnect = &v
-}
-
-// GetKeepaliveTimer returns the KeepaliveTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetKeepaliveTimer() int64 {
-	if o == nil || IsNil(o.KeepaliveTimer.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.KeepaliveTimer.Get()
-}
-
-// GetKeepaliveTimerOk returns a tuple with the KeepaliveTimer field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetKeepaliveTimerOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.KeepaliveTimer.Get(), o.KeepaliveTimer.IsSet()
-}
-
-// HasKeepaliveTimer returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasKeepaliveTimer() bool {
-	if o != nil && o.KeepaliveTimer.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetKeepaliveTimer gets a reference to the given NullableInt64 and assigns it to the KeepaliveTimer field.
-func (o *GatewaysPutRequestGatewayValue) SetKeepaliveTimer(v int64) {
-	o.KeepaliveTimer.Set(&v)
-}
-// SetKeepaliveTimerNil sets the value for KeepaliveTimer to be an explicit nil
-func (o *GatewaysPutRequestGatewayValue) SetKeepaliveTimerNil() {
-	o.KeepaliveTimer.Set(nil)
-}
-
-// UnsetKeepaliveTimer ensures that no value is present for KeepaliveTimer, not even an explicit nil
-func (o *GatewaysPutRequestGatewayValue) UnsetKeepaliveTimer() {
-	o.KeepaliveTimer.Unset()
-}
-
-// GetHoldTimer returns the HoldTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetHoldTimer() int64 {
-	if o == nil || IsNil(o.HoldTimer.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.HoldTimer.Get()
-}
-
-// GetHoldTimerOk returns a tuple with the HoldTimer field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetHoldTimerOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.HoldTimer.Get(), o.HoldTimer.IsSet()
-}
-
-// HasHoldTimer returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasHoldTimer() bool {
-	if o != nil && o.HoldTimer.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetHoldTimer gets a reference to the given NullableInt64 and assigns it to the HoldTimer field.
-func (o *GatewaysPutRequestGatewayValue) SetHoldTimer(v int64) {
-	o.HoldTimer.Set(&v)
-}
-// SetHoldTimerNil sets the value for HoldTimer to be an explicit nil
-func (o *GatewaysPutRequestGatewayValue) SetHoldTimerNil() {
-	o.HoldTimer.Set(nil)
-}
-
-// UnsetHoldTimer ensures that no value is present for HoldTimer, not even an explicit nil
-func (o *GatewaysPutRequestGatewayValue) UnsetHoldTimer() {
-	o.HoldTimer.Unset()
-}
-
-// GetConnectTimer returns the ConnectTimer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetConnectTimer() int64 {
-	if o == nil || IsNil(o.ConnectTimer.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.ConnectTimer.Get()
-}
-
-// GetConnectTimerOk returns a tuple with the ConnectTimer field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetConnectTimerOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.ConnectTimer.Get(), o.ConnectTimer.IsSet()
-}
-
-// HasConnectTimer returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasConnectTimer() bool {
-	if o != nil && o.ConnectTimer.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetConnectTimer gets a reference to the given NullableInt64 and assigns it to the ConnectTimer field.
-func (o *GatewaysPutRequestGatewayValue) SetConnectTimer(v int64) {
-	o.ConnectTimer.Set(&v)
-}
-// SetConnectTimerNil sets the value for ConnectTimer to be an explicit nil
-func (o *GatewaysPutRequestGatewayValue) SetConnectTimerNil() {
-	o.ConnectTimer.Set(nil)
-}
-
-// UnsetConnectTimer ensures that no value is present for ConnectTimer, not even an explicit nil
-func (o *GatewaysPutRequestGatewayValue) UnsetConnectTimer() {
-	o.ConnectTimer.Unset()
 }
 
 // GetAdvertisementInterval returns the AdvertisementInterval field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -881,6 +297,7 @@ func (o *GatewaysPutRequestGatewayValue) HasAdvertisementInterval() bool {
 func (o *GatewaysPutRequestGatewayValue) SetAdvertisementInterval(v int64) {
 	o.AdvertisementInterval.Set(&v)
 }
+
 // SetAdvertisementIntervalNil sets the value for AdvertisementInterval to be an explicit nil
 func (o *GatewaysPutRequestGatewayValue) SetAdvertisementIntervalNil() {
 	o.AdvertisementInterval.Set(nil)
@@ -889,6 +306,424 @@ func (o *GatewaysPutRequestGatewayValue) SetAdvertisementIntervalNil() {
 // UnsetAdvertisementInterval ensures that no value is present for AdvertisementInterval, not even an explicit nil
 func (o *GatewaysPutRequestGatewayValue) UnsetAdvertisementInterval() {
 	o.AdvertisementInterval.Unset()
+}
+
+// GetAllowasInOrigin returns the AllowasInOrigin field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetAllowasInOrigin() bool {
+	if o == nil || IsNil(o.AllowasInOrigin) {
+		var ret bool
+		return ret
+	}
+	return *o.AllowasInOrigin
+}
+
+// GetAllowasInOriginOk returns a tuple with the AllowasInOrigin field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetAllowasInOriginOk() (*bool, bool) {
+	if o == nil || IsNil(o.AllowasInOrigin) {
+		return nil, false
+	}
+	return o.AllowasInOrigin, true
+}
+
+// HasAllowasInOrigin returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasAllowasInOrigin() bool {
+	if o != nil && !IsNil(o.AllowasInOrigin) {
+		return true
+	}
+
+	return false
+}
+
+// SetAllowasInOrigin gets a reference to the given bool and assigns it to the AllowasInOrigin field.
+func (o *GatewaysPutRequestGatewayValue) SetAllowasInOrigin(v bool) {
+	o.AllowasInOrigin = &v
+}
+
+// GetAnycastIpMask returns the AnycastIpMask field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetAnycastIpMask() string {
+	if o == nil || IsNil(o.AnycastIpMask) {
+		var ret string
+		return ret
+	}
+	return *o.AnycastIpMask
+}
+
+// GetAnycastIpMaskOk returns a tuple with the AnycastIpMask field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetAnycastIpMaskOk() (*string, bool) {
+	if o == nil || IsNil(o.AnycastIpMask) {
+		return nil, false
+	}
+	return o.AnycastIpMask, true
+}
+
+// HasAnycastIpMask returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasAnycastIpMask() bool {
+	if o != nil && !IsNil(o.AnycastIpMask) {
+		return true
+	}
+
+	return false
+}
+
+// SetAnycastIpMask gets a reference to the given string and assigns it to the AnycastIpMask field.
+func (o *GatewaysPutRequestGatewayValue) SetAnycastIpMask(v string) {
+	o.AnycastIpMask = &v
+}
+
+// GetBfdDetectMultiplier returns the BfdDetectMultiplier field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GatewaysPutRequestGatewayValue) GetBfdDetectMultiplier() int64 {
+	if o == nil || IsNil(o.BfdDetectMultiplier.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.BfdDetectMultiplier.Get()
+}
+
+// GetBfdDetectMultiplierOk returns a tuple with the BfdDetectMultiplier field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GatewaysPutRequestGatewayValue) GetBfdDetectMultiplierOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.BfdDetectMultiplier.Get(), o.BfdDetectMultiplier.IsSet()
+}
+
+// HasBfdDetectMultiplier returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasBfdDetectMultiplier() bool {
+	if o != nil && o.BfdDetectMultiplier.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetBfdDetectMultiplier gets a reference to the given NullableInt64 and assigns it to the BfdDetectMultiplier field.
+func (o *GatewaysPutRequestGatewayValue) SetBfdDetectMultiplier(v int64) {
+	o.BfdDetectMultiplier.Set(&v)
+}
+
+// SetBfdDetectMultiplierNil sets the value for BfdDetectMultiplier to be an explicit nil
+func (o *GatewaysPutRequestGatewayValue) SetBfdDetectMultiplierNil() {
+	o.BfdDetectMultiplier.Set(nil)
+}
+
+// UnsetBfdDetectMultiplier ensures that no value is present for BfdDetectMultiplier, not even an explicit nil
+func (o *GatewaysPutRequestGatewayValue) UnsetBfdDetectMultiplier() {
+	o.BfdDetectMultiplier.Unset()
+}
+
+// GetBfdMultihop returns the BfdMultihop field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetBfdMultihop() bool {
+	if o == nil || IsNil(o.BfdMultihop) {
+		var ret bool
+		return ret
+	}
+	return *o.BfdMultihop
+}
+
+// GetBfdMultihopOk returns a tuple with the BfdMultihop field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetBfdMultihopOk() (*bool, bool) {
+	if o == nil || IsNil(o.BfdMultihop) {
+		return nil, false
+	}
+	return o.BfdMultihop, true
+}
+
+// HasBfdMultihop returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasBfdMultihop() bool {
+	if o != nil && !IsNil(o.BfdMultihop) {
+		return true
+	}
+
+	return false
+}
+
+// SetBfdMultihop gets a reference to the given bool and assigns it to the BfdMultihop field.
+func (o *GatewaysPutRequestGatewayValue) SetBfdMultihop(v bool) {
+	o.BfdMultihop = &v
+}
+
+// GetBfdReceiveInterval returns the BfdReceiveInterval field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GatewaysPutRequestGatewayValue) GetBfdReceiveInterval() int64 {
+	if o == nil || IsNil(o.BfdReceiveInterval.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.BfdReceiveInterval.Get()
+}
+
+// GetBfdReceiveIntervalOk returns a tuple with the BfdReceiveInterval field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GatewaysPutRequestGatewayValue) GetBfdReceiveIntervalOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.BfdReceiveInterval.Get(), o.BfdReceiveInterval.IsSet()
+}
+
+// HasBfdReceiveInterval returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasBfdReceiveInterval() bool {
+	if o != nil && o.BfdReceiveInterval.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetBfdReceiveInterval gets a reference to the given NullableInt64 and assigns it to the BfdReceiveInterval field.
+func (o *GatewaysPutRequestGatewayValue) SetBfdReceiveInterval(v int64) {
+	o.BfdReceiveInterval.Set(&v)
+}
+
+// SetBfdReceiveIntervalNil sets the value for BfdReceiveInterval to be an explicit nil
+func (o *GatewaysPutRequestGatewayValue) SetBfdReceiveIntervalNil() {
+	o.BfdReceiveInterval.Set(nil)
+}
+
+// UnsetBfdReceiveInterval ensures that no value is present for BfdReceiveInterval, not even an explicit nil
+func (o *GatewaysPutRequestGatewayValue) UnsetBfdReceiveInterval() {
+	o.BfdReceiveInterval.Unset()
+}
+
+// GetBfdTransmissionInterval returns the BfdTransmissionInterval field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GatewaysPutRequestGatewayValue) GetBfdTransmissionInterval() int64 {
+	if o == nil || IsNil(o.BfdTransmissionInterval.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.BfdTransmissionInterval.Get()
+}
+
+// GetBfdTransmissionIntervalOk returns a tuple with the BfdTransmissionInterval field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GatewaysPutRequestGatewayValue) GetBfdTransmissionIntervalOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.BfdTransmissionInterval.Get(), o.BfdTransmissionInterval.IsSet()
+}
+
+// HasBfdTransmissionInterval returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasBfdTransmissionInterval() bool {
+	if o != nil && o.BfdTransmissionInterval.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetBfdTransmissionInterval gets a reference to the given NullableInt64 and assigns it to the BfdTransmissionInterval field.
+func (o *GatewaysPutRequestGatewayValue) SetBfdTransmissionInterval(v int64) {
+	o.BfdTransmissionInterval.Set(&v)
+}
+
+// SetBfdTransmissionIntervalNil sets the value for BfdTransmissionInterval to be an explicit nil
+func (o *GatewaysPutRequestGatewayValue) SetBfdTransmissionIntervalNil() {
+	o.BfdTransmissionInterval.Set(nil)
+}
+
+// UnsetBfdTransmissionInterval ensures that no value is present for BfdTransmissionInterval, not even an explicit nil
+func (o *GatewaysPutRequestGatewayValue) UnsetBfdTransmissionInterval() {
+	o.BfdTransmissionInterval.Unset()
+}
+
+// GetBgpInstanceAsNumber returns the BgpInstanceAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumber() int64 {
+	if o == nil || IsNil(o.BgpInstanceAsNumber.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.BgpInstanceAsNumber.Get()
+}
+
+// GetBgpInstanceAsNumberOk returns a tuple with the BgpInstanceAsNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumberOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.BgpInstanceAsNumber.Get(), o.BgpInstanceAsNumber.IsSet()
+}
+
+// HasBgpInstanceAsNumber returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasBgpInstanceAsNumber() bool {
+	if o != nil && o.BgpInstanceAsNumber.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetBgpInstanceAsNumber gets a reference to the given NullableInt64 and assigns it to the BgpInstanceAsNumber field.
+func (o *GatewaysPutRequestGatewayValue) SetBgpInstanceAsNumber(v int64) {
+	o.BgpInstanceAsNumber.Set(&v)
+}
+
+// SetBgpInstanceAsNumberNil sets the value for BgpInstanceAsNumber to be an explicit nil
+func (o *GatewaysPutRequestGatewayValue) SetBgpInstanceAsNumberNil() {
+	o.BgpInstanceAsNumber.Set(nil)
+}
+
+// UnsetBgpInstanceAsNumber ensures that no value is present for BgpInstanceAsNumber, not even an explicit nil
+func (o *GatewaysPutRequestGatewayValue) UnsetBgpInstanceAsNumber() {
+	o.BgpInstanceAsNumber.Unset()
+}
+
+// GetConnectTimer returns the ConnectTimer field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GatewaysPutRequestGatewayValue) GetConnectTimer() int64 {
+	if o == nil || IsNil(o.ConnectTimer.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.ConnectTimer.Get()
+}
+
+// GetConnectTimerOk returns a tuple with the ConnectTimer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GatewaysPutRequestGatewayValue) GetConnectTimerOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ConnectTimer.Get(), o.ConnectTimer.IsSet()
+}
+
+// HasConnectTimer returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasConnectTimer() bool {
+	if o != nil && o.ConnectTimer.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetConnectTimer gets a reference to the given NullableInt64 and assigns it to the ConnectTimer field.
+func (o *GatewaysPutRequestGatewayValue) SetConnectTimer(v int64) {
+	o.ConnectTimer.Set(&v)
+}
+
+// SetConnectTimerNil sets the value for ConnectTimer to be an explicit nil
+func (o *GatewaysPutRequestGatewayValue) SetConnectTimerNil() {
+	o.ConnectTimer.Set(nil)
+}
+
+// UnsetConnectTimer ensures that no value is present for ConnectTimer, not even an explicit nil
+func (o *GatewaysPutRequestGatewayValue) UnsetConnectTimer() {
+	o.ConnectTimer.Unset()
+}
+
+// GetDefaultOriginate returns the DefaultOriginate field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetDefaultOriginate() bool {
+	if o == nil || IsNil(o.DefaultOriginate) {
+		var ret bool
+		return ret
+	}
+	return *o.DefaultOriginate
+}
+
+// GetDefaultOriginateOk returns a tuple with the DefaultOriginate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetDefaultOriginateOk() (*bool, bool) {
+	if o == nil || IsNil(o.DefaultOriginate) {
+		return nil, false
+	}
+	return o.DefaultOriginate, true
+}
+
+// HasDefaultOriginate returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasDefaultOriginate() bool {
+	if o != nil && !IsNil(o.DefaultOriginate) {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultOriginate gets a reference to the given bool and assigns it to the DefaultOriginate field.
+func (o *GatewaysPutRequestGatewayValue) SetDefaultOriginate(v bool) {
+	o.DefaultOriginate = &v
+}
+
+// GetDynamicBgpLimits returns the DynamicBgpLimits field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpLimits() int64 {
+	if o == nil || IsNil(o.DynamicBgpLimits.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.DynamicBgpLimits.Get()
+}
+
+// GetDynamicBgpLimitsOk returns a tuple with the DynamicBgpLimits field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpLimitsOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DynamicBgpLimits.Get(), o.DynamicBgpLimits.IsSet()
+}
+
+// HasDynamicBgpLimits returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasDynamicBgpLimits() bool {
+	if o != nil && o.DynamicBgpLimits.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDynamicBgpLimits gets a reference to the given NullableInt64 and assigns it to the DynamicBgpLimits field.
+func (o *GatewaysPutRequestGatewayValue) SetDynamicBgpLimits(v int64) {
+	o.DynamicBgpLimits.Set(&v)
+}
+
+// SetDynamicBgpLimitsNil sets the value for DynamicBgpLimits to be an explicit nil
+func (o *GatewaysPutRequestGatewayValue) SetDynamicBgpLimitsNil() {
+	o.DynamicBgpLimits.Set(nil)
+}
+
+// UnsetDynamicBgpLimits ensures that no value is present for DynamicBgpLimits, not even an explicit nil
+func (o *GatewaysPutRequestGatewayValue) UnsetDynamicBgpLimits() {
+	o.DynamicBgpLimits.Unset()
+}
+
+// GetDynamicBgpSubnet returns the DynamicBgpSubnet field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpSubnet() string {
+	if o == nil || IsNil(o.DynamicBgpSubnet) {
+		var ret string
+		return ret
+	}
+	return *o.DynamicBgpSubnet
+}
+
+// GetDynamicBgpSubnetOk returns a tuple with the DynamicBgpSubnet field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpSubnetOk() (*string, bool) {
+	if o == nil || IsNil(o.DynamicBgpSubnet) {
+		return nil, false
+	}
+	return o.DynamicBgpSubnet, true
+}
+
+// HasDynamicBgpSubnet returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasDynamicBgpSubnet() bool {
+	if o != nil && !IsNil(o.DynamicBgpSubnet) {
+		return true
+	}
+
+	return false
+}
+
+// SetDynamicBgpSubnet gets a reference to the given string and assigns it to the DynamicBgpSubnet field.
+func (o *GatewaysPutRequestGatewayValue) SetDynamicBgpSubnet(v string) {
+	o.DynamicBgpSubnet = &v
 }
 
 // GetEbgpMultihop returns the EbgpMultihop field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -923,6 +758,7 @@ func (o *GatewaysPutRequestGatewayValue) HasEbgpMultihop() bool {
 func (o *GatewaysPutRequestGatewayValue) SetEbgpMultihop(v int64) {
 	o.EbgpMultihop.Set(&v)
 }
+
 // SetEbgpMultihopNil sets the value for EbgpMultihop to be an explicit nil
 func (o *GatewaysPutRequestGatewayValue) SetEbgpMultihopNil() {
 	o.EbgpMultihop.Set(nil)
@@ -965,6 +801,7 @@ func (o *GatewaysPutRequestGatewayValue) HasEgressVlan() bool {
 func (o *GatewaysPutRequestGatewayValue) SetEgressVlan(v int64) {
 	o.EgressVlan.Set(&v)
 }
+
 // SetEgressVlanNil sets the value for EgressVlan to be an explicit nil
 func (o *GatewaysPutRequestGatewayValue) SetEgressVlanNil() {
 	o.EgressVlan.Set(nil)
@@ -975,164 +812,68 @@ func (o *GatewaysPutRequestGatewayValue) UnsetEgressVlan() {
 	o.EgressVlan.Unset()
 }
 
-// GetSourceIpAddress returns the SourceIpAddress field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetSourceIpAddress() string {
-	if o == nil || IsNil(o.SourceIpAddress) {
-		var ret string
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
 		return ret
 	}
-	return *o.SourceIpAddress
+	return *o.Enable
 }
 
-// GetSourceIpAddressOk returns a tuple with the SourceIpAddress field value if set, nil otherwise
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetSourceIpAddressOk() (*string, bool) {
-	if o == nil || IsNil(o.SourceIpAddress) {
+func (o *GatewaysPutRequestGatewayValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
 		return nil, false
 	}
-	return o.SourceIpAddress, true
+	return o.Enable, true
 }
 
-// HasSourceIpAddress returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasSourceIpAddress() bool {
-	if o != nil && !IsNil(o.SourceIpAddress) {
+// HasEnable returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
 		return true
 	}
 
 	return false
 }
 
-// SetSourceIpAddress gets a reference to the given string and assigns it to the SourceIpAddress field.
-func (o *GatewaysPutRequestGatewayValue) SetSourceIpAddress(v string) {
-	o.SourceIpAddress = &v
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *GatewaysPutRequestGatewayValue) SetEnable(v bool) {
+	o.Enable = &v
 }
 
-// GetAnycastIpMask returns the AnycastIpMask field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetAnycastIpMask() string {
-	if o == nil || IsNil(o.AnycastIpMask) {
-		var ret string
+// GetEnableBfd returns the EnableBfd field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetEnableBfd() bool {
+	if o == nil || IsNil(o.EnableBfd) {
+		var ret bool
 		return ret
 	}
-	return *o.AnycastIpMask
+	return *o.EnableBfd
 }
 
-// GetAnycastIpMaskOk returns a tuple with the AnycastIpMask field value if set, nil otherwise
+// GetEnableBfdOk returns a tuple with the EnableBfd field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetAnycastIpMaskOk() (*string, bool) {
-	if o == nil || IsNil(o.AnycastIpMask) {
+func (o *GatewaysPutRequestGatewayValue) GetEnableBfdOk() (*bool, bool) {
+	if o == nil || IsNil(o.EnableBfd) {
 		return nil, false
 	}
-	return o.AnycastIpMask, true
+	return o.EnableBfd, true
 }
 
-// HasAnycastIpMask returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasAnycastIpMask() bool {
-	if o != nil && !IsNil(o.AnycastIpMask) {
+// HasEnableBfd returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasEnableBfd() bool {
+	if o != nil && !IsNil(o.EnableBfd) {
 		return true
 	}
 
 	return false
 }
 
-// SetAnycastIpMask gets a reference to the given string and assigns it to the AnycastIpMask field.
-func (o *GatewaysPutRequestGatewayValue) SetAnycastIpMask(v string) {
-	o.AnycastIpMask = &v
-}
-
-// GetMd5Password returns the Md5Password field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetMd5Password() string {
-	if o == nil || IsNil(o.Md5Password) {
-		var ret string
-		return ret
-	}
-	return *o.Md5Password
-}
-
-// GetMd5PasswordOk returns a tuple with the Md5Password field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetMd5PasswordOk() (*string, bool) {
-	if o == nil || IsNil(o.Md5Password) {
-		return nil, false
-	}
-	return o.Md5Password, true
-}
-
-// HasMd5Password returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasMd5Password() bool {
-	if o != nil && !IsNil(o.Md5Password) {
-		return true
-	}
-
-	return false
-}
-
-// SetMd5Password gets a reference to the given string and assigns it to the Md5Password field.
-func (o *GatewaysPutRequestGatewayValue) SetMd5Password(v string) {
-	o.Md5Password = &v
-}
-
-// GetImportRouteMap returns the ImportRouteMap field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetImportRouteMap() string {
-	if o == nil || IsNil(o.ImportRouteMap) {
-		var ret string
-		return ret
-	}
-	return *o.ImportRouteMap
-}
-
-// GetImportRouteMapOk returns a tuple with the ImportRouteMap field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetImportRouteMapOk() (*string, bool) {
-	if o == nil || IsNil(o.ImportRouteMap) {
-		return nil, false
-	}
-	return o.ImportRouteMap, true
-}
-
-// HasImportRouteMap returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasImportRouteMap() bool {
-	if o != nil && !IsNil(o.ImportRouteMap) {
-		return true
-	}
-
-	return false
-}
-
-// SetImportRouteMap gets a reference to the given string and assigns it to the ImportRouteMap field.
-func (o *GatewaysPutRequestGatewayValue) SetImportRouteMap(v string) {
-	o.ImportRouteMap = &v
-}
-
-// GetImportRouteMapRefType returns the ImportRouteMapRefType field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetImportRouteMapRefType() string {
-	if o == nil || IsNil(o.ImportRouteMapRefType) {
-		var ret string
-		return ret
-	}
-	return *o.ImportRouteMapRefType
-}
-
-// GetImportRouteMapRefTypeOk returns a tuple with the ImportRouteMapRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetImportRouteMapRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.ImportRouteMapRefType) {
-		return nil, false
-	}
-	return o.ImportRouteMapRefType, true
-}
-
-// HasImportRouteMapRefType returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasImportRouteMapRefType() bool {
-	if o != nil && !IsNil(o.ImportRouteMapRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetImportRouteMapRefType gets a reference to the given string and assigns it to the ImportRouteMapRefType field.
-func (o *GatewaysPutRequestGatewayValue) SetImportRouteMapRefType(v string) {
-	o.ImportRouteMapRefType = &v
+// SetEnableBfd gets a reference to the given bool and assigns it to the EnableBfd field.
+func (o *GatewaysPutRequestGatewayValue) SetEnableBfd(v bool) {
+	o.EnableBfd = &v
 }
 
 // GetExportRouteMap returns the ExportRouteMap field value if set, zero value otherwise.
@@ -1199,6 +940,102 @@ func (o *GatewaysPutRequestGatewayValue) SetExportRouteMapRefType(v string) {
 	o.ExportRouteMapRefType = &v
 }
 
+// GetFabric returns the Fabric field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetFabric() string {
+	if o == nil || IsNil(o.Fabric) {
+		var ret string
+		return ret
+	}
+	return *o.Fabric
+}
+
+// GetFabricOk returns a tuple with the Fabric field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetFabricOk() (*string, bool) {
+	if o == nil || IsNil(o.Fabric) {
+		return nil, false
+	}
+	return o.Fabric, true
+}
+
+// HasFabric returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasFabric() bool {
+	if o != nil && !IsNil(o.Fabric) {
+		return true
+	}
+
+	return false
+}
+
+// SetFabric gets a reference to the given string and assigns it to the Fabric field.
+func (o *GatewaysPutRequestGatewayValue) SetFabric(v string) {
+	o.Fabric = &v
+}
+
+// GetFabricInterconnect returns the FabricInterconnect field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetFabricInterconnect() bool {
+	if o == nil || IsNil(o.FabricInterconnect) {
+		var ret bool
+		return ret
+	}
+	return *o.FabricInterconnect
+}
+
+// GetFabricInterconnectOk returns a tuple with the FabricInterconnect field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetFabricInterconnectOk() (*bool, bool) {
+	if o == nil || IsNil(o.FabricInterconnect) {
+		return nil, false
+	}
+	return o.FabricInterconnect, true
+}
+
+// HasFabricInterconnect returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasFabricInterconnect() bool {
+	if o != nil && !IsNil(o.FabricInterconnect) {
+		return true
+	}
+
+	return false
+}
+
+// SetFabricInterconnect gets a reference to the given bool and assigns it to the FabricInterconnect field.
+func (o *GatewaysPutRequestGatewayValue) SetFabricInterconnect(v bool) {
+	o.FabricInterconnect = &v
+}
+
+// GetFabricRefType returns the FabricRefType field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetFabricRefType() string {
+	if o == nil || IsNil(o.FabricRefType) {
+		var ret string
+		return ret
+	}
+	return *o.FabricRefType
+}
+
+// GetFabricRefTypeOk returns a tuple with the FabricRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetFabricRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.FabricRefType) {
+		return nil, false
+	}
+	return o.FabricRefType, true
+}
+
+// HasFabricRefType returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasFabricRefType() bool {
+	if o != nil && !IsNil(o.FabricRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetFabricRefType gets a reference to the given string and assigns it to the FabricRefType field.
+func (o *GatewaysPutRequestGatewayValue) SetFabricRefType(v string) {
+	o.FabricRefType = &v
+}
+
 // GetGatewayMode returns the GatewayMode field value if set, zero value otherwise.
 func (o *GatewaysPutRequestGatewayValue) GetGatewayMode() string {
 	if o == nil || IsNil(o.GatewayMode) {
@@ -1231,46 +1068,218 @@ func (o *GatewaysPutRequestGatewayValue) SetGatewayMode(v string) {
 	o.GatewayMode = &v
 }
 
-// GetBgpInstanceAsNumber returns the BgpInstanceAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumber() int64 {
-	if o == nil || IsNil(o.BgpInstanceAsNumber.Get()) {
-		var ret int64
+// GetHelperHopIpAddress returns the HelperHopIpAddress field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetHelperHopIpAddress() string {
+	if o == nil || IsNil(o.HelperHopIpAddress) {
+		var ret string
 		return ret
 	}
-	return *o.BgpInstanceAsNumber.Get()
+	return *o.HelperHopIpAddress
 }
 
-// GetBgpInstanceAsNumberOk returns a tuple with the BgpInstanceAsNumber field value if set, nil otherwise
+// GetHelperHopIpAddressOk returns a tuple with the HelperHopIpAddress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetBgpInstanceAsNumberOk() (*int64, bool) {
-	if o == nil {
+func (o *GatewaysPutRequestGatewayValue) GetHelperHopIpAddressOk() (*string, bool) {
+	if o == nil || IsNil(o.HelperHopIpAddress) {
 		return nil, false
 	}
-	return o.BgpInstanceAsNumber.Get(), o.BgpInstanceAsNumber.IsSet()
+	return o.HelperHopIpAddress, true
 }
 
-// HasBgpInstanceAsNumber returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasBgpInstanceAsNumber() bool {
-	if o != nil && o.BgpInstanceAsNumber.IsSet() {
+// HasHelperHopIpAddress returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasHelperHopIpAddress() bool {
+	if o != nil && !IsNil(o.HelperHopIpAddress) {
 		return true
 	}
 
 	return false
 }
 
-// SetBgpInstanceAsNumber gets a reference to the given NullableInt64 and assigns it to the BgpInstanceAsNumber field.
-func (o *GatewaysPutRequestGatewayValue) SetBgpInstanceAsNumber(v int64) {
-	o.BgpInstanceAsNumber.Set(&v)
-}
-// SetBgpInstanceAsNumberNil sets the value for BgpInstanceAsNumber to be an explicit nil
-func (o *GatewaysPutRequestGatewayValue) SetBgpInstanceAsNumberNil() {
-	o.BgpInstanceAsNumber.Set(nil)
+// SetHelperHopIpAddress gets a reference to the given string and assigns it to the HelperHopIpAddress field.
+func (o *GatewaysPutRequestGatewayValue) SetHelperHopIpAddress(v string) {
+	o.HelperHopIpAddress = &v
 }
 
-// UnsetBgpInstanceAsNumber ensures that no value is present for BgpInstanceAsNumber, not even an explicit nil
-func (o *GatewaysPutRequestGatewayValue) UnsetBgpInstanceAsNumber() {
-	o.BgpInstanceAsNumber.Unset()
+// GetHoldTimer returns the HoldTimer field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GatewaysPutRequestGatewayValue) GetHoldTimer() int64 {
+	if o == nil || IsNil(o.HoldTimer.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.HoldTimer.Get()
+}
+
+// GetHoldTimerOk returns a tuple with the HoldTimer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GatewaysPutRequestGatewayValue) GetHoldTimerOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.HoldTimer.Get(), o.HoldTimer.IsSet()
+}
+
+// HasHoldTimer returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasHoldTimer() bool {
+	if o != nil && o.HoldTimer.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetHoldTimer gets a reference to the given NullableInt64 and assigns it to the HoldTimer field.
+func (o *GatewaysPutRequestGatewayValue) SetHoldTimer(v int64) {
+	o.HoldTimer.Set(&v)
+}
+
+// SetHoldTimerNil sets the value for HoldTimer to be an explicit nil
+func (o *GatewaysPutRequestGatewayValue) SetHoldTimerNil() {
+	o.HoldTimer.Set(nil)
+}
+
+// UnsetHoldTimer ensures that no value is present for HoldTimer, not even an explicit nil
+func (o *GatewaysPutRequestGatewayValue) UnsetHoldTimer() {
+	o.HoldTimer.Unset()
+}
+
+// GetImportRouteMap returns the ImportRouteMap field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetImportRouteMap() string {
+	if o == nil || IsNil(o.ImportRouteMap) {
+		var ret string
+		return ret
+	}
+	return *o.ImportRouteMap
+}
+
+// GetImportRouteMapOk returns a tuple with the ImportRouteMap field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetImportRouteMapOk() (*string, bool) {
+	if o == nil || IsNil(o.ImportRouteMap) {
+		return nil, false
+	}
+	return o.ImportRouteMap, true
+}
+
+// HasImportRouteMap returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasImportRouteMap() bool {
+	if o != nil && !IsNil(o.ImportRouteMap) {
+		return true
+	}
+
+	return false
+}
+
+// SetImportRouteMap gets a reference to the given string and assigns it to the ImportRouteMap field.
+func (o *GatewaysPutRequestGatewayValue) SetImportRouteMap(v string) {
+	o.ImportRouteMap = &v
+}
+
+// GetImportRouteMapRefType returns the ImportRouteMapRefType field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetImportRouteMapRefType() string {
+	if o == nil || IsNil(o.ImportRouteMapRefType) {
+		var ret string
+		return ret
+	}
+	return *o.ImportRouteMapRefType
+}
+
+// GetImportRouteMapRefTypeOk returns a tuple with the ImportRouteMapRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetImportRouteMapRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ImportRouteMapRefType) {
+		return nil, false
+	}
+	return o.ImportRouteMapRefType, true
+}
+
+// HasImportRouteMapRefType returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasImportRouteMapRefType() bool {
+	if o != nil && !IsNil(o.ImportRouteMapRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetImportRouteMapRefType gets a reference to the given string and assigns it to the ImportRouteMapRefType field.
+func (o *GatewaysPutRequestGatewayValue) SetImportRouteMapRefType(v string) {
+	o.ImportRouteMapRefType = &v
+}
+
+// GetKeepaliveTimer returns the KeepaliveTimer field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GatewaysPutRequestGatewayValue) GetKeepaliveTimer() int64 {
+	if o == nil || IsNil(o.KeepaliveTimer.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.KeepaliveTimer.Get()
+}
+
+// GetKeepaliveTimerOk returns a tuple with the KeepaliveTimer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GatewaysPutRequestGatewayValue) GetKeepaliveTimerOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.KeepaliveTimer.Get(), o.KeepaliveTimer.IsSet()
+}
+
+// HasKeepaliveTimer returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasKeepaliveTimer() bool {
+	if o != nil && o.KeepaliveTimer.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetKeepaliveTimer gets a reference to the given NullableInt64 and assigns it to the KeepaliveTimer field.
+func (o *GatewaysPutRequestGatewayValue) SetKeepaliveTimer(v int64) {
+	o.KeepaliveTimer.Set(&v)
+}
+
+// SetKeepaliveTimerNil sets the value for KeepaliveTimer to be an explicit nil
+func (o *GatewaysPutRequestGatewayValue) SetKeepaliveTimerNil() {
+	o.KeepaliveTimer.Set(nil)
+}
+
+// UnsetKeepaliveTimer ensures that no value is present for KeepaliveTimer, not even an explicit nil
+func (o *GatewaysPutRequestGatewayValue) UnsetKeepaliveTimer() {
+	o.KeepaliveTimer.Unset()
+}
+
+// GetLocalAsNoPrepend returns the LocalAsNoPrepend field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetLocalAsNoPrepend() bool {
+	if o == nil || IsNil(o.LocalAsNoPrepend) {
+		var ret bool
+		return ret
+	}
+	return *o.LocalAsNoPrepend
+}
+
+// GetLocalAsNoPrependOk returns a tuple with the LocalAsNoPrepend field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetLocalAsNoPrependOk() (*bool, bool) {
+	if o == nil || IsNil(o.LocalAsNoPrepend) {
+		return nil, false
+	}
+	return o.LocalAsNoPrepend, true
+}
+
+// HasLocalAsNoPrepend returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasLocalAsNoPrepend() bool {
+	if o != nil && !IsNil(o.LocalAsNoPrepend) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocalAsNoPrepend gets a reference to the given bool and assigns it to the LocalAsNoPrepend field.
+func (o *GatewaysPutRequestGatewayValue) SetLocalAsNoPrepend(v bool) {
+	o.LocalAsNoPrepend = &v
 }
 
 // GetLocalAsNumber returns the LocalAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1305,6 +1314,7 @@ func (o *GatewaysPutRequestGatewayValue) HasLocalAsNumber() bool {
 func (o *GatewaysPutRequestGatewayValue) SetLocalAsNumber(v int64) {
 	o.LocalAsNumber.Set(&v)
 }
+
 // SetLocalAsNumberNil sets the value for LocalAsNumber to be an explicit nil
 func (o *GatewaysPutRequestGatewayValue) SetLocalAsNumberNil() {
 	o.LocalAsNumber.Set(nil)
@@ -1315,36 +1325,250 @@ func (o *GatewaysPutRequestGatewayValue) UnsetLocalAsNumber() {
 	o.LocalAsNumber.Unset()
 }
 
-// GetLocalAsNoPrepend returns the LocalAsNoPrepend field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetLocalAsNoPrepend() bool {
-	if o == nil || IsNil(o.LocalAsNoPrepend) {
-		var ret bool
+// GetMaxLocalAsOccurrences returns the MaxLocalAsOccurrences field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GatewaysPutRequestGatewayValue) GetMaxLocalAsOccurrences() int64 {
+	if o == nil || IsNil(o.MaxLocalAsOccurrences.Get()) {
+		var ret int64
 		return ret
 	}
-	return *o.LocalAsNoPrepend
+	return *o.MaxLocalAsOccurrences.Get()
 }
 
-// GetLocalAsNoPrependOk returns a tuple with the LocalAsNoPrepend field value if set, nil otherwise
+// GetMaxLocalAsOccurrencesOk returns a tuple with the MaxLocalAsOccurrences field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetLocalAsNoPrependOk() (*bool, bool) {
-	if o == nil || IsNil(o.LocalAsNoPrepend) {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GatewaysPutRequestGatewayValue) GetMaxLocalAsOccurrencesOk() (*int64, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.LocalAsNoPrepend, true
+	return o.MaxLocalAsOccurrences.Get(), o.MaxLocalAsOccurrences.IsSet()
 }
 
-// HasLocalAsNoPrepend returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasLocalAsNoPrepend() bool {
-	if o != nil && !IsNil(o.LocalAsNoPrepend) {
+// HasMaxLocalAsOccurrences returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasMaxLocalAsOccurrences() bool {
+	if o != nil && o.MaxLocalAsOccurrences.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLocalAsNoPrepend gets a reference to the given bool and assigns it to the LocalAsNoPrepend field.
-func (o *GatewaysPutRequestGatewayValue) SetLocalAsNoPrepend(v bool) {
-	o.LocalAsNoPrepend = &v
+// SetMaxLocalAsOccurrences gets a reference to the given NullableInt64 and assigns it to the MaxLocalAsOccurrences field.
+func (o *GatewaysPutRequestGatewayValue) SetMaxLocalAsOccurrences(v int64) {
+	o.MaxLocalAsOccurrences.Set(&v)
+}
+
+// SetMaxLocalAsOccurrencesNil sets the value for MaxLocalAsOccurrences to be an explicit nil
+func (o *GatewaysPutRequestGatewayValue) SetMaxLocalAsOccurrencesNil() {
+	o.MaxLocalAsOccurrences.Set(nil)
+}
+
+// UnsetMaxLocalAsOccurrences ensures that no value is present for MaxLocalAsOccurrences, not even an explicit nil
+func (o *GatewaysPutRequestGatewayValue) UnsetMaxLocalAsOccurrences() {
+	o.MaxLocalAsOccurrences.Unset()
+}
+
+// GetMd5Password returns the Md5Password field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetMd5Password() string {
+	if o == nil || IsNil(o.Md5Password) {
+		var ret string
+		return ret
+	}
+	return *o.Md5Password
+}
+
+// GetMd5PasswordOk returns a tuple with the Md5Password field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetMd5PasswordOk() (*string, bool) {
+	if o == nil || IsNil(o.Md5Password) {
+		return nil, false
+	}
+	return o.Md5Password, true
+}
+
+// HasMd5Password returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasMd5Password() bool {
+	if o != nil && !IsNil(o.Md5Password) {
+		return true
+	}
+
+	return false
+}
+
+// SetMd5Password gets a reference to the given string and assigns it to the Md5Password field.
+func (o *GatewaysPutRequestGatewayValue) SetMd5Password(v string) {
+	o.Md5Password = &v
+}
+
+// GetMd5PasswordEncrypted returns the Md5PasswordEncrypted field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetMd5PasswordEncrypted() string {
+	if o == nil || IsNil(o.Md5PasswordEncrypted) {
+		var ret string
+		return ret
+	}
+	return *o.Md5PasswordEncrypted
+}
+
+// GetMd5PasswordEncryptedOk returns a tuple with the Md5PasswordEncrypted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetMd5PasswordEncryptedOk() (*string, bool) {
+	if o == nil || IsNil(o.Md5PasswordEncrypted) {
+		return nil, false
+	}
+	return o.Md5PasswordEncrypted, true
+}
+
+// HasMd5PasswordEncrypted returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasMd5PasswordEncrypted() bool {
+	if o != nil && !IsNil(o.Md5PasswordEncrypted) {
+		return true
+	}
+
+	return false
+}
+
+// SetMd5PasswordEncrypted gets a reference to the given string and assigns it to the Md5PasswordEncrypted field.
+func (o *GatewaysPutRequestGatewayValue) SetMd5PasswordEncrypted(v string) {
+	o.Md5PasswordEncrypted = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *GatewaysPutRequestGatewayValue) SetName(v string) {
+	o.Name = &v
+}
+
+// GetNeighborAsNumber returns the NeighborAsNumber field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *GatewaysPutRequestGatewayValue) GetNeighborAsNumber() int64 {
+	if o == nil || IsNil(o.NeighborAsNumber.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.NeighborAsNumber.Get()
+}
+
+// GetNeighborAsNumberOk returns a tuple with the NeighborAsNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GatewaysPutRequestGatewayValue) GetNeighborAsNumberOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.NeighborAsNumber.Get(), o.NeighborAsNumber.IsSet()
+}
+
+// HasNeighborAsNumber returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasNeighborAsNumber() bool {
+	if o != nil && o.NeighborAsNumber.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetNeighborAsNumber gets a reference to the given NullableInt64 and assigns it to the NeighborAsNumber field.
+func (o *GatewaysPutRequestGatewayValue) SetNeighborAsNumber(v int64) {
+	o.NeighborAsNumber.Set(&v)
+}
+
+// SetNeighborAsNumberNil sets the value for NeighborAsNumber to be an explicit nil
+func (o *GatewaysPutRequestGatewayValue) SetNeighborAsNumberNil() {
+	o.NeighborAsNumber.Set(nil)
+}
+
+// UnsetNeighborAsNumber ensures that no value is present for NeighborAsNumber, not even an explicit nil
+func (o *GatewaysPutRequestGatewayValue) UnsetNeighborAsNumber() {
+	o.NeighborAsNumber.Unset()
+}
+
+// GetNeighborIpAddress returns the NeighborIpAddress field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetNeighborIpAddress() string {
+	if o == nil || IsNil(o.NeighborIpAddress) {
+		var ret string
+		return ret
+	}
+	return *o.NeighborIpAddress
+}
+
+// GetNeighborIpAddressOk returns a tuple with the NeighborIpAddress field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetNeighborIpAddressOk() (*string, bool) {
+	if o == nil || IsNil(o.NeighborIpAddress) {
+		return nil, false
+	}
+	return o.NeighborIpAddress, true
+}
+
+// HasNeighborIpAddress returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasNeighborIpAddress() bool {
+	if o != nil && !IsNil(o.NeighborIpAddress) {
+		return true
+	}
+
+	return false
+}
+
+// SetNeighborIpAddress gets a reference to the given string and assigns it to the NeighborIpAddress field.
+func (o *GatewaysPutRequestGatewayValue) SetNeighborIpAddress(v string) {
+	o.NeighborIpAddress = &v
+}
+
+// GetNextHopSelf returns the NextHopSelf field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetNextHopSelf() bool {
+	if o == nil || IsNil(o.NextHopSelf) {
+		var ret bool
+		return ret
+	}
+	return *o.NextHopSelf
+}
+
+// GetNextHopSelfOk returns a tuple with the NextHopSelf field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetNextHopSelfOk() (*bool, bool) {
+	if o == nil || IsNil(o.NextHopSelf) {
+		return nil, false
+	}
+	return o.NextHopSelf, true
+}
+
+// HasNextHopSelf returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasNextHopSelf() bool {
+	if o != nil && !IsNil(o.NextHopSelf) {
+		return true
+	}
+
+	return false
+}
+
+// SetNextHopSelf gets a reference to the given bool and assigns it to the NextHopSelf field.
+func (o *GatewaysPutRequestGatewayValue) SetNextHopSelf(v bool) {
+	o.NextHopSelf = &v
 }
 
 // GetRemovePrivateAs returns the RemovePrivateAs field value if set, zero value otherwise.
@@ -1411,374 +1635,36 @@ func (o *GatewaysPutRequestGatewayValue) SetReplaceAs(v bool) {
 	o.ReplaceAs = &v
 }
 
-// GetMaxLocalAsOccurrences returns the MaxLocalAsOccurrences field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetMaxLocalAsOccurrences() int64 {
-	if o == nil || IsNil(o.MaxLocalAsOccurrences.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.MaxLocalAsOccurrences.Get()
-}
-
-// GetMaxLocalAsOccurrencesOk returns a tuple with the MaxLocalAsOccurrences field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetMaxLocalAsOccurrencesOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.MaxLocalAsOccurrences.Get(), o.MaxLocalAsOccurrences.IsSet()
-}
-
-// HasMaxLocalAsOccurrences returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasMaxLocalAsOccurrences() bool {
-	if o != nil && o.MaxLocalAsOccurrences.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMaxLocalAsOccurrences gets a reference to the given NullableInt64 and assigns it to the MaxLocalAsOccurrences field.
-func (o *GatewaysPutRequestGatewayValue) SetMaxLocalAsOccurrences(v int64) {
-	o.MaxLocalAsOccurrences.Set(&v)
-}
-// SetMaxLocalAsOccurrencesNil sets the value for MaxLocalAsOccurrences to be an explicit nil
-func (o *GatewaysPutRequestGatewayValue) SetMaxLocalAsOccurrencesNil() {
-	o.MaxLocalAsOccurrences.Set(nil)
-}
-
-// UnsetMaxLocalAsOccurrences ensures that no value is present for MaxLocalAsOccurrences, not even an explicit nil
-func (o *GatewaysPutRequestGatewayValue) UnsetMaxLocalAsOccurrences() {
-	o.MaxLocalAsOccurrences.Unset()
-}
-
-// GetAllowasInOrigin returns the AllowasInOrigin field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetAllowasInOrigin() bool {
-	if o == nil || IsNil(o.AllowasInOrigin) {
-		var ret bool
-		return ret
-	}
-	return *o.AllowasInOrigin
-}
-
-// GetAllowasInOriginOk returns a tuple with the AllowasInOrigin field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetAllowasInOriginOk() (*bool, bool) {
-	if o == nil || IsNil(o.AllowasInOrigin) {
-		return nil, false
-	}
-	return o.AllowasInOrigin, true
-}
-
-// HasAllowasInOrigin returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasAllowasInOrigin() bool {
-	if o != nil && !IsNil(o.AllowasInOrigin) {
-		return true
-	}
-
-	return false
-}
-
-// SetAllowasInOrigin gets a reference to the given bool and assigns it to the AllowasInOrigin field.
-func (o *GatewaysPutRequestGatewayValue) SetAllowasInOrigin(v bool) {
-	o.AllowasInOrigin = &v
-}
-
-// GetDynamicBgpSubnet returns the DynamicBgpSubnet field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpSubnet() string {
-	if o == nil || IsNil(o.DynamicBgpSubnet) {
+// GetSourceIpAddress returns the SourceIpAddress field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetSourceIpAddress() string {
+	if o == nil || IsNil(o.SourceIpAddress) {
 		var ret string
 		return ret
 	}
-	return *o.DynamicBgpSubnet
+	return *o.SourceIpAddress
 }
 
-// GetDynamicBgpSubnetOk returns a tuple with the DynamicBgpSubnet field value if set, nil otherwise
+// GetSourceIpAddressOk returns a tuple with the SourceIpAddress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpSubnetOk() (*string, bool) {
-	if o == nil || IsNil(o.DynamicBgpSubnet) {
+func (o *GatewaysPutRequestGatewayValue) GetSourceIpAddressOk() (*string, bool) {
+	if o == nil || IsNil(o.SourceIpAddress) {
 		return nil, false
 	}
-	return o.DynamicBgpSubnet, true
+	return o.SourceIpAddress, true
 }
 
-// HasDynamicBgpSubnet returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasDynamicBgpSubnet() bool {
-	if o != nil && !IsNil(o.DynamicBgpSubnet) {
+// HasSourceIpAddress returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasSourceIpAddress() bool {
+	if o != nil && !IsNil(o.SourceIpAddress) {
 		return true
 	}
 
 	return false
 }
 
-// SetDynamicBgpSubnet gets a reference to the given string and assigns it to the DynamicBgpSubnet field.
-func (o *GatewaysPutRequestGatewayValue) SetDynamicBgpSubnet(v string) {
-	o.DynamicBgpSubnet = &v
-}
-
-// GetDynamicBgpLimits returns the DynamicBgpLimits field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpLimits() int64 {
-	if o == nil || IsNil(o.DynamicBgpLimits.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.DynamicBgpLimits.Get()
-}
-
-// GetDynamicBgpLimitsOk returns a tuple with the DynamicBgpLimits field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetDynamicBgpLimitsOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.DynamicBgpLimits.Get(), o.DynamicBgpLimits.IsSet()
-}
-
-// HasDynamicBgpLimits returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasDynamicBgpLimits() bool {
-	if o != nil && o.DynamicBgpLimits.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetDynamicBgpLimits gets a reference to the given NullableInt64 and assigns it to the DynamicBgpLimits field.
-func (o *GatewaysPutRequestGatewayValue) SetDynamicBgpLimits(v int64) {
-	o.DynamicBgpLimits.Set(&v)
-}
-// SetDynamicBgpLimitsNil sets the value for DynamicBgpLimits to be an explicit nil
-func (o *GatewaysPutRequestGatewayValue) SetDynamicBgpLimitsNil() {
-	o.DynamicBgpLimits.Set(nil)
-}
-
-// UnsetDynamicBgpLimits ensures that no value is present for DynamicBgpLimits, not even an explicit nil
-func (o *GatewaysPutRequestGatewayValue) UnsetDynamicBgpLimits() {
-	o.DynamicBgpLimits.Unset()
-}
-
-// GetHelperHopIpAddress returns the HelperHopIpAddress field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetHelperHopIpAddress() string {
-	if o == nil || IsNil(o.HelperHopIpAddress) {
-		var ret string
-		return ret
-	}
-	return *o.HelperHopIpAddress
-}
-
-// GetHelperHopIpAddressOk returns a tuple with the HelperHopIpAddress field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetHelperHopIpAddressOk() (*string, bool) {
-	if o == nil || IsNil(o.HelperHopIpAddress) {
-		return nil, false
-	}
-	return o.HelperHopIpAddress, true
-}
-
-// HasHelperHopIpAddress returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasHelperHopIpAddress() bool {
-	if o != nil && !IsNil(o.HelperHopIpAddress) {
-		return true
-	}
-
-	return false
-}
-
-// SetHelperHopIpAddress gets a reference to the given string and assigns it to the HelperHopIpAddress field.
-func (o *GatewaysPutRequestGatewayValue) SetHelperHopIpAddress(v string) {
-	o.HelperHopIpAddress = &v
-}
-
-// GetEnableBfd returns the EnableBfd field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetEnableBfd() bool {
-	if o == nil || IsNil(o.EnableBfd) {
-		var ret bool
-		return ret
-	}
-	return *o.EnableBfd
-}
-
-// GetEnableBfdOk returns a tuple with the EnableBfd field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetEnableBfdOk() (*bool, bool) {
-	if o == nil || IsNil(o.EnableBfd) {
-		return nil, false
-	}
-	return o.EnableBfd, true
-}
-
-// HasEnableBfd returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasEnableBfd() bool {
-	if o != nil && !IsNil(o.EnableBfd) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnableBfd gets a reference to the given bool and assigns it to the EnableBfd field.
-func (o *GatewaysPutRequestGatewayValue) SetEnableBfd(v bool) {
-	o.EnableBfd = &v
-}
-
-// GetBfdReceiveInterval returns the BfdReceiveInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetBfdReceiveInterval() int64 {
-	if o == nil || IsNil(o.BfdReceiveInterval.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.BfdReceiveInterval.Get()
-}
-
-// GetBfdReceiveIntervalOk returns a tuple with the BfdReceiveInterval field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetBfdReceiveIntervalOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.BfdReceiveInterval.Get(), o.BfdReceiveInterval.IsSet()
-}
-
-// HasBfdReceiveInterval returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasBfdReceiveInterval() bool {
-	if o != nil && o.BfdReceiveInterval.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetBfdReceiveInterval gets a reference to the given NullableInt64 and assigns it to the BfdReceiveInterval field.
-func (o *GatewaysPutRequestGatewayValue) SetBfdReceiveInterval(v int64) {
-	o.BfdReceiveInterval.Set(&v)
-}
-// SetBfdReceiveIntervalNil sets the value for BfdReceiveInterval to be an explicit nil
-func (o *GatewaysPutRequestGatewayValue) SetBfdReceiveIntervalNil() {
-	o.BfdReceiveInterval.Set(nil)
-}
-
-// UnsetBfdReceiveInterval ensures that no value is present for BfdReceiveInterval, not even an explicit nil
-func (o *GatewaysPutRequestGatewayValue) UnsetBfdReceiveInterval() {
-	o.BfdReceiveInterval.Unset()
-}
-
-// GetBfdTransmissionInterval returns the BfdTransmissionInterval field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetBfdTransmissionInterval() int64 {
-	if o == nil || IsNil(o.BfdTransmissionInterval.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.BfdTransmissionInterval.Get()
-}
-
-// GetBfdTransmissionIntervalOk returns a tuple with the BfdTransmissionInterval field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetBfdTransmissionIntervalOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.BfdTransmissionInterval.Get(), o.BfdTransmissionInterval.IsSet()
-}
-
-// HasBfdTransmissionInterval returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasBfdTransmissionInterval() bool {
-	if o != nil && o.BfdTransmissionInterval.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetBfdTransmissionInterval gets a reference to the given NullableInt64 and assigns it to the BfdTransmissionInterval field.
-func (o *GatewaysPutRequestGatewayValue) SetBfdTransmissionInterval(v int64) {
-	o.BfdTransmissionInterval.Set(&v)
-}
-// SetBfdTransmissionIntervalNil sets the value for BfdTransmissionInterval to be an explicit nil
-func (o *GatewaysPutRequestGatewayValue) SetBfdTransmissionIntervalNil() {
-	o.BfdTransmissionInterval.Set(nil)
-}
-
-// UnsetBfdTransmissionInterval ensures that no value is present for BfdTransmissionInterval, not even an explicit nil
-func (o *GatewaysPutRequestGatewayValue) UnsetBfdTransmissionInterval() {
-	o.BfdTransmissionInterval.Unset()
-}
-
-// GetBfdDetectMultiplier returns the BfdDetectMultiplier field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *GatewaysPutRequestGatewayValue) GetBfdDetectMultiplier() int64 {
-	if o == nil || IsNil(o.BfdDetectMultiplier.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.BfdDetectMultiplier.Get()
-}
-
-// GetBfdDetectMultiplierOk returns a tuple with the BfdDetectMultiplier field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GatewaysPutRequestGatewayValue) GetBfdDetectMultiplierOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.BfdDetectMultiplier.Get(), o.BfdDetectMultiplier.IsSet()
-}
-
-// HasBfdDetectMultiplier returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasBfdDetectMultiplier() bool {
-	if o != nil && o.BfdDetectMultiplier.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetBfdDetectMultiplier gets a reference to the given NullableInt64 and assigns it to the BfdDetectMultiplier field.
-func (o *GatewaysPutRequestGatewayValue) SetBfdDetectMultiplier(v int64) {
-	o.BfdDetectMultiplier.Set(&v)
-}
-// SetBfdDetectMultiplierNil sets the value for BfdDetectMultiplier to be an explicit nil
-func (o *GatewaysPutRequestGatewayValue) SetBfdDetectMultiplierNil() {
-	o.BfdDetectMultiplier.Set(nil)
-}
-
-// UnsetBfdDetectMultiplier ensures that no value is present for BfdDetectMultiplier, not even an explicit nil
-func (o *GatewaysPutRequestGatewayValue) UnsetBfdDetectMultiplier() {
-	o.BfdDetectMultiplier.Unset()
-}
-
-// GetNextHopSelf returns the NextHopSelf field value if set, zero value otherwise.
-func (o *GatewaysPutRequestGatewayValue) GetNextHopSelf() bool {
-	if o == nil || IsNil(o.NextHopSelf) {
-		var ret bool
-		return ret
-	}
-	return *o.NextHopSelf
-}
-
-// GetNextHopSelfOk returns a tuple with the NextHopSelf field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *GatewaysPutRequestGatewayValue) GetNextHopSelfOk() (*bool, bool) {
-	if o == nil || IsNil(o.NextHopSelf) {
-		return nil, false
-	}
-	return o.NextHopSelf, true
-}
-
-// HasNextHopSelf returns a boolean if a field has been set.
-func (o *GatewaysPutRequestGatewayValue) HasNextHopSelf() bool {
-	if o != nil && !IsNil(o.NextHopSelf) {
-		return true
-	}
-
-	return false
-}
-
-// SetNextHopSelf gets a reference to the given bool and assigns it to the NextHopSelf field.
-func (o *GatewaysPutRequestGatewayValue) SetNextHopSelf(v bool) {
-	o.NextHopSelf = &v
+// SetSourceIpAddress gets a reference to the given string and assigns it to the SourceIpAddress field.
+func (o *GatewaysPutRequestGatewayValue) SetSourceIpAddress(v string) {
+	o.SourceIpAddress = &v
 }
 
 // GetStaticRoutes returns the StaticRoutes field value if set, zero value otherwise.
@@ -1813,8 +1699,136 @@ func (o *GatewaysPutRequestGatewayValue) SetStaticRoutes(v []GatewaysPutRequestG
 	o.StaticRoutes = v
 }
 
+// GetSwitchEncryptedMd5Password returns the SwitchEncryptedMd5Password field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetSwitchEncryptedMd5Password() bool {
+	if o == nil || IsNil(o.SwitchEncryptedMd5Password) {
+		var ret bool
+		return ret
+	}
+	return *o.SwitchEncryptedMd5Password
+}
+
+// GetSwitchEncryptedMd5PasswordOk returns a tuple with the SwitchEncryptedMd5Password field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetSwitchEncryptedMd5PasswordOk() (*bool, bool) {
+	if o == nil || IsNil(o.SwitchEncryptedMd5Password) {
+		return nil, false
+	}
+	return o.SwitchEncryptedMd5Password, true
+}
+
+// HasSwitchEncryptedMd5Password returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasSwitchEncryptedMd5Password() bool {
+	if o != nil && !IsNil(o.SwitchEncryptedMd5Password) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchEncryptedMd5Password gets a reference to the given bool and assigns it to the SwitchEncryptedMd5Password field.
+func (o *GatewaysPutRequestGatewayValue) SetSwitchEncryptedMd5Password(v bool) {
+	o.SwitchEncryptedMd5Password = &v
+}
+
+// GetTenant returns the Tenant field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetTenant() string {
+	if o == nil || IsNil(o.Tenant) {
+		var ret string
+		return ret
+	}
+	return *o.Tenant
+}
+
+// GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetTenantOk() (*string, bool) {
+	if o == nil || IsNil(o.Tenant) {
+		return nil, false
+	}
+	return o.Tenant, true
+}
+
+// HasTenant returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasTenant() bool {
+	if o != nil && !IsNil(o.Tenant) {
+		return true
+	}
+
+	return false
+}
+
+// SetTenant gets a reference to the given string and assigns it to the Tenant field.
+func (o *GatewaysPutRequestGatewayValue) SetTenant(v string) {
+	o.Tenant = &v
+}
+
+// GetTenantRefType returns the TenantRefType field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetTenantRefType() string {
+	if o == nil || IsNil(o.TenantRefType) {
+		var ret string
+		return ret
+	}
+	return *o.TenantRefType
+}
+
+// GetTenantRefTypeOk returns a tuple with the TenantRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetTenantRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.TenantRefType) {
+		return nil, false
+	}
+	return o.TenantRefType, true
+}
+
+// HasTenantRefType returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasTenantRefType() bool {
+	if o != nil && !IsNil(o.TenantRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetTenantRefType gets a reference to the given string and assigns it to the TenantRefType field.
+func (o *GatewaysPutRequestGatewayValue) SetTenantRefType(v string) {
+	o.TenantRefType = &v
+}
+
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *GatewaysPutRequestGatewayValue) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewaysPutRequestGatewayValue) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *GatewaysPutRequestGatewayValue) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *GatewaysPutRequestGatewayValue) SetType(v string) {
+	o.Type = &v
+}
+
 func (o GatewaysPutRequestGatewayValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1823,122 +1837,20 @@ func (o GatewaysPutRequestGatewayValue) MarshalJSON() ([]byte, error) {
 
 func (o GatewaysPutRequestGatewayValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.SwitchEncryptedMd5Password) {
-		toSerialize["switch_encrypted_md5_password"] = o.SwitchEncryptedMd5Password
-	}
-	if !IsNil(o.Md5PasswordEncrypted) {
-		toSerialize["md5_password_encrypted"] = o.Md5PasswordEncrypted
-	}
-	if !IsNil(o.DefaultOriginate) {
-		toSerialize["default_originate"] = o.DefaultOriginate
-	}
-	if !IsNil(o.BfdMultihop) {
-		toSerialize["bfd_multihop"] = o.BfdMultihop
-	}
-	if !IsNil(o.Tenant) {
-		toSerialize["tenant"] = o.Tenant
-	}
-	if !IsNil(o.TenantRefType) {
-		toSerialize["tenant_ref_type_"] = o.TenantRefType
-	}
-	if !IsNil(o.Fabric) {
-		toSerialize["fabric"] = o.Fabric
-	}
-	if !IsNil(o.FabricRefType) {
-		toSerialize["fabric_ref_type_"] = o.FabricRefType
-	}
-	if !IsNil(o.Type) {
-		toSerialize["type"] = o.Type
-	}
-	if !IsNil(o.NeighborIpAddress) {
-		toSerialize["neighbor_ip_address"] = o.NeighborIpAddress
-	}
-	if o.NeighborAsNumber.IsSet() {
-		toSerialize["neighbor_as_number"] = o.NeighborAsNumber.Get()
-	}
-	if !IsNil(o.FabricInterconnect) {
-		toSerialize["fabric_interconnect"] = o.FabricInterconnect
-	}
-	if o.KeepaliveTimer.IsSet() {
-		toSerialize["keepalive_timer"] = o.KeepaliveTimer.Get()
-	}
-	if o.HoldTimer.IsSet() {
-		toSerialize["hold_timer"] = o.HoldTimer.Get()
-	}
-	if o.ConnectTimer.IsSet() {
-		toSerialize["connect_timer"] = o.ConnectTimer.Get()
-	}
 	if o.AdvertisementInterval.IsSet() {
 		toSerialize["advertisement_interval"] = o.AdvertisementInterval.Get()
-	}
-	if o.EbgpMultihop.IsSet() {
-		toSerialize["ebgp_multihop"] = o.EbgpMultihop.Get()
-	}
-	if o.EgressVlan.IsSet() {
-		toSerialize["egress_vlan"] = o.EgressVlan.Get()
-	}
-	if !IsNil(o.SourceIpAddress) {
-		toSerialize["source_ip_address"] = o.SourceIpAddress
-	}
-	if !IsNil(o.AnycastIpMask) {
-		toSerialize["anycast_ip_mask"] = o.AnycastIpMask
-	}
-	if !IsNil(o.Md5Password) {
-		toSerialize["md5_password"] = o.Md5Password
-	}
-	if !IsNil(o.ImportRouteMap) {
-		toSerialize["import_route_map"] = o.ImportRouteMap
-	}
-	if !IsNil(o.ImportRouteMapRefType) {
-		toSerialize["import_route_map_ref_type_"] = o.ImportRouteMapRefType
-	}
-	if !IsNil(o.ExportRouteMap) {
-		toSerialize["export_route_map"] = o.ExportRouteMap
-	}
-	if !IsNil(o.ExportRouteMapRefType) {
-		toSerialize["export_route_map_ref_type_"] = o.ExportRouteMapRefType
-	}
-	if !IsNil(o.GatewayMode) {
-		toSerialize["gateway_mode"] = o.GatewayMode
-	}
-	if o.BgpInstanceAsNumber.IsSet() {
-		toSerialize["bgp_instance_as_number"] = o.BgpInstanceAsNumber.Get()
-	}
-	if o.LocalAsNumber.IsSet() {
-		toSerialize["local_as_number"] = o.LocalAsNumber.Get()
-	}
-	if !IsNil(o.LocalAsNoPrepend) {
-		toSerialize["local_as_no_prepend"] = o.LocalAsNoPrepend
-	}
-	if !IsNil(o.RemovePrivateAs) {
-		toSerialize["remove_private_as"] = o.RemovePrivateAs
-	}
-	if !IsNil(o.ReplaceAs) {
-		toSerialize["replace_as"] = o.ReplaceAs
-	}
-	if o.MaxLocalAsOccurrences.IsSet() {
-		toSerialize["max_local_as_occurrences"] = o.MaxLocalAsOccurrences.Get()
 	}
 	if !IsNil(o.AllowasInOrigin) {
 		toSerialize["allowas_in_origin"] = o.AllowasInOrigin
 	}
-	if !IsNil(o.DynamicBgpSubnet) {
-		toSerialize["dynamic_bgp_subnet"] = o.DynamicBgpSubnet
+	if !IsNil(o.AnycastIpMask) {
+		toSerialize["anycast_ip_mask"] = o.AnycastIpMask
 	}
-	if o.DynamicBgpLimits.IsSet() {
-		toSerialize["dynamic_bgp_limits"] = o.DynamicBgpLimits.Get()
+	if o.BfdDetectMultiplier.IsSet() {
+		toSerialize["bfd_detect_multiplier"] = o.BfdDetectMultiplier.Get()
 	}
-	if !IsNil(o.HelperHopIpAddress) {
-		toSerialize["helper_hop_ip_address"] = o.HelperHopIpAddress
-	}
-	if !IsNil(o.EnableBfd) {
-		toSerialize["enable_bfd"] = o.EnableBfd
+	if !IsNil(o.BfdMultihop) {
+		toSerialize["bfd_multihop"] = o.BfdMultihop
 	}
 	if o.BfdReceiveInterval.IsSet() {
 		toSerialize["bfd_receive_interval"] = o.BfdReceiveInterval.Get()
@@ -1946,14 +1858,116 @@ func (o GatewaysPutRequestGatewayValue) ToMap() (map[string]interface{}, error) 
 	if o.BfdTransmissionInterval.IsSet() {
 		toSerialize["bfd_transmission_interval"] = o.BfdTransmissionInterval.Get()
 	}
-	if o.BfdDetectMultiplier.IsSet() {
-		toSerialize["bfd_detect_multiplier"] = o.BfdDetectMultiplier.Get()
+	if o.BgpInstanceAsNumber.IsSet() {
+		toSerialize["bgp_instance_as_number"] = o.BgpInstanceAsNumber.Get()
+	}
+	if o.ConnectTimer.IsSet() {
+		toSerialize["connect_timer"] = o.ConnectTimer.Get()
+	}
+	if !IsNil(o.DefaultOriginate) {
+		toSerialize["default_originate"] = o.DefaultOriginate
+	}
+	if o.DynamicBgpLimits.IsSet() {
+		toSerialize["dynamic_bgp_limits"] = o.DynamicBgpLimits.Get()
+	}
+	if !IsNil(o.DynamicBgpSubnet) {
+		toSerialize["dynamic_bgp_subnet"] = o.DynamicBgpSubnet
+	}
+	if o.EbgpMultihop.IsSet() {
+		toSerialize["ebgp_multihop"] = o.EbgpMultihop.Get()
+	}
+	if o.EgressVlan.IsSet() {
+		toSerialize["egress_vlan"] = o.EgressVlan.Get()
+	}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
+	}
+	if !IsNil(o.EnableBfd) {
+		toSerialize["enable_bfd"] = o.EnableBfd
+	}
+	if !IsNil(o.ExportRouteMap) {
+		toSerialize["export_route_map"] = o.ExportRouteMap
+	}
+	if !IsNil(o.ExportRouteMapRefType) {
+		toSerialize["export_route_map_ref_type_"] = o.ExportRouteMapRefType
+	}
+	if !IsNil(o.Fabric) {
+		toSerialize["fabric"] = o.Fabric
+	}
+	if !IsNil(o.FabricInterconnect) {
+		toSerialize["fabric_interconnect"] = o.FabricInterconnect
+	}
+	if !IsNil(o.FabricRefType) {
+		toSerialize["fabric_ref_type_"] = o.FabricRefType
+	}
+	if !IsNil(o.GatewayMode) {
+		toSerialize["gateway_mode"] = o.GatewayMode
+	}
+	if !IsNil(o.HelperHopIpAddress) {
+		toSerialize["helper_hop_ip_address"] = o.HelperHopIpAddress
+	}
+	if o.HoldTimer.IsSet() {
+		toSerialize["hold_timer"] = o.HoldTimer.Get()
+	}
+	if !IsNil(o.ImportRouteMap) {
+		toSerialize["import_route_map"] = o.ImportRouteMap
+	}
+	if !IsNil(o.ImportRouteMapRefType) {
+		toSerialize["import_route_map_ref_type_"] = o.ImportRouteMapRefType
+	}
+	if o.KeepaliveTimer.IsSet() {
+		toSerialize["keepalive_timer"] = o.KeepaliveTimer.Get()
+	}
+	if !IsNil(o.LocalAsNoPrepend) {
+		toSerialize["local_as_no_prepend"] = o.LocalAsNoPrepend
+	}
+	if o.LocalAsNumber.IsSet() {
+		toSerialize["local_as_number"] = o.LocalAsNumber.Get()
+	}
+	if o.MaxLocalAsOccurrences.IsSet() {
+		toSerialize["max_local_as_occurrences"] = o.MaxLocalAsOccurrences.Get()
+	}
+	if !IsNil(o.Md5Password) {
+		toSerialize["md5_password"] = o.Md5Password
+	}
+	if !IsNil(o.Md5PasswordEncrypted) {
+		toSerialize["md5_password_encrypted"] = o.Md5PasswordEncrypted
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
+	if o.NeighborAsNumber.IsSet() {
+		toSerialize["neighbor_as_number"] = o.NeighborAsNumber.Get()
+	}
+	if !IsNil(o.NeighborIpAddress) {
+		toSerialize["neighbor_ip_address"] = o.NeighborIpAddress
 	}
 	if !IsNil(o.NextHopSelf) {
 		toSerialize["next_hop_self"] = o.NextHopSelf
 	}
+	if !IsNil(o.RemovePrivateAs) {
+		toSerialize["remove_private_as"] = o.RemovePrivateAs
+	}
+	if !IsNil(o.ReplaceAs) {
+		toSerialize["replace_as"] = o.ReplaceAs
+	}
+	if !IsNil(o.SourceIpAddress) {
+		toSerialize["source_ip_address"] = o.SourceIpAddress
+	}
 	if !IsNil(o.StaticRoutes) {
 		toSerialize["static_routes"] = o.StaticRoutes
+	}
+	if !IsNil(o.SwitchEncryptedMd5Password) {
+		toSerialize["switch_encrypted_md5_password"] = o.SwitchEncryptedMd5Password
+	}
+	if !IsNil(o.Tenant) {
+		toSerialize["tenant"] = o.Tenant
+	}
+	if !IsNil(o.TenantRefType) {
+		toSerialize["tenant_ref_type_"] = o.TenantRefType
+	}
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
 	}
 	return toSerialize, nil
 }
@@ -1993,5 +2007,3 @@ func (v *NullableGatewaysPutRequestGatewayValue) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

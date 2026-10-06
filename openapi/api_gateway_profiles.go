@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // GatewayProfilesAPIService GatewayProfilesAPI service
 type GatewayProfilesAPIService service
 
 type ApiGatewayprofilesDeleteRequest struct {
-	ctx context.Context
-	ApiService *GatewayProfilesAPIService
-	profileName *[]string
+	ctx           context.Context
+	ApiService    *GatewayProfilesAPIService
+	profileName   *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ GatewayprofilesDelete Delete Gateway Profile
 
 Deletes an existing Gateway Profile from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGatewayprofilesDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGatewayprofilesDeleteRequest
 */
 func (a *GatewayProfilesAPIService) GatewayprofilesDelete(ctx context.Context) ApiGatewayprofilesDeleteRequest {
 	return ApiGatewayprofilesDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *GatewayProfilesAPIService) GatewayprofilesDeleteExecute(r ApiGatewayprofilesDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GatewayProfilesAPIService.GatewayprofilesDelete")
@@ -142,10 +140,10 @@ func (a *GatewayProfilesAPIService) GatewayprofilesDeleteExecute(r ApiGatewaypro
 }
 
 type ApiGatewayprofilesGetRequest struct {
-	ctx context.Context
-	ApiService *GatewayProfilesAPIService
-	profileName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *GatewayProfilesAPIService
+	profileName   *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ GatewayprofilesGet Get all Gateway Profiles
 
 Downloads all Gateway Profiles from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGatewayprofilesGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGatewayprofilesGetRequest
 */
 func (a *GatewayProfilesAPIService) GatewayprofilesGet(ctx context.Context) ApiGatewayprofilesGetRequest {
 	return ApiGatewayprofilesGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *GatewayProfilesAPIService) GatewayprofilesGetExecute(r ApiGatewayprofilesGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GatewayProfilesAPIService.GatewayprofilesGet")
@@ -258,9 +255,9 @@ func (a *GatewayProfilesAPIService) GatewayprofilesGetExecute(r ApiGatewayprofil
 }
 
 type ApiGatewayprofilesPatchRequest struct {
-	ctx context.Context
-	ApiService *GatewayProfilesAPIService
-	changesetName *string
+	ctx                       context.Context
+	ApiService                *GatewayProfilesAPIService
+	changesetName             *string
 	gatewayprofilesPutRequest *GatewayprofilesPutRequest
 }
 
@@ -283,23 +280,22 @@ GatewayprofilesPatch Update Gateway Profile
 
 Update Gateway Profile into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGatewayprofilesPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGatewayprofilesPatchRequest
 */
 func (a *GatewayProfilesAPIService) GatewayprofilesPatch(ctx context.Context) ApiGatewayprofilesPatchRequest {
 	return ApiGatewayprofilesPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *GatewayProfilesAPIService) GatewayprofilesPatchExecute(r ApiGatewayprofilesPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GatewayProfilesAPIService.GatewayprofilesPatch")
@@ -364,9 +360,9 @@ func (a *GatewayProfilesAPIService) GatewayprofilesPatchExecute(r ApiGatewayprof
 }
 
 type ApiGatewayprofilesPutRequest struct {
-	ctx context.Context
-	ApiService *GatewayProfilesAPIService
-	changesetName *string
+	ctx                       context.Context
+	ApiService                *GatewayProfilesAPIService
+	changesetName             *string
 	gatewayprofilesPutRequest *GatewayprofilesPutRequest
 }
 
@@ -389,23 +385,22 @@ GatewayprofilesPut Create Gateway Profile
 
 Create Gateway Profile into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGatewayprofilesPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGatewayprofilesPutRequest
 */
 func (a *GatewayProfilesAPIService) GatewayprofilesPut(ctx context.Context) ApiGatewayprofilesPutRequest {
 	return ApiGatewayprofilesPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *GatewayProfilesAPIService) GatewayprofilesPutExecute(r ApiGatewayprofilesPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "GatewayProfilesAPIService.GatewayprofilesPut")

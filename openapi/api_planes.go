@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // PlanesAPIService PlanesAPI service
 type PlanesAPIService service
 
 type ApiPlanesDeleteRequest struct {
-	ctx context.Context
-	ApiService *PlanesAPIService
-	planeName *[]string
+	ctx           context.Context
+	ApiService    *PlanesAPIService
+	planeName     *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ PlanesDelete Delete plane
 
 Deletes an existing plane from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPlanesDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPlanesDeleteRequest
 */
 func (a *PlanesAPIService) PlanesDelete(ctx context.Context) ApiPlanesDeleteRequest {
 	return ApiPlanesDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PlanesAPIService) PlanesDeleteExecute(r ApiPlanesDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PlanesAPIService.PlanesDelete")
@@ -142,10 +140,10 @@ func (a *PlanesAPIService) PlanesDeleteExecute(r ApiPlanesDeleteRequest) (*http.
 }
 
 type ApiPlanesGetRequest struct {
-	ctx context.Context
-	ApiService *PlanesAPIService
-	planeName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *PlanesAPIService
+	planeName     *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ PlanesGet Get all planes
 
 Downloads all planes from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPlanesGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPlanesGetRequest
 */
 func (a *PlanesAPIService) PlanesGet(ctx context.Context) ApiPlanesGetRequest {
 	return ApiPlanesGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PlanesAPIService) PlanesGetExecute(r ApiPlanesGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PlanesAPIService.PlanesGet")
@@ -258,9 +255,9 @@ func (a *PlanesAPIService) PlanesGetExecute(r ApiPlanesGetRequest) (*http.Respon
 }
 
 type ApiPlanesPatchRequest struct {
-	ctx context.Context
-	ApiService *PlanesAPIService
-	changesetName *string
+	ctx              context.Context
+	ApiService       *PlanesAPIService
+	changesetName    *string
 	planesPutRequest *PlanesPutRequest
 }
 
@@ -283,23 +280,22 @@ PlanesPatch Update plane
 
 Update plane into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPlanesPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPlanesPatchRequest
 */
 func (a *PlanesAPIService) PlanesPatch(ctx context.Context) ApiPlanesPatchRequest {
 	return ApiPlanesPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PlanesAPIService) PlanesPatchExecute(r ApiPlanesPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PlanesAPIService.PlanesPatch")
@@ -364,9 +360,9 @@ func (a *PlanesAPIService) PlanesPatchExecute(r ApiPlanesPatchRequest) (*http.Re
 }
 
 type ApiPlanesPutRequest struct {
-	ctx context.Context
-	ApiService *PlanesAPIService
-	changesetName *string
+	ctx              context.Context
+	ApiService       *PlanesAPIService
+	changesetName    *string
 	planesPutRequest *PlanesPutRequest
 }
 
@@ -389,23 +385,22 @@ PlanesPut Create plane
 
 Create plane into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPlanesPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPlanesPutRequest
 */
 func (a *PlanesAPIService) PlanesPut(ctx context.Context) ApiPlanesPutRequest {
 	return ApiPlanesPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PlanesAPIService) PlanesPutExecute(r ApiPlanesPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PlanesAPIService.PlanesPut")

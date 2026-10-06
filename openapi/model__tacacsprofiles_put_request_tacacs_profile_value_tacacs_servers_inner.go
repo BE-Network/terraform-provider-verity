@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,22 +19,22 @@ var _ MappedNullable = &TacacsprofilesPutRequestTacacsProfileValueTacacsServersI
 
 // TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner struct for TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner
 type TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner struct {
-	// Enable TACACS+ server
-	Enabled *bool `json:"enabled,omitempty"`
-	// IPv4, IPv6, or DNS name for TACACS+ server
-	Server *string `json:"server,omitempty"`
 	// TACACS+ authentication type
 	AuthType *string `json:"auth_type,omitempty"`
-	// TACACS+ server port
-	Port *string `json:"port,omitempty"`
-	// TACACS+ server timeout in seconds
-	Timeout NullableInt64 `json:"timeout,omitempty"`
-	// TACACS+ shared secret
-	Secret *string `json:"secret,omitempty"`
+	// Enable TACACS+ server
+	Enabled *bool `json:"enabled,omitempty"`
 	// TACACS+ shared secret (encrypted)
 	EncSecret *string `json:"enc_secret,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
+	// TACACS+ server port
+	Port *string `json:"port,omitempty"`
+	// TACACS+ shared secret
+	Secret *string `json:"secret,omitempty"`
+	// IPv4, IPv6, or DNS name for TACACS+ server
+	Server *string `json:"server,omitempty"`
+	// TACACS+ server timeout in seconds
+	Timeout NullableInt64 `json:"timeout,omitempty"`
 }
 
 // NewTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner instantiates a new TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner object
@@ -43,18 +43,18 @@ type TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner struct {
 // will change when the set of required properties is changed
 func NewTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner() *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner {
 	this := TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner{}
-	var enabled bool = false
-	this.Enabled = &enabled
-	var server string = ""
-	this.Server = &server
 	var authType string = "pap"
 	this.AuthType = &authType
+	var enabled bool = false
+	this.Enabled = &enabled
+	var encSecret string = ""
+	this.EncSecret = &encSecret
 	var port string = ""
 	this.Port = &port
 	var secret string = ""
 	this.Secret = &secret
-	var encSecret string = ""
-	this.EncSecret = &encSecret
+	var server string = ""
+	this.Server = &server
 	return &this
 }
 
@@ -63,83 +63,19 @@ func NewTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner() *Tacacspr
 // but it doesn't guarantee that properties required by API are set
 func NewTacacsprofilesPutRequestTacacsProfileValueTacacsServersInnerWithDefaults() *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner {
 	this := TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner{}
-	var enabled bool = false
-	this.Enabled = &enabled
-	var server string = ""
-	this.Server = &server
 	var authType string = "pap"
 	this.AuthType = &authType
+	var enabled bool = false
+	this.Enabled = &enabled
+	var encSecret string = ""
+	this.EncSecret = &encSecret
 	var port string = ""
 	this.Port = &port
 	var secret string = ""
 	this.Secret = &secret
-	var encSecret string = ""
-	this.EncSecret = &encSecret
+	var server string = ""
+	this.Server = &server
 	return &this
-}
-
-// GetEnabled returns the Enabled field value if set, zero value otherwise.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetEnabled() bool {
-	if o == nil || IsNil(o.Enabled) {
-		var ret bool
-		return ret
-	}
-	return *o.Enabled
-}
-
-// GetEnabledOk returns a tuple with the Enabled field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetEnabledOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enabled) {
-		return nil, false
-	}
-	return o.Enabled, true
-}
-
-// HasEnabled returns a boolean if a field has been set.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasEnabled() bool {
-	if o != nil && !IsNil(o.Enabled) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnabled gets a reference to the given bool and assigns it to the Enabled field.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetEnabled(v bool) {
-	o.Enabled = &v
-}
-
-// GetServer returns the Server field value if set, zero value otherwise.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetServer() string {
-	if o == nil || IsNil(o.Server) {
-		var ret string
-		return ret
-	}
-	return *o.Server
-}
-
-// GetServerOk returns a tuple with the Server field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetServerOk() (*string, bool) {
-	if o == nil || IsNil(o.Server) {
-		return nil, false
-	}
-	return o.Server, true
-}
-
-// HasServer returns a boolean if a field has been set.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasServer() bool {
-	if o != nil && !IsNil(o.Server) {
-		return true
-	}
-
-	return false
-}
-
-// SetServer gets a reference to the given string and assigns it to the Server field.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetServer(v string) {
-	o.Server = &v
 }
 
 // GetAuthType returns the AuthType field value if set, zero value otherwise.
@@ -174,110 +110,36 @@ func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetAuthTy
 	o.AuthType = &v
 }
 
-// GetPort returns the Port field value if set, zero value otherwise.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetPort() string {
-	if o == nil || IsNil(o.Port) {
-		var ret string
+// GetEnabled returns the Enabled field value if set, zero value otherwise.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetEnabled() bool {
+	if o == nil || IsNil(o.Enabled) {
+		var ret bool
 		return ret
 	}
-	return *o.Port
+	return *o.Enabled
 }
 
-// GetPortOk returns a tuple with the Port field value if set, nil otherwise
+// GetEnabledOk returns a tuple with the Enabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetPortOk() (*string, bool) {
-	if o == nil || IsNil(o.Port) {
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetEnabledOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enabled) {
 		return nil, false
 	}
-	return o.Port, true
+	return o.Enabled, true
 }
 
-// HasPort returns a boolean if a field has been set.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasPort() bool {
-	if o != nil && !IsNil(o.Port) {
+// HasEnabled returns a boolean if a field has been set.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasEnabled() bool {
+	if o != nil && !IsNil(o.Enabled) {
 		return true
 	}
 
 	return false
 }
 
-// SetPort gets a reference to the given string and assigns it to the Port field.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetPort(v string) {
-	o.Port = &v
-}
-
-// GetTimeout returns the Timeout field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetTimeout() int64 {
-	if o == nil || IsNil(o.Timeout.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.Timeout.Get()
-}
-
-// GetTimeoutOk returns a tuple with the Timeout field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetTimeoutOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.Timeout.Get(), o.Timeout.IsSet()
-}
-
-// HasTimeout returns a boolean if a field has been set.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasTimeout() bool {
-	if o != nil && o.Timeout.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetTimeout gets a reference to the given NullableInt64 and assigns it to the Timeout field.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetTimeout(v int64) {
-	o.Timeout.Set(&v)
-}
-// SetTimeoutNil sets the value for Timeout to be an explicit nil
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetTimeoutNil() {
-	o.Timeout.Set(nil)
-}
-
-// UnsetTimeout ensures that no value is present for Timeout, not even an explicit nil
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) UnsetTimeout() {
-	o.Timeout.Unset()
-}
-
-// GetSecret returns the Secret field value if set, zero value otherwise.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetSecret() string {
-	if o == nil || IsNil(o.Secret) {
-		var ret string
-		return ret
-	}
-	return *o.Secret
-}
-
-// GetSecretOk returns a tuple with the Secret field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetSecretOk() (*string, bool) {
-	if o == nil || IsNil(o.Secret) {
-		return nil, false
-	}
-	return o.Secret, true
-}
-
-// HasSecret returns a boolean if a field has been set.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasSecret() bool {
-	if o != nil && !IsNil(o.Secret) {
-		return true
-	}
-
-	return false
-}
-
-// SetSecret gets a reference to the given string and assigns it to the Secret field.
-func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetSecret(v string) {
-	o.Secret = &v
+// SetEnabled gets a reference to the given bool and assigns it to the Enabled field.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetEnabled(v bool) {
+	o.Enabled = &v
 }
 
 // GetEncSecret returns the EncSecret field value if set, zero value otherwise.
@@ -344,8 +206,147 @@ func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetIndex(
 	o.Index = &v
 }
 
+// GetPort returns the Port field value if set, zero value otherwise.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetPort() string {
+	if o == nil || IsNil(o.Port) {
+		var ret string
+		return ret
+	}
+	return *o.Port
+}
+
+// GetPortOk returns a tuple with the Port field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetPortOk() (*string, bool) {
+	if o == nil || IsNil(o.Port) {
+		return nil, false
+	}
+	return o.Port, true
+}
+
+// HasPort returns a boolean if a field has been set.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasPort() bool {
+	if o != nil && !IsNil(o.Port) {
+		return true
+	}
+
+	return false
+}
+
+// SetPort gets a reference to the given string and assigns it to the Port field.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetPort(v string) {
+	o.Port = &v
+}
+
+// GetSecret returns the Secret field value if set, zero value otherwise.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetSecret() string {
+	if o == nil || IsNil(o.Secret) {
+		var ret string
+		return ret
+	}
+	return *o.Secret
+}
+
+// GetSecretOk returns a tuple with the Secret field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetSecretOk() (*string, bool) {
+	if o == nil || IsNil(o.Secret) {
+		return nil, false
+	}
+	return o.Secret, true
+}
+
+// HasSecret returns a boolean if a field has been set.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasSecret() bool {
+	if o != nil && !IsNil(o.Secret) {
+		return true
+	}
+
+	return false
+}
+
+// SetSecret gets a reference to the given string and assigns it to the Secret field.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetSecret(v string) {
+	o.Secret = &v
+}
+
+// GetServer returns the Server field value if set, zero value otherwise.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetServer() string {
+	if o == nil || IsNil(o.Server) {
+		var ret string
+		return ret
+	}
+	return *o.Server
+}
+
+// GetServerOk returns a tuple with the Server field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetServerOk() (*string, bool) {
+	if o == nil || IsNil(o.Server) {
+		return nil, false
+	}
+	return o.Server, true
+}
+
+// HasServer returns a boolean if a field has been set.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasServer() bool {
+	if o != nil && !IsNil(o.Server) {
+		return true
+	}
+
+	return false
+}
+
+// SetServer gets a reference to the given string and assigns it to the Server field.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetServer(v string) {
+	o.Server = &v
+}
+
+// GetTimeout returns the Timeout field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetTimeout() int64 {
+	if o == nil || IsNil(o.Timeout.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.Timeout.Get()
+}
+
+// GetTimeoutOk returns a tuple with the Timeout field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) GetTimeoutOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Timeout.Get(), o.Timeout.IsSet()
+}
+
+// HasTimeout returns a boolean if a field has been set.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) HasTimeout() bool {
+	if o != nil && o.Timeout.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTimeout gets a reference to the given NullableInt64 and assigns it to the Timeout field.
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetTimeout(v int64) {
+	o.Timeout.Set(&v)
+}
+
+// SetTimeoutNil sets the value for Timeout to be an explicit nil
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) SetTimeoutNil() {
+	o.Timeout.Set(nil)
+}
+
+// UnsetTimeout ensures that no value is present for Timeout, not even an explicit nil
+func (o *TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) UnsetTimeout() {
+	o.Timeout.Unset()
+}
+
 func (o TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -354,29 +355,29 @@ func (o TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) MarshalJSO
 
 func (o TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Enabled) {
-		toSerialize["enabled"] = o.Enabled
-	}
-	if !IsNil(o.Server) {
-		toSerialize["server"] = o.Server
-	}
 	if !IsNil(o.AuthType) {
 		toSerialize["auth_type"] = o.AuthType
 	}
-	if !IsNil(o.Port) {
-		toSerialize["port"] = o.Port
-	}
-	if o.Timeout.IsSet() {
-		toSerialize["timeout"] = o.Timeout.Get()
-	}
-	if !IsNil(o.Secret) {
-		toSerialize["secret"] = o.Secret
+	if !IsNil(o.Enabled) {
+		toSerialize["enabled"] = o.Enabled
 	}
 	if !IsNil(o.EncSecret) {
 		toSerialize["enc_secret"] = o.EncSecret
 	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
+	}
+	if !IsNil(o.Port) {
+		toSerialize["port"] = o.Port
+	}
+	if !IsNil(o.Secret) {
+		toSerialize["secret"] = o.Secret
+	}
+	if !IsNil(o.Server) {
+		toSerialize["server"] = o.Server
+	}
+	if o.Timeout.IsSet() {
+		toSerialize["timeout"] = o.Timeout.Get()
 	}
 	return toSerialize, nil
 }
@@ -416,5 +417,3 @@ func (v *NullableTacacsprofilesPutRequestTacacsProfileValueTacacsServersInner) U
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

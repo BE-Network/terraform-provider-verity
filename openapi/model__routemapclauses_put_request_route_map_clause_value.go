@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,12 +19,8 @@ var _ MappedNullable = &RoutemapclausesPutRequestRouteMapClauseValue{}
 
 // RoutemapclausesPutRequestRouteMapClauseValue struct for RoutemapclausesPutRequestRouteMapClauseValue
 type RoutemapclausesPutRequestRouteMapClauseValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable flag of this provisioning object
 	Enable *bool `json:"enable,omitempty"`
-	// Action upon match of Community Strings.
-	PermitDeny *string `json:"permit_deny,omitempty"`
 	// Match AS Path Access List
 	MatchAsPathAccessList *string `json:"match_as_path_access_list,omitempty"`
 	// Object type for match_as_path_access_list field
@@ -33,6 +29,10 @@ type RoutemapclausesPutRequestRouteMapClauseValue struct {
 	MatchCommunityList *string `json:"match_community_list,omitempty"`
 	// Object type for match_community_list field
 	MatchCommunityListRefType *string `json:"match_community_list_ref_type_,omitempty"`
+	// Match based on the indicated EVPN Route Type
+	MatchEvpnRouteType *string `json:"match_evpn_route_type,omitempty"`
+	// Match based on the type of EVPN Route Type being Default\"
+	MatchEvpnRouteTypeDefault *bool `json:"match_evpn_route_type_default,omitempty"`
 	// Match Extended Community List
 	MatchExtendedCommunityList *string `json:"match_extended_community_list,omitempty"`
 	// Object type for match_extended_community_list field
@@ -57,33 +57,33 @@ type RoutemapclausesPutRequestRouteMapClauseValue struct {
 	MatchIpv6NextHopIpv6PrefixList *string `json:"match_ipv6_next_hop_ipv6_prefix_list,omitempty"`
 	// Object type for match_ipv6_next_hop_ipv6_prefix_list field
 	MatchIpv6NextHopIpv6PrefixListRefType *string `json:"match_ipv6_next_hop_ipv6_prefix_list_ref_type_,omitempty"`
-	// Match BGP Local Preference value on the route 
+	// Match BGP Local Preference value on the route
 	MatchLocalPreference NullableInt64 `json:"match_local_preference,omitempty"`
-	// Match Metric of the IP route entry 
+	// Match Metric of the IP route entry
 	MatchMetric NullableInt64 `json:"match_metric,omitempty"`
-	// Match routes based on the value of the BGP Origin attribute 
+	// Match routes based on the value of the BGP Origin attribute
 	MatchOrigin *string `json:"match_origin,omitempty"`
-	// Match BGP Peer IP Address the route was learned from 
-	MatchPeerIpAddress *string `json:"match_peer_ip_address,omitempty"`
-	// Match BGP Peer port the route was learned from 
+	// Match BGP Peer port the route was learned from
 	MatchPeerInterface NullableInt64 `json:"match_peer_interface,omitempty"`
-	// Match BGP Peer VLAN over which the route was learned 
+	// Match BGP Peer IP Address the route was learned from
+	MatchPeerIpAddress *string `json:"match_peer_ip_address,omitempty"`
+	// Match BGP Peer VLAN over which the route was learned
 	MatchPeerVlan NullableInt64 `json:"match_peer_vlan,omitempty"`
-	// Match Routing  Protocol the route originated from 
+	// Match Routing  Protocol the route originated from
 	MatchSourceProtocol *string `json:"match_source_protocol,omitempty"`
-	// Match VRF the route is associated with 
+	// Match routes that have this value for a Tag attribute
+	MatchTag NullableInt64 `json:"match_tag,omitempty"`
+	// Match based on the VNI value
+	MatchVni NullableInt64 `json:"match_vni,omitempty"`
+	// Match VRF the route is associated with
 	MatchVrf *string `json:"match_vrf,omitempty"`
 	// Object type for match_vrf field
 	MatchVrfRefType *string `json:"match_vrf_ref_type_,omitempty"`
-	// Match routes that have this value for a Tag attribute
-	MatchTag NullableInt64 `json:"match_tag,omitempty"`
-	// Match based on the type of EVPN Route Type being Default\"
-	MatchEvpnRouteTypeDefault *bool `json:"match_evpn_route_type_default,omitempty"`
-	// Match based on the indicated EVPN Route Type
-	MatchEvpnRouteType *string `json:"match_evpn_route_type,omitempty"`
-	// Match based on the VNI value 
-	MatchVni NullableInt64 `json:"match_vni,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                                       `json:"name,omitempty"`
 	ObjectProperties *RoutemapclausesPutRequestRouteMapClauseValueObjectProperties `json:"object_properties,omitempty"`
+	// Action upon match of Community Strings.
+	PermitDeny *string `json:"permit_deny,omitempty"`
 }
 
 // NewRoutemapclausesPutRequestRouteMapClauseValue instantiates a new RoutemapclausesPutRequestRouteMapClauseValue object
@@ -92,16 +92,14 @@ type RoutemapclausesPutRequestRouteMapClauseValue struct {
 // will change when the set of required properties is changed
 func NewRoutemapclausesPutRequestRouteMapClauseValue() *RoutemapclausesPutRequestRouteMapClauseValue {
 	this := RoutemapclausesPutRequestRouteMapClauseValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
-	var permitDeny string = "permit"
-	this.PermitDeny = &permitDeny
 	var matchAsPathAccessList string = ""
 	this.MatchAsPathAccessList = &matchAsPathAccessList
 	var matchCommunityList string = ""
 	this.MatchCommunityList = &matchCommunityList
+	var matchEvpnRouteType string = ""
+	this.MatchEvpnRouteType = &matchEvpnRouteType
 	var matchExtendedCommunityList string = ""
 	this.MatchExtendedCommunityList = &matchExtendedCommunityList
 	var matchIpv4AddressIpPrefixList string = ""
@@ -120,8 +118,10 @@ func NewRoutemapclausesPutRequestRouteMapClauseValue() *RoutemapclausesPutReques
 	this.MatchSourceProtocol = &matchSourceProtocol
 	var matchVrf string = ""
 	this.MatchVrf = &matchVrf
-	var matchEvpnRouteType string = ""
-	this.MatchEvpnRouteType = &matchEvpnRouteType
+	var name string = ""
+	this.Name = &name
+	var permitDeny string = "permit"
+	this.PermitDeny = &permitDeny
 	return &this
 }
 
@@ -130,16 +130,14 @@ func NewRoutemapclausesPutRequestRouteMapClauseValue() *RoutemapclausesPutReques
 // but it doesn't guarantee that properties required by API are set
 func NewRoutemapclausesPutRequestRouteMapClauseValueWithDefaults() *RoutemapclausesPutRequestRouteMapClauseValue {
 	this := RoutemapclausesPutRequestRouteMapClauseValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
-	var permitDeny string = "permit"
-	this.PermitDeny = &permitDeny
 	var matchAsPathAccessList string = ""
 	this.MatchAsPathAccessList = &matchAsPathAccessList
 	var matchCommunityList string = ""
 	this.MatchCommunityList = &matchCommunityList
+	var matchEvpnRouteType string = ""
+	this.MatchEvpnRouteType = &matchEvpnRouteType
 	var matchExtendedCommunityList string = ""
 	this.MatchExtendedCommunityList = &matchExtendedCommunityList
 	var matchIpv4AddressIpPrefixList string = ""
@@ -158,41 +156,11 @@ func NewRoutemapclausesPutRequestRouteMapClauseValueWithDefaults() *Routemapclau
 	this.MatchSourceProtocol = &matchSourceProtocol
 	var matchVrf string = ""
 	this.MatchVrf = &matchVrf
-	var matchEvpnRouteType string = ""
-	this.MatchEvpnRouteType = &matchEvpnRouteType
+	var name string = ""
+	this.Name = &name
+	var permitDeny string = "permit"
+	this.PermitDeny = &permitDeny
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -225,38 +193,6 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasEnable() bool {
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetEnable(v bool) {
 	o.Enable = &v
-}
-
-// GetPermitDeny returns the PermitDeny field value if set, zero value otherwise.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetPermitDeny() string {
-	if o == nil || IsNil(o.PermitDeny) {
-		var ret string
-		return ret
-	}
-	return *o.PermitDeny
-}
-
-// GetPermitDenyOk returns a tuple with the PermitDeny field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetPermitDenyOk() (*string, bool) {
-	if o == nil || IsNil(o.PermitDeny) {
-		return nil, false
-	}
-	return o.PermitDeny, true
-}
-
-// HasPermitDeny returns a boolean if a field has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasPermitDeny() bool {
-	if o != nil && !IsNil(o.PermitDeny) {
-		return true
-	}
-
-	return false
-}
-
-// SetPermitDeny gets a reference to the given string and assigns it to the PermitDeny field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetPermitDeny(v string) {
-	o.PermitDeny = &v
 }
 
 // GetMatchAsPathAccessList returns the MatchAsPathAccessList field value if set, zero value otherwise.
@@ -387,6 +323,70 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchCommunityListRefT
 	o.MatchCommunityListRefType = &v
 }
 
+// GetMatchEvpnRouteType returns the MatchEvpnRouteType field value if set, zero value otherwise.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchEvpnRouteType() string {
+	if o == nil || IsNil(o.MatchEvpnRouteType) {
+		var ret string
+		return ret
+	}
+	return *o.MatchEvpnRouteType
+}
+
+// GetMatchEvpnRouteTypeOk returns a tuple with the MatchEvpnRouteType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchEvpnRouteTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.MatchEvpnRouteType) {
+		return nil, false
+	}
+	return o.MatchEvpnRouteType, true
+}
+
+// HasMatchEvpnRouteType returns a boolean if a field has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchEvpnRouteType() bool {
+	if o != nil && !IsNil(o.MatchEvpnRouteType) {
+		return true
+	}
+
+	return false
+}
+
+// SetMatchEvpnRouteType gets a reference to the given string and assigns it to the MatchEvpnRouteType field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchEvpnRouteType(v string) {
+	o.MatchEvpnRouteType = &v
+}
+
+// GetMatchEvpnRouteTypeDefault returns the MatchEvpnRouteTypeDefault field value if set, zero value otherwise.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchEvpnRouteTypeDefault() bool {
+	if o == nil || IsNil(o.MatchEvpnRouteTypeDefault) {
+		var ret bool
+		return ret
+	}
+	return *o.MatchEvpnRouteTypeDefault
+}
+
+// GetMatchEvpnRouteTypeDefaultOk returns a tuple with the MatchEvpnRouteTypeDefault field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchEvpnRouteTypeDefaultOk() (*bool, bool) {
+	if o == nil || IsNil(o.MatchEvpnRouteTypeDefault) {
+		return nil, false
+	}
+	return o.MatchEvpnRouteTypeDefault, true
+}
+
+// HasMatchEvpnRouteTypeDefault returns a boolean if a field has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchEvpnRouteTypeDefault() bool {
+	if o != nil && !IsNil(o.MatchEvpnRouteTypeDefault) {
+		return true
+	}
+
+	return false
+}
+
+// SetMatchEvpnRouteTypeDefault gets a reference to the given bool and assigns it to the MatchEvpnRouteTypeDefault field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchEvpnRouteTypeDefault(v bool) {
+	o.MatchEvpnRouteTypeDefault = &v
+}
+
 // GetMatchExtendedCommunityList returns the MatchExtendedCommunityList field value if set, zero value otherwise.
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchExtendedCommunityList() string {
 	if o == nil || IsNil(o.MatchExtendedCommunityList) {
@@ -483,6 +483,7 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchInterfaceNumber()
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchInterfaceNumber(v int64) {
 	o.MatchInterfaceNumber.Set(&v)
 }
+
 // SetMatchInterfaceNumberNil sets the value for MatchInterfaceNumber to be an explicit nil
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchInterfaceNumberNil() {
 	o.MatchInterfaceNumber.Set(nil)
@@ -525,6 +526,7 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchInterfaceVlan() b
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchInterfaceVlan(v int64) {
 	o.MatchInterfaceVlan.Set(&v)
 }
+
 // SetMatchInterfaceVlanNil sets the value for MatchInterfaceVlan to be an explicit nil
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchInterfaceVlanNil() {
 	o.MatchInterfaceVlan.Set(nil)
@@ -823,6 +825,7 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchLocalPreference()
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchLocalPreference(v int64) {
 	o.MatchLocalPreference.Set(&v)
 }
+
 // SetMatchLocalPreferenceNil sets the value for MatchLocalPreference to be an explicit nil
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchLocalPreferenceNil() {
 	o.MatchLocalPreference.Set(nil)
@@ -865,6 +868,7 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchMetric() bool {
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchMetric(v int64) {
 	o.MatchMetric.Set(&v)
 }
+
 // SetMatchMetricNil sets the value for MatchMetric to be an explicit nil
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchMetricNil() {
 	o.MatchMetric.Set(nil)
@@ -907,38 +911,6 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchOrigin(v string) 
 	o.MatchOrigin = &v
 }
 
-// GetMatchPeerIpAddress returns the MatchPeerIpAddress field value if set, zero value otherwise.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerIpAddress() string {
-	if o == nil || IsNil(o.MatchPeerIpAddress) {
-		var ret string
-		return ret
-	}
-	return *o.MatchPeerIpAddress
-}
-
-// GetMatchPeerIpAddressOk returns a tuple with the MatchPeerIpAddress field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerIpAddressOk() (*string, bool) {
-	if o == nil || IsNil(o.MatchPeerIpAddress) {
-		return nil, false
-	}
-	return o.MatchPeerIpAddress, true
-}
-
-// HasMatchPeerIpAddress returns a boolean if a field has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchPeerIpAddress() bool {
-	if o != nil && !IsNil(o.MatchPeerIpAddress) {
-		return true
-	}
-
-	return false
-}
-
-// SetMatchPeerIpAddress gets a reference to the given string and assigns it to the MatchPeerIpAddress field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerIpAddress(v string) {
-	o.MatchPeerIpAddress = &v
-}
-
 // GetMatchPeerInterface returns the MatchPeerInterface field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerInterface() int64 {
 	if o == nil || IsNil(o.MatchPeerInterface.Get()) {
@@ -971,6 +943,7 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchPeerInterface() b
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerInterface(v int64) {
 	o.MatchPeerInterface.Set(&v)
 }
+
 // SetMatchPeerInterfaceNil sets the value for MatchPeerInterface to be an explicit nil
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerInterfaceNil() {
 	o.MatchPeerInterface.Set(nil)
@@ -979,6 +952,38 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerInterfaceNil(
 // UnsetMatchPeerInterface ensures that no value is present for MatchPeerInterface, not even an explicit nil
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) UnsetMatchPeerInterface() {
 	o.MatchPeerInterface.Unset()
+}
+
+// GetMatchPeerIpAddress returns the MatchPeerIpAddress field value if set, zero value otherwise.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerIpAddress() string {
+	if o == nil || IsNil(o.MatchPeerIpAddress) {
+		var ret string
+		return ret
+	}
+	return *o.MatchPeerIpAddress
+}
+
+// GetMatchPeerIpAddressOk returns a tuple with the MatchPeerIpAddress field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchPeerIpAddressOk() (*string, bool) {
+	if o == nil || IsNil(o.MatchPeerIpAddress) {
+		return nil, false
+	}
+	return o.MatchPeerIpAddress, true
+}
+
+// HasMatchPeerIpAddress returns a boolean if a field has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchPeerIpAddress() bool {
+	if o != nil && !IsNil(o.MatchPeerIpAddress) {
+		return true
+	}
+
+	return false
+}
+
+// SetMatchPeerIpAddress gets a reference to the given string and assigns it to the MatchPeerIpAddress field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerIpAddress(v string) {
+	o.MatchPeerIpAddress = &v
 }
 
 // GetMatchPeerVlan returns the MatchPeerVlan field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1013,6 +1018,7 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchPeerVlan() bool {
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerVlan(v int64) {
 	o.MatchPeerVlan.Set(&v)
 }
+
 // SetMatchPeerVlanNil sets the value for MatchPeerVlan to be an explicit nil
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchPeerVlanNil() {
 	o.MatchPeerVlan.Set(nil)
@@ -1053,6 +1059,92 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchSourceProtocol() 
 // SetMatchSourceProtocol gets a reference to the given string and assigns it to the MatchSourceProtocol field.
 func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchSourceProtocol(v string) {
 	o.MatchSourceProtocol = &v
+}
+
+// GetMatchTag returns the MatchTag field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchTag() int64 {
+	if o == nil || IsNil(o.MatchTag.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.MatchTag.Get()
+}
+
+// GetMatchTagOk returns a tuple with the MatchTag field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchTagOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MatchTag.Get(), o.MatchTag.IsSet()
+}
+
+// HasMatchTag returns a boolean if a field has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchTag() bool {
+	if o != nil && o.MatchTag.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMatchTag gets a reference to the given NullableInt64 and assigns it to the MatchTag field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchTag(v int64) {
+	o.MatchTag.Set(&v)
+}
+
+// SetMatchTagNil sets the value for MatchTag to be an explicit nil
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchTagNil() {
+	o.MatchTag.Set(nil)
+}
+
+// UnsetMatchTag ensures that no value is present for MatchTag, not even an explicit nil
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) UnsetMatchTag() {
+	o.MatchTag.Unset()
+}
+
+// GetMatchVni returns the MatchVni field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchVni() int64 {
+	if o == nil || IsNil(o.MatchVni.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.MatchVni.Get()
+}
+
+// GetMatchVniOk returns a tuple with the MatchVni field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchVniOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MatchVni.Get(), o.MatchVni.IsSet()
+}
+
+// HasMatchVni returns a boolean if a field has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchVni() bool {
+	if o != nil && o.MatchVni.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMatchVni gets a reference to the given NullableInt64 and assigns it to the MatchVni field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchVni(v int64) {
+	o.MatchVni.Set(&v)
+}
+
+// SetMatchVniNil sets the value for MatchVni to be an explicit nil
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchVniNil() {
+	o.MatchVni.Set(nil)
+}
+
+// UnsetMatchVni ensures that no value is present for MatchVni, not even an explicit nil
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) UnsetMatchVni() {
+	o.MatchVni.Unset()
 }
 
 // GetMatchVrf returns the MatchVrf field value if set, zero value otherwise.
@@ -1119,152 +1211,36 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchVrfRefType(v stri
 	o.MatchVrfRefType = &v
 }
 
-// GetMatchTag returns the MatchTag field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchTag() int64 {
-	if o == nil || IsNil(o.MatchTag.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.MatchTag.Get()
-}
-
-// GetMatchTagOk returns a tuple with the MatchTag field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchTagOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.MatchTag.Get(), o.MatchTag.IsSet()
-}
-
-// HasMatchTag returns a boolean if a field has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchTag() bool {
-	if o != nil && o.MatchTag.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMatchTag gets a reference to the given NullableInt64 and assigns it to the MatchTag field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchTag(v int64) {
-	o.MatchTag.Set(&v)
-}
-// SetMatchTagNil sets the value for MatchTag to be an explicit nil
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchTagNil() {
-	o.MatchTag.Set(nil)
-}
-
-// UnsetMatchTag ensures that no value is present for MatchTag, not even an explicit nil
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) UnsetMatchTag() {
-	o.MatchTag.Unset()
-}
-
-// GetMatchEvpnRouteTypeDefault returns the MatchEvpnRouteTypeDefault field value if set, zero value otherwise.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchEvpnRouteTypeDefault() bool {
-	if o == nil || IsNil(o.MatchEvpnRouteTypeDefault) {
-		var ret bool
-		return ret
-	}
-	return *o.MatchEvpnRouteTypeDefault
-}
-
-// GetMatchEvpnRouteTypeDefaultOk returns a tuple with the MatchEvpnRouteTypeDefault field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchEvpnRouteTypeDefaultOk() (*bool, bool) {
-	if o == nil || IsNil(o.MatchEvpnRouteTypeDefault) {
-		return nil, false
-	}
-	return o.MatchEvpnRouteTypeDefault, true
-}
-
-// HasMatchEvpnRouteTypeDefault returns a boolean if a field has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchEvpnRouteTypeDefault() bool {
-	if o != nil && !IsNil(o.MatchEvpnRouteTypeDefault) {
-		return true
-	}
-
-	return false
-}
-
-// SetMatchEvpnRouteTypeDefault gets a reference to the given bool and assigns it to the MatchEvpnRouteTypeDefault field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchEvpnRouteTypeDefault(v bool) {
-	o.MatchEvpnRouteTypeDefault = &v
-}
-
-// GetMatchEvpnRouteType returns the MatchEvpnRouteType field value if set, zero value otherwise.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchEvpnRouteType() string {
-	if o == nil || IsNil(o.MatchEvpnRouteType) {
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
-	return *o.MatchEvpnRouteType
+	return *o.Name
 }
 
-// GetMatchEvpnRouteTypeOk returns a tuple with the MatchEvpnRouteType field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchEvpnRouteTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.MatchEvpnRouteType) {
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
-	return o.MatchEvpnRouteType, true
+	return o.Name, true
 }
 
-// HasMatchEvpnRouteType returns a boolean if a field has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchEvpnRouteType() bool {
-	if o != nil && !IsNil(o.MatchEvpnRouteType) {
+// HasName returns a boolean if a field has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
 	return false
 }
 
-// SetMatchEvpnRouteType gets a reference to the given string and assigns it to the MatchEvpnRouteType field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchEvpnRouteType(v string) {
-	o.MatchEvpnRouteType = &v
-}
-
-// GetMatchVni returns the MatchVni field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchVni() int64 {
-	if o == nil || IsNil(o.MatchVni.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.MatchVni.Get()
-}
-
-// GetMatchVniOk returns a tuple with the MatchVni field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetMatchVniOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.MatchVni.Get(), o.MatchVni.IsSet()
-}
-
-// HasMatchVni returns a boolean if a field has been set.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasMatchVni() bool {
-	if o != nil && o.MatchVni.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMatchVni gets a reference to the given NullableInt64 and assigns it to the MatchVni field.
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchVni(v int64) {
-	o.MatchVni.Set(&v)
-}
-// SetMatchVniNil sets the value for MatchVni to be an explicit nil
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetMatchVniNil() {
-	o.MatchVni.Set(nil)
-}
-
-// UnsetMatchVni ensures that no value is present for MatchVni, not even an explicit nil
-func (o *RoutemapclausesPutRequestRouteMapClauseValue) UnsetMatchVni() {
-	o.MatchVni.Unset()
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -1299,8 +1275,40 @@ func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetObjectProperties(v Rou
 	o.ObjectProperties = &v
 }
 
+// GetPermitDeny returns the PermitDeny field value if set, zero value otherwise.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetPermitDeny() string {
+	if o == nil || IsNil(o.PermitDeny) {
+		var ret string
+		return ret
+	}
+	return *o.PermitDeny
+}
+
+// GetPermitDenyOk returns a tuple with the PermitDeny field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) GetPermitDenyOk() (*string, bool) {
+	if o == nil || IsNil(o.PermitDeny) {
+		return nil, false
+	}
+	return o.PermitDeny, true
+}
+
+// HasPermitDeny returns a boolean if a field has been set.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) HasPermitDeny() bool {
+	if o != nil && !IsNil(o.PermitDeny) {
+		return true
+	}
+
+	return false
+}
+
+// SetPermitDeny gets a reference to the given string and assigns it to the PermitDeny field.
+func (o *RoutemapclausesPutRequestRouteMapClauseValue) SetPermitDeny(v string) {
+	o.PermitDeny = &v
+}
+
 func (o RoutemapclausesPutRequestRouteMapClauseValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1309,14 +1317,8 @@ func (o RoutemapclausesPutRequestRouteMapClauseValue) MarshalJSON() ([]byte, err
 
 func (o RoutemapclausesPutRequestRouteMapClauseValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.PermitDeny) {
-		toSerialize["permit_deny"] = o.PermitDeny
 	}
 	if !IsNil(o.MatchAsPathAccessList) {
 		toSerialize["match_as_path_access_list"] = o.MatchAsPathAccessList
@@ -1329,6 +1331,12 @@ func (o RoutemapclausesPutRequestRouteMapClauseValue) ToMap() (map[string]interf
 	}
 	if !IsNil(o.MatchCommunityListRefType) {
 		toSerialize["match_community_list_ref_type_"] = o.MatchCommunityListRefType
+	}
+	if !IsNil(o.MatchEvpnRouteType) {
+		toSerialize["match_evpn_route_type"] = o.MatchEvpnRouteType
+	}
+	if !IsNil(o.MatchEvpnRouteTypeDefault) {
+		toSerialize["match_evpn_route_type_default"] = o.MatchEvpnRouteTypeDefault
 	}
 	if !IsNil(o.MatchExtendedCommunityList) {
 		toSerialize["match_extended_community_list"] = o.MatchExtendedCommunityList
@@ -1375,11 +1383,11 @@ func (o RoutemapclausesPutRequestRouteMapClauseValue) ToMap() (map[string]interf
 	if !IsNil(o.MatchOrigin) {
 		toSerialize["match_origin"] = o.MatchOrigin
 	}
-	if !IsNil(o.MatchPeerIpAddress) {
-		toSerialize["match_peer_ip_address"] = o.MatchPeerIpAddress
-	}
 	if o.MatchPeerInterface.IsSet() {
 		toSerialize["match_peer_interface"] = o.MatchPeerInterface.Get()
+	}
+	if !IsNil(o.MatchPeerIpAddress) {
+		toSerialize["match_peer_ip_address"] = o.MatchPeerIpAddress
 	}
 	if o.MatchPeerVlan.IsSet() {
 		toSerialize["match_peer_vlan"] = o.MatchPeerVlan.Get()
@@ -1387,26 +1395,26 @@ func (o RoutemapclausesPutRequestRouteMapClauseValue) ToMap() (map[string]interf
 	if !IsNil(o.MatchSourceProtocol) {
 		toSerialize["match_source_protocol"] = o.MatchSourceProtocol
 	}
+	if o.MatchTag.IsSet() {
+		toSerialize["match_tag"] = o.MatchTag.Get()
+	}
+	if o.MatchVni.IsSet() {
+		toSerialize["match_vni"] = o.MatchVni.Get()
+	}
 	if !IsNil(o.MatchVrf) {
 		toSerialize["match_vrf"] = o.MatchVrf
 	}
 	if !IsNil(o.MatchVrfRefType) {
 		toSerialize["match_vrf_ref_type_"] = o.MatchVrfRefType
 	}
-	if o.MatchTag.IsSet() {
-		toSerialize["match_tag"] = o.MatchTag.Get()
-	}
-	if !IsNil(o.MatchEvpnRouteTypeDefault) {
-		toSerialize["match_evpn_route_type_default"] = o.MatchEvpnRouteTypeDefault
-	}
-	if !IsNil(o.MatchEvpnRouteType) {
-		toSerialize["match_evpn_route_type"] = o.MatchEvpnRouteType
-	}
-	if o.MatchVni.IsSet() {
-		toSerialize["match_vni"] = o.MatchVni.Get()
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.PermitDeny) {
+		toSerialize["permit_deny"] = o.PermitDeny
 	}
 	return toSerialize, nil
 }
@@ -1446,5 +1454,3 @@ func (v *NullableRoutemapclausesPutRequestRouteMapClauseValue) UnmarshalJSON(src
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

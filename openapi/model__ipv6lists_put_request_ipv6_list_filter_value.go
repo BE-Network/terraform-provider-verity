@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,12 +19,12 @@ var _ MappedNullable = &Ipv6listsPutRequestIpv6ListFilterValue{}
 
 // Ipv6listsPutRequestIpv6ListFilterValue struct for Ipv6listsPutRequestIpv6ListFilterValue
 type Ipv6listsPutRequestIpv6ListFilterValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	// Comma separated list of IPv6 addresses
 	Ipv6List *string `json:"ipv6_list,omitempty" validate:"regexp=/^.*$/"`
+	// Template Name. Must be unique within type.
+	Name *string `json:"name,omitempty"`
 }
 
 // NewIpv6listsPutRequestIpv6ListFilterValue instantiates a new Ipv6listsPutRequestIpv6ListFilterValue object
@@ -33,12 +33,12 @@ type Ipv6listsPutRequestIpv6ListFilterValue struct {
 // will change when the set of required properties is changed
 func NewIpv6listsPutRequestIpv6ListFilterValue() *Ipv6listsPutRequestIpv6ListFilterValue {
 	this := Ipv6listsPutRequestIpv6ListFilterValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
 	var ipv6List string = ""
 	this.Ipv6List = &ipv6List
+	var name string = ""
+	this.Name = &name
 	return &this
 }
 
@@ -47,45 +47,13 @@ func NewIpv6listsPutRequestIpv6ListFilterValue() *Ipv6listsPutRequestIpv6ListFil
 // but it doesn't guarantee that properties required by API are set
 func NewIpv6listsPutRequestIpv6ListFilterValueWithDefaults() *Ipv6listsPutRequestIpv6ListFilterValue {
 	this := Ipv6listsPutRequestIpv6ListFilterValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
 	var ipv6List string = ""
 	this.Ipv6List = &ipv6List
+	var name string = ""
+	this.Name = &name
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *Ipv6listsPutRequestIpv6ListFilterValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *Ipv6listsPutRequestIpv6ListFilterValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *Ipv6listsPutRequestIpv6ListFilterValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *Ipv6listsPutRequestIpv6ListFilterValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -152,8 +120,40 @@ func (o *Ipv6listsPutRequestIpv6ListFilterValue) SetIpv6List(v string) {
 	o.Ipv6List = &v
 }
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *Ipv6listsPutRequestIpv6ListFilterValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Ipv6listsPutRequestIpv6ListFilterValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *Ipv6listsPutRequestIpv6ListFilterValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *Ipv6listsPutRequestIpv6ListFilterValue) SetName(v string) {
+	o.Name = &v
+}
+
 func (o Ipv6listsPutRequestIpv6ListFilterValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -162,14 +162,14 @@ func (o Ipv6listsPutRequestIpv6ListFilterValue) MarshalJSON() ([]byte, error) {
 
 func (o Ipv6listsPutRequestIpv6ListFilterValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
 	if !IsNil(o.Ipv6List) {
 		toSerialize["ipv6_list"] = o.Ipv6List
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	return toSerialize, nil
 }
@@ -209,5 +209,3 @@ func (v *NullableIpv6listsPutRequestIpv6ListFilterValue) UnmarshalJSON(src []byt
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

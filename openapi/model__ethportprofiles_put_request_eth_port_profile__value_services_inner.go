@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,30 +19,30 @@ var _ MappedNullable = &EthportprofilesPutRequestEthPortProfileValueServicesInne
 
 // EthportprofilesPutRequestEthPortProfileValueServicesInner struct for EthportprofilesPutRequestEthPortProfileValueServicesInner
 type EthportprofilesPutRequestEthPortProfileValueServicesInner struct {
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
+	// Choose an egress access control list
+	RowNumEgressAcl *string `json:"row_num_egress_acl,omitempty"`
+	// Object type for row_num_egress_acl field
+	RowNumEgressAclRefType *string `json:"row_num_egress_acl_ref_type_,omitempty"`
 	// Enable row
 	RowNumEnable *bool `json:"row_num_enable,omitempty"`
-	// Choose a Service to connect
-	RowNumService *string `json:"row_num_service,omitempty"`
-	// Object type for row_num_service field
-	RowNumServiceRefType *string `json:"row_num_service_ref_type_,omitempty"`
 	// Choose an external vlan A value of 0 will make the VLAN untagged, while in case null is provided, the VLAN will be the one associated with the service.
 	RowNumExternalVlan NullableInt64 `json:"row_num_external_vlan,omitempty"`
 	// Choose an ingress access control list
 	RowNumIngressAcl *string `json:"row_num_ingress_acl,omitempty"`
 	// Object type for row_num_ingress_acl field
 	RowNumIngressAclRefType *string `json:"row_num_ingress_acl_ref_type_,omitempty"`
-	// Choose an egress access control list
-	RowNumEgressAcl *string `json:"row_num_egress_acl,omitempty"`
-	// Object type for row_num_egress_acl field
-	RowNumEgressAclRefType *string `json:"row_num_egress_acl_ref_type_,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
+	// Denotes a LAN or IPTV service
+	RowNumLanIptv *string `json:"row_num_lan_iptv,omitempty"`
 	// Choose an access control list
 	RowNumMacFilter *string `json:"row_num_mac_filter,omitempty"`
 	// Object type for row_num_mac_filter field
 	RowNumMacFilterRefType *string `json:"row_num_mac_filter_ref_type_,omitempty"`
-	// Denotes a LAN or IPTV service
-	RowNumLanIptv *string `json:"row_num_lan_iptv,omitempty"`
+	// Choose a Service to connect
+	RowNumService *string `json:"row_num_service,omitempty"`
+	// Object type for row_num_service field
+	RowNumServiceRefType *string `json:"row_num_service_ref_type_,omitempty"`
 }
 
 // NewEthportprofilesPutRequestEthPortProfileValueServicesInner instantiates a new EthportprofilesPutRequestEthPortProfileValueServicesInner object
@@ -51,18 +51,18 @@ type EthportprofilesPutRequestEthPortProfileValueServicesInner struct {
 // will change when the set of required properties is changed
 func NewEthportprofilesPutRequestEthPortProfileValueServicesInner() *EthportprofilesPutRequestEthPortProfileValueServicesInner {
 	this := EthportprofilesPutRequestEthPortProfileValueServicesInner{}
-	var rowNumEnable bool = false
-	this.RowNumEnable = &rowNumEnable
-	var rowNumService string = ""
-	this.RowNumService = &rowNumService
-	var rowNumIngressAcl string = ""
-	this.RowNumIngressAcl = &rowNumIngressAcl
 	var rowNumEgressAcl string = ""
 	this.RowNumEgressAcl = &rowNumEgressAcl
-	var rowNumMacFilter string = ""
-	this.RowNumMacFilter = &rowNumMacFilter
+	var rowNumEnable bool = false
+	this.RowNumEnable = &rowNumEnable
+	var rowNumIngressAcl string = ""
+	this.RowNumIngressAcl = &rowNumIngressAcl
 	var rowNumLanIptv string = ""
 	this.RowNumLanIptv = &rowNumLanIptv
+	var rowNumMacFilter string = ""
+	this.RowNumMacFilter = &rowNumMacFilter
+	var rowNumService string = ""
+	this.RowNumService = &rowNumService
 	return &this
 }
 
@@ -71,19 +71,115 @@ func NewEthportprofilesPutRequestEthPortProfileValueServicesInner() *Ethportprof
 // but it doesn't guarantee that properties required by API are set
 func NewEthportprofilesPutRequestEthPortProfileValueServicesInnerWithDefaults() *EthportprofilesPutRequestEthPortProfileValueServicesInner {
 	this := EthportprofilesPutRequestEthPortProfileValueServicesInner{}
-	var rowNumEnable bool = false
-	this.RowNumEnable = &rowNumEnable
-	var rowNumService string = ""
-	this.RowNumService = &rowNumService
-	var rowNumIngressAcl string = ""
-	this.RowNumIngressAcl = &rowNumIngressAcl
 	var rowNumEgressAcl string = ""
 	this.RowNumEgressAcl = &rowNumEgressAcl
-	var rowNumMacFilter string = ""
-	this.RowNumMacFilter = &rowNumMacFilter
+	var rowNumEnable bool = false
+	this.RowNumEnable = &rowNumEnable
+	var rowNumIngressAcl string = ""
+	this.RowNumIngressAcl = &rowNumIngressAcl
 	var rowNumLanIptv string = ""
 	this.RowNumLanIptv = &rowNumLanIptv
+	var rowNumMacFilter string = ""
+	this.RowNumMacFilter = &rowNumMacFilter
+	var rowNumService string = ""
+	this.RowNumService = &rowNumService
 	return &this
+}
+
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetIndex(v int64) {
+	o.Index = &v
+}
+
+// GetRowNumEgressAcl returns the RowNumEgressAcl field value if set, zero value otherwise.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumEgressAcl() string {
+	if o == nil || IsNil(o.RowNumEgressAcl) {
+		var ret string
+		return ret
+	}
+	return *o.RowNumEgressAcl
+}
+
+// GetRowNumEgressAclOk returns a tuple with the RowNumEgressAcl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumEgressAclOk() (*string, bool) {
+	if o == nil || IsNil(o.RowNumEgressAcl) {
+		return nil, false
+	}
+	return o.RowNumEgressAcl, true
+}
+
+// HasRowNumEgressAcl returns a boolean if a field has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasRowNumEgressAcl() bool {
+	if o != nil && !IsNil(o.RowNumEgressAcl) {
+		return true
+	}
+
+	return false
+}
+
+// SetRowNumEgressAcl gets a reference to the given string and assigns it to the RowNumEgressAcl field.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumEgressAcl(v string) {
+	o.RowNumEgressAcl = &v
+}
+
+// GetRowNumEgressAclRefType returns the RowNumEgressAclRefType field value if set, zero value otherwise.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumEgressAclRefType() string {
+	if o == nil || IsNil(o.RowNumEgressAclRefType) {
+		var ret string
+		return ret
+	}
+	return *o.RowNumEgressAclRefType
+}
+
+// GetRowNumEgressAclRefTypeOk returns a tuple with the RowNumEgressAclRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumEgressAclRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.RowNumEgressAclRefType) {
+		return nil, false
+	}
+	return o.RowNumEgressAclRefType, true
+}
+
+// HasRowNumEgressAclRefType returns a boolean if a field has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasRowNumEgressAclRefType() bool {
+	if o != nil && !IsNil(o.RowNumEgressAclRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetRowNumEgressAclRefType gets a reference to the given string and assigns it to the RowNumEgressAclRefType field.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumEgressAclRefType(v string) {
+	o.RowNumEgressAclRefType = &v
 }
 
 // GetRowNumEnable returns the RowNumEnable field value if set, zero value otherwise.
@@ -118,70 +214,6 @@ func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumEna
 	o.RowNumEnable = &v
 }
 
-// GetRowNumService returns the RowNumService field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumService() string {
-	if o == nil || IsNil(o.RowNumService) {
-		var ret string
-		return ret
-	}
-	return *o.RowNumService
-}
-
-// GetRowNumServiceOk returns a tuple with the RowNumService field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumServiceOk() (*string, bool) {
-	if o == nil || IsNil(o.RowNumService) {
-		return nil, false
-	}
-	return o.RowNumService, true
-}
-
-// HasRowNumService returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasRowNumService() bool {
-	if o != nil && !IsNil(o.RowNumService) {
-		return true
-	}
-
-	return false
-}
-
-// SetRowNumService gets a reference to the given string and assigns it to the RowNumService field.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumService(v string) {
-	o.RowNumService = &v
-}
-
-// GetRowNumServiceRefType returns the RowNumServiceRefType field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumServiceRefType() string {
-	if o == nil || IsNil(o.RowNumServiceRefType) {
-		var ret string
-		return ret
-	}
-	return *o.RowNumServiceRefType
-}
-
-// GetRowNumServiceRefTypeOk returns a tuple with the RowNumServiceRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumServiceRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.RowNumServiceRefType) {
-		return nil, false
-	}
-	return o.RowNumServiceRefType, true
-}
-
-// HasRowNumServiceRefType returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasRowNumServiceRefType() bool {
-	if o != nil && !IsNil(o.RowNumServiceRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetRowNumServiceRefType gets a reference to the given string and assigns it to the RowNumServiceRefType field.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumServiceRefType(v string) {
-	o.RowNumServiceRefType = &v
-}
-
 // GetRowNumExternalVlan returns the RowNumExternalVlan field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumExternalVlan() int64 {
 	if o == nil || IsNil(o.RowNumExternalVlan.Get()) {
@@ -214,6 +246,7 @@ func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasRowNumExt
 func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumExternalVlan(v int64) {
 	o.RowNumExternalVlan.Set(&v)
 }
+
 // SetRowNumExternalVlanNil sets the value for RowNumExternalVlan to be an explicit nil
 func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumExternalVlanNil() {
 	o.RowNumExternalVlan.Set(nil)
@@ -288,100 +321,36 @@ func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumIng
 	o.RowNumIngressAclRefType = &v
 }
 
-// GetRowNumEgressAcl returns the RowNumEgressAcl field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumEgressAcl() string {
-	if o == nil || IsNil(o.RowNumEgressAcl) {
+// GetRowNumLanIptv returns the RowNumLanIptv field value if set, zero value otherwise.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumLanIptv() string {
+	if o == nil || IsNil(o.RowNumLanIptv) {
 		var ret string
 		return ret
 	}
-	return *o.RowNumEgressAcl
+	return *o.RowNumLanIptv
 }
 
-// GetRowNumEgressAclOk returns a tuple with the RowNumEgressAcl field value if set, nil otherwise
+// GetRowNumLanIptvOk returns a tuple with the RowNumLanIptv field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumEgressAclOk() (*string, bool) {
-	if o == nil || IsNil(o.RowNumEgressAcl) {
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumLanIptvOk() (*string, bool) {
+	if o == nil || IsNil(o.RowNumLanIptv) {
 		return nil, false
 	}
-	return o.RowNumEgressAcl, true
+	return o.RowNumLanIptv, true
 }
 
-// HasRowNumEgressAcl returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasRowNumEgressAcl() bool {
-	if o != nil && !IsNil(o.RowNumEgressAcl) {
+// HasRowNumLanIptv returns a boolean if a field has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasRowNumLanIptv() bool {
+	if o != nil && !IsNil(o.RowNumLanIptv) {
 		return true
 	}
 
 	return false
 }
 
-// SetRowNumEgressAcl gets a reference to the given string and assigns it to the RowNumEgressAcl field.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumEgressAcl(v string) {
-	o.RowNumEgressAcl = &v
-}
-
-// GetRowNumEgressAclRefType returns the RowNumEgressAclRefType field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumEgressAclRefType() string {
-	if o == nil || IsNil(o.RowNumEgressAclRefType) {
-		var ret string
-		return ret
-	}
-	return *o.RowNumEgressAclRefType
-}
-
-// GetRowNumEgressAclRefTypeOk returns a tuple with the RowNumEgressAclRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumEgressAclRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.RowNumEgressAclRefType) {
-		return nil, false
-	}
-	return o.RowNumEgressAclRefType, true
-}
-
-// HasRowNumEgressAclRefType returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasRowNumEgressAclRefType() bool {
-	if o != nil && !IsNil(o.RowNumEgressAclRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetRowNumEgressAclRefType gets a reference to the given string and assigns it to the RowNumEgressAclRefType field.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumEgressAclRefType(v string) {
-	o.RowNumEgressAclRefType = &v
-}
-
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetIndex(v int64) {
-	o.Index = &v
+// SetRowNumLanIptv gets a reference to the given string and assigns it to the RowNumLanIptv field.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumLanIptv(v string) {
+	o.RowNumLanIptv = &v
 }
 
 // GetRowNumMacFilter returns the RowNumMacFilter field value if set, zero value otherwise.
@@ -448,40 +417,72 @@ func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumMac
 	o.RowNumMacFilterRefType = &v
 }
 
-// GetRowNumLanIptv returns the RowNumLanIptv field value if set, zero value otherwise.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumLanIptv() string {
-	if o == nil || IsNil(o.RowNumLanIptv) {
+// GetRowNumService returns the RowNumService field value if set, zero value otherwise.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumService() string {
+	if o == nil || IsNil(o.RowNumService) {
 		var ret string
 		return ret
 	}
-	return *o.RowNumLanIptv
+	return *o.RowNumService
 }
 
-// GetRowNumLanIptvOk returns a tuple with the RowNumLanIptv field value if set, nil otherwise
+// GetRowNumServiceOk returns a tuple with the RowNumService field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumLanIptvOk() (*string, bool) {
-	if o == nil || IsNil(o.RowNumLanIptv) {
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumServiceOk() (*string, bool) {
+	if o == nil || IsNil(o.RowNumService) {
 		return nil, false
 	}
-	return o.RowNumLanIptv, true
+	return o.RowNumService, true
 }
 
-// HasRowNumLanIptv returns a boolean if a field has been set.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasRowNumLanIptv() bool {
-	if o != nil && !IsNil(o.RowNumLanIptv) {
+// HasRowNumService returns a boolean if a field has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasRowNumService() bool {
+	if o != nil && !IsNil(o.RowNumService) {
 		return true
 	}
 
 	return false
 }
 
-// SetRowNumLanIptv gets a reference to the given string and assigns it to the RowNumLanIptv field.
-func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumLanIptv(v string) {
-	o.RowNumLanIptv = &v
+// SetRowNumService gets a reference to the given string and assigns it to the RowNumService field.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumService(v string) {
+	o.RowNumService = &v
+}
+
+// GetRowNumServiceRefType returns the RowNumServiceRefType field value if set, zero value otherwise.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumServiceRefType() string {
+	if o == nil || IsNil(o.RowNumServiceRefType) {
+		var ret string
+		return ret
+	}
+	return *o.RowNumServiceRefType
+}
+
+// GetRowNumServiceRefTypeOk returns a tuple with the RowNumServiceRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) GetRowNumServiceRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.RowNumServiceRefType) {
+		return nil, false
+	}
+	return o.RowNumServiceRefType, true
+}
+
+// HasRowNumServiceRefType returns a boolean if a field has been set.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) HasRowNumServiceRefType() bool {
+	if o != nil && !IsNil(o.RowNumServiceRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetRowNumServiceRefType gets a reference to the given string and assigns it to the RowNumServiceRefType field.
+func (o *EthportprofilesPutRequestEthPortProfileValueServicesInner) SetRowNumServiceRefType(v string) {
+	o.RowNumServiceRefType = &v
 }
 
 func (o EthportprofilesPutRequestEthPortProfileValueServicesInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -490,14 +491,17 @@ func (o EthportprofilesPutRequestEthPortProfileValueServicesInner) MarshalJSON()
 
 func (o EthportprofilesPutRequestEthPortProfileValueServicesInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
+	}
+	if !IsNil(o.RowNumEgressAcl) {
+		toSerialize["row_num_egress_acl"] = o.RowNumEgressAcl
+	}
+	if !IsNil(o.RowNumEgressAclRefType) {
+		toSerialize["row_num_egress_acl_ref_type_"] = o.RowNumEgressAclRefType
+	}
 	if !IsNil(o.RowNumEnable) {
 		toSerialize["row_num_enable"] = o.RowNumEnable
-	}
-	if !IsNil(o.RowNumService) {
-		toSerialize["row_num_service"] = o.RowNumService
-	}
-	if !IsNil(o.RowNumServiceRefType) {
-		toSerialize["row_num_service_ref_type_"] = o.RowNumServiceRefType
 	}
 	if o.RowNumExternalVlan.IsSet() {
 		toSerialize["row_num_external_vlan"] = o.RowNumExternalVlan.Get()
@@ -508,14 +512,8 @@ func (o EthportprofilesPutRequestEthPortProfileValueServicesInner) ToMap() (map[
 	if !IsNil(o.RowNumIngressAclRefType) {
 		toSerialize["row_num_ingress_acl_ref_type_"] = o.RowNumIngressAclRefType
 	}
-	if !IsNil(o.RowNumEgressAcl) {
-		toSerialize["row_num_egress_acl"] = o.RowNumEgressAcl
-	}
-	if !IsNil(o.RowNumEgressAclRefType) {
-		toSerialize["row_num_egress_acl_ref_type_"] = o.RowNumEgressAclRefType
-	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
+	if !IsNil(o.RowNumLanIptv) {
+		toSerialize["row_num_lan_iptv"] = o.RowNumLanIptv
 	}
 	if !IsNil(o.RowNumMacFilter) {
 		toSerialize["row_num_mac_filter"] = o.RowNumMacFilter
@@ -523,8 +521,11 @@ func (o EthportprofilesPutRequestEthPortProfileValueServicesInner) ToMap() (map[
 	if !IsNil(o.RowNumMacFilterRefType) {
 		toSerialize["row_num_mac_filter_ref_type_"] = o.RowNumMacFilterRefType
 	}
-	if !IsNil(o.RowNumLanIptv) {
-		toSerialize["row_num_lan_iptv"] = o.RowNumLanIptv
+	if !IsNil(o.RowNumService) {
+		toSerialize["row_num_service"] = o.RowNumService
+	}
+	if !IsNil(o.RowNumServiceRefType) {
+		toSerialize["row_num_service_ref_type_"] = o.RowNumServiceRefType
 	}
 	return toSerialize, nil
 }
@@ -564,5 +565,3 @@ func (v *NullableEthportprofilesPutRequestEthPortProfileValueServicesInner) Unma
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

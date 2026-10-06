@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -25,12 +25,12 @@ type GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner struct {
 	Gateway *string `json:"gateway,omitempty"`
 	// Object type for gateway field
 	GatewayRefType *string `json:"gateway_ref_type_,omitempty"`
-	// Source address on the port if untagged or on the VLAN if tagged used for the outgoing BGP session 
-	SourceIpMask *string `json:"source_ip_mask,omitempty"`
-	// Setting for paired switches only. Flag indicating that this gateway is a peer gateway. For each gateway profile referencing a BGP session on a member of a leaf pair, the peer should have a gateway profile entry indicating the IP address for the peers gateway.
-	PeerGw *bool `json:"peer_gw,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
+	// Setting for paired switches only. Flag indicating that this gateway is a peer gateway. For each gateway profile referencing a BGP session on a member of a leaf pair, the peer should have a gateway profile entry indicating the IP address for the peers gateway.
+	PeerGw *bool `json:"peer_gw,omitempty"`
+	// Source address on the port if untagged or on the VLAN if tagged used for the outgoing BGP session
+	SourceIpMask *string `json:"source_ip_mask,omitempty"`
 }
 
 // NewGatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner instantiates a new GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner object
@@ -43,10 +43,10 @@ func NewGatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner() *Gat
 	this.Enable = &enable
 	var gateway string = ""
 	this.Gateway = &gateway
-	var sourceIpMask string = ""
-	this.SourceIpMask = &sourceIpMask
 	var peerGw bool = false
 	this.PeerGw = &peerGw
+	var sourceIpMask string = ""
+	this.SourceIpMask = &sourceIpMask
 	return &this
 }
 
@@ -59,10 +59,10 @@ func NewGatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInnerWithDef
 	this.Enable = &enable
 	var gateway string = ""
 	this.Gateway = &gateway
-	var sourceIpMask string = ""
-	this.SourceIpMask = &sourceIpMask
 	var peerGw bool = false
 	this.PeerGw = &peerGw
+	var sourceIpMask string = ""
+	this.SourceIpMask = &sourceIpMask
 	return &this
 }
 
@@ -162,36 +162,36 @@ func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) SetG
 	o.GatewayRefType = &v
 }
 
-// GetSourceIpMask returns the SourceIpMask field value if set, zero value otherwise.
-func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetSourceIpMask() string {
-	if o == nil || IsNil(o.SourceIpMask) {
-		var ret string
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
 		return ret
 	}
-	return *o.SourceIpMask
+	return *o.Index
 }
 
-// GetSourceIpMaskOk returns a tuple with the SourceIpMask field value if set, nil otherwise
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetSourceIpMaskOk() (*string, bool) {
-	if o == nil || IsNil(o.SourceIpMask) {
+func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
-	return o.SourceIpMask, true
+	return o.Index, true
 }
 
-// HasSourceIpMask returns a boolean if a field has been set.
-func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) HasSourceIpMask() bool {
-	if o != nil && !IsNil(o.SourceIpMask) {
+// HasIndex returns a boolean if a field has been set.
+func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
 		return true
 	}
 
 	return false
 }
 
-// SetSourceIpMask gets a reference to the given string and assigns it to the SourceIpMask field.
-func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) SetSourceIpMask(v string) {
-	o.SourceIpMask = &v
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetPeerGw returns the PeerGw field value if set, zero value otherwise.
@@ -226,40 +226,40 @@ func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) SetP
 	o.PeerGw = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
+// GetSourceIpMask returns the SourceIpMask field value if set, zero value otherwise.
+func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetSourceIpMask() string {
+	if o == nil || IsNil(o.SourceIpMask) {
+		var ret string
 		return ret
 	}
-	return *o.Index
+	return *o.SourceIpMask
 }
 
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// GetSourceIpMaskOk returns a tuple with the SourceIpMask field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
+func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) GetSourceIpMaskOk() (*string, bool) {
+	if o == nil || IsNil(o.SourceIpMask) {
 		return nil, false
 	}
-	return o.Index, true
+	return o.SourceIpMask, true
 }
 
-// HasIndex returns a boolean if a field has been set.
-func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
+// HasSourceIpMask returns a boolean if a field has been set.
+func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) HasSourceIpMask() bool {
+	if o != nil && !IsNil(o.SourceIpMask) {
 		return true
 	}
 
 	return false
 }
 
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) SetIndex(v int64) {
-	o.Index = &v
+// SetSourceIpMask gets a reference to the given string and assigns it to the SourceIpMask field.
+func (o *GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) SetSourceIpMask(v string) {
+	o.SourceIpMask = &v
 }
 
 func (o GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -277,14 +277,14 @@ func (o GatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInner) ToMap
 	if !IsNil(o.GatewayRefType) {
 		toSerialize["gateway_ref_type_"] = o.GatewayRefType
 	}
-	if !IsNil(o.SourceIpMask) {
-		toSerialize["source_ip_mask"] = o.SourceIpMask
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	if !IsNil(o.PeerGw) {
 		toSerialize["peer_gw"] = o.PeerGw
 	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
+	if !IsNil(o.SourceIpMask) {
+		toSerialize["source_ip_mask"] = o.SourceIpMask
 	}
 	return toSerialize, nil
 }
@@ -324,5 +324,3 @@ func (v *NullableGatewayprofilesPutRequestGatewayProfileValueExternalGatewaysInn
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

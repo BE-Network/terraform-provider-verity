@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // SwitchPairsAPIService SwitchPairsAPI service
 type SwitchPairsAPIService service
 
 type ApiPairsDeleteRequest struct {
-	ctx context.Context
-	ApiService *SwitchPairsAPIService
+	ctx            context.Context
+	ApiService     *SwitchPairsAPIService
 	switchPairName *[]string
-	changesetName *string
+	changesetName  *string
 }
 
 func (r ApiPairsDeleteRequest) SwitchPairName(switchPairName []string) ApiPairsDeleteRequest {
@@ -49,23 +48,22 @@ PairsDelete Delete Switch Pair
 
 Deletes an existing Switch Pair from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPairsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPairsDeleteRequest
 */
 func (a *SwitchPairsAPIService) PairsDelete(ctx context.Context) ApiPairsDeleteRequest {
 	return ApiPairsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SwitchPairsAPIService) PairsDeleteExecute(r ApiPairsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SwitchPairsAPIService.PairsDelete")
@@ -142,11 +140,11 @@ func (a *SwitchPairsAPIService) PairsDeleteExecute(r ApiPairsDeleteRequest) (*ht
 }
 
 type ApiPairsGetRequest struct {
-	ctx context.Context
-	ApiService *SwitchPairsAPIService
+	ctx            context.Context
+	ApiService     *SwitchPairsAPIService
 	switchPairName *string
-	includeData *bool
-	changesetName *string
+	includeData    *bool
+	changesetName  *string
 }
 
 func (r ApiPairsGetRequest) SwitchPairName(switchPairName string) ApiPairsGetRequest {
@@ -173,23 +171,22 @@ PairsGet Get all Switch Pairs
 
 Downloads all Switch Pairs from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPairsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPairsGetRequest
 */
 func (a *SwitchPairsAPIService) PairsGet(ctx context.Context) ApiPairsGetRequest {
 	return ApiPairsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SwitchPairsAPIService) PairsGetExecute(r ApiPairsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SwitchPairsAPIService.PairsGet")
@@ -258,9 +255,9 @@ func (a *SwitchPairsAPIService) PairsGetExecute(r ApiPairsGetRequest) (*http.Res
 }
 
 type ApiPairsPatchRequest struct {
-	ctx context.Context
-	ApiService *SwitchPairsAPIService
-	changesetName *string
+	ctx             context.Context
+	ApiService      *SwitchPairsAPIService
+	changesetName   *string
 	pairsPutRequest *PairsPutRequest
 }
 
@@ -283,23 +280,22 @@ PairsPatch Update Switch Pair
 
 Update Switch Pair into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPairsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPairsPatchRequest
 */
 func (a *SwitchPairsAPIService) PairsPatch(ctx context.Context) ApiPairsPatchRequest {
 	return ApiPairsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SwitchPairsAPIService) PairsPatchExecute(r ApiPairsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SwitchPairsAPIService.PairsPatch")
@@ -364,9 +360,9 @@ func (a *SwitchPairsAPIService) PairsPatchExecute(r ApiPairsPatchRequest) (*http
 }
 
 type ApiPairsPutRequest struct {
-	ctx context.Context
-	ApiService *SwitchPairsAPIService
-	changesetName *string
+	ctx             context.Context
+	ApiService      *SwitchPairsAPIService
+	changesetName   *string
 	pairsPutRequest *PairsPutRequest
 }
 
@@ -389,23 +385,22 @@ PairsPut Create Switch Pair
 
 Create Switch Pair into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPairsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPairsPutRequest
 */
 func (a *SwitchPairsAPIService) PairsPut(ctx context.Context) ApiPairsPutRequest {
 	return ApiPairsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SwitchPairsAPIService) PairsPutExecute(r ApiPairsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SwitchPairsAPIService.PairsPut")

@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,17 +19,17 @@ var _ MappedNullable = &RacksPutRequestRackValue{}
 
 // RacksPutRequestRackValue struct for RacksPutRequestRackValue
 type RacksPutRequestRackValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                      `json:"name,omitempty"`
+	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 	// Position of the Rack
 	Position NullableFloat64 `json:"position,omitempty"`
 	// SU this Rack is assigned to
 	Su *string `json:"su,omitempty"`
 	// Object type for su field
 	SuRefType *string `json:"su_ref_type_,omitempty"`
-	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewRacksPutRequestRackValue instantiates a new RacksPutRequestRackValue object
@@ -38,10 +38,10 @@ type RacksPutRequestRackValue struct {
 // will change when the set of required properties is changed
 func NewRacksPutRequestRackValue() *RacksPutRequestRackValue {
 	this := RacksPutRequestRackValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	var su string = ""
 	this.Su = &su
 	return &this
@@ -52,45 +52,13 @@ func NewRacksPutRequestRackValue() *RacksPutRequestRackValue {
 // but it doesn't guarantee that properties required by API are set
 func NewRacksPutRequestRackValueWithDefaults() *RacksPutRequestRackValue {
 	this := RacksPutRequestRackValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	var su string = ""
 	this.Su = &su
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *RacksPutRequestRackValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RacksPutRequestRackValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *RacksPutRequestRackValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *RacksPutRequestRackValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -125,6 +93,70 @@ func (o *RacksPutRequestRackValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *RacksPutRequestRackValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RacksPutRequestRackValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *RacksPutRequestRackValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *RacksPutRequestRackValue) SetName(v string) {
+	o.Name = &v
+}
+
+// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
+func (o *RacksPutRequestRackValue) GetObjectProperties() AclsPutRequestIpFilterValueObjectProperties {
+	if o == nil || IsNil(o.ObjectProperties) {
+		var ret AclsPutRequestIpFilterValueObjectProperties
+		return ret
+	}
+	return *o.ObjectProperties
+}
+
+// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RacksPutRequestRackValue) GetObjectPropertiesOk() (*AclsPutRequestIpFilterValueObjectProperties, bool) {
+	if o == nil || IsNil(o.ObjectProperties) {
+		return nil, false
+	}
+	return o.ObjectProperties, true
+}
+
+// HasObjectProperties returns a boolean if a field has been set.
+func (o *RacksPutRequestRackValue) HasObjectProperties() bool {
+	if o != nil && !IsNil(o.ObjectProperties) {
+		return true
+	}
+
+	return false
+}
+
+// SetObjectProperties gets a reference to the given AclsPutRequestIpFilterValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *RacksPutRequestRackValue) SetObjectProperties(v AclsPutRequestIpFilterValueObjectProperties) {
+	o.ObjectProperties = &v
+}
+
 // GetPosition returns the Position field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *RacksPutRequestRackValue) GetPosition() float64 {
 	if o == nil || IsNil(o.Position.Get()) {
@@ -157,6 +189,7 @@ func (o *RacksPutRequestRackValue) HasPosition() bool {
 func (o *RacksPutRequestRackValue) SetPosition(v float64) {
 	o.Position.Set(&v)
 }
+
 // SetPositionNil sets the value for Position to be an explicit nil
 func (o *RacksPutRequestRackValue) SetPositionNil() {
 	o.Position.Set(nil)
@@ -231,40 +264,8 @@ func (o *RacksPutRequestRackValue) SetSuRefType(v string) {
 	o.SuRefType = &v
 }
 
-// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *RacksPutRequestRackValue) GetObjectProperties() AclsPutRequestIpFilterValueObjectProperties {
-	if o == nil || IsNil(o.ObjectProperties) {
-		var ret AclsPutRequestIpFilterValueObjectProperties
-		return ret
-	}
-	return *o.ObjectProperties
-}
-
-// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RacksPutRequestRackValue) GetObjectPropertiesOk() (*AclsPutRequestIpFilterValueObjectProperties, bool) {
-	if o == nil || IsNil(o.ObjectProperties) {
-		return nil, false
-	}
-	return o.ObjectProperties, true
-}
-
-// HasObjectProperties returns a boolean if a field has been set.
-func (o *RacksPutRequestRackValue) HasObjectProperties() bool {
-	if o != nil && !IsNil(o.ObjectProperties) {
-		return true
-	}
-
-	return false
-}
-
-// SetObjectProperties gets a reference to the given AclsPutRequestIpFilterValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *RacksPutRequestRackValue) SetObjectProperties(v AclsPutRequestIpFilterValueObjectProperties) {
-	o.ObjectProperties = &v
-}
-
 func (o RacksPutRequestRackValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -273,11 +274,14 @@ func (o RacksPutRequestRackValue) MarshalJSON() ([]byte, error) {
 
 func (o RacksPutRequestRackValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
+	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
+	if !IsNil(o.ObjectProperties) {
+		toSerialize["object_properties"] = o.ObjectProperties
 	}
 	if o.Position.IsSet() {
 		toSerialize["position"] = o.Position.Get()
@@ -287,9 +291,6 @@ func (o RacksPutRequestRackValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SuRefType) {
 		toSerialize["su_ref_type_"] = o.SuRefType
-	}
-	if !IsNil(o.ObjectProperties) {
-		toSerialize["object_properties"] = o.ObjectProperties
 	}
 	return toSerialize, nil
 }
@@ -329,5 +330,3 @@ func (v *NullableRacksPutRequestRackValue) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

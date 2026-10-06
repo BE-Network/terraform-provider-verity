@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,31 +19,31 @@ var _ MappedNullable = &AclsPutRequestIpFilterValue{}
 
 // AclsPutRequestIpFilterValue struct for AclsPutRequestIpFilterValue
 type AclsPutRequestIpFilterValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
-	// Value must be ip/tcp/udp/icmp or a number between 0 and 255 to match packets.  Value IP will match all IP protocols.
-	Protocol *string `json:"protocol,omitempty"`
 	// If bidirectional is selected, packets will be selected that match the source filters in either the source or destination fields of the packet.
 	Bidirectional *bool `json:"bidirectional,omitempty"`
-	// This field matches the source IP address of an IPv4 packet
-	SourceIp *string `json:"source_ip,omitempty"`
-	// This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater, less or range.
-	SourcePortOperator *string `json:"source_port_operator,omitempty"`
-	// This field is used for equal, greater-than or less-than TCP/UDP port value in match operation. This field is also used for the lower value in the range port match operation.
-	SourcePort1 NullableInt64 `json:"source_port_1,omitempty"`
-	// This field will only be used in the range TCP/UDP port value match operation to define the top value in the range.
-	SourcePort2 NullableInt64 `json:"source_port_2,omitempty"`
 	// This field matches the destination IP address of an IPv4 packet.
 	DestinationIp *string `json:"destination_ip,omitempty"`
-	// This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater, less or range.
-	DestinationPortOperator *string `json:"destination_port_operator,omitempty"`
 	// This field is used for equal, greater-than or less-than TCP/UDP port value in match operation. This field is also used for the lower value in the range port match operation.
 	DestinationPort1 NullableInt64 `json:"destination_port_1,omitempty"`
 	// This field will only be used in the range TCP/UDP port value match operation to define the top value in the range.
 	DestinationPort2 NullableInt64 `json:"destination_port_2,omitempty"`
+	// This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater, less or range.
+	DestinationPortOperator *string `json:"destination_port_operator,omitempty"`
+	// Enable object.
+	Enable *bool `json:"enable,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                      `json:"name,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
+	// Value must be ip/tcp/udp/icmp or a number between 0 and 255 to match packets.  Value IP will match all IP protocols.
+	Protocol *string `json:"protocol,omitempty"`
+	// This field matches the source IP address of an IPv4 packet
+	SourceIp *string `json:"source_ip,omitempty"`
+	// This field is used for equal, greater-than or less-than TCP/UDP port value in match operation. This field is also used for the lower value in the range port match operation.
+	SourcePort1 NullableInt64 `json:"source_port_1,omitempty"`
+	// This field will only be used in the range TCP/UDP port value match operation to define the top value in the range.
+	SourcePort2 NullableInt64 `json:"source_port_2,omitempty"`
+	// This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater, less or range.
+	SourcePortOperator *string `json:"source_port_operator,omitempty"`
 }
 
 // NewAclsPutRequestIpFilterValue instantiates a new AclsPutRequestIpFilterValue object
@@ -52,22 +52,22 @@ type AclsPutRequestIpFilterValue struct {
 // will change when the set of required properties is changed
 func NewAclsPutRequestIpFilterValue() *AclsPutRequestIpFilterValue {
 	this := AclsPutRequestIpFilterValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
-	var protocol string = ""
-	this.Protocol = &protocol
 	var bidirectional bool = false
 	this.Bidirectional = &bidirectional
-	var sourceIp string = ""
-	this.SourceIp = &sourceIp
-	var sourcePortOperator string = ""
-	this.SourcePortOperator = &sourcePortOperator
 	var destinationIp string = ""
 	this.DestinationIp = &destinationIp
 	var destinationPortOperator string = ""
 	this.DestinationPortOperator = &destinationPortOperator
+	var enable bool = false
+	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
+	var protocol string = ""
+	this.Protocol = &protocol
+	var sourceIp string = ""
+	this.SourceIp = &sourceIp
+	var sourcePortOperator string = ""
+	this.SourcePortOperator = &sourcePortOperator
 	return &this
 }
 
@@ -76,119 +76,23 @@ func NewAclsPutRequestIpFilterValue() *AclsPutRequestIpFilterValue {
 // but it doesn't guarantee that properties required by API are set
 func NewAclsPutRequestIpFilterValueWithDefaults() *AclsPutRequestIpFilterValue {
 	this := AclsPutRequestIpFilterValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
-	var protocol string = ""
-	this.Protocol = &protocol
 	var bidirectional bool = false
 	this.Bidirectional = &bidirectional
-	var sourceIp string = ""
-	this.SourceIp = &sourceIp
-	var sourcePortOperator string = ""
-	this.SourcePortOperator = &sourcePortOperator
 	var destinationIp string = ""
 	this.DestinationIp = &destinationIp
 	var destinationPortOperator string = ""
 	this.DestinationPortOperator = &destinationPortOperator
+	var enable bool = false
+	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
+	var protocol string = ""
+	this.Protocol = &protocol
+	var sourceIp string = ""
+	this.SourceIp = &sourceIp
+	var sourcePortOperator string = ""
+	this.SourcePortOperator = &sourcePortOperator
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *AclsPutRequestIpFilterValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AclsPutRequestIpFilterValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *AclsPutRequestIpFilterValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *AclsPutRequestIpFilterValue) SetName(v string) {
-	o.Name = &v
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *AclsPutRequestIpFilterValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AclsPutRequestIpFilterValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *AclsPutRequestIpFilterValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *AclsPutRequestIpFilterValue) SetEnable(v bool) {
-	o.Enable = &v
-}
-
-// GetProtocol returns the Protocol field value if set, zero value otherwise.
-func (o *AclsPutRequestIpFilterValue) GetProtocol() string {
-	if o == nil || IsNil(o.Protocol) {
-		var ret string
-		return ret
-	}
-	return *o.Protocol
-}
-
-// GetProtocolOk returns a tuple with the Protocol field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AclsPutRequestIpFilterValue) GetProtocolOk() (*string, bool) {
-	if o == nil || IsNil(o.Protocol) {
-		return nil, false
-	}
-	return o.Protocol, true
-}
-
-// HasProtocol returns a boolean if a field has been set.
-func (o *AclsPutRequestIpFilterValue) HasProtocol() bool {
-	if o != nil && !IsNil(o.Protocol) {
-		return true
-	}
-
-	return false
-}
-
-// SetProtocol gets a reference to the given string and assigns it to the Protocol field.
-func (o *AclsPutRequestIpFilterValue) SetProtocol(v string) {
-	o.Protocol = &v
 }
 
 // GetBidirectional returns the Bidirectional field value if set, zero value otherwise.
@@ -223,154 +127,6 @@ func (o *AclsPutRequestIpFilterValue) SetBidirectional(v bool) {
 	o.Bidirectional = &v
 }
 
-// GetSourceIp returns the SourceIp field value if set, zero value otherwise.
-func (o *AclsPutRequestIpFilterValue) GetSourceIp() string {
-	if o == nil || IsNil(o.SourceIp) {
-		var ret string
-		return ret
-	}
-	return *o.SourceIp
-}
-
-// GetSourceIpOk returns a tuple with the SourceIp field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AclsPutRequestIpFilterValue) GetSourceIpOk() (*string, bool) {
-	if o == nil || IsNil(o.SourceIp) {
-		return nil, false
-	}
-	return o.SourceIp, true
-}
-
-// HasSourceIp returns a boolean if a field has been set.
-func (o *AclsPutRequestIpFilterValue) HasSourceIp() bool {
-	if o != nil && !IsNil(o.SourceIp) {
-		return true
-	}
-
-	return false
-}
-
-// SetSourceIp gets a reference to the given string and assigns it to the SourceIp field.
-func (o *AclsPutRequestIpFilterValue) SetSourceIp(v string) {
-	o.SourceIp = &v
-}
-
-// GetSourcePortOperator returns the SourcePortOperator field value if set, zero value otherwise.
-func (o *AclsPutRequestIpFilterValue) GetSourcePortOperator() string {
-	if o == nil || IsNil(o.SourcePortOperator) {
-		var ret string
-		return ret
-	}
-	return *o.SourcePortOperator
-}
-
-// GetSourcePortOperatorOk returns a tuple with the SourcePortOperator field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AclsPutRequestIpFilterValue) GetSourcePortOperatorOk() (*string, bool) {
-	if o == nil || IsNil(o.SourcePortOperator) {
-		return nil, false
-	}
-	return o.SourcePortOperator, true
-}
-
-// HasSourcePortOperator returns a boolean if a field has been set.
-func (o *AclsPutRequestIpFilterValue) HasSourcePortOperator() bool {
-	if o != nil && !IsNil(o.SourcePortOperator) {
-		return true
-	}
-
-	return false
-}
-
-// SetSourcePortOperator gets a reference to the given string and assigns it to the SourcePortOperator field.
-func (o *AclsPutRequestIpFilterValue) SetSourcePortOperator(v string) {
-	o.SourcePortOperator = &v
-}
-
-// GetSourcePort1 returns the SourcePort1 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *AclsPutRequestIpFilterValue) GetSourcePort1() int64 {
-	if o == nil || IsNil(o.SourcePort1.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.SourcePort1.Get()
-}
-
-// GetSourcePort1Ok returns a tuple with the SourcePort1 field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *AclsPutRequestIpFilterValue) GetSourcePort1Ok() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.SourcePort1.Get(), o.SourcePort1.IsSet()
-}
-
-// HasSourcePort1 returns a boolean if a field has been set.
-func (o *AclsPutRequestIpFilterValue) HasSourcePort1() bool {
-	if o != nil && o.SourcePort1.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetSourcePort1 gets a reference to the given NullableInt64 and assigns it to the SourcePort1 field.
-func (o *AclsPutRequestIpFilterValue) SetSourcePort1(v int64) {
-	o.SourcePort1.Set(&v)
-}
-// SetSourcePort1Nil sets the value for SourcePort1 to be an explicit nil
-func (o *AclsPutRequestIpFilterValue) SetSourcePort1Nil() {
-	o.SourcePort1.Set(nil)
-}
-
-// UnsetSourcePort1 ensures that no value is present for SourcePort1, not even an explicit nil
-func (o *AclsPutRequestIpFilterValue) UnsetSourcePort1() {
-	o.SourcePort1.Unset()
-}
-
-// GetSourcePort2 returns the SourcePort2 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *AclsPutRequestIpFilterValue) GetSourcePort2() int64 {
-	if o == nil || IsNil(o.SourcePort2.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.SourcePort2.Get()
-}
-
-// GetSourcePort2Ok returns a tuple with the SourcePort2 field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *AclsPutRequestIpFilterValue) GetSourcePort2Ok() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.SourcePort2.Get(), o.SourcePort2.IsSet()
-}
-
-// HasSourcePort2 returns a boolean if a field has been set.
-func (o *AclsPutRequestIpFilterValue) HasSourcePort2() bool {
-	if o != nil && o.SourcePort2.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetSourcePort2 gets a reference to the given NullableInt64 and assigns it to the SourcePort2 field.
-func (o *AclsPutRequestIpFilterValue) SetSourcePort2(v int64) {
-	o.SourcePort2.Set(&v)
-}
-// SetSourcePort2Nil sets the value for SourcePort2 to be an explicit nil
-func (o *AclsPutRequestIpFilterValue) SetSourcePort2Nil() {
-	o.SourcePort2.Set(nil)
-}
-
-// UnsetSourcePort2 ensures that no value is present for SourcePort2, not even an explicit nil
-func (o *AclsPutRequestIpFilterValue) UnsetSourcePort2() {
-	o.SourcePort2.Unset()
-}
-
 // GetDestinationIp returns the DestinationIp field value if set, zero value otherwise.
 func (o *AclsPutRequestIpFilterValue) GetDestinationIp() string {
 	if o == nil || IsNil(o.DestinationIp) {
@@ -401,38 +157,6 @@ func (o *AclsPutRequestIpFilterValue) HasDestinationIp() bool {
 // SetDestinationIp gets a reference to the given string and assigns it to the DestinationIp field.
 func (o *AclsPutRequestIpFilterValue) SetDestinationIp(v string) {
 	o.DestinationIp = &v
-}
-
-// GetDestinationPortOperator returns the DestinationPortOperator field value if set, zero value otherwise.
-func (o *AclsPutRequestIpFilterValue) GetDestinationPortOperator() string {
-	if o == nil || IsNil(o.DestinationPortOperator) {
-		var ret string
-		return ret
-	}
-	return *o.DestinationPortOperator
-}
-
-// GetDestinationPortOperatorOk returns a tuple with the DestinationPortOperator field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AclsPutRequestIpFilterValue) GetDestinationPortOperatorOk() (*string, bool) {
-	if o == nil || IsNil(o.DestinationPortOperator) {
-		return nil, false
-	}
-	return o.DestinationPortOperator, true
-}
-
-// HasDestinationPortOperator returns a boolean if a field has been set.
-func (o *AclsPutRequestIpFilterValue) HasDestinationPortOperator() bool {
-	if o != nil && !IsNil(o.DestinationPortOperator) {
-		return true
-	}
-
-	return false
-}
-
-// SetDestinationPortOperator gets a reference to the given string and assigns it to the DestinationPortOperator field.
-func (o *AclsPutRequestIpFilterValue) SetDestinationPortOperator(v string) {
-	o.DestinationPortOperator = &v
 }
 
 // GetDestinationPort1 returns the DestinationPort1 field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -467,6 +191,7 @@ func (o *AclsPutRequestIpFilterValue) HasDestinationPort1() bool {
 func (o *AclsPutRequestIpFilterValue) SetDestinationPort1(v int64) {
 	o.DestinationPort1.Set(&v)
 }
+
 // SetDestinationPort1Nil sets the value for DestinationPort1 to be an explicit nil
 func (o *AclsPutRequestIpFilterValue) SetDestinationPort1Nil() {
 	o.DestinationPort1.Set(nil)
@@ -509,6 +234,7 @@ func (o *AclsPutRequestIpFilterValue) HasDestinationPort2() bool {
 func (o *AclsPutRequestIpFilterValue) SetDestinationPort2(v int64) {
 	o.DestinationPort2.Set(&v)
 }
+
 // SetDestinationPort2Nil sets the value for DestinationPort2 to be an explicit nil
 func (o *AclsPutRequestIpFilterValue) SetDestinationPort2Nil() {
 	o.DestinationPort2.Set(nil)
@@ -517,6 +243,102 @@ func (o *AclsPutRequestIpFilterValue) SetDestinationPort2Nil() {
 // UnsetDestinationPort2 ensures that no value is present for DestinationPort2, not even an explicit nil
 func (o *AclsPutRequestIpFilterValue) UnsetDestinationPort2() {
 	o.DestinationPort2.Unset()
+}
+
+// GetDestinationPortOperator returns the DestinationPortOperator field value if set, zero value otherwise.
+func (o *AclsPutRequestIpFilterValue) GetDestinationPortOperator() string {
+	if o == nil || IsNil(o.DestinationPortOperator) {
+		var ret string
+		return ret
+	}
+	return *o.DestinationPortOperator
+}
+
+// GetDestinationPortOperatorOk returns a tuple with the DestinationPortOperator field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AclsPutRequestIpFilterValue) GetDestinationPortOperatorOk() (*string, bool) {
+	if o == nil || IsNil(o.DestinationPortOperator) {
+		return nil, false
+	}
+	return o.DestinationPortOperator, true
+}
+
+// HasDestinationPortOperator returns a boolean if a field has been set.
+func (o *AclsPutRequestIpFilterValue) HasDestinationPortOperator() bool {
+	if o != nil && !IsNil(o.DestinationPortOperator) {
+		return true
+	}
+
+	return false
+}
+
+// SetDestinationPortOperator gets a reference to the given string and assigns it to the DestinationPortOperator field.
+func (o *AclsPutRequestIpFilterValue) SetDestinationPortOperator(v string) {
+	o.DestinationPortOperator = &v
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *AclsPutRequestIpFilterValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AclsPutRequestIpFilterValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *AclsPutRequestIpFilterValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *AclsPutRequestIpFilterValue) SetEnable(v bool) {
+	o.Enable = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *AclsPutRequestIpFilterValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AclsPutRequestIpFilterValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *AclsPutRequestIpFilterValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *AclsPutRequestIpFilterValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -551,8 +373,190 @@ func (o *AclsPutRequestIpFilterValue) SetObjectProperties(v AclsPutRequestIpFilt
 	o.ObjectProperties = &v
 }
 
+// GetProtocol returns the Protocol field value if set, zero value otherwise.
+func (o *AclsPutRequestIpFilterValue) GetProtocol() string {
+	if o == nil || IsNil(o.Protocol) {
+		var ret string
+		return ret
+	}
+	return *o.Protocol
+}
+
+// GetProtocolOk returns a tuple with the Protocol field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AclsPutRequestIpFilterValue) GetProtocolOk() (*string, bool) {
+	if o == nil || IsNil(o.Protocol) {
+		return nil, false
+	}
+	return o.Protocol, true
+}
+
+// HasProtocol returns a boolean if a field has been set.
+func (o *AclsPutRequestIpFilterValue) HasProtocol() bool {
+	if o != nil && !IsNil(o.Protocol) {
+		return true
+	}
+
+	return false
+}
+
+// SetProtocol gets a reference to the given string and assigns it to the Protocol field.
+func (o *AclsPutRequestIpFilterValue) SetProtocol(v string) {
+	o.Protocol = &v
+}
+
+// GetSourceIp returns the SourceIp field value if set, zero value otherwise.
+func (o *AclsPutRequestIpFilterValue) GetSourceIp() string {
+	if o == nil || IsNil(o.SourceIp) {
+		var ret string
+		return ret
+	}
+	return *o.SourceIp
+}
+
+// GetSourceIpOk returns a tuple with the SourceIp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AclsPutRequestIpFilterValue) GetSourceIpOk() (*string, bool) {
+	if o == nil || IsNil(o.SourceIp) {
+		return nil, false
+	}
+	return o.SourceIp, true
+}
+
+// HasSourceIp returns a boolean if a field has been set.
+func (o *AclsPutRequestIpFilterValue) HasSourceIp() bool {
+	if o != nil && !IsNil(o.SourceIp) {
+		return true
+	}
+
+	return false
+}
+
+// SetSourceIp gets a reference to the given string and assigns it to the SourceIp field.
+func (o *AclsPutRequestIpFilterValue) SetSourceIp(v string) {
+	o.SourceIp = &v
+}
+
+// GetSourcePort1 returns the SourcePort1 field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AclsPutRequestIpFilterValue) GetSourcePort1() int64 {
+	if o == nil || IsNil(o.SourcePort1.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.SourcePort1.Get()
+}
+
+// GetSourcePort1Ok returns a tuple with the SourcePort1 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AclsPutRequestIpFilterValue) GetSourcePort1Ok() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SourcePort1.Get(), o.SourcePort1.IsSet()
+}
+
+// HasSourcePort1 returns a boolean if a field has been set.
+func (o *AclsPutRequestIpFilterValue) HasSourcePort1() bool {
+	if o != nil && o.SourcePort1.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSourcePort1 gets a reference to the given NullableInt64 and assigns it to the SourcePort1 field.
+func (o *AclsPutRequestIpFilterValue) SetSourcePort1(v int64) {
+	o.SourcePort1.Set(&v)
+}
+
+// SetSourcePort1Nil sets the value for SourcePort1 to be an explicit nil
+func (o *AclsPutRequestIpFilterValue) SetSourcePort1Nil() {
+	o.SourcePort1.Set(nil)
+}
+
+// UnsetSourcePort1 ensures that no value is present for SourcePort1, not even an explicit nil
+func (o *AclsPutRequestIpFilterValue) UnsetSourcePort1() {
+	o.SourcePort1.Unset()
+}
+
+// GetSourcePort2 returns the SourcePort2 field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AclsPutRequestIpFilterValue) GetSourcePort2() int64 {
+	if o == nil || IsNil(o.SourcePort2.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.SourcePort2.Get()
+}
+
+// GetSourcePort2Ok returns a tuple with the SourcePort2 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AclsPutRequestIpFilterValue) GetSourcePort2Ok() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SourcePort2.Get(), o.SourcePort2.IsSet()
+}
+
+// HasSourcePort2 returns a boolean if a field has been set.
+func (o *AclsPutRequestIpFilterValue) HasSourcePort2() bool {
+	if o != nil && o.SourcePort2.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSourcePort2 gets a reference to the given NullableInt64 and assigns it to the SourcePort2 field.
+func (o *AclsPutRequestIpFilterValue) SetSourcePort2(v int64) {
+	o.SourcePort2.Set(&v)
+}
+
+// SetSourcePort2Nil sets the value for SourcePort2 to be an explicit nil
+func (o *AclsPutRequestIpFilterValue) SetSourcePort2Nil() {
+	o.SourcePort2.Set(nil)
+}
+
+// UnsetSourcePort2 ensures that no value is present for SourcePort2, not even an explicit nil
+func (o *AclsPutRequestIpFilterValue) UnsetSourcePort2() {
+	o.SourcePort2.Unset()
+}
+
+// GetSourcePortOperator returns the SourcePortOperator field value if set, zero value otherwise.
+func (o *AclsPutRequestIpFilterValue) GetSourcePortOperator() string {
+	if o == nil || IsNil(o.SourcePortOperator) {
+		var ret string
+		return ret
+	}
+	return *o.SourcePortOperator
+}
+
+// GetSourcePortOperatorOk returns a tuple with the SourcePortOperator field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AclsPutRequestIpFilterValue) GetSourcePortOperatorOk() (*string, bool) {
+	if o == nil || IsNil(o.SourcePortOperator) {
+		return nil, false
+	}
+	return o.SourcePortOperator, true
+}
+
+// HasSourcePortOperator returns a boolean if a field has been set.
+func (o *AclsPutRequestIpFilterValue) HasSourcePortOperator() bool {
+	if o != nil && !IsNil(o.SourcePortOperator) {
+		return true
+	}
+
+	return false
+}
+
+// SetSourcePortOperator gets a reference to the given string and assigns it to the SourcePortOperator field.
+func (o *AclsPutRequestIpFilterValue) SetSourcePortOperator(v string) {
+	o.SourcePortOperator = &v
+}
+
 func (o AclsPutRequestIpFilterValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -561,35 +565,11 @@ func (o AclsPutRequestIpFilterValue) MarshalJSON() ([]byte, error) {
 
 func (o AclsPutRequestIpFilterValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.Protocol) {
-		toSerialize["protocol"] = o.Protocol
-	}
 	if !IsNil(o.Bidirectional) {
 		toSerialize["bidirectional"] = o.Bidirectional
 	}
-	if !IsNil(o.SourceIp) {
-		toSerialize["source_ip"] = o.SourceIp
-	}
-	if !IsNil(o.SourcePortOperator) {
-		toSerialize["source_port_operator"] = o.SourcePortOperator
-	}
-	if o.SourcePort1.IsSet() {
-		toSerialize["source_port_1"] = o.SourcePort1.Get()
-	}
-	if o.SourcePort2.IsSet() {
-		toSerialize["source_port_2"] = o.SourcePort2.Get()
-	}
 	if !IsNil(o.DestinationIp) {
 		toSerialize["destination_ip"] = o.DestinationIp
-	}
-	if !IsNil(o.DestinationPortOperator) {
-		toSerialize["destination_port_operator"] = o.DestinationPortOperator
 	}
 	if o.DestinationPort1.IsSet() {
 		toSerialize["destination_port_1"] = o.DestinationPort1.Get()
@@ -597,8 +577,32 @@ func (o AclsPutRequestIpFilterValue) ToMap() (map[string]interface{}, error) {
 	if o.DestinationPort2.IsSet() {
 		toSerialize["destination_port_2"] = o.DestinationPort2.Get()
 	}
+	if !IsNil(o.DestinationPortOperator) {
+		toSerialize["destination_port_operator"] = o.DestinationPortOperator
+	}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.Protocol) {
+		toSerialize["protocol"] = o.Protocol
+	}
+	if !IsNil(o.SourceIp) {
+		toSerialize["source_ip"] = o.SourceIp
+	}
+	if o.SourcePort1.IsSet() {
+		toSerialize["source_port_1"] = o.SourcePort1.Get()
+	}
+	if o.SourcePort2.IsSet() {
+		toSerialize["source_port_2"] = o.SourcePort2.Get()
+	}
+	if !IsNil(o.SourcePortOperator) {
+		toSerialize["source_port_operator"] = o.SourcePortOperator
 	}
 	return toSerialize, nil
 }
@@ -638,5 +642,3 @@ func (v *NullableAclsPutRequestIpFilterValue) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

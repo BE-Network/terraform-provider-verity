@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // ServicesAPIService ServicesAPI service
 type ServicesAPIService service
 
 type ApiServicesDeleteRequest struct {
-	ctx context.Context
-	ApiService *ServicesAPIService
-	serviceName *[]string
+	ctx           context.Context
+	ApiService    *ServicesAPIService
+	serviceName   *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ ServicesDelete Delete Service
 
 Deletes an existing service from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiServicesDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiServicesDeleteRequest
 */
 func (a *ServicesAPIService) ServicesDelete(ctx context.Context) ApiServicesDeleteRequest {
 	return ApiServicesDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ServicesAPIService) ServicesDeleteExecute(r ApiServicesDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServicesAPIService.ServicesDelete")
@@ -142,10 +140,10 @@ func (a *ServicesAPIService) ServicesDeleteExecute(r ApiServicesDeleteRequest) (
 }
 
 type ApiServicesGetRequest struct {
-	ctx context.Context
-	ApiService *ServicesAPIService
-	serviceName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *ServicesAPIService
+	serviceName   *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ ServicesGet Get all services
 
 Retrieves all services from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiServicesGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiServicesGetRequest
 */
 func (a *ServicesAPIService) ServicesGet(ctx context.Context) ApiServicesGetRequest {
 	return ApiServicesGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ServicesAPIService) ServicesGetExecute(r ApiServicesGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServicesAPIService.ServicesGet")
@@ -258,9 +255,9 @@ func (a *ServicesAPIService) ServicesGetExecute(r ApiServicesGetRequest) (*http.
 }
 
 type ApiServicesPatchRequest struct {
-	ctx context.Context
-	ApiService *ServicesAPIService
-	changesetName *string
+	ctx                context.Context
+	ApiService         *ServicesAPIService
+	changesetName      *string
 	servicesPutRequest *ServicesPutRequest
 }
 
@@ -283,23 +280,22 @@ ServicesPatch Update a service
 
 Update a service into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiServicesPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiServicesPatchRequest
 */
 func (a *ServicesAPIService) ServicesPatch(ctx context.Context) ApiServicesPatchRequest {
 	return ApiServicesPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ServicesAPIService) ServicesPatchExecute(r ApiServicesPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServicesAPIService.ServicesPatch")
@@ -364,9 +360,9 @@ func (a *ServicesAPIService) ServicesPatchExecute(r ApiServicesPatchRequest) (*h
 }
 
 type ApiServicesPutRequest struct {
-	ctx context.Context
-	ApiService *ServicesAPIService
-	changesetName *string
+	ctx                context.Context
+	ApiService         *ServicesAPIService
+	changesetName      *string
 	servicesPutRequest *ServicesPutRequest
 }
 
@@ -389,23 +385,22 @@ ServicesPut Create service
 
 Create service into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiServicesPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiServicesPutRequest
 */
 func (a *ServicesAPIService) ServicesPut(ctx context.Context) ApiServicesPutRequest {
 	return ApiServicesPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *ServicesAPIService) ServicesPutExecute(r ApiServicesPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ServicesAPIService.ServicesPut")

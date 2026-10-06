@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,10 +21,10 @@ var _ MappedNullable = &AspathaccesslistsPutRequestAsPathAccessListValueListsInn
 type AspathaccesslistsPutRequestAsPathAccessListValueListsInner struct {
 	// Enable this AS Path Access List
 	Enable *bool `json:"enable,omitempty"`
-	// Regular Expression to match BGP Community Strings
-	RegularExpression *string `json:"regular_expression,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
+	// Regular Expression to match BGP Community Strings
+	RegularExpression *string `json:"regular_expression,omitempty"`
 }
 
 // NewAspathaccesslistsPutRequestAsPathAccessListValueListsInner instantiates a new AspathaccesslistsPutRequestAsPathAccessListValueListsInner object
@@ -84,38 +84,6 @@ func (o *AspathaccesslistsPutRequestAsPathAccessListValueListsInner) SetEnable(v
 	o.Enable = &v
 }
 
-// GetRegularExpression returns the RegularExpression field value if set, zero value otherwise.
-func (o *AspathaccesslistsPutRequestAsPathAccessListValueListsInner) GetRegularExpression() string {
-	if o == nil || IsNil(o.RegularExpression) {
-		var ret string
-		return ret
-	}
-	return *o.RegularExpression
-}
-
-// GetRegularExpressionOk returns a tuple with the RegularExpression field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AspathaccesslistsPutRequestAsPathAccessListValueListsInner) GetRegularExpressionOk() (*string, bool) {
-	if o == nil || IsNil(o.RegularExpression) {
-		return nil, false
-	}
-	return o.RegularExpression, true
-}
-
-// HasRegularExpression returns a boolean if a field has been set.
-func (o *AspathaccesslistsPutRequestAsPathAccessListValueListsInner) HasRegularExpression() bool {
-	if o != nil && !IsNil(o.RegularExpression) {
-		return true
-	}
-
-	return false
-}
-
-// SetRegularExpression gets a reference to the given string and assigns it to the RegularExpression field.
-func (o *AspathaccesslistsPutRequestAsPathAccessListValueListsInner) SetRegularExpression(v string) {
-	o.RegularExpression = &v
-}
-
 // GetIndex returns the Index field value if set, zero value otherwise.
 func (o *AspathaccesslistsPutRequestAsPathAccessListValueListsInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
@@ -148,8 +116,40 @@ func (o *AspathaccesslistsPutRequestAsPathAccessListValueListsInner) SetIndex(v 
 	o.Index = &v
 }
 
+// GetRegularExpression returns the RegularExpression field value if set, zero value otherwise.
+func (o *AspathaccesslistsPutRequestAsPathAccessListValueListsInner) GetRegularExpression() string {
+	if o == nil || IsNil(o.RegularExpression) {
+		var ret string
+		return ret
+	}
+	return *o.RegularExpression
+}
+
+// GetRegularExpressionOk returns a tuple with the RegularExpression field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AspathaccesslistsPutRequestAsPathAccessListValueListsInner) GetRegularExpressionOk() (*string, bool) {
+	if o == nil || IsNil(o.RegularExpression) {
+		return nil, false
+	}
+	return o.RegularExpression, true
+}
+
+// HasRegularExpression returns a boolean if a field has been set.
+func (o *AspathaccesslistsPutRequestAsPathAccessListValueListsInner) HasRegularExpression() bool {
+	if o != nil && !IsNil(o.RegularExpression) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegularExpression gets a reference to the given string and assigns it to the RegularExpression field.
+func (o *AspathaccesslistsPutRequestAsPathAccessListValueListsInner) SetRegularExpression(v string) {
+	o.RegularExpression = &v
+}
+
 func (o AspathaccesslistsPutRequestAsPathAccessListValueListsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -161,11 +161,11 @@ func (o AspathaccesslistsPutRequestAsPathAccessListValueListsInner) ToMap() (map
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.RegularExpression) {
-		toSerialize["regular_expression"] = o.RegularExpression
-	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
+	}
+	if !IsNil(o.RegularExpression) {
+		toSerialize["regular_expression"] = o.RegularExpression
 	}
 	return toSerialize, nil
 }
@@ -205,5 +205,3 @@ func (v *NullableAspathaccesslistsPutRequestAsPathAccessListValueListsInner) Unm
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

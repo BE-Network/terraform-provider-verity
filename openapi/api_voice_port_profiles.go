@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // VoicePortProfilesAPIService VoicePortProfilesAPI service
 type VoicePortProfilesAPIService service
 
 type ApiVoiceportprofilesDeleteRequest struct {
-	ctx context.Context
-	ApiService *VoicePortProfilesAPIService
+	ctx                  context.Context
+	ApiService           *VoicePortProfilesAPIService
 	voicePortProfileName *[]string
-	changesetName *string
+	changesetName        *string
 }
 
 func (r ApiVoiceportprofilesDeleteRequest) VoicePortProfileName(voicePortProfileName []string) ApiVoiceportprofilesDeleteRequest {
@@ -49,23 +48,22 @@ VoiceportprofilesDelete Delete Voice-Port Profile
 
 Deletes an existing Voice-Port Profile from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiVoiceportprofilesDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiVoiceportprofilesDeleteRequest
 */
 func (a *VoicePortProfilesAPIService) VoiceportprofilesDelete(ctx context.Context) ApiVoiceportprofilesDeleteRequest {
 	return ApiVoiceportprofilesDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *VoicePortProfilesAPIService) VoiceportprofilesDeleteExecute(r ApiVoiceportprofilesDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VoicePortProfilesAPIService.VoiceportprofilesDelete")
@@ -142,11 +140,11 @@ func (a *VoicePortProfilesAPIService) VoiceportprofilesDeleteExecute(r ApiVoicep
 }
 
 type ApiVoiceportprofilesGetRequest struct {
-	ctx context.Context
-	ApiService *VoicePortProfilesAPIService
+	ctx                  context.Context
+	ApiService           *VoicePortProfilesAPIService
 	voicePortProfileName *string
-	includeData *bool
-	changesetName *string
+	includeData          *bool
+	changesetName        *string
 }
 
 func (r ApiVoiceportprofilesGetRequest) VoicePortProfileName(voicePortProfileName string) ApiVoiceportprofilesGetRequest {
@@ -173,23 +171,22 @@ VoiceportprofilesGet Get all Voice-Port Profiles
 
 Retrieves all Voice-Port Profiles from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiVoiceportprofilesGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiVoiceportprofilesGetRequest
 */
 func (a *VoicePortProfilesAPIService) VoiceportprofilesGet(ctx context.Context) ApiVoiceportprofilesGetRequest {
 	return ApiVoiceportprofilesGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *VoicePortProfilesAPIService) VoiceportprofilesGetExecute(r ApiVoiceportprofilesGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VoicePortProfilesAPIService.VoiceportprofilesGet")
@@ -258,9 +255,9 @@ func (a *VoicePortProfilesAPIService) VoiceportprofilesGetExecute(r ApiVoiceport
 }
 
 type ApiVoiceportprofilesPatchRequest struct {
-	ctx context.Context
-	ApiService *VoicePortProfilesAPIService
-	changesetName *string
+	ctx                         context.Context
+	ApiService                  *VoicePortProfilesAPIService
+	changesetName               *string
 	voiceportprofilesPutRequest *VoiceportprofilesPutRequest
 }
 
@@ -283,23 +280,22 @@ VoiceportprofilesPatch Update Voice-Port Profile
 
 Update Voice-Port Profile into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiVoiceportprofilesPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiVoiceportprofilesPatchRequest
 */
 func (a *VoicePortProfilesAPIService) VoiceportprofilesPatch(ctx context.Context) ApiVoiceportprofilesPatchRequest {
 	return ApiVoiceportprofilesPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *VoicePortProfilesAPIService) VoiceportprofilesPatchExecute(r ApiVoiceportprofilesPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VoicePortProfilesAPIService.VoiceportprofilesPatch")
@@ -364,9 +360,9 @@ func (a *VoicePortProfilesAPIService) VoiceportprofilesPatchExecute(r ApiVoicepo
 }
 
 type ApiVoiceportprofilesPutRequest struct {
-	ctx context.Context
-	ApiService *VoicePortProfilesAPIService
-	changesetName *string
+	ctx                         context.Context
+	ApiService                  *VoicePortProfilesAPIService
+	changesetName               *string
 	voiceportprofilesPutRequest *VoiceportprofilesPutRequest
 }
 
@@ -389,23 +385,22 @@ VoiceportprofilesPut Create Voice-Port ProfileVoice-Port Profiles
 
 Create Voice-Port ProfileVoice-Port Profiles into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiVoiceportprofilesPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiVoiceportprofilesPutRequest
 */
 func (a *VoicePortProfilesAPIService) VoiceportprofilesPut(ctx context.Context) ApiVoiceportprofilesPutRequest {
 	return ApiVoiceportprofilesPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *VoicePortProfilesAPIService) VoiceportprofilesPutExecute(r ApiVoiceportprofilesPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VoicePortProfilesAPIService.VoiceportprofilesPut")

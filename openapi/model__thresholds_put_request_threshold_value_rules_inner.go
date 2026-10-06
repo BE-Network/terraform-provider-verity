@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -21,20 +21,20 @@ var _ MappedNullable = &ThresholdsPutRequestThresholdValueRulesInner{}
 type ThresholdsPutRequestThresholdValueRulesInner struct {
 	// Enable
 	Enable *bool `json:"enable,omitempty"`
-	// Use a metric or a nested threshold
-	Type *string `json:"type,omitempty"`
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
 	// Metric threshold is on
 	Metric *string `json:"metric,omitempty"`
 	// How to compare the metric to the value
 	Operation *string `json:"operation,omitempty"`
-	// Value to compare the metric to
-	Value *string `json:"value,omitempty"`
 	// Nested threshold to evaluate (when Type is Threshold)
 	Threshold *string `json:"threshold,omitempty"`
 	// Object type for threshold field
 	ThresholdRefType *string `json:"threshold_ref_type_,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
+	// Use a metric or a nested threshold
+	Type *string `json:"type,omitempty"`
+	// Value to compare the metric to
+	Value *string `json:"value,omitempty"`
 }
 
 // NewThresholdsPutRequestThresholdValueRulesInner instantiates a new ThresholdsPutRequestThresholdValueRulesInner object
@@ -45,16 +45,16 @@ func NewThresholdsPutRequestThresholdValueRulesInner() *ThresholdsPutRequestThre
 	this := ThresholdsPutRequestThresholdValueRulesInner{}
 	var enable bool = false
 	this.Enable = &enable
-	var type_ string = "metric"
-	this.Type = &type_
 	var metric string = ""
 	this.Metric = &metric
 	var operation string = "eq"
 	this.Operation = &operation
-	var value string = ""
-	this.Value = &value
 	var threshold string = ""
 	this.Threshold = &threshold
+	var type_ string = "metric"
+	this.Type = &type_
+	var value string = ""
+	this.Value = &value
 	return &this
 }
 
@@ -65,16 +65,16 @@ func NewThresholdsPutRequestThresholdValueRulesInnerWithDefaults() *ThresholdsPu
 	this := ThresholdsPutRequestThresholdValueRulesInner{}
 	var enable bool = false
 	this.Enable = &enable
-	var type_ string = "metric"
-	this.Type = &type_
 	var metric string = ""
 	this.Metric = &metric
 	var operation string = "eq"
 	this.Operation = &operation
-	var value string = ""
-	this.Value = &value
 	var threshold string = ""
 	this.Threshold = &threshold
+	var type_ string = "metric"
+	this.Type = &type_
+	var value string = ""
+	this.Value = &value
 	return &this
 }
 
@@ -110,36 +110,36 @@ func (o *ThresholdsPutRequestThresholdValueRulesInner) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
-func (o *ThresholdsPutRequestThresholdValueRulesInner) GetType() string {
-	if o == nil || IsNil(o.Type) {
-		var ret string
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *ThresholdsPutRequestThresholdValueRulesInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
 		return ret
 	}
-	return *o.Type
+	return *o.Index
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ThresholdsPutRequestThresholdValueRulesInner) GetTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.Type) {
+func (o *ThresholdsPutRequestThresholdValueRulesInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
 		return nil, false
 	}
-	return o.Type, true
+	return o.Index, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *ThresholdsPutRequestThresholdValueRulesInner) HasType() bool {
-	if o != nil && !IsNil(o.Type) {
+// HasIndex returns a boolean if a field has been set.
+func (o *ThresholdsPutRequestThresholdValueRulesInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
 		return true
 	}
 
 	return false
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *ThresholdsPutRequestThresholdValueRulesInner) SetType(v string) {
-	o.Type = &v
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *ThresholdsPutRequestThresholdValueRulesInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetMetric returns the Metric field value if set, zero value otherwise.
@@ -206,38 +206,6 @@ func (o *ThresholdsPutRequestThresholdValueRulesInner) SetOperation(v string) {
 	o.Operation = &v
 }
 
-// GetValue returns the Value field value if set, zero value otherwise.
-func (o *ThresholdsPutRequestThresholdValueRulesInner) GetValue() string {
-	if o == nil || IsNil(o.Value) {
-		var ret string
-		return ret
-	}
-	return *o.Value
-}
-
-// GetValueOk returns a tuple with the Value field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ThresholdsPutRequestThresholdValueRulesInner) GetValueOk() (*string, bool) {
-	if o == nil || IsNil(o.Value) {
-		return nil, false
-	}
-	return o.Value, true
-}
-
-// HasValue returns a boolean if a field has been set.
-func (o *ThresholdsPutRequestThresholdValueRulesInner) HasValue() bool {
-	if o != nil && !IsNil(o.Value) {
-		return true
-	}
-
-	return false
-}
-
-// SetValue gets a reference to the given string and assigns it to the Value field.
-func (o *ThresholdsPutRequestThresholdValueRulesInner) SetValue(v string) {
-	o.Value = &v
-}
-
 // GetThreshold returns the Threshold field value if set, zero value otherwise.
 func (o *ThresholdsPutRequestThresholdValueRulesInner) GetThreshold() string {
 	if o == nil || IsNil(o.Threshold) {
@@ -302,40 +270,72 @@ func (o *ThresholdsPutRequestThresholdValueRulesInner) SetThresholdRefType(v str
 	o.ThresholdRefType = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *ThresholdsPutRequestThresholdValueRulesInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *ThresholdsPutRequestThresholdValueRulesInner) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
 		return ret
 	}
-	return *o.Index
+	return *o.Type
 }
 
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ThresholdsPutRequestThresholdValueRulesInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
+func (o *ThresholdsPutRequestThresholdValueRulesInner) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
 		return nil, false
 	}
-	return o.Index, true
+	return o.Type, true
 }
 
-// HasIndex returns a boolean if a field has been set.
-func (o *ThresholdsPutRequestThresholdValueRulesInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
+// HasType returns a boolean if a field has been set.
+func (o *ThresholdsPutRequestThresholdValueRulesInner) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
 		return true
 	}
 
 	return false
 }
 
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *ThresholdsPutRequestThresholdValueRulesInner) SetIndex(v int64) {
-	o.Index = &v
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *ThresholdsPutRequestThresholdValueRulesInner) SetType(v string) {
+	o.Type = &v
+}
+
+// GetValue returns the Value field value if set, zero value otherwise.
+func (o *ThresholdsPutRequestThresholdValueRulesInner) GetValue() string {
+	if o == nil || IsNil(o.Value) {
+		var ret string
+		return ret
+	}
+	return *o.Value
+}
+
+// GetValueOk returns a tuple with the Value field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ThresholdsPutRequestThresholdValueRulesInner) GetValueOk() (*string, bool) {
+	if o == nil || IsNil(o.Value) {
+		return nil, false
+	}
+	return o.Value, true
+}
+
+// HasValue returns a boolean if a field has been set.
+func (o *ThresholdsPutRequestThresholdValueRulesInner) HasValue() bool {
+	if o != nil && !IsNil(o.Value) {
+		return true
+	}
+
+	return false
+}
+
+// SetValue gets a reference to the given string and assigns it to the Value field.
+func (o *ThresholdsPutRequestThresholdValueRulesInner) SetValue(v string) {
+	o.Value = &v
 }
 
 func (o ThresholdsPutRequestThresholdValueRulesInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -347,8 +347,8 @@ func (o ThresholdsPutRequestThresholdValueRulesInner) ToMap() (map[string]interf
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.Type) {
-		toSerialize["type"] = o.Type
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
 	}
 	if !IsNil(o.Metric) {
 		toSerialize["metric"] = o.Metric
@@ -356,17 +356,17 @@ func (o ThresholdsPutRequestThresholdValueRulesInner) ToMap() (map[string]interf
 	if !IsNil(o.Operation) {
 		toSerialize["operation"] = o.Operation
 	}
-	if !IsNil(o.Value) {
-		toSerialize["value"] = o.Value
-	}
 	if !IsNil(o.Threshold) {
 		toSerialize["threshold"] = o.Threshold
 	}
 	if !IsNil(o.ThresholdRefType) {
 		toSerialize["threshold_ref_type_"] = o.ThresholdRefType
 	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
+	}
+	if !IsNil(o.Value) {
+		toSerialize["value"] = o.Value
 	}
 	return toSerialize, nil
 }
@@ -406,5 +406,3 @@ func (v *NullableThresholdsPutRequestThresholdValueRulesInner) UnmarshalJSON(src
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

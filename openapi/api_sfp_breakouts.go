@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -18,16 +18,15 @@ import (
 	"net/url"
 )
 
-
 // SFPBreakoutsAPIService SFPBreakoutsAPI service
 type SFPBreakoutsAPIService service
 
 type ApiSfpbreakoutsGetRequest struct {
-	ctx context.Context
-	ApiService *SFPBreakoutsAPIService
+	ctx              context.Context
+	ApiService       *SFPBreakoutsAPIService
 	sfpBreakoutsName *string
-	includeData *bool
-	changesetName *string
+	includeData      *bool
+	changesetName    *string
 }
 
 func (r ApiSfpbreakoutsGetRequest) SfpBreakoutsName(sfpBreakoutsName string) ApiSfpbreakoutsGetRequest {
@@ -54,23 +53,22 @@ SfpbreakoutsGet Get all SFP Breakouts
 
 Retrieves all SFP Breakouts from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSfpbreakoutsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSfpbreakoutsGetRequest
 */
 func (a *SFPBreakoutsAPIService) SfpbreakoutsGet(ctx context.Context) ApiSfpbreakoutsGetRequest {
 	return ApiSfpbreakoutsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SFPBreakoutsAPIService) SfpbreakoutsGetExecute(r ApiSfpbreakoutsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SFPBreakoutsAPIService.SfpbreakoutsGet")
@@ -139,9 +137,9 @@ func (a *SFPBreakoutsAPIService) SfpbreakoutsGetExecute(r ApiSfpbreakoutsGetRequ
 }
 
 type ApiSfpbreakoutsPatchRequest struct {
-	ctx context.Context
-	ApiService *SFPBreakoutsAPIService
-	changesetName *string
+	ctx                      context.Context
+	ApiService               *SFPBreakoutsAPIService
+	changesetName            *string
 	sfpbreakoutsPatchRequest *SfpbreakoutsPatchRequest
 }
 
@@ -164,23 +162,22 @@ SfpbreakoutsPatch Update SFP Breakout
 
 Update SFP Breakout into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSfpbreakoutsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSfpbreakoutsPatchRequest
 */
 func (a *SFPBreakoutsAPIService) SfpbreakoutsPatch(ctx context.Context) ApiSfpbreakoutsPatchRequest {
 	return ApiSfpbreakoutsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *SFPBreakoutsAPIService) SfpbreakoutsPatchExecute(r ApiSfpbreakoutsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SFPBreakoutsAPIService.SfpbreakoutsPatch")

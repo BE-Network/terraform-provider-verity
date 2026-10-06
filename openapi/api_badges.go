@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,13 @@ import (
 	"reflect"
 )
 
-
 // BadgesAPIService BadgesAPI service
 type BadgesAPIService service
 
 type ApiBadgesDeleteRequest struct {
-	ctx context.Context
-	ApiService *BadgesAPIService
-	badgeName *[]string
+	ctx           context.Context
+	ApiService    *BadgesAPIService
+	badgeName     *[]string
 	changesetName *string
 }
 
@@ -49,23 +48,22 @@ BadgesDelete Delete Badge
 
 Deletes an existing Badge from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiBadgesDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiBadgesDeleteRequest
 */
 func (a *BadgesAPIService) BadgesDelete(ctx context.Context) ApiBadgesDeleteRequest {
 	return ApiBadgesDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *BadgesAPIService) BadgesDeleteExecute(r ApiBadgesDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BadgesAPIService.BadgesDelete")
@@ -142,10 +140,10 @@ func (a *BadgesAPIService) BadgesDeleteExecute(r ApiBadgesDeleteRequest) (*http.
 }
 
 type ApiBadgesGetRequest struct {
-	ctx context.Context
-	ApiService *BadgesAPIService
-	badgeName *string
-	includeData *bool
+	ctx           context.Context
+	ApiService    *BadgesAPIService
+	badgeName     *string
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ BadgesGet Get all Badges
 
 Retrieves all Badges from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiBadgesGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiBadgesGetRequest
 */
 func (a *BadgesAPIService) BadgesGet(ctx context.Context) ApiBadgesGetRequest {
 	return ApiBadgesGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *BadgesAPIService) BadgesGetExecute(r ApiBadgesGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BadgesAPIService.BadgesGet")
@@ -258,9 +255,9 @@ func (a *BadgesAPIService) BadgesGetExecute(r ApiBadgesGetRequest) (*http.Respon
 }
 
 type ApiBadgesPatchRequest struct {
-	ctx context.Context
-	ApiService *BadgesAPIService
-	changesetName *string
+	ctx              context.Context
+	ApiService       *BadgesAPIService
+	changesetName    *string
 	badgesPutRequest *BadgesPutRequest
 }
 
@@ -283,23 +280,22 @@ BadgesPatch Update Badge
 
 Update Badge into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiBadgesPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiBadgesPatchRequest
 */
 func (a *BadgesAPIService) BadgesPatch(ctx context.Context) ApiBadgesPatchRequest {
 	return ApiBadgesPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *BadgesAPIService) BadgesPatchExecute(r ApiBadgesPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BadgesAPIService.BadgesPatch")
@@ -364,9 +360,9 @@ func (a *BadgesAPIService) BadgesPatchExecute(r ApiBadgesPatchRequest) (*http.Re
 }
 
 type ApiBadgesPutRequest struct {
-	ctx context.Context
-	ApiService *BadgesAPIService
-	changesetName *string
+	ctx              context.Context
+	ApiService       *BadgesAPIService
+	changesetName    *string
 	badgesPutRequest *BadgesPutRequest
 }
 
@@ -389,23 +385,22 @@ BadgesPut Create Badge
 
 Create Badge into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiBadgesPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiBadgesPutRequest
 */
 func (a *BadgesAPIService) BadgesPut(ctx context.Context) ApiBadgesPutRequest {
 	return ApiBadgesPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *BadgesAPIService) BadgesPutExecute(r ApiBadgesPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BadgesAPIService.BadgesPut")

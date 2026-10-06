@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,15 +19,14 @@ import (
 	"reflect"
 )
 
-
 // CommunityListsAPIService CommunityListsAPI service
 type CommunityListsAPIService service
 
 type ApiCommunitylistsDeleteRequest struct {
-	ctx context.Context
-	ApiService *CommunityListsAPIService
+	ctx               context.Context
+	ApiService        *CommunityListsAPIService
 	communityListName *[]string
-	changesetName *string
+	changesetName     *string
 }
 
 func (r ApiCommunitylistsDeleteRequest) CommunityListName(communityListName []string) ApiCommunitylistsDeleteRequest {
@@ -49,23 +48,22 @@ CommunitylistsDelete Delete Community Lists
 
 Deletes an existing Community Lists from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCommunitylistsDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCommunitylistsDeleteRequest
 */
 func (a *CommunityListsAPIService) CommunitylistsDelete(ctx context.Context) ApiCommunitylistsDeleteRequest {
 	return ApiCommunitylistsDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *CommunityListsAPIService) CommunitylistsDeleteExecute(r ApiCommunitylistsDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommunityListsAPIService.CommunitylistsDelete")
@@ -142,11 +140,11 @@ func (a *CommunityListsAPIService) CommunitylistsDeleteExecute(r ApiCommunitylis
 }
 
 type ApiCommunitylistsGetRequest struct {
-	ctx context.Context
-	ApiService *CommunityListsAPIService
+	ctx               context.Context
+	ApiService        *CommunityListsAPIService
 	communityListName *string
-	includeData *bool
-	changesetName *string
+	includeData       *bool
+	changesetName     *string
 }
 
 func (r ApiCommunitylistsGetRequest) CommunityListName(communityListName string) ApiCommunitylistsGetRequest {
@@ -173,23 +171,22 @@ CommunitylistsGet Get all Community Lists
 
 Retrieves all Community Lists from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCommunitylistsGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCommunitylistsGetRequest
 */
 func (a *CommunityListsAPIService) CommunitylistsGet(ctx context.Context) ApiCommunitylistsGetRequest {
 	return ApiCommunitylistsGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *CommunityListsAPIService) CommunitylistsGetExecute(r ApiCommunitylistsGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommunityListsAPIService.CommunitylistsGet")
@@ -258,9 +255,9 @@ func (a *CommunityListsAPIService) CommunitylistsGetExecute(r ApiCommunitylistsG
 }
 
 type ApiCommunitylistsPatchRequest struct {
-	ctx context.Context
-	ApiService *CommunityListsAPIService
-	changesetName *string
+	ctx                      context.Context
+	ApiService               *CommunityListsAPIService
+	changesetName            *string
 	communitylistsPutRequest *CommunitylistsPutRequest
 }
 
@@ -283,23 +280,22 @@ CommunitylistsPatch Update Community List
 
 Update Community List into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCommunitylistsPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCommunitylistsPatchRequest
 */
 func (a *CommunityListsAPIService) CommunitylistsPatch(ctx context.Context) ApiCommunitylistsPatchRequest {
 	return ApiCommunitylistsPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *CommunityListsAPIService) CommunitylistsPatchExecute(r ApiCommunitylistsPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommunityListsAPIService.CommunitylistsPatch")
@@ -364,9 +360,9 @@ func (a *CommunityListsAPIService) CommunitylistsPatchExecute(r ApiCommunitylist
 }
 
 type ApiCommunitylistsPutRequest struct {
-	ctx context.Context
-	ApiService *CommunityListsAPIService
-	changesetName *string
+	ctx                      context.Context
+	ApiService               *CommunityListsAPIService
+	changesetName            *string
 	communitylistsPutRequest *CommunitylistsPutRequest
 }
 
@@ -389,23 +385,22 @@ CommunitylistsPut Create Community List
 
 Create Community List into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCommunitylistsPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCommunitylistsPutRequest
 */
 func (a *CommunityListsAPIService) CommunitylistsPut(ctx context.Context) ApiCommunitylistsPutRequest {
 	return ApiCommunitylistsPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *CommunityListsAPIService) CommunitylistsPutExecute(r ApiCommunitylistsPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "CommunityListsAPIService.CommunitylistsPut")

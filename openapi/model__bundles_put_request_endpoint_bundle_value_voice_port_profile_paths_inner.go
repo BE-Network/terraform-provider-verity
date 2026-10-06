@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,12 +19,12 @@ var _ MappedNullable = &BundlesPutRequestEndpointBundleValueVoicePortProfilePath
 
 // BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner struct for BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner
 type BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner struct {
+	// The index identifying the object. Zero if you want to add an object to the list.
+	Index *int64 `json:"index,omitempty"`
 	//  Voice Port Settings for Voice Port
 	VoicePortNumVoicePortProfiles *string `json:"voice_port_num_voice_port_profiles,omitempty"`
 	// Object type for voice_port_num_voice_port_profiles field
 	VoicePortNumVoicePortProfilesRefType *string `json:"voice_port_num_voice_port_profiles_ref_type_,omitempty"`
-	// The index identifying the object. Zero if you want to add an object to the list.
-	Index *int64 `json:"index,omitempty"`
 }
 
 // NewBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner instantiates a new BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner object
@@ -46,6 +46,38 @@ func NewBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInnerWithDefaul
 	var voicePortNumVoicePortProfiles string = ""
 	this.VoicePortNumVoicePortProfiles = &voicePortNumVoicePortProfiles
 	return &this
+}
+
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetIndex() int64 {
+	if o == nil || IsNil(o.Index) {
+		var ret int64
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetIndexOk() (*int64, bool) {
+	if o == nil || IsNil(o.Index) {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) HasIndex() bool {
+	if o != nil && !IsNil(o.Index) {
+		return true
+	}
+
+	return false
+}
+
+// SetIndex gets a reference to the given int64 and assigns it to the Index field.
+func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) SetIndex(v int64) {
+	o.Index = &v
 }
 
 // GetVoicePortNumVoicePortProfiles returns the VoicePortNumVoicePortProfiles field value if set, zero value otherwise.
@@ -112,40 +144,8 @@ func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) SetVoic
 	o.VoicePortNumVoicePortProfilesRefType = &v
 }
 
-// GetIndex returns the Index field value if set, zero value otherwise.
-func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetIndex() int64 {
-	if o == nil || IsNil(o.Index) {
-		var ret int64
-		return ret
-	}
-	return *o.Index
-}
-
-// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) GetIndexOk() (*int64, bool) {
-	if o == nil || IsNil(o.Index) {
-		return nil, false
-	}
-	return o.Index, true
-}
-
-// HasIndex returns a boolean if a field has been set.
-func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) HasIndex() bool {
-	if o != nil && !IsNil(o.Index) {
-		return true
-	}
-
-	return false
-}
-
-// SetIndex gets a reference to the given int64 and assigns it to the Index field.
-func (o *BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) SetIndex(v int64) {
-	o.Index = &v
-}
-
 func (o BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -154,14 +154,14 @@ func (o BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) MarshalJ
 
 func (o BundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Index) {
+		toSerialize["index"] = o.Index
+	}
 	if !IsNil(o.VoicePortNumVoicePortProfiles) {
 		toSerialize["voice_port_num_voice_port_profiles"] = o.VoicePortNumVoicePortProfiles
 	}
 	if !IsNil(o.VoicePortNumVoicePortProfilesRefType) {
 		toSerialize["voice_port_num_voice_port_profiles_ref_type_"] = o.VoicePortNumVoicePortProfilesRefType
-	}
-	if !IsNil(o.Index) {
-		toSerialize["index"] = o.Index
 	}
 	return toSerialize, nil
 }
@@ -201,5 +201,3 @@ func (v *NullableBundlesPutRequestEndpointBundleValueVoicePortProfilePathsInner)
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

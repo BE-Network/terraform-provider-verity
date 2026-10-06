@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,13 +19,13 @@ var _ MappedNullable = &PacketqueuesPutRequestPacketQueueValue{}
 
 // PacketqueuesPutRequestPacketQueueValue struct for PacketqueuesPutRequestPacketQueueValue
 type PacketqueuesPutRequestPacketQueueValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
-	Pbit []PacketqueuesPutRequestPacketQueueValuePbitInner `json:"pbit,omitempty"`
-	Queue []PacketqueuesPutRequestPacketQueueValueQueueInner `json:"queue,omitempty"`
-	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                            `json:"name,omitempty"`
+	ObjectProperties map[string]interface{}                             `json:"object_properties,omitempty"`
+	Pbit             []PacketqueuesPutRequestPacketQueueValuePbitInner  `json:"pbit,omitempty"`
+	Queue            []PacketqueuesPutRequestPacketQueueValueQueueInner `json:"queue,omitempty"`
 }
 
 // NewPacketqueuesPutRequestPacketQueueValue instantiates a new PacketqueuesPutRequestPacketQueueValue object
@@ -34,10 +34,10 @@ type PacketqueuesPutRequestPacketQueueValue struct {
 // will change when the set of required properties is changed
 func NewPacketqueuesPutRequestPacketQueueValue() *PacketqueuesPutRequestPacketQueueValue {
 	this := PacketqueuesPutRequestPacketQueueValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	return &this
 }
 
@@ -46,11 +46,43 @@ func NewPacketqueuesPutRequestPacketQueueValue() *PacketqueuesPutRequestPacketQu
 // but it doesn't guarantee that properties required by API are set
 func NewPacketqueuesPutRequestPacketQueueValueWithDefaults() *PacketqueuesPutRequestPacketQueueValue {
 	this := PacketqueuesPutRequestPacketQueueValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	return &this
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *PacketqueuesPutRequestPacketQueueValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PacketqueuesPutRequestPacketQueueValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *PacketqueuesPutRequestPacketQueueValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *PacketqueuesPutRequestPacketQueueValue) SetEnable(v bool) {
+	o.Enable = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -85,36 +117,36 @@ func (o *PacketqueuesPutRequestPacketQueueValue) SetName(v string) {
 	o.Name = &v
 }
 
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *PacketqueuesPutRequestPacketQueueValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
+// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
+func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectProperties() map[string]interface{} {
+	if o == nil || IsNil(o.ObjectProperties) {
+		var ret map[string]interface{}
 		return ret
 	}
-	return *o.Enable
+	return o.ObjectProperties
 }
 
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PacketqueuesPutRequestPacketQueueValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
+func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectPropertiesOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.ObjectProperties) {
+		return map[string]interface{}{}, false
 	}
-	return o.Enable, true
+	return o.ObjectProperties, true
 }
 
-// HasEnable returns a boolean if a field has been set.
-func (o *PacketqueuesPutRequestPacketQueueValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
+// HasObjectProperties returns a boolean if a field has been set.
+func (o *PacketqueuesPutRequestPacketQueueValue) HasObjectProperties() bool {
+	if o != nil && !IsNil(o.ObjectProperties) {
 		return true
 	}
 
 	return false
 }
 
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *PacketqueuesPutRequestPacketQueueValue) SetEnable(v bool) {
-	o.Enable = &v
+// SetObjectProperties gets a reference to the given map[string]interface{} and assigns it to the ObjectProperties field.
+func (o *PacketqueuesPutRequestPacketQueueValue) SetObjectProperties(v map[string]interface{}) {
+	o.ObjectProperties = v
 }
 
 // GetPbit returns the Pbit field value if set, zero value otherwise.
@@ -181,40 +213,8 @@ func (o *PacketqueuesPutRequestPacketQueueValue) SetQueue(v []PacketqueuesPutReq
 	o.Queue = v
 }
 
-// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectProperties() map[string]interface{} {
-	if o == nil || IsNil(o.ObjectProperties) {
-		var ret map[string]interface{}
-		return ret
-	}
-	return o.ObjectProperties
-}
-
-// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PacketqueuesPutRequestPacketQueueValue) GetObjectPropertiesOk() (map[string]interface{}, bool) {
-	if o == nil || IsNil(o.ObjectProperties) {
-		return map[string]interface{}{}, false
-	}
-	return o.ObjectProperties, true
-}
-
-// HasObjectProperties returns a boolean if a field has been set.
-func (o *PacketqueuesPutRequestPacketQueueValue) HasObjectProperties() bool {
-	if o != nil && !IsNil(o.ObjectProperties) {
-		return true
-	}
-
-	return false
-}
-
-// SetObjectProperties gets a reference to the given map[string]interface{} and assigns it to the ObjectProperties field.
-func (o *PacketqueuesPutRequestPacketQueueValue) SetObjectProperties(v map[string]interface{}) {
-	o.ObjectProperties = v
-}
-
 func (o PacketqueuesPutRequestPacketQueueValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -223,20 +223,20 @@ func (o PacketqueuesPutRequestPacketQueueValue) MarshalJSON() ([]byte, error) {
 
 func (o PacketqueuesPutRequestPacketQueueValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
+	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
+	if !IsNil(o.ObjectProperties) {
+		toSerialize["object_properties"] = o.ObjectProperties
 	}
 	if !IsNil(o.Pbit) {
 		toSerialize["pbit"] = o.Pbit
 	}
 	if !IsNil(o.Queue) {
 		toSerialize["queue"] = o.Queue
-	}
-	if !IsNil(o.ObjectProperties) {
-		toSerialize["object_properties"] = o.ObjectProperties
 	}
 	return toSerialize, nil
 }
@@ -276,5 +276,3 @@ func (v *NullablePacketqueuesPutRequestPacketQueueValue) UnmarshalJSON(src []byt
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

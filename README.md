@@ -258,6 +258,19 @@ tools/generate_openapi_sdk.sh --write
 The command requires Docker, Python 3, Go, and `rsync` for `--write`. Do not
 delete `openapi/` manually and do not install an unpinned global generator.
 
+Generation automatically retains only Go SDK sources, excludes generated tests
+and module files, and formats the output. `tools/sdkgen/call_api.go.tmpl` supplies
+the `callAPI` implementation that redacts authentication bodies, authorization
+headers, session headers, and URL user information in debug logs while the actual
+request and response remain intact. Ordinary resource bodies are still logged in
+full and may contain resource secrets; registry-based sensitive-field redaction
+is a separate follow-up. Edit that customization instead of restoring `client.go`
+by hand after generation. See [SDK preparation](tools/sdkgen/README.md) for the
+output policy and the reconciled baseline.
+
+CI runs the SDK drift check and debug-log regression tests on every PR and push
+covered by the test workflow, using Docker and Python 3 on the Ubuntu runner.
+
 
 ### Adding or Changing a Resource
 

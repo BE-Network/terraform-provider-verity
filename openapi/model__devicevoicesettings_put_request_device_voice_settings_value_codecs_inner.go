@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,10 +19,10 @@ var _ MappedNullable = &DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCod
 
 // DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner struct for DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner
 type DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner struct {
-	// Name of this Codec
-	CodecNumName *string `json:"codec_num_name,omitempty"`
 	// Enable Codec
 	CodecNumEnable *bool `json:"codec_num_enable,omitempty"`
+	// Name of this Codec
+	CodecNumName *string `json:"codec_num_name,omitempty"`
 	// Packet period selection interval in milliseconds
 	CodecNumPacketizationPeriod *string `json:"codec_num_packetization_period,omitempty"`
 	// Specifies whether silence suppression is on or off. Valid values are 0 = off and 1 = on
@@ -37,10 +37,10 @@ type DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner struct {
 // will change when the set of required properties is changed
 func NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner() *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner {
 	this := DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{}
-	var codecNumName string = "G.711MuLaw"
-	this.CodecNumName = &codecNumName
 	var codecNumEnable bool = true
 	this.CodecNumEnable = &codecNumEnable
+	var codecNumName string = "G.711MuLaw"
+	this.CodecNumName = &codecNumName
 	var codecNumPacketizationPeriod string = "20"
 	this.CodecNumPacketizationPeriod = &codecNumPacketizationPeriod
 	var codecNumSilenceSuppression bool = false
@@ -53,47 +53,15 @@ func NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner() *Devi
 // but it doesn't guarantee that properties required by API are set
 func NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInnerWithDefaults() *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner {
 	this := DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner{}
-	var codecNumName string = "G.711MuLaw"
-	this.CodecNumName = &codecNumName
 	var codecNumEnable bool = true
 	this.CodecNumEnable = &codecNumEnable
+	var codecNumName string = "G.711MuLaw"
+	this.CodecNumName = &codecNumName
 	var codecNumPacketizationPeriod string = "20"
 	this.CodecNumPacketizationPeriod = &codecNumPacketizationPeriod
 	var codecNumSilenceSuppression bool = false
 	this.CodecNumSilenceSuppression = &codecNumSilenceSuppression
 	return &this
-}
-
-// GetCodecNumName returns the CodecNumName field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) GetCodecNumName() string {
-	if o == nil || IsNil(o.CodecNumName) {
-		var ret string
-		return ret
-	}
-	return *o.CodecNumName
-}
-
-// GetCodecNumNameOk returns a tuple with the CodecNumName field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) GetCodecNumNameOk() (*string, bool) {
-	if o == nil || IsNil(o.CodecNumName) {
-		return nil, false
-	}
-	return o.CodecNumName, true
-}
-
-// HasCodecNumName returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) HasCodecNumName() bool {
-	if o != nil && !IsNil(o.CodecNumName) {
-		return true
-	}
-
-	return false
-}
-
-// SetCodecNumName gets a reference to the given string and assigns it to the CodecNumName field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) SetCodecNumName(v string) {
-	o.CodecNumName = &v
 }
 
 // GetCodecNumEnable returns the CodecNumEnable field value if set, zero value otherwise.
@@ -126,6 +94,38 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) HasCo
 // SetCodecNumEnable gets a reference to the given bool and assigns it to the CodecNumEnable field.
 func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) SetCodecNumEnable(v bool) {
 	o.CodecNumEnable = &v
+}
+
+// GetCodecNumName returns the CodecNumName field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) GetCodecNumName() string {
+	if o == nil || IsNil(o.CodecNumName) {
+		var ret string
+		return ret
+	}
+	return *o.CodecNumName
+}
+
+// GetCodecNumNameOk returns a tuple with the CodecNumName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) GetCodecNumNameOk() (*string, bool) {
+	if o == nil || IsNil(o.CodecNumName) {
+		return nil, false
+	}
+	return o.CodecNumName, true
+}
+
+// HasCodecNumName returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) HasCodecNumName() bool {
+	if o != nil && !IsNil(o.CodecNumName) {
+		return true
+	}
+
+	return false
+}
+
+// SetCodecNumName gets a reference to the given string and assigns it to the CodecNumName field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) SetCodecNumName(v string) {
+	o.CodecNumName = &v
 }
 
 // GetCodecNumPacketizationPeriod returns the CodecNumPacketizationPeriod field value if set, zero value otherwise.
@@ -225,7 +225,7 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) SetIn
 }
 
 func (o DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -234,11 +234,11 @@ func (o DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) Marsha
 
 func (o DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.CodecNumName) {
-		toSerialize["codec_num_name"] = o.CodecNumName
-	}
 	if !IsNil(o.CodecNumEnable) {
 		toSerialize["codec_num_enable"] = o.CodecNumEnable
+	}
+	if !IsNil(o.CodecNumName) {
+		toSerialize["codec_num_name"] = o.CodecNumName
 	}
 	if !IsNil(o.CodecNumPacketizationPeriod) {
 		toSerialize["codec_num_packetization_period"] = o.CodecNumPacketizationPeriod
@@ -287,5 +287,3 @@ func (v *NullableDevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInne
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,13 +19,12 @@ import (
 	"reflect"
 )
 
-
 // PBRoutingAPIService PBRoutingAPI service
 type PBRoutingAPIService service
 
 type ApiPolicybasedroutingDeleteRequest struct {
-	ctx context.Context
-	ApiService *PBRoutingAPIService
+	ctx           context.Context
+	ApiService    *PBRoutingAPIService
 	pbRoutingName *[]string
 	changesetName *string
 }
@@ -49,23 +48,22 @@ PolicybasedroutingDelete Delete PB Routing object
 
 Deletes an existing PB Routing object from the system if changeset_name is empty, from a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPolicybasedroutingDeleteRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPolicybasedroutingDeleteRequest
 */
 func (a *PBRoutingAPIService) PolicybasedroutingDelete(ctx context.Context) ApiPolicybasedroutingDeleteRequest {
 	return ApiPolicybasedroutingDeleteRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PBRoutingAPIService) PolicybasedroutingDeleteExecute(r ApiPolicybasedroutingDeleteRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PBRoutingAPIService.PolicybasedroutingDelete")
@@ -142,10 +140,10 @@ func (a *PBRoutingAPIService) PolicybasedroutingDeleteExecute(r ApiPolicybasedro
 }
 
 type ApiPolicybasedroutingGetRequest struct {
-	ctx context.Context
-	ApiService *PBRoutingAPIService
+	ctx           context.Context
+	ApiService    *PBRoutingAPIService
 	pbRoutingName *string
-	includeData *bool
+	includeData   *bool
 	changesetName *string
 }
 
@@ -173,23 +171,22 @@ PolicybasedroutingGet Get all PB Routing objects
 
 Downloads all PB Routing objects from the system.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPolicybasedroutingGetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPolicybasedroutingGetRequest
 */
 func (a *PBRoutingAPIService) PolicybasedroutingGet(ctx context.Context) ApiPolicybasedroutingGetRequest {
 	return ApiPolicybasedroutingGetRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PBRoutingAPIService) PolicybasedroutingGetExecute(r ApiPolicybasedroutingGetRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodGet
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PBRoutingAPIService.PolicybasedroutingGet")
@@ -258,9 +255,9 @@ func (a *PBRoutingAPIService) PolicybasedroutingGetExecute(r ApiPolicybasedrouti
 }
 
 type ApiPolicybasedroutingPatchRequest struct {
-	ctx context.Context
-	ApiService *PBRoutingAPIService
-	changesetName *string
+	ctx                          context.Context
+	ApiService                   *PBRoutingAPIService
+	changesetName                *string
 	policybasedroutingPutRequest *PolicybasedroutingPutRequest
 }
 
@@ -283,23 +280,22 @@ PolicybasedroutingPatch Update PB Routing object
 
 Update PB Routing object into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPolicybasedroutingPatchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPolicybasedroutingPatchRequest
 */
 func (a *PBRoutingAPIService) PolicybasedroutingPatch(ctx context.Context) ApiPolicybasedroutingPatchRequest {
 	return ApiPolicybasedroutingPatchRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PBRoutingAPIService) PolicybasedroutingPatchExecute(r ApiPolicybasedroutingPatchRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPatch
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPatch
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PBRoutingAPIService.PolicybasedroutingPatch")
@@ -364,9 +360,9 @@ func (a *PBRoutingAPIService) PolicybasedroutingPatchExecute(r ApiPolicybasedrou
 }
 
 type ApiPolicybasedroutingPutRequest struct {
-	ctx context.Context
-	ApiService *PBRoutingAPIService
-	changesetName *string
+	ctx                          context.Context
+	ApiService                   *PBRoutingAPIService
+	changesetName                *string
 	policybasedroutingPutRequest *PolicybasedroutingPutRequest
 }
 
@@ -389,23 +385,22 @@ PolicybasedroutingPut Create PB Routing object
 
 Create PB Routing object into the system if changeset_name is empty, into a changeset if its name is provided.
 
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiPolicybasedroutingPutRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiPolicybasedroutingPutRequest
 */
 func (a *PBRoutingAPIService) PolicybasedroutingPut(ctx context.Context) ApiPolicybasedroutingPutRequest {
 	return ApiPolicybasedroutingPutRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
 func (a *PBRoutingAPIService) PolicybasedroutingPutExecute(r ApiPolicybasedroutingPutRequest) (*http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
+		localVarHTTPMethod = http.MethodPut
+		localVarPostBody   interface{}
+		formFiles          []formFile
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "PBRoutingAPIService.PolicybasedroutingPut")

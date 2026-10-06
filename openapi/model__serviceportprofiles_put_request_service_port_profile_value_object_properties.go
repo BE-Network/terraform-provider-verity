@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -115,7 +115,7 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValueObjectProperties) S
 }
 
 func (o ServiceportprofilesPutRequestServicePortProfileValueObjectProperties) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -168,5 +168,3 @@ func (v *NullableServiceportprofilesPutRequestServicePortProfileValueObjectPrope
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

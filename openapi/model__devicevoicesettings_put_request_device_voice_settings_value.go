@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,14 +19,86 @@ var _ MappedNullable = &DevicevoicesettingsPutRequestDeviceVoiceSettingsValue{}
 
 // DevicevoicesettingsPutRequestDeviceVoiceSettingsValue struct for DevicevoicesettingsPutRequestDeviceVoiceSettingsValue
 type DevicevoicesettingsPutRequestDeviceVoiceSettingsValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
+	// Anonymoes Caller ID Block Activate
+	AnonCidBlockActivate *string `json:"anon_cid_block_activate,omitempty"`
+	// Anonymous Caller ID Block Deactivate
+	AnonCidBlockDeactivate *string `json:"anon_cid_block_deactivate,omitempty"`
+	// T.38 Bit Rate in bps. Most available fax machines support up to 14,400bps
+	BitRate *string `json:"bit_rate,omitempty"`
+	// Call Agent 1
+	CallAgent1 *string `json:"call_agent_1,omitempty"`
+	// Call Agent 2
+	CallAgent2 *string `json:"call_agent_2,omitempty"`
+	// Call Agent Port 1
+	CallAgentPort1 NullableInt64 `json:"call_agent_port_1,omitempty"`
+	// Call Agent Port 2
+	CallAgentPort2 NullableInt64 `json:"call_agent_port_2,omitempty"`
+	// Call Forward On Busy Activate
+	CallForwardOnBusyActivate *string `json:"call_forward_on_busy_activate,omitempty"`
+	// Call Forward On Busy Deactivate
+	CallForwardOnBusyDeactivate *string `json:"call_forward_on_busy_deactivate,omitempty"`
+	// Call Forward On No Answer Activate
+	CallForwardOnNoAnswerActivate *string `json:"call_forward_on_no_answer_activate,omitempty"`
+	// Call Forward On No Answer Deactivate
+	CallForwardOnNoAnswerDeactivate *string `json:"call_forward_on_no_answer_deactivate,omitempty"`
+	// Call Forward Unconditional Activate
+	CallForwardUnconditionalActivate *string `json:"call_forward_unconditional_activate,omitempty"`
+	// Call Forward Unconditional Deactivate
+	CallForwardUnconditionalDeactivate *string `json:"call_forward_unconditional_deactivate,omitempty"`
+	// Call hold
+	CallHold *string `json:"call_hold,omitempty"`
+	// Cancel Call waiting
+	CancelCallWaiting *string `json:"cancel_call_waiting,omitempty"`
+	// Enables or disables handling of CAS via RTP CAS events. Valid values are 0 = off and 1 = on
+	CasEvents NullableInt64 `json:"cas_events,omitempty"`
+	// Caller ID Delivery Blocking (single call)  Activate
+	CidsActivate *string `json:"cids_activate,omitempty"`
+	// Caller ID Delivery Blocking (single call) Deactivate
+	CidsDeactivate *string                                                            `json:"cids_deactivate,omitempty"`
+	Codecs         []DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner `json:"codecs,omitempty"`
+	// Do not Disturb Activate
+	DoNotDisturbActivate *string `json:"do_not_disturb_activate,omitempty"`
+	// Do not Disturb Deactivate
+	DoNotDisturbDeactivate *string `json:"do_not_disturb_deactivate,omitempty"`
+	// Do not Disturb PIN Change
+	DoNotDisturbPinChange *string `json:"do_not_disturb_pin_change,omitempty"`
+	// Domain
+	Domain *string `json:"domain,omitempty"`
+	// Differentiated Services Code Point (DSCP) to be used for outgoing RTP packets
+	DscpMark NullableInt64 `json:"dscp_mark,omitempty"`
 	// Specifies how DTMF signals are carried
 	DtmfMethod *string `json:"dtmf_method,omitempty"`
-	// Region
-	Region *string `json:"region,omitempty"`
+	// Emergency Service Number
+	EmergencyServiceNumber *string `json:"emergency_service_number,omitempty"`
+	// Enable object.
+	Enable *bool `json:"enable,omitempty"`
+	// Telephone Event Payload Type
+	EventPayloadType NullableInt64 `json:"event_payload_type,omitempty"`
+	// Fax T.38 Enable
+	FaxT38 *bool `json:"fax_t38,omitempty"`
+	// Intercom 1
+	Intercom1 *string `json:"intercom_1,omitempty"`
+	// Intercom 2
+	Intercom2 *string `json:"intercom_2,omitempty"`
+	// Intercom 3
+	Intercom3 *string `json:"intercom_3,omitempty"`
+	// Defines the highest RTP port used for voice traffic, must be greater than local Local Port Min
+	LocalPortMax NullableInt64 `json:"local_port_max,omitempty"`
+	// Defines the base RTP port that should be used for voice traffic
+	LocalPortMin NullableInt64 `json:"local_port_min,omitempty"`
+	// MGCP Differentiated Services Code point (DSCP)
+	MgcpDscpMark NullableInt64 `json:"mgcp_dscp_mark,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                `json:"name,omitempty"`
+	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
+	// IP address or URI of the outbound proxy server for SIP signalling messages. An outbound SIP proxy may or may not be required within a given network
+	OutboundProxy *string `json:"outbound_proxy,omitempty"`
+	// Outbound Proxy Port
+	OutboundProxyPort NullableInt64 `json:"outbound_proxy_port,omitempty"`
+	// IP address or URI of the secondary outbound proxy server for SIP signalling messages. An outbound SIP proxy may or may not be required within a given network
+	OutboundProxySecondary *string `json:"outbound_proxy_secondary,omitempty"`
+	// Secondary Outbound Proxy Port
+	OutboundProxySecondaryPort NullableInt64 `json:"outbound_proxy_secondary_port,omitempty"`
 	// Voice Protocol: MGCP or SIP
 	Protocol *string `json:"protocol,omitempty"`
 	// IP address or URI of the SIP proxy server for SIP signalling messages
@@ -37,6 +109,10 @@ type DevicevoicesettingsPutRequestDeviceVoiceSettingsValue struct {
 	ProxyServerSecondary *string `json:"proxy_server_secondary,omitempty"`
 	// Secondary Proxy Server Port
 	ProxyServerSecondaryPort NullableInt64 `json:"proxy_server_secondary_port,omitempty"`
+	// Region
+	Region *string `json:"region,omitempty"`
+	// SIP registration expiration time in seconds. If value is 0, the SIP agent does not add an expiration time to the registration requests and does not perform re-registration. The default value is 3600 seconds
+	RegisterExpires NullableInt64 `json:"register_expires,omitempty"`
 	// Name or IP address or resolved name of the registrar server for SIP signalling messages. Examples: 10.10.10.10 and proxy.voip.net
 	RegistrarServer *string `json:"registrar_server,omitempty"`
 	// Registrar Server Port
@@ -45,102 +121,26 @@ type DevicevoicesettingsPutRequestDeviceVoiceSettingsValue struct {
 	RegistrarServerSecondary *string `json:"registrar_server_secondary,omitempty"`
 	// Secondary Registrar Server Port
 	RegistrarServerSecondaryPort NullableInt64 `json:"registrar_server_secondary_port,omitempty"`
-	// User Agent Domain
-	UserAgentDomain *string `json:"user_agent_domain,omitempty"`
-	// User Agent Transport
-	UserAgentTransport *string `json:"user_agent_transport,omitempty"`
-	// User Agent Port
-	UserAgentPort NullableInt64 `json:"user_agent_port,omitempty"`
-	// IP address or URI of the outbound proxy server for SIP signalling messages. An outbound SIP proxy may or may not be required within a given network
-	OutboundProxy *string `json:"outbound_proxy,omitempty"`
-	// Outbound Proxy Port
-	OutboundProxyPort NullableInt64 `json:"outbound_proxy_port,omitempty"`
-	// IP address or URI of the secondary outbound proxy server for SIP signalling messages. An outbound SIP proxy may or may not be required within a given network
-	OutboundProxySecondary *string `json:"outbound_proxy_secondary,omitempty"`
-	// Secondary Outbound Proxy Port
-	OutboundProxySecondaryPort NullableInt64 `json:"outbound_proxy_secondary_port,omitempty"`
 	// Specifies the time in seconds to start the re-registration process. The default value is 3240 seconds
 	RegistrationPeriod NullableInt64 `json:"registration_period,omitempty"`
-	// SIP registration expiration time in seconds. If value is 0, the SIP agent does not add an expiration time to the registration requests and does not perform re-registration. The default value is 3600 seconds
-	RegisterExpires NullableInt64 `json:"register_expires,omitempty"`
-	// Name or IP address or resolved name of the external voicemail server if not provided by SIP server for MWI control. Examples: 10.10.10.10 and proxy.voip.net
-	VoicemailServer *string `json:"voicemail_server,omitempty"`
-	// Voicemail Server Port
-	VoicemailServerPort NullableInt64 `json:"voicemail_server_port,omitempty"`
-	// Voicemail server expiration time in seconds. If value is 0, the Register Expires time is used instead. The default value is 3600 seconds
-	VoicemailServerExpires NullableInt64 `json:"voicemail_server_expires,omitempty"`
-	// Sip Differentiated Services Code point (DSCP)
-	SipDscpMark NullableInt64 `json:"sip_dscp_mark,omitempty"`
-	// Call Agent 1
-	CallAgent1 *string `json:"call_agent_1,omitempty"`
-	// Call Agent Port 1
-	CallAgentPort1 NullableInt64 `json:"call_agent_port_1,omitempty"`
-	// Call Agent 2
-	CallAgent2 *string `json:"call_agent_2,omitempty"`
-	// Call Agent Port 2
-	CallAgentPort2 NullableInt64 `json:"call_agent_port_2,omitempty"`
-	// Domain
-	Domain *string `json:"domain,omitempty"`
-	// MGCP Differentiated Services Code point (DSCP)
-	MgcpDscpMark NullableInt64 `json:"mgcp_dscp_mark,omitempty"`
-	// Base string for the MGCP physical termination id(s)
-	TerminationBase *string `json:"termination_base,omitempty"`
-	// Defines the base RTP port that should be used for voice traffic
-	LocalPortMin NullableInt64 `json:"local_port_min,omitempty"`
-	// Defines the highest RTP port used for voice traffic, must be greater than local Local Port Min
-	LocalPortMax NullableInt64 `json:"local_port_max,omitempty"`
-	// Telephone Event Payload Type
-	EventPayloadType NullableInt64 `json:"event_payload_type,omitempty"`
-	// Enables or disables handling of CAS via RTP CAS events. Valid values are 0 = off and 1 = on
-	CasEvents NullableInt64 `json:"cas_events,omitempty"`
-	// Differentiated Services Code Point (DSCP) to be used for outgoing RTP packets
-	DscpMark NullableInt64 `json:"dscp_mark,omitempty"`
 	// RTCP Enable
 	Rtcp *bool `json:"rtcp,omitempty"`
-	// Fax T.38 Enable
-	FaxT38 *bool `json:"fax_t38,omitempty"`
-	// T.38 Bit Rate in bps. Most available fax machines support up to 14,400bps
-	BitRate *string `json:"bit_rate,omitempty"`
-	// Cancel Call waiting
-	CancelCallWaiting *string `json:"cancel_call_waiting,omitempty"`
-	// Call hold
-	CallHold *string `json:"call_hold,omitempty"`
-	// Caller ID Delivery Blocking (single call)  Activate
-	CidsActivate *string `json:"cids_activate,omitempty"`
-	// Caller ID Delivery Blocking (single call) Deactivate
-	CidsDeactivate *string `json:"cids_deactivate,omitempty"`
-	// Do not Disturb Activate
-	DoNotDisturbActivate *string `json:"do_not_disturb_activate,omitempty"`
-	// Do not Disturb Deactivate
-	DoNotDisturbDeactivate *string `json:"do_not_disturb_deactivate,omitempty"`
-	// Do not Disturb PIN Change
-	DoNotDisturbPinChange *string `json:"do_not_disturb_pin_change,omitempty"`
-	// Emergency Service Number
-	EmergencyServiceNumber *string `json:"emergency_service_number,omitempty"`
-	// Anonymoes Caller ID Block Activate
-	AnonCidBlockActivate *string `json:"anon_cid_block_activate,omitempty"`
-	// Anonymous Caller ID Block Deactivate
-	AnonCidBlockDeactivate *string `json:"anon_cid_block_deactivate,omitempty"`
-	// Call Forward Unconditional Activate
-	CallForwardUnconditionalActivate *string `json:"call_forward_unconditional_activate,omitempty"`
-	// Call Forward Unconditional Deactivate
-	CallForwardUnconditionalDeactivate *string `json:"call_forward_unconditional_deactivate,omitempty"`
-	// Call Forward On Busy Activate
-	CallForwardOnBusyActivate *string `json:"call_forward_on_busy_activate,omitempty"`
-	// Call Forward On Busy Deactivate
-	CallForwardOnBusyDeactivate *string `json:"call_forward_on_busy_deactivate,omitempty"`
-	// Call Forward On No Answer Activate
-	CallForwardOnNoAnswerActivate *string `json:"call_forward_on_no_answer_activate,omitempty"`
-	// Call Forward On No Answer Deactivate
-	CallForwardOnNoAnswerDeactivate *string `json:"call_forward_on_no_answer_deactivate,omitempty"`
-	// Intercom 1
-	Intercom1 *string `json:"intercom_1,omitempty"`
-	// Intercom 2
-	Intercom2 *string `json:"intercom_2,omitempty"`
-	// Intercom 3
-	Intercom3 *string `json:"intercom_3,omitempty"`
-	Codecs []DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner `json:"codecs,omitempty"`
-	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
+	// Sip Differentiated Services Code point (DSCP)
+	SipDscpMark NullableInt64 `json:"sip_dscp_mark,omitempty"`
+	// Base string for the MGCP physical termination id(s)
+	TerminationBase *string `json:"termination_base,omitempty"`
+	// User Agent Domain
+	UserAgentDomain *string `json:"user_agent_domain,omitempty"`
+	// User Agent Port
+	UserAgentPort NullableInt64 `json:"user_agent_port,omitempty"`
+	// User Agent Transport
+	UserAgentTransport *string `json:"user_agent_transport,omitempty"`
+	// Name or IP address or resolved name of the external voicemail server if not provided by SIP server for MWI control. Examples: 10.10.10.10 and proxy.voip.net
+	VoicemailServer *string `json:"voicemail_server,omitempty"`
+	// Voicemail server expiration time in seconds. If value is 0, the Register Expires time is used instead. The default value is 3600 seconds
+	VoicemailServerExpires NullableInt64 `json:"voicemail_server_expires,omitempty"`
+	// Voicemail Server Port
+	VoicemailServerPort NullableInt64 `json:"voicemail_server_port,omitempty"`
 }
 
 // NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValue instantiates a new DevicevoicesettingsPutRequestDeviceVoiceSettingsValue object
@@ -149,92 +149,38 @@ type DevicevoicesettingsPutRequestDeviceVoiceSettingsValue struct {
 // will change when the set of required properties is changed
 func NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValue() *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue {
 	this := DevicevoicesettingsPutRequestDeviceVoiceSettingsValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
-	var dtmfMethod string = "Inband"
-	this.DtmfMethod = &dtmfMethod
-	var region string = "US"
-	this.Region = &region
-	var protocol string = "SIP"
-	this.Protocol = &protocol
-	var proxyServer string = ""
-	this.ProxyServer = &proxyServer
-	var proxyServerPort int64 = 0
-	this.ProxyServerPort = *NewNullableInt64(&proxyServerPort)
-	var proxyServerSecondary string = ""
-	this.ProxyServerSecondary = &proxyServerSecondary
-	var proxyServerSecondaryPort int64 = 0
-	this.ProxyServerSecondaryPort = *NewNullableInt64(&proxyServerSecondaryPort)
-	var registrarServer string = ""
-	this.RegistrarServer = &registrarServer
-	var registrarServerPort int64 = 0
-	this.RegistrarServerPort = *NewNullableInt64(&registrarServerPort)
-	var registrarServerSecondary string = ""
-	this.RegistrarServerSecondary = &registrarServerSecondary
-	var registrarServerSecondaryPort int64 = 0
-	this.RegistrarServerSecondaryPort = *NewNullableInt64(&registrarServerSecondaryPort)
-	var userAgentDomain string = ""
-	this.UserAgentDomain = &userAgentDomain
-	var userAgentTransport string = "UDP"
-	this.UserAgentTransport = &userAgentTransport
-	var userAgentPort int64 = 0
-	this.UserAgentPort = *NewNullableInt64(&userAgentPort)
-	var outboundProxy string = ""
-	this.OutboundProxy = &outboundProxy
-	var outboundProxyPort int64 = 0
-	this.OutboundProxyPort = *NewNullableInt64(&outboundProxyPort)
-	var outboundProxySecondary string = ""
-	this.OutboundProxySecondary = &outboundProxySecondary
-	var outboundProxySecondaryPort int64 = 0
-	this.OutboundProxySecondaryPort = *NewNullableInt64(&outboundProxySecondaryPort)
-	var registrationPeriod int64 = 3240
-	this.RegistrationPeriod = *NewNullableInt64(&registrationPeriod)
-	var registerExpires int64 = 3600
-	this.RegisterExpires = *NewNullableInt64(&registerExpires)
-	var voicemailServer string = ""
-	this.VoicemailServer = &voicemailServer
-	var voicemailServerPort int64 = 0
-	this.VoicemailServerPort = *NewNullableInt64(&voicemailServerPort)
-	var voicemailServerExpires int64 = 3600
-	this.VoicemailServerExpires = *NewNullableInt64(&voicemailServerExpires)
-	var sipDscpMark int64 = 0
-	this.SipDscpMark = *NewNullableInt64(&sipDscpMark)
-	var callAgent1 string = ""
-	this.CallAgent1 = &callAgent1
-	var callAgentPort1 int64 = 0
-	this.CallAgentPort1 = *NewNullableInt64(&callAgentPort1)
-	var callAgent2 string = ""
-	this.CallAgent2 = &callAgent2
-	var callAgentPort2 int64 = 0
-	this.CallAgentPort2 = *NewNullableInt64(&callAgentPort2)
-	var domain string = ""
-	this.Domain = &domain
-	var mgcpDscpMark int64 = 0
-	this.MgcpDscpMark = *NewNullableInt64(&mgcpDscpMark)
-	var terminationBase string = "aaln/"
-	this.TerminationBase = &terminationBase
-	var localPortMin int64 = 30000
-	this.LocalPortMin = *NewNullableInt64(&localPortMin)
-	var localPortMax int64 = 30200
-	this.LocalPortMax = *NewNullableInt64(&localPortMax)
-	var eventPayloadType int64 = 101
-	this.EventPayloadType = *NewNullableInt64(&eventPayloadType)
-	var casEvents int64 = 0
-	this.CasEvents = *NewNullableInt64(&casEvents)
-	var dscpMark int64 = 0
-	this.DscpMark = *NewNullableInt64(&dscpMark)
-	var rtcp bool = true
-	this.Rtcp = &rtcp
-	var faxT38 bool = false
-	this.FaxT38 = &faxT38
+	var anonCidBlockActivate string = "*77"
+	this.AnonCidBlockActivate = &anonCidBlockActivate
+	var anonCidBlockDeactivate string = "*87"
+	this.AnonCidBlockDeactivate = &anonCidBlockDeactivate
 	var bitRate string = "14400"
 	this.BitRate = &bitRate
-	var cancelCallWaiting string = "*70"
-	this.CancelCallWaiting = &cancelCallWaiting
+	var callAgent1 string = ""
+	this.CallAgent1 = &callAgent1
+	var callAgent2 string = ""
+	this.CallAgent2 = &callAgent2
+	var callAgentPort1 int64 = 0
+	this.CallAgentPort1 = *NewNullableInt64(&callAgentPort1)
+	var callAgentPort2 int64 = 0
+	this.CallAgentPort2 = *NewNullableInt64(&callAgentPort2)
+	var callForwardOnBusyActivate string = "*90"
+	this.CallForwardOnBusyActivate = &callForwardOnBusyActivate
+	var callForwardOnBusyDeactivate string = "*91"
+	this.CallForwardOnBusyDeactivate = &callForwardOnBusyDeactivate
+	var callForwardOnNoAnswerActivate string = "*92"
+	this.CallForwardOnNoAnswerActivate = &callForwardOnNoAnswerActivate
+	var callForwardOnNoAnswerDeactivate string = "*93"
+	this.CallForwardOnNoAnswerDeactivate = &callForwardOnNoAnswerDeactivate
+	var callForwardUnconditionalActivate string = "*72"
+	this.CallForwardUnconditionalActivate = &callForwardUnconditionalActivate
+	var callForwardUnconditionalDeactivate string = "*73"
+	this.CallForwardUnconditionalDeactivate = &callForwardUnconditionalDeactivate
 	var callHold string = "*9"
 	this.CallHold = &callHold
+	var cancelCallWaiting string = "*70"
+	this.CancelCallWaiting = &cancelCallWaiting
+	var casEvents int64 = 0
+	this.CasEvents = *NewNullableInt64(&casEvents)
 	var cidsActivate string = "*67"
 	this.CidsActivate = &cidsActivate
 	var cidsDeactivate string = "*82"
@@ -245,30 +191,84 @@ func NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValue() *Devicevoicesett
 	this.DoNotDisturbDeactivate = &doNotDisturbDeactivate
 	var doNotDisturbPinChange string = "*10"
 	this.DoNotDisturbPinChange = &doNotDisturbPinChange
+	var domain string = ""
+	this.Domain = &domain
+	var dscpMark int64 = 0
+	this.DscpMark = *NewNullableInt64(&dscpMark)
+	var dtmfMethod string = "Inband"
+	this.DtmfMethod = &dtmfMethod
 	var emergencyServiceNumber string = "911"
 	this.EmergencyServiceNumber = &emergencyServiceNumber
-	var anonCidBlockActivate string = "*77"
-	this.AnonCidBlockActivate = &anonCidBlockActivate
-	var anonCidBlockDeactivate string = "*87"
-	this.AnonCidBlockDeactivate = &anonCidBlockDeactivate
-	var callForwardUnconditionalActivate string = "*72"
-	this.CallForwardUnconditionalActivate = &callForwardUnconditionalActivate
-	var callForwardUnconditionalDeactivate string = "*73"
-	this.CallForwardUnconditionalDeactivate = &callForwardUnconditionalDeactivate
-	var callForwardOnBusyActivate string = "*90"
-	this.CallForwardOnBusyActivate = &callForwardOnBusyActivate
-	var callForwardOnBusyDeactivate string = "*91"
-	this.CallForwardOnBusyDeactivate = &callForwardOnBusyDeactivate
-	var callForwardOnNoAnswerActivate string = "*92"
-	this.CallForwardOnNoAnswerActivate = &callForwardOnNoAnswerActivate
-	var callForwardOnNoAnswerDeactivate string = "*93"
-	this.CallForwardOnNoAnswerDeactivate = &callForwardOnNoAnswerDeactivate
+	var enable bool = false
+	this.Enable = &enable
+	var eventPayloadType int64 = 101
+	this.EventPayloadType = *NewNullableInt64(&eventPayloadType)
+	var faxT38 bool = false
+	this.FaxT38 = &faxT38
 	var intercom1 string = "*53"
 	this.Intercom1 = &intercom1
 	var intercom2 string = "*54"
 	this.Intercom2 = &intercom2
 	var intercom3 string = "*55"
 	this.Intercom3 = &intercom3
+	var localPortMax int64 = 30200
+	this.LocalPortMax = *NewNullableInt64(&localPortMax)
+	var localPortMin int64 = 30000
+	this.LocalPortMin = *NewNullableInt64(&localPortMin)
+	var mgcpDscpMark int64 = 0
+	this.MgcpDscpMark = *NewNullableInt64(&mgcpDscpMark)
+	var name string = ""
+	this.Name = &name
+	var outboundProxy string = ""
+	this.OutboundProxy = &outboundProxy
+	var outboundProxyPort int64 = 0
+	this.OutboundProxyPort = *NewNullableInt64(&outboundProxyPort)
+	var outboundProxySecondary string = ""
+	this.OutboundProxySecondary = &outboundProxySecondary
+	var outboundProxySecondaryPort int64 = 0
+	this.OutboundProxySecondaryPort = *NewNullableInt64(&outboundProxySecondaryPort)
+	var protocol string = "SIP"
+	this.Protocol = &protocol
+	var proxyServer string = ""
+	this.ProxyServer = &proxyServer
+	var proxyServerPort int64 = 0
+	this.ProxyServerPort = *NewNullableInt64(&proxyServerPort)
+	var proxyServerSecondary string = ""
+	this.ProxyServerSecondary = &proxyServerSecondary
+	var proxyServerSecondaryPort int64 = 0
+	this.ProxyServerSecondaryPort = *NewNullableInt64(&proxyServerSecondaryPort)
+	var region string = "US"
+	this.Region = &region
+	var registerExpires int64 = 3600
+	this.RegisterExpires = *NewNullableInt64(&registerExpires)
+	var registrarServer string = ""
+	this.RegistrarServer = &registrarServer
+	var registrarServerPort int64 = 0
+	this.RegistrarServerPort = *NewNullableInt64(&registrarServerPort)
+	var registrarServerSecondary string = ""
+	this.RegistrarServerSecondary = &registrarServerSecondary
+	var registrarServerSecondaryPort int64 = 0
+	this.RegistrarServerSecondaryPort = *NewNullableInt64(&registrarServerSecondaryPort)
+	var registrationPeriod int64 = 3240
+	this.RegistrationPeriod = *NewNullableInt64(&registrationPeriod)
+	var rtcp bool = true
+	this.Rtcp = &rtcp
+	var sipDscpMark int64 = 0
+	this.SipDscpMark = *NewNullableInt64(&sipDscpMark)
+	var terminationBase string = "aaln/"
+	this.TerminationBase = &terminationBase
+	var userAgentDomain string = ""
+	this.UserAgentDomain = &userAgentDomain
+	var userAgentPort int64 = 0
+	this.UserAgentPort = *NewNullableInt64(&userAgentPort)
+	var userAgentTransport string = "UDP"
+	this.UserAgentTransport = &userAgentTransport
+	var voicemailServer string = ""
+	this.VoicemailServer = &voicemailServer
+	var voicemailServerExpires int64 = 3600
+	this.VoicemailServerExpires = *NewNullableInt64(&voicemailServerExpires)
+	var voicemailServerPort int64 = 0
+	this.VoicemailServerPort = *NewNullableInt64(&voicemailServerPort)
 	return &this
 }
 
@@ -277,92 +277,38 @@ func NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValue() *Devicevoicesett
 // but it doesn't guarantee that properties required by API are set
 func NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValueWithDefaults() *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue {
 	this := DevicevoicesettingsPutRequestDeviceVoiceSettingsValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
-	var dtmfMethod string = "Inband"
-	this.DtmfMethod = &dtmfMethod
-	var region string = "US"
-	this.Region = &region
-	var protocol string = "SIP"
-	this.Protocol = &protocol
-	var proxyServer string = ""
-	this.ProxyServer = &proxyServer
-	var proxyServerPort int64 = 0
-	this.ProxyServerPort = *NewNullableInt64(&proxyServerPort)
-	var proxyServerSecondary string = ""
-	this.ProxyServerSecondary = &proxyServerSecondary
-	var proxyServerSecondaryPort int64 = 0
-	this.ProxyServerSecondaryPort = *NewNullableInt64(&proxyServerSecondaryPort)
-	var registrarServer string = ""
-	this.RegistrarServer = &registrarServer
-	var registrarServerPort int64 = 0
-	this.RegistrarServerPort = *NewNullableInt64(&registrarServerPort)
-	var registrarServerSecondary string = ""
-	this.RegistrarServerSecondary = &registrarServerSecondary
-	var registrarServerSecondaryPort int64 = 0
-	this.RegistrarServerSecondaryPort = *NewNullableInt64(&registrarServerSecondaryPort)
-	var userAgentDomain string = ""
-	this.UserAgentDomain = &userAgentDomain
-	var userAgentTransport string = "UDP"
-	this.UserAgentTransport = &userAgentTransport
-	var userAgentPort int64 = 0
-	this.UserAgentPort = *NewNullableInt64(&userAgentPort)
-	var outboundProxy string = ""
-	this.OutboundProxy = &outboundProxy
-	var outboundProxyPort int64 = 0
-	this.OutboundProxyPort = *NewNullableInt64(&outboundProxyPort)
-	var outboundProxySecondary string = ""
-	this.OutboundProxySecondary = &outboundProxySecondary
-	var outboundProxySecondaryPort int64 = 0
-	this.OutboundProxySecondaryPort = *NewNullableInt64(&outboundProxySecondaryPort)
-	var registrationPeriod int64 = 3240
-	this.RegistrationPeriod = *NewNullableInt64(&registrationPeriod)
-	var registerExpires int64 = 3600
-	this.RegisterExpires = *NewNullableInt64(&registerExpires)
-	var voicemailServer string = ""
-	this.VoicemailServer = &voicemailServer
-	var voicemailServerPort int64 = 0
-	this.VoicemailServerPort = *NewNullableInt64(&voicemailServerPort)
-	var voicemailServerExpires int64 = 3600
-	this.VoicemailServerExpires = *NewNullableInt64(&voicemailServerExpires)
-	var sipDscpMark int64 = 0
-	this.SipDscpMark = *NewNullableInt64(&sipDscpMark)
-	var callAgent1 string = ""
-	this.CallAgent1 = &callAgent1
-	var callAgentPort1 int64 = 0
-	this.CallAgentPort1 = *NewNullableInt64(&callAgentPort1)
-	var callAgent2 string = ""
-	this.CallAgent2 = &callAgent2
-	var callAgentPort2 int64 = 0
-	this.CallAgentPort2 = *NewNullableInt64(&callAgentPort2)
-	var domain string = ""
-	this.Domain = &domain
-	var mgcpDscpMark int64 = 0
-	this.MgcpDscpMark = *NewNullableInt64(&mgcpDscpMark)
-	var terminationBase string = "aaln/"
-	this.TerminationBase = &terminationBase
-	var localPortMin int64 = 30000
-	this.LocalPortMin = *NewNullableInt64(&localPortMin)
-	var localPortMax int64 = 30200
-	this.LocalPortMax = *NewNullableInt64(&localPortMax)
-	var eventPayloadType int64 = 101
-	this.EventPayloadType = *NewNullableInt64(&eventPayloadType)
-	var casEvents int64 = 0
-	this.CasEvents = *NewNullableInt64(&casEvents)
-	var dscpMark int64 = 0
-	this.DscpMark = *NewNullableInt64(&dscpMark)
-	var rtcp bool = true
-	this.Rtcp = &rtcp
-	var faxT38 bool = false
-	this.FaxT38 = &faxT38
+	var anonCidBlockActivate string = "*77"
+	this.AnonCidBlockActivate = &anonCidBlockActivate
+	var anonCidBlockDeactivate string = "*87"
+	this.AnonCidBlockDeactivate = &anonCidBlockDeactivate
 	var bitRate string = "14400"
 	this.BitRate = &bitRate
-	var cancelCallWaiting string = "*70"
-	this.CancelCallWaiting = &cancelCallWaiting
+	var callAgent1 string = ""
+	this.CallAgent1 = &callAgent1
+	var callAgent2 string = ""
+	this.CallAgent2 = &callAgent2
+	var callAgentPort1 int64 = 0
+	this.CallAgentPort1 = *NewNullableInt64(&callAgentPort1)
+	var callAgentPort2 int64 = 0
+	this.CallAgentPort2 = *NewNullableInt64(&callAgentPort2)
+	var callForwardOnBusyActivate string = "*90"
+	this.CallForwardOnBusyActivate = &callForwardOnBusyActivate
+	var callForwardOnBusyDeactivate string = "*91"
+	this.CallForwardOnBusyDeactivate = &callForwardOnBusyDeactivate
+	var callForwardOnNoAnswerActivate string = "*92"
+	this.CallForwardOnNoAnswerActivate = &callForwardOnNoAnswerActivate
+	var callForwardOnNoAnswerDeactivate string = "*93"
+	this.CallForwardOnNoAnswerDeactivate = &callForwardOnNoAnswerDeactivate
+	var callForwardUnconditionalActivate string = "*72"
+	this.CallForwardUnconditionalActivate = &callForwardUnconditionalActivate
+	var callForwardUnconditionalDeactivate string = "*73"
+	this.CallForwardUnconditionalDeactivate = &callForwardUnconditionalDeactivate
 	var callHold string = "*9"
 	this.CallHold = &callHold
+	var cancelCallWaiting string = "*70"
+	this.CancelCallWaiting = &cancelCallWaiting
+	var casEvents int64 = 0
+	this.CasEvents = *NewNullableInt64(&casEvents)
 	var cidsActivate string = "*67"
 	this.CidsActivate = &cidsActivate
 	var cidsDeactivate string = "*82"
@@ -373,1799 +319,85 @@ func NewDevicevoicesettingsPutRequestDeviceVoiceSettingsValueWithDefaults() *Dev
 	this.DoNotDisturbDeactivate = &doNotDisturbDeactivate
 	var doNotDisturbPinChange string = "*10"
 	this.DoNotDisturbPinChange = &doNotDisturbPinChange
+	var domain string = ""
+	this.Domain = &domain
+	var dscpMark int64 = 0
+	this.DscpMark = *NewNullableInt64(&dscpMark)
+	var dtmfMethod string = "Inband"
+	this.DtmfMethod = &dtmfMethod
 	var emergencyServiceNumber string = "911"
 	this.EmergencyServiceNumber = &emergencyServiceNumber
-	var anonCidBlockActivate string = "*77"
-	this.AnonCidBlockActivate = &anonCidBlockActivate
-	var anonCidBlockDeactivate string = "*87"
-	this.AnonCidBlockDeactivate = &anonCidBlockDeactivate
-	var callForwardUnconditionalActivate string = "*72"
-	this.CallForwardUnconditionalActivate = &callForwardUnconditionalActivate
-	var callForwardUnconditionalDeactivate string = "*73"
-	this.CallForwardUnconditionalDeactivate = &callForwardUnconditionalDeactivate
-	var callForwardOnBusyActivate string = "*90"
-	this.CallForwardOnBusyActivate = &callForwardOnBusyActivate
-	var callForwardOnBusyDeactivate string = "*91"
-	this.CallForwardOnBusyDeactivate = &callForwardOnBusyDeactivate
-	var callForwardOnNoAnswerActivate string = "*92"
-	this.CallForwardOnNoAnswerActivate = &callForwardOnNoAnswerActivate
-	var callForwardOnNoAnswerDeactivate string = "*93"
-	this.CallForwardOnNoAnswerDeactivate = &callForwardOnNoAnswerDeactivate
+	var enable bool = false
+	this.Enable = &enable
+	var eventPayloadType int64 = 101
+	this.EventPayloadType = *NewNullableInt64(&eventPayloadType)
+	var faxT38 bool = false
+	this.FaxT38 = &faxT38
 	var intercom1 string = "*53"
 	this.Intercom1 = &intercom1
 	var intercom2 string = "*54"
 	this.Intercom2 = &intercom2
 	var intercom3 string = "*55"
 	this.Intercom3 = &intercom3
+	var localPortMax int64 = 30200
+	this.LocalPortMax = *NewNullableInt64(&localPortMax)
+	var localPortMin int64 = 30000
+	this.LocalPortMin = *NewNullableInt64(&localPortMin)
+	var mgcpDscpMark int64 = 0
+	this.MgcpDscpMark = *NewNullableInt64(&mgcpDscpMark)
+	var name string = ""
+	this.Name = &name
+	var outboundProxy string = ""
+	this.OutboundProxy = &outboundProxy
+	var outboundProxyPort int64 = 0
+	this.OutboundProxyPort = *NewNullableInt64(&outboundProxyPort)
+	var outboundProxySecondary string = ""
+	this.OutboundProxySecondary = &outboundProxySecondary
+	var outboundProxySecondaryPort int64 = 0
+	this.OutboundProxySecondaryPort = *NewNullableInt64(&outboundProxySecondaryPort)
+	var protocol string = "SIP"
+	this.Protocol = &protocol
+	var proxyServer string = ""
+	this.ProxyServer = &proxyServer
+	var proxyServerPort int64 = 0
+	this.ProxyServerPort = *NewNullableInt64(&proxyServerPort)
+	var proxyServerSecondary string = ""
+	this.ProxyServerSecondary = &proxyServerSecondary
+	var proxyServerSecondaryPort int64 = 0
+	this.ProxyServerSecondaryPort = *NewNullableInt64(&proxyServerSecondaryPort)
+	var region string = "US"
+	this.Region = &region
+	var registerExpires int64 = 3600
+	this.RegisterExpires = *NewNullableInt64(&registerExpires)
+	var registrarServer string = ""
+	this.RegistrarServer = &registrarServer
+	var registrarServerPort int64 = 0
+	this.RegistrarServerPort = *NewNullableInt64(&registrarServerPort)
+	var registrarServerSecondary string = ""
+	this.RegistrarServerSecondary = &registrarServerSecondary
+	var registrarServerSecondaryPort int64 = 0
+	this.RegistrarServerSecondaryPort = *NewNullableInt64(&registrarServerSecondaryPort)
+	var registrationPeriod int64 = 3240
+	this.RegistrationPeriod = *NewNullableInt64(&registrationPeriod)
+	var rtcp bool = true
+	this.Rtcp = &rtcp
+	var sipDscpMark int64 = 0
+	this.SipDscpMark = *NewNullableInt64(&sipDscpMark)
+	var terminationBase string = "aaln/"
+	this.TerminationBase = &terminationBase
+	var userAgentDomain string = ""
+	this.UserAgentDomain = &userAgentDomain
+	var userAgentPort int64 = 0
+	this.UserAgentPort = *NewNullableInt64(&userAgentPort)
+	var userAgentTransport string = "UDP"
+	this.UserAgentTransport = &userAgentTransport
+	var voicemailServer string = ""
+	this.VoicemailServer = &voicemailServer
+	var voicemailServerExpires int64 = 3600
+	this.VoicemailServerExpires = *NewNullableInt64(&voicemailServerExpires)
+	var voicemailServerPort int64 = 0
+	this.VoicemailServerPort = *NewNullableInt64(&voicemailServerPort)
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetName(v string) {
-	o.Name = &v
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetEnable(v bool) {
-	o.Enable = &v
-}
-
-// GetDtmfMethod returns the DtmfMethod field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDtmfMethod() string {
-	if o == nil || IsNil(o.DtmfMethod) {
-		var ret string
-		return ret
-	}
-	return *o.DtmfMethod
-}
-
-// GetDtmfMethodOk returns a tuple with the DtmfMethod field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDtmfMethodOk() (*string, bool) {
-	if o == nil || IsNil(o.DtmfMethod) {
-		return nil, false
-	}
-	return o.DtmfMethod, true
-}
-
-// HasDtmfMethod returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasDtmfMethod() bool {
-	if o != nil && !IsNil(o.DtmfMethod) {
-		return true
-	}
-
-	return false
-}
-
-// SetDtmfMethod gets a reference to the given string and assigns it to the DtmfMethod field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDtmfMethod(v string) {
-	o.DtmfMethod = &v
-}
-
-// GetRegion returns the Region field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegion() string {
-	if o == nil || IsNil(o.Region) {
-		var ret string
-		return ret
-	}
-	return *o.Region
-}
-
-// GetRegionOk returns a tuple with the Region field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegionOk() (*string, bool) {
-	if o == nil || IsNil(o.Region) {
-		return nil, false
-	}
-	return o.Region, true
-}
-
-// HasRegion returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegion() bool {
-	if o != nil && !IsNil(o.Region) {
-		return true
-	}
-
-	return false
-}
-
-// SetRegion gets a reference to the given string and assigns it to the Region field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegion(v string) {
-	o.Region = &v
-}
-
-// GetProtocol returns the Protocol field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProtocol() string {
-	if o == nil || IsNil(o.Protocol) {
-		var ret string
-		return ret
-	}
-	return *o.Protocol
-}
-
-// GetProtocolOk returns a tuple with the Protocol field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProtocolOk() (*string, bool) {
-	if o == nil || IsNil(o.Protocol) {
-		return nil, false
-	}
-	return o.Protocol, true
-}
-
-// HasProtocol returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasProtocol() bool {
-	if o != nil && !IsNil(o.Protocol) {
-		return true
-	}
-
-	return false
-}
-
-// SetProtocol gets a reference to the given string and assigns it to the Protocol field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProtocol(v string) {
-	o.Protocol = &v
-}
-
-// GetProxyServer returns the ProxyServer field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServer() string {
-	if o == nil || IsNil(o.ProxyServer) {
-		var ret string
-		return ret
-	}
-	return *o.ProxyServer
-}
-
-// GetProxyServerOk returns a tuple with the ProxyServer field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerOk() (*string, bool) {
-	if o == nil || IsNil(o.ProxyServer) {
-		return nil, false
-	}
-	return o.ProxyServer, true
-}
-
-// HasProxyServer returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasProxyServer() bool {
-	if o != nil && !IsNil(o.ProxyServer) {
-		return true
-	}
-
-	return false
-}
-
-// SetProxyServer gets a reference to the given string and assigns it to the ProxyServer field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServer(v string) {
-	o.ProxyServer = &v
-}
-
-// GetProxyServerPort returns the ProxyServerPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerPort() int64 {
-	if o == nil || IsNil(o.ProxyServerPort.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.ProxyServerPort.Get()
-}
-
-// GetProxyServerPortOk returns a tuple with the ProxyServerPort field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerPortOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.ProxyServerPort.Get(), o.ProxyServerPort.IsSet()
-}
-
-// HasProxyServerPort returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasProxyServerPort() bool {
-	if o != nil && o.ProxyServerPort.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetProxyServerPort gets a reference to the given NullableInt64 and assigns it to the ProxyServerPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerPort(v int64) {
-	o.ProxyServerPort.Set(&v)
-}
-// SetProxyServerPortNil sets the value for ProxyServerPort to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerPortNil() {
-	o.ProxyServerPort.Set(nil)
-}
-
-// UnsetProxyServerPort ensures that no value is present for ProxyServerPort, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetProxyServerPort() {
-	o.ProxyServerPort.Unset()
-}
-
-// GetProxyServerSecondary returns the ProxyServerSecondary field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondary() string {
-	if o == nil || IsNil(o.ProxyServerSecondary) {
-		var ret string
-		return ret
-	}
-	return *o.ProxyServerSecondary
-}
-
-// GetProxyServerSecondaryOk returns a tuple with the ProxyServerSecondary field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondaryOk() (*string, bool) {
-	if o == nil || IsNil(o.ProxyServerSecondary) {
-		return nil, false
-	}
-	return o.ProxyServerSecondary, true
-}
-
-// HasProxyServerSecondary returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasProxyServerSecondary() bool {
-	if o != nil && !IsNil(o.ProxyServerSecondary) {
-		return true
-	}
-
-	return false
-}
-
-// SetProxyServerSecondary gets a reference to the given string and assigns it to the ProxyServerSecondary field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerSecondary(v string) {
-	o.ProxyServerSecondary = &v
-}
-
-// GetProxyServerSecondaryPort returns the ProxyServerSecondaryPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondaryPort() int64 {
-	if o == nil || IsNil(o.ProxyServerSecondaryPort.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.ProxyServerSecondaryPort.Get()
-}
-
-// GetProxyServerSecondaryPortOk returns a tuple with the ProxyServerSecondaryPort field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondaryPortOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.ProxyServerSecondaryPort.Get(), o.ProxyServerSecondaryPort.IsSet()
-}
-
-// HasProxyServerSecondaryPort returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasProxyServerSecondaryPort() bool {
-	if o != nil && o.ProxyServerSecondaryPort.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetProxyServerSecondaryPort gets a reference to the given NullableInt64 and assigns it to the ProxyServerSecondaryPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerSecondaryPort(v int64) {
-	o.ProxyServerSecondaryPort.Set(&v)
-}
-// SetProxyServerSecondaryPortNil sets the value for ProxyServerSecondaryPort to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerSecondaryPortNil() {
-	o.ProxyServerSecondaryPort.Set(nil)
-}
-
-// UnsetProxyServerSecondaryPort ensures that no value is present for ProxyServerSecondaryPort, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetProxyServerSecondaryPort() {
-	o.ProxyServerSecondaryPort.Unset()
-}
-
-// GetRegistrarServer returns the RegistrarServer field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServer() string {
-	if o == nil || IsNil(o.RegistrarServer) {
-		var ret string
-		return ret
-	}
-	return *o.RegistrarServer
-}
-
-// GetRegistrarServerOk returns a tuple with the RegistrarServer field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerOk() (*string, bool) {
-	if o == nil || IsNil(o.RegistrarServer) {
-		return nil, false
-	}
-	return o.RegistrarServer, true
-}
-
-// HasRegistrarServer returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegistrarServer() bool {
-	if o != nil && !IsNil(o.RegistrarServer) {
-		return true
-	}
-
-	return false
-}
-
-// SetRegistrarServer gets a reference to the given string and assigns it to the RegistrarServer field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServer(v string) {
-	o.RegistrarServer = &v
-}
-
-// GetRegistrarServerPort returns the RegistrarServerPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerPort() int64 {
-	if o == nil || IsNil(o.RegistrarServerPort.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.RegistrarServerPort.Get()
-}
-
-// GetRegistrarServerPortOk returns a tuple with the RegistrarServerPort field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerPortOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.RegistrarServerPort.Get(), o.RegistrarServerPort.IsSet()
-}
-
-// HasRegistrarServerPort returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegistrarServerPort() bool {
-	if o != nil && o.RegistrarServerPort.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetRegistrarServerPort gets a reference to the given NullableInt64 and assigns it to the RegistrarServerPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerPort(v int64) {
-	o.RegistrarServerPort.Set(&v)
-}
-// SetRegistrarServerPortNil sets the value for RegistrarServerPort to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerPortNil() {
-	o.RegistrarServerPort.Set(nil)
-}
-
-// UnsetRegistrarServerPort ensures that no value is present for RegistrarServerPort, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetRegistrarServerPort() {
-	o.RegistrarServerPort.Unset()
-}
-
-// GetRegistrarServerSecondary returns the RegistrarServerSecondary field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondary() string {
-	if o == nil || IsNil(o.RegistrarServerSecondary) {
-		var ret string
-		return ret
-	}
-	return *o.RegistrarServerSecondary
-}
-
-// GetRegistrarServerSecondaryOk returns a tuple with the RegistrarServerSecondary field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondaryOk() (*string, bool) {
-	if o == nil || IsNil(o.RegistrarServerSecondary) {
-		return nil, false
-	}
-	return o.RegistrarServerSecondary, true
-}
-
-// HasRegistrarServerSecondary returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegistrarServerSecondary() bool {
-	if o != nil && !IsNil(o.RegistrarServerSecondary) {
-		return true
-	}
-
-	return false
-}
-
-// SetRegistrarServerSecondary gets a reference to the given string and assigns it to the RegistrarServerSecondary field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerSecondary(v string) {
-	o.RegistrarServerSecondary = &v
-}
-
-// GetRegistrarServerSecondaryPort returns the RegistrarServerSecondaryPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondaryPort() int64 {
-	if o == nil || IsNil(o.RegistrarServerSecondaryPort.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.RegistrarServerSecondaryPort.Get()
-}
-
-// GetRegistrarServerSecondaryPortOk returns a tuple with the RegistrarServerSecondaryPort field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondaryPortOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.RegistrarServerSecondaryPort.Get(), o.RegistrarServerSecondaryPort.IsSet()
-}
-
-// HasRegistrarServerSecondaryPort returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegistrarServerSecondaryPort() bool {
-	if o != nil && o.RegistrarServerSecondaryPort.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetRegistrarServerSecondaryPort gets a reference to the given NullableInt64 and assigns it to the RegistrarServerSecondaryPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerSecondaryPort(v int64) {
-	o.RegistrarServerSecondaryPort.Set(&v)
-}
-// SetRegistrarServerSecondaryPortNil sets the value for RegistrarServerSecondaryPort to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerSecondaryPortNil() {
-	o.RegistrarServerSecondaryPort.Set(nil)
-}
-
-// UnsetRegistrarServerSecondaryPort ensures that no value is present for RegistrarServerSecondaryPort, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetRegistrarServerSecondaryPort() {
-	o.RegistrarServerSecondaryPort.Unset()
-}
-
-// GetUserAgentDomain returns the UserAgentDomain field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentDomain() string {
-	if o == nil || IsNil(o.UserAgentDomain) {
-		var ret string
-		return ret
-	}
-	return *o.UserAgentDomain
-}
-
-// GetUserAgentDomainOk returns a tuple with the UserAgentDomain field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentDomainOk() (*string, bool) {
-	if o == nil || IsNil(o.UserAgentDomain) {
-		return nil, false
-	}
-	return o.UserAgentDomain, true
-}
-
-// HasUserAgentDomain returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasUserAgentDomain() bool {
-	if o != nil && !IsNil(o.UserAgentDomain) {
-		return true
-	}
-
-	return false
-}
-
-// SetUserAgentDomain gets a reference to the given string and assigns it to the UserAgentDomain field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetUserAgentDomain(v string) {
-	o.UserAgentDomain = &v
-}
-
-// GetUserAgentTransport returns the UserAgentTransport field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentTransport() string {
-	if o == nil || IsNil(o.UserAgentTransport) {
-		var ret string
-		return ret
-	}
-	return *o.UserAgentTransport
-}
-
-// GetUserAgentTransportOk returns a tuple with the UserAgentTransport field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentTransportOk() (*string, bool) {
-	if o == nil || IsNil(o.UserAgentTransport) {
-		return nil, false
-	}
-	return o.UserAgentTransport, true
-}
-
-// HasUserAgentTransport returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasUserAgentTransport() bool {
-	if o != nil && !IsNil(o.UserAgentTransport) {
-		return true
-	}
-
-	return false
-}
-
-// SetUserAgentTransport gets a reference to the given string and assigns it to the UserAgentTransport field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetUserAgentTransport(v string) {
-	o.UserAgentTransport = &v
-}
-
-// GetUserAgentPort returns the UserAgentPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentPort() int64 {
-	if o == nil || IsNil(o.UserAgentPort.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.UserAgentPort.Get()
-}
-
-// GetUserAgentPortOk returns a tuple with the UserAgentPort field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentPortOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.UserAgentPort.Get(), o.UserAgentPort.IsSet()
-}
-
-// HasUserAgentPort returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasUserAgentPort() bool {
-	if o != nil && o.UserAgentPort.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetUserAgentPort gets a reference to the given NullableInt64 and assigns it to the UserAgentPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetUserAgentPort(v int64) {
-	o.UserAgentPort.Set(&v)
-}
-// SetUserAgentPortNil sets the value for UserAgentPort to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetUserAgentPortNil() {
-	o.UserAgentPort.Set(nil)
-}
-
-// UnsetUserAgentPort ensures that no value is present for UserAgentPort, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetUserAgentPort() {
-	o.UserAgentPort.Unset()
-}
-
-// GetOutboundProxy returns the OutboundProxy field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxy() string {
-	if o == nil || IsNil(o.OutboundProxy) {
-		var ret string
-		return ret
-	}
-	return *o.OutboundProxy
-}
-
-// GetOutboundProxyOk returns a tuple with the OutboundProxy field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxyOk() (*string, bool) {
-	if o == nil || IsNil(o.OutboundProxy) {
-		return nil, false
-	}
-	return o.OutboundProxy, true
-}
-
-// HasOutboundProxy returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasOutboundProxy() bool {
-	if o != nil && !IsNil(o.OutboundProxy) {
-		return true
-	}
-
-	return false
-}
-
-// SetOutboundProxy gets a reference to the given string and assigns it to the OutboundProxy field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxy(v string) {
-	o.OutboundProxy = &v
-}
-
-// GetOutboundProxyPort returns the OutboundProxyPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxyPort() int64 {
-	if o == nil || IsNil(o.OutboundProxyPort.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.OutboundProxyPort.Get()
-}
-
-// GetOutboundProxyPortOk returns a tuple with the OutboundProxyPort field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxyPortOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.OutboundProxyPort.Get(), o.OutboundProxyPort.IsSet()
-}
-
-// HasOutboundProxyPort returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasOutboundProxyPort() bool {
-	if o != nil && o.OutboundProxyPort.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetOutboundProxyPort gets a reference to the given NullableInt64 and assigns it to the OutboundProxyPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxyPort(v int64) {
-	o.OutboundProxyPort.Set(&v)
-}
-// SetOutboundProxyPortNil sets the value for OutboundProxyPort to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxyPortNil() {
-	o.OutboundProxyPort.Set(nil)
-}
-
-// UnsetOutboundProxyPort ensures that no value is present for OutboundProxyPort, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetOutboundProxyPort() {
-	o.OutboundProxyPort.Unset()
-}
-
-// GetOutboundProxySecondary returns the OutboundProxySecondary field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondary() string {
-	if o == nil || IsNil(o.OutboundProxySecondary) {
-		var ret string
-		return ret
-	}
-	return *o.OutboundProxySecondary
-}
-
-// GetOutboundProxySecondaryOk returns a tuple with the OutboundProxySecondary field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondaryOk() (*string, bool) {
-	if o == nil || IsNil(o.OutboundProxySecondary) {
-		return nil, false
-	}
-	return o.OutboundProxySecondary, true
-}
-
-// HasOutboundProxySecondary returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasOutboundProxySecondary() bool {
-	if o != nil && !IsNil(o.OutboundProxySecondary) {
-		return true
-	}
-
-	return false
-}
-
-// SetOutboundProxySecondary gets a reference to the given string and assigns it to the OutboundProxySecondary field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxySecondary(v string) {
-	o.OutboundProxySecondary = &v
-}
-
-// GetOutboundProxySecondaryPort returns the OutboundProxySecondaryPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondaryPort() int64 {
-	if o == nil || IsNil(o.OutboundProxySecondaryPort.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.OutboundProxySecondaryPort.Get()
-}
-
-// GetOutboundProxySecondaryPortOk returns a tuple with the OutboundProxySecondaryPort field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondaryPortOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.OutboundProxySecondaryPort.Get(), o.OutboundProxySecondaryPort.IsSet()
-}
-
-// HasOutboundProxySecondaryPort returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasOutboundProxySecondaryPort() bool {
-	if o != nil && o.OutboundProxySecondaryPort.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetOutboundProxySecondaryPort gets a reference to the given NullableInt64 and assigns it to the OutboundProxySecondaryPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxySecondaryPort(v int64) {
-	o.OutboundProxySecondaryPort.Set(&v)
-}
-// SetOutboundProxySecondaryPortNil sets the value for OutboundProxySecondaryPort to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxySecondaryPortNil() {
-	o.OutboundProxySecondaryPort.Set(nil)
-}
-
-// UnsetOutboundProxySecondaryPort ensures that no value is present for OutboundProxySecondaryPort, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetOutboundProxySecondaryPort() {
-	o.OutboundProxySecondaryPort.Unset()
-}
-
-// GetRegistrationPeriod returns the RegistrationPeriod field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrationPeriod() int64 {
-	if o == nil || IsNil(o.RegistrationPeriod.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.RegistrationPeriod.Get()
-}
-
-// GetRegistrationPeriodOk returns a tuple with the RegistrationPeriod field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrationPeriodOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.RegistrationPeriod.Get(), o.RegistrationPeriod.IsSet()
-}
-
-// HasRegistrationPeriod returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegistrationPeriod() bool {
-	if o != nil && o.RegistrationPeriod.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetRegistrationPeriod gets a reference to the given NullableInt64 and assigns it to the RegistrationPeriod field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrationPeriod(v int64) {
-	o.RegistrationPeriod.Set(&v)
-}
-// SetRegistrationPeriodNil sets the value for RegistrationPeriod to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrationPeriodNil() {
-	o.RegistrationPeriod.Set(nil)
-}
-
-// UnsetRegistrationPeriod ensures that no value is present for RegistrationPeriod, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetRegistrationPeriod() {
-	o.RegistrationPeriod.Unset()
-}
-
-// GetRegisterExpires returns the RegisterExpires field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegisterExpires() int64 {
-	if o == nil || IsNil(o.RegisterExpires.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.RegisterExpires.Get()
-}
-
-// GetRegisterExpiresOk returns a tuple with the RegisterExpires field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegisterExpiresOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.RegisterExpires.Get(), o.RegisterExpires.IsSet()
-}
-
-// HasRegisterExpires returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegisterExpires() bool {
-	if o != nil && o.RegisterExpires.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetRegisterExpires gets a reference to the given NullableInt64 and assigns it to the RegisterExpires field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegisterExpires(v int64) {
-	o.RegisterExpires.Set(&v)
-}
-// SetRegisterExpiresNil sets the value for RegisterExpires to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegisterExpiresNil() {
-	o.RegisterExpires.Set(nil)
-}
-
-// UnsetRegisterExpires ensures that no value is present for RegisterExpires, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetRegisterExpires() {
-	o.RegisterExpires.Unset()
-}
-
-// GetVoicemailServer returns the VoicemailServer field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServer() string {
-	if o == nil || IsNil(o.VoicemailServer) {
-		var ret string
-		return ret
-	}
-	return *o.VoicemailServer
-}
-
-// GetVoicemailServerOk returns a tuple with the VoicemailServer field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerOk() (*string, bool) {
-	if o == nil || IsNil(o.VoicemailServer) {
-		return nil, false
-	}
-	return o.VoicemailServer, true
-}
-
-// HasVoicemailServer returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasVoicemailServer() bool {
-	if o != nil && !IsNil(o.VoicemailServer) {
-		return true
-	}
-
-	return false
-}
-
-// SetVoicemailServer gets a reference to the given string and assigns it to the VoicemailServer field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServer(v string) {
-	o.VoicemailServer = &v
-}
-
-// GetVoicemailServerPort returns the VoicemailServerPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerPort() int64 {
-	if o == nil || IsNil(o.VoicemailServerPort.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.VoicemailServerPort.Get()
-}
-
-// GetVoicemailServerPortOk returns a tuple with the VoicemailServerPort field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerPortOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.VoicemailServerPort.Get(), o.VoicemailServerPort.IsSet()
-}
-
-// HasVoicemailServerPort returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasVoicemailServerPort() bool {
-	if o != nil && o.VoicemailServerPort.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetVoicemailServerPort gets a reference to the given NullableInt64 and assigns it to the VoicemailServerPort field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerPort(v int64) {
-	o.VoicemailServerPort.Set(&v)
-}
-// SetVoicemailServerPortNil sets the value for VoicemailServerPort to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerPortNil() {
-	o.VoicemailServerPort.Set(nil)
-}
-
-// UnsetVoicemailServerPort ensures that no value is present for VoicemailServerPort, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetVoicemailServerPort() {
-	o.VoicemailServerPort.Unset()
-}
-
-// GetVoicemailServerExpires returns the VoicemailServerExpires field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerExpires() int64 {
-	if o == nil || IsNil(o.VoicemailServerExpires.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.VoicemailServerExpires.Get()
-}
-
-// GetVoicemailServerExpiresOk returns a tuple with the VoicemailServerExpires field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerExpiresOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.VoicemailServerExpires.Get(), o.VoicemailServerExpires.IsSet()
-}
-
-// HasVoicemailServerExpires returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasVoicemailServerExpires() bool {
-	if o != nil && o.VoicemailServerExpires.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetVoicemailServerExpires gets a reference to the given NullableInt64 and assigns it to the VoicemailServerExpires field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerExpires(v int64) {
-	o.VoicemailServerExpires.Set(&v)
-}
-// SetVoicemailServerExpiresNil sets the value for VoicemailServerExpires to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerExpiresNil() {
-	o.VoicemailServerExpires.Set(nil)
-}
-
-// UnsetVoicemailServerExpires ensures that no value is present for VoicemailServerExpires, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetVoicemailServerExpires() {
-	o.VoicemailServerExpires.Unset()
-}
-
-// GetSipDscpMark returns the SipDscpMark field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetSipDscpMark() int64 {
-	if o == nil || IsNil(o.SipDscpMark.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.SipDscpMark.Get()
-}
-
-// GetSipDscpMarkOk returns a tuple with the SipDscpMark field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetSipDscpMarkOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.SipDscpMark.Get(), o.SipDscpMark.IsSet()
-}
-
-// HasSipDscpMark returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasSipDscpMark() bool {
-	if o != nil && o.SipDscpMark.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetSipDscpMark gets a reference to the given NullableInt64 and assigns it to the SipDscpMark field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetSipDscpMark(v int64) {
-	o.SipDscpMark.Set(&v)
-}
-// SetSipDscpMarkNil sets the value for SipDscpMark to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetSipDscpMarkNil() {
-	o.SipDscpMark.Set(nil)
-}
-
-// UnsetSipDscpMark ensures that no value is present for SipDscpMark, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetSipDscpMark() {
-	o.SipDscpMark.Unset()
-}
-
-// GetCallAgent1 returns the CallAgent1 field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgent1() string {
-	if o == nil || IsNil(o.CallAgent1) {
-		var ret string
-		return ret
-	}
-	return *o.CallAgent1
-}
-
-// GetCallAgent1Ok returns a tuple with the CallAgent1 field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgent1Ok() (*string, bool) {
-	if o == nil || IsNil(o.CallAgent1) {
-		return nil, false
-	}
-	return o.CallAgent1, true
-}
-
-// HasCallAgent1 returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallAgent1() bool {
-	if o != nil && !IsNil(o.CallAgent1) {
-		return true
-	}
-
-	return false
-}
-
-// SetCallAgent1 gets a reference to the given string and assigns it to the CallAgent1 field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgent1(v string) {
-	o.CallAgent1 = &v
-}
-
-// GetCallAgentPort1 returns the CallAgentPort1 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort1() int64 {
-	if o == nil || IsNil(o.CallAgentPort1.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.CallAgentPort1.Get()
-}
-
-// GetCallAgentPort1Ok returns a tuple with the CallAgentPort1 field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort1Ok() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.CallAgentPort1.Get(), o.CallAgentPort1.IsSet()
-}
-
-// HasCallAgentPort1 returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallAgentPort1() bool {
-	if o != nil && o.CallAgentPort1.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetCallAgentPort1 gets a reference to the given NullableInt64 and assigns it to the CallAgentPort1 field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort1(v int64) {
-	o.CallAgentPort1.Set(&v)
-}
-// SetCallAgentPort1Nil sets the value for CallAgentPort1 to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort1Nil() {
-	o.CallAgentPort1.Set(nil)
-}
-
-// UnsetCallAgentPort1 ensures that no value is present for CallAgentPort1, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetCallAgentPort1() {
-	o.CallAgentPort1.Unset()
-}
-
-// GetCallAgent2 returns the CallAgent2 field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgent2() string {
-	if o == nil || IsNil(o.CallAgent2) {
-		var ret string
-		return ret
-	}
-	return *o.CallAgent2
-}
-
-// GetCallAgent2Ok returns a tuple with the CallAgent2 field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgent2Ok() (*string, bool) {
-	if o == nil || IsNil(o.CallAgent2) {
-		return nil, false
-	}
-	return o.CallAgent2, true
-}
-
-// HasCallAgent2 returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallAgent2() bool {
-	if o != nil && !IsNil(o.CallAgent2) {
-		return true
-	}
-
-	return false
-}
-
-// SetCallAgent2 gets a reference to the given string and assigns it to the CallAgent2 field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgent2(v string) {
-	o.CallAgent2 = &v
-}
-
-// GetCallAgentPort2 returns the CallAgentPort2 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort2() int64 {
-	if o == nil || IsNil(o.CallAgentPort2.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.CallAgentPort2.Get()
-}
-
-// GetCallAgentPort2Ok returns a tuple with the CallAgentPort2 field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort2Ok() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.CallAgentPort2.Get(), o.CallAgentPort2.IsSet()
-}
-
-// HasCallAgentPort2 returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallAgentPort2() bool {
-	if o != nil && o.CallAgentPort2.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetCallAgentPort2 gets a reference to the given NullableInt64 and assigns it to the CallAgentPort2 field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort2(v int64) {
-	o.CallAgentPort2.Set(&v)
-}
-// SetCallAgentPort2Nil sets the value for CallAgentPort2 to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort2Nil() {
-	o.CallAgentPort2.Set(nil)
-}
-
-// UnsetCallAgentPort2 ensures that no value is present for CallAgentPort2, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetCallAgentPort2() {
-	o.CallAgentPort2.Unset()
-}
-
-// GetDomain returns the Domain field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDomain() string {
-	if o == nil || IsNil(o.Domain) {
-		var ret string
-		return ret
-	}
-	return *o.Domain
-}
-
-// GetDomainOk returns a tuple with the Domain field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDomainOk() (*string, bool) {
-	if o == nil || IsNil(o.Domain) {
-		return nil, false
-	}
-	return o.Domain, true
-}
-
-// HasDomain returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasDomain() bool {
-	if o != nil && !IsNil(o.Domain) {
-		return true
-	}
-
-	return false
-}
-
-// SetDomain gets a reference to the given string and assigns it to the Domain field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDomain(v string) {
-	o.Domain = &v
-}
-
-// GetMgcpDscpMark returns the MgcpDscpMark field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetMgcpDscpMark() int64 {
-	if o == nil || IsNil(o.MgcpDscpMark.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.MgcpDscpMark.Get()
-}
-
-// GetMgcpDscpMarkOk returns a tuple with the MgcpDscpMark field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetMgcpDscpMarkOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.MgcpDscpMark.Get(), o.MgcpDscpMark.IsSet()
-}
-
-// HasMgcpDscpMark returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasMgcpDscpMark() bool {
-	if o != nil && o.MgcpDscpMark.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMgcpDscpMark gets a reference to the given NullableInt64 and assigns it to the MgcpDscpMark field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetMgcpDscpMark(v int64) {
-	o.MgcpDscpMark.Set(&v)
-}
-// SetMgcpDscpMarkNil sets the value for MgcpDscpMark to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetMgcpDscpMarkNil() {
-	o.MgcpDscpMark.Set(nil)
-}
-
-// UnsetMgcpDscpMark ensures that no value is present for MgcpDscpMark, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetMgcpDscpMark() {
-	o.MgcpDscpMark.Unset()
-}
-
-// GetTerminationBase returns the TerminationBase field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetTerminationBase() string {
-	if o == nil || IsNil(o.TerminationBase) {
-		var ret string
-		return ret
-	}
-	return *o.TerminationBase
-}
-
-// GetTerminationBaseOk returns a tuple with the TerminationBase field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetTerminationBaseOk() (*string, bool) {
-	if o == nil || IsNil(o.TerminationBase) {
-		return nil, false
-	}
-	return o.TerminationBase, true
-}
-
-// HasTerminationBase returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasTerminationBase() bool {
-	if o != nil && !IsNil(o.TerminationBase) {
-		return true
-	}
-
-	return false
-}
-
-// SetTerminationBase gets a reference to the given string and assigns it to the TerminationBase field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetTerminationBase(v string) {
-	o.TerminationBase = &v
-}
-
-// GetLocalPortMin returns the LocalPortMin field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMin() int64 {
-	if o == nil || IsNil(o.LocalPortMin.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.LocalPortMin.Get()
-}
-
-// GetLocalPortMinOk returns a tuple with the LocalPortMin field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMinOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.LocalPortMin.Get(), o.LocalPortMin.IsSet()
-}
-
-// HasLocalPortMin returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasLocalPortMin() bool {
-	if o != nil && o.LocalPortMin.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetLocalPortMin gets a reference to the given NullableInt64 and assigns it to the LocalPortMin field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMin(v int64) {
-	o.LocalPortMin.Set(&v)
-}
-// SetLocalPortMinNil sets the value for LocalPortMin to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMinNil() {
-	o.LocalPortMin.Set(nil)
-}
-
-// UnsetLocalPortMin ensures that no value is present for LocalPortMin, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetLocalPortMin() {
-	o.LocalPortMin.Unset()
-}
-
-// GetLocalPortMax returns the LocalPortMax field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMax() int64 {
-	if o == nil || IsNil(o.LocalPortMax.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.LocalPortMax.Get()
-}
-
-// GetLocalPortMaxOk returns a tuple with the LocalPortMax field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMaxOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.LocalPortMax.Get(), o.LocalPortMax.IsSet()
-}
-
-// HasLocalPortMax returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasLocalPortMax() bool {
-	if o != nil && o.LocalPortMax.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetLocalPortMax gets a reference to the given NullableInt64 and assigns it to the LocalPortMax field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMax(v int64) {
-	o.LocalPortMax.Set(&v)
-}
-// SetLocalPortMaxNil sets the value for LocalPortMax to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMaxNil() {
-	o.LocalPortMax.Set(nil)
-}
-
-// UnsetLocalPortMax ensures that no value is present for LocalPortMax, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetLocalPortMax() {
-	o.LocalPortMax.Unset()
-}
-
-// GetEventPayloadType returns the EventPayloadType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEventPayloadType() int64 {
-	if o == nil || IsNil(o.EventPayloadType.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.EventPayloadType.Get()
-}
-
-// GetEventPayloadTypeOk returns a tuple with the EventPayloadType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEventPayloadTypeOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.EventPayloadType.Get(), o.EventPayloadType.IsSet()
-}
-
-// HasEventPayloadType returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasEventPayloadType() bool {
-	if o != nil && o.EventPayloadType.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetEventPayloadType gets a reference to the given NullableInt64 and assigns it to the EventPayloadType field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetEventPayloadType(v int64) {
-	o.EventPayloadType.Set(&v)
-}
-// SetEventPayloadTypeNil sets the value for EventPayloadType to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetEventPayloadTypeNil() {
-	o.EventPayloadType.Set(nil)
-}
-
-// UnsetEventPayloadType ensures that no value is present for EventPayloadType, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetEventPayloadType() {
-	o.EventPayloadType.Unset()
-}
-
-// GetCasEvents returns the CasEvents field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEvents() int64 {
-	if o == nil || IsNil(o.CasEvents.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.CasEvents.Get()
-}
-
-// GetCasEventsOk returns a tuple with the CasEvents field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEventsOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.CasEvents.Get(), o.CasEvents.IsSet()
-}
-
-// HasCasEvents returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCasEvents() bool {
-	if o != nil && o.CasEvents.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetCasEvents gets a reference to the given NullableInt64 and assigns it to the CasEvents field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCasEvents(v int64) {
-	o.CasEvents.Set(&v)
-}
-// SetCasEventsNil sets the value for CasEvents to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCasEventsNil() {
-	o.CasEvents.Set(nil)
-}
-
-// UnsetCasEvents ensures that no value is present for CasEvents, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetCasEvents() {
-	o.CasEvents.Unset()
-}
-
-// GetDscpMark returns the DscpMark field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDscpMark() int64 {
-	if o == nil || IsNil(o.DscpMark.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.DscpMark.Get()
-}
-
-// GetDscpMarkOk returns a tuple with the DscpMark field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDscpMarkOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.DscpMark.Get(), o.DscpMark.IsSet()
-}
-
-// HasDscpMark returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasDscpMark() bool {
-	if o != nil && o.DscpMark.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetDscpMark gets a reference to the given NullableInt64 and assigns it to the DscpMark field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDscpMark(v int64) {
-	o.DscpMark.Set(&v)
-}
-// SetDscpMarkNil sets the value for DscpMark to be an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDscpMarkNil() {
-	o.DscpMark.Set(nil)
-}
-
-// UnsetDscpMark ensures that no value is present for DscpMark, not even an explicit nil
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetDscpMark() {
-	o.DscpMark.Unset()
-}
-
-// GetRtcp returns the Rtcp field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRtcp() bool {
-	if o == nil || IsNil(o.Rtcp) {
-		var ret bool
-		return ret
-	}
-	return *o.Rtcp
-}
-
-// GetRtcpOk returns a tuple with the Rtcp field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRtcpOk() (*bool, bool) {
-	if o == nil || IsNil(o.Rtcp) {
-		return nil, false
-	}
-	return o.Rtcp, true
-}
-
-// HasRtcp returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRtcp() bool {
-	if o != nil && !IsNil(o.Rtcp) {
-		return true
-	}
-
-	return false
-}
-
-// SetRtcp gets a reference to the given bool and assigns it to the Rtcp field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRtcp(v bool) {
-	o.Rtcp = &v
-}
-
-// GetFaxT38 returns the FaxT38 field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetFaxT38() bool {
-	if o == nil || IsNil(o.FaxT38) {
-		var ret bool
-		return ret
-	}
-	return *o.FaxT38
-}
-
-// GetFaxT38Ok returns a tuple with the FaxT38 field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetFaxT38Ok() (*bool, bool) {
-	if o == nil || IsNil(o.FaxT38) {
-		return nil, false
-	}
-	return o.FaxT38, true
-}
-
-// HasFaxT38 returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasFaxT38() bool {
-	if o != nil && !IsNil(o.FaxT38) {
-		return true
-	}
-
-	return false
-}
-
-// SetFaxT38 gets a reference to the given bool and assigns it to the FaxT38 field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetFaxT38(v bool) {
-	o.FaxT38 = &v
-}
-
-// GetBitRate returns the BitRate field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetBitRate() string {
-	if o == nil || IsNil(o.BitRate) {
-		var ret string
-		return ret
-	}
-	return *o.BitRate
-}
-
-// GetBitRateOk returns a tuple with the BitRate field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetBitRateOk() (*string, bool) {
-	if o == nil || IsNil(o.BitRate) {
-		return nil, false
-	}
-	return o.BitRate, true
-}
-
-// HasBitRate returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasBitRate() bool {
-	if o != nil && !IsNil(o.BitRate) {
-		return true
-	}
-
-	return false
-}
-
-// SetBitRate gets a reference to the given string and assigns it to the BitRate field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetBitRate(v string) {
-	o.BitRate = &v
-}
-
-// GetCancelCallWaiting returns the CancelCallWaiting field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCancelCallWaiting() string {
-	if o == nil || IsNil(o.CancelCallWaiting) {
-		var ret string
-		return ret
-	}
-	return *o.CancelCallWaiting
-}
-
-// GetCancelCallWaitingOk returns a tuple with the CancelCallWaiting field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCancelCallWaitingOk() (*string, bool) {
-	if o == nil || IsNil(o.CancelCallWaiting) {
-		return nil, false
-	}
-	return o.CancelCallWaiting, true
-}
-
-// HasCancelCallWaiting returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCancelCallWaiting() bool {
-	if o != nil && !IsNil(o.CancelCallWaiting) {
-		return true
-	}
-
-	return false
-}
-
-// SetCancelCallWaiting gets a reference to the given string and assigns it to the CancelCallWaiting field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCancelCallWaiting(v string) {
-	o.CancelCallWaiting = &v
-}
-
-// GetCallHold returns the CallHold field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallHold() string {
-	if o == nil || IsNil(o.CallHold) {
-		var ret string
-		return ret
-	}
-	return *o.CallHold
-}
-
-// GetCallHoldOk returns a tuple with the CallHold field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallHoldOk() (*string, bool) {
-	if o == nil || IsNil(o.CallHold) {
-		return nil, false
-	}
-	return o.CallHold, true
-}
-
-// HasCallHold returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallHold() bool {
-	if o != nil && !IsNil(o.CallHold) {
-		return true
-	}
-
-	return false
-}
-
-// SetCallHold gets a reference to the given string and assigns it to the CallHold field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallHold(v string) {
-	o.CallHold = &v
-}
-
-// GetCidsActivate returns the CidsActivate field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCidsActivate() string {
-	if o == nil || IsNil(o.CidsActivate) {
-		var ret string
-		return ret
-	}
-	return *o.CidsActivate
-}
-
-// GetCidsActivateOk returns a tuple with the CidsActivate field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCidsActivateOk() (*string, bool) {
-	if o == nil || IsNil(o.CidsActivate) {
-		return nil, false
-	}
-	return o.CidsActivate, true
-}
-
-// HasCidsActivate returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCidsActivate() bool {
-	if o != nil && !IsNil(o.CidsActivate) {
-		return true
-	}
-
-	return false
-}
-
-// SetCidsActivate gets a reference to the given string and assigns it to the CidsActivate field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCidsActivate(v string) {
-	o.CidsActivate = &v
-}
-
-// GetCidsDeactivate returns the CidsDeactivate field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCidsDeactivate() string {
-	if o == nil || IsNil(o.CidsDeactivate) {
-		var ret string
-		return ret
-	}
-	return *o.CidsDeactivate
-}
-
-// GetCidsDeactivateOk returns a tuple with the CidsDeactivate field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCidsDeactivateOk() (*string, bool) {
-	if o == nil || IsNil(o.CidsDeactivate) {
-		return nil, false
-	}
-	return o.CidsDeactivate, true
-}
-
-// HasCidsDeactivate returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCidsDeactivate() bool {
-	if o != nil && !IsNil(o.CidsDeactivate) {
-		return true
-	}
-
-	return false
-}
-
-// SetCidsDeactivate gets a reference to the given string and assigns it to the CidsDeactivate field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCidsDeactivate(v string) {
-	o.CidsDeactivate = &v
-}
-
-// GetDoNotDisturbActivate returns the DoNotDisturbActivate field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDoNotDisturbActivate() string {
-	if o == nil || IsNil(o.DoNotDisturbActivate) {
-		var ret string
-		return ret
-	}
-	return *o.DoNotDisturbActivate
-}
-
-// GetDoNotDisturbActivateOk returns a tuple with the DoNotDisturbActivate field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDoNotDisturbActivateOk() (*string, bool) {
-	if o == nil || IsNil(o.DoNotDisturbActivate) {
-		return nil, false
-	}
-	return o.DoNotDisturbActivate, true
-}
-
-// HasDoNotDisturbActivate returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasDoNotDisturbActivate() bool {
-	if o != nil && !IsNil(o.DoNotDisturbActivate) {
-		return true
-	}
-
-	return false
-}
-
-// SetDoNotDisturbActivate gets a reference to the given string and assigns it to the DoNotDisturbActivate field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDoNotDisturbActivate(v string) {
-	o.DoNotDisturbActivate = &v
-}
-
-// GetDoNotDisturbDeactivate returns the DoNotDisturbDeactivate field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDoNotDisturbDeactivate() string {
-	if o == nil || IsNil(o.DoNotDisturbDeactivate) {
-		var ret string
-		return ret
-	}
-	return *o.DoNotDisturbDeactivate
-}
-
-// GetDoNotDisturbDeactivateOk returns a tuple with the DoNotDisturbDeactivate field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDoNotDisturbDeactivateOk() (*string, bool) {
-	if o == nil || IsNil(o.DoNotDisturbDeactivate) {
-		return nil, false
-	}
-	return o.DoNotDisturbDeactivate, true
-}
-
-// HasDoNotDisturbDeactivate returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasDoNotDisturbDeactivate() bool {
-	if o != nil && !IsNil(o.DoNotDisturbDeactivate) {
-		return true
-	}
-
-	return false
-}
-
-// SetDoNotDisturbDeactivate gets a reference to the given string and assigns it to the DoNotDisturbDeactivate field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDoNotDisturbDeactivate(v string) {
-	o.DoNotDisturbDeactivate = &v
-}
-
-// GetDoNotDisturbPinChange returns the DoNotDisturbPinChange field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDoNotDisturbPinChange() string {
-	if o == nil || IsNil(o.DoNotDisturbPinChange) {
-		var ret string
-		return ret
-	}
-	return *o.DoNotDisturbPinChange
-}
-
-// GetDoNotDisturbPinChangeOk returns a tuple with the DoNotDisturbPinChange field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDoNotDisturbPinChangeOk() (*string, bool) {
-	if o == nil || IsNil(o.DoNotDisturbPinChange) {
-		return nil, false
-	}
-	return o.DoNotDisturbPinChange, true
-}
-
-// HasDoNotDisturbPinChange returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasDoNotDisturbPinChange() bool {
-	if o != nil && !IsNil(o.DoNotDisturbPinChange) {
-		return true
-	}
-
-	return false
-}
-
-// SetDoNotDisturbPinChange gets a reference to the given string and assigns it to the DoNotDisturbPinChange field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDoNotDisturbPinChange(v string) {
-	o.DoNotDisturbPinChange = &v
-}
-
-// GetEmergencyServiceNumber returns the EmergencyServiceNumber field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEmergencyServiceNumber() string {
-	if o == nil || IsNil(o.EmergencyServiceNumber) {
-		var ret string
-		return ret
-	}
-	return *o.EmergencyServiceNumber
-}
-
-// GetEmergencyServiceNumberOk returns a tuple with the EmergencyServiceNumber field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEmergencyServiceNumberOk() (*string, bool) {
-	if o == nil || IsNil(o.EmergencyServiceNumber) {
-		return nil, false
-	}
-	return o.EmergencyServiceNumber, true
-}
-
-// HasEmergencyServiceNumber returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasEmergencyServiceNumber() bool {
-	if o != nil && !IsNil(o.EmergencyServiceNumber) {
-		return true
-	}
-
-	return false
-}
-
-// SetEmergencyServiceNumber gets a reference to the given string and assigns it to the EmergencyServiceNumber field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetEmergencyServiceNumber(v string) {
-	o.EmergencyServiceNumber = &v
 }
 
 // GetAnonCidBlockActivate returns the AnonCidBlockActivate field value if set, zero value otherwise.
@@ -2232,68 +464,186 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetAnonCidBlockD
 	o.AnonCidBlockDeactivate = &v
 }
 
-// GetCallForwardUnconditionalActivate returns the CallForwardUnconditionalActivate field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallForwardUnconditionalActivate() string {
-	if o == nil || IsNil(o.CallForwardUnconditionalActivate) {
+// GetBitRate returns the BitRate field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetBitRate() string {
+	if o == nil || IsNil(o.BitRate) {
 		var ret string
 		return ret
 	}
-	return *o.CallForwardUnconditionalActivate
+	return *o.BitRate
 }
 
-// GetCallForwardUnconditionalActivateOk returns a tuple with the CallForwardUnconditionalActivate field value if set, nil otherwise
+// GetBitRateOk returns a tuple with the BitRate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallForwardUnconditionalActivateOk() (*string, bool) {
-	if o == nil || IsNil(o.CallForwardUnconditionalActivate) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetBitRateOk() (*string, bool) {
+	if o == nil || IsNil(o.BitRate) {
 		return nil, false
 	}
-	return o.CallForwardUnconditionalActivate, true
+	return o.BitRate, true
 }
 
-// HasCallForwardUnconditionalActivate returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallForwardUnconditionalActivate() bool {
-	if o != nil && !IsNil(o.CallForwardUnconditionalActivate) {
+// HasBitRate returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasBitRate() bool {
+	if o != nil && !IsNil(o.BitRate) {
 		return true
 	}
 
 	return false
 }
 
-// SetCallForwardUnconditionalActivate gets a reference to the given string and assigns it to the CallForwardUnconditionalActivate field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallForwardUnconditionalActivate(v string) {
-	o.CallForwardUnconditionalActivate = &v
+// SetBitRate gets a reference to the given string and assigns it to the BitRate field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetBitRate(v string) {
+	o.BitRate = &v
 }
 
-// GetCallForwardUnconditionalDeactivate returns the CallForwardUnconditionalDeactivate field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallForwardUnconditionalDeactivate() string {
-	if o == nil || IsNil(o.CallForwardUnconditionalDeactivate) {
+// GetCallAgent1 returns the CallAgent1 field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgent1() string {
+	if o == nil || IsNil(o.CallAgent1) {
 		var ret string
 		return ret
 	}
-	return *o.CallForwardUnconditionalDeactivate
+	return *o.CallAgent1
 }
 
-// GetCallForwardUnconditionalDeactivateOk returns a tuple with the CallForwardUnconditionalDeactivate field value if set, nil otherwise
+// GetCallAgent1Ok returns a tuple with the CallAgent1 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallForwardUnconditionalDeactivateOk() (*string, bool) {
-	if o == nil || IsNil(o.CallForwardUnconditionalDeactivate) {
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgent1Ok() (*string, bool) {
+	if o == nil || IsNil(o.CallAgent1) {
 		return nil, false
 	}
-	return o.CallForwardUnconditionalDeactivate, true
+	return o.CallAgent1, true
 }
 
-// HasCallForwardUnconditionalDeactivate returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallForwardUnconditionalDeactivate() bool {
-	if o != nil && !IsNil(o.CallForwardUnconditionalDeactivate) {
+// HasCallAgent1 returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallAgent1() bool {
+	if o != nil && !IsNil(o.CallAgent1) {
 		return true
 	}
 
 	return false
 }
 
-// SetCallForwardUnconditionalDeactivate gets a reference to the given string and assigns it to the CallForwardUnconditionalDeactivate field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallForwardUnconditionalDeactivate(v string) {
-	o.CallForwardUnconditionalDeactivate = &v
+// SetCallAgent1 gets a reference to the given string and assigns it to the CallAgent1 field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgent1(v string) {
+	o.CallAgent1 = &v
+}
+
+// GetCallAgent2 returns the CallAgent2 field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgent2() string {
+	if o == nil || IsNil(o.CallAgent2) {
+		var ret string
+		return ret
+	}
+	return *o.CallAgent2
+}
+
+// GetCallAgent2Ok returns a tuple with the CallAgent2 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgent2Ok() (*string, bool) {
+	if o == nil || IsNil(o.CallAgent2) {
+		return nil, false
+	}
+	return o.CallAgent2, true
+}
+
+// HasCallAgent2 returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallAgent2() bool {
+	if o != nil && !IsNil(o.CallAgent2) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallAgent2 gets a reference to the given string and assigns it to the CallAgent2 field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgent2(v string) {
+	o.CallAgent2 = &v
+}
+
+// GetCallAgentPort1 returns the CallAgentPort1 field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort1() int64 {
+	if o == nil || IsNil(o.CallAgentPort1.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.CallAgentPort1.Get()
+}
+
+// GetCallAgentPort1Ok returns a tuple with the CallAgentPort1 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort1Ok() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CallAgentPort1.Get(), o.CallAgentPort1.IsSet()
+}
+
+// HasCallAgentPort1 returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallAgentPort1() bool {
+	if o != nil && o.CallAgentPort1.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCallAgentPort1 gets a reference to the given NullableInt64 and assigns it to the CallAgentPort1 field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort1(v int64) {
+	o.CallAgentPort1.Set(&v)
+}
+
+// SetCallAgentPort1Nil sets the value for CallAgentPort1 to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort1Nil() {
+	o.CallAgentPort1.Set(nil)
+}
+
+// UnsetCallAgentPort1 ensures that no value is present for CallAgentPort1, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetCallAgentPort1() {
+	o.CallAgentPort1.Unset()
+}
+
+// GetCallAgentPort2 returns the CallAgentPort2 field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort2() int64 {
+	if o == nil || IsNil(o.CallAgentPort2.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.CallAgentPort2.Get()
+}
+
+// GetCallAgentPort2Ok returns a tuple with the CallAgentPort2 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallAgentPort2Ok() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CallAgentPort2.Get(), o.CallAgentPort2.IsSet()
+}
+
+// HasCallAgentPort2 returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallAgentPort2() bool {
+	if o != nil && o.CallAgentPort2.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCallAgentPort2 gets a reference to the given NullableInt64 and assigns it to the CallAgentPort2 field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort2(v int64) {
+	o.CallAgentPort2.Set(&v)
+}
+
+// SetCallAgentPort2Nil sets the value for CallAgentPort2 to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallAgentPort2Nil() {
+	o.CallAgentPort2.Set(nil)
+}
+
+// UnsetCallAgentPort2 ensures that no value is present for CallAgentPort2, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetCallAgentPort2() {
+	o.CallAgentPort2.Unset()
 }
 
 // GetCallForwardOnBusyActivate returns the CallForwardOnBusyActivate field value if set, zero value otherwise.
@@ -2424,6 +774,615 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallForwardOn
 	o.CallForwardOnNoAnswerDeactivate = &v
 }
 
+// GetCallForwardUnconditionalActivate returns the CallForwardUnconditionalActivate field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallForwardUnconditionalActivate() string {
+	if o == nil || IsNil(o.CallForwardUnconditionalActivate) {
+		var ret string
+		return ret
+	}
+	return *o.CallForwardUnconditionalActivate
+}
+
+// GetCallForwardUnconditionalActivateOk returns a tuple with the CallForwardUnconditionalActivate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallForwardUnconditionalActivateOk() (*string, bool) {
+	if o == nil || IsNil(o.CallForwardUnconditionalActivate) {
+		return nil, false
+	}
+	return o.CallForwardUnconditionalActivate, true
+}
+
+// HasCallForwardUnconditionalActivate returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallForwardUnconditionalActivate() bool {
+	if o != nil && !IsNil(o.CallForwardUnconditionalActivate) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallForwardUnconditionalActivate gets a reference to the given string and assigns it to the CallForwardUnconditionalActivate field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallForwardUnconditionalActivate(v string) {
+	o.CallForwardUnconditionalActivate = &v
+}
+
+// GetCallForwardUnconditionalDeactivate returns the CallForwardUnconditionalDeactivate field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallForwardUnconditionalDeactivate() string {
+	if o == nil || IsNil(o.CallForwardUnconditionalDeactivate) {
+		var ret string
+		return ret
+	}
+	return *o.CallForwardUnconditionalDeactivate
+}
+
+// GetCallForwardUnconditionalDeactivateOk returns a tuple with the CallForwardUnconditionalDeactivate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallForwardUnconditionalDeactivateOk() (*string, bool) {
+	if o == nil || IsNil(o.CallForwardUnconditionalDeactivate) {
+		return nil, false
+	}
+	return o.CallForwardUnconditionalDeactivate, true
+}
+
+// HasCallForwardUnconditionalDeactivate returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallForwardUnconditionalDeactivate() bool {
+	if o != nil && !IsNil(o.CallForwardUnconditionalDeactivate) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallForwardUnconditionalDeactivate gets a reference to the given string and assigns it to the CallForwardUnconditionalDeactivate field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallForwardUnconditionalDeactivate(v string) {
+	o.CallForwardUnconditionalDeactivate = &v
+}
+
+// GetCallHold returns the CallHold field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallHold() string {
+	if o == nil || IsNil(o.CallHold) {
+		var ret string
+		return ret
+	}
+	return *o.CallHold
+}
+
+// GetCallHoldOk returns a tuple with the CallHold field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCallHoldOk() (*string, bool) {
+	if o == nil || IsNil(o.CallHold) {
+		return nil, false
+	}
+	return o.CallHold, true
+}
+
+// HasCallHold returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCallHold() bool {
+	if o != nil && !IsNil(o.CallHold) {
+		return true
+	}
+
+	return false
+}
+
+// SetCallHold gets a reference to the given string and assigns it to the CallHold field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCallHold(v string) {
+	o.CallHold = &v
+}
+
+// GetCancelCallWaiting returns the CancelCallWaiting field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCancelCallWaiting() string {
+	if o == nil || IsNil(o.CancelCallWaiting) {
+		var ret string
+		return ret
+	}
+	return *o.CancelCallWaiting
+}
+
+// GetCancelCallWaitingOk returns a tuple with the CancelCallWaiting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCancelCallWaitingOk() (*string, bool) {
+	if o == nil || IsNil(o.CancelCallWaiting) {
+		return nil, false
+	}
+	return o.CancelCallWaiting, true
+}
+
+// HasCancelCallWaiting returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCancelCallWaiting() bool {
+	if o != nil && !IsNil(o.CancelCallWaiting) {
+		return true
+	}
+
+	return false
+}
+
+// SetCancelCallWaiting gets a reference to the given string and assigns it to the CancelCallWaiting field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCancelCallWaiting(v string) {
+	o.CancelCallWaiting = &v
+}
+
+// GetCasEvents returns the CasEvents field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEvents() int64 {
+	if o == nil || IsNil(o.CasEvents.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.CasEvents.Get()
+}
+
+// GetCasEventsOk returns a tuple with the CasEvents field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCasEventsOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CasEvents.Get(), o.CasEvents.IsSet()
+}
+
+// HasCasEvents returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCasEvents() bool {
+	if o != nil && o.CasEvents.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCasEvents gets a reference to the given NullableInt64 and assigns it to the CasEvents field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCasEvents(v int64) {
+	o.CasEvents.Set(&v)
+}
+
+// SetCasEventsNil sets the value for CasEvents to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCasEventsNil() {
+	o.CasEvents.Set(nil)
+}
+
+// UnsetCasEvents ensures that no value is present for CasEvents, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetCasEvents() {
+	o.CasEvents.Unset()
+}
+
+// GetCidsActivate returns the CidsActivate field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCidsActivate() string {
+	if o == nil || IsNil(o.CidsActivate) {
+		var ret string
+		return ret
+	}
+	return *o.CidsActivate
+}
+
+// GetCidsActivateOk returns a tuple with the CidsActivate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCidsActivateOk() (*string, bool) {
+	if o == nil || IsNil(o.CidsActivate) {
+		return nil, false
+	}
+	return o.CidsActivate, true
+}
+
+// HasCidsActivate returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCidsActivate() bool {
+	if o != nil && !IsNil(o.CidsActivate) {
+		return true
+	}
+
+	return false
+}
+
+// SetCidsActivate gets a reference to the given string and assigns it to the CidsActivate field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCidsActivate(v string) {
+	o.CidsActivate = &v
+}
+
+// GetCidsDeactivate returns the CidsDeactivate field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCidsDeactivate() string {
+	if o == nil || IsNil(o.CidsDeactivate) {
+		var ret string
+		return ret
+	}
+	return *o.CidsDeactivate
+}
+
+// GetCidsDeactivateOk returns a tuple with the CidsDeactivate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCidsDeactivateOk() (*string, bool) {
+	if o == nil || IsNil(o.CidsDeactivate) {
+		return nil, false
+	}
+	return o.CidsDeactivate, true
+}
+
+// HasCidsDeactivate returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCidsDeactivate() bool {
+	if o != nil && !IsNil(o.CidsDeactivate) {
+		return true
+	}
+
+	return false
+}
+
+// SetCidsDeactivate gets a reference to the given string and assigns it to the CidsDeactivate field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCidsDeactivate(v string) {
+	o.CidsDeactivate = &v
+}
+
+// GetCodecs returns the Codecs field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCodecs() []DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner {
+	if o == nil || IsNil(o.Codecs) {
+		var ret []DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner
+		return ret
+	}
+	return o.Codecs
+}
+
+// GetCodecsOk returns a tuple with the Codecs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCodecsOk() ([]DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner, bool) {
+	if o == nil || IsNil(o.Codecs) {
+		return nil, false
+	}
+	return o.Codecs, true
+}
+
+// HasCodecs returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCodecs() bool {
+	if o != nil && !IsNil(o.Codecs) {
+		return true
+	}
+
+	return false
+}
+
+// SetCodecs gets a reference to the given []DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner and assigns it to the Codecs field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCodecs(v []DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) {
+	o.Codecs = v
+}
+
+// GetDoNotDisturbActivate returns the DoNotDisturbActivate field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDoNotDisturbActivate() string {
+	if o == nil || IsNil(o.DoNotDisturbActivate) {
+		var ret string
+		return ret
+	}
+	return *o.DoNotDisturbActivate
+}
+
+// GetDoNotDisturbActivateOk returns a tuple with the DoNotDisturbActivate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDoNotDisturbActivateOk() (*string, bool) {
+	if o == nil || IsNil(o.DoNotDisturbActivate) {
+		return nil, false
+	}
+	return o.DoNotDisturbActivate, true
+}
+
+// HasDoNotDisturbActivate returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasDoNotDisturbActivate() bool {
+	if o != nil && !IsNil(o.DoNotDisturbActivate) {
+		return true
+	}
+
+	return false
+}
+
+// SetDoNotDisturbActivate gets a reference to the given string and assigns it to the DoNotDisturbActivate field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDoNotDisturbActivate(v string) {
+	o.DoNotDisturbActivate = &v
+}
+
+// GetDoNotDisturbDeactivate returns the DoNotDisturbDeactivate field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDoNotDisturbDeactivate() string {
+	if o == nil || IsNil(o.DoNotDisturbDeactivate) {
+		var ret string
+		return ret
+	}
+	return *o.DoNotDisturbDeactivate
+}
+
+// GetDoNotDisturbDeactivateOk returns a tuple with the DoNotDisturbDeactivate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDoNotDisturbDeactivateOk() (*string, bool) {
+	if o == nil || IsNil(o.DoNotDisturbDeactivate) {
+		return nil, false
+	}
+	return o.DoNotDisturbDeactivate, true
+}
+
+// HasDoNotDisturbDeactivate returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasDoNotDisturbDeactivate() bool {
+	if o != nil && !IsNil(o.DoNotDisturbDeactivate) {
+		return true
+	}
+
+	return false
+}
+
+// SetDoNotDisturbDeactivate gets a reference to the given string and assigns it to the DoNotDisturbDeactivate field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDoNotDisturbDeactivate(v string) {
+	o.DoNotDisturbDeactivate = &v
+}
+
+// GetDoNotDisturbPinChange returns the DoNotDisturbPinChange field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDoNotDisturbPinChange() string {
+	if o == nil || IsNil(o.DoNotDisturbPinChange) {
+		var ret string
+		return ret
+	}
+	return *o.DoNotDisturbPinChange
+}
+
+// GetDoNotDisturbPinChangeOk returns a tuple with the DoNotDisturbPinChange field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDoNotDisturbPinChangeOk() (*string, bool) {
+	if o == nil || IsNil(o.DoNotDisturbPinChange) {
+		return nil, false
+	}
+	return o.DoNotDisturbPinChange, true
+}
+
+// HasDoNotDisturbPinChange returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasDoNotDisturbPinChange() bool {
+	if o != nil && !IsNil(o.DoNotDisturbPinChange) {
+		return true
+	}
+
+	return false
+}
+
+// SetDoNotDisturbPinChange gets a reference to the given string and assigns it to the DoNotDisturbPinChange field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDoNotDisturbPinChange(v string) {
+	o.DoNotDisturbPinChange = &v
+}
+
+// GetDomain returns the Domain field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDomain() string {
+	if o == nil || IsNil(o.Domain) {
+		var ret string
+		return ret
+	}
+	return *o.Domain
+}
+
+// GetDomainOk returns a tuple with the Domain field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDomainOk() (*string, bool) {
+	if o == nil || IsNil(o.Domain) {
+		return nil, false
+	}
+	return o.Domain, true
+}
+
+// HasDomain returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasDomain() bool {
+	if o != nil && !IsNil(o.Domain) {
+		return true
+	}
+
+	return false
+}
+
+// SetDomain gets a reference to the given string and assigns it to the Domain field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDomain(v string) {
+	o.Domain = &v
+}
+
+// GetDscpMark returns the DscpMark field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDscpMark() int64 {
+	if o == nil || IsNil(o.DscpMark.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.DscpMark.Get()
+}
+
+// GetDscpMarkOk returns a tuple with the DscpMark field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDscpMarkOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DscpMark.Get(), o.DscpMark.IsSet()
+}
+
+// HasDscpMark returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasDscpMark() bool {
+	if o != nil && o.DscpMark.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDscpMark gets a reference to the given NullableInt64 and assigns it to the DscpMark field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDscpMark(v int64) {
+	o.DscpMark.Set(&v)
+}
+
+// SetDscpMarkNil sets the value for DscpMark to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDscpMarkNil() {
+	o.DscpMark.Set(nil)
+}
+
+// UnsetDscpMark ensures that no value is present for DscpMark, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetDscpMark() {
+	o.DscpMark.Unset()
+}
+
+// GetDtmfMethod returns the DtmfMethod field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDtmfMethod() string {
+	if o == nil || IsNil(o.DtmfMethod) {
+		var ret string
+		return ret
+	}
+	return *o.DtmfMethod
+}
+
+// GetDtmfMethodOk returns a tuple with the DtmfMethod field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetDtmfMethodOk() (*string, bool) {
+	if o == nil || IsNil(o.DtmfMethod) {
+		return nil, false
+	}
+	return o.DtmfMethod, true
+}
+
+// HasDtmfMethod returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasDtmfMethod() bool {
+	if o != nil && !IsNil(o.DtmfMethod) {
+		return true
+	}
+
+	return false
+}
+
+// SetDtmfMethod gets a reference to the given string and assigns it to the DtmfMethod field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetDtmfMethod(v string) {
+	o.DtmfMethod = &v
+}
+
+// GetEmergencyServiceNumber returns the EmergencyServiceNumber field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEmergencyServiceNumber() string {
+	if o == nil || IsNil(o.EmergencyServiceNumber) {
+		var ret string
+		return ret
+	}
+	return *o.EmergencyServiceNumber
+}
+
+// GetEmergencyServiceNumberOk returns a tuple with the EmergencyServiceNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEmergencyServiceNumberOk() (*string, bool) {
+	if o == nil || IsNil(o.EmergencyServiceNumber) {
+		return nil, false
+	}
+	return o.EmergencyServiceNumber, true
+}
+
+// HasEmergencyServiceNumber returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasEmergencyServiceNumber() bool {
+	if o != nil && !IsNil(o.EmergencyServiceNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetEmergencyServiceNumber gets a reference to the given string and assigns it to the EmergencyServiceNumber field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetEmergencyServiceNumber(v string) {
+	o.EmergencyServiceNumber = &v
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetEnable(v bool) {
+	o.Enable = &v
+}
+
+// GetEventPayloadType returns the EventPayloadType field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEventPayloadType() int64 {
+	if o == nil || IsNil(o.EventPayloadType.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.EventPayloadType.Get()
+}
+
+// GetEventPayloadTypeOk returns a tuple with the EventPayloadType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetEventPayloadTypeOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.EventPayloadType.Get(), o.EventPayloadType.IsSet()
+}
+
+// HasEventPayloadType returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasEventPayloadType() bool {
+	if o != nil && o.EventPayloadType.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetEventPayloadType gets a reference to the given NullableInt64 and assigns it to the EventPayloadType field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetEventPayloadType(v int64) {
+	o.EventPayloadType.Set(&v)
+}
+
+// SetEventPayloadTypeNil sets the value for EventPayloadType to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetEventPayloadTypeNil() {
+	o.EventPayloadType.Set(nil)
+}
+
+// UnsetEventPayloadType ensures that no value is present for EventPayloadType, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetEventPayloadType() {
+	o.EventPayloadType.Unset()
+}
+
+// GetFaxT38 returns the FaxT38 field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetFaxT38() bool {
+	if o == nil || IsNil(o.FaxT38) {
+		var ret bool
+		return ret
+	}
+	return *o.FaxT38
+}
+
+// GetFaxT38Ok returns a tuple with the FaxT38 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetFaxT38Ok() (*bool, bool) {
+	if o == nil || IsNil(o.FaxT38) {
+		return nil, false
+	}
+	return o.FaxT38, true
+}
+
+// HasFaxT38 returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasFaxT38() bool {
+	if o != nil && !IsNil(o.FaxT38) {
+		return true
+	}
+
+	return false
+}
+
+// SetFaxT38 gets a reference to the given bool and assigns it to the FaxT38 field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetFaxT38(v bool) {
+	o.FaxT38 = &v
+}
+
 // GetIntercom1 returns the Intercom1 field value if set, zero value otherwise.
 func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetIntercom1() string {
 	if o == nil || IsNil(o.Intercom1) {
@@ -2520,36 +1479,165 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetIntercom3(v s
 	o.Intercom3 = &v
 }
 
-// GetCodecs returns the Codecs field value if set, zero value otherwise.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCodecs() []DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner {
-	if o == nil || IsNil(o.Codecs) {
-		var ret []DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner
+// GetLocalPortMax returns the LocalPortMax field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMax() int64 {
+	if o == nil || IsNil(o.LocalPortMax.Get()) {
+		var ret int64
 		return ret
 	}
-	return o.Codecs
+	return *o.LocalPortMax.Get()
 }
 
-// GetCodecsOk returns a tuple with the Codecs field value if set, nil otherwise
+// GetLocalPortMaxOk returns a tuple with the LocalPortMax field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetCodecsOk() ([]DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner, bool) {
-	if o == nil || IsNil(o.Codecs) {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMaxOk() (*int64, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Codecs, true
+	return o.LocalPortMax.Get(), o.LocalPortMax.IsSet()
 }
 
-// HasCodecs returns a boolean if a field has been set.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasCodecs() bool {
-	if o != nil && !IsNil(o.Codecs) {
+// HasLocalPortMax returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasLocalPortMax() bool {
+	if o != nil && o.LocalPortMax.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetCodecs gets a reference to the given []DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner and assigns it to the Codecs field.
-func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetCodecs(v []DevicevoicesettingsPutRequestDeviceVoiceSettingsValueCodecsInner) {
-	o.Codecs = v
+// SetLocalPortMax gets a reference to the given NullableInt64 and assigns it to the LocalPortMax field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMax(v int64) {
+	o.LocalPortMax.Set(&v)
+}
+
+// SetLocalPortMaxNil sets the value for LocalPortMax to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMaxNil() {
+	o.LocalPortMax.Set(nil)
+}
+
+// UnsetLocalPortMax ensures that no value is present for LocalPortMax, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetLocalPortMax() {
+	o.LocalPortMax.Unset()
+}
+
+// GetLocalPortMin returns the LocalPortMin field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMin() int64 {
+	if o == nil || IsNil(o.LocalPortMin.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.LocalPortMin.Get()
+}
+
+// GetLocalPortMinOk returns a tuple with the LocalPortMin field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetLocalPortMinOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LocalPortMin.Get(), o.LocalPortMin.IsSet()
+}
+
+// HasLocalPortMin returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasLocalPortMin() bool {
+	if o != nil && o.LocalPortMin.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLocalPortMin gets a reference to the given NullableInt64 and assigns it to the LocalPortMin field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMin(v int64) {
+	o.LocalPortMin.Set(&v)
+}
+
+// SetLocalPortMinNil sets the value for LocalPortMin to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetLocalPortMinNil() {
+	o.LocalPortMin.Set(nil)
+}
+
+// UnsetLocalPortMin ensures that no value is present for LocalPortMin, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetLocalPortMin() {
+	o.LocalPortMin.Unset()
+}
+
+// GetMgcpDscpMark returns the MgcpDscpMark field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetMgcpDscpMark() int64 {
+	if o == nil || IsNil(o.MgcpDscpMark.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.MgcpDscpMark.Get()
+}
+
+// GetMgcpDscpMarkOk returns a tuple with the MgcpDscpMark field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetMgcpDscpMarkOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MgcpDscpMark.Get(), o.MgcpDscpMark.IsSet()
+}
+
+// HasMgcpDscpMark returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasMgcpDscpMark() bool {
+	if o != nil && o.MgcpDscpMark.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMgcpDscpMark gets a reference to the given NullableInt64 and assigns it to the MgcpDscpMark field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetMgcpDscpMark(v int64) {
+	o.MgcpDscpMark.Set(&v)
+}
+
+// SetMgcpDscpMarkNil sets the value for MgcpDscpMark to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetMgcpDscpMarkNil() {
+	o.MgcpDscpMark.Set(nil)
+}
+
+// UnsetMgcpDscpMark ensures that no value is present for MgcpDscpMark, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetMgcpDscpMark() {
+	o.MgcpDscpMark.Unset()
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -2584,8 +1672,940 @@ func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetObjectPropert
 	o.ObjectProperties = v
 }
 
+// GetOutboundProxy returns the OutboundProxy field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxy() string {
+	if o == nil || IsNil(o.OutboundProxy) {
+		var ret string
+		return ret
+	}
+	return *o.OutboundProxy
+}
+
+// GetOutboundProxyOk returns a tuple with the OutboundProxy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxyOk() (*string, bool) {
+	if o == nil || IsNil(o.OutboundProxy) {
+		return nil, false
+	}
+	return o.OutboundProxy, true
+}
+
+// HasOutboundProxy returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasOutboundProxy() bool {
+	if o != nil && !IsNil(o.OutboundProxy) {
+		return true
+	}
+
+	return false
+}
+
+// SetOutboundProxy gets a reference to the given string and assigns it to the OutboundProxy field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxy(v string) {
+	o.OutboundProxy = &v
+}
+
+// GetOutboundProxyPort returns the OutboundProxyPort field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxyPort() int64 {
+	if o == nil || IsNil(o.OutboundProxyPort.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.OutboundProxyPort.Get()
+}
+
+// GetOutboundProxyPortOk returns a tuple with the OutboundProxyPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxyPortOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.OutboundProxyPort.Get(), o.OutboundProxyPort.IsSet()
+}
+
+// HasOutboundProxyPort returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasOutboundProxyPort() bool {
+	if o != nil && o.OutboundProxyPort.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetOutboundProxyPort gets a reference to the given NullableInt64 and assigns it to the OutboundProxyPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxyPort(v int64) {
+	o.OutboundProxyPort.Set(&v)
+}
+
+// SetOutboundProxyPortNil sets the value for OutboundProxyPort to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxyPortNil() {
+	o.OutboundProxyPort.Set(nil)
+}
+
+// UnsetOutboundProxyPort ensures that no value is present for OutboundProxyPort, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetOutboundProxyPort() {
+	o.OutboundProxyPort.Unset()
+}
+
+// GetOutboundProxySecondary returns the OutboundProxySecondary field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondary() string {
+	if o == nil || IsNil(o.OutboundProxySecondary) {
+		var ret string
+		return ret
+	}
+	return *o.OutboundProxySecondary
+}
+
+// GetOutboundProxySecondaryOk returns a tuple with the OutboundProxySecondary field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondaryOk() (*string, bool) {
+	if o == nil || IsNil(o.OutboundProxySecondary) {
+		return nil, false
+	}
+	return o.OutboundProxySecondary, true
+}
+
+// HasOutboundProxySecondary returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasOutboundProxySecondary() bool {
+	if o != nil && !IsNil(o.OutboundProxySecondary) {
+		return true
+	}
+
+	return false
+}
+
+// SetOutboundProxySecondary gets a reference to the given string and assigns it to the OutboundProxySecondary field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxySecondary(v string) {
+	o.OutboundProxySecondary = &v
+}
+
+// GetOutboundProxySecondaryPort returns the OutboundProxySecondaryPort field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondaryPort() int64 {
+	if o == nil || IsNil(o.OutboundProxySecondaryPort.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.OutboundProxySecondaryPort.Get()
+}
+
+// GetOutboundProxySecondaryPortOk returns a tuple with the OutboundProxySecondaryPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetOutboundProxySecondaryPortOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.OutboundProxySecondaryPort.Get(), o.OutboundProxySecondaryPort.IsSet()
+}
+
+// HasOutboundProxySecondaryPort returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasOutboundProxySecondaryPort() bool {
+	if o != nil && o.OutboundProxySecondaryPort.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetOutboundProxySecondaryPort gets a reference to the given NullableInt64 and assigns it to the OutboundProxySecondaryPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxySecondaryPort(v int64) {
+	o.OutboundProxySecondaryPort.Set(&v)
+}
+
+// SetOutboundProxySecondaryPortNil sets the value for OutboundProxySecondaryPort to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetOutboundProxySecondaryPortNil() {
+	o.OutboundProxySecondaryPort.Set(nil)
+}
+
+// UnsetOutboundProxySecondaryPort ensures that no value is present for OutboundProxySecondaryPort, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetOutboundProxySecondaryPort() {
+	o.OutboundProxySecondaryPort.Unset()
+}
+
+// GetProtocol returns the Protocol field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProtocol() string {
+	if o == nil || IsNil(o.Protocol) {
+		var ret string
+		return ret
+	}
+	return *o.Protocol
+}
+
+// GetProtocolOk returns a tuple with the Protocol field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProtocolOk() (*string, bool) {
+	if o == nil || IsNil(o.Protocol) {
+		return nil, false
+	}
+	return o.Protocol, true
+}
+
+// HasProtocol returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasProtocol() bool {
+	if o != nil && !IsNil(o.Protocol) {
+		return true
+	}
+
+	return false
+}
+
+// SetProtocol gets a reference to the given string and assigns it to the Protocol field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProtocol(v string) {
+	o.Protocol = &v
+}
+
+// GetProxyServer returns the ProxyServer field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServer() string {
+	if o == nil || IsNil(o.ProxyServer) {
+		var ret string
+		return ret
+	}
+	return *o.ProxyServer
+}
+
+// GetProxyServerOk returns a tuple with the ProxyServer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerOk() (*string, bool) {
+	if o == nil || IsNil(o.ProxyServer) {
+		return nil, false
+	}
+	return o.ProxyServer, true
+}
+
+// HasProxyServer returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasProxyServer() bool {
+	if o != nil && !IsNil(o.ProxyServer) {
+		return true
+	}
+
+	return false
+}
+
+// SetProxyServer gets a reference to the given string and assigns it to the ProxyServer field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServer(v string) {
+	o.ProxyServer = &v
+}
+
+// GetProxyServerPort returns the ProxyServerPort field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerPort() int64 {
+	if o == nil || IsNil(o.ProxyServerPort.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.ProxyServerPort.Get()
+}
+
+// GetProxyServerPortOk returns a tuple with the ProxyServerPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerPortOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ProxyServerPort.Get(), o.ProxyServerPort.IsSet()
+}
+
+// HasProxyServerPort returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasProxyServerPort() bool {
+	if o != nil && o.ProxyServerPort.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetProxyServerPort gets a reference to the given NullableInt64 and assigns it to the ProxyServerPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerPort(v int64) {
+	o.ProxyServerPort.Set(&v)
+}
+
+// SetProxyServerPortNil sets the value for ProxyServerPort to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerPortNil() {
+	o.ProxyServerPort.Set(nil)
+}
+
+// UnsetProxyServerPort ensures that no value is present for ProxyServerPort, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetProxyServerPort() {
+	o.ProxyServerPort.Unset()
+}
+
+// GetProxyServerSecondary returns the ProxyServerSecondary field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondary() string {
+	if o == nil || IsNil(o.ProxyServerSecondary) {
+		var ret string
+		return ret
+	}
+	return *o.ProxyServerSecondary
+}
+
+// GetProxyServerSecondaryOk returns a tuple with the ProxyServerSecondary field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondaryOk() (*string, bool) {
+	if o == nil || IsNil(o.ProxyServerSecondary) {
+		return nil, false
+	}
+	return o.ProxyServerSecondary, true
+}
+
+// HasProxyServerSecondary returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasProxyServerSecondary() bool {
+	if o != nil && !IsNil(o.ProxyServerSecondary) {
+		return true
+	}
+
+	return false
+}
+
+// SetProxyServerSecondary gets a reference to the given string and assigns it to the ProxyServerSecondary field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerSecondary(v string) {
+	o.ProxyServerSecondary = &v
+}
+
+// GetProxyServerSecondaryPort returns the ProxyServerSecondaryPort field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondaryPort() int64 {
+	if o == nil || IsNil(o.ProxyServerSecondaryPort.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.ProxyServerSecondaryPort.Get()
+}
+
+// GetProxyServerSecondaryPortOk returns a tuple with the ProxyServerSecondaryPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetProxyServerSecondaryPortOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ProxyServerSecondaryPort.Get(), o.ProxyServerSecondaryPort.IsSet()
+}
+
+// HasProxyServerSecondaryPort returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasProxyServerSecondaryPort() bool {
+	if o != nil && o.ProxyServerSecondaryPort.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetProxyServerSecondaryPort gets a reference to the given NullableInt64 and assigns it to the ProxyServerSecondaryPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerSecondaryPort(v int64) {
+	o.ProxyServerSecondaryPort.Set(&v)
+}
+
+// SetProxyServerSecondaryPortNil sets the value for ProxyServerSecondaryPort to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetProxyServerSecondaryPortNil() {
+	o.ProxyServerSecondaryPort.Set(nil)
+}
+
+// UnsetProxyServerSecondaryPort ensures that no value is present for ProxyServerSecondaryPort, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetProxyServerSecondaryPort() {
+	o.ProxyServerSecondaryPort.Unset()
+}
+
+// GetRegion returns the Region field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegion() string {
+	if o == nil || IsNil(o.Region) {
+		var ret string
+		return ret
+	}
+	return *o.Region
+}
+
+// GetRegionOk returns a tuple with the Region field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegionOk() (*string, bool) {
+	if o == nil || IsNil(o.Region) {
+		return nil, false
+	}
+	return o.Region, true
+}
+
+// HasRegion returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegion() bool {
+	if o != nil && !IsNil(o.Region) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegion gets a reference to the given string and assigns it to the Region field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegion(v string) {
+	o.Region = &v
+}
+
+// GetRegisterExpires returns the RegisterExpires field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegisterExpires() int64 {
+	if o == nil || IsNil(o.RegisterExpires.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.RegisterExpires.Get()
+}
+
+// GetRegisterExpiresOk returns a tuple with the RegisterExpires field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegisterExpiresOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RegisterExpires.Get(), o.RegisterExpires.IsSet()
+}
+
+// HasRegisterExpires returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegisterExpires() bool {
+	if o != nil && o.RegisterExpires.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRegisterExpires gets a reference to the given NullableInt64 and assigns it to the RegisterExpires field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegisterExpires(v int64) {
+	o.RegisterExpires.Set(&v)
+}
+
+// SetRegisterExpiresNil sets the value for RegisterExpires to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegisterExpiresNil() {
+	o.RegisterExpires.Set(nil)
+}
+
+// UnsetRegisterExpires ensures that no value is present for RegisterExpires, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetRegisterExpires() {
+	o.RegisterExpires.Unset()
+}
+
+// GetRegistrarServer returns the RegistrarServer field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServer() string {
+	if o == nil || IsNil(o.RegistrarServer) {
+		var ret string
+		return ret
+	}
+	return *o.RegistrarServer
+}
+
+// GetRegistrarServerOk returns a tuple with the RegistrarServer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerOk() (*string, bool) {
+	if o == nil || IsNil(o.RegistrarServer) {
+		return nil, false
+	}
+	return o.RegistrarServer, true
+}
+
+// HasRegistrarServer returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegistrarServer() bool {
+	if o != nil && !IsNil(o.RegistrarServer) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegistrarServer gets a reference to the given string and assigns it to the RegistrarServer field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServer(v string) {
+	o.RegistrarServer = &v
+}
+
+// GetRegistrarServerPort returns the RegistrarServerPort field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerPort() int64 {
+	if o == nil || IsNil(o.RegistrarServerPort.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.RegistrarServerPort.Get()
+}
+
+// GetRegistrarServerPortOk returns a tuple with the RegistrarServerPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerPortOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RegistrarServerPort.Get(), o.RegistrarServerPort.IsSet()
+}
+
+// HasRegistrarServerPort returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegistrarServerPort() bool {
+	if o != nil && o.RegistrarServerPort.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRegistrarServerPort gets a reference to the given NullableInt64 and assigns it to the RegistrarServerPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerPort(v int64) {
+	o.RegistrarServerPort.Set(&v)
+}
+
+// SetRegistrarServerPortNil sets the value for RegistrarServerPort to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerPortNil() {
+	o.RegistrarServerPort.Set(nil)
+}
+
+// UnsetRegistrarServerPort ensures that no value is present for RegistrarServerPort, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetRegistrarServerPort() {
+	o.RegistrarServerPort.Unset()
+}
+
+// GetRegistrarServerSecondary returns the RegistrarServerSecondary field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondary() string {
+	if o == nil || IsNil(o.RegistrarServerSecondary) {
+		var ret string
+		return ret
+	}
+	return *o.RegistrarServerSecondary
+}
+
+// GetRegistrarServerSecondaryOk returns a tuple with the RegistrarServerSecondary field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondaryOk() (*string, bool) {
+	if o == nil || IsNil(o.RegistrarServerSecondary) {
+		return nil, false
+	}
+	return o.RegistrarServerSecondary, true
+}
+
+// HasRegistrarServerSecondary returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegistrarServerSecondary() bool {
+	if o != nil && !IsNil(o.RegistrarServerSecondary) {
+		return true
+	}
+
+	return false
+}
+
+// SetRegistrarServerSecondary gets a reference to the given string and assigns it to the RegistrarServerSecondary field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerSecondary(v string) {
+	o.RegistrarServerSecondary = &v
+}
+
+// GetRegistrarServerSecondaryPort returns the RegistrarServerSecondaryPort field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondaryPort() int64 {
+	if o == nil || IsNil(o.RegistrarServerSecondaryPort.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.RegistrarServerSecondaryPort.Get()
+}
+
+// GetRegistrarServerSecondaryPortOk returns a tuple with the RegistrarServerSecondaryPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrarServerSecondaryPortOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RegistrarServerSecondaryPort.Get(), o.RegistrarServerSecondaryPort.IsSet()
+}
+
+// HasRegistrarServerSecondaryPort returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegistrarServerSecondaryPort() bool {
+	if o != nil && o.RegistrarServerSecondaryPort.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRegistrarServerSecondaryPort gets a reference to the given NullableInt64 and assigns it to the RegistrarServerSecondaryPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerSecondaryPort(v int64) {
+	o.RegistrarServerSecondaryPort.Set(&v)
+}
+
+// SetRegistrarServerSecondaryPortNil sets the value for RegistrarServerSecondaryPort to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrarServerSecondaryPortNil() {
+	o.RegistrarServerSecondaryPort.Set(nil)
+}
+
+// UnsetRegistrarServerSecondaryPort ensures that no value is present for RegistrarServerSecondaryPort, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetRegistrarServerSecondaryPort() {
+	o.RegistrarServerSecondaryPort.Unset()
+}
+
+// GetRegistrationPeriod returns the RegistrationPeriod field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrationPeriod() int64 {
+	if o == nil || IsNil(o.RegistrationPeriod.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.RegistrationPeriod.Get()
+}
+
+// GetRegistrationPeriodOk returns a tuple with the RegistrationPeriod field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRegistrationPeriodOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RegistrationPeriod.Get(), o.RegistrationPeriod.IsSet()
+}
+
+// HasRegistrationPeriod returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRegistrationPeriod() bool {
+	if o != nil && o.RegistrationPeriod.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRegistrationPeriod gets a reference to the given NullableInt64 and assigns it to the RegistrationPeriod field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrationPeriod(v int64) {
+	o.RegistrationPeriod.Set(&v)
+}
+
+// SetRegistrationPeriodNil sets the value for RegistrationPeriod to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRegistrationPeriodNil() {
+	o.RegistrationPeriod.Set(nil)
+}
+
+// UnsetRegistrationPeriod ensures that no value is present for RegistrationPeriod, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetRegistrationPeriod() {
+	o.RegistrationPeriod.Unset()
+}
+
+// GetRtcp returns the Rtcp field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRtcp() bool {
+	if o == nil || IsNil(o.Rtcp) {
+		var ret bool
+		return ret
+	}
+	return *o.Rtcp
+}
+
+// GetRtcpOk returns a tuple with the Rtcp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetRtcpOk() (*bool, bool) {
+	if o == nil || IsNil(o.Rtcp) {
+		return nil, false
+	}
+	return o.Rtcp, true
+}
+
+// HasRtcp returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasRtcp() bool {
+	if o != nil && !IsNil(o.Rtcp) {
+		return true
+	}
+
+	return false
+}
+
+// SetRtcp gets a reference to the given bool and assigns it to the Rtcp field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetRtcp(v bool) {
+	o.Rtcp = &v
+}
+
+// GetSipDscpMark returns the SipDscpMark field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetSipDscpMark() int64 {
+	if o == nil || IsNil(o.SipDscpMark.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.SipDscpMark.Get()
+}
+
+// GetSipDscpMarkOk returns a tuple with the SipDscpMark field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetSipDscpMarkOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SipDscpMark.Get(), o.SipDscpMark.IsSet()
+}
+
+// HasSipDscpMark returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasSipDscpMark() bool {
+	if o != nil && o.SipDscpMark.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSipDscpMark gets a reference to the given NullableInt64 and assigns it to the SipDscpMark field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetSipDscpMark(v int64) {
+	o.SipDscpMark.Set(&v)
+}
+
+// SetSipDscpMarkNil sets the value for SipDscpMark to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetSipDscpMarkNil() {
+	o.SipDscpMark.Set(nil)
+}
+
+// UnsetSipDscpMark ensures that no value is present for SipDscpMark, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetSipDscpMark() {
+	o.SipDscpMark.Unset()
+}
+
+// GetTerminationBase returns the TerminationBase field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetTerminationBase() string {
+	if o == nil || IsNil(o.TerminationBase) {
+		var ret string
+		return ret
+	}
+	return *o.TerminationBase
+}
+
+// GetTerminationBaseOk returns a tuple with the TerminationBase field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetTerminationBaseOk() (*string, bool) {
+	if o == nil || IsNil(o.TerminationBase) {
+		return nil, false
+	}
+	return o.TerminationBase, true
+}
+
+// HasTerminationBase returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasTerminationBase() bool {
+	if o != nil && !IsNil(o.TerminationBase) {
+		return true
+	}
+
+	return false
+}
+
+// SetTerminationBase gets a reference to the given string and assigns it to the TerminationBase field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetTerminationBase(v string) {
+	o.TerminationBase = &v
+}
+
+// GetUserAgentDomain returns the UserAgentDomain field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentDomain() string {
+	if o == nil || IsNil(o.UserAgentDomain) {
+		var ret string
+		return ret
+	}
+	return *o.UserAgentDomain
+}
+
+// GetUserAgentDomainOk returns a tuple with the UserAgentDomain field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentDomainOk() (*string, bool) {
+	if o == nil || IsNil(o.UserAgentDomain) {
+		return nil, false
+	}
+	return o.UserAgentDomain, true
+}
+
+// HasUserAgentDomain returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasUserAgentDomain() bool {
+	if o != nil && !IsNil(o.UserAgentDomain) {
+		return true
+	}
+
+	return false
+}
+
+// SetUserAgentDomain gets a reference to the given string and assigns it to the UserAgentDomain field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetUserAgentDomain(v string) {
+	o.UserAgentDomain = &v
+}
+
+// GetUserAgentPort returns the UserAgentPort field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentPort() int64 {
+	if o == nil || IsNil(o.UserAgentPort.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.UserAgentPort.Get()
+}
+
+// GetUserAgentPortOk returns a tuple with the UserAgentPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentPortOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.UserAgentPort.Get(), o.UserAgentPort.IsSet()
+}
+
+// HasUserAgentPort returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasUserAgentPort() bool {
+	if o != nil && o.UserAgentPort.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetUserAgentPort gets a reference to the given NullableInt64 and assigns it to the UserAgentPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetUserAgentPort(v int64) {
+	o.UserAgentPort.Set(&v)
+}
+
+// SetUserAgentPortNil sets the value for UserAgentPort to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetUserAgentPortNil() {
+	o.UserAgentPort.Set(nil)
+}
+
+// UnsetUserAgentPort ensures that no value is present for UserAgentPort, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetUserAgentPort() {
+	o.UserAgentPort.Unset()
+}
+
+// GetUserAgentTransport returns the UserAgentTransport field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentTransport() string {
+	if o == nil || IsNil(o.UserAgentTransport) {
+		var ret string
+		return ret
+	}
+	return *o.UserAgentTransport
+}
+
+// GetUserAgentTransportOk returns a tuple with the UserAgentTransport field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetUserAgentTransportOk() (*string, bool) {
+	if o == nil || IsNil(o.UserAgentTransport) {
+		return nil, false
+	}
+	return o.UserAgentTransport, true
+}
+
+// HasUserAgentTransport returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasUserAgentTransport() bool {
+	if o != nil && !IsNil(o.UserAgentTransport) {
+		return true
+	}
+
+	return false
+}
+
+// SetUserAgentTransport gets a reference to the given string and assigns it to the UserAgentTransport field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetUserAgentTransport(v string) {
+	o.UserAgentTransport = &v
+}
+
+// GetVoicemailServer returns the VoicemailServer field value if set, zero value otherwise.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServer() string {
+	if o == nil || IsNil(o.VoicemailServer) {
+		var ret string
+		return ret
+	}
+	return *o.VoicemailServer
+}
+
+// GetVoicemailServerOk returns a tuple with the VoicemailServer field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerOk() (*string, bool) {
+	if o == nil || IsNil(o.VoicemailServer) {
+		return nil, false
+	}
+	return o.VoicemailServer, true
+}
+
+// HasVoicemailServer returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasVoicemailServer() bool {
+	if o != nil && !IsNil(o.VoicemailServer) {
+		return true
+	}
+
+	return false
+}
+
+// SetVoicemailServer gets a reference to the given string and assigns it to the VoicemailServer field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServer(v string) {
+	o.VoicemailServer = &v
+}
+
+// GetVoicemailServerExpires returns the VoicemailServerExpires field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerExpires() int64 {
+	if o == nil || IsNil(o.VoicemailServerExpires.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.VoicemailServerExpires.Get()
+}
+
+// GetVoicemailServerExpiresOk returns a tuple with the VoicemailServerExpires field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerExpiresOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.VoicemailServerExpires.Get(), o.VoicemailServerExpires.IsSet()
+}
+
+// HasVoicemailServerExpires returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasVoicemailServerExpires() bool {
+	if o != nil && o.VoicemailServerExpires.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetVoicemailServerExpires gets a reference to the given NullableInt64 and assigns it to the VoicemailServerExpires field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerExpires(v int64) {
+	o.VoicemailServerExpires.Set(&v)
+}
+
+// SetVoicemailServerExpiresNil sets the value for VoicemailServerExpires to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerExpiresNil() {
+	o.VoicemailServerExpires.Set(nil)
+}
+
+// UnsetVoicemailServerExpires ensures that no value is present for VoicemailServerExpires, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetVoicemailServerExpires() {
+	o.VoicemailServerExpires.Unset()
+}
+
+// GetVoicemailServerPort returns the VoicemailServerPort field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerPort() int64 {
+	if o == nil || IsNil(o.VoicemailServerPort.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.VoicemailServerPort.Get()
+}
+
+// GetVoicemailServerPortOk returns a tuple with the VoicemailServerPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) GetVoicemailServerPortOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.VoicemailServerPort.Get(), o.VoicemailServerPort.IsSet()
+}
+
+// HasVoicemailServerPort returns a boolean if a field has been set.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) HasVoicemailServerPort() bool {
+	if o != nil && o.VoicemailServerPort.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetVoicemailServerPort gets a reference to the given NullableInt64 and assigns it to the VoicemailServerPort field.
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerPort(v int64) {
+	o.VoicemailServerPort.Set(&v)
+}
+
+// SetVoicemailServerPortNil sets the value for VoicemailServerPort to be an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) SetVoicemailServerPortNil() {
+	o.VoicemailServerPort.Set(nil)
+}
+
+// UnsetVoicemailServerPort ensures that no value is present for VoicemailServerPort, not even an explicit nil
+func (o *DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) UnsetVoicemailServerPort() {
+	o.VoicemailServerPort.Unset()
+}
+
 func (o DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -2594,17 +2614,128 @@ func (o DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) MarshalJSON() ([]
 
 func (o DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
+	if !IsNil(o.AnonCidBlockActivate) {
+		toSerialize["anon_cid_block_activate"] = o.AnonCidBlockActivate
 	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
+	if !IsNil(o.AnonCidBlockDeactivate) {
+		toSerialize["anon_cid_block_deactivate"] = o.AnonCidBlockDeactivate
+	}
+	if !IsNil(o.BitRate) {
+		toSerialize["bit_rate"] = o.BitRate
+	}
+	if !IsNil(o.CallAgent1) {
+		toSerialize["call_agent_1"] = o.CallAgent1
+	}
+	if !IsNil(o.CallAgent2) {
+		toSerialize["call_agent_2"] = o.CallAgent2
+	}
+	if o.CallAgentPort1.IsSet() {
+		toSerialize["call_agent_port_1"] = o.CallAgentPort1.Get()
+	}
+	if o.CallAgentPort2.IsSet() {
+		toSerialize["call_agent_port_2"] = o.CallAgentPort2.Get()
+	}
+	if !IsNil(o.CallForwardOnBusyActivate) {
+		toSerialize["call_forward_on_busy_activate"] = o.CallForwardOnBusyActivate
+	}
+	if !IsNil(o.CallForwardOnBusyDeactivate) {
+		toSerialize["call_forward_on_busy_deactivate"] = o.CallForwardOnBusyDeactivate
+	}
+	if !IsNil(o.CallForwardOnNoAnswerActivate) {
+		toSerialize["call_forward_on_no_answer_activate"] = o.CallForwardOnNoAnswerActivate
+	}
+	if !IsNil(o.CallForwardOnNoAnswerDeactivate) {
+		toSerialize["call_forward_on_no_answer_deactivate"] = o.CallForwardOnNoAnswerDeactivate
+	}
+	if !IsNil(o.CallForwardUnconditionalActivate) {
+		toSerialize["call_forward_unconditional_activate"] = o.CallForwardUnconditionalActivate
+	}
+	if !IsNil(o.CallForwardUnconditionalDeactivate) {
+		toSerialize["call_forward_unconditional_deactivate"] = o.CallForwardUnconditionalDeactivate
+	}
+	if !IsNil(o.CallHold) {
+		toSerialize["call_hold"] = o.CallHold
+	}
+	if !IsNil(o.CancelCallWaiting) {
+		toSerialize["cancel_call_waiting"] = o.CancelCallWaiting
+	}
+	if o.CasEvents.IsSet() {
+		toSerialize["cas_events"] = o.CasEvents.Get()
+	}
+	if !IsNil(o.CidsActivate) {
+		toSerialize["cids_activate"] = o.CidsActivate
+	}
+	if !IsNil(o.CidsDeactivate) {
+		toSerialize["cids_deactivate"] = o.CidsDeactivate
+	}
+	if !IsNil(o.Codecs) {
+		toSerialize["codecs"] = o.Codecs
+	}
+	if !IsNil(o.DoNotDisturbActivate) {
+		toSerialize["do_not_disturb_activate"] = o.DoNotDisturbActivate
+	}
+	if !IsNil(o.DoNotDisturbDeactivate) {
+		toSerialize["do_not_disturb_deactivate"] = o.DoNotDisturbDeactivate
+	}
+	if !IsNil(o.DoNotDisturbPinChange) {
+		toSerialize["do_not_disturb_pin_change"] = o.DoNotDisturbPinChange
+	}
+	if !IsNil(o.Domain) {
+		toSerialize["domain"] = o.Domain
+	}
+	if o.DscpMark.IsSet() {
+		toSerialize["dscp_mark"] = o.DscpMark.Get()
 	}
 	if !IsNil(o.DtmfMethod) {
 		toSerialize["dtmf_method"] = o.DtmfMethod
 	}
-	if !IsNil(o.Region) {
-		toSerialize["region"] = o.Region
+	if !IsNil(o.EmergencyServiceNumber) {
+		toSerialize["emergency_service_number"] = o.EmergencyServiceNumber
+	}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
+	}
+	if o.EventPayloadType.IsSet() {
+		toSerialize["event_payload_type"] = o.EventPayloadType.Get()
+	}
+	if !IsNil(o.FaxT38) {
+		toSerialize["fax_t38"] = o.FaxT38
+	}
+	if !IsNil(o.Intercom1) {
+		toSerialize["intercom_1"] = o.Intercom1
+	}
+	if !IsNil(o.Intercom2) {
+		toSerialize["intercom_2"] = o.Intercom2
+	}
+	if !IsNil(o.Intercom3) {
+		toSerialize["intercom_3"] = o.Intercom3
+	}
+	if o.LocalPortMax.IsSet() {
+		toSerialize["local_port_max"] = o.LocalPortMax.Get()
+	}
+	if o.LocalPortMin.IsSet() {
+		toSerialize["local_port_min"] = o.LocalPortMin.Get()
+	}
+	if o.MgcpDscpMark.IsSet() {
+		toSerialize["mgcp_dscp_mark"] = o.MgcpDscpMark.Get()
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.ObjectProperties) {
+		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.OutboundProxy) {
+		toSerialize["outbound_proxy"] = o.OutboundProxy
+	}
+	if o.OutboundProxyPort.IsSet() {
+		toSerialize["outbound_proxy_port"] = o.OutboundProxyPort.Get()
+	}
+	if !IsNil(o.OutboundProxySecondary) {
+		toSerialize["outbound_proxy_secondary"] = o.OutboundProxySecondary
+	}
+	if o.OutboundProxySecondaryPort.IsSet() {
+		toSerialize["outbound_proxy_secondary_port"] = o.OutboundProxySecondaryPort.Get()
 	}
 	if !IsNil(o.Protocol) {
 		toSerialize["protocol"] = o.Protocol
@@ -2621,6 +2752,12 @@ func (o DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) ToMap() (map[stri
 	if o.ProxyServerSecondaryPort.IsSet() {
 		toSerialize["proxy_server_secondary_port"] = o.ProxyServerSecondaryPort.Get()
 	}
+	if !IsNil(o.Region) {
+		toSerialize["region"] = o.Region
+	}
+	if o.RegisterExpires.IsSet() {
+		toSerialize["register_expires"] = o.RegisterExpires.Get()
+	}
 	if !IsNil(o.RegistrarServer) {
 		toSerialize["registrar_server"] = o.RegistrarServer
 	}
@@ -2633,152 +2770,35 @@ func (o DevicevoicesettingsPutRequestDeviceVoiceSettingsValue) ToMap() (map[stri
 	if o.RegistrarServerSecondaryPort.IsSet() {
 		toSerialize["registrar_server_secondary_port"] = o.RegistrarServerSecondaryPort.Get()
 	}
-	if !IsNil(o.UserAgentDomain) {
-		toSerialize["user_agent_domain"] = o.UserAgentDomain
-	}
-	if !IsNil(o.UserAgentTransport) {
-		toSerialize["user_agent_transport"] = o.UserAgentTransport
-	}
-	if o.UserAgentPort.IsSet() {
-		toSerialize["user_agent_port"] = o.UserAgentPort.Get()
-	}
-	if !IsNil(o.OutboundProxy) {
-		toSerialize["outbound_proxy"] = o.OutboundProxy
-	}
-	if o.OutboundProxyPort.IsSet() {
-		toSerialize["outbound_proxy_port"] = o.OutboundProxyPort.Get()
-	}
-	if !IsNil(o.OutboundProxySecondary) {
-		toSerialize["outbound_proxy_secondary"] = o.OutboundProxySecondary
-	}
-	if o.OutboundProxySecondaryPort.IsSet() {
-		toSerialize["outbound_proxy_secondary_port"] = o.OutboundProxySecondaryPort.Get()
-	}
 	if o.RegistrationPeriod.IsSet() {
 		toSerialize["registration_period"] = o.RegistrationPeriod.Get()
-	}
-	if o.RegisterExpires.IsSet() {
-		toSerialize["register_expires"] = o.RegisterExpires.Get()
-	}
-	if !IsNil(o.VoicemailServer) {
-		toSerialize["voicemail_server"] = o.VoicemailServer
-	}
-	if o.VoicemailServerPort.IsSet() {
-		toSerialize["voicemail_server_port"] = o.VoicemailServerPort.Get()
-	}
-	if o.VoicemailServerExpires.IsSet() {
-		toSerialize["voicemail_server_expires"] = o.VoicemailServerExpires.Get()
-	}
-	if o.SipDscpMark.IsSet() {
-		toSerialize["sip_dscp_mark"] = o.SipDscpMark.Get()
-	}
-	if !IsNil(o.CallAgent1) {
-		toSerialize["call_agent_1"] = o.CallAgent1
-	}
-	if o.CallAgentPort1.IsSet() {
-		toSerialize["call_agent_port_1"] = o.CallAgentPort1.Get()
-	}
-	if !IsNil(o.CallAgent2) {
-		toSerialize["call_agent_2"] = o.CallAgent2
-	}
-	if o.CallAgentPort2.IsSet() {
-		toSerialize["call_agent_port_2"] = o.CallAgentPort2.Get()
-	}
-	if !IsNil(o.Domain) {
-		toSerialize["domain"] = o.Domain
-	}
-	if o.MgcpDscpMark.IsSet() {
-		toSerialize["mgcp_dscp_mark"] = o.MgcpDscpMark.Get()
-	}
-	if !IsNil(o.TerminationBase) {
-		toSerialize["termination_base"] = o.TerminationBase
-	}
-	if o.LocalPortMin.IsSet() {
-		toSerialize["local_port_min"] = o.LocalPortMin.Get()
-	}
-	if o.LocalPortMax.IsSet() {
-		toSerialize["local_port_max"] = o.LocalPortMax.Get()
-	}
-	if o.EventPayloadType.IsSet() {
-		toSerialize["event_payload_type"] = o.EventPayloadType.Get()
-	}
-	if o.CasEvents.IsSet() {
-		toSerialize["cas_events"] = o.CasEvents.Get()
-	}
-	if o.DscpMark.IsSet() {
-		toSerialize["dscp_mark"] = o.DscpMark.Get()
 	}
 	if !IsNil(o.Rtcp) {
 		toSerialize["rtcp"] = o.Rtcp
 	}
-	if !IsNil(o.FaxT38) {
-		toSerialize["fax_t38"] = o.FaxT38
+	if o.SipDscpMark.IsSet() {
+		toSerialize["sip_dscp_mark"] = o.SipDscpMark.Get()
 	}
-	if !IsNil(o.BitRate) {
-		toSerialize["bit_rate"] = o.BitRate
+	if !IsNil(o.TerminationBase) {
+		toSerialize["termination_base"] = o.TerminationBase
 	}
-	if !IsNil(o.CancelCallWaiting) {
-		toSerialize["cancel_call_waiting"] = o.CancelCallWaiting
+	if !IsNil(o.UserAgentDomain) {
+		toSerialize["user_agent_domain"] = o.UserAgentDomain
 	}
-	if !IsNil(o.CallHold) {
-		toSerialize["call_hold"] = o.CallHold
+	if o.UserAgentPort.IsSet() {
+		toSerialize["user_agent_port"] = o.UserAgentPort.Get()
 	}
-	if !IsNil(o.CidsActivate) {
-		toSerialize["cids_activate"] = o.CidsActivate
+	if !IsNil(o.UserAgentTransport) {
+		toSerialize["user_agent_transport"] = o.UserAgentTransport
 	}
-	if !IsNil(o.CidsDeactivate) {
-		toSerialize["cids_deactivate"] = o.CidsDeactivate
+	if !IsNil(o.VoicemailServer) {
+		toSerialize["voicemail_server"] = o.VoicemailServer
 	}
-	if !IsNil(o.DoNotDisturbActivate) {
-		toSerialize["do_not_disturb_activate"] = o.DoNotDisturbActivate
+	if o.VoicemailServerExpires.IsSet() {
+		toSerialize["voicemail_server_expires"] = o.VoicemailServerExpires.Get()
 	}
-	if !IsNil(o.DoNotDisturbDeactivate) {
-		toSerialize["do_not_disturb_deactivate"] = o.DoNotDisturbDeactivate
-	}
-	if !IsNil(o.DoNotDisturbPinChange) {
-		toSerialize["do_not_disturb_pin_change"] = o.DoNotDisturbPinChange
-	}
-	if !IsNil(o.EmergencyServiceNumber) {
-		toSerialize["emergency_service_number"] = o.EmergencyServiceNumber
-	}
-	if !IsNil(o.AnonCidBlockActivate) {
-		toSerialize["anon_cid_block_activate"] = o.AnonCidBlockActivate
-	}
-	if !IsNil(o.AnonCidBlockDeactivate) {
-		toSerialize["anon_cid_block_deactivate"] = o.AnonCidBlockDeactivate
-	}
-	if !IsNil(o.CallForwardUnconditionalActivate) {
-		toSerialize["call_forward_unconditional_activate"] = o.CallForwardUnconditionalActivate
-	}
-	if !IsNil(o.CallForwardUnconditionalDeactivate) {
-		toSerialize["call_forward_unconditional_deactivate"] = o.CallForwardUnconditionalDeactivate
-	}
-	if !IsNil(o.CallForwardOnBusyActivate) {
-		toSerialize["call_forward_on_busy_activate"] = o.CallForwardOnBusyActivate
-	}
-	if !IsNil(o.CallForwardOnBusyDeactivate) {
-		toSerialize["call_forward_on_busy_deactivate"] = o.CallForwardOnBusyDeactivate
-	}
-	if !IsNil(o.CallForwardOnNoAnswerActivate) {
-		toSerialize["call_forward_on_no_answer_activate"] = o.CallForwardOnNoAnswerActivate
-	}
-	if !IsNil(o.CallForwardOnNoAnswerDeactivate) {
-		toSerialize["call_forward_on_no_answer_deactivate"] = o.CallForwardOnNoAnswerDeactivate
-	}
-	if !IsNil(o.Intercom1) {
-		toSerialize["intercom_1"] = o.Intercom1
-	}
-	if !IsNil(o.Intercom2) {
-		toSerialize["intercom_2"] = o.Intercom2
-	}
-	if !IsNil(o.Intercom3) {
-		toSerialize["intercom_3"] = o.Intercom3
-	}
-	if !IsNil(o.Codecs) {
-		toSerialize["codecs"] = o.Codecs
-	}
-	if !IsNil(o.ObjectProperties) {
-		toSerialize["object_properties"] = o.ObjectProperties
+	if o.VoicemailServerPort.IsSet() {
+		toSerialize["voicemail_server_port"] = o.VoicemailServerPort.Get()
 	}
 	return toSerialize, nil
 }
@@ -2818,5 +2838,3 @@ func (v *NullableDevicevoicesettingsPutRequestDeviceVoiceSettingsValue) Unmarsha
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

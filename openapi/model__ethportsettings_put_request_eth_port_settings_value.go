@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,100 +19,100 @@ var _ MappedNullable = &EthportsettingsPutRequestEthPortSettingsValue{}
 
 // EthportsettingsPutRequestEthPortSettingsValue struct for EthportsettingsPutRequestEthPortSettingsValue
 type EthportsettingsPutRequestEthPortSettingsValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
+	// Action taken if broadcast/multicast/unknown-unicast traffic excedes the Max. One of: <br>            <div class=\"tab\">             Protect: Broadcast/Multicast packets beyond the percent rate are silently dropped. QOS drop counters should indicate the drops.<br><br>             Restrict: Broadcast/Multicast packets beyond the percent rate are dropped. QOS drop counters should indicate the drops.             Alarm is raised . Alarm automatically clears when rate is below configured threshold. <br><br>             Shutdown: Alarm is raised and port is taken out of service. User must administratively Disable and Enable the port to restore service. <br>            </div>
+	Action *string `json:"action,omitempty"`
+	// In minutes, how long the client will stay authenticated. See Also Aging Type
+	AgingTime NullableInt64 `json:"aging_time,omitempty"`
+	// Limit MAC authentication based on inactivity or on absolute time. See Also Aging Time
+	AgingType *string `json:"aging_type,omitempty"`
+	// Power the PoE system will attempt to allocate on this port
+	AllocatedPower *string `json:"allocated_power,omitempty"`
+	// Indicates if duplex mode should be auto negotiated
+	AutoNegotiation *bool `json:"auto_negotiation,omitempty"`
+	// Drop all Rx and Tx BPDUs
+	BpduFilter *bool `json:"bpdu_filter,omitempty"`
+	// Block port on BPDU Receive
+	BpduGuard *bool `json:"bpdu_guard,omitempty"`
+	// Broadcast
+	Broadcast *bool `json:"broadcast,omitempty"`
+	// Enable Traffic Storm Protection which prevents excessive broadcast/multicast/unknown-unicast traffic from overwhelming the Switch CPU
+	BspEnable *bool `json:"bsp_enable,omitempty"`
+	// CLI Commands
+	CliCommands *string `json:"cli_commands,omitempty"`
+	// Enable Detection of Bridging Loops
+	DetectBridgingLoops *bool `json:"detect_bridging_loops,omitempty"`
+	// Duplex Mode
+	DuplexMode *string `json:"duplex_mode,omitempty"`
 	// Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 	Enable *bool `json:"enable,omitempty"`
+	// Enables Explicit Congestion Notification for WRED.
+	EnableEcn *bool `json:"enable_ecn,omitempty"`
+	// Turns on speed control fields
+	EnableSpeedControl *bool `json:"enable_speed_control,omitempty"`
+	// Enables custom tuning of Watchdog values. Uncheck to use Switch default values.
+	EnableWatchdogTuning *bool `json:"enable_watchdog_tuning,omitempty"`
+	// Enables custom tuning of WRED values. Uncheck to use Switch default values.
+	EnableWredTuning *bool `json:"enable_wred_tuning,omitempty"`
+	// Enable Immediate Transition to Forwarding
+	FastLearningMode *bool `json:"fast_learning_mode,omitempty"`
+	// FEC is Forward Error Correction which is error correction on the fiber link.            <div class=\"tab\">             Any: Allows switch Negotiation between FC and RS <br>             None: Disables FEC on an interface.<br>             FC: Enables FEC on supported interfaces. FC stands for fire code.<br>             RS: Enables FEC on supported interfaces. RS stands for Reed-Solomon code. <br>             None: VnetC doesn't alter the Switch Value.<br>            </div>
+	Fec *string `json:"fec,omitempty"`
+	// Enable Cisco Guard Loop
+	GuardLoop *bool `json:"guard_loop,omitempty"`
+	// LLDP enable
+	LldpEnable *bool                                                       `json:"lldp_enable,omitempty"`
+	LldpMed    []EthportsettingsPutRequestEthPortSettingsValueLldpMedInner `json:"lldp_med,omitempty"`
+	// LLDP med enable
+	LldpMedEnable *bool `json:"lldp_med_enable,omitempty"`
+	// LLDP mode.  Enables LLDP Rx and/or LLDP Tx
+	LldpMode *string `json:"lldp_mode,omitempty"`
+	// Between 1-1000
+	MacLimit NullableInt64 `json:"mac_limit,omitempty"`
+	// Dynamic - MACs are learned and aged normally up to the limit. <br>        <div class=\"tab\">         Packets will be dropped from clients exceeding the limit. <br>         Once a client ages out, a new client can take its slot. <br>         When the port goes operationally down (disconnecting or disabling), the MACs will be flushed.<br>        </div>       Sticky - Semi permenant learning. <br>        <div class=\"tab\">         Packets will be dropped from clients exceeding the limit. <br>         Addresses do not age out or move within the same switch. <br>         Operationally downing a port (disconnecting) does NOT flush the entries. <br>         Learned MACs can only be flushed by administratively taking the port down or rebooting the switch.        </div>
+	MacSecurityMode *string `json:"mac_security_mode,omitempty"`
+	// Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action <br>            <div class=\"tab\">             %: Percentage.<br>             kbps: kilobits per second <br>             mbps: megabits per second <br>             gbps: gigabits per second <br>             pps: packet per second <br>             kpps: kilopacket per second <br>            </div>
+	MaxAllowedUnit *string `json:"max_allowed_unit,omitempty"`
+	// Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action
+	MaxAllowedValue NullableInt64 `json:"max_allowed_value,omitempty"`
+	// Maximum Bit Rate allowed
+	MaxBitRate *string `json:"max_bit_rate,omitempty"`
+	// A value between 1 to 12480(in KiloBytes)
+	MaximumWredThreshold NullableInt64 `json:"maximum_wred_threshold,omitempty"`
+	// A value between 1 to 12480(in KiloBytes)
+	MinimumWredThreshold NullableInt64 `json:"minimum_wred_threshold,omitempty"`
+	// MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets.
+	Mtu NullableInt64 `json:"mtu,omitempty"`
+	// Multicast
+	Multicast *bool `json:"multicast,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                `json:"name,omitempty"`
+	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
 	// Packet Queue
 	PacketQueue *string `json:"packet_queue,omitempty"`
 	// Object type for packet_queue field
 	PacketQueueRefType *string `json:"packet_queue_ref_type_,omitempty"`
-	// Enables custom tuning of WRED values. Uncheck to use Switch default values.
-	EnableWredTuning *bool `json:"enable_wred_tuning,omitempty"`
-	// Enables Explicit Congestion Notification for WRED.
-	EnableEcn *bool `json:"enable_ecn,omitempty"`
-	// Enables custom tuning of Watchdog values. Uncheck to use Switch default values.
-	EnableWatchdogTuning *bool `json:"enable_watchdog_tuning,omitempty"`
-	// Indicates if duplex mode should be auto negotiated
-	AutoNegotiation *bool `json:"auto_negotiation,omitempty"`
-	// For use when the port speed/FEC are manually fixed, but the physical link still needs SerDes tuning most commonly high-speed passive DAC/copper links
-	StandaloneLinkTraining *bool `json:"standalone_link_training,omitempty"`
-	// Turns on speed control fields
-	EnableSpeedControl *bool `json:"enable_speed_control,omitempty"`
-	// MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets.
-	Mtu NullableInt64 `json:"mtu,omitempty"`
-	// Maximum Bit Rate allowed
-	MaxBitRate *string `json:"max_bit_rate,omitempty"`
-	// Duplex Mode
-	DuplexMode *string `json:"duplex_mode,omitempty"`
-	// CLI Commands
-	CliCommands *string `json:"cli_commands,omitempty"`
-	// Enable Spanning Tree on the port.  Note: the Spanning Tree Type (VLAN, Port, MST) is controlled in the Fabric Settings
-	StpEnable *bool `json:"stp_enable,omitempty"`
-	// Enable Immediate Transition to Forwarding
-	FastLearningMode *bool `json:"fast_learning_mode,omitempty"`
-	// Block port on BPDU Receive
-	BpduGuard *bool `json:"bpdu_guard,omitempty"`
-	// Drop all Rx and Tx BPDUs
-	BpduFilter *bool `json:"bpdu_filter,omitempty"`
-	// Enable Cisco Guard Loop
-	GuardLoop *bool `json:"guard_loop,omitempty"`
 	// Enable PoE on the port
 	PoeEnable *bool `json:"poe_enable,omitempty"`
 	// Priority given when assigning power in a limited power situation
 	Priority *string `json:"priority,omitempty"`
-	// Power the PoE system will attempt to allocate on this port
-	AllocatedPower *string `json:"allocated_power,omitempty"`
-	// Enable Traffic Storm Protection which prevents excessive broadcast/multicast/unknown-unicast traffic from overwhelming the Switch CPU
-	BspEnable *bool `json:"bsp_enable,omitempty"`
-	// Broadcast
-	Broadcast *bool `json:"broadcast,omitempty"`
-	// Multicast
-	Multicast *bool `json:"multicast,omitempty"`
-	// Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action
-	MaxAllowedValue NullableInt64 `json:"max_allowed_value,omitempty"`
-	// Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action <br>            <div class=\"tab\">             %: Percentage.<br>             kbps: kilobits per second <br>             mbps: megabits per second <br>             gbps: gigabits per second <br>             pps: packet per second <br>             kpps: kilopacket per second <br>            </div>            
-	MaxAllowedUnit *string `json:"max_allowed_unit,omitempty"`
-	// Action taken if broadcast/multicast/unknown-unicast traffic excedes the Max. One of: <br>            <div class=\"tab\">             Protect: Broadcast/Multicast packets beyond the percent rate are silently dropped. QOS drop counters should indicate the drops.<br><br>             Restrict: Broadcast/Multicast packets beyond the percent rate are dropped. QOS drop counters should indicate the drops.             Alarm is raised . Alarm automatically clears when rate is below configured threshold. <br><br>             Shutdown: Alarm is raised and port is taken out of service. User must administratively Disable and Enable the port to restore service. <br>            </div>           
-	Action *string `json:"action,omitempty"`
-	// FEC is Forward Error Correction which is error correction on the fiber link.            <div class=\"tab\">             Any: Allows switch Negotiation between FC and RS <br>             None: Disables FEC on an interface.<br>             FC: Enables FEC on supported interfaces. FC stands for fire code.<br>             RS: Enables FEC on supported interfaces. RS stands for Reed-Solomon code. <br>             None: VnetC doesn't alter the Switch Value.<br>            </div>           
-	Fec *string `json:"fec,omitempty"`
-	// Ports with this setting will be disabled when link state tracking takes effect
-	SingleLink *bool `json:"single_link,omitempty"`
-	// A value between 1 to 12480(in KiloBytes)
-	MinimumWredThreshold NullableInt64 `json:"minimum_wred_threshold,omitempty"`
-	// A value between 1 to 12480(in KiloBytes)
-	MaximumWredThreshold NullableInt64 `json:"maximum_wred_threshold,omitempty"`
-	// A value between 0 to 100
-	WredDropProbability NullableInt64 `json:"wred_drop_probability,omitempty"`
 	// Ports with this setting will be disabled when link state tracking takes effect
 	PriorityFlowControlWatchdogAction *string `json:"priority_flow_control_watchdog_action,omitempty"`
 	// A value between 100 to 5000
 	PriorityFlowControlWatchdogDetectTime NullableInt64 `json:"priority_flow_control_watchdog_detect_time,omitempty"`
 	// A value between 100 to 60000
 	PriorityFlowControlWatchdogRestoreTime NullableInt64 `json:"priority_flow_control_watchdog_restore_time,omitempty"`
-	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
-	// Enable Detection of Bridging Loops
-	DetectBridgingLoops *bool `json:"detect_bridging_loops,omitempty"`
-	// Enable Detection of Unidirectional Link
-	UnidirectionalLinkDetection *bool `json:"unidirectional_link_detection,omitempty"`
-	// Dynamic - MACs are learned and aged normally up to the limit. <br>        <div class=\"tab\">         Packets will be dropped from clients exceeding the limit. <br>         Once a client ages out, a new client can take its slot. <br>         When the port goes operationally down (disconnecting or disabling), the MACs will be flushed.<br>        </div>       Sticky - Semi permenant learning. <br>        <div class=\"tab\">         Packets will be dropped from clients exceeding the limit. <br>         Addresses do not age out or move within the same switch. <br>         Operationally downing a port (disconnecting) does NOT flush the entries. <br>         Learned MACs can only be flushed by administratively taking the port down or rebooting the switch.        </div>
-	MacSecurityMode *string `json:"mac_security_mode,omitempty"`
-	// Between 1-1000
-	MacLimit NullableInt64 `json:"mac_limit,omitempty"`
 	// Protect - All packets are dropped from clients above the MAC Limit. <br>        <div class=\"tab\">         Exceeding the limit is not alarmed. <br>        </div>       Restrict - All packets are dropped from clients above the MAC Limit. <br>        <div class=\"tab\">         Alarm is raised while attempts to exceed limit are active (MAC has not aged). Alarm automatically clears. <br>        </div>       Shutdown - Alarm is raised and port is taken down if attempt to exceed MAC limit is made. <br>        <div class=\"tab\">         User must administratively Disable and Enable the port to restore service.        </div>
 	SecurityViolationAction *string `json:"security_violation_action,omitempty"`
-	// Limit MAC authentication based on inactivity or on absolute time. See Also Aging Time
-	AgingType *string `json:"aging_type,omitempty"`
-	// In minutes, how long the client will stay authenticated. See Also Aging Type
-	AgingTime NullableInt64 `json:"aging_time,omitempty"`
-	// LLDP enable
-	LldpEnable *bool `json:"lldp_enable,omitempty"`
-	// LLDP mode.  Enables LLDP Rx and/or LLDP Tx
-	LldpMode *string `json:"lldp_mode,omitempty"`
-	// LLDP med enable
-	LldpMedEnable *bool `json:"lldp_med_enable,omitempty"`
-	LldpMed []EthportsettingsPutRequestEthPortSettingsValueLldpMedInner `json:"lldp_med,omitempty"`
+	// Ports with this setting will be disabled when link state tracking takes effect
+	SingleLink *bool `json:"single_link,omitempty"`
+	// For use when the port speed/FEC are manually fixed, but the physical link still needs SerDes tuning most commonly high-speed passive DAC/copper links
+	StandaloneLinkTraining *bool `json:"standalone_link_training,omitempty"`
+	// Enable Spanning Tree on the port.  Note: the Spanning Tree Type (VLAN, Port, MST) is controlled in the Fabric Settings
+	StpEnable *bool `json:"stp_enable,omitempty"`
+	// Enable Detection of Unidirectional Link
+	UnidirectionalLinkDetection *bool `json:"unidirectional_link_detection,omitempty"`
+	// A value between 0 to 100
+	WredDropProbability NullableInt64 `json:"wred_drop_probability,omitempty"`
 }
 
 // NewEthportsettingsPutRequestEthPortSettingsValue instantiates a new EthportsettingsPutRequestEthPortSettingsValue object
@@ -121,94 +121,94 @@ type EthportsettingsPutRequestEthPortSettingsValue struct {
 // will change when the set of required properties is changed
 func NewEthportsettingsPutRequestEthPortSettingsValue() *EthportsettingsPutRequestEthPortSettingsValue {
 	this := EthportsettingsPutRequestEthPortSettingsValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
-	var packetQueue string = ""
-	this.PacketQueue = &packetQueue
-	var enableWredTuning bool = false
-	this.EnableWredTuning = &enableWredTuning
-	var enableEcn bool = true
-	this.EnableEcn = &enableEcn
-	var enableWatchdogTuning bool = false
-	this.EnableWatchdogTuning = &enableWatchdogTuning
+	var action string = "Protect"
+	this.Action = &action
+	var agingTime int64 = 0
+	this.AgingTime = *NewNullableInt64(&agingTime)
+	var agingType string = "absolute"
+	this.AgingType = &agingType
+	var allocatedPower string = "0.0"
+	this.AllocatedPower = &allocatedPower
 	var autoNegotiation bool = true
 	this.AutoNegotiation = &autoNegotiation
-	var standaloneLinkTraining bool = false
-	this.StandaloneLinkTraining = &standaloneLinkTraining
-	var enableSpeedControl bool = true
-	this.EnableSpeedControl = &enableSpeedControl
-	var maxBitRate string = "-1"
-	this.MaxBitRate = &maxBitRate
-	var duplexMode string = "Auto"
-	this.DuplexMode = &duplexMode
-	var cliCommands string = ""
-	this.CliCommands = &cliCommands
-	var stpEnable bool = false
-	this.StpEnable = &stpEnable
-	var fastLearningMode bool = true
-	this.FastLearningMode = &fastLearningMode
-	var bpduGuard bool = false
-	this.BpduGuard = &bpduGuard
 	var bpduFilter bool = false
 	this.BpduFilter = &bpduFilter
+	var bpduGuard bool = false
+	this.BpduGuard = &bpduGuard
+	var broadcast bool = true
+	this.Broadcast = &broadcast
+	var bspEnable bool = false
+	this.BspEnable = &bspEnable
+	var cliCommands string = ""
+	this.CliCommands = &cliCommands
+	var detectBridgingLoops bool = false
+	this.DetectBridgingLoops = &detectBridgingLoops
+	var duplexMode string = "Auto"
+	this.DuplexMode = &duplexMode
+	var enable bool = false
+	this.Enable = &enable
+	var enableEcn bool = true
+	this.EnableEcn = &enableEcn
+	var enableSpeedControl bool = true
+	this.EnableSpeedControl = &enableSpeedControl
+	var enableWatchdogTuning bool = false
+	this.EnableWatchdogTuning = &enableWatchdogTuning
+	var enableWredTuning bool = false
+	this.EnableWredTuning = &enableWredTuning
+	var fastLearningMode bool = true
+	this.FastLearningMode = &fastLearningMode
+	var fec string = "unaltered"
+	this.Fec = &fec
 	var guardLoop bool = false
 	this.GuardLoop = &guardLoop
+	var lldpEnable bool = true
+	this.LldpEnable = &lldpEnable
+	var lldpMedEnable bool = false
+	this.LldpMedEnable = &lldpMedEnable
+	var lldpMode string = "RxAndTx"
+	this.LldpMode = &lldpMode
+	var macLimit int64 = 1000
+	this.MacLimit = *NewNullableInt64(&macLimit)
+	var macSecurityMode string = "disabled"
+	this.MacSecurityMode = &macSecurityMode
+	var maxAllowedUnit string = "pps"
+	this.MaxAllowedUnit = &maxAllowedUnit
+	var maxAllowedValue int64 = 1000
+	this.MaxAllowedValue = *NewNullableInt64(&maxAllowedValue)
+	var maxBitRate string = "-1"
+	this.MaxBitRate = &maxBitRate
+	var maximumWredThreshold int64 = 1
+	this.MaximumWredThreshold = *NewNullableInt64(&maximumWredThreshold)
+	var minimumWredThreshold int64 = 1
+	this.MinimumWredThreshold = *NewNullableInt64(&minimumWredThreshold)
+	var multicast bool = true
+	this.Multicast = &multicast
+	var name string = ""
+	this.Name = &name
+	var packetQueue string = ""
+	this.PacketQueue = &packetQueue
 	var poeEnable bool = false
 	this.PoeEnable = &poeEnable
 	var priority string = "High"
 	this.Priority = &priority
-	var allocatedPower string = "0.0"
-	this.AllocatedPower = &allocatedPower
-	var bspEnable bool = false
-	this.BspEnable = &bspEnable
-	var broadcast bool = true
-	this.Broadcast = &broadcast
-	var multicast bool = true
-	this.Multicast = &multicast
-	var maxAllowedValue int64 = 1000
-	this.MaxAllowedValue = *NewNullableInt64(&maxAllowedValue)
-	var maxAllowedUnit string = "pps"
-	this.MaxAllowedUnit = &maxAllowedUnit
-	var action string = "Protect"
-	this.Action = &action
-	var fec string = "unaltered"
-	this.Fec = &fec
-	var singleLink bool = false
-	this.SingleLink = &singleLink
-	var minimumWredThreshold int64 = 1
-	this.MinimumWredThreshold = *NewNullableInt64(&minimumWredThreshold)
-	var maximumWredThreshold int64 = 1
-	this.MaximumWredThreshold = *NewNullableInt64(&maximumWredThreshold)
-	var wredDropProbability int64 = 0
-	this.WredDropProbability = *NewNullableInt64(&wredDropProbability)
 	var priorityFlowControlWatchdogAction string = "DROP"
 	this.PriorityFlowControlWatchdogAction = &priorityFlowControlWatchdogAction
 	var priorityFlowControlWatchdogDetectTime int64 = 100
 	this.PriorityFlowControlWatchdogDetectTime = *NewNullableInt64(&priorityFlowControlWatchdogDetectTime)
 	var priorityFlowControlWatchdogRestoreTime int64 = 100
 	this.PriorityFlowControlWatchdogRestoreTime = *NewNullableInt64(&priorityFlowControlWatchdogRestoreTime)
-	var detectBridgingLoops bool = false
-	this.DetectBridgingLoops = &detectBridgingLoops
-	var unidirectionalLinkDetection bool = false
-	this.UnidirectionalLinkDetection = &unidirectionalLinkDetection
-	var macSecurityMode string = "disabled"
-	this.MacSecurityMode = &macSecurityMode
-	var macLimit int64 = 1000
-	this.MacLimit = *NewNullableInt64(&macLimit)
 	var securityViolationAction string = "protect"
 	this.SecurityViolationAction = &securityViolationAction
-	var agingType string = "absolute"
-	this.AgingType = &agingType
-	var agingTime int64 = 0
-	this.AgingTime = *NewNullableInt64(&agingTime)
-	var lldpEnable bool = true
-	this.LldpEnable = &lldpEnable
-	var lldpMode string = "RxAndTx"
-	this.LldpMode = &lldpMode
-	var lldpMedEnable bool = false
-	this.LldpMedEnable = &lldpMedEnable
+	var singleLink bool = false
+	this.SingleLink = &singleLink
+	var standaloneLinkTraining bool = false
+	this.StandaloneLinkTraining = &standaloneLinkTraining
+	var stpEnable bool = false
+	this.StpEnable = &stpEnable
+	var unidirectionalLinkDetection bool = false
+	this.UnidirectionalLinkDetection = &unidirectionalLinkDetection
+	var wredDropProbability int64 = 0
+	this.WredDropProbability = *NewNullableInt64(&wredDropProbability)
 	return &this
 }
 
@@ -217,95 +217,1217 @@ func NewEthportsettingsPutRequestEthPortSettingsValue() *EthportsettingsPutReque
 // but it doesn't guarantee that properties required by API are set
 func NewEthportsettingsPutRequestEthPortSettingsValueWithDefaults() *EthportsettingsPutRequestEthPortSettingsValue {
 	this := EthportsettingsPutRequestEthPortSettingsValue{}
-	var name string = ""
-	this.Name = &name
-	var enable bool = false
-	this.Enable = &enable
-	var packetQueue string = ""
-	this.PacketQueue = &packetQueue
-	var enableWredTuning bool = false
-	this.EnableWredTuning = &enableWredTuning
-	var enableEcn bool = true
-	this.EnableEcn = &enableEcn
-	var enableWatchdogTuning bool = false
-	this.EnableWatchdogTuning = &enableWatchdogTuning
+	var action string = "Protect"
+	this.Action = &action
+	var agingTime int64 = 0
+	this.AgingTime = *NewNullableInt64(&agingTime)
+	var agingType string = "absolute"
+	this.AgingType = &agingType
+	var allocatedPower string = "0.0"
+	this.AllocatedPower = &allocatedPower
 	var autoNegotiation bool = true
 	this.AutoNegotiation = &autoNegotiation
-	var standaloneLinkTraining bool = false
-	this.StandaloneLinkTraining = &standaloneLinkTraining
-	var enableSpeedControl bool = true
-	this.EnableSpeedControl = &enableSpeedControl
-	var maxBitRate string = "-1"
-	this.MaxBitRate = &maxBitRate
-	var duplexMode string = "Auto"
-	this.DuplexMode = &duplexMode
-	var cliCommands string = ""
-	this.CliCommands = &cliCommands
-	var stpEnable bool = false
-	this.StpEnable = &stpEnable
-	var fastLearningMode bool = true
-	this.FastLearningMode = &fastLearningMode
-	var bpduGuard bool = false
-	this.BpduGuard = &bpduGuard
 	var bpduFilter bool = false
 	this.BpduFilter = &bpduFilter
+	var bpduGuard bool = false
+	this.BpduGuard = &bpduGuard
+	var broadcast bool = true
+	this.Broadcast = &broadcast
+	var bspEnable bool = false
+	this.BspEnable = &bspEnable
+	var cliCommands string = ""
+	this.CliCommands = &cliCommands
+	var detectBridgingLoops bool = false
+	this.DetectBridgingLoops = &detectBridgingLoops
+	var duplexMode string = "Auto"
+	this.DuplexMode = &duplexMode
+	var enable bool = false
+	this.Enable = &enable
+	var enableEcn bool = true
+	this.EnableEcn = &enableEcn
+	var enableSpeedControl bool = true
+	this.EnableSpeedControl = &enableSpeedControl
+	var enableWatchdogTuning bool = false
+	this.EnableWatchdogTuning = &enableWatchdogTuning
+	var enableWredTuning bool = false
+	this.EnableWredTuning = &enableWredTuning
+	var fastLearningMode bool = true
+	this.FastLearningMode = &fastLearningMode
+	var fec string = "unaltered"
+	this.Fec = &fec
 	var guardLoop bool = false
 	this.GuardLoop = &guardLoop
+	var lldpEnable bool = true
+	this.LldpEnable = &lldpEnable
+	var lldpMedEnable bool = false
+	this.LldpMedEnable = &lldpMedEnable
+	var lldpMode string = "RxAndTx"
+	this.LldpMode = &lldpMode
+	var macLimit int64 = 1000
+	this.MacLimit = *NewNullableInt64(&macLimit)
+	var macSecurityMode string = "disabled"
+	this.MacSecurityMode = &macSecurityMode
+	var maxAllowedUnit string = "pps"
+	this.MaxAllowedUnit = &maxAllowedUnit
+	var maxAllowedValue int64 = 1000
+	this.MaxAllowedValue = *NewNullableInt64(&maxAllowedValue)
+	var maxBitRate string = "-1"
+	this.MaxBitRate = &maxBitRate
+	var maximumWredThreshold int64 = 1
+	this.MaximumWredThreshold = *NewNullableInt64(&maximumWredThreshold)
+	var minimumWredThreshold int64 = 1
+	this.MinimumWredThreshold = *NewNullableInt64(&minimumWredThreshold)
+	var multicast bool = true
+	this.Multicast = &multicast
+	var name string = ""
+	this.Name = &name
+	var packetQueue string = ""
+	this.PacketQueue = &packetQueue
 	var poeEnable bool = false
 	this.PoeEnable = &poeEnable
 	var priority string = "High"
 	this.Priority = &priority
-	var allocatedPower string = "0.0"
-	this.AllocatedPower = &allocatedPower
-	var bspEnable bool = false
-	this.BspEnable = &bspEnable
-	var broadcast bool = true
-	this.Broadcast = &broadcast
-	var multicast bool = true
-	this.Multicast = &multicast
-	var maxAllowedValue int64 = 1000
-	this.MaxAllowedValue = *NewNullableInt64(&maxAllowedValue)
-	var maxAllowedUnit string = "pps"
-	this.MaxAllowedUnit = &maxAllowedUnit
-	var action string = "Protect"
-	this.Action = &action
-	var fec string = "unaltered"
-	this.Fec = &fec
-	var singleLink bool = false
-	this.SingleLink = &singleLink
-	var minimumWredThreshold int64 = 1
-	this.MinimumWredThreshold = *NewNullableInt64(&minimumWredThreshold)
-	var maximumWredThreshold int64 = 1
-	this.MaximumWredThreshold = *NewNullableInt64(&maximumWredThreshold)
-	var wredDropProbability int64 = 0
-	this.WredDropProbability = *NewNullableInt64(&wredDropProbability)
 	var priorityFlowControlWatchdogAction string = "DROP"
 	this.PriorityFlowControlWatchdogAction = &priorityFlowControlWatchdogAction
 	var priorityFlowControlWatchdogDetectTime int64 = 100
 	this.PriorityFlowControlWatchdogDetectTime = *NewNullableInt64(&priorityFlowControlWatchdogDetectTime)
 	var priorityFlowControlWatchdogRestoreTime int64 = 100
 	this.PriorityFlowControlWatchdogRestoreTime = *NewNullableInt64(&priorityFlowControlWatchdogRestoreTime)
-	var detectBridgingLoops bool = false
-	this.DetectBridgingLoops = &detectBridgingLoops
-	var unidirectionalLinkDetection bool = false
-	this.UnidirectionalLinkDetection = &unidirectionalLinkDetection
-	var macSecurityMode string = "disabled"
-	this.MacSecurityMode = &macSecurityMode
-	var macLimit int64 = 1000
-	this.MacLimit = *NewNullableInt64(&macLimit)
 	var securityViolationAction string = "protect"
 	this.SecurityViolationAction = &securityViolationAction
-	var agingType string = "absolute"
-	this.AgingType = &agingType
-	var agingTime int64 = 0
-	this.AgingTime = *NewNullableInt64(&agingTime)
-	var lldpEnable bool = true
-	this.LldpEnable = &lldpEnable
-	var lldpMode string = "RxAndTx"
-	this.LldpMode = &lldpMode
-	var lldpMedEnable bool = false
-	this.LldpMedEnable = &lldpMedEnable
+	var singleLink bool = false
+	this.SingleLink = &singleLink
+	var standaloneLinkTraining bool = false
+	this.StandaloneLinkTraining = &standaloneLinkTraining
+	var stpEnable bool = false
+	this.StpEnable = &stpEnable
+	var unidirectionalLinkDetection bool = false
+	this.UnidirectionalLinkDetection = &unidirectionalLinkDetection
+	var wredDropProbability int64 = 0
+	this.WredDropProbability = *NewNullableInt64(&wredDropProbability)
 	return &this
+}
+
+// GetAction returns the Action field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAction() string {
+	if o == nil || IsNil(o.Action) {
+		var ret string
+		return ret
+	}
+	return *o.Action
+}
+
+// GetActionOk returns a tuple with the Action field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetActionOk() (*string, bool) {
+	if o == nil || IsNil(o.Action) {
+		return nil, false
+	}
+	return o.Action, true
+}
+
+// HasAction returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAction() bool {
+	if o != nil && !IsNil(o.Action) {
+		return true
+	}
+
+	return false
+}
+
+// SetAction gets a reference to the given string and assigns it to the Action field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAction(v string) {
+	o.Action = &v
+}
+
+// GetAgingTime returns the AgingTime field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAgingTime() int64 {
+	if o == nil || IsNil(o.AgingTime.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.AgingTime.Get()
+}
+
+// GetAgingTimeOk returns a tuple with the AgingTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAgingTimeOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AgingTime.Get(), o.AgingTime.IsSet()
+}
+
+// HasAgingTime returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAgingTime() bool {
+	if o != nil && o.AgingTime.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAgingTime gets a reference to the given NullableInt64 and assigns it to the AgingTime field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAgingTime(v int64) {
+	o.AgingTime.Set(&v)
+}
+
+// SetAgingTimeNil sets the value for AgingTime to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAgingTimeNil() {
+	o.AgingTime.Set(nil)
+}
+
+// UnsetAgingTime ensures that no value is present for AgingTime, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetAgingTime() {
+	o.AgingTime.Unset()
+}
+
+// GetAgingType returns the AgingType field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAgingType() string {
+	if o == nil || IsNil(o.AgingType) {
+		var ret string
+		return ret
+	}
+	return *o.AgingType
+}
+
+// GetAgingTypeOk returns a tuple with the AgingType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAgingTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.AgingType) {
+		return nil, false
+	}
+	return o.AgingType, true
+}
+
+// HasAgingType returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAgingType() bool {
+	if o != nil && !IsNil(o.AgingType) {
+		return true
+	}
+
+	return false
+}
+
+// SetAgingType gets a reference to the given string and assigns it to the AgingType field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAgingType(v string) {
+	o.AgingType = &v
+}
+
+// GetAllocatedPower returns the AllocatedPower field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAllocatedPower() string {
+	if o == nil || IsNil(o.AllocatedPower) {
+		var ret string
+		return ret
+	}
+	return *o.AllocatedPower
+}
+
+// GetAllocatedPowerOk returns a tuple with the AllocatedPower field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAllocatedPowerOk() (*string, bool) {
+	if o == nil || IsNil(o.AllocatedPower) {
+		return nil, false
+	}
+	return o.AllocatedPower, true
+}
+
+// HasAllocatedPower returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAllocatedPower() bool {
+	if o != nil && !IsNil(o.AllocatedPower) {
+		return true
+	}
+
+	return false
+}
+
+// SetAllocatedPower gets a reference to the given string and assigns it to the AllocatedPower field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAllocatedPower(v string) {
+	o.AllocatedPower = &v
+}
+
+// GetAutoNegotiation returns the AutoNegotiation field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAutoNegotiation() bool {
+	if o == nil || IsNil(o.AutoNegotiation) {
+		var ret bool
+		return ret
+	}
+	return *o.AutoNegotiation
+}
+
+// GetAutoNegotiationOk returns a tuple with the AutoNegotiation field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAutoNegotiationOk() (*bool, bool) {
+	if o == nil || IsNil(o.AutoNegotiation) {
+		return nil, false
+	}
+	return o.AutoNegotiation, true
+}
+
+// HasAutoNegotiation returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAutoNegotiation() bool {
+	if o != nil && !IsNil(o.AutoNegotiation) {
+		return true
+	}
+
+	return false
+}
+
+// SetAutoNegotiation gets a reference to the given bool and assigns it to the AutoNegotiation field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAutoNegotiation(v bool) {
+	o.AutoNegotiation = &v
+}
+
+// GetBpduFilter returns the BpduFilter field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBpduFilter() bool {
+	if o == nil || IsNil(o.BpduFilter) {
+		var ret bool
+		return ret
+	}
+	return *o.BpduFilter
+}
+
+// GetBpduFilterOk returns a tuple with the BpduFilter field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBpduFilterOk() (*bool, bool) {
+	if o == nil || IsNil(o.BpduFilter) {
+		return nil, false
+	}
+	return o.BpduFilter, true
+}
+
+// HasBpduFilter returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasBpduFilter() bool {
+	if o != nil && !IsNil(o.BpduFilter) {
+		return true
+	}
+
+	return false
+}
+
+// SetBpduFilter gets a reference to the given bool and assigns it to the BpduFilter field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetBpduFilter(v bool) {
+	o.BpduFilter = &v
+}
+
+// GetBpduGuard returns the BpduGuard field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBpduGuard() bool {
+	if o == nil || IsNil(o.BpduGuard) {
+		var ret bool
+		return ret
+	}
+	return *o.BpduGuard
+}
+
+// GetBpduGuardOk returns a tuple with the BpduGuard field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBpduGuardOk() (*bool, bool) {
+	if o == nil || IsNil(o.BpduGuard) {
+		return nil, false
+	}
+	return o.BpduGuard, true
+}
+
+// HasBpduGuard returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasBpduGuard() bool {
+	if o != nil && !IsNil(o.BpduGuard) {
+		return true
+	}
+
+	return false
+}
+
+// SetBpduGuard gets a reference to the given bool and assigns it to the BpduGuard field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetBpduGuard(v bool) {
+	o.BpduGuard = &v
+}
+
+// GetBroadcast returns the Broadcast field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBroadcast() bool {
+	if o == nil || IsNil(o.Broadcast) {
+		var ret bool
+		return ret
+	}
+	return *o.Broadcast
+}
+
+// GetBroadcastOk returns a tuple with the Broadcast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBroadcastOk() (*bool, bool) {
+	if o == nil || IsNil(o.Broadcast) {
+		return nil, false
+	}
+	return o.Broadcast, true
+}
+
+// HasBroadcast returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasBroadcast() bool {
+	if o != nil && !IsNil(o.Broadcast) {
+		return true
+	}
+
+	return false
+}
+
+// SetBroadcast gets a reference to the given bool and assigns it to the Broadcast field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetBroadcast(v bool) {
+	o.Broadcast = &v
+}
+
+// GetBspEnable returns the BspEnable field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBspEnable() bool {
+	if o == nil || IsNil(o.BspEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.BspEnable
+}
+
+// GetBspEnableOk returns a tuple with the BspEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBspEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.BspEnable) {
+		return nil, false
+	}
+	return o.BspEnable, true
+}
+
+// HasBspEnable returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasBspEnable() bool {
+	if o != nil && !IsNil(o.BspEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetBspEnable gets a reference to the given bool and assigns it to the BspEnable field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetBspEnable(v bool) {
+	o.BspEnable = &v
+}
+
+// GetCliCommands returns the CliCommands field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetCliCommands() string {
+	if o == nil || IsNil(o.CliCommands) {
+		var ret string
+		return ret
+	}
+	return *o.CliCommands
+}
+
+// GetCliCommandsOk returns a tuple with the CliCommands field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetCliCommandsOk() (*string, bool) {
+	if o == nil || IsNil(o.CliCommands) {
+		return nil, false
+	}
+	return o.CliCommands, true
+}
+
+// HasCliCommands returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasCliCommands() bool {
+	if o != nil && !IsNil(o.CliCommands) {
+		return true
+	}
+
+	return false
+}
+
+// SetCliCommands gets a reference to the given string and assigns it to the CliCommands field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetCliCommands(v string) {
+	o.CliCommands = &v
+}
+
+// GetDetectBridgingLoops returns the DetectBridgingLoops field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetDetectBridgingLoops() bool {
+	if o == nil || IsNil(o.DetectBridgingLoops) {
+		var ret bool
+		return ret
+	}
+	return *o.DetectBridgingLoops
+}
+
+// GetDetectBridgingLoopsOk returns a tuple with the DetectBridgingLoops field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetDetectBridgingLoopsOk() (*bool, bool) {
+	if o == nil || IsNil(o.DetectBridgingLoops) {
+		return nil, false
+	}
+	return o.DetectBridgingLoops, true
+}
+
+// HasDetectBridgingLoops returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasDetectBridgingLoops() bool {
+	if o != nil && !IsNil(o.DetectBridgingLoops) {
+		return true
+	}
+
+	return false
+}
+
+// SetDetectBridgingLoops gets a reference to the given bool and assigns it to the DetectBridgingLoops field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetDetectBridgingLoops(v bool) {
+	o.DetectBridgingLoops = &v
+}
+
+// GetDuplexMode returns the DuplexMode field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetDuplexMode() string {
+	if o == nil || IsNil(o.DuplexMode) {
+		var ret string
+		return ret
+	}
+	return *o.DuplexMode
+}
+
+// GetDuplexModeOk returns a tuple with the DuplexMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetDuplexModeOk() (*string, bool) {
+	if o == nil || IsNil(o.DuplexMode) {
+		return nil, false
+	}
+	return o.DuplexMode, true
+}
+
+// HasDuplexMode returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasDuplexMode() bool {
+	if o != nil && !IsNil(o.DuplexMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetDuplexMode gets a reference to the given string and assigns it to the DuplexMode field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetDuplexMode(v string) {
+	o.DuplexMode = &v
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnable(v bool) {
+	o.Enable = &v
+}
+
+// GetEnableEcn returns the EnableEcn field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableEcn() bool {
+	if o == nil || IsNil(o.EnableEcn) {
+		var ret bool
+		return ret
+	}
+	return *o.EnableEcn
+}
+
+// GetEnableEcnOk returns a tuple with the EnableEcn field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableEcnOk() (*bool, bool) {
+	if o == nil || IsNil(o.EnableEcn) {
+		return nil, false
+	}
+	return o.EnableEcn, true
+}
+
+// HasEnableEcn returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableEcn() bool {
+	if o != nil && !IsNil(o.EnableEcn) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableEcn gets a reference to the given bool and assigns it to the EnableEcn field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableEcn(v bool) {
+	o.EnableEcn = &v
+}
+
+// GetEnableSpeedControl returns the EnableSpeedControl field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableSpeedControl() bool {
+	if o == nil || IsNil(o.EnableSpeedControl) {
+		var ret bool
+		return ret
+	}
+	return *o.EnableSpeedControl
+}
+
+// GetEnableSpeedControlOk returns a tuple with the EnableSpeedControl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableSpeedControlOk() (*bool, bool) {
+	if o == nil || IsNil(o.EnableSpeedControl) {
+		return nil, false
+	}
+	return o.EnableSpeedControl, true
+}
+
+// HasEnableSpeedControl returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableSpeedControl() bool {
+	if o != nil && !IsNil(o.EnableSpeedControl) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableSpeedControl gets a reference to the given bool and assigns it to the EnableSpeedControl field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableSpeedControl(v bool) {
+	o.EnableSpeedControl = &v
+}
+
+// GetEnableWatchdogTuning returns the EnableWatchdogTuning field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWatchdogTuning() bool {
+	if o == nil || IsNil(o.EnableWatchdogTuning) {
+		var ret bool
+		return ret
+	}
+	return *o.EnableWatchdogTuning
+}
+
+// GetEnableWatchdogTuningOk returns a tuple with the EnableWatchdogTuning field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWatchdogTuningOk() (*bool, bool) {
+	if o == nil || IsNil(o.EnableWatchdogTuning) {
+		return nil, false
+	}
+	return o.EnableWatchdogTuning, true
+}
+
+// HasEnableWatchdogTuning returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableWatchdogTuning() bool {
+	if o != nil && !IsNil(o.EnableWatchdogTuning) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableWatchdogTuning gets a reference to the given bool and assigns it to the EnableWatchdogTuning field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableWatchdogTuning(v bool) {
+	o.EnableWatchdogTuning = &v
+}
+
+// GetEnableWredTuning returns the EnableWredTuning field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWredTuning() bool {
+	if o == nil || IsNil(o.EnableWredTuning) {
+		var ret bool
+		return ret
+	}
+	return *o.EnableWredTuning
+}
+
+// GetEnableWredTuningOk returns a tuple with the EnableWredTuning field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWredTuningOk() (*bool, bool) {
+	if o == nil || IsNil(o.EnableWredTuning) {
+		return nil, false
+	}
+	return o.EnableWredTuning, true
+}
+
+// HasEnableWredTuning returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableWredTuning() bool {
+	if o != nil && !IsNil(o.EnableWredTuning) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableWredTuning gets a reference to the given bool and assigns it to the EnableWredTuning field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableWredTuning(v bool) {
+	o.EnableWredTuning = &v
+}
+
+// GetFastLearningMode returns the FastLearningMode field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetFastLearningMode() bool {
+	if o == nil || IsNil(o.FastLearningMode) {
+		var ret bool
+		return ret
+	}
+	return *o.FastLearningMode
+}
+
+// GetFastLearningModeOk returns a tuple with the FastLearningMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetFastLearningModeOk() (*bool, bool) {
+	if o == nil || IsNil(o.FastLearningMode) {
+		return nil, false
+	}
+	return o.FastLearningMode, true
+}
+
+// HasFastLearningMode returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasFastLearningMode() bool {
+	if o != nil && !IsNil(o.FastLearningMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetFastLearningMode gets a reference to the given bool and assigns it to the FastLearningMode field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetFastLearningMode(v bool) {
+	o.FastLearningMode = &v
+}
+
+// GetFec returns the Fec field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetFec() string {
+	if o == nil || IsNil(o.Fec) {
+		var ret string
+		return ret
+	}
+	return *o.Fec
+}
+
+// GetFecOk returns a tuple with the Fec field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetFecOk() (*string, bool) {
+	if o == nil || IsNil(o.Fec) {
+		return nil, false
+	}
+	return o.Fec, true
+}
+
+// HasFec returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasFec() bool {
+	if o != nil && !IsNil(o.Fec) {
+		return true
+	}
+
+	return false
+}
+
+// SetFec gets a reference to the given string and assigns it to the Fec field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetFec(v string) {
+	o.Fec = &v
+}
+
+// GetGuardLoop returns the GuardLoop field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetGuardLoop() bool {
+	if o == nil || IsNil(o.GuardLoop) {
+		var ret bool
+		return ret
+	}
+	return *o.GuardLoop
+}
+
+// GetGuardLoopOk returns a tuple with the GuardLoop field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetGuardLoopOk() (*bool, bool) {
+	if o == nil || IsNil(o.GuardLoop) {
+		return nil, false
+	}
+	return o.GuardLoop, true
+}
+
+// HasGuardLoop returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasGuardLoop() bool {
+	if o != nil && !IsNil(o.GuardLoop) {
+		return true
+	}
+
+	return false
+}
+
+// SetGuardLoop gets a reference to the given bool and assigns it to the GuardLoop field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetGuardLoop(v bool) {
+	o.GuardLoop = &v
+}
+
+// GetLldpEnable returns the LldpEnable field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpEnable() bool {
+	if o == nil || IsNil(o.LldpEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.LldpEnable
+}
+
+// GetLldpEnableOk returns a tuple with the LldpEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.LldpEnable) {
+		return nil, false
+	}
+	return o.LldpEnable, true
+}
+
+// HasLldpEnable returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasLldpEnable() bool {
+	if o != nil && !IsNil(o.LldpEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetLldpEnable gets a reference to the given bool and assigns it to the LldpEnable field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetLldpEnable(v bool) {
+	o.LldpEnable = &v
+}
+
+// GetLldpMed returns the LldpMed field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpMed() []EthportsettingsPutRequestEthPortSettingsValueLldpMedInner {
+	if o == nil || IsNil(o.LldpMed) {
+		var ret []EthportsettingsPutRequestEthPortSettingsValueLldpMedInner
+		return ret
+	}
+	return o.LldpMed
+}
+
+// GetLldpMedOk returns a tuple with the LldpMed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpMedOk() ([]EthportsettingsPutRequestEthPortSettingsValueLldpMedInner, bool) {
+	if o == nil || IsNil(o.LldpMed) {
+		return nil, false
+	}
+	return o.LldpMed, true
+}
+
+// HasLldpMed returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasLldpMed() bool {
+	if o != nil && !IsNil(o.LldpMed) {
+		return true
+	}
+
+	return false
+}
+
+// SetLldpMed gets a reference to the given []EthportsettingsPutRequestEthPortSettingsValueLldpMedInner and assigns it to the LldpMed field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetLldpMed(v []EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) {
+	o.LldpMed = v
+}
+
+// GetLldpMedEnable returns the LldpMedEnable field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpMedEnable() bool {
+	if o == nil || IsNil(o.LldpMedEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.LldpMedEnable
+}
+
+// GetLldpMedEnableOk returns a tuple with the LldpMedEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpMedEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.LldpMedEnable) {
+		return nil, false
+	}
+	return o.LldpMedEnable, true
+}
+
+// HasLldpMedEnable returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasLldpMedEnable() bool {
+	if o != nil && !IsNil(o.LldpMedEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetLldpMedEnable gets a reference to the given bool and assigns it to the LldpMedEnable field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetLldpMedEnable(v bool) {
+	o.LldpMedEnable = &v
+}
+
+// GetLldpMode returns the LldpMode field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpMode() string {
+	if o == nil || IsNil(o.LldpMode) {
+		var ret string
+		return ret
+	}
+	return *o.LldpMode
+}
+
+// GetLldpModeOk returns a tuple with the LldpMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpModeOk() (*string, bool) {
+	if o == nil || IsNil(o.LldpMode) {
+		return nil, false
+	}
+	return o.LldpMode, true
+}
+
+// HasLldpMode returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasLldpMode() bool {
+	if o != nil && !IsNil(o.LldpMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetLldpMode gets a reference to the given string and assigns it to the LldpMode field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetLldpMode(v string) {
+	o.LldpMode = &v
+}
+
+// GetMacLimit returns the MacLimit field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMacLimit() int64 {
+	if o == nil || IsNil(o.MacLimit.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.MacLimit.Get()
+}
+
+// GetMacLimitOk returns a tuple with the MacLimit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMacLimitOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MacLimit.Get(), o.MacLimit.IsSet()
+}
+
+// HasMacLimit returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMacLimit() bool {
+	if o != nil && o.MacLimit.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMacLimit gets a reference to the given NullableInt64 and assigns it to the MacLimit field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMacLimit(v int64) {
+	o.MacLimit.Set(&v)
+}
+
+// SetMacLimitNil sets the value for MacLimit to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMacLimitNil() {
+	o.MacLimit.Set(nil)
+}
+
+// UnsetMacLimit ensures that no value is present for MacLimit, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMacLimit() {
+	o.MacLimit.Unset()
+}
+
+// GetMacSecurityMode returns the MacSecurityMode field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMacSecurityMode() string {
+	if o == nil || IsNil(o.MacSecurityMode) {
+		var ret string
+		return ret
+	}
+	return *o.MacSecurityMode
+}
+
+// GetMacSecurityModeOk returns a tuple with the MacSecurityMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMacSecurityModeOk() (*string, bool) {
+	if o == nil || IsNil(o.MacSecurityMode) {
+		return nil, false
+	}
+	return o.MacSecurityMode, true
+}
+
+// HasMacSecurityMode returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMacSecurityMode() bool {
+	if o != nil && !IsNil(o.MacSecurityMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetMacSecurityMode gets a reference to the given string and assigns it to the MacSecurityMode field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMacSecurityMode(v string) {
+	o.MacSecurityMode = &v
+}
+
+// GetMaxAllowedUnit returns the MaxAllowedUnit field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxAllowedUnit() string {
+	if o == nil || IsNil(o.MaxAllowedUnit) {
+		var ret string
+		return ret
+	}
+	return *o.MaxAllowedUnit
+}
+
+// GetMaxAllowedUnitOk returns a tuple with the MaxAllowedUnit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxAllowedUnitOk() (*string, bool) {
+	if o == nil || IsNil(o.MaxAllowedUnit) {
+		return nil, false
+	}
+	return o.MaxAllowedUnit, true
+}
+
+// HasMaxAllowedUnit returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMaxAllowedUnit() bool {
+	if o != nil && !IsNil(o.MaxAllowedUnit) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxAllowedUnit gets a reference to the given string and assigns it to the MaxAllowedUnit field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaxAllowedUnit(v string) {
+	o.MaxAllowedUnit = &v
+}
+
+// GetMaxAllowedValue returns the MaxAllowedValue field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxAllowedValue() int64 {
+	if o == nil || IsNil(o.MaxAllowedValue.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.MaxAllowedValue.Get()
+}
+
+// GetMaxAllowedValueOk returns a tuple with the MaxAllowedValue field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxAllowedValueOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MaxAllowedValue.Get(), o.MaxAllowedValue.IsSet()
+}
+
+// HasMaxAllowedValue returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMaxAllowedValue() bool {
+	if o != nil && o.MaxAllowedValue.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxAllowedValue gets a reference to the given NullableInt64 and assigns it to the MaxAllowedValue field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaxAllowedValue(v int64) {
+	o.MaxAllowedValue.Set(&v)
+}
+
+// SetMaxAllowedValueNil sets the value for MaxAllowedValue to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaxAllowedValueNil() {
+	o.MaxAllowedValue.Set(nil)
+}
+
+// UnsetMaxAllowedValue ensures that no value is present for MaxAllowedValue, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMaxAllowedValue() {
+	o.MaxAllowedValue.Unset()
+}
+
+// GetMaxBitRate returns the MaxBitRate field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxBitRate() string {
+	if o == nil || IsNil(o.MaxBitRate) {
+		var ret string
+		return ret
+	}
+	return *o.MaxBitRate
+}
+
+// GetMaxBitRateOk returns a tuple with the MaxBitRate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxBitRateOk() (*string, bool) {
+	if o == nil || IsNil(o.MaxBitRate) {
+		return nil, false
+	}
+	return o.MaxBitRate, true
+}
+
+// HasMaxBitRate returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMaxBitRate() bool {
+	if o != nil && !IsNil(o.MaxBitRate) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxBitRate gets a reference to the given string and assigns it to the MaxBitRate field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaxBitRate(v string) {
+	o.MaxBitRate = &v
+}
+
+// GetMaximumWredThreshold returns the MaximumWredThreshold field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaximumWredThreshold() int64 {
+	if o == nil || IsNil(o.MaximumWredThreshold.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.MaximumWredThreshold.Get()
+}
+
+// GetMaximumWredThresholdOk returns a tuple with the MaximumWredThreshold field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaximumWredThresholdOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MaximumWredThreshold.Get(), o.MaximumWredThreshold.IsSet()
+}
+
+// HasMaximumWredThreshold returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMaximumWredThreshold() bool {
+	if o != nil && o.MaximumWredThreshold.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMaximumWredThreshold gets a reference to the given NullableInt64 and assigns it to the MaximumWredThreshold field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaximumWredThreshold(v int64) {
+	o.MaximumWredThreshold.Set(&v)
+}
+
+// SetMaximumWredThresholdNil sets the value for MaximumWredThreshold to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaximumWredThresholdNil() {
+	o.MaximumWredThreshold.Set(nil)
+}
+
+// UnsetMaximumWredThreshold ensures that no value is present for MaximumWredThreshold, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMaximumWredThreshold() {
+	o.MaximumWredThreshold.Unset()
+}
+
+// GetMinimumWredThreshold returns the MinimumWredThreshold field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMinimumWredThreshold() int64 {
+	if o == nil || IsNil(o.MinimumWredThreshold.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.MinimumWredThreshold.Get()
+}
+
+// GetMinimumWredThresholdOk returns a tuple with the MinimumWredThreshold field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMinimumWredThresholdOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MinimumWredThreshold.Get(), o.MinimumWredThreshold.IsSet()
+}
+
+// HasMinimumWredThreshold returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMinimumWredThreshold() bool {
+	if o != nil && o.MinimumWredThreshold.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMinimumWredThreshold gets a reference to the given NullableInt64 and assigns it to the MinimumWredThreshold field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMinimumWredThreshold(v int64) {
+	o.MinimumWredThreshold.Set(&v)
+}
+
+// SetMinimumWredThresholdNil sets the value for MinimumWredThreshold to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMinimumWredThresholdNil() {
+	o.MinimumWredThreshold.Set(nil)
+}
+
+// UnsetMinimumWredThreshold ensures that no value is present for MinimumWredThreshold, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMinimumWredThreshold() {
+	o.MinimumWredThreshold.Unset()
+}
+
+// GetMtu returns the Mtu field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMtu() int64 {
+	if o == nil || IsNil(o.Mtu.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.Mtu.Get()
+}
+
+// GetMtuOk returns a tuple with the Mtu field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMtuOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Mtu.Get(), o.Mtu.IsSet()
+}
+
+// HasMtu returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMtu() bool {
+	if o != nil && o.Mtu.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMtu gets a reference to the given NullableInt64 and assigns it to the Mtu field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMtu(v int64) {
+	o.Mtu.Set(&v)
+}
+
+// SetMtuNil sets the value for Mtu to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMtuNil() {
+	o.Mtu.Set(nil)
+}
+
+// UnsetMtu ensures that no value is present for Mtu, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMtu() {
+	o.Mtu.Unset()
+}
+
+// GetMulticast returns the Multicast field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMulticast() bool {
+	if o == nil || IsNil(o.Multicast) {
+		var ret bool
+		return ret
+	}
+	return *o.Multicast
+}
+
+// GetMulticastOk returns a tuple with the Multicast field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMulticastOk() (*bool, bool) {
+	if o == nil || IsNil(o.Multicast) {
+		return nil, false
+	}
+	return o.Multicast, true
+}
+
+// HasMulticast returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMulticast() bool {
+	if o != nil && !IsNil(o.Multicast) {
+		return true
+	}
+
+	return false
+}
+
+// SetMulticast gets a reference to the given bool and assigns it to the Multicast field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMulticast(v bool) {
+	o.Multicast = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -340,36 +1462,36 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) SetName(v string) {
 	o.Name = &v
 }
 
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
+// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectProperties() map[string]interface{} {
+	if o == nil || IsNil(o.ObjectProperties) {
+		var ret map[string]interface{}
 		return ret
 	}
-	return *o.Enable
+	return o.ObjectProperties
 }
 
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectPropertiesOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.ObjectProperties) {
+		return map[string]interface{}{}, false
 	}
-	return o.Enable, true
+	return o.ObjectProperties, true
 }
 
-// HasEnable returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
+// HasObjectProperties returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasObjectProperties() bool {
+	if o != nil && !IsNil(o.ObjectProperties) {
 		return true
 	}
 
 	return false
 }
 
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnable(v bool) {
-	o.Enable = &v
+// SetObjectProperties gets a reference to the given map[string]interface{} and assigns it to the ObjectProperties field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetObjectProperties(v map[string]interface{}) {
+	o.ObjectProperties = v
 }
 
 // GetPacketQueue returns the PacketQueue field value if set, zero value otherwise.
@@ -436,496 +1558,6 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPacketQueueRefType(v 
 	o.PacketQueueRefType = &v
 }
 
-// GetEnableWredTuning returns the EnableWredTuning field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWredTuning() bool {
-	if o == nil || IsNil(o.EnableWredTuning) {
-		var ret bool
-		return ret
-	}
-	return *o.EnableWredTuning
-}
-
-// GetEnableWredTuningOk returns a tuple with the EnableWredTuning field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWredTuningOk() (*bool, bool) {
-	if o == nil || IsNil(o.EnableWredTuning) {
-		return nil, false
-	}
-	return o.EnableWredTuning, true
-}
-
-// HasEnableWredTuning returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableWredTuning() bool {
-	if o != nil && !IsNil(o.EnableWredTuning) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnableWredTuning gets a reference to the given bool and assigns it to the EnableWredTuning field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableWredTuning(v bool) {
-	o.EnableWredTuning = &v
-}
-
-// GetEnableEcn returns the EnableEcn field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableEcn() bool {
-	if o == nil || IsNil(o.EnableEcn) {
-		var ret bool
-		return ret
-	}
-	return *o.EnableEcn
-}
-
-// GetEnableEcnOk returns a tuple with the EnableEcn field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableEcnOk() (*bool, bool) {
-	if o == nil || IsNil(o.EnableEcn) {
-		return nil, false
-	}
-	return o.EnableEcn, true
-}
-
-// HasEnableEcn returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableEcn() bool {
-	if o != nil && !IsNil(o.EnableEcn) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnableEcn gets a reference to the given bool and assigns it to the EnableEcn field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableEcn(v bool) {
-	o.EnableEcn = &v
-}
-
-// GetEnableWatchdogTuning returns the EnableWatchdogTuning field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWatchdogTuning() bool {
-	if o == nil || IsNil(o.EnableWatchdogTuning) {
-		var ret bool
-		return ret
-	}
-	return *o.EnableWatchdogTuning
-}
-
-// GetEnableWatchdogTuningOk returns a tuple with the EnableWatchdogTuning field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableWatchdogTuningOk() (*bool, bool) {
-	if o == nil || IsNil(o.EnableWatchdogTuning) {
-		return nil, false
-	}
-	return o.EnableWatchdogTuning, true
-}
-
-// HasEnableWatchdogTuning returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableWatchdogTuning() bool {
-	if o != nil && !IsNil(o.EnableWatchdogTuning) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnableWatchdogTuning gets a reference to the given bool and assigns it to the EnableWatchdogTuning field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableWatchdogTuning(v bool) {
-	o.EnableWatchdogTuning = &v
-}
-
-// GetAutoNegotiation returns the AutoNegotiation field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAutoNegotiation() bool {
-	if o == nil || IsNil(o.AutoNegotiation) {
-		var ret bool
-		return ret
-	}
-	return *o.AutoNegotiation
-}
-
-// GetAutoNegotiationOk returns a tuple with the AutoNegotiation field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAutoNegotiationOk() (*bool, bool) {
-	if o == nil || IsNil(o.AutoNegotiation) {
-		return nil, false
-	}
-	return o.AutoNegotiation, true
-}
-
-// HasAutoNegotiation returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAutoNegotiation() bool {
-	if o != nil && !IsNil(o.AutoNegotiation) {
-		return true
-	}
-
-	return false
-}
-
-// SetAutoNegotiation gets a reference to the given bool and assigns it to the AutoNegotiation field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAutoNegotiation(v bool) {
-	o.AutoNegotiation = &v
-}
-
-// GetStandaloneLinkTraining returns the StandaloneLinkTraining field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetStandaloneLinkTraining() bool {
-	if o == nil || IsNil(o.StandaloneLinkTraining) {
-		var ret bool
-		return ret
-	}
-	return *o.StandaloneLinkTraining
-}
-
-// GetStandaloneLinkTrainingOk returns a tuple with the StandaloneLinkTraining field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetStandaloneLinkTrainingOk() (*bool, bool) {
-	if o == nil || IsNil(o.StandaloneLinkTraining) {
-		return nil, false
-	}
-	return o.StandaloneLinkTraining, true
-}
-
-// HasStandaloneLinkTraining returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasStandaloneLinkTraining() bool {
-	if o != nil && !IsNil(o.StandaloneLinkTraining) {
-		return true
-	}
-
-	return false
-}
-
-// SetStandaloneLinkTraining gets a reference to the given bool and assigns it to the StandaloneLinkTraining field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetStandaloneLinkTraining(v bool) {
-	o.StandaloneLinkTraining = &v
-}
-
-// GetEnableSpeedControl returns the EnableSpeedControl field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableSpeedControl() bool {
-	if o == nil || IsNil(o.EnableSpeedControl) {
-		var ret bool
-		return ret
-	}
-	return *o.EnableSpeedControl
-}
-
-// GetEnableSpeedControlOk returns a tuple with the EnableSpeedControl field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetEnableSpeedControlOk() (*bool, bool) {
-	if o == nil || IsNil(o.EnableSpeedControl) {
-		return nil, false
-	}
-	return o.EnableSpeedControl, true
-}
-
-// HasEnableSpeedControl returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasEnableSpeedControl() bool {
-	if o != nil && !IsNil(o.EnableSpeedControl) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnableSpeedControl gets a reference to the given bool and assigns it to the EnableSpeedControl field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetEnableSpeedControl(v bool) {
-	o.EnableSpeedControl = &v
-}
-
-// GetMtu returns the Mtu field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMtu() int64 {
-	if o == nil || IsNil(o.Mtu.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.Mtu.Get()
-}
-
-// GetMtuOk returns a tuple with the Mtu field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMtuOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.Mtu.Get(), o.Mtu.IsSet()
-}
-
-// HasMtu returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMtu() bool {
-	if o != nil && o.Mtu.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMtu gets a reference to the given NullableInt64 and assigns it to the Mtu field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMtu(v int64) {
-	o.Mtu.Set(&v)
-}
-// SetMtuNil sets the value for Mtu to be an explicit nil
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMtuNil() {
-	o.Mtu.Set(nil)
-}
-
-// UnsetMtu ensures that no value is present for Mtu, not even an explicit nil
-func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMtu() {
-	o.Mtu.Unset()
-}
-
-// GetMaxBitRate returns the MaxBitRate field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxBitRate() string {
-	if o == nil || IsNil(o.MaxBitRate) {
-		var ret string
-		return ret
-	}
-	return *o.MaxBitRate
-}
-
-// GetMaxBitRateOk returns a tuple with the MaxBitRate field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxBitRateOk() (*string, bool) {
-	if o == nil || IsNil(o.MaxBitRate) {
-		return nil, false
-	}
-	return o.MaxBitRate, true
-}
-
-// HasMaxBitRate returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMaxBitRate() bool {
-	if o != nil && !IsNil(o.MaxBitRate) {
-		return true
-	}
-
-	return false
-}
-
-// SetMaxBitRate gets a reference to the given string and assigns it to the MaxBitRate field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaxBitRate(v string) {
-	o.MaxBitRate = &v
-}
-
-// GetDuplexMode returns the DuplexMode field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetDuplexMode() string {
-	if o == nil || IsNil(o.DuplexMode) {
-		var ret string
-		return ret
-	}
-	return *o.DuplexMode
-}
-
-// GetDuplexModeOk returns a tuple with the DuplexMode field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetDuplexModeOk() (*string, bool) {
-	if o == nil || IsNil(o.DuplexMode) {
-		return nil, false
-	}
-	return o.DuplexMode, true
-}
-
-// HasDuplexMode returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasDuplexMode() bool {
-	if o != nil && !IsNil(o.DuplexMode) {
-		return true
-	}
-
-	return false
-}
-
-// SetDuplexMode gets a reference to the given string and assigns it to the DuplexMode field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetDuplexMode(v string) {
-	o.DuplexMode = &v
-}
-
-// GetCliCommands returns the CliCommands field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetCliCommands() string {
-	if o == nil || IsNil(o.CliCommands) {
-		var ret string
-		return ret
-	}
-	return *o.CliCommands
-}
-
-// GetCliCommandsOk returns a tuple with the CliCommands field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetCliCommandsOk() (*string, bool) {
-	if o == nil || IsNil(o.CliCommands) {
-		return nil, false
-	}
-	return o.CliCommands, true
-}
-
-// HasCliCommands returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasCliCommands() bool {
-	if o != nil && !IsNil(o.CliCommands) {
-		return true
-	}
-
-	return false
-}
-
-// SetCliCommands gets a reference to the given string and assigns it to the CliCommands field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetCliCommands(v string) {
-	o.CliCommands = &v
-}
-
-// GetStpEnable returns the StpEnable field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetStpEnable() bool {
-	if o == nil || IsNil(o.StpEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.StpEnable
-}
-
-// GetStpEnableOk returns a tuple with the StpEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetStpEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.StpEnable) {
-		return nil, false
-	}
-	return o.StpEnable, true
-}
-
-// HasStpEnable returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasStpEnable() bool {
-	if o != nil && !IsNil(o.StpEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetStpEnable gets a reference to the given bool and assigns it to the StpEnable field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetStpEnable(v bool) {
-	o.StpEnable = &v
-}
-
-// GetFastLearningMode returns the FastLearningMode field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetFastLearningMode() bool {
-	if o == nil || IsNil(o.FastLearningMode) {
-		var ret bool
-		return ret
-	}
-	return *o.FastLearningMode
-}
-
-// GetFastLearningModeOk returns a tuple with the FastLearningMode field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetFastLearningModeOk() (*bool, bool) {
-	if o == nil || IsNil(o.FastLearningMode) {
-		return nil, false
-	}
-	return o.FastLearningMode, true
-}
-
-// HasFastLearningMode returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasFastLearningMode() bool {
-	if o != nil && !IsNil(o.FastLearningMode) {
-		return true
-	}
-
-	return false
-}
-
-// SetFastLearningMode gets a reference to the given bool and assigns it to the FastLearningMode field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetFastLearningMode(v bool) {
-	o.FastLearningMode = &v
-}
-
-// GetBpduGuard returns the BpduGuard field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBpduGuard() bool {
-	if o == nil || IsNil(o.BpduGuard) {
-		var ret bool
-		return ret
-	}
-	return *o.BpduGuard
-}
-
-// GetBpduGuardOk returns a tuple with the BpduGuard field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBpduGuardOk() (*bool, bool) {
-	if o == nil || IsNil(o.BpduGuard) {
-		return nil, false
-	}
-	return o.BpduGuard, true
-}
-
-// HasBpduGuard returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasBpduGuard() bool {
-	if o != nil && !IsNil(o.BpduGuard) {
-		return true
-	}
-
-	return false
-}
-
-// SetBpduGuard gets a reference to the given bool and assigns it to the BpduGuard field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetBpduGuard(v bool) {
-	o.BpduGuard = &v
-}
-
-// GetBpduFilter returns the BpduFilter field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBpduFilter() bool {
-	if o == nil || IsNil(o.BpduFilter) {
-		var ret bool
-		return ret
-	}
-	return *o.BpduFilter
-}
-
-// GetBpduFilterOk returns a tuple with the BpduFilter field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBpduFilterOk() (*bool, bool) {
-	if o == nil || IsNil(o.BpduFilter) {
-		return nil, false
-	}
-	return o.BpduFilter, true
-}
-
-// HasBpduFilter returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasBpduFilter() bool {
-	if o != nil && !IsNil(o.BpduFilter) {
-		return true
-	}
-
-	return false
-}
-
-// SetBpduFilter gets a reference to the given bool and assigns it to the BpduFilter field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetBpduFilter(v bool) {
-	o.BpduFilter = &v
-}
-
-// GetGuardLoop returns the GuardLoop field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetGuardLoop() bool {
-	if o == nil || IsNil(o.GuardLoop) {
-		var ret bool
-		return ret
-	}
-	return *o.GuardLoop
-}
-
-// GetGuardLoopOk returns a tuple with the GuardLoop field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetGuardLoopOk() (*bool, bool) {
-	if o == nil || IsNil(o.GuardLoop) {
-		return nil, false
-	}
-	return o.GuardLoop, true
-}
-
-// HasGuardLoop returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasGuardLoop() bool {
-	if o != nil && !IsNil(o.GuardLoop) {
-		return true
-	}
-
-	return false
-}
-
-// SetGuardLoop gets a reference to the given bool and assigns it to the GuardLoop field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetGuardLoop(v bool) {
-	o.GuardLoop = &v
-}
-
 // GetPoeEnable returns the PoeEnable field value if set, zero value otherwise.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) GetPoeEnable() bool {
 	if o == nil || IsNil(o.PoeEnable) {
@@ -988,430 +1620,6 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) HasPriority() bool {
 // SetPriority gets a reference to the given string and assigns it to the Priority field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPriority(v string) {
 	o.Priority = &v
-}
-
-// GetAllocatedPower returns the AllocatedPower field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAllocatedPower() string {
-	if o == nil || IsNil(o.AllocatedPower) {
-		var ret string
-		return ret
-	}
-	return *o.AllocatedPower
-}
-
-// GetAllocatedPowerOk returns a tuple with the AllocatedPower field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAllocatedPowerOk() (*string, bool) {
-	if o == nil || IsNil(o.AllocatedPower) {
-		return nil, false
-	}
-	return o.AllocatedPower, true
-}
-
-// HasAllocatedPower returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAllocatedPower() bool {
-	if o != nil && !IsNil(o.AllocatedPower) {
-		return true
-	}
-
-	return false
-}
-
-// SetAllocatedPower gets a reference to the given string and assigns it to the AllocatedPower field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAllocatedPower(v string) {
-	o.AllocatedPower = &v
-}
-
-// GetBspEnable returns the BspEnable field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBspEnable() bool {
-	if o == nil || IsNil(o.BspEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.BspEnable
-}
-
-// GetBspEnableOk returns a tuple with the BspEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBspEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.BspEnable) {
-		return nil, false
-	}
-	return o.BspEnable, true
-}
-
-// HasBspEnable returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasBspEnable() bool {
-	if o != nil && !IsNil(o.BspEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetBspEnable gets a reference to the given bool and assigns it to the BspEnable field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetBspEnable(v bool) {
-	o.BspEnable = &v
-}
-
-// GetBroadcast returns the Broadcast field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBroadcast() bool {
-	if o == nil || IsNil(o.Broadcast) {
-		var ret bool
-		return ret
-	}
-	return *o.Broadcast
-}
-
-// GetBroadcastOk returns a tuple with the Broadcast field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBroadcastOk() (*bool, bool) {
-	if o == nil || IsNil(o.Broadcast) {
-		return nil, false
-	}
-	return o.Broadcast, true
-}
-
-// HasBroadcast returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasBroadcast() bool {
-	if o != nil && !IsNil(o.Broadcast) {
-		return true
-	}
-
-	return false
-}
-
-// SetBroadcast gets a reference to the given bool and assigns it to the Broadcast field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetBroadcast(v bool) {
-	o.Broadcast = &v
-}
-
-// GetMulticast returns the Multicast field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMulticast() bool {
-	if o == nil || IsNil(o.Multicast) {
-		var ret bool
-		return ret
-	}
-	return *o.Multicast
-}
-
-// GetMulticastOk returns a tuple with the Multicast field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMulticastOk() (*bool, bool) {
-	if o == nil || IsNil(o.Multicast) {
-		return nil, false
-	}
-	return o.Multicast, true
-}
-
-// HasMulticast returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMulticast() bool {
-	if o != nil && !IsNil(o.Multicast) {
-		return true
-	}
-
-	return false
-}
-
-// SetMulticast gets a reference to the given bool and assigns it to the Multicast field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMulticast(v bool) {
-	o.Multicast = &v
-}
-
-// GetMaxAllowedValue returns the MaxAllowedValue field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxAllowedValue() int64 {
-	if o == nil || IsNil(o.MaxAllowedValue.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.MaxAllowedValue.Get()
-}
-
-// GetMaxAllowedValueOk returns a tuple with the MaxAllowedValue field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxAllowedValueOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.MaxAllowedValue.Get(), o.MaxAllowedValue.IsSet()
-}
-
-// HasMaxAllowedValue returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMaxAllowedValue() bool {
-	if o != nil && o.MaxAllowedValue.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMaxAllowedValue gets a reference to the given NullableInt64 and assigns it to the MaxAllowedValue field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaxAllowedValue(v int64) {
-	o.MaxAllowedValue.Set(&v)
-}
-// SetMaxAllowedValueNil sets the value for MaxAllowedValue to be an explicit nil
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaxAllowedValueNil() {
-	o.MaxAllowedValue.Set(nil)
-}
-
-// UnsetMaxAllowedValue ensures that no value is present for MaxAllowedValue, not even an explicit nil
-func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMaxAllowedValue() {
-	o.MaxAllowedValue.Unset()
-}
-
-// GetMaxAllowedUnit returns the MaxAllowedUnit field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxAllowedUnit() string {
-	if o == nil || IsNil(o.MaxAllowedUnit) {
-		var ret string
-		return ret
-	}
-	return *o.MaxAllowedUnit
-}
-
-// GetMaxAllowedUnitOk returns a tuple with the MaxAllowedUnit field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaxAllowedUnitOk() (*string, bool) {
-	if o == nil || IsNil(o.MaxAllowedUnit) {
-		return nil, false
-	}
-	return o.MaxAllowedUnit, true
-}
-
-// HasMaxAllowedUnit returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMaxAllowedUnit() bool {
-	if o != nil && !IsNil(o.MaxAllowedUnit) {
-		return true
-	}
-
-	return false
-}
-
-// SetMaxAllowedUnit gets a reference to the given string and assigns it to the MaxAllowedUnit field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaxAllowedUnit(v string) {
-	o.MaxAllowedUnit = &v
-}
-
-// GetAction returns the Action field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAction() string {
-	if o == nil || IsNil(o.Action) {
-		var ret string
-		return ret
-	}
-	return *o.Action
-}
-
-// GetActionOk returns a tuple with the Action field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetActionOk() (*string, bool) {
-	if o == nil || IsNil(o.Action) {
-		return nil, false
-	}
-	return o.Action, true
-}
-
-// HasAction returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAction() bool {
-	if o != nil && !IsNil(o.Action) {
-		return true
-	}
-
-	return false
-}
-
-// SetAction gets a reference to the given string and assigns it to the Action field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAction(v string) {
-	o.Action = &v
-}
-
-// GetFec returns the Fec field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetFec() string {
-	if o == nil || IsNil(o.Fec) {
-		var ret string
-		return ret
-	}
-	return *o.Fec
-}
-
-// GetFecOk returns a tuple with the Fec field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetFecOk() (*string, bool) {
-	if o == nil || IsNil(o.Fec) {
-		return nil, false
-	}
-	return o.Fec, true
-}
-
-// HasFec returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasFec() bool {
-	if o != nil && !IsNil(o.Fec) {
-		return true
-	}
-
-	return false
-}
-
-// SetFec gets a reference to the given string and assigns it to the Fec field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetFec(v string) {
-	o.Fec = &v
-}
-
-// GetSingleLink returns the SingleLink field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetSingleLink() bool {
-	if o == nil || IsNil(o.SingleLink) {
-		var ret bool
-		return ret
-	}
-	return *o.SingleLink
-}
-
-// GetSingleLinkOk returns a tuple with the SingleLink field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetSingleLinkOk() (*bool, bool) {
-	if o == nil || IsNil(o.SingleLink) {
-		return nil, false
-	}
-	return o.SingleLink, true
-}
-
-// HasSingleLink returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasSingleLink() bool {
-	if o != nil && !IsNil(o.SingleLink) {
-		return true
-	}
-
-	return false
-}
-
-// SetSingleLink gets a reference to the given bool and assigns it to the SingleLink field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetSingleLink(v bool) {
-	o.SingleLink = &v
-}
-
-// GetMinimumWredThreshold returns the MinimumWredThreshold field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMinimumWredThreshold() int64 {
-	if o == nil || IsNil(o.MinimumWredThreshold.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.MinimumWredThreshold.Get()
-}
-
-// GetMinimumWredThresholdOk returns a tuple with the MinimumWredThreshold field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMinimumWredThresholdOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.MinimumWredThreshold.Get(), o.MinimumWredThreshold.IsSet()
-}
-
-// HasMinimumWredThreshold returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMinimumWredThreshold() bool {
-	if o != nil && o.MinimumWredThreshold.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMinimumWredThreshold gets a reference to the given NullableInt64 and assigns it to the MinimumWredThreshold field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMinimumWredThreshold(v int64) {
-	o.MinimumWredThreshold.Set(&v)
-}
-// SetMinimumWredThresholdNil sets the value for MinimumWredThreshold to be an explicit nil
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMinimumWredThresholdNil() {
-	o.MinimumWredThreshold.Set(nil)
-}
-
-// UnsetMinimumWredThreshold ensures that no value is present for MinimumWredThreshold, not even an explicit nil
-func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMinimumWredThreshold() {
-	o.MinimumWredThreshold.Unset()
-}
-
-// GetMaximumWredThreshold returns the MaximumWredThreshold field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaximumWredThreshold() int64 {
-	if o == nil || IsNil(o.MaximumWredThreshold.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.MaximumWredThreshold.Get()
-}
-
-// GetMaximumWredThresholdOk returns a tuple with the MaximumWredThreshold field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMaximumWredThresholdOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.MaximumWredThreshold.Get(), o.MaximumWredThreshold.IsSet()
-}
-
-// HasMaximumWredThreshold returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMaximumWredThreshold() bool {
-	if o != nil && o.MaximumWredThreshold.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMaximumWredThreshold gets a reference to the given NullableInt64 and assigns it to the MaximumWredThreshold field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaximumWredThreshold(v int64) {
-	o.MaximumWredThreshold.Set(&v)
-}
-// SetMaximumWredThresholdNil sets the value for MaximumWredThreshold to be an explicit nil
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMaximumWredThresholdNil() {
-	o.MaximumWredThreshold.Set(nil)
-}
-
-// UnsetMaximumWredThreshold ensures that no value is present for MaximumWredThreshold, not even an explicit nil
-func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMaximumWredThreshold() {
-	o.MaximumWredThreshold.Unset()
-}
-
-// GetWredDropProbability returns the WredDropProbability field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetWredDropProbability() int64 {
-	if o == nil || IsNil(o.WredDropProbability.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.WredDropProbability.Get()
-}
-
-// GetWredDropProbabilityOk returns a tuple with the WredDropProbability field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetWredDropProbabilityOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.WredDropProbability.Get(), o.WredDropProbability.IsSet()
-}
-
-// HasWredDropProbability returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasWredDropProbability() bool {
-	if o != nil && o.WredDropProbability.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetWredDropProbability gets a reference to the given NullableInt64 and assigns it to the WredDropProbability field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetWredDropProbability(v int64) {
-	o.WredDropProbability.Set(&v)
-}
-// SetWredDropProbabilityNil sets the value for WredDropProbability to be an explicit nil
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetWredDropProbabilityNil() {
-	o.WredDropProbability.Set(nil)
-}
-
-// UnsetWredDropProbability ensures that no value is present for WredDropProbability, not even an explicit nil
-func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetWredDropProbability() {
-	o.WredDropProbability.Unset()
 }
 
 // GetPriorityFlowControlWatchdogAction returns the PriorityFlowControlWatchdogAction field value if set, zero value otherwise.
@@ -1478,6 +1686,7 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) HasPriorityFlowControlWa
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPriorityFlowControlWatchdogDetectTime(v int64) {
 	o.PriorityFlowControlWatchdogDetectTime.Set(&v)
 }
+
 // SetPriorityFlowControlWatchdogDetectTimeNil sets the value for PriorityFlowControlWatchdogDetectTime to be an explicit nil
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPriorityFlowControlWatchdogDetectTimeNil() {
 	o.PriorityFlowControlWatchdogDetectTime.Set(nil)
@@ -1520,6 +1729,7 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) HasPriorityFlowControlWa
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPriorityFlowControlWatchdogRestoreTime(v int64) {
 	o.PriorityFlowControlWatchdogRestoreTime.Set(&v)
 }
+
 // SetPriorityFlowControlWatchdogRestoreTimeNil sets the value for PriorityFlowControlWatchdogRestoreTime to be an explicit nil
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPriorityFlowControlWatchdogRestoreTimeNil() {
 	o.PriorityFlowControlWatchdogRestoreTime.Set(nil)
@@ -1528,176 +1738,6 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) SetPriorityFlowControlWa
 // UnsetPriorityFlowControlWatchdogRestoreTime ensures that no value is present for PriorityFlowControlWatchdogRestoreTime, not even an explicit nil
 func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetPriorityFlowControlWatchdogRestoreTime() {
 	o.PriorityFlowControlWatchdogRestoreTime.Unset()
-}
-
-// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectProperties() map[string]interface{} {
-	if o == nil || IsNil(o.ObjectProperties) {
-		var ret map[string]interface{}
-		return ret
-	}
-	return o.ObjectProperties
-}
-
-// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetObjectPropertiesOk() (map[string]interface{}, bool) {
-	if o == nil || IsNil(o.ObjectProperties) {
-		return map[string]interface{}{}, false
-	}
-	return o.ObjectProperties, true
-}
-
-// HasObjectProperties returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasObjectProperties() bool {
-	if o != nil && !IsNil(o.ObjectProperties) {
-		return true
-	}
-
-	return false
-}
-
-// SetObjectProperties gets a reference to the given map[string]interface{} and assigns it to the ObjectProperties field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetObjectProperties(v map[string]interface{}) {
-	o.ObjectProperties = v
-}
-
-// GetDetectBridgingLoops returns the DetectBridgingLoops field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetDetectBridgingLoops() bool {
-	if o == nil || IsNil(o.DetectBridgingLoops) {
-		var ret bool
-		return ret
-	}
-	return *o.DetectBridgingLoops
-}
-
-// GetDetectBridgingLoopsOk returns a tuple with the DetectBridgingLoops field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetDetectBridgingLoopsOk() (*bool, bool) {
-	if o == nil || IsNil(o.DetectBridgingLoops) {
-		return nil, false
-	}
-	return o.DetectBridgingLoops, true
-}
-
-// HasDetectBridgingLoops returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasDetectBridgingLoops() bool {
-	if o != nil && !IsNil(o.DetectBridgingLoops) {
-		return true
-	}
-
-	return false
-}
-
-// SetDetectBridgingLoops gets a reference to the given bool and assigns it to the DetectBridgingLoops field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetDetectBridgingLoops(v bool) {
-	o.DetectBridgingLoops = &v
-}
-
-// GetUnidirectionalLinkDetection returns the UnidirectionalLinkDetection field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetUnidirectionalLinkDetection() bool {
-	if o == nil || IsNil(o.UnidirectionalLinkDetection) {
-		var ret bool
-		return ret
-	}
-	return *o.UnidirectionalLinkDetection
-}
-
-// GetUnidirectionalLinkDetectionOk returns a tuple with the UnidirectionalLinkDetection field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetUnidirectionalLinkDetectionOk() (*bool, bool) {
-	if o == nil || IsNil(o.UnidirectionalLinkDetection) {
-		return nil, false
-	}
-	return o.UnidirectionalLinkDetection, true
-}
-
-// HasUnidirectionalLinkDetection returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasUnidirectionalLinkDetection() bool {
-	if o != nil && !IsNil(o.UnidirectionalLinkDetection) {
-		return true
-	}
-
-	return false
-}
-
-// SetUnidirectionalLinkDetection gets a reference to the given bool and assigns it to the UnidirectionalLinkDetection field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetUnidirectionalLinkDetection(v bool) {
-	o.UnidirectionalLinkDetection = &v
-}
-
-// GetMacSecurityMode returns the MacSecurityMode field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMacSecurityMode() string {
-	if o == nil || IsNil(o.MacSecurityMode) {
-		var ret string
-		return ret
-	}
-	return *o.MacSecurityMode
-}
-
-// GetMacSecurityModeOk returns a tuple with the MacSecurityMode field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMacSecurityModeOk() (*string, bool) {
-	if o == nil || IsNil(o.MacSecurityMode) {
-		return nil, false
-	}
-	return o.MacSecurityMode, true
-}
-
-// HasMacSecurityMode returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMacSecurityMode() bool {
-	if o != nil && !IsNil(o.MacSecurityMode) {
-		return true
-	}
-
-	return false
-}
-
-// SetMacSecurityMode gets a reference to the given string and assigns it to the MacSecurityMode field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMacSecurityMode(v string) {
-	o.MacSecurityMode = &v
-}
-
-// GetMacLimit returns the MacLimit field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMacLimit() int64 {
-	if o == nil || IsNil(o.MacLimit.Get()) {
-		var ret int64
-		return ret
-	}
-	return *o.MacLimit.Get()
-}
-
-// GetMacLimitOk returns a tuple with the MacLimit field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetMacLimitOk() (*int64, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.MacLimit.Get(), o.MacLimit.IsSet()
-}
-
-// HasMacLimit returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasMacLimit() bool {
-	if o != nil && o.MacLimit.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetMacLimit gets a reference to the given NullableInt64 and assigns it to the MacLimit field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMacLimit(v int64) {
-	o.MacLimit.Set(&v)
-}
-// SetMacLimitNil sets the value for MacLimit to be an explicit nil
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetMacLimitNil() {
-	o.MacLimit.Set(nil)
-}
-
-// UnsetMacLimit ensures that no value is present for MacLimit, not even an explicit nil
-func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetMacLimit() {
-	o.MacLimit.Unset()
 }
 
 // GetSecurityViolationAction returns the SecurityViolationAction field value if set, zero value otherwise.
@@ -1732,210 +1772,179 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) SetSecurityViolationActi
 	o.SecurityViolationAction = &v
 }
 
-// GetAgingType returns the AgingType field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAgingType() string {
-	if o == nil || IsNil(o.AgingType) {
-		var ret string
+// GetSingleLink returns the SingleLink field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetSingleLink() bool {
+	if o == nil || IsNil(o.SingleLink) {
+		var ret bool
 		return ret
 	}
-	return *o.AgingType
+	return *o.SingleLink
 }
 
-// GetAgingTypeOk returns a tuple with the AgingType field value if set, nil otherwise
+// GetSingleLinkOk returns a tuple with the SingleLink field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAgingTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.AgingType) {
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetSingleLinkOk() (*bool, bool) {
+	if o == nil || IsNil(o.SingleLink) {
 		return nil, false
 	}
-	return o.AgingType, true
+	return o.SingleLink, true
 }
 
-// HasAgingType returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAgingType() bool {
-	if o != nil && !IsNil(o.AgingType) {
+// HasSingleLink returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasSingleLink() bool {
+	if o != nil && !IsNil(o.SingleLink) {
 		return true
 	}
 
 	return false
 }
 
-// SetAgingType gets a reference to the given string and assigns it to the AgingType field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAgingType(v string) {
-	o.AgingType = &v
+// SetSingleLink gets a reference to the given bool and assigns it to the SingleLink field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetSingleLink(v bool) {
+	o.SingleLink = &v
 }
 
-// GetAgingTime returns the AgingTime field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAgingTime() int64 {
-	if o == nil || IsNil(o.AgingTime.Get()) {
+// GetStandaloneLinkTraining returns the StandaloneLinkTraining field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetStandaloneLinkTraining() bool {
+	if o == nil || IsNil(o.StandaloneLinkTraining) {
+		var ret bool
+		return ret
+	}
+	return *o.StandaloneLinkTraining
+}
+
+// GetStandaloneLinkTrainingOk returns a tuple with the StandaloneLinkTraining field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetStandaloneLinkTrainingOk() (*bool, bool) {
+	if o == nil || IsNil(o.StandaloneLinkTraining) {
+		return nil, false
+	}
+	return o.StandaloneLinkTraining, true
+}
+
+// HasStandaloneLinkTraining returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasStandaloneLinkTraining() bool {
+	if o != nil && !IsNil(o.StandaloneLinkTraining) {
+		return true
+	}
+
+	return false
+}
+
+// SetStandaloneLinkTraining gets a reference to the given bool and assigns it to the StandaloneLinkTraining field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetStandaloneLinkTraining(v bool) {
+	o.StandaloneLinkTraining = &v
+}
+
+// GetStpEnable returns the StpEnable field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetStpEnable() bool {
+	if o == nil || IsNil(o.StpEnable) {
+		var ret bool
+		return ret
+	}
+	return *o.StpEnable
+}
+
+// GetStpEnableOk returns a tuple with the StpEnable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetStpEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.StpEnable) {
+		return nil, false
+	}
+	return o.StpEnable, true
+}
+
+// HasStpEnable returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasStpEnable() bool {
+	if o != nil && !IsNil(o.StpEnable) {
+		return true
+	}
+
+	return false
+}
+
+// SetStpEnable gets a reference to the given bool and assigns it to the StpEnable field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetStpEnable(v bool) {
+	o.StpEnable = &v
+}
+
+// GetUnidirectionalLinkDetection returns the UnidirectionalLinkDetection field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetUnidirectionalLinkDetection() bool {
+	if o == nil || IsNil(o.UnidirectionalLinkDetection) {
+		var ret bool
+		return ret
+	}
+	return *o.UnidirectionalLinkDetection
+}
+
+// GetUnidirectionalLinkDetectionOk returns a tuple with the UnidirectionalLinkDetection field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetUnidirectionalLinkDetectionOk() (*bool, bool) {
+	if o == nil || IsNil(o.UnidirectionalLinkDetection) {
+		return nil, false
+	}
+	return o.UnidirectionalLinkDetection, true
+}
+
+// HasUnidirectionalLinkDetection returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasUnidirectionalLinkDetection() bool {
+	if o != nil && !IsNil(o.UnidirectionalLinkDetection) {
+		return true
+	}
+
+	return false
+}
+
+// SetUnidirectionalLinkDetection gets a reference to the given bool and assigns it to the UnidirectionalLinkDetection field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetUnidirectionalLinkDetection(v bool) {
+	o.UnidirectionalLinkDetection = &v
+}
+
+// GetWredDropProbability returns the WredDropProbability field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetWredDropProbability() int64 {
+	if o == nil || IsNil(o.WredDropProbability.Get()) {
 		var ret int64
 		return ret
 	}
-	return *o.AgingTime.Get()
+	return *o.WredDropProbability.Get()
 }
 
-// GetAgingTimeOk returns a tuple with the AgingTime field value if set, nil otherwise
+// GetWredDropProbabilityOk returns a tuple with the WredDropProbability field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetAgingTimeOk() (*int64, bool) {
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetWredDropProbabilityOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return o.AgingTime.Get(), o.AgingTime.IsSet()
+	return o.WredDropProbability.Get(), o.WredDropProbability.IsSet()
 }
 
-// HasAgingTime returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasAgingTime() bool {
-	if o != nil && o.AgingTime.IsSet() {
+// HasWredDropProbability returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasWredDropProbability() bool {
+	if o != nil && o.WredDropProbability.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAgingTime gets a reference to the given NullableInt64 and assigns it to the AgingTime field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAgingTime(v int64) {
-	o.AgingTime.Set(&v)
-}
-// SetAgingTimeNil sets the value for AgingTime to be an explicit nil
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetAgingTimeNil() {
-	o.AgingTime.Set(nil)
+// SetWredDropProbability gets a reference to the given NullableInt64 and assigns it to the WredDropProbability field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetWredDropProbability(v int64) {
+	o.WredDropProbability.Set(&v)
 }
 
-// UnsetAgingTime ensures that no value is present for AgingTime, not even an explicit nil
-func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetAgingTime() {
-	o.AgingTime.Unset()
+// SetWredDropProbabilityNil sets the value for WredDropProbability to be an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetWredDropProbabilityNil() {
+	o.WredDropProbability.Set(nil)
 }
 
-// GetLldpEnable returns the LldpEnable field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpEnable() bool {
-	if o == nil || IsNil(o.LldpEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.LldpEnable
-}
-
-// GetLldpEnableOk returns a tuple with the LldpEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.LldpEnable) {
-		return nil, false
-	}
-	return o.LldpEnable, true
-}
-
-// HasLldpEnable returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasLldpEnable() bool {
-	if o != nil && !IsNil(o.LldpEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetLldpEnable gets a reference to the given bool and assigns it to the LldpEnable field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetLldpEnable(v bool) {
-	o.LldpEnable = &v
-}
-
-// GetLldpMode returns the LldpMode field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpMode() string {
-	if o == nil || IsNil(o.LldpMode) {
-		var ret string
-		return ret
-	}
-	return *o.LldpMode
-}
-
-// GetLldpModeOk returns a tuple with the LldpMode field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpModeOk() (*string, bool) {
-	if o == nil || IsNil(o.LldpMode) {
-		return nil, false
-	}
-	return o.LldpMode, true
-}
-
-// HasLldpMode returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasLldpMode() bool {
-	if o != nil && !IsNil(o.LldpMode) {
-		return true
-	}
-
-	return false
-}
-
-// SetLldpMode gets a reference to the given string and assigns it to the LldpMode field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetLldpMode(v string) {
-	o.LldpMode = &v
-}
-
-// GetLldpMedEnable returns the LldpMedEnable field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpMedEnable() bool {
-	if o == nil || IsNil(o.LldpMedEnable) {
-		var ret bool
-		return ret
-	}
-	return *o.LldpMedEnable
-}
-
-// GetLldpMedEnableOk returns a tuple with the LldpMedEnable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpMedEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.LldpMedEnable) {
-		return nil, false
-	}
-	return o.LldpMedEnable, true
-}
-
-// HasLldpMedEnable returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasLldpMedEnable() bool {
-	if o != nil && !IsNil(o.LldpMedEnable) {
-		return true
-	}
-
-	return false
-}
-
-// SetLldpMedEnable gets a reference to the given bool and assigns it to the LldpMedEnable field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetLldpMedEnable(v bool) {
-	o.LldpMedEnable = &v
-}
-
-// GetLldpMed returns the LldpMed field value if set, zero value otherwise.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpMed() []EthportsettingsPutRequestEthPortSettingsValueLldpMedInner {
-	if o == nil || IsNil(o.LldpMed) {
-		var ret []EthportsettingsPutRequestEthPortSettingsValueLldpMedInner
-		return ret
-	}
-	return o.LldpMed
-}
-
-// GetLldpMedOk returns a tuple with the LldpMed field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) GetLldpMedOk() ([]EthportsettingsPutRequestEthPortSettingsValueLldpMedInner, bool) {
-	if o == nil || IsNil(o.LldpMed) {
-		return nil, false
-	}
-	return o.LldpMed, true
-}
-
-// HasLldpMed returns a boolean if a field has been set.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) HasLldpMed() bool {
-	if o != nil && !IsNil(o.LldpMed) {
-		return true
-	}
-
-	return false
-}
-
-// SetLldpMed gets a reference to the given []EthportsettingsPutRequestEthPortSettingsValueLldpMedInner and assigns it to the LldpMed field.
-func (o *EthportsettingsPutRequestEthPortSettingsValue) SetLldpMed(v []EthportsettingsPutRequestEthPortSettingsValueLldpMedInner) {
-	o.LldpMed = v
+// UnsetWredDropProbability ensures that no value is present for WredDropProbability, not even an explicit nil
+func (o *EthportsettingsPutRequestEthPortSettingsValue) UnsetWredDropProbability() {
+	o.WredDropProbability.Unset()
 }
 
 func (o EthportsettingsPutRequestEthPortSettingsValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -1944,11 +1953,110 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) MarshalJSON() ([]byte, er
 
 func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
+	if !IsNil(o.Action) {
+		toSerialize["action"] = o.Action
+	}
+	if o.AgingTime.IsSet() {
+		toSerialize["aging_time"] = o.AgingTime.Get()
+	}
+	if !IsNil(o.AgingType) {
+		toSerialize["aging_type"] = o.AgingType
+	}
+	if !IsNil(o.AllocatedPower) {
+		toSerialize["allocated_power"] = o.AllocatedPower
+	}
+	if !IsNil(o.AutoNegotiation) {
+		toSerialize["auto_negotiation"] = o.AutoNegotiation
+	}
+	if !IsNil(o.BpduFilter) {
+		toSerialize["bpdu_filter"] = o.BpduFilter
+	}
+	if !IsNil(o.BpduGuard) {
+		toSerialize["bpdu_guard"] = o.BpduGuard
+	}
+	if !IsNil(o.Broadcast) {
+		toSerialize["broadcast"] = o.Broadcast
+	}
+	if !IsNil(o.BspEnable) {
+		toSerialize["bsp_enable"] = o.BspEnable
+	}
+	if !IsNil(o.CliCommands) {
+		toSerialize["cli_commands"] = o.CliCommands
+	}
+	if !IsNil(o.DetectBridgingLoops) {
+		toSerialize["detect_bridging_loops"] = o.DetectBridgingLoops
+	}
+	if !IsNil(o.DuplexMode) {
+		toSerialize["duplex_mode"] = o.DuplexMode
 	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
+	}
+	if !IsNil(o.EnableEcn) {
+		toSerialize["enable_ecn"] = o.EnableEcn
+	}
+	if !IsNil(o.EnableSpeedControl) {
+		toSerialize["enable_speed_control"] = o.EnableSpeedControl
+	}
+	if !IsNil(o.EnableWatchdogTuning) {
+		toSerialize["enable_watchdog_tuning"] = o.EnableWatchdogTuning
+	}
+	if !IsNil(o.EnableWredTuning) {
+		toSerialize["enable_wred_tuning"] = o.EnableWredTuning
+	}
+	if !IsNil(o.FastLearningMode) {
+		toSerialize["fast_learning_mode"] = o.FastLearningMode
+	}
+	if !IsNil(o.Fec) {
+		toSerialize["fec"] = o.Fec
+	}
+	if !IsNil(o.GuardLoop) {
+		toSerialize["guard_loop"] = o.GuardLoop
+	}
+	if !IsNil(o.LldpEnable) {
+		toSerialize["lldp_enable"] = o.LldpEnable
+	}
+	if !IsNil(o.LldpMed) {
+		toSerialize["lldp_med"] = o.LldpMed
+	}
+	if !IsNil(o.LldpMedEnable) {
+		toSerialize["lldp_med_enable"] = o.LldpMedEnable
+	}
+	if !IsNil(o.LldpMode) {
+		toSerialize["lldp_mode"] = o.LldpMode
+	}
+	if o.MacLimit.IsSet() {
+		toSerialize["mac_limit"] = o.MacLimit.Get()
+	}
+	if !IsNil(o.MacSecurityMode) {
+		toSerialize["mac_security_mode"] = o.MacSecurityMode
+	}
+	if !IsNil(o.MaxAllowedUnit) {
+		toSerialize["max_allowed_unit"] = o.MaxAllowedUnit
+	}
+	if o.MaxAllowedValue.IsSet() {
+		toSerialize["max_allowed_value"] = o.MaxAllowedValue.Get()
+	}
+	if !IsNil(o.MaxBitRate) {
+		toSerialize["max_bit_rate"] = o.MaxBitRate
+	}
+	if o.MaximumWredThreshold.IsSet() {
+		toSerialize["maximum_wred_threshold"] = o.MaximumWredThreshold.Get()
+	}
+	if o.MinimumWredThreshold.IsSet() {
+		toSerialize["minimum_wred_threshold"] = o.MinimumWredThreshold.Get()
+	}
+	if o.Mtu.IsSet() {
+		toSerialize["mtu"] = o.Mtu.Get()
+	}
+	if !IsNil(o.Multicast) {
+		toSerialize["multicast"] = o.Multicast
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.ObjectProperties) {
+		toSerialize["object_properties"] = o.ObjectProperties
 	}
 	if !IsNil(o.PacketQueue) {
 		toSerialize["packet_queue"] = o.PacketQueue
@@ -1956,92 +2064,11 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]inter
 	if !IsNil(o.PacketQueueRefType) {
 		toSerialize["packet_queue_ref_type_"] = o.PacketQueueRefType
 	}
-	if !IsNil(o.EnableWredTuning) {
-		toSerialize["enable_wred_tuning"] = o.EnableWredTuning
-	}
-	if !IsNil(o.EnableEcn) {
-		toSerialize["enable_ecn"] = o.EnableEcn
-	}
-	if !IsNil(o.EnableWatchdogTuning) {
-		toSerialize["enable_watchdog_tuning"] = o.EnableWatchdogTuning
-	}
-	if !IsNil(o.AutoNegotiation) {
-		toSerialize["auto_negotiation"] = o.AutoNegotiation
-	}
-	if !IsNil(o.StandaloneLinkTraining) {
-		toSerialize["standalone_link_training"] = o.StandaloneLinkTraining
-	}
-	if !IsNil(o.EnableSpeedControl) {
-		toSerialize["enable_speed_control"] = o.EnableSpeedControl
-	}
-	if o.Mtu.IsSet() {
-		toSerialize["mtu"] = o.Mtu.Get()
-	}
-	if !IsNil(o.MaxBitRate) {
-		toSerialize["max_bit_rate"] = o.MaxBitRate
-	}
-	if !IsNil(o.DuplexMode) {
-		toSerialize["duplex_mode"] = o.DuplexMode
-	}
-	if !IsNil(o.CliCommands) {
-		toSerialize["cli_commands"] = o.CliCommands
-	}
-	if !IsNil(o.StpEnable) {
-		toSerialize["stp_enable"] = o.StpEnable
-	}
-	if !IsNil(o.FastLearningMode) {
-		toSerialize["fast_learning_mode"] = o.FastLearningMode
-	}
-	if !IsNil(o.BpduGuard) {
-		toSerialize["bpdu_guard"] = o.BpduGuard
-	}
-	if !IsNil(o.BpduFilter) {
-		toSerialize["bpdu_filter"] = o.BpduFilter
-	}
-	if !IsNil(o.GuardLoop) {
-		toSerialize["guard_loop"] = o.GuardLoop
-	}
 	if !IsNil(o.PoeEnable) {
 		toSerialize["poe_enable"] = o.PoeEnable
 	}
 	if !IsNil(o.Priority) {
 		toSerialize["priority"] = o.Priority
-	}
-	if !IsNil(o.AllocatedPower) {
-		toSerialize["allocated_power"] = o.AllocatedPower
-	}
-	if !IsNil(o.BspEnable) {
-		toSerialize["bsp_enable"] = o.BspEnable
-	}
-	if !IsNil(o.Broadcast) {
-		toSerialize["broadcast"] = o.Broadcast
-	}
-	if !IsNil(o.Multicast) {
-		toSerialize["multicast"] = o.Multicast
-	}
-	if o.MaxAllowedValue.IsSet() {
-		toSerialize["max_allowed_value"] = o.MaxAllowedValue.Get()
-	}
-	if !IsNil(o.MaxAllowedUnit) {
-		toSerialize["max_allowed_unit"] = o.MaxAllowedUnit
-	}
-	if !IsNil(o.Action) {
-		toSerialize["action"] = o.Action
-	}
-	if !IsNil(o.Fec) {
-		toSerialize["fec"] = o.Fec
-	}
-	if !IsNil(o.SingleLink) {
-		toSerialize["single_link"] = o.SingleLink
-	}
-	if o.MinimumWredThreshold.IsSet() {
-		toSerialize["minimum_wred_threshold"] = o.MinimumWredThreshold.Get()
-	}
-	if o.MaximumWredThreshold.IsSet() {
-		toSerialize["maximum_wred_threshold"] = o.MaximumWredThreshold.Get()
-	}
-	if o.WredDropProbability.IsSet() {
-		toSerialize["wred_drop_probability"] = o.WredDropProbability.Get()
 	}
 	if !IsNil(o.PriorityFlowControlWatchdogAction) {
 		toSerialize["priority_flow_control_watchdog_action"] = o.PriorityFlowControlWatchdogAction
@@ -2052,41 +2079,23 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]inter
 	if o.PriorityFlowControlWatchdogRestoreTime.IsSet() {
 		toSerialize["priority_flow_control_watchdog_restore_time"] = o.PriorityFlowControlWatchdogRestoreTime.Get()
 	}
-	if !IsNil(o.ObjectProperties) {
-		toSerialize["object_properties"] = o.ObjectProperties
+	if !IsNil(o.SecurityViolationAction) {
+		toSerialize["security_violation_action"] = o.SecurityViolationAction
 	}
-	if !IsNil(o.DetectBridgingLoops) {
-		toSerialize["detect_bridging_loops"] = o.DetectBridgingLoops
+	if !IsNil(o.SingleLink) {
+		toSerialize["single_link"] = o.SingleLink
+	}
+	if !IsNil(o.StandaloneLinkTraining) {
+		toSerialize["standalone_link_training"] = o.StandaloneLinkTraining
+	}
+	if !IsNil(o.StpEnable) {
+		toSerialize["stp_enable"] = o.StpEnable
 	}
 	if !IsNil(o.UnidirectionalLinkDetection) {
 		toSerialize["unidirectional_link_detection"] = o.UnidirectionalLinkDetection
 	}
-	if !IsNil(o.MacSecurityMode) {
-		toSerialize["mac_security_mode"] = o.MacSecurityMode
-	}
-	if o.MacLimit.IsSet() {
-		toSerialize["mac_limit"] = o.MacLimit.Get()
-	}
-	if !IsNil(o.SecurityViolationAction) {
-		toSerialize["security_violation_action"] = o.SecurityViolationAction
-	}
-	if !IsNil(o.AgingType) {
-		toSerialize["aging_type"] = o.AgingType
-	}
-	if o.AgingTime.IsSet() {
-		toSerialize["aging_time"] = o.AgingTime.Get()
-	}
-	if !IsNil(o.LldpEnable) {
-		toSerialize["lldp_enable"] = o.LldpEnable
-	}
-	if !IsNil(o.LldpMode) {
-		toSerialize["lldp_mode"] = o.LldpMode
-	}
-	if !IsNil(o.LldpMedEnable) {
-		toSerialize["lldp_med_enable"] = o.LldpMedEnable
-	}
-	if !IsNil(o.LldpMed) {
-		toSerialize["lldp_med"] = o.LldpMed
+	if o.WredDropProbability.IsSet() {
+		toSerialize["wred_drop_probability"] = o.WredDropProbability.Get()
 	}
 	return toSerialize, nil
 }
@@ -2126,5 +2135,3 @@ func (v *NullableEthportsettingsPutRequestEthPortSettingsValue) UnmarshalJSON(sr
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

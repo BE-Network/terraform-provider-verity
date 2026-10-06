@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,17 +19,17 @@ var _ MappedNullable = &SspgroupsPutRequestSuperspineGroupValue{}
 
 // SspgroupsPutRequestSuperspineGroupValue struct for SspgroupsPutRequestSuperspineGroupValue
 type SspgroupsPutRequestSuperspineGroupValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	// Fabric this SuperSpine Group is assigned to
 	Fabric *string `json:"fabric,omitempty"`
 	// Object type for fabric field
 	FabricRefType *string `json:"fabric_ref_type_,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                      `json:"name,omitempty"`
+	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 	// Position of the Switch
 	Position NullableFloat64 `json:"position,omitempty"`
-	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewSspgroupsPutRequestSuperspineGroupValue instantiates a new SspgroupsPutRequestSuperspineGroupValue object
@@ -38,12 +38,12 @@ type SspgroupsPutRequestSuperspineGroupValue struct {
 // will change when the set of required properties is changed
 func NewSspgroupsPutRequestSuperspineGroupValue() *SspgroupsPutRequestSuperspineGroupValue {
 	this := SspgroupsPutRequestSuperspineGroupValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
 	var fabric string = ""
 	this.Fabric = &fabric
+	var name string = ""
+	this.Name = &name
 	return &this
 }
 
@@ -52,45 +52,13 @@ func NewSspgroupsPutRequestSuperspineGroupValue() *SspgroupsPutRequestSuperspine
 // but it doesn't guarantee that properties required by API are set
 func NewSspgroupsPutRequestSuperspineGroupValueWithDefaults() *SspgroupsPutRequestSuperspineGroupValue {
 	this := SspgroupsPutRequestSuperspineGroupValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
 	var fabric string = ""
 	this.Fabric = &fabric
+	var name string = ""
+	this.Name = &name
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *SspgroupsPutRequestSuperspineGroupValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SspgroupsPutRequestSuperspineGroupValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *SspgroupsPutRequestSuperspineGroupValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *SspgroupsPutRequestSuperspineGroupValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -189,46 +157,36 @@ func (o *SspgroupsPutRequestSuperspineGroupValue) SetFabricRefType(v string) {
 	o.FabricRefType = &v
 }
 
-// GetPosition returns the Position field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SspgroupsPutRequestSuperspineGroupValue) GetPosition() float64 {
-	if o == nil || IsNil(o.Position.Get()) {
-		var ret float64
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *SspgroupsPutRequestSuperspineGroupValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
 		return ret
 	}
-	return *o.Position.Get()
+	return *o.Name
 }
 
-// GetPositionOk returns a tuple with the Position field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SspgroupsPutRequestSuperspineGroupValue) GetPositionOk() (*float64, bool) {
-	if o == nil {
+func (o *SspgroupsPutRequestSuperspineGroupValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
-	return o.Position.Get(), o.Position.IsSet()
+	return o.Name, true
 }
 
-// HasPosition returns a boolean if a field has been set.
-func (o *SspgroupsPutRequestSuperspineGroupValue) HasPosition() bool {
-	if o != nil && o.Position.IsSet() {
+// HasName returns a boolean if a field has been set.
+func (o *SspgroupsPutRequestSuperspineGroupValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
 	return false
 }
 
-// SetPosition gets a reference to the given NullableFloat64 and assigns it to the Position field.
-func (o *SspgroupsPutRequestSuperspineGroupValue) SetPosition(v float64) {
-	o.Position.Set(&v)
-}
-// SetPositionNil sets the value for Position to be an explicit nil
-func (o *SspgroupsPutRequestSuperspineGroupValue) SetPositionNil() {
-	o.Position.Set(nil)
-}
-
-// UnsetPosition ensures that no value is present for Position, not even an explicit nil
-func (o *SspgroupsPutRequestSuperspineGroupValue) UnsetPosition() {
-	o.Position.Unset()
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *SspgroupsPutRequestSuperspineGroupValue) SetName(v string) {
+	o.Name = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -263,8 +221,51 @@ func (o *SspgroupsPutRequestSuperspineGroupValue) SetObjectProperties(v AclsPutR
 	o.ObjectProperties = &v
 }
 
+// GetPosition returns the Position field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SspgroupsPutRequestSuperspineGroupValue) GetPosition() float64 {
+	if o == nil || IsNil(o.Position.Get()) {
+		var ret float64
+		return ret
+	}
+	return *o.Position.Get()
+}
+
+// GetPositionOk returns a tuple with the Position field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SspgroupsPutRequestSuperspineGroupValue) GetPositionOk() (*float64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Position.Get(), o.Position.IsSet()
+}
+
+// HasPosition returns a boolean if a field has been set.
+func (o *SspgroupsPutRequestSuperspineGroupValue) HasPosition() bool {
+	if o != nil && o.Position.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetPosition gets a reference to the given NullableFloat64 and assigns it to the Position field.
+func (o *SspgroupsPutRequestSuperspineGroupValue) SetPosition(v float64) {
+	o.Position.Set(&v)
+}
+
+// SetPositionNil sets the value for Position to be an explicit nil
+func (o *SspgroupsPutRequestSuperspineGroupValue) SetPositionNil() {
+	o.Position.Set(nil)
+}
+
+// UnsetPosition ensures that no value is present for Position, not even an explicit nil
+func (o *SspgroupsPutRequestSuperspineGroupValue) UnsetPosition() {
+	o.Position.Unset()
+}
+
 func (o SspgroupsPutRequestSuperspineGroupValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -273,9 +274,6 @@ func (o SspgroupsPutRequestSuperspineGroupValue) MarshalJSON() ([]byte, error) {
 
 func (o SspgroupsPutRequestSuperspineGroupValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
@@ -285,11 +283,14 @@ func (o SspgroupsPutRequestSuperspineGroupValue) ToMap() (map[string]interface{}
 	if !IsNil(o.FabricRefType) {
 		toSerialize["fabric_ref_type_"] = o.FabricRefType
 	}
-	if o.Position.IsSet() {
-		toSerialize["position"] = o.Position.Get()
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if o.Position.IsSet() {
+		toSerialize["position"] = o.Position.Get()
 	}
 	return toSerialize, nil
 }
@@ -329,5 +330,3 @@ func (v *NullableSspgroupsPutRequestSuperspineGroupValue) UnmarshalJSON(src []by
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

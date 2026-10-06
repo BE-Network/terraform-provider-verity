@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,22 +19,22 @@ var _ MappedNullable = &DeviceaaaprofilesPutRequestDeviceAaaProfileValue{}
 
 // DeviceaaaprofilesPutRequestDeviceAaaProfileValue struct for DeviceaaaprofilesPutRequestDeviceAaaProfileValue
 type DeviceaaaprofilesPutRequestDeviceAaaProfileValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	// When enabled, authentication continues to access each server in the method list if an authentication request fails on one server
 	FailThrough *bool `json:"fail_through,omitempty"`
-	LoginDefault []DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner `json:"login_default,omitempty"`
+	// LDAP profile for authentication
+	LdapProfile *string `json:"ldap_profile,omitempty"`
+	// Object type for ldap_profile field
+	LdapProfileRefType *string                                                             `json:"ldap_profile_ref_type_,omitempty"`
+	LoginDefault       []DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner `json:"login_default,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                `json:"name,omitempty"`
+	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
 	// TACACS+ profile for authentication
 	TacacsProfile *string `json:"tacacs_profile,omitempty"`
 	// Object type for tacacs_profile field
 	TacacsProfileRefType *string `json:"tacacs_profile_ref_type_,omitempty"`
-	// LDAP profile for authentication
-	LdapProfile *string `json:"ldap_profile,omitempty"`
-	// Object type for ldap_profile field
-	LdapProfileRefType *string `json:"ldap_profile_ref_type_,omitempty"`
-	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
 }
 
 // NewDeviceaaaprofilesPutRequestDeviceAaaProfileValue instantiates a new DeviceaaaprofilesPutRequestDeviceAaaProfileValue object
@@ -43,16 +43,16 @@ type DeviceaaaprofilesPutRequestDeviceAaaProfileValue struct {
 // will change when the set of required properties is changed
 func NewDeviceaaaprofilesPutRequestDeviceAaaProfileValue() *DeviceaaaprofilesPutRequestDeviceAaaProfileValue {
 	this := DeviceaaaprofilesPutRequestDeviceAaaProfileValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
 	var failThrough bool = true
 	this.FailThrough = &failThrough
-	var tacacsProfile string = ""
-	this.TacacsProfile = &tacacsProfile
 	var ldapProfile string = ""
 	this.LdapProfile = &ldapProfile
+	var name string = ""
+	this.Name = &name
+	var tacacsProfile string = ""
+	this.TacacsProfile = &tacacsProfile
 	return &this
 }
 
@@ -61,49 +61,17 @@ func NewDeviceaaaprofilesPutRequestDeviceAaaProfileValue() *DeviceaaaprofilesPut
 // but it doesn't guarantee that properties required by API are set
 func NewDeviceaaaprofilesPutRequestDeviceAaaProfileValueWithDefaults() *DeviceaaaprofilesPutRequestDeviceAaaProfileValue {
 	this := DeviceaaaprofilesPutRequestDeviceAaaProfileValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
 	var failThrough bool = true
 	this.FailThrough = &failThrough
-	var tacacsProfile string = ""
-	this.TacacsProfile = &tacacsProfile
 	var ldapProfile string = ""
 	this.LdapProfile = &ldapProfile
+	var name string = ""
+	this.Name = &name
+	var tacacsProfile string = ""
+	this.TacacsProfile = &tacacsProfile
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -170,6 +138,70 @@ func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) SetFailThrough(v bool
 	o.FailThrough = &v
 }
 
+// GetLdapProfile returns the LdapProfile field value if set, zero value otherwise.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetLdapProfile() string {
+	if o == nil || IsNil(o.LdapProfile) {
+		var ret string
+		return ret
+	}
+	return *o.LdapProfile
+}
+
+// GetLdapProfileOk returns a tuple with the LdapProfile field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetLdapProfileOk() (*string, bool) {
+	if o == nil || IsNil(o.LdapProfile) {
+		return nil, false
+	}
+	return o.LdapProfile, true
+}
+
+// HasLdapProfile returns a boolean if a field has been set.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) HasLdapProfile() bool {
+	if o != nil && !IsNil(o.LdapProfile) {
+		return true
+	}
+
+	return false
+}
+
+// SetLdapProfile gets a reference to the given string and assigns it to the LdapProfile field.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) SetLdapProfile(v string) {
+	o.LdapProfile = &v
+}
+
+// GetLdapProfileRefType returns the LdapProfileRefType field value if set, zero value otherwise.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetLdapProfileRefType() string {
+	if o == nil || IsNil(o.LdapProfileRefType) {
+		var ret string
+		return ret
+	}
+	return *o.LdapProfileRefType
+}
+
+// GetLdapProfileRefTypeOk returns a tuple with the LdapProfileRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetLdapProfileRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.LdapProfileRefType) {
+		return nil, false
+	}
+	return o.LdapProfileRefType, true
+}
+
+// HasLdapProfileRefType returns a boolean if a field has been set.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) HasLdapProfileRefType() bool {
+	if o != nil && !IsNil(o.LdapProfileRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetLdapProfileRefType gets a reference to the given string and assigns it to the LdapProfileRefType field.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) SetLdapProfileRefType(v string) {
+	o.LdapProfileRefType = &v
+}
+
 // GetLoginDefault returns the LoginDefault field value if set, zero value otherwise.
 func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetLoginDefault() []DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner {
 	if o == nil || IsNil(o.LoginDefault) {
@@ -200,6 +232,70 @@ func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) HasLoginDefault() boo
 // SetLoginDefault gets a reference to the given []DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner and assigns it to the LoginDefault field.
 func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) SetLoginDefault(v []DeviceaaaprofilesPutRequestDeviceAaaProfileValueLoginDefaultInner) {
 	o.LoginDefault = v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) SetName(v string) {
+	o.Name = &v
+}
+
+// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetObjectProperties() map[string]interface{} {
+	if o == nil || IsNil(o.ObjectProperties) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.ObjectProperties
+}
+
+// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetObjectPropertiesOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.ObjectProperties) {
+		return map[string]interface{}{}, false
+	}
+	return o.ObjectProperties, true
+}
+
+// HasObjectProperties returns a boolean if a field has been set.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) HasObjectProperties() bool {
+	if o != nil && !IsNil(o.ObjectProperties) {
+		return true
+	}
+
+	return false
+}
+
+// SetObjectProperties gets a reference to the given map[string]interface{} and assigns it to the ObjectProperties field.
+func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) SetObjectProperties(v map[string]interface{}) {
+	o.ObjectProperties = v
 }
 
 // GetTacacsProfile returns the TacacsProfile field value if set, zero value otherwise.
@@ -266,104 +362,8 @@ func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) SetTacacsProfileRefTy
 	o.TacacsProfileRefType = &v
 }
 
-// GetLdapProfile returns the LdapProfile field value if set, zero value otherwise.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetLdapProfile() string {
-	if o == nil || IsNil(o.LdapProfile) {
-		var ret string
-		return ret
-	}
-	return *o.LdapProfile
-}
-
-// GetLdapProfileOk returns a tuple with the LdapProfile field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetLdapProfileOk() (*string, bool) {
-	if o == nil || IsNil(o.LdapProfile) {
-		return nil, false
-	}
-	return o.LdapProfile, true
-}
-
-// HasLdapProfile returns a boolean if a field has been set.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) HasLdapProfile() bool {
-	if o != nil && !IsNil(o.LdapProfile) {
-		return true
-	}
-
-	return false
-}
-
-// SetLdapProfile gets a reference to the given string and assigns it to the LdapProfile field.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) SetLdapProfile(v string) {
-	o.LdapProfile = &v
-}
-
-// GetLdapProfileRefType returns the LdapProfileRefType field value if set, zero value otherwise.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetLdapProfileRefType() string {
-	if o == nil || IsNil(o.LdapProfileRefType) {
-		var ret string
-		return ret
-	}
-	return *o.LdapProfileRefType
-}
-
-// GetLdapProfileRefTypeOk returns a tuple with the LdapProfileRefType field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetLdapProfileRefTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.LdapProfileRefType) {
-		return nil, false
-	}
-	return o.LdapProfileRefType, true
-}
-
-// HasLdapProfileRefType returns a boolean if a field has been set.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) HasLdapProfileRefType() bool {
-	if o != nil && !IsNil(o.LdapProfileRefType) {
-		return true
-	}
-
-	return false
-}
-
-// SetLdapProfileRefType gets a reference to the given string and assigns it to the LdapProfileRefType field.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) SetLdapProfileRefType(v string) {
-	o.LdapProfileRefType = &v
-}
-
-// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetObjectProperties() map[string]interface{} {
-	if o == nil || IsNil(o.ObjectProperties) {
-		var ret map[string]interface{}
-		return ret
-	}
-	return o.ObjectProperties
-}
-
-// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) GetObjectPropertiesOk() (map[string]interface{}, bool) {
-	if o == nil || IsNil(o.ObjectProperties) {
-		return map[string]interface{}{}, false
-	}
-	return o.ObjectProperties, true
-}
-
-// HasObjectProperties returns a boolean if a field has been set.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) HasObjectProperties() bool {
-	if o != nil && !IsNil(o.ObjectProperties) {
-		return true
-	}
-
-	return false
-}
-
-// SetObjectProperties gets a reference to the given map[string]interface{} and assigns it to the ObjectProperties field.
-func (o *DeviceaaaprofilesPutRequestDeviceAaaProfileValue) SetObjectProperties(v map[string]interface{}) {
-	o.ObjectProperties = v
-}
-
 func (o DeviceaaaprofilesPutRequestDeviceAaaProfileValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -372,23 +372,11 @@ func (o DeviceaaaprofilesPutRequestDeviceAaaProfileValue) MarshalJSON() ([]byte,
 
 func (o DeviceaaaprofilesPutRequestDeviceAaaProfileValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
 	if !IsNil(o.FailThrough) {
 		toSerialize["fail_through"] = o.FailThrough
-	}
-	if !IsNil(o.LoginDefault) {
-		toSerialize["login_default"] = o.LoginDefault
-	}
-	if !IsNil(o.TacacsProfile) {
-		toSerialize["tacacs_profile"] = o.TacacsProfile
-	}
-	if !IsNil(o.TacacsProfileRefType) {
-		toSerialize["tacacs_profile_ref_type_"] = o.TacacsProfileRefType
 	}
 	if !IsNil(o.LdapProfile) {
 		toSerialize["ldap_profile"] = o.LdapProfile
@@ -396,8 +384,20 @@ func (o DeviceaaaprofilesPutRequestDeviceAaaProfileValue) ToMap() (map[string]in
 	if !IsNil(o.LdapProfileRefType) {
 		toSerialize["ldap_profile_ref_type_"] = o.LdapProfileRefType
 	}
+	if !IsNil(o.LoginDefault) {
+		toSerialize["login_default"] = o.LoginDefault
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
+	}
+	if !IsNil(o.TacacsProfile) {
+		toSerialize["tacacs_profile"] = o.TacacsProfile
+	}
+	if !IsNil(o.TacacsProfileRefType) {
+		toSerialize["tacacs_profile_ref_type_"] = o.TacacsProfileRefType
 	}
 	return toSerialize, nil
 }
@@ -437,5 +437,3 @@ func (v *NullableDeviceaaaprofilesPutRequestDeviceAaaProfileValue) UnmarshalJSON
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

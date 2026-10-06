@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,13 +19,13 @@ var _ MappedNullable = &MacfiltersPutRequestMacFilterValue{}
 
 // MacfiltersPutRequestMacFilterValue struct for MacfiltersPutRequestMacFilterValue
 type MacfiltersPutRequestMacFilterValue struct {
+	// Enable object.
+	Enable  *bool                                            `json:"enable,omitempty"`
+	Filters []MacfiltersPutRequestMacFilterValueFiltersInner `json:"filters,omitempty"`
 	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
 	// Black vs White MAC Filter
 	Type *string `json:"type,omitempty"`
-	Filters []MacfiltersPutRequestMacFilterValueFiltersInner `json:"filters,omitempty"`
 }
 
 // NewMacfiltersPutRequestMacFilterValue instantiates a new MacfiltersPutRequestMacFilterValue object
@@ -34,10 +34,10 @@ type MacfiltersPutRequestMacFilterValue struct {
 // will change when the set of required properties is changed
 func NewMacfiltersPutRequestMacFilterValue() *MacfiltersPutRequestMacFilterValue {
 	this := MacfiltersPutRequestMacFilterValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	var type_ string = "White"
 	this.Type = &type_
 	return &this
@@ -48,45 +48,13 @@ func NewMacfiltersPutRequestMacFilterValue() *MacfiltersPutRequestMacFilterValue
 // but it doesn't guarantee that properties required by API are set
 func NewMacfiltersPutRequestMacFilterValueWithDefaults() *MacfiltersPutRequestMacFilterValue {
 	this := MacfiltersPutRequestMacFilterValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = false
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	var type_ string = "White"
 	this.Type = &type_
 	return &this
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *MacfiltersPutRequestMacFilterValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *MacfiltersPutRequestMacFilterValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *MacfiltersPutRequestMacFilterValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *MacfiltersPutRequestMacFilterValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetEnable returns the Enable field value if set, zero value otherwise.
@@ -121,38 +89,6 @@ func (o *MacfiltersPutRequestMacFilterValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
-func (o *MacfiltersPutRequestMacFilterValue) GetType() string {
-	if o == nil || IsNil(o.Type) {
-		var ret string
-		return ret
-	}
-	return *o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *MacfiltersPutRequestMacFilterValue) GetTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.Type) {
-		return nil, false
-	}
-	return o.Type, true
-}
-
-// HasType returns a boolean if a field has been set.
-func (o *MacfiltersPutRequestMacFilterValue) HasType() bool {
-	if o != nil && !IsNil(o.Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *MacfiltersPutRequestMacFilterValue) SetType(v string) {
-	o.Type = &v
-}
-
 // GetFilters returns the Filters field value if set, zero value otherwise.
 func (o *MacfiltersPutRequestMacFilterValue) GetFilters() []MacfiltersPutRequestMacFilterValueFiltersInner {
 	if o == nil || IsNil(o.Filters) {
@@ -185,8 +121,72 @@ func (o *MacfiltersPutRequestMacFilterValue) SetFilters(v []MacfiltersPutRequest
 	o.Filters = v
 }
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *MacfiltersPutRequestMacFilterValue) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MacfiltersPutRequestMacFilterValue) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *MacfiltersPutRequestMacFilterValue) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *MacfiltersPutRequestMacFilterValue) SetName(v string) {
+	o.Name = &v
+}
+
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *MacfiltersPutRequestMacFilterValue) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MacfiltersPutRequestMacFilterValue) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *MacfiltersPutRequestMacFilterValue) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *MacfiltersPutRequestMacFilterValue) SetType(v string) {
+	o.Type = &v
+}
+
 func (o MacfiltersPutRequestMacFilterValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -195,17 +195,17 @@ func (o MacfiltersPutRequestMacFilterValue) MarshalJSON() ([]byte, error) {
 
 func (o MacfiltersPutRequestMacFilterValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
 	}
-	if !IsNil(o.Type) {
-		toSerialize["type"] = o.Type
-	}
 	if !IsNil(o.Filters) {
 		toSerialize["filters"] = o.Filters
+	}
+	if !IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
+	if !IsNil(o.Type) {
+		toSerialize["type"] = o.Type
 	}
 	return toSerialize, nil
 }
@@ -245,5 +245,3 @@ func (v *NullableMacfiltersPutRequestMacFilterValue) UnmarshalJSON(src []byte) e
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

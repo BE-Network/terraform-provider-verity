@@ -1,7 +1,7 @@
 /*
 Verity API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Verity API.
 
 API version: 6.6
 */
@@ -19,17 +19,17 @@ var _ MappedNullable = &SusPutRequestSuValue{}
 
 // SusPutRequestSuValue struct for SusPutRequestSuValue
 type SusPutRequestSuValue struct {
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
+	// Template Name. Must be unique within type.
+	Name             *string                                      `json:"name,omitempty"`
+	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 	// Pod this SU is assigned to
 	Pod *string `json:"pod,omitempty"`
 	// Object type for pod field
 	PodRefType *string `json:"pod_ref_type_,omitempty"`
 	// Position of the Switch
 	Position NullableFloat64 `json:"position,omitempty"`
-	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 }
 
 // NewSusPutRequestSuValue instantiates a new SusPutRequestSuValue object
@@ -38,10 +38,10 @@ type SusPutRequestSuValue struct {
 // will change when the set of required properties is changed
 func NewSusPutRequestSuValue() *SusPutRequestSuValue {
 	this := SusPutRequestSuValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	var pod string = ""
 	this.Pod = &pod
 	return &this
@@ -52,13 +52,45 @@ func NewSusPutRequestSuValue() *SusPutRequestSuValue {
 // but it doesn't guarantee that properties required by API are set
 func NewSusPutRequestSuValueWithDefaults() *SusPutRequestSuValue {
 	this := SusPutRequestSuValue{}
-	var name string = ""
-	this.Name = &name
 	var enable bool = true
 	this.Enable = &enable
+	var name string = ""
+	this.Name = &name
 	var pod string = ""
 	this.Pod = &pod
 	return &this
+}
+
+// GetEnable returns the Enable field value if set, zero value otherwise.
+func (o *SusPutRequestSuValue) GetEnable() bool {
+	if o == nil || IsNil(o.Enable) {
+		var ret bool
+		return ret
+	}
+	return *o.Enable
+}
+
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SusPutRequestSuValue) GetEnableOk() (*bool, bool) {
+	if o == nil || IsNil(o.Enable) {
+		return nil, false
+	}
+	return o.Enable, true
+}
+
+// HasEnable returns a boolean if a field has been set.
+func (o *SusPutRequestSuValue) HasEnable() bool {
+	if o != nil && !IsNil(o.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the Enable field.
+func (o *SusPutRequestSuValue) SetEnable(v bool) {
+	o.Enable = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -93,36 +125,36 @@ func (o *SusPutRequestSuValue) SetName(v string) {
 	o.Name = &v
 }
 
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *SusPutRequestSuValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
+// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
+func (o *SusPutRequestSuValue) GetObjectProperties() AclsPutRequestIpFilterValueObjectProperties {
+	if o == nil || IsNil(o.ObjectProperties) {
+		var ret AclsPutRequestIpFilterValueObjectProperties
 		return ret
 	}
-	return *o.Enable
+	return *o.ObjectProperties
 }
 
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SusPutRequestSuValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
+func (o *SusPutRequestSuValue) GetObjectPropertiesOk() (*AclsPutRequestIpFilterValueObjectProperties, bool) {
+	if o == nil || IsNil(o.ObjectProperties) {
 		return nil, false
 	}
-	return o.Enable, true
+	return o.ObjectProperties, true
 }
 
-// HasEnable returns a boolean if a field has been set.
-func (o *SusPutRequestSuValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
+// HasObjectProperties returns a boolean if a field has been set.
+func (o *SusPutRequestSuValue) HasObjectProperties() bool {
+	if o != nil && !IsNil(o.ObjectProperties) {
 		return true
 	}
 
 	return false
 }
 
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *SusPutRequestSuValue) SetEnable(v bool) {
-	o.Enable = &v
+// SetObjectProperties gets a reference to the given AclsPutRequestIpFilterValueObjectProperties and assigns it to the ObjectProperties field.
+func (o *SusPutRequestSuValue) SetObjectProperties(v AclsPutRequestIpFilterValueObjectProperties) {
+	o.ObjectProperties = &v
 }
 
 // GetPod returns the Pod field value if set, zero value otherwise.
@@ -221,6 +253,7 @@ func (o *SusPutRequestSuValue) HasPosition() bool {
 func (o *SusPutRequestSuValue) SetPosition(v float64) {
 	o.Position.Set(&v)
 }
+
 // SetPositionNil sets the value for Position to be an explicit nil
 func (o *SusPutRequestSuValue) SetPositionNil() {
 	o.Position.Set(nil)
@@ -231,40 +264,8 @@ func (o *SusPutRequestSuValue) UnsetPosition() {
 	o.Position.Unset()
 }
 
-// GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
-func (o *SusPutRequestSuValue) GetObjectProperties() AclsPutRequestIpFilterValueObjectProperties {
-	if o == nil || IsNil(o.ObjectProperties) {
-		var ret AclsPutRequestIpFilterValueObjectProperties
-		return ret
-	}
-	return *o.ObjectProperties
-}
-
-// GetObjectPropertiesOk returns a tuple with the ObjectProperties field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SusPutRequestSuValue) GetObjectPropertiesOk() (*AclsPutRequestIpFilterValueObjectProperties, bool) {
-	if o == nil || IsNil(o.ObjectProperties) {
-		return nil, false
-	}
-	return o.ObjectProperties, true
-}
-
-// HasObjectProperties returns a boolean if a field has been set.
-func (o *SusPutRequestSuValue) HasObjectProperties() bool {
-	if o != nil && !IsNil(o.ObjectProperties) {
-		return true
-	}
-
-	return false
-}
-
-// SetObjectProperties gets a reference to the given AclsPutRequestIpFilterValueObjectProperties and assigns it to the ObjectProperties field.
-func (o *SusPutRequestSuValue) SetObjectProperties(v AclsPutRequestIpFilterValueObjectProperties) {
-	o.ObjectProperties = &v
-}
-
 func (o SusPutRequestSuValue) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -273,11 +274,14 @@ func (o SusPutRequestSuValue) MarshalJSON() ([]byte, error) {
 
 func (o SusPutRequestSuValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
+	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
+	if !IsNil(o.ObjectProperties) {
+		toSerialize["object_properties"] = o.ObjectProperties
 	}
 	if !IsNil(o.Pod) {
 		toSerialize["pod"] = o.Pod
@@ -287,9 +291,6 @@ func (o SusPutRequestSuValue) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Position.IsSet() {
 		toSerialize["position"] = o.Position.Get()
-	}
-	if !IsNil(o.ObjectProperties) {
-		toSerialize["object_properties"] = o.ObjectProperties
 	}
 	return toSerialize, nil
 }
@@ -329,5 +330,3 @@ func (v *NullableSusPutRequestSuValue) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-
