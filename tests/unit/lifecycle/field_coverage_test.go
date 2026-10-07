@@ -15,7 +15,6 @@ import (
 	"terraform-provider-verity/internal/provider"
 	"terraform-provider-verity/internal/registry"
 	"terraform-provider-verity/internal/spec"
-	"terraform-provider-verity/internal/utils"
 	"terraform-provider-verity/tests/unit/mock"
 )
 
@@ -272,12 +271,12 @@ func defaultHCLValue(fi fieldInfo) string {
 	}
 }
 
-func generateCoverageHCL(rs resourceSchemaInfo, tfType, resourceName, mode, modeFieldsKey string, overrides map[string]string) string {
+func generateCoverageHCL(t *testing.T, rs resourceSchemaInfo, tfType, resourceName, mode, modeFieldsKey string, overrides map[string]string) string {
 	var b strings.Builder
 	b.WriteString(fmt.Sprintf("resource %q %q {\n", tfType, "test"))
 
 	for _, fi := range rs.Attributes {
-		if !utils.FieldAppliesToMode(modeFieldsKey, fi.Name, mode) {
+		if !fieldAppliesToMode(t, modeFieldsKey, fi.Name, mode) {
 			continue
 		}
 		val := defaultHCLValue(fi)
@@ -291,7 +290,7 @@ func generateCoverageHCL(rs resourceSchemaInfo, tfType, resourceName, mode, mode
 	}
 
 	for _, block := range rs.Blocks {
-		if !utils.FieldAppliesToMode(modeFieldsKey, block.Name, mode) {
+		if !fieldAppliesToMode(t, modeFieldsKey, block.Name, mode) {
 			continue
 		}
 
@@ -299,18 +298,18 @@ func generateCoverageHCL(rs resourceSchemaInfo, tfType, resourceName, mode, mode
 			continue
 		}
 		b.WriteString("\n")
-		writeCoverageBlock(&b, block, block.Name, "  ", mode, modeFieldsKey, overrides)
+		writeCoverageBlock(t, &b, block, block.Name, "  ", mode, modeFieldsKey, overrides)
 	}
 
 	b.WriteString("}\n")
 	return b.String()
 }
 
-func writeCoverageBlock(b *strings.Builder, block blockInfo, path, indent, mode, modeFieldsKey string, overrides map[string]string) {
+func writeCoverageBlock(t *testing.T, b *strings.Builder, block blockInfo, path, indent, mode, modeFieldsKey string, overrides map[string]string) {
 	fmt.Fprintf(b, "%s%s {\n", indent, block.Name)
 	for _, fi := range block.Fields {
 		nestedKey := path + "." + fi.Name
-		if !utils.FieldAppliesToMode(modeFieldsKey, nestedKey, mode) {
+		if !fieldAppliesToMode(t, modeFieldsKey, nestedKey, mode) {
 			continue
 		}
 		val := defaultHCLValue(fi)
@@ -321,13 +320,13 @@ func writeCoverageBlock(b *strings.Builder, block blockInfo, path, indent, mode,
 	}
 	for _, nested := range block.Blocks {
 		nestedPath := path + "." + nested.Name
-		if !utils.FieldAppliesToMode(modeFieldsKey, nestedPath, mode) {
+		if !fieldAppliesToMode(t, modeFieldsKey, nestedPath, mode) {
 			continue
 		}
 		if len(nested.Fields) == 0 && len(nested.Blocks) == 0 {
 			continue
 		}
-		writeCoverageBlock(b, nested, nestedPath, indent+"  ", mode, modeFieldsKey, overrides)
+		writeCoverageBlock(t, b, nested, nestedPath, indent+"  ", mode, modeFieldsKey, overrides)
 	}
 	fmt.Fprintf(b, "%s}\n", indent)
 }
@@ -386,7 +385,7 @@ func TestFieldCoverage_PutContainsAllFields(t *testing.T) {
 
 			rs := inspectSchema(tc.Factory)
 			modeKey := tc.modeFieldsKey()
-			hcl := generateCoverageHCL(rs, tc.TerraformType, tc.ResourceName, tc.Mode, modeKey, tc.Overrides)
+			hcl := generateCoverageHCL(t, rs, tc.TerraformType, tc.ResourceName, tc.Mode, modeKey, tc.Overrides)
 
 			config := mock.ProviderConfig(ms.URL(), tc.Mode) + hcl
 			t.Logf("Generated HCL:\n%s", hcl)
@@ -440,7 +439,7 @@ func verifyPutFieldCoverage(t *testing.T, body map[string]interface{}, tc Resour
 	modeKey := tc.modeFieldsKey()
 
 	for _, fi := range rs.Attributes {
-		if !utils.FieldAppliesToMode(modeKey, fi.Name, tc.Mode) {
+		if !fieldAppliesToMode(t, modeKey, fi.Name, tc.Mode) {
 			continue
 		}
 		if _, exists := res[fi.Name]; !exists {
@@ -457,7 +456,7 @@ func verifyPutFieldCoverage(t *testing.T, body map[string]interface{}, tc Resour
 
 func verifyBlockFieldCoverage(t *testing.T, parent map[string]interface{}, block blockInfo, path string, tc ResourceCoverageEntry, modeKey string) {
 	t.Helper()
-	if !utils.FieldAppliesToMode(modeKey, path, tc.Mode) {
+	if !fieldAppliesToMode(t, modeKey, path, tc.Mode) {
 		return
 	}
 	if len(block.Fields) == 0 && len(block.Blocks) == 0 {
@@ -486,7 +485,7 @@ func verifyBlockFieldCoverage(t *testing.T, parent map[string]interface{}, block
 
 	for _, fi := range block.Fields {
 		nestedKey := path + "." + fi.Name
-		if !utils.FieldAppliesToMode(modeKey, nestedKey, tc.Mode) {
+		if !fieldAppliesToMode(t, modeKey, nestedKey, tc.Mode) {
 			continue
 		}
 		if _, exists := item[fi.Name]; !exists {

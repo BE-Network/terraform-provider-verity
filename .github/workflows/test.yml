@@ -16,7 +16,7 @@ jobs:
         run: tools/generate_provider.sh --check
       - name: Verify auth/session log redaction
         run: go test ./tests/unit/sdk/ -count=1 -timeout 2m
-      - name: Verify generated registry matches legacy implementations
+      - name: Verify provider contracts and generators
         run: go test ./internal/... ./tools/... -count=1 -timeout 5m
       - uses: hashicorp/setup-terraform@v4
         with:

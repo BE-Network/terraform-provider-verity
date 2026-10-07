@@ -34,12 +34,12 @@ func TestGenericMatchesLegacyOnNullableEntryMembers(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			legacy := captureLifecycle(t, "verity_tacacs_profile", false, scenario.create, scenario.update)
-			generic := captureLifecycle(t, "verity_tacacs_profile", true, scenario.create, scenario.update)
+			legacy := legacyReference(t)
+			generic := runLifecycle(t, "verity_tacacs_profile", scenario.create, scenario.update)
 			for _, operation := range []string{"PUT", "PATCH"} {
 				want, got := canonical(t, legacy[operation]), canonical(t, generic[operation])
 				if want != got {
-					t.Errorf("%s differs between implementations\n  legacy:  %s\n  generic: %s", operation, want, got)
+					t.Errorf("%s differs from the recorded legacy reference\n  legacy:  %s\n  generic: %s", operation, want, got)
 				}
 			}
 		})

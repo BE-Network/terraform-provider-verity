@@ -10,7 +10,7 @@ import (
 func TestGenericMatchesLegacyOnListInsideSingleton(t *testing.T) {
 	entry := coverageEntry(t, "verity_fabric")
 	rs := inspectSchema(entry.Factory)
-	base := generateCoverageHCL(rs, entry.TerraformType, "difffabric", entry.Mode, entry.modeFieldsKey(), entry.Overrides)
+	base := generateCoverageHCL(t, rs, entry.TerraformType, "difffabric", entry.Mode, entry.modeFieldsKey(), entry.Overrides)
 	block := regexp.MustCompile(`(?s)\n  object_properties \{\n.*?\n  \}\n`)
 	if !block.MatchString(base) {
 		t.Fatal("the harness configuration no longer writes object_properties the way this test expects")
@@ -38,12 +38,12 @@ func TestGenericMatchesLegacyOnListInsideSingleton(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			legacy := captureLifecycle(t, entry.TerraformType, false, scenario.create, scenario.update, scenario.outcome)
-			generic := captureLifecycle(t, entry.TerraformType, true, scenario.create, scenario.update, scenario.outcome)
+			legacy := legacyReference(t)
+			generic := runLifecycle(t, entry.TerraformType, scenario.create, scenario.update, scenario.outcome)
 			for _, operation := range []string{"PUT", "PATCH"} {
 				want, got := canonical(t, legacy[operation]), canonical(t, generic[operation])
 				if want != got {
-					t.Errorf("%s differs between implementations\n  legacy:  %s\n  generic: %s", operation, want, got)
+					t.Errorf("%s differs from the recorded legacy reference\n  legacy:  %s\n  generic: %s", operation, want, got)
 				}
 			}
 		})

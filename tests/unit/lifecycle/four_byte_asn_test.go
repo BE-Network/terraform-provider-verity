@@ -24,7 +24,7 @@ func TestFourByteASNRoundTrips(t *testing.T) {
 	rs := inspectSchema(entry.Factory)
 	overrides := mergeOverrides(entry.Overrides, map[string]string{"neighbor_as_number": asn})
 	config := mock.ProviderConfig(ms.URL(), entry.Mode) +
-		generateCoverageHCL(rs, entry.TerraformType, entry.ResourceName, entry.Mode, entry.modeFieldsKey(), overrides)
+		generateCoverageHCL(t, rs, entry.TerraformType, entry.ResourceName, entry.Mode, entry.modeFieldsKey(), overrides)
 
 	fwresource.UnitTest(t, fwresource.TestCase{
 		ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(),

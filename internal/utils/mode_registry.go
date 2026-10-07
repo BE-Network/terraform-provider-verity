@@ -11,25 +11,19 @@ import (
 )
 
 var (
-	registryOnce       sync.Once
-	registryByType     map[string]spec.ResourceSpec
-	registryByEndpoint map[string]spec.ResourceSpec
+	registryOnce   sync.Once
+	registryByType map[string]spec.ResourceSpec
 )
 
 func loadRegistryIndexes() {
 	registryOnce.Do(func() {
 		registryByType = map[string]spec.ResourceSpec{}
-		registryByEndpoint = map[string]spec.ResourceSpec{}
 		resources, err := registry.Load()
 		if err != nil {
 			return
 		}
 		for _, resource := range resources {
 			registryByType[resource.TerraformType] = resource
-			endpoint := strings.Trim(resource.API.EndpointPath, "/")
-			if _, shared := registryByEndpoint[endpoint]; !shared {
-				registryByEndpoint[endpoint] = resource
-			}
 		}
 	})
 }
@@ -37,12 +31,6 @@ func loadRegistryIndexes() {
 func registryResource(terraformType string) (spec.ResourceSpec, bool) {
 	loadRegistryIndexes()
 	resource, found := registryByType[terraformType]
-	return resource, found
-}
-
-func registryResourceByEndpoint(endpoint string) (spec.ResourceSpec, bool) {
-	loadRegistryIndexes()
-	resource, found := registryByEndpoint[strings.Trim(endpoint, "/")]
 	return resource, found
 }
 

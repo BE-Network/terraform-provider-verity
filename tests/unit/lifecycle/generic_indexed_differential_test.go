@@ -114,8 +114,8 @@ func TestGenericMatchesLegacyOnIndexedCollections(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			legacy := captureLifecycle(t, scenario.terraformType, false, scenario.create, scenario.update, scenario.outcome)
-			generic := captureLifecycle(t, scenario.terraformType, true, scenario.create, scenario.update, scenario.outcome)
+			legacy := legacyReference(t)
+			generic := runLifecycle(t, scenario.terraformType, scenario.create, scenario.update, scenario.outcome)
 
 			render := canonical
 			if scenario.unordered {
@@ -124,7 +124,7 @@ func TestGenericMatchesLegacyOnIndexedCollections(t *testing.T) {
 			for _, operation := range []string{"PUT", "PATCH"} {
 				want, got := render(t, legacy[operation]), render(t, generic[operation])
 				if want != got {
-					t.Errorf("%s differs between implementations\n  legacy:  %s\n  generic: %s", operation, want, got)
+					t.Errorf("%s differs from the recorded legacy reference\n  legacy:  %s\n  generic: %s", operation, want, got)
 				}
 			}
 		})

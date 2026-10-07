@@ -51,28 +51,3 @@ func TestResponseCollectionKeyForBulkKey(t *testing.T) {
 		}
 	}
 }
-
-func TestFieldAppliesToMode(t *testing.T) {
-	cases := []struct {
-		endpoint, field, mode string
-		want                  bool
-	}{
-		{"services", "name", "datacenter", true},
-		{"services", "name", "campus", true},
-		{"services", "anycast_ipv4_mask", "datacenter", true},
-		{"services", "anycast_ipv4_mask", "campus", false},
-		{"services", "packet_priority", "campus", true},
-		{"services", "packet_priority", "datacenter", false},
-		{"services", "object_properties.warn_on_no_external_source", "campus", true},
-		{"services", "object_properties.warn_on_no_external_source", "datacenter", false},
-		{"devicevoicesettings", "bit_rate", "campus", true},
-		{"devicevoicesettings", "bit_rate", "datacenter", false},
-		{"services", "no_such_field", "datacenter", true},
-		{"no_such_endpoint", "anycast_ipv4_mask", "campus", true},
-	}
-	for _, tc := range cases {
-		if got := FieldAppliesToMode(tc.endpoint, tc.field, tc.mode); got != tc.want {
-			t.Errorf("FieldAppliesToMode(%q, %q, %q) = %v, want %v", tc.endpoint, tc.field, tc.mode, got, tc.want)
-		}
-	}
-}

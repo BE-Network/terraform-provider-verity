@@ -111,13 +111,13 @@ func TestGenericMatchesLegacyOnAutoAssignment(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			legacy := captureLifecycle(t, "verity_service", false, scenario.create, scenario.update, scenario.outcome)
-			generic := captureLifecycle(t, "verity_service", true, scenario.create, scenario.update, scenario.outcome)
+			legacy := legacyReference(t)
+			generic := runLifecycle(t, "verity_service", scenario.create, scenario.update, scenario.outcome)
 
 			for _, operation := range []string{"PUT", "PATCH"} {
 				want, got := canonical(t, legacy[operation]), canonical(t, generic[operation])
 				if want != got {
-					t.Errorf("%s differs between implementations\n  legacy:  %s\n  generic: %s", operation, want, got)
+					t.Errorf("%s differs from the recorded legacy reference\n  legacy:  %s\n  generic: %s", operation, want, got)
 				}
 			}
 		})
@@ -142,15 +142,15 @@ func TestAutoAssignedValueNotWrittenOnCreateIsOmitted(t *testing.T) {
   vni_auto_assigned_ = false
 }
 `
-	legacy := captureLifecycle(t, "verity_service", false, create, create)
-	generic := captureLifecycle(t, "verity_service", true, create, create)
+	legacy := legacyReference(t)
+	generic := runLifecycle(t, "verity_service", create, create)
 
 	const common = `"anycast_ipv4_mask":"","anycast_ipv6_mask":"","dhcp_server_ipv4":"","dhcp_server_ipv6":"","enable":true,"ip_attach_host_advertise":42,"mtu":1500,"name":"diffsvc","policy_based_routing":"","policy_based_routing_ref_type_":"","tenant":"","tenant_ref_type_":"","vlan":10`
 	wantLegacy := `{"service":{"diffsvc":{` + common + `,"vni":0,"vni_auto_assigned_":false}}}`
 	wantGeneric := `{"service":{"diffsvc":{` + common + `,"vni_auto_assigned_":false}}}`
 
 	if got := canonical(t, legacy["PUT"]); got != wantLegacy {
-		t.Errorf("legacy PUT = %s\nwant %s\nif the handwritten create now skips an unknown vni, the two agree and this test should assert equality", got, wantLegacy)
+		t.Errorf("legacy PUT = %s\nwant %s\nrecorded legacy create included a zero for unknown vni", got, wantLegacy)
 	}
 	if got := canonical(t, generic["PUT"]); got != wantGeneric {
 		t.Errorf("generic PUT = %s\nwant %s\nan unwritten vni must follow unknown_plan", got, wantGeneric)
@@ -179,11 +179,11 @@ func TestAutoAssignedValueWrittenAsNullIsSent(t *testing.T) {
 `
 	}
 
-	legacy := captureLifecycle(t, "verity_service", false, config("100"), config("null"))
-	generic := captureLifecycle(t, "verity_service", true, config("100"), config("null"))
+	legacy := legacyReference(t)
+	generic := runLifecycle(t, "verity_service", config("100"), config("null"))
 
 	if got := canonical(t, legacy["PATCH"]); got != "<no request>" {
-		t.Errorf("legacy PATCH = %s, want no request: if the handwritten service now sends the null, the two agree and this test should assert equality", got)
+		t.Errorf("legacy PATCH = %s, want no request: recorded legacy updates omitted the null", got)
 	}
 	if got, want := canonical(t, generic["PATCH"]), `{"service":{"diffsvc":{"vni":null,"vni_auto_assigned_":false}}}`; got != want {
 		t.Errorf("generic PATCH = %s, want %s: a written null must be sent", got, want)
@@ -252,12 +252,12 @@ func TestGenericMatchesLegacyOnTenantAutoAssignment(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			legacy := captureLifecycle(t, "verity_tenant", false, scenario.create, scenario.update, scenario.outcome)
-			generic := captureLifecycle(t, "verity_tenant", true, scenario.create, scenario.update, scenario.outcome)
+			legacy := legacyReference(t)
+			generic := runLifecycle(t, "verity_tenant", scenario.create, scenario.update, scenario.outcome)
 			for _, operation := range []string{"PUT", "PATCH"} {
 				want, got := canonical(t, legacy[operation]), canonical(t, generic[operation])
 				if want != got {
-					t.Errorf("%s differs between implementations\n  legacy:  %s\n  generic: %s", operation, want, got)
+					t.Errorf("%s differs from the recorded legacy reference\n  legacy:  %s\n  generic: %s", operation, want, got)
 				}
 			}
 		})
@@ -267,7 +267,7 @@ func TestGenericMatchesLegacyOnTenantAutoAssignment(t *testing.T) {
 func TestGenericMatchesLegacyOnFabricAutoAssignment(t *testing.T) {
 	entry := coverageEntry(t, "verity_fabric")
 	rs := inspectSchema(entry.Factory)
-	base := generateCoverageHCL(rs, entry.TerraformType, "difffabric", entry.Mode, entry.modeFieldsKey(), entry.Overrides)
+	base := generateCoverageHCL(t, rs, entry.TerraformType, "difffabric", entry.Mode, entry.modeFieldsKey(), entry.Overrides)
 	const value, flag = `  anycast_mac_address = ""` + "\n", `  anycast_mac_address_auto_assigned_ = false` + "\n"
 	if !strings.Contains(base, value) || !strings.Contains(base, flag) {
 		t.Fatal("the harness configuration no longer writes the anycast pair the way this test expects")
@@ -289,12 +289,12 @@ func TestGenericMatchesLegacyOnFabricAutoAssignment(t *testing.T) {
 	}
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			legacy := captureLifecycle(t, entry.TerraformType, false, base, scenario.update, scenario.outcome)
-			generic := captureLifecycle(t, entry.TerraformType, true, base, scenario.update, scenario.outcome)
+			legacy := legacyReference(t)
+			generic := runLifecycle(t, entry.TerraformType, base, scenario.update, scenario.outcome)
 			for _, operation := range []string{"PUT", "PATCH"} {
 				want, got := canonical(t, legacy[operation]), canonical(t, generic[operation])
 				if want != got {
-					t.Errorf("%s differs between implementations\n  legacy:  %s\n  generic: %s", operation, want, got)
+					t.Errorf("%s differs from the recorded legacy reference\n  legacy:  %s\n  generic: %s", operation, want, got)
 				}
 			}
 		})

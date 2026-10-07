@@ -47,13 +47,13 @@ func TestGenericMatchesLegacyOnACLUpdates(t *testing.T) {
 		}
 		for _, scenario := range scenarios {
 			t.Run(terraformType+"/"+scenario.name, func(t *testing.T) {
-				legacy := captureLifecycle(t, terraformType, false, scenario.create, scenario.update)
-				generic := captureLifecycle(t, terraformType, true, scenario.create, scenario.update)
+				legacy := legacyReference(t)
+				generic := runLifecycle(t, terraformType, scenario.create, scenario.update)
 
 				for _, key := range []string{"PUT", "PUT query", "PATCH", "PATCH query", "DELETE query"} {
 					want, got := canonical(t, legacy[key]), canonical(t, generic[key])
 					if want != got {
-						t.Errorf("%s differs between implementations\n  legacy:  %s\n  generic: %s", key, want, got)
+						t.Errorf("%s differs from the recorded legacy reference\n  legacy:  %s\n  generic: %s", key, want, got)
 					}
 				}
 				if got := canonical(t, generic["PUT query"]); got != fmt.Sprintf(`{"ip_version":["%s"]}`, version) {

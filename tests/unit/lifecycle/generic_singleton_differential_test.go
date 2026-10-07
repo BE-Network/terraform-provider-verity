@@ -95,13 +95,13 @@ func TestGenericMatchesLegacyOnSingletonUpdates(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			legacy := captureLifecycle(t, scenario.terraformType, false, scenario.create, scenario.update, scenario.outcome)
-			generic := captureLifecycle(t, scenario.terraformType, true, scenario.create, scenario.update, scenario.outcome)
+			legacy := legacyReference(t)
+			generic := runLifecycle(t, scenario.terraformType, scenario.create, scenario.update, scenario.outcome)
 
 			for _, operation := range []string{"PUT", "PATCH"} {
 				want, got := canonical(t, legacy[operation]), canonical(t, generic[operation])
 				if want != got {
-					t.Errorf("%s differs between implementations\n  legacy:  %s\n  generic: %s", operation, want, got)
+					t.Errorf("%s differs from the recorded legacy reference\n  legacy:  %s\n  generic: %s", operation, want, got)
 				}
 			}
 		})
@@ -112,15 +112,15 @@ func TestSingletonEmptyBlockOnCreateOmitsUnknownMembers(t *testing.T) {
 	create := fmt.Sprintf("resource \"verity_badge\" \"test\" {\n  name = \"diffbadge\"\n%s}\n",
 		"  color = \"red\"\n  enable = true\n  number = 42\n  object_properties {\n  }\n")
 
-	legacy := captureLifecycle(t, "verity_badge", false, create, create)
-	generic := captureLifecycle(t, "verity_badge", true, create, create)
+	legacy := legacyReference(t)
+	generic := runLifecycle(t, "verity_badge", create, create)
 
 	const (
 		wantLegacy  = `{"badge":{"diffbadge":{"color":"red","enable":true,"name":"diffbadge","number":42,"object_properties":{"notes":""}}}}`
 		wantGeneric = `{"badge":{"diffbadge":{"color":"red","enable":true,"name":"diffbadge","number":42,"object_properties":{}}}}`
 	)
 	if got := canonical(t, legacy["PUT"]); got != wantLegacy {
-		t.Errorf("legacy PUT = %s, want %s: if the handwritten helper now skips unknowns, the two agree and this test should assert equality", got, wantLegacy)
+		t.Errorf("legacy PUT = %s, want %s: recorded legacy creates included unknown members", got, wantLegacy)
 	}
 	if got := canonical(t, generic["PUT"]); got != wantGeneric {
 		t.Errorf("generic PUT = %s, want %s: an unknown member must follow unknown_plan", got, wantGeneric)

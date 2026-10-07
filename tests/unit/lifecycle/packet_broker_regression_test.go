@@ -36,10 +36,10 @@ func TestPacketBrokerIPv6PermitEnableReachesPatch(t *testing.T) {
 	name := "pb_ipv6_enable"
 
 	createConfig := mock.ProviderConfig(ms.URL(), entry.Mode) +
-		generateCoverageHCL(schema, entry.TerraformType, name, entry.Mode, modeKey,
+		generateCoverageHCL(t, schema, entry.TerraformType, name, entry.Mode, modeKey,
 			mergeOverrides(entry.Overrides, map[string]string{"ipv6_permit.enable": "true"}))
 	updateConfig := mock.ProviderConfig(ms.URL(), entry.Mode) +
-		generateCoverageHCL(schema, entry.TerraformType, name, entry.Mode, modeKey,
+		generateCoverageHCL(t, schema, entry.TerraformType, name, entry.Mode, modeKey,
 			mergeOverrides(entry.Overrides, map[string]string{"ipv6_permit.enable": "false"}))
 
 	resource.UnitTest(t, resource.TestCase{

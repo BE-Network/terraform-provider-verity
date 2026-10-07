@@ -52,10 +52,10 @@ func assertGoldenParity(t *testing.T, terraformType string) {
 	rs := inspectSchema(entry.Factory)
 	modeKey := entry.modeFieldsKey()
 	createConfig := mock.ProviderConfig(ms.URL(), entry.Mode) +
-		generateCoverageHCL(rs, entry.TerraformType, entry.ResourceName, entry.Mode, modeKey,
+		generateCoverageHCL(t, rs, entry.TerraformType, entry.ResourceName, entry.Mode, modeKey,
 			mergeOverrides(entry.Overrides, map[string]string{"enable": "true"}))
 	updateConfig := mock.ProviderConfig(ms.URL(), entry.Mode) +
-		generateCoverageHCL(rs, entry.TerraformType, entry.ResourceName, entry.Mode, modeKey,
+		generateCoverageHCL(t, rs, entry.TerraformType, entry.ResourceName, entry.Mode, modeKey,
 			mergeOverrides(entry.Overrides, map[string]string{"enable": "false"}))
 
 	address := entry.TerraformType + ".test"
@@ -126,7 +126,7 @@ func TestGenericIPv4ListImportsAndDeletes(t *testing.T) {
 
 	rs := inspectSchema(entry.Factory)
 	config := mock.ProviderConfig(ms.URL(), entry.Mode) +
-		generateCoverageHCL(rs, entry.TerraformType, entry.ResourceName, entry.Mode, entry.modeFieldsKey(),
+		generateCoverageHCL(t, rs, entry.TerraformType, entry.ResourceName, entry.Mode, entry.modeFieldsKey(),
 			mergeOverrides(entry.Overrides, map[string]string{"enable": "true"}))
 
 	fwresource.UnitTest(t, fwresource.TestCase{

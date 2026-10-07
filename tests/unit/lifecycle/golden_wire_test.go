@@ -32,9 +32,9 @@ func TestGoldenWireFixtures(t *testing.T) {
 			createOverrides := mergeOverrides(tc.Overrides, map[string]string{"enable": "true"})
 			updateOverrides := mergeOverrides(tc.Overrides, map[string]string{"enable": "false"})
 			createConfig := mock.ProviderConfig(ms.URL(), tc.Mode) +
-				generateCoverageHCL(rs, tc.TerraformType, tc.ResourceName, tc.Mode, modeKey, createOverrides)
+				generateCoverageHCL(t, rs, tc.TerraformType, tc.ResourceName, tc.Mode, modeKey, createOverrides)
 			updateConfig := mock.ProviderConfig(ms.URL(), tc.Mode) +
-				generateCoverageHCL(rs, tc.TerraformType, tc.ResourceName, tc.Mode, modeKey, updateOverrides)
+				generateCoverageHCL(t, rs, tc.TerraformType, tc.ResourceName, tc.Mode, modeKey, updateOverrides)
 
 			address := tc.TerraformType + ".test"
 

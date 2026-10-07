@@ -116,13 +116,13 @@ func TestGenericMatchesLegacyOnPairAndNullableUpdates(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			legacy := captureLifecycle(t, terraformType, false, base(scenario.create), base(scenario.update))
-			generic := captureLifecycle(t, terraformType, true, base(scenario.create), base(scenario.update))
+			legacy := legacyReference(t)
+			generic := runLifecycle(t, terraformType, base(scenario.create), base(scenario.update))
 
 			for _, operation := range []string{"PUT", "PATCH"} {
 				want, got := canonical(t, legacy[operation]), canonical(t, generic[operation])
 				if want != got {
-					t.Errorf("%s differs between implementations\n  legacy:  %s\n  generic: %s", operation, want, got)
+					t.Errorf("%s differs from the recorded legacy reference\n  legacy:  %s\n  generic: %s", operation, want, got)
 				}
 			}
 		})
@@ -137,14 +137,6 @@ type lifecycleOutcome struct {
 	updatePlanChecks []plancheck.PlanCheck
 
 	intermediate []string
-}
-
-func captureLifecycle(t *testing.T, terraformType string, generic bool, createConfig, updateConfig string, outcome ...lifecycleOutcome) map[string]map[string]interface{} {
-	t.Helper()
-	if !generic {
-		return legacyReference(t)
-	}
-	return runLifecycle(t, terraformType, createConfig, updateConfig, outcome...)
 }
 
 func runLifecycle(t *testing.T, terraformType string, createConfig, updateConfig string, outcome ...lifecycleOutcome) map[string]map[string]interface{} {

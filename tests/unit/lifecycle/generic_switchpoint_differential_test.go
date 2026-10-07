@@ -33,7 +33,7 @@ func switchpointBase(t *testing.T) string {
 	t.Helper()
 	entry := coverageEntry(t, "verity_switchpoint")
 	rs := inspectSchema(entry.Factory)
-	base := generateCoverageHCL(rs, entry.TerraformType, "diffsp", entry.Mode, entry.modeFieldsKey(), entry.Overrides)
+	base := generateCoverageHCL(t, rs, entry.TerraformType, "diffsp", entry.Mode, entry.modeFieldsKey(), entry.Overrides)
 	for _, pair := range switchpointPairs {
 		line := regexp.MustCompile(`(?m)^  (` + pair.value + `|` + pair.flag() + `) = .*\n`)
 		if len(line.FindAllString(base, -1)) != 2 {
@@ -96,8 +96,8 @@ func TestGenericMatchesLegacyOnSwitchpointAutoAssignment(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			legacy := captureLifecycle(t, "verity_switchpoint", false, scenario.create, scenario.update, scenario.outcome)
-			generic := captureLifecycle(t, "verity_switchpoint", true, scenario.create, scenario.update, scenario.outcome)
+			legacy := legacyReference(t)
+			generic := runLifecycle(t, "verity_switchpoint", scenario.create, scenario.update, scenario.outcome)
 			for _, operation := range []string{"PUT", "PATCH"} {
 				pinned := map[string]bool{}
 				for _, pair := range switchpointPairs {
@@ -108,7 +108,7 @@ func TestGenericMatchesLegacyOnSwitchpointAutoAssignment(t *testing.T) {
 							pinned[key] = true
 							state := strings.Trim(pair.first, `"`)
 							if !wantHeld || fmt.Sprint(want) != fmt.Sprint(zero) {
-								t.Errorf("legacy PATCH %s = %s, want the zero value %#v; if the handwritten resend now skips an unknown plan, the two agree and this pin should go", key, describeKey(want, wantHeld), zero)
+								t.Errorf("legacy PATCH %s = %s, want the zero value %#v; recorded legacy PATCH included this zero for an unknown plan", key, describeKey(want, wantHeld), zero)
 							}
 							if !gotHeld || fmt.Sprint(got) != state {
 								t.Errorf("generic PATCH %s = %s, want state's %s", key, describeKey(got, gotHeld), state)
@@ -121,7 +121,7 @@ func TestGenericMatchesLegacyOnSwitchpointAutoAssignment(t *testing.T) {
 					}
 				}
 				if want, got := canonical(t, withoutKeys(legacy[operation], pinned)), canonical(t, withoutKeys(generic[operation], pinned)); want != got {
-					t.Errorf("%s differs between implementations\n  legacy:  %s\n  generic: %s", operation, want, got)
+					t.Errorf("%s differs from the recorded legacy reference\n  legacy:  %s\n  generic: %s", operation, want, got)
 				}
 			}
 		})
@@ -157,11 +157,11 @@ func TestGenericMatchesLegacyOnSwitchpointNullableMember(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			legacy := captureLifecycle(t, "verity_switchpoint", false, scenario.create, scenario.update)
-			generic := captureLifecycle(t, "verity_switchpoint", true, scenario.create, scenario.update)
+			legacy := legacyReference(t)
+			generic := runLifecycle(t, "verity_switchpoint", scenario.create, scenario.update)
 			for _, operation := range []string{"PUT", "PATCH"} {
 				if want, got := canonical(t, legacy[operation]), canonical(t, generic[operation]); want != got {
-					t.Errorf("%s differs between implementations\n  legacy:  %s\n  generic: %s", operation, want, got)
+					t.Errorf("%s differs from the recorded legacy reference\n  legacy:  %s\n  generic: %s", operation, want, got)
 				}
 			}
 		})

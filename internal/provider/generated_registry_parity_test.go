@@ -25,86 +25,37 @@ type generatedRegistryArtifact struct {
 	Resources spec.Registry `json:"resources"`
 }
 
-func TestGeneratedSpecsMatchLegacySchemas(t *testing.T) {
+func TestProviderSchemasMatchRegistryContract(t *testing.T) {
 	registry := generatedRegistry(t)
 
-	constructors := legacyConstructorsByType(t)
+	constructors := providerConstructorsByType(t)
 
-	cacheKeys := map[string]string{
-		"verity_acl_v4":                   "acls_ipv4",
-		"verity_acl_v6":                   "acls_ipv6",
-		"verity_aaa_profile":              "device_aaa_profiles",
-		"verity_as_path_access_list":      "as_path_access_lists",
-		"verity_authenticated_eth_port":   "authenticated_eth_ports",
-		"verity_badge":                    "badges",
-		"verity_bundle":                   "bundles",
-		"verity_community_list":           "community_lists",
-		"verity_device_voice_settings":    "device_voice_settings",
-		"verity_diagnostics_port_profile": "diagnostics_port_profiles",
-		"verity_diagnostics_profile":      "diagnostics_profiles",
-		"verity_eth_port_profile":         "eth_port_profiles",
-		"verity_eth_port_settings":        "eth_port_settings",
-		"verity_extended_community_list":  "extended_community_lists",
-		"verity_gateway_profile":          "gateway_profiles",
-		"verity_grouping_rule":            "grouping_rules",
-		"verity_device_settings":          "device_settings",
-		"verity_fabric":                   "fabrics",
-		"verity_gateway":                  "gateways",
-		"verity_sfp_breakout":             "sfp_breakouts",
-		"verity_ipv4_list":                "ipv4_lists",
-		"verity_ipv4_prefix_list":         "ipv4_prefix_lists",
-		"verity_ipv6_list":                "ipv6_lists",
-		"verity_ipv6_prefix_list":         "ipv6_prefix_lists",
-		"verity_lag":                      "lags",
-		"verity_ldap_profile":             "ldap_profiles",
-		"verity_mac_filter":               "mac_filters",
-		"verity_packet_broker":            "packet_brokers",
-		"verity_packet_queue":             "packet_queues",
-		"verity_pair":                     "pairs",
-		"verity_pb_routing":               "pb_routing",
-		"verity_pb_routing_acl":           "pb_routing_acl",
-		"verity_plane":                    "planes",
-		"verity_pod":                      "pods",
-		"verity_port_acl":                 "port_acls",
-		"verity_rack":                     "racks",
-		"verity_route_map":                "route_maps",
-		"verity_route_map_clause":         "route_map_clauses",
-		"verity_service":                  "services",
-		"verity_service_port_profile":     "service_port_profiles",
-		"verity_sflow_collector":          "sflow_collectors",
-		"verity_spine_plane":              "spine_planes",
-		"verity_ssp_group":                "ssp_groups",
-		"verity_su":                       "sus",
-		"verity_switchpoint":              "switchpoints",
-		"verity_tacacs_profile":           "tacacs_profiles",
-		"verity_tenant":                   "tenants",
-		"verity_threshold":                "thresholds",
-		"verity_threshold_group":          "threshold_groups",
-		"verity_voice_port_profile":       "voice_port_profiles",
+	if len(constructors) != len(registry)+1 {
+		t.Fatalf("provider registers %d resources for %d registry resources plus operation_stage", len(constructors), len(registry))
 	}
-	if len(cacheKeys) != len(registry) {
-		t.Fatalf("legacy parity mappings cover %d cache keys for %d generated resources", len(cacheKeys), len(registry))
+	if _, exists := constructors["verity_operation_stage"]; !exists {
+		t.Fatal("provider is missing verity_operation_stage")
 	}
 	for _, resourceSpec := range registry {
 		constructor, exists := constructors[resourceSpec.TerraformType]
 		if !exists {
-			t.Fatalf("legacy schema constructor is missing for %q", resourceSpec.TerraformType)
-		}
-		if resourceSpec.API.CacheKey != cacheKeys[resourceSpec.TerraformType] {
-			t.Fatalf("generated cache key = %q, legacy cache key = %q for %s", resourceSpec.API.CacheKey, cacheKeys[resourceSpec.TerraformType], resourceSpec.TerraformType)
+			t.Fatalf("provider resource constructor is missing for %q", resourceSpec.TerraformType)
 		}
 		assertGeneratedModes(t, resourceSpec)
-		assertGeneratedSchemaMatchesLegacy(t, resourceSpec, constructor())
+		assertProviderSchemaMatchesRegistry(t, resourceSpec, constructor())
 	}
 }
 
-func legacyConstructorsByType(t *testing.T) map[string]func() resource.Resource {
+func providerConstructorsByType(t *testing.T) map[string]func() resource.Resource {
 	t.Helper()
 	ctx := context.Background()
 	byType := make(map[string]func() resource.Resource)
 	for _, constructor := range getAllResources() {
 		var metadata resource.MetadataResponse
 		constructor().Metadata(ctx, resource.MetadataRequest{ProviderTypeName: "verity"}, &metadata)
+		if _, exists := byType[metadata.TypeName]; exists {
+			t.Fatalf("duplicate provider resource %q", metadata.TypeName)
+		}
 		byType[metadata.TypeName] = constructor
 	}
 	return byType
@@ -112,7 +63,7 @@ func legacyConstructorsByType(t *testing.T) map[string]func() resource.Resource 
 
 func assertGeneratedModes(t *testing.T, resourceSpec spec.ResourceSpec) {
 	t.Helper()
-	legacyMode, exists := utils.ResourceModeFor(resourceSpec.TerraformType)
+	runtimeMode, exists := utils.ResourceModeFor(resourceSpec.TerraformType)
 	if !exists {
 		t.Fatalf("no mode is reported for %q", resourceSpec.TerraformType)
 	}
@@ -120,29 +71,29 @@ func assertGeneratedModes(t *testing.T, resourceSpec spec.ResourceSpec) {
 		utils.ResourceModeDatacenter: {spec.ModeDatacenter},
 		utils.ResourceModeCampus:     {spec.ModeCampus},
 		utils.ResourceModeBoth:       {spec.ModeCampus, spec.ModeDatacenter},
-	}[legacyMode]
+	}[runtimeMode]
 	if len(expected) != len(resourceSpec.Modes) {
-		t.Fatalf("legacy mode %q maps to %v, generated modes = %v for %s", legacyMode, expected, resourceSpec.Modes, resourceSpec.TerraformType)
+		t.Fatalf("runtime mode %q maps to %v, generated modes = %v for %s", runtimeMode, expected, resourceSpec.Modes, resourceSpec.TerraformType)
 	}
 	for index, mode := range expected {
 		if resourceSpec.Modes[index] != mode {
-			t.Fatalf("legacy mode %q maps to %v, generated modes = %v for %s", legacyMode, expected, resourceSpec.Modes, resourceSpec.TerraformType)
+			t.Fatalf("runtime mode %q maps to %v, generated modes = %v for %s", runtimeMode, expected, resourceSpec.Modes, resourceSpec.TerraformType)
 		}
 	}
 }
 
-func assertGeneratedSchemaMatchesLegacy(t *testing.T, resourceSpec spec.ResourceSpec, legacy resource.Resource) {
+func assertProviderSchemaMatchesRegistry(t *testing.T, resourceSpec spec.ResourceSpec, registered resource.Resource) {
 	t.Helper()
 	ctx := context.Background()
 	var metadata resource.MetadataResponse
-	legacy.Metadata(ctx, resource.MetadataRequest{ProviderTypeName: "verity"}, &metadata)
+	registered.Metadata(ctx, resource.MetadataRequest{ProviderTypeName: "verity"}, &metadata)
 	if metadata.TypeName != resourceSpec.TerraformType {
-		t.Fatalf("legacy Terraform type = %q, generated type = %q", metadata.TypeName, resourceSpec.TerraformType)
+		t.Fatalf("provider Terraform type = %q, generated type = %q", metadata.TypeName, resourceSpec.TerraformType)
 	}
 	var response resource.SchemaResponse
-	legacy.Schema(ctx, resource.SchemaRequest{}, &response)
+	registered.Schema(ctx, resource.SchemaRequest{}, &response)
 	if response.Diagnostics.HasError() {
-		t.Fatalf("legacy schema diagnostics: %s", response.Diagnostics)
+		t.Fatalf("provider schema diagnostics: %s", response.Diagnostics)
 	}
 	assertGeneratedFieldsMatchSchema(t, resourceSpec.Fields, response.Schema.Attributes, response.Schema.Blocks, resourceSpec.TerraformType)
 }
@@ -157,7 +108,7 @@ func assertGeneratedFieldsMatchSchema(t *testing.T, fields []spec.FieldSpec, att
 		}
 	}
 	if len(attributes)+len(blocks) != len(managed) {
-		t.Fatalf("%s has %d legacy attributes and %d blocks for %d managed generated fields", path, len(attributes), len(blocks), len(managed))
+		t.Fatalf("%s has %d schema attributes and %d blocks for %d managed generated fields", path, len(attributes), len(blocks), len(managed))
 	}
 	for _, field := range managed {
 
@@ -178,7 +129,7 @@ func assertGeneratedFieldsMatchSchema(t *testing.T, fields []spec.FieldSpec, att
 		}
 		list, ok := block.(schema.ListNestedBlock)
 		if !ok || list.Description != field.Description {
-			t.Fatalf("legacy block %q does not match generated metadata", field.TerraformName)
+			t.Fatalf("schema block %q does not match generated metadata", field.TerraformName)
 		}
 		assertGeneratedFieldsMatchSchema(t, field.Fields, list.NestedObject.Attributes, list.NestedObject.Blocks, path+"."+field.TerraformName)
 	}
@@ -209,25 +160,25 @@ func assertGeneratedAttribute(t *testing.T, field spec.FieldSpec, attribute sche
 		assertGeneratedBoolField(t, field, value)
 	case schema.Int64Attribute:
 		if field.Kind != spec.FieldKindInt64 || field.Description != value.Description || field.Sensitive != value.Sensitive {
-			t.Fatalf("legacy int64 field %q does not match generated metadata", field.TerraformName)
+			t.Fatalf("schema int64 field %q does not match generated metadata", field.TerraformName)
 		}
 		assertGeneratedAccess(t, field, value.Required, value.Optional, value.Computed)
 		assertGeneratedReplace(t, field, countRequiresReplace(value.PlanModifiers))
 	case schema.NumberAttribute:
 		if field.Kind != spec.FieldKindNumber || field.Description != value.Description || field.Sensitive != value.Sensitive {
-			t.Fatalf("legacy number field %q does not match generated metadata", field.TerraformName)
+			t.Fatalf("schema number field %q does not match generated metadata", field.TerraformName)
 		}
 		assertGeneratedAccess(t, field, value.Required, value.Optional, value.Computed)
 		assertGeneratedReplace(t, field, countRequiresReplace(value.PlanModifiers))
 	default:
-		t.Fatalf("legacy field %q has unsupported attribute type %T", field.TerraformName, attribute)
+		t.Fatalf("schema field %q has unsupported attribute type %T", field.TerraformName, attribute)
 	}
 }
 
 func assertGeneratedStringField(t *testing.T, field spec.FieldSpec, attribute schema.StringAttribute) {
 	t.Helper()
 	if field.Kind != spec.FieldKindString || field.Description != attribute.Description || field.Sensitive != attribute.Sensitive {
-		t.Fatalf("legacy string field %q does not match generated metadata", field.TerraformName)
+		t.Fatalf("schema string field %q does not match generated metadata", field.TerraformName)
 	}
 	assertGeneratedAccess(t, field, attribute.Required, attribute.Optional, attribute.Computed)
 	assertGeneratedReplace(t, field, countRequiresReplace(attribute.PlanModifiers))
@@ -236,7 +187,7 @@ func assertGeneratedStringField(t *testing.T, field spec.FieldSpec, attribute sc
 func assertGeneratedBoolField(t *testing.T, field spec.FieldSpec, attribute schema.BoolAttribute) {
 	t.Helper()
 	if field.Kind != spec.FieldKindBool || field.Description != attribute.Description || field.Sensitive != attribute.Sensitive {
-		t.Fatalf("legacy bool field %q does not match generated metadata", field.TerraformName)
+		t.Fatalf("schema bool field %q does not match generated metadata", field.TerraformName)
 	}
 	assertGeneratedAccess(t, field, attribute.Required, attribute.Optional, attribute.Computed)
 	assertGeneratedReplace(t, field, countRequiresReplace(attribute.PlanModifiers))
@@ -245,7 +196,7 @@ func assertGeneratedBoolField(t *testing.T, field spec.FieldSpec, attribute sche
 func assertGeneratedAccess(t *testing.T, field spec.FieldSpec, required, optional, computed bool) {
 	t.Helper()
 	if required != (field.Access == spec.AccessRequired) || optional != (field.Access == spec.AccessOptional || field.Access == spec.AccessOptionalComputed) || computed != (field.Access == spec.AccessComputed || field.Access == spec.AccessOptionalComputed) {
-		t.Fatalf("legacy field %q access does not match generated access %q", field.TerraformName, field.Access)
+		t.Fatalf("schema field %q access does not match generated access %q", field.TerraformName, field.Access)
 	}
 }
 
@@ -269,7 +220,7 @@ func countRequiresReplace[T any](modifiers []T) int {
 func assertGeneratedReplace(t *testing.T, field spec.FieldSpec, requiresReplaceCount int) {
 	t.Helper()
 	if field.Replace != (requiresReplaceCount > 0) {
-		t.Fatalf("legacy field %q replace = %v but the schema has %d RequiresReplace plan modifiers", field.TerraformName, field.Replace, requiresReplaceCount)
+		t.Fatalf("schema field %q replace = %v but the schema has %d RequiresReplace plan modifiers", field.TerraformName, field.Replace, requiresReplaceCount)
 	}
 }
 
@@ -293,7 +244,7 @@ func TestCountRequiresReplaceIdentifiesTheModifier(t *testing.T) {
 	}
 }
 
-func TestGeneratedPoliciesMatchLegacyBehavior(t *testing.T) {
+func TestRegistryPoliciesMatchRecordedLegacyEvidence(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join("testdata", "legacy_field_policies.json"))
 	if err != nil {
 		t.Fatal(err)
@@ -436,4 +387,22 @@ func TestGeneratedPairsAreModelled(t *testing.T) {
 		t.Fatalf("found %d reference and %d auto-assignment pairs; the walk looks broken", references, assignments)
 	}
 	t.Logf("%d reference pairs and %d auto-assignment pairs modelled", references, assignments)
+}
+
+func TestResourceCacheKeysMatchHistoricalBaseline(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join("testdata", "resource_cache_keys_v6_6.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var expected map[string]string
+	if err := json.Unmarshal(raw, &expected); err != nil {
+		t.Fatal(err)
+	}
+	actual := make(map[string]string)
+	for _, resource := range generatedRegistry(t) {
+		actual[resource.TerraformType] = resource.API.CacheKey
+	}
+	if !reflect.DeepEqual(actual, expected) {
+		t.Fatalf("resource cache keys differ from the historical baseline: got %v, want %v", actual, expected)
+	}
 }

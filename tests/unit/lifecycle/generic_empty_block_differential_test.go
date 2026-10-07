@@ -9,7 +9,7 @@ import (
 func TestGenericMatchesLegacyOnEmptyBlock(t *testing.T) {
 	entry := coverageEntry(t, "verity_device_settings")
 	rs := inspectSchema(entry.Factory)
-	base := generateCoverageHCL(rs, entry.TerraformType, "diffds", entry.Mode, entry.modeFieldsKey(), entry.Overrides)
+	base := generateCoverageHCL(t, rs, entry.TerraformType, "diffds", entry.Mode, entry.modeFieldsKey(), entry.Overrides)
 	withBlock := func(present bool) string {
 		if !present {
 			return base
@@ -32,12 +32,12 @@ func TestGenericMatchesLegacyOnEmptyBlock(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			legacy := captureLifecycle(t, entry.TerraformType, false, withBlock(scenario.create), withBlock(scenario.update), scenario.outcome)
-			generic := captureLifecycle(t, entry.TerraformType, true, withBlock(scenario.create), withBlock(scenario.update), scenario.outcome)
+			legacy := legacyReference(t)
+			generic := runLifecycle(t, entry.TerraformType, withBlock(scenario.create), withBlock(scenario.update), scenario.outcome)
 			for _, operation := range []string{"PUT", "PATCH"} {
 				want, got := canonical(t, legacy[operation]), canonical(t, generic[operation])
 				if want != got {
-					t.Errorf("%s differs between implementations\n  legacy:  %s\n  generic: %s", operation, want, got)
+					t.Errorf("%s differs from the recorded legacy reference\n  legacy:  %s\n  generic: %s", operation, want, got)
 				}
 			}
 		})

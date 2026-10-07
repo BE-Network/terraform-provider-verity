@@ -6,7 +6,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"terraform-provider-verity/internal/spec"
-	"terraform-provider-verity/internal/utils"
 )
 
 func modeFields() []spec.FieldSpec {
@@ -79,13 +78,5 @@ func TestAppliesToModeReadsTheSpec(t *testing.T) {
 
 	if appliesToMode(bothModes, "") || appliesToMode(bothModes, "datacentre") {
 		t.Error("an unrecognised mode was treated as matching")
-	}
-}
-
-func TestLegacyModeTableFailsOpenForUnknownResources(t *testing.T) {
-	t.Parallel()
-
-	if !utils.FieldAppliesToMode("no_such_endpoint", "campus_only", "datacenter") {
-		t.Skip("FieldAppliesToMode no longer fails open; the engine's reason for not using it has changed")
 	}
 }

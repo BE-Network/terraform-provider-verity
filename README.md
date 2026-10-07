@@ -472,7 +472,37 @@ The provider includes a unit test suite that runs fully offline using a mock HTT
 - Mode field exclusion: datacenter-only fields absent in campus mode and vice versa
 - Required query params: ACL `ip_version` param sent correctly for v4/v6
 - Delete and import: resource removal and `terraform import` paths
-- Differential tests (`generic_*_differential_test.go`): the generic engine's requests for each semantic rule, compared with what the retired handwritten resources sent for the same configurations, recorded in `testdata/legacy_reference`
+- Recorded legacy comparisons (`generic_*_differential_test.go`): `runLifecycle`
+  executes the current provider, while `legacyReference` reads the retired
+  handwritten provider's recorded requests from `testdata/legacy_reference`.
+  These tests do not run a second implementation. Historical test names stay
+  stable because they identify the fixture filenames. Intended semantic changes
+  are asserted explicitly against the recorded behavior.
+
+### Compatibility evidence
+
+`internal/provider` checks that registered provider schemas, modes, and fields
+match the current registry contract. That is an integration check of current
+code, rather than a comparison with a retired provider implementation.
+
+Mode-exclusion expectations use `specs/generated_manifest.json`, extracted from
+canonical datacenter/campus OpenAPI inputs before overrides are applied. The test
+lookup rejects unknown endpoints, nested field paths, and modes. Schema-derived
+field paths must exist in that independent source; a typo cannot silently skip
+an assertion. Any future Terraform field alias needs an explicit mapping to its
+API field for these checks.
+
+Independent evidence remains checked in: the lifecycle schema snapshot, recorded
+legacy requests, `internal/provider/testdata/legacy_field_policies.json`, the
+historical resource-to-cache-key fixture, bulk wire/order/cache-key goldens, and
+importer output goldens. The cache-key fixture preserves the former handwritten
+test mapping; it is not generated from the current registry. Review changes to
+these baselines explicitly. The schema snapshot update command above refreshes
+that snapshot; it does not implement a state migration or prove that one is
+unnecessary. Historical legacy-request fixtures have no automatic update path.
+
+Release requirements and generation instructions live in tracked documentation.
+Private `refactor/` notes are not required inputs, CI checks, or release gates.
 
 ### Running locally
 
@@ -485,12 +515,15 @@ export VERITY_RESPONSE_PROCESSOR_DELAY=0s
 export VERITY_POST_OPERATION_VERIFICATION_BACKOFF=0s
 export VERITY_DEBOUNCE_DELAY=100ms
 
+go test ./internal/... ./tools/... -count=1 -timeout 5m
 go test ./tests/unit/lifecycle/ -count=1 -timeout 15m
 go test ./tests/unit/bulkops/ -count=1 -timeout 2m
+go test ./tests/unit/sdk/ -count=1 -timeout 2m
 ```
 
 `-count=1` disables Go's test result cache, ensuring tests always execute rather than reusing a previous result.
 
 ### CI
 
-Tests run automatically on every PR and push to `main` via `.github/workflows/test.yml`.
+Tests and generated-artifact checks run automatically for PRs and pushes targeting
+`main`, `release/**`, and `dev/**` through `.github/workflows/test.yml`.
