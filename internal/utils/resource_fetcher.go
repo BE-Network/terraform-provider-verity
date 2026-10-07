@@ -32,13 +32,13 @@ func FetchResourceWithRetry[T any](
 
 		if fetchErr == nil {
 			if typedResult, ok := data.(T); ok {
-				result = typedResult
-				break
+				return typedResult, nil
 			} else {
 				err = fmt.Errorf("failed to cast result to expected type")
 			}
+		} else {
+			err = fetchErr
 		}
-		err = fetchErr
 	}
 
 	return result, err
