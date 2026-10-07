@@ -19,10 +19,10 @@ func TestImporterLeavesOutUnsupportedArguments(t *testing.T) {
 		t.Fatal(err)
 	}
 	tenants := map[string]map[string]map[string]interface{}{"tenant": {"newer_tenant": {
-		"name":                    "newer_tenant",
-		"enable":                  true,
-		"maximum_ebgp_paths":      nil,
-		"maximum_ebgp_paths_mode": "automated",
+		"name":                       "newer_tenant",
+		"enable":                     true,
+		"future_maximum_paths":       nil,
+		"future_path_selection_mode": "automated",
 	}}}
 	body, err := json.Marshal(tenants)
 	if err != nil {
@@ -50,7 +50,7 @@ data "verity_state_importer" "test" {
 	if !strings.Contains(tf, `name = "newer_tenant"`) || !strings.Contains(tf, "enable = true") {
 		t.Fatalf("tenants.tf lost the tenant or a supported argument:\n%s", tf)
 	}
-	for _, unsupported := range []string{"maximum_ebgp_paths", "maximum_ebgp_paths_mode"} {
+	for _, unsupported := range []string{"future_maximum_paths", "future_path_selection_mode"} {
 		if strings.Contains(tf, unsupported) {
 			t.Errorf("tenants.tf still writes %s:\n%s", unsupported, tf)
 		}
@@ -60,7 +60,7 @@ data "verity_state_importer" "test" {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(string(listed), "verity_tenant: maximum_ebgp_paths, maximum_ebgp_paths_mode") {
+	if !strings.Contains(string(listed), "verity_tenant: future_maximum_paths, future_path_selection_mode") {
 		t.Errorf("unsupported_arguments.txt does not name the tenant's arguments:\n%s", listed)
 	}
 }

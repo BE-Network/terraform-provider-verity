@@ -9,7 +9,7 @@ import (
 
 func TestGenericMatchesLegacyOnListInsideSingleton(t *testing.T) {
 	entry := coverageEntry(t, "verity_fabric")
-	rs := inspectSchema(entry.Factory)
+	rs := inspectLegacySchema(t, entry)
 	base := generateCoverageHCL(t, rs, entry.TerraformType, "difffabric", entry.Mode, entry.modeFieldsKey(), entry.Overrides)
 	block := regexp.MustCompile(`(?s)\n  object_properties \{\n.*?\n  \}\n`)
 	if !block.MatchString(base) {

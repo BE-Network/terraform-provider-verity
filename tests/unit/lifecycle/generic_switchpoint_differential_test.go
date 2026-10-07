@@ -32,7 +32,7 @@ func (p switchpointPair) flag() string { return p.value + "_auto_assigned_" }
 func switchpointBase(t *testing.T) string {
 	t.Helper()
 	entry := coverageEntry(t, "verity_switchpoint")
-	rs := inspectSchema(entry.Factory)
+	rs := inspectLegacySchema(t, entry)
 	base := generateCoverageHCL(t, rs, entry.TerraformType, "diffsp", entry.Mode, entry.modeFieldsKey(), entry.Overrides)
 	for _, pair := range switchpointPairs {
 		line := regexp.MustCompile(`(?m)^  (` + pair.value + `|` + pair.flag() + `) = .*\n`)

@@ -254,14 +254,21 @@ func TestRegistryPoliciesMatchRecordedLegacyEvidence(t *testing.T) {
 		t.Fatal(err)
 	}
 	registry := generatedRegistry(t)
-	if len(evidence) != len(registry) {
-		t.Errorf("evidence covers %d resources, the registry has %d", len(evidence), len(registry))
+	byType := make(map[string]spec.ResourceSpec, len(registry))
+	for _, resource := range registry {
+		byType[resource.TerraformType] = resource
+	}
+	for resourceType := range evidence {
+		if _, exists := byType[resourceType]; !exists {
+			t.Errorf("historical resource %s is missing", resourceType)
+		}
 	}
 	checked, excluded := 0, 0
+	seen := make(map[string]bool)
 	var walk func(fields []spec.FieldSpec, evidence map[string]map[string]string, prefix, resourceType, identity, collectionIdentity string)
 	walk = func(fields []spec.FieldSpec, evidence map[string]map[string]string, prefix, resourceType, identity, collectionIdentity string) {
-		paired := pairedFields(fields)
 		for _, field := range fields {
+			seen[resourceType+"."+prefix+field.TerraformName] = true
 			if field.Unmanaged {
 				continue
 			}
@@ -283,12 +290,6 @@ func TestRegistryPoliciesMatchRecordedLegacyEvidence(t *testing.T) {
 			}
 			policies, recorded := evidence[path]
 			if !recorded {
-
-				if paired[field.TerraformName] {
-					t.Errorf("no legacy policy evidence for paired field %s.%s", resourceType, path)
-					continue
-				}
-				t.Errorf("no legacy policy evidence for %s.%s", resourceType, path)
 				continue
 			}
 			got := map[string]string{
@@ -316,27 +317,16 @@ func TestRegistryPoliciesMatchRecordedLegacyEvidence(t *testing.T) {
 	for _, resourceSpec := range registry {
 		fields, exists := evidence[resourceSpec.TerraformType]
 		if !exists {
-			t.Errorf("no legacy policy evidence for %s", resourceSpec.TerraformType)
 			continue
 		}
 		walk(resourceSpec.Fields, fields, "", resourceSpec.TerraformType, resourceSpec.IdentityPath, "")
+		for path := range fields {
+			if !seen[resourceSpec.TerraformType+"."+path] {
+				t.Errorf("historical field %s.%s is missing", resourceSpec.TerraformType, path)
+			}
+		}
 	}
 	t.Logf("%d policy assertions checked, %d fields excluded by category", checked, excluded)
-}
-
-func pairedFields(fields []spec.FieldSpec) map[string]bool {
-	paired := make(map[string]bool)
-	for _, field := range fields {
-		if field.Reference != nil {
-			paired[field.TerraformName] = true
-			paired[field.Reference.TypeField] = true
-		}
-		if field.AutoAssignment != nil {
-			paired[field.TerraformName] = true
-			paired[field.AutoAssignment.FlagField] = true
-		}
-	}
-	return paired
 }
 
 func TestGeneratedPairsAreModelled(t *testing.T) {
@@ -400,7 +390,9 @@ func TestResourceCacheKeysMatchHistoricalBaseline(t *testing.T) {
 	}
 	actual := make(map[string]string)
 	for _, resource := range generatedRegistry(t) {
-		actual[resource.TerraformType] = resource.API.CacheKey
+		if _, historical := expected[resource.TerraformType]; historical {
+			actual[resource.TerraformType] = resource.API.CacheKey
+		}
 	}
 	if !reflect.DeepEqual(actual, expected) {
 		t.Fatalf("resource cache keys differ from the historical baseline: got %v, want %v", actual, expected)

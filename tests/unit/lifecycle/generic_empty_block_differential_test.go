@@ -8,7 +8,7 @@ import (
 
 func TestGenericMatchesLegacyOnEmptyBlock(t *testing.T) {
 	entry := coverageEntry(t, "verity_device_settings")
-	rs := inspectSchema(entry.Factory)
+	rs := inspectLegacySchema(t, entry)
 	base := generateCoverageHCL(t, rs, entry.TerraformType, "diffds", entry.Mode, entry.modeFieldsKey(), entry.Overrides)
 	withBlock := func(present bool) string {
 		if !present {

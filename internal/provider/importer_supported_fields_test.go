@@ -76,28 +76,28 @@ func TestImporterKeepsEverySupportedArgument(t *testing.T) {
 func TestImporterLeavesOutArgumentsFromANewerAPI(t *testing.T) {
 	imp := importer.NewImporter(nil, "datacenter").WithSupportedFields(importerSupportedFields(context.Background()))
 	tenants := map[string]map[string]interface{}{
-		"t1": {"name": "t1", "enable": true, "maximum_ebgp_paths": nil, "maximum_ebgp_paths_mode": "automated"},
+		"t1": {"name": "t1", "enable": true, "future_maximum_paths": nil, "future_path_selection_mode": "automated"},
 	}
 	switchpoints := map[string]map[string]interface{}{
 		"Leaf_01": {"name": "Leaf_01", "traffic_mirrors": []interface{}{map[string]interface{}{
-			"index":                                       float64(1),
-			"traffic_mirror_num_enable":                   true,
-			"traffic_mirror_num_monitoring_acl":           "montest",
-			"traffic_mirror_num_monitoring_acl_ref_type_": "monitoring_acl",
+			"index":                                      float64(1),
+			"traffic_mirror_num_enable":                  true,
+			"traffic_mirror_num_future_filter":           "montest",
+			"traffic_mirror_num_future_filter_ref_type_": "monitoring_acl",
 		}}},
 	}
 	imp.PruneUnsupported("verity_tenant", tenants)
 	imp.PruneUnsupported("verity_switchpoint", switchpoints)
 
-	if _, kept := tenants["t1"]["maximum_ebgp_paths"]; kept {
-		t.Error("maximum_ebgp_paths was written")
+	if _, kept := tenants["t1"]["future_maximum_paths"]; kept {
+		t.Error("future_maximum_paths was written")
 	}
 	if _, kept := tenants["t1"]["enable"]; !kept {
 		t.Error("enable was left out")
 	}
 	entry := switchpoints["Leaf_01"]["traffic_mirrors"].([]interface{})[0].(map[string]interface{})
-	if _, kept := entry["traffic_mirror_num_monitoring_acl"]; kept {
-		t.Error("traffic_mirror_num_monitoring_acl was written")
+	if _, kept := entry["traffic_mirror_num_future_filter"]; kept {
+		t.Error("traffic_mirror_num_future_filter was written")
 	}
 	if _, kept := entry["traffic_mirror_num_enable"]; !kept {
 		t.Error("traffic_mirror_num_enable was left out")
@@ -105,8 +105,8 @@ func TestImporterLeavesOutArgumentsFromANewerAPI(t *testing.T) {
 
 	want := "The Verity API returned arguments that this provider version does not support. " +
 		"They were left out of the generated configuration, so Terraform will not manage them:\n" +
-		"\n  verity_switchpoint: traffic_mirrors.traffic_mirror_num_monitoring_acl, traffic_mirrors.traffic_mirror_num_monitoring_acl_ref_type_" +
-		"\n  verity_tenant: maximum_ebgp_paths, maximum_ebgp_paths_mode" +
+		"\n  verity_switchpoint: traffic_mirrors.traffic_mirror_num_future_filter, traffic_mirrors.traffic_mirror_num_future_filter_ref_type_" +
+		"\n  verity_tenant: future_maximum_paths, future_path_selection_mode" +
 		"\n\nPlease check for a newer provider version that supports them."
 	if got := unsupportedFieldsWarning(imp.UnsupportedFields()); got != want {
 		t.Errorf("warning =\n%s\nwant\n%s", got, want)

@@ -266,7 +266,7 @@ func TestGenericMatchesLegacyOnTenantAutoAssignment(t *testing.T) {
 
 func TestGenericMatchesLegacyOnFabricAutoAssignment(t *testing.T) {
 	entry := coverageEntry(t, "verity_fabric")
-	rs := inspectSchema(entry.Factory)
+	rs := inspectLegacySchema(t, entry)
 	base := generateCoverageHCL(t, rs, entry.TerraformType, "difffabric", entry.Mode, entry.modeFieldsKey(), entry.Overrides)
 	const value, flag = `  anycast_mac_address = ""` + "\n", `  anycast_mac_address_auto_assigned_ = false` + "\n"
 	if !strings.Contains(base, value) || !strings.Contains(base, flag) {
