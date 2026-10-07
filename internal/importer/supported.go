@@ -1,6 +1,10 @@
 package importer
 
-import "sort"
+import (
+	"sort"
+
+	"terraform-provider-verity/internal/spec"
+)
 
 type SchemaFields struct {
 	Attributes map[string]bool
@@ -35,18 +39,23 @@ func (i *Importer) PruneUnsupported(resourceType string, objects map[string]map[
 		return
 	}
 	for _, object := range objects {
-		i.pruneObject(resourceType, fields, object, "", config.SkipTopLevelKeys, config.FieldMappings)
+		i.pruneObject(resourceType, fields, object, "", config.SkipTopLevelKeys, config.Fields)
 	}
 }
 
-func (i *Importer) pruneObject(resourceType string, fields *SchemaFields, object map[string]interface{}, prefix string, skip map[string]bool, mappings map[string]string) {
+func (i *Importer) pruneObject(resourceType string, fields *SchemaFields, object map[string]interface{}, prefix string, skip map[string]bool, specs []spec.FieldSpec) {
+	byAPIName := fieldsByAPIName(specs)
 	for key, value := range object {
 		if skip[key] {
 			continue
 		}
 		name := key
-		if mapped, found := mappings[key]; found {
-			name = mapped
+		field, found := byAPIName[key]
+		if found {
+			name = field.TerraformName
+		}
+		if skip[name] {
+			continue
 		}
 		if fields.Attributes[name] {
 			continue
@@ -54,11 +63,11 @@ func (i *Importer) pruneObject(resourceType string, fields *SchemaFields, object
 		if nested := fields.Blocks[name]; nested != nil {
 			switch entries := value.(type) {
 			case map[string]interface{}:
-				i.pruneObject(resourceType, nested, entries, prefix+name+".", nil, nil)
+				i.pruneObject(resourceType, nested, entries, prefix+name+".", nil, field.Fields)
 			case []interface{}:
 				for _, entry := range entries {
 					if entryObject, isObject := entry.(map[string]interface{}); isObject {
-						i.pruneObject(resourceType, nested, entryObject, prefix+name+".", nil, nil)
+						i.pruneObject(resourceType, nested, entryObject, prefix+name+".", nil, field.Fields)
 					}
 				}
 			}

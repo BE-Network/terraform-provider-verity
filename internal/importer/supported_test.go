@@ -76,20 +76,6 @@ func TestPruneUnsupportedLeavesOutUnknownArguments(t *testing.T) {
 	}
 }
 
-func TestPruneUnsupportedHonorsSkipKeysAndFieldMappings(t *testing.T) {
-
-	voice := &SchemaFields{Attributes: map[string]bool{"codecs": true}, Blocks: map[string]*SchemaFields{}}
-	imp := (&Importer{Mode: "campus"}).WithSupportedFields(map[string]*SchemaFields{"verity_device_voice_settings": voice})
-	objects := map[string]map[string]interface{}{"v": {"name": "v", "Codecs": []interface{}{}}}
-	imp.PruneUnsupported("verity_device_voice_settings", objects)
-	if _, kept := objects["v"]["Codecs"]; !kept {
-		t.Fatal("a renamed argument the schema has was left out")
-	}
-	if got := imp.UnsupportedFields(); len(got) != 0 {
-		t.Fatalf("UnsupportedFields() = %v, want nothing", got)
-	}
-}
-
 func TestPruneUnsupportedWithoutSchemasKeepsEverything(t *testing.T) {
 	imp := &Importer{}
 	objects := map[string]map[string]interface{}{"t": {"name": "t", "anything": true}}

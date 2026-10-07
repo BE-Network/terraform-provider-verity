@@ -469,6 +469,20 @@ This ensures proper ordering of operations and helps avoid dependency issues whe
 4. Run a second `terraform apply` to import the resources into your state
 5. Clean up temporary files
 
+Importer rendering follows registry field specs recursively for objects, nested
+blocks, aliases, and scalar lists. Unsupported-field pruning uses the same alias
+lookup at each depth. Resource names use deterministic natural sorting, object
+keys are sorted, and list order is preserved. Collection identity fields are
+written first. Known root-index skips and separate ACL filenames remain supported.
+Strings are escaped as literal HCL; malformed object or list values produce a
+field-specific error instead of incomplete output.
+
+Configuration generation stops at the first fetch, render, or write error. The
+scripts stop when that first apply fails and do not run the import apply with an
+incomplete set of generated resources. Files written for earlier resource types
+may remain in the output directory; correct the reported error and rerun generation
+before importing.
+
 ### Running the Scripts
 
 #### Linux and macOS
