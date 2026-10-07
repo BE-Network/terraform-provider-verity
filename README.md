@@ -245,15 +245,79 @@ in `internal/registry/registry.json` are generated together and checked in CI.
    ```
 
 3. Review endpoint and field changes and adjust override entries, policies,
-   mode-specific metadata, and the reviewed bulk operation order.
+   mode-specific metadata, and the reviewed bulk operation order. Classify
+   removals, renames, type changes, and semantic changes using the compatibility
+   process below before refreshing any fixtures.
 4. Run `tools/generate_provider.sh --write`, review the diff, then run
    `tools/generate_provider.sh --check` and the tests. Update mock data and golden
-   fixtures deliberately. Incompatible state changes require a migration.
+   fixtures deliberately. Incompatible state changes require a reviewed fresh-import
+   declaration and upgrade guide; an in-place migration is optional future work.
 5. Validate against a lab system in both modes before releasing. Review README
    release examples and Dependabot branch targets when the supported release
    branches change. `.github/dependabot.yml` intentionally follows branch policy,
    independently of the selected API version. Historical tests and fixtures retain
    the version they describe.
+
+### Breaking API changes and existing Terraform state
+
+A new API release may add, remove, rename, or reinterpret endpoints and fields.
+The supported workflow for a breaking release is to start with fresh Terraform
+configuration and empty state, then run `import_verity_state` to adopt the current
+server configuration. See [Fresh-import upgrades](docs/guides/fresh-import-upgrades.md).
+An in-place upgrade of old state is not promised for a release declared this way;
+production state upgraders are not required for that workflow.
+
+Review the previous and new canonical API inputs in both modes. Generation
+updates the SDK and metadata; maintainers still decide whether renamed endpoints
+represent the same object, whether fields changed meaning or units, and what the
+new provider can manage. Preserve Terraform names where practical. Removed
+endpoints must be documented as no longer managed, rather than interpreted as
+instructions to delete objects from the server. Review semantic changes even when
+field names and types stay unchanged; the state-shape guard cannot detect them.
+
+`specs/state_transitions.json` records reviewed fresh-import releases. It currently
+contains no exceptions. Each release entry names:
+
+- `api_version`, matching the selected version in the embedded registry;
+- `baseline_sha256`, matching the pinned historical baseline;
+- `strategy: "fresh_import"`;
+- `upgrade_guide`, an existing, nonempty Markdown file under `docs/guides/` that
+  explains the release changes and links to the fresh-import procedure;
+- `changes`, with each affected `terraform_type`, a `reason`, and
+  `expected_state_sha256` for its complete reviewed target representation, or
+  `"removed"` for a retired resource.
+
+After regeneration, print a declaration proposal without changing files:
+
+```bash
+go test ./tests/unit/lifecycle/ -run '^TestStateCompatibilityReport$' -count=1 -v
+```
+
+Review the reported changes, write the release guide, fill in the guide path and
+reasons, and add the entry to `releases` in `specs/state_transitions.json`. Then run
+the guard, importer and lifecycle tests, and only then update the ordinary schema
+snapshot. The report grants no exceptions and does not edit the policy or baseline.
+
+Declarations are scoped to the selected API version and exact resource targets.
+A missing declaration, an unlisted resource, or a later target-shape change still
+fails. A blanket release exemption or environment-variable bypass is not supported.
+The pinned baseline remains unchanged. Preserve a new historical baseline when
+publishing later releases and extend coverage to it so newly introduced resources
+and fields are protected in subsequent upgrades.
+
+For each target release, update overrides, API policies, importer coverage, mock
+responses and fixtures for added, removed, renamed and retyped fields/endpoints.
+Exercise fresh import from an empty state against target API mocks in both modes,
+check the resulting plan and HTTP behavior, then validate on a lab system. Document
+server objects the new API no longer exposes, and any configuration that must be
+supplied manually. This workflow adopts server configuration, so unapplied changes
+from the old Terraform configuration do not carry over automatically.
+
+The API version and each resource's schema version are independent. Fresh import
+creates state from the current schema; incrementing schema versions or implementing
+old-state conversions is not a prerequisite for a declared fresh-import release.
+Supporting in-place upgrades later would require production state-upgrade or
+resource-state-move integration and separate migration tests.
 
 ### Bulk bindings and scheduling
 
@@ -500,6 +564,35 @@ test mapping; it is not generated from the current registry. Review changes to
 these baselines explicitly. The schema snapshot update command above refreshes
 that snapshot; it does not implement a state migration or prove that one is
 unnecessary. Historical legacy-request fixtures have no automatic update path.
+
+`TestStateCompatibility` separately checks existing field names, types, collection
+element types, and block nesting against
+`tests/unit/testdata/state_compatibility_v6_6.json`. This baseline was projected
+from the checked-in 6.6 schema snapshot at commit
+`71b2718753bd1297595afc34636d1d78fa718448`; its provenance and checksum are pinned.
+The maintainer review verified that all 51 state representations and schema
+versions also match released provider `v6.6.100`.
+It excludes descriptions, validators, plan modifiers, and other schema metadata.
+New resources and added fields are allowed when existing representations remain
+compatible. Removing a resource or field, renaming a field, changing a type or
+nesting, or changing a schema version fails unless it matches an explicit reviewed
+fresh-import declaration for the selected API version.
+
+`TestSchemaGolden` runs this guard before writing, including when
+`UPDATE_SCHEMA_SNAPSHOT=1`. Updating the ordinary snapshot cannot replace the
+historical state baseline or bypass compatibility checks. Run the fast guard with:
+
+```bash
+go test ./tests/unit/lifecycle/ -run '^TestStateCompatibility' -count=1
+```
+
+The guard detects undeclared breaks rather than requiring automatic migration.
+Approved fresh-import declarations allow resource retirement and incompatible
+field changes without a production upgrader. They must match the complete target
+representation, including newly added fields and the schema version. A subsequent
+unreviewed change invalidates that declaration. The declaration loader rejects
+missing or empty upgrade guides, malformed policies, and unknown resource names.
+Future support for in-place migrations remains separate from this release policy.
 
 Release requirements and generation instructions live in tracked documentation.
 Private `refactor/` notes are not required inputs, CI checks, or release gates.

@@ -60,7 +60,9 @@ type extensionGolden struct {
 }
 
 func TestSchemaGolden(t *testing.T) {
-	got, err := marshalSchemaGolden(buildSchemaGolden(t))
+	current := buildSchemaGolden(t)
+	requireStateCompatibility(t, current)
+	got, err := marshalSchemaGolden(current)
 	if err != nil {
 		t.Fatalf("marshal schema golden: %v", err)
 	}

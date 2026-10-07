@@ -12,6 +12,8 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version: '1.25'
+      - name: Verify historical state compatibility
+        run: go test ./tests/unit/lifecycle/ -run '^TestStateCompatibility' -count=1 -timeout 2m
       - name: Verify generated provider artifacts
         run: tools/generate_provider.sh --check
       - name: Verify auth/session log redaction
