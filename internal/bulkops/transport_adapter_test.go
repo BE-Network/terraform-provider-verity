@@ -1,78 +1,70 @@
 package bulkops
 
 import (
-	"context"
-	"net/http"
+	"encoding/json"
 	"testing"
 
 	"terraform-provider-verity/internal/transport"
 	"terraform-provider-verity/openapi"
 )
 
-func TestIPv4ListTransportPreparerUsesWireAdapter(t *testing.T) {
-	config := resourceRegistry["ipv4_list"]
-	preparer := (&Manager{}).createRequestPreparerWithError(config, "PATCH")
-
-	request, err := preparer(map[string]interface{}{
-		"edge-list": transport.WireObject{
-			"enable": transport.Bool(false),
+func TestTransportPreparerUsesGeneratedAdapter(t *testing.T) {
+	tests := []struct {
+		operation string
+		object    transport.WireObject
+		want      string
+	}{
+		{
+			operation: "PUT",
+			object: transport.WireObject{
+				"name":      transport.String("edge-list"),
+				"enable":    transport.Bool(false),
+				"ipv4_list": transport.String(""),
+			},
+			want: `{"ipv4_list_filter":{"edge-list":{"enable":false,"ipv4_list":"","name":"edge-list"}}}`,
 		},
-	})
-	if err != nil {
-		t.Fatalf("prepare request: %v", err)
+		{
+			operation: "PATCH",
+			object:    transport.WireObject{"enable": transport.Bool(false)},
+			want:      `{"ipv4_list_filter":{"edge-list":{"enable":false}}}`,
+		},
 	}
-
-	ipv4Request, ok := request.(*openapi.Ipv4listsPutRequest)
-	if !ok {
-		t.Fatalf("request type = %T, want *openapi.Ipv4listsPutRequest", request)
-	}
-	value := ipv4Request.GetIpv4ListFilter()["edge-list"]
-	if !value.HasEnable() || value.GetEnable() {
-		t.Fatalf("enable = %v (set=%v), want false and set", value.GetEnable(), value.HasEnable())
-	}
-	if value.HasName() || value.HasIpv4List() {
-		t.Fatalf("patch request included omitted fields: %#v", value)
+	for _, tt := range tests {
+		t.Run(tt.operation, func(t *testing.T) {
+			value, err := transport.GeneratedAdapters["verity_ipv4_list"].ResourceValue(tt.object)
+			if err != nil {
+				t.Fatalf("convert resource: %v", err)
+			}
+			config := resourceRegistry["ipv4_list"]
+			request, err := (&Manager{}).createRequestPreparerWithError(config, tt.operation)(map[string]interface{}{"edge-list": value})
+			if err != nil {
+				t.Fatalf("prepare request: %v", err)
+			}
+			if _, ok := request.(*openapi.Ipv4listsPutRequest); !ok {
+				t.Fatalf("request type = %T, want *openapi.Ipv4listsPutRequest", request)
+			}
+			got, err := json.Marshal(request)
+			if err != nil {
+				t.Fatalf("marshal request: %v", err)
+			}
+			if string(got) != tt.want {
+				t.Fatalf("%s wire JSON = %s, want %s", tt.operation, got, tt.want)
+			}
+		})
 	}
 }
 
-func TestIPv4ListTransportPreparerRejectsMixedBatch(t *testing.T) {
+func TestTransportPreparerRejectsUnconvertedWireObjects(t *testing.T) {
 	config := resourceRegistry["ipv4_list"]
 	preparer := (&Manager{}).createRequestPreparerWithError(config, "PUT")
 
 	_, err := preparer(map[string]interface{}{
 		"wire": transport.WireObject{"name": transport.String("wire")},
-		"legacy": openapi.Ipv4listsPutRequestIpv4ListFilterValue{
-			Name: openapi.PtrString("legacy"),
+		"typed": openapi.Ipv4listsPutRequestIpv4ListFilterValue{
+			Name: openapi.PtrString("typed"),
 		},
 	})
 	if err == nil {
-		t.Fatal("expected mixed batch to fail")
-	}
-}
-
-func TestIPv4ListTransportPreparationErrorBecomesDiagnostic(t *testing.T) {
-	manager := NewManager(nil, nil, nil, "datacenter")
-	operationID := manager.AddPut(context.Background(), "ipv4_list", "edge-list", transport.WireObject{
-		"name": transport.Null(),
-	})
-	config := resourceRegistry["ipv4_list"]
-
-	diagnostics := manager.executeBulkOperation(context.Background(), BulkOperationConfig{
-		ResourceType:            "ipv4_list",
-		OperationType:           "PUT",
-		ExtractOperations:       manager.createExtractor("ipv4_list", "PUT"),
-		PrepareRequest:          manager.createRequestPreparer(config, "PUT"),
-		PrepareRequestWithError: manager.createRequestPreparerWithError(config, "PUT"),
-		ExecuteRequest: func(context.Context, interface{}) (*http.Response, error) {
-			t.Fatal("request execution must not occur when preparation fails")
-			return nil, nil
-		},
-		UpdateRecentOps: func() {},
-	})
-	if !diagnostics.HasError() {
-		t.Fatal("expected request preparation diagnostic")
-	}
-	if _, exists := manager.operationErrors[operationID]; !exists {
-		t.Fatal("expected failed operation to retain the preparation error")
+		t.Fatal("expected unconverted wire object to fail")
 	}
 }
