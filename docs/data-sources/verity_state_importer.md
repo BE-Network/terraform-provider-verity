@@ -16,6 +16,12 @@ data "verity_state_importer" "import" {
 
 - `output_dir` (String) - Directory where the Terraform configuration files will be saved. The directory will be created if it doesn't exist. If not specified or empty, files will be created in the current working directory.
 
+### Read-only
+
+- `id` (String) - Identifier for this import operation.
+- `imported_files` (List of String) - Terraform files written by the current run,
+  including `stages.tf` and `import_blocks.tf` once each.
+
 ## Files generated
 
 The importer writes multiple `.tf` files into the output directory. The importer always writes `stages.tf` and then may write any of the following files:
@@ -75,8 +81,20 @@ The importer writes multiple `.tf` files into the output directory. The importer
 
 Note: Not all files will be created. Tasks are filtered by provider mode and API version compatibility, and the importer skips writing a file if the generated Terraform configuration is empty.
 
-Additionally, the importer writes:
-- import_blocks.tf — a generated file containing a sequence of Terraform import blocks for the resources found in the output directory.
+`import_blocks.tf` uses the addresses and API names recorded when the importer
+generates resource files. Import IDs are escaped as literal HCL, and blocks follow
+the resource dependency order. Existing user-authored or stale `.tf` files are
+not scanned for imports or included in `imported_files`.
+
+If a known resource output file exists but was not regenerated, the importer
+fails instead of leaving stale configuration available for the import apply.
+The error identifies the file and asks you to review and move or remove it before
+rerunning generation. This includes known resource files excluded by the current
+mode or API compatibility policy. The import scripts stop on that error; files
+are not automatically deleted.
+
+User-authored files with other names remain untouched and still participate in
+Terraform plans. They do not receive automatically generated import blocks.
 
 ## Arguments not supported by this provider version
 

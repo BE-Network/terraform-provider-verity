@@ -114,7 +114,7 @@ func TestTheKnownRootIndexQuirksAreNeitherWrittenNorReported(t *testing.T) {
 		if err != nil {
 			t.Fatalf("%s: %v", terraformType, err)
 		}
-		generated, err := imp.generateResourceTF(objects, config)
+		generated, _, err := imp.generateResourceTF(objects, config)
 		if err != nil {
 			t.Fatalf("%s: %v", terraformType, err)
 		}

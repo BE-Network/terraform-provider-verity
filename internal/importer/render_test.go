@@ -50,7 +50,7 @@ func TestRecursiveRendererAndPruningUseAliasesAtEveryDepth(t *testing.T) {
 	if got, want := imp.UnsupportedFields(), map[string][]string{"verity_example": {"configuration.members.options.children.unknown"}}; !reflect.DeepEqual(got, want) {
 		t.Fatalf("unsupported fields = %v, want %v", got, want)
 	}
-	got, err := imp.generateResourceTF(map[string]map[string]interface{}{"example": object}, ResourceConfig{ResourceType: "example", StageName: "example_stage", Fields: fields})
+	got, _, err := imp.generateResourceTF(map[string]map[string]interface{}{"example": object}, ResourceConfig{ResourceType: "example", StageName: "example_stage", Fields: fields})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -97,7 +97,7 @@ func TestRendererAndPruningHonorAliasedRootSkipFields(t *testing.T) {
 	if got := imp.UnsupportedFields(); len(got) != 0 {
 		t.Fatalf("root identity/index aliases reported as unsupported: %v", got)
 	}
-	got, err := imp.generateResourceTF(map[string]map[string]interface{}{"x": object}, ResourceConfig{ResourceType: "example", StageName: "example_stage", Fields: fields, SkipTopLevelKeys: skip})
+	got, _, err := imp.generateResourceTF(map[string]map[string]interface{}{"x": object}, ResourceConfig{ResourceType: "example", StageName: "example_stage", Fields: fields, SkipTopLevelKeys: skip})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -112,7 +112,7 @@ func TestRendererUsesDeclaredAutoAssignmentFlagWithAliases(t *testing.T) {
 		{APIName: "Flag", TerraformName: "automatic", Kind: spec.FieldKindBool},
 	}
 	for _, automatic := range []bool{true, false} {
-		got, err := (&Importer{}).generateResourceTF(map[string]map[string]interface{}{"x": {"Value": "server-assigned", "Flag": automatic}}, ResourceConfig{ResourceType: "example", StageName: "example_stage", Fields: fields})
+		got, _, err := (&Importer{}).generateResourceTF(map[string]map[string]interface{}{"x": {"Value": "server-assigned", "Flag": automatic}}, ResourceConfig{ResourceType: "example", StageName: "example_stage", Fields: fields})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -137,7 +137,7 @@ func TestRendererHandlesEmptyAndNullCollections(t *testing.T) {
 		{name: "null", object: map[string]interface{}{"properties": nil, "entries": nil, "labels": nil}, labels: "labels = null"},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			got, err := (&Importer{}).generateResourceTF(map[string]map[string]interface{}{"x": test.object}, ResourceConfig{ResourceType: "example", StageName: "example_stage", Fields: fields})
+			got, _, err := (&Importer{}).generateResourceTF(map[string]map[string]interface{}{"x": test.object}, ResourceConfig{ResourceType: "example", StageName: "example_stage", Fields: fields})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -160,7 +160,7 @@ func TestRendererRejectsMalformedValuesInsteadOfLosingData(t *testing.T) {
 		{spec.FieldKindList, spec.FieldKindObject, []interface{}{"bad"}, "entry 0: expected object"},
 		{spec.FieldKindList, spec.FieldKindString, []interface{}{map[string]interface{}{}}, "entry 0: expected JSON scalar"},
 	} {
-		got, err := (&Importer{}).generateResourceTF(map[string]map[string]interface{}{"x": {"bad": test.value}}, ResourceConfig{ResourceType: "example", StageName: "example_stage", Fields: []spec.FieldSpec{{APIName: "bad", TerraformName: "bad", Kind: test.kind, ElementKind: test.element}}})
+		got, _, err := (&Importer{}).generateResourceTF(map[string]map[string]interface{}{"x": {"bad": test.value}}, ResourceConfig{ResourceType: "example", StageName: "example_stage", Fields: []spec.FieldSpec{{APIName: "bad", TerraformName: "bad", Kind: test.kind, ElementKind: test.element}}})
 		if got != "" || err == nil || !strings.Contains(err.Error(), "verity_example \"x\": bad:") || !strings.Contains(err.Error(), test.want) {
 			t.Fatalf("HCL %q, error %v, want %q", got, err, test.want)
 		}
@@ -187,7 +187,7 @@ func TestRendererNaturalOrderIsDeterministicForNumericTies(t *testing.T) {
 	objects := map[string]map[string]interface{}{"node10": {}, "node2": {}, "node1": {}, "node01": {}}
 	var previous string
 	for run := 0; run < 30; run++ {
-		got, err := (&Importer{}).generateResourceTF(objects, ResourceConfig{ResourceType: "example", StageName: "example_stage"})
+		got, resources, err := (&Importer{}).generateResourceTF(objects, ResourceConfig{ResourceType: "example", StageName: "example_stage"})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -196,12 +196,43 @@ func TestRendererNaturalOrderIsDeterministicForNumericTies(t *testing.T) {
 		}
 		previous = got
 		last := -1
-		for _, name := range []string{"node01", "node1", "node2", "node10"} {
+		for index, name := range []string{"node01", "node1", "node2", "node10"} {
+			if want := (ImportedResource{TerraformType: "verity_example", TerraformName: name, ID: name}); resources[index] != want {
+				t.Fatalf("resource %d = %#v, want %#v", index, resources[index], want)
+			}
 			position := strings.Index(got, "name = \""+name+"\"")
 			if position <= last {
 				t.Fatalf("incorrect natural order:\n%s", got)
 			}
 			last = position
 		}
+	}
+}
+
+func TestRendererReturnsTopLevelImportIdentity(t *testing.T) {
+	fields := []spec.FieldSpec{{APIName: "properties", TerraformName: "properties", Kind: spec.FieldKindObject, Fields: []spec.FieldSpec{
+		{APIName: "name", TerraformName: "name", Kind: spec.FieldKindString},
+	}}}
+	config, resources, err := (&Importer{}).generateResourceTF(map[string]map[string]interface{}{
+		"edge\"node": {"name": "different-body-name", "properties": map[string]interface{}{"name": "nested-name"}},
+	}, ResourceConfig{ResourceType: "example", StageName: "example_stage", Fields: fields})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []ImportedResource{{TerraformType: "verity_example", TerraformName: "edge_node", ID: "edge\"node"}}
+	if !reflect.DeepEqual(resources, want) {
+		t.Fatalf("resources = %#v, want %#v", resources, want)
+	}
+	file, diags := hclsyntax.ParseConfig([]byte(config), "resource.tf", hcl.InitialPos)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	block := file.Body.(*hclsyntax.Body).Blocks[0]
+	if !reflect.DeepEqual(block.Labels, []string{want[0].TerraformType, want[0].TerraformName}) {
+		t.Fatalf("resource labels = %v, want %#v", block.Labels, want[0])
+	}
+	id, diags := block.Body.Attributes["name"].Expr.Value(nil)
+	if diags.HasErrors() || !id.RawEquals(cty.StringVal(want[0].ID)) {
+		t.Fatalf("resource name = %v, diagnostics = %v", id, diags)
 	}
 }

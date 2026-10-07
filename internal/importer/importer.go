@@ -35,6 +35,17 @@ type ResourceConfig struct {
 	SkipTopLevelKeys map[string]bool
 }
 
+type ImportedResource struct {
+	TerraformType string
+	TerraformName string
+	ID            string
+}
+
+type ImportResult struct {
+	Files     []string
+	Resources []ImportedResource
+}
+
 var rootIndexSkipped = map[string]bool{
 	"verity_gateway_profile":  true,
 	"verity_eth_port_profile": true,
@@ -98,9 +109,10 @@ func NewImporter(client *openapi.APIClient, mode string) *Importer {
 	}
 }
 
-func (i *Importer) ImportAll(outputDir string) error {
+func (i *Importer) ImportAll(outputDir string) (ImportResult, error) {
+	var result ImportResult
 	if err := os.MkdirAll(outputDir, 0755); err != nil {
-		return fmt.Errorf("failed to create output directory: %w", err)
+		return ImportResult{}, fmt.Errorf("failed to create output directory: %w", err)
 	}
 
 	tflog.Info(i.ctx, "Starting importer with mode", map[string]interface{}{
@@ -110,7 +122,7 @@ func (i *Importer) ImportAll(outputDir string) error {
 
 	tasks, err := i.importTasks()
 	if err != nil {
-		return err
+		return ImportResult{}, err
 	}
 
 	for _, task := range tasks {
@@ -122,7 +134,7 @@ func (i *Importer) ImportAll(outputDir string) error {
 		data, err := i.fetchResource(task.resource)
 		if err != nil {
 			tflog.Error(i.ctx, "Failed to import resource", map[string]interface{}{"resource_name": task.name, "error": err})
-			return fmt.Errorf("failed to import %s: %w", task.name, err)
+			return ImportResult{}, fmt.Errorf("failed to import %s: %w", task.name, err)
 		}
 		if len(data) == 0 {
 			tflog.Info(i.ctx, "No data found for resource, skipping TF generation", map[string]interface{}{"resource_name": task.name})
@@ -136,15 +148,15 @@ func (i *Importer) ImportAll(outputDir string) error {
 				"terraform_type": task.terraformResourceType,
 				"error":          err,
 			})
-			return fmt.Errorf("no registry entry for %s: %w", task.terraformResourceType, err)
+			return ImportResult{}, fmt.Errorf("no registry entry for %s: %w", task.terraformResourceType, err)
 		}
 
 		i.PruneUnsupported(task.terraformResourceType, data)
 
-		tfConfig, err := i.generateResourceTF(data, config)
+		tfConfig, resources, err := i.generateResourceTF(data, config)
 		if err != nil {
 			tflog.Error(i.ctx, "Failed to generate Terraform config", map[string]interface{}{"resource_name": task.name, "error": err})
-			return fmt.Errorf("failed to generate terraform config for %s: %w", task.name, err)
+			return ImportResult{}, fmt.Errorf("failed to generate terraform config for %s: %w", task.name, err)
 		}
 
 		if strings.TrimSpace(tfConfig) == "" {
@@ -155,24 +167,30 @@ func (i *Importer) ImportAll(outputDir string) error {
 		outputFile := filepath.Join(outputDir, fmt.Sprintf("%s.tf", task.name))
 		if err := os.WriteFile(outputFile, []byte(tfConfig), 0644); err != nil {
 			tflog.Error(i.ctx, "Failed to write TF config to file", map[string]interface{}{"resource_name": task.name, "file": outputFile, "error": err})
-			return fmt.Errorf("failed to write %s terraform config: %w", task.name, err)
+			return ImportResult{}, fmt.Errorf("failed to write %s terraform config: %w", task.name, err)
 		}
+		result.Files = append(result.Files, outputFile)
+		result.Resources = append(result.Resources, resources...)
 		tflog.Info(i.ctx, "Successfully wrote TF config for resource", map[string]interface{}{"resource_name": task.name, "file": outputFile})
+	}
+	if err := i.checkStaleResourceFiles(outputDir, result.Files); err != nil {
+		return ImportResult{}, err
 	}
 
 	stagesTF, err := i.generateStagesTF()
 	if err != nil {
 		tflog.Error(i.ctx, "Failed to generate stages TF", map[string]interface{}{"error": err})
-		return fmt.Errorf("failed to generate stages: %w", err)
+		return ImportResult{}, fmt.Errorf("failed to generate stages: %w", err)
 	}
 
 	stagesFile := filepath.Join(outputDir, "stages.tf")
 	if err := os.WriteFile(stagesFile, []byte(stagesTF), 0644); err != nil {
 		tflog.Error(i.ctx, "Failed to write stages TF config", map[string]interface{}{"error": err, "file": stagesFile})
-		return fmt.Errorf("failed to write stages terraform config: %w", err)
+		return ImportResult{}, fmt.Errorf("failed to write stages terraform config: %w", err)
 	}
+	result.Files = append(result.Files, stagesFile)
 
-	return nil
+	return result, nil
 }
 
 type importTask struct {
@@ -186,6 +204,36 @@ var importFileNames = map[string]string{
 	"verity_acl_v6": "acls_ipv6",
 }
 
+func importFileName(resource spec.ResourceSpec) string {
+	if name, named := importFileNames[resource.TerraformType]; named {
+		return name
+	}
+	return strings.Trim(resource.API.EndpointPath, "/")
+}
+
+func (i *Importer) checkStaleResourceFiles(outputDir string, writtenFiles []string) error {
+	written := make(map[string]bool, len(writtenFiles))
+	for _, file := range writtenFiles {
+		written[file] = true
+	}
+	resources, err := registry.Load()
+	if err != nil {
+		return fmt.Errorf("check stale resource files: %w", err)
+	}
+	for _, resource := range resources {
+		file := filepath.Join(outputDir, importFileName(resource)+".tf")
+		if written[file] {
+			continue
+		}
+		if _, err := os.Lstat(file); err == nil {
+			return fmt.Errorf("resource file %q was not regenerated: no %s objects were fetched in mode %q; Terraform could recreate deleted objects from this file. Review and move or remove it before rerunning the importer", file, resource.TerraformType, i.Mode)
+		} else if !os.IsNotExist(err) {
+			return fmt.Errorf("check resource file %q: %w", file, err)
+		}
+	}
+	return nil
+}
+
 func (i *Importer) importTasks() ([]importTask, error) {
 	tasks := make([]importTask, 0, 50)
 	resourceTypes, err := ResourceTypeOrder(i.Mode)
@@ -197,11 +245,7 @@ func (i *Importer) importTasks() ([]importTask, error) {
 		if err != nil {
 			return nil, fmt.Errorf("no registry entry for %s: %w", terraformType, err)
 		}
-		name, named := importFileNames[terraformType]
-		if !named {
-			name = strings.Trim(resource.API.EndpointPath, "/")
-		}
-		tasks = append(tasks, importTask{name: name, terraformResourceType: terraformType, resource: resource})
+		tasks = append(tasks, importTask{name: importFileName(resource), terraformResourceType: terraformType, resource: resource})
 	}
 	return tasks, nil
 }

@@ -477,6 +477,21 @@ written first. Known root-index skips and separate ACL filenames remain supporte
 Strings are escaped as literal HCL; malformed object or list values produce a
 field-specific error instead of incomplete output.
 
+Import blocks use the resource addresses and API names recorded while generating
+configuration. IDs are escaped as literal HCL, and blocks retain importer stage
+order. The `imported_files` result lists only Terraform files written by the
+current run, including `stages.tf` and `import_blocks.tf` once each. Existing
+user-authored or stale files are not scanned for imports or included in that
+result. If a known resource output file exists but was not regenerated, generation
+fails with its path and instructions to review and move or remove it. This also
+covers resource files excluded by the current mode or API compatibility policy.
+The scripts stop before the import apply, preventing stale generated configuration
+from recreating deleted objects. Files are not automatically deleted.
+
+User-authored files with other names remain on disk and still participate in
+Terraform plans. They no longer receive automatically generated import blocks;
+review them before applying the directory.
+
 Configuration generation stops at the first fetch, render, or write error. The
 scripts stop when that first apply fails and do not run the import apply with an
 incomplete set of generated resources. Files written for earlier resource types

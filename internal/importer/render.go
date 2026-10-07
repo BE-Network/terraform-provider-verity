@@ -43,24 +43,31 @@ func naturalNameLess(left, right string) bool {
 	return left < right
 }
 
-func (i *Importer) generateResourceTF(objects map[string]map[string]interface{}, config ResourceConfig) (string, error) {
+func (i *Importer) generateResourceTF(objects map[string]map[string]interface{}, config ResourceConfig) (string, []ImportedResource, error) {
 	names := make([]string, 0, len(objects))
 	for name := range objects {
 		names = append(names, name)
 	}
 	sort.Slice(names, func(a, b int) bool { return naturalNameLess(names[a], names[b]) })
 	var output strings.Builder
+	resources := make([]ImportedResource, 0, len(names))
 	for _, name := range names {
-		fmt.Fprintf(&output, "\nresource \"verity_%s\" \"%s\" {\n", config.ResourceType, utils.SanitizeResourceName(name))
+		resource := ImportedResource{
+			TerraformType: "verity_" + config.ResourceType,
+			TerraformName: utils.SanitizeResourceName(name),
+			ID:            name,
+		}
+		fmt.Fprintf(&output, "\nresource \"%s\" \"%s\" {\n", resource.TerraformType, resource.TerraformName)
 		nameValue, _ := scalarHCL(name)
 		fmt.Fprintf(&output, "    name = %s\n", nameValue)
 		fmt.Fprintf(&output, "    depends_on = [verity_operation_stage.%s]\n", config.StageName)
 		if err := renderFields(&output, objects[name], config.Fields, config.SkipTopLevelKeys, "\t", "", true); err != nil {
-			return "", fmt.Errorf("verity_%s %q: %w", config.ResourceType, name, err)
+			return "", nil, fmt.Errorf("verity_%s %q: %w", config.ResourceType, name, err)
 		}
 		output.WriteString("}\n\n")
+		resources = append(resources, resource)
 	}
-	return output.String(), nil
+	return output.String(), resources, nil
 }
 
 func renderFields(output *strings.Builder, object map[string]interface{}, fields []spec.FieldSpec, skip map[string]bool, indent, identity string, objectsFirst bool) error {
