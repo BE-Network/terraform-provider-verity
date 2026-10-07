@@ -138,3 +138,149 @@ import {
   id = "threshold_group_test1"
 }
 
+# verity_operation_stage imports
+import {
+  to = verity_operation_stage.sfp_breakout_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.acl_v6_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.acl_v4_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.mac_filter_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.service_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.port_acl_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.tacacs_profile_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.ldap_profile_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.sflow_collector_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.eth_port_profile_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.packet_queue_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.device_aaa_profile_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.fabric_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.service_port_profile_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.diagnostics_profile_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.authenticated_eth_port_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.device_settings_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.voice_port_profile_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.lag_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.device_voice_setting_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.eth_port_settings_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.diagnostics_port_profile_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.bundle_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.badge_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.grouping_rule_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.switchpoint_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.threshold_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.threshold_group_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.pair_stage
+  id = "stage"
+}
+

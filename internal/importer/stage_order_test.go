@@ -7,7 +7,7 @@ import (
 )
 
 func TestGeneratedDatacenterStagesPlaceFabricBeforeGateway(t *testing.T) {
-	config, err := (&Importer{ctx: context.Background(), Mode: "datacenter"}).generateStagesTF()
+	config, _, err := (&Importer{ctx: context.Background(), Mode: "datacenter"}).generateStagesTF()
 	if err != nil {
 		t.Fatalf("generateStagesTF returned error: %v", err)
 	}
@@ -61,9 +61,19 @@ func TestGeneratedStagesMatchExecutorOrder(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			config, err := (&Importer{ctx: context.Background(), Mode: tt.mode}).generateStagesTF()
+			config, resources, err := (&Importer{ctx: context.Background(), Mode: tt.mode}).generateStagesTF()
 			if err != nil {
 				t.Fatalf("generateStagesTF returned error: %v", err)
+			}
+
+			if len(resources) != len(tt.stages) {
+				t.Fatalf("got %d stage imports, want %d", len(resources), len(tt.stages))
+			}
+			for index, stage := range tt.stages {
+				want := ImportedResource{TerraformType: "verity_operation_stage", TerraformName: stage, ID: "stage"}
+				if resources[index] != want {
+					t.Fatalf("stage import %d = %#v, want %#v", index, resources[index], want)
+				}
 			}
 
 			lastPosition := -1
@@ -82,7 +92,7 @@ func TestGeneratedStagesMatchExecutorOrder(t *testing.T) {
 }
 
 func TestGeneratedCampusStagesExcludeDatacenterOnlyResources(t *testing.T) {
-	config, err := (&Importer{ctx: context.Background(), Mode: "campus"}).generateStagesTF()
+	config, _, err := (&Importer{ctx: context.Background(), Mode: "campus"}).generateStagesTF()
 	if err != nil {
 		t.Fatalf("generateStagesTF returned error: %v", err)
 	}

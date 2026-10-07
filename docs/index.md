@@ -109,7 +109,9 @@ data "verity_state_importer" "import" {
 
 If `output_dir` is omitted, generation uses the current working directory.
 The scripts run two applies: the first generates configuration and import blocks,
-and the second imports those objects into Terraform state.
+and the second imports those objects and the generated operation stages into
+Terraform state. Importing stages avoids their creation waits without changing
+bulk batching settings or dependencies. Stages already in state are unchanged.
 
 Only resources supported by the selected mode and API compatibility policy are
 exported. Unsupported arguments, including nested arguments, are removed before

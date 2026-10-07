@@ -83,7 +83,10 @@ Note: Not all files will be created. Tasks are filtered by provider mode and API
 
 `import_blocks.tf` uses the addresses and API names recorded when the importer
 generates resource files. Import IDs are escaped as literal HCL, and blocks follow
-the resource dependency order. Existing user-authored or stale `.tf` files are
+the resource dependency order. Generated operation stages also receive import
+blocks with ID `"stage"`, avoiding the waits in stage creation. This preserves
+bulk batching settings and stage dependencies. Stages already in state are
+unchanged. Existing user-authored or stale `.tf` files are
 not scanned for imports or included in `imported_files`.
 
 If a known resource output file exists but was not regenerated, the importer

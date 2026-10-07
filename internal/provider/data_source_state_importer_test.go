@@ -88,6 +88,7 @@ func TestStateImporterReportsOnlyCurrentRun(t *testing.T) {
 			})
 			request := datasource.ReadRequest{Config: tfsdk.Config{Raw: raw, Schema: schema.Schema}}
 			wantImports := map[string]string{"verity_service.edge_node": "edge\"node", "verity_service.node2": "node2", "verity_service.node10": "node10"}
+			stageImports := map[string]string{}
 			for run := 0; run < 4; run++ {
 				if run == 2 {
 					empty.Store(true)
@@ -112,6 +113,12 @@ func TestStateImporterReportsOnlyCurrentRun(t *testing.T) {
 				if response.Diagnostics.HasError() {
 					t.Fatalf("run %d: %v", run, response.Diagnostics)
 				}
+				if run == 0 {
+					stageImports = readStageImports(t, filepath.Join(outputDir, "stages.tf"))
+					for address, id := range stageImports {
+						wantImports[address] = id
+					}
+				}
 				var result stateImporterDataSourceModel
 				if diags := response.State.Get(ctx, &result); diags.HasError() {
 					t.Fatal(diags)
@@ -119,7 +126,7 @@ func TestStateImporterReportsOnlyCurrentRun(t *testing.T) {
 				wantFiles := []string{filepath.Join(outputDir, "services.tf"), filepath.Join(outputDir, "stages.tf"), filepath.Join(outputDir, "import_blocks.tf")}
 				if run == 3 {
 					wantFiles = wantFiles[1:]
-					wantImports = map[string]string{}
+					wantImports = stageImports
 				}
 				var gotFiles []string
 				for _, file := range result.ImportedFiles {
@@ -190,6 +197,29 @@ func readImportBlocks(t *testing.T, path string) map[string]string {
 			t.Fatalf("duplicate import %q", address)
 		}
 		imports[address] = value.AsString()
+	}
+	return imports
+}
+
+func readStageImports(t *testing.T, path string) map[string]string {
+	t.Helper()
+	content, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	file, diags := hclsyntax.ParseConfig(content, path, hcl.InitialPos)
+	if diags.HasErrors() {
+		t.Fatal(diags)
+	}
+	imports := map[string]string{}
+	for _, block := range file.Body.(*hclsyntax.Body).Blocks {
+		if block.Type != "resource" || len(block.Labels) != 2 || block.Labels[0] != "verity_operation_stage" {
+			t.Fatalf("unexpected stage block: %#v", block)
+		}
+		imports[block.Labels[0]+"."+block.Labels[1]] = "stage"
+	}
+	if len(imports) == 0 {
+		t.Fatal("no generated stages")
 	}
 	return imports
 }

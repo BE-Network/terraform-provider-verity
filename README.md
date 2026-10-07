@@ -487,7 +487,10 @@ deterministic natural order, and ACL v4/v6 use separate files.
 
 Import blocks use the resource addresses and API names recorded while generating
 configuration. IDs are escaped as literal HCL, and blocks retain importer stage
-order. The `imported_files` result lists only Terraform files written by the
+order. Generated operation stages also receive import blocks with ID `"stage"`,
+so importing them avoids the waits in stage creation. Normal batching settings
+and stage dependencies are unchanged. Stages already in state are not imported
+again. The `imported_files` result lists only Terraform files written by the
 current run, including `stages.tf` and `import_blocks.tf` once each. Existing
 user-authored or stale files are not scanned for imports or included in that
 result. If a known resource output file exists but was not regenerated, generation

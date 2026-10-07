@@ -177,7 +177,7 @@ func (i *Importer) ImportAll(outputDir string) (ImportResult, error) {
 		return ImportResult{}, err
 	}
 
-	stagesTF, err := i.generateStagesTF()
+	stagesTF, stages, err := i.generateStagesTF()
 	if err != nil {
 		tflog.Error(i.ctx, "Failed to generate stages TF", map[string]interface{}{"error": err})
 		return ImportResult{}, fmt.Errorf("failed to generate stages: %w", err)
@@ -189,6 +189,7 @@ func (i *Importer) ImportAll(outputDir string) (ImportResult, error) {
 		return ImportResult{}, fmt.Errorf("failed to write stages terraform config: %w", err)
 	}
 	result.Files = append(result.Files, stagesFile)
+	result.Resources = append(result.Resources, stages...)
 
 	return result, nil
 }
@@ -313,7 +314,7 @@ func ResourceTypeOrder(mode string) ([]string, error) {
 	return order, nil
 }
 
-func (i *Importer) generateStagesTF() (string, error) {
+func (i *Importer) generateStagesTF() (string, []ImportedResource, error) {
 	var tfConfig strings.Builder
 
 	tflog.Info(i.ctx, "Generating stages for mode", map[string]interface{}{
@@ -322,7 +323,7 @@ func (i *Importer) generateStagesTF() (string, error) {
 
 	stages, err := stageOrder(i.Mode)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 
 	var compatibleStages []stageDefinition
@@ -347,7 +348,9 @@ func (i *Importer) generateStagesTF() (string, error) {
 	modeComment := strings.ToUpper(i.Mode)
 	tfConfig.WriteString(fmt.Sprintf("\n# These resources establish ordering for bulk operations in %s mode\n", modeComment))
 
+	var resources []ImportedResource
 	for _, stage := range compatibleStages {
+		resources = append(resources, ImportedResource{TerraformType: "verity_operation_stage", TerraformName: stage.StageName, ID: "stage"})
 		tfConfig.WriteString(fmt.Sprintf("resource \"verity_operation_stage\" \"%s\" {\n", stage.StageName))
 
 		if stage.DependsOnStage != "" {
@@ -366,5 +369,5 @@ func (i *Importer) generateStagesTF() (string, error) {
 		"compatible_stages": len(compatibleStages),
 	})
 
-	return tfConfig.String(), nil
+	return tfConfig.String(), resources, nil
 }
