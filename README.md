@@ -1,21 +1,44 @@
-# Local Verity Terraform Provider Setup
+# Verity Terraform Provider
 
-## Security Toolchain
+Terraform provider for Verity datacenter and campus deployments. See the
+[provider documentation](docs/index.md) for resource examples and the
+[state importer documentation](docs/data-sources/verity_state_importer.md) for
+import output details.
 
-This repository uses a standardized security baseline implemented via GitHub Actions workflows:
+## Table of Contents
 
-- `.github/workflows/security-baseline.yml`
-- `.github/workflows/codeql.yml`
-
-Central standard:
-
-- https://github.com/BE-Network/verity-monitoring/blob/main/SECURITY_TOOLCHAIN_STANDARD.md
+- [Building the Provider](#building-the-provider)
+- [Provider Configuration](#provider-configuration)
+  - [Custom Provider Binary](#custom-provider-binary)
+  - [Configuration and Environment Variables](#configuration-and-environment-variables)
+  - [Parallelism Configuration](#parallelism-configuration)
+- [Production Setup](#production-setup)
+- [Regenerating the provider](#regenerating-the-provider)
+  - [Preparing a new API release](#preparing-a-new-api-release)
+  - [Breaking API changes and existing Terraform state](#breaking-api-changes-and-existing-terraform-state)
+  - [Bulk bindings and scheduling](#bulk-bindings-and-scheduling)
+  - [SDK generation and logging](#sdk-generation-and-logging)
+  - [Adding or Changing a Resource](#adding-or-changing-a-resource)
+- [Using the State Import Scripts](#using-the-state-import-scripts)
+  - [Resource Dependency Management](#resource-dependency-management)
+  - [What the Scripts Do](#what-the-scripts-do)
+  - [Running the Scripts](#running-the-scripts)
+  - [Prerequisites](#prerequisites)
+- [Handling Auto-Assigned Fields](#handling-auto-assigned-fields)
+- [Unit Tests](#unit-tests)
+  - [Test packages](#test-packages)
+  - [Compatibility evidence](#compatibility-evidence)
+  - [Running locally](#running-locally)
+  - [CI](#ci)
+- [Security Toolchain](#security-toolchain)
 
 ## Building the Provider
 
-To compile the provider binary, run the following command in the root directory of the project:
+Install the Go version required by [go.mod](go.mod), then build from the
+repository root.
 
- For macOS/Linux:
+For macOS/Linux:
+
 ```bash
 go build -o terraform-provider-verity
 ```
@@ -26,15 +49,16 @@ For Windows:
 go build -o terraform-provider-verity.exe
 ```
 
-
 ## Provider Configuration
 
 ### Custom Provider Binary
 
-To use a local development version of the provider, you need to configure Terraform to use your custom provider binary instead of downloading it from the registry. This is done using a `.tfrc` configuration file. Here's an example (`dev.tfrc`):
-
+Build the provider, then create a `dev.tfrc` file with a development override.
+The override must point to the directory containing the binary, on both platforms.
+See [Terraform development overrides](https://developer.hashicorp.com/terraform/cli/config/config-file#development-overrides-for-provider-developers).
 
 #### Example for macOS/Linux
+
 ```hcl
 provider_installation {
   dev_overrides {
@@ -45,10 +69,11 @@ provider_installation {
 ```
 
 #### Example for Windows
+
 ```hcl
 provider_installation {
   dev_overrides {
-    "registry.terraform.io/local/verity" = "C:\\Users\\<user>\\terraform-provider-verity.exe"
+    "registry.terraform.io/local/verity" = "C:\\Users\\<user>\\terraform-provider-verity"
   }
   direct {}
 }
@@ -70,102 +95,102 @@ provider "verity" {
 }
 ```
 
+Set `TF_CLI_CONFIG_FILE` to the configuration file you created:
 
-To use this configuration, set the `TF_CLI_CONFIG_FILE` environment variable to point to your custom `.tfrc` file:
-  
-  For macOS/Linux
-  ```bash
-  export TF_CLI_CONFIG_FILE=/home/<user>/terraform-provider-verity/examples/dev.tfrc
-  ```
-  For Windows:
-  ```powershell
-  $env:TF_CLI_CONFIG_FILE="C:\path\to\terraform-provider-verity\examples\dev.tfrc"
-  ```
+For macOS/Linux:
 
-### Required Environment Variables
+```bash
+export TF_CLI_CONFIG_FILE=/path/to/dev.tfrc
+```
 
-The Verity provider offers flexible configuration options, allowing you to specify credentials through provider configuration blocks, variable files, or environment variables:
+For Windows PowerShell:
 
-- `TF_VAR_uri`: The base URL of the Verity API
-- `TF_VAR_username`: Your Verity API username
-- `TF_VAR_password`: Your Verity API password
+```powershell
+$env:TF_CLI_CONFIG_FILE="C:\path\to\dev.tfrc"
+```
 
+Use `terraform plan` or `terraform apply` with the override. `terraform init`
+still attempts to install a published provider, so it cannot download the
+unpublished `local/verity` development provider.
 
-You can configure the Verity provider in two ways:
+### Configuration and Environment Variables
 
-1. **Recommended: Export environment variables**
-  Export the following environment variables before running Terraform:
-  ```bash
-  export TF_VAR_uri="<your-verity-uri>"
-  export TF_VAR_username="<your-username>"
-  export TF_VAR_password="<your-password>"
-  ```
-  Then use a minimal provider block:
-  ```terraform
-  provider "verity" {}
-  ```
-  All configuration is taken from environment variables.
+Set these values in the provider block or through the corresponding environment
+variables. A nonempty provider attribute takes precedence over its environment
+variable. All four values are required; mode has no default.
 
-2. **Alternative: Specify fields directly in the provider block**
-  ```terraform
-  provider "verity" {
-    uri = "<your-verity-uri>"
-    # username and password should NOT be written in plain text here
-    # prefer environment variables for sensitive values
-  }
-  ```
-  You may specify any or all fields directly. If a field is not specified, the provider will look for it in the corresponding environment variable. For security, do not write sensitive values (like username and password) directly in your configuration files.
+| Provider attribute | Environment variable | Value |
+| --- | --- | --- |
+| `uri` | `TF_VAR_uri` | Verity API base URL |
+| `username` | `TF_VAR_username` | Verity API username |
+| `password` | `TF_VAR_password` | Verity API password |
+| `mode` | `TF_VAR_mode` | `datacenter` or `campus` |
 
-For Linux and macOS, use the following commands to set environment variables:
+For Linux and macOS:
 
 ```bash
 export TF_VAR_uri="<your-verity-uri>"
 export TF_VAR_username="<your-username>"
 export TF_VAR_password="<your-password>"
+export TF_VAR_mode="datacenter"
 ```
 
-For Windows, use the following commands to set environment variables:
+For Windows PowerShell:
 
 ```powershell
 $env:TF_VAR_uri="<your-verity-uri>"
 $env:TF_VAR_username="<your-username>"
 $env:TF_VAR_password="<your-password>"
+$env:TF_VAR_mode="datacenter"
 ```
 
-### Parallelism Configuration (Important)
+With all four environment variables set, use:
 
-The Verity provider uses a **bulk operations architecture** — all resources of a given type are collected and sent to the API in a single request. For this to work correctly, Terraform's parallelism must be set **higher than the total number of resources affected in a single `terraform apply` run** (creates + updates + deletes combined).
+```hcl
+provider "verity" {}
+```
 
-For example, if one apply run adds 300 resources, updates 100, and deletes 50, the total is 450 — so `parallelism=500` is sufficient. This ensures all affected resources start concurrently, queue their operations, and each type is sent to the API in a single request.
+You can also set non-secret attributes directly, while supplying credentials
+through environment variables:
 
-**Recommended: `parallelism=500`** — sufficient for most deployments (up to ~500 total affected resources per apply). For larger environments, use `parallelism=1000` or `parallelism=2000`.
+```hcl
+provider "verity" {
+  uri  = "<your-verity-uri>"
+  mode = "datacenter"
+}
+```
 
-> **Why is high parallelism safe?** Terraform parallelism controls Go goroutines. Each resource goroutine blocks on a wait channel (sleeping) until the bulk operation for its type executes — consuming negligible CPU and memory. Values of 1000–2000 are perfectly safe even on modest hardware.
->
-> **What happens with low parallelism?** If parallelism is lower than the total number of affected resources, resources are processed in waves. This means some types may be split across multiple API calls. While this is usually harmless, it can slow down execution and may cause issues if resources of the same type reference each other across batches. Cross-type ordering is always preserved regardless of parallelism.
+Keep credentials out of committed Terraform configuration.
 
-If this variable is not set, Terraform will use the default parallelism of 10, which will significantly slow down the provider and may cause batch-splitting issues:
+### Parallelism Configuration
 
-#### Unix-based Systems
+The provider groups queued operations by resource type. Higher Terraform
+parallelism allows more resources to queue together and can reduce the number of
+bulk API requests. Lower parallelism processes resources in waves, potentially
+splitting a resource type across multiple requests; batching windows and the
+dependency graph also affect how operations are grouped.
+
+For larger applies, the existing `500` setting is a starting point. Adjust it to
+your environment rather than treating it as a requirement or a guarantee that
+all operations fit into one request.
+
+For Linux and macOS:
+
 ```bash
 export TF_CLI_ARGS_apply="-parallelism=500"
 ```
 
-#### Windows
+For Windows PowerShell:
+
 ```powershell
 $env:TF_CLI_ARGS_apply="-parallelism=500"
 ```
 
-For large deployments (more than 500 affected resources per apply):
-```bash
-export TF_CLI_ARGS_apply="-parallelism=2000"
-```
-
-Make sure to set these environment variables before running any Terraform commands.
-
+Terraform's [apply parallelism](https://developer.hashicorp.com/terraform/cli/commands/apply#apply-options)
+default is 10. Keep the stage dependencies described under
+[Resource Dependency Management](#resource-dependency-management).
 
 ## Production Setup
-
 
 For production use, configure Terraform to download the provider from the registry. You can find all available versions on the HashiCorp Registry:
 
@@ -187,8 +212,6 @@ provider "verity" {
 ```
 
 > Replace `6.6.0` with the desired release version. Set `mode` to match your Verity deployment type.
-
-
 
 ## Regenerating the provider
 
@@ -305,13 +328,8 @@ The pinned baseline remains unchanged. Preserve a new historical baseline when
 publishing later releases and extend coverage to it so newly introduced resources
 and fields are protected in subsequent upgrades.
 
-For each target release, update overrides, API policies, importer coverage, mock
-responses and fixtures for added, removed, renamed and retyped fields/endpoints.
-Exercise fresh import from an empty state against target API mocks in both modes,
-check the resulting plan and HTTP behavior, then validate on a lab system. Document
-server objects the new API no longer exposes, and any configuration that must be
-supplied manually. This workflow adopts server configuration, so unapplied changes
-from the old Terraform configuration do not carry over automatically.
+Fresh import adopts server configuration; unapplied changes from the old
+Terraform configuration do not carry over automatically.
 
 The API version and each resource's schema version are independent. Fresh import
 creates state from the current schema; incrementing schema versions or implementing
@@ -359,14 +377,12 @@ Generation retains only Go SDK sources, excludes generated tests and module
 files, and formats output. `tools/sdkgen/call_api.go.tmpl` supplies `callAPI` auth
 body, authorization/session header, and URL user-information redaction. Actual
 traffic remains intact. Ordinary resource bodies remain logged in full and may
-contain resource secrets; registry-based sensitive-field redaction is a separate
-follow-up. Edit the customization instead of restoring `client.go` by hand.
+contain resource secrets. Edit the customization instead of restoring `client.go` by hand.
 See [SDK preparation](tools/sdkgen/README.md) for the retention policy.
 
 CI runs the complete generated-artifact check and debug-log regression tests on
 every PR and push covered by the test workflow, using Docker and Python 3 on the
 Ubuntu runner.
-
 
 ### Adding or Changing a Resource
 
@@ -406,7 +422,7 @@ To add a resource:
 4. **Tests.** Coverage tests read the resource path, wrapper, mode, fixed
    headers, and supported operations from the registry. Add a mock response in
    `tests/unit/testdata/responses/<mode>/`, record the golden fixtures and the
-   schema snapshot, review the diff, then run the suites (see "Unit Tests"):
+   schema snapshot, review the diff, then run the suites (see [Unit Tests](#unit-tests)):
 
    ```bash
    UPDATE_GOLDEN=1 go test ./tests/unit/lifecycle/ -run TestGoldenWireFixtures -count=1
@@ -432,34 +448,27 @@ The provider includes scripts to help import existing Verity resources into Terr
 
 ### Resource Dependency Management
 
-The import process creates a special `stages.tf` file that defines explicit dependency ordering for resources. This uses the `verity_operation_stage` resource, which acts as an **active barrier** between resource type groups:
-
-1. Establish a clear sequence for creating, updating, and destroying resources
-2. Prevent dependency conflicts between resource types
-3. Ensure that resources are processed in the optimal order for the Verity API
-4. Wait for all operations from the current type group to complete before allowing the next group to start
-
-Each imported resource is configured with the appropriate `depends_on` attribute referring to its corresponding stage. When a stage's `Create` is executed, it actively waits for its sibling resources to queue their operations, flushes them to the API, and only returns once all operations for that type group are complete. This guarantees sequential, ordered API execution regardless of Terraform's internal scheduling.
+The importer generates `stages.tf` with a dependency chain of
+`verity_operation_stage` resources. Each API resource depends on its corresponding
+stage. Stage creation and deletion wait for and flush pending bulk operations;
+the manager applies the PUT/PATCH/DELETE orders from the registry.
 
 #### Creating New Resources
 
-When manually creating new resources (not through import), it's strongly recommended to follow the same pattern and include the appropriate `depends_on` attribute referring to the corresponding stage. For example:
+When adding resources manually, reuse the generated stages and the appropriate
+`depends_on`. A minimal example for one resource type is:
 
 ```hcl
-resource "verity_tenant" "example" {
-  name = "example-tenant"
-  // other attributes...
-  depends_on = [verity_operation_stage.tenant_stage]
-}
+resource "verity_operation_stage" "service_stage" {}
 
 resource "verity_service" "example" {
-  name = "example-service"
-  // other attributes...
+  name       = "example-service"
   depends_on = [verity_operation_stage.service_stage]
 }
 ```
 
-This ensures proper ordering of operations and helps avoid dependency issues when managing your infrastructure.
+For multiple resource types, retain the mode-specific chain in the generated
+`stages.tf`. See [operation stages](docs/resources/verity_operation_stage.md).
 
 ### What the Scripts Do
 
@@ -467,15 +476,14 @@ This ensures proper ordering of operations and helps avoid dependency issues whe
 2. Add the `verity_state_importer` data source if it doesn't exist
 3. Run a first `terraform apply` to generate resource files and import blocks
 4. Run a second `terraform apply` to import the resources into your state
-5. Clean up temporary files
+5. Remove the generated import blocks after a successful import and clean up
+   temporary files
 
-Importer rendering follows registry field specs recursively for objects, nested
-blocks, aliases, and scalar lists. Unsupported-field pruning uses the same alias
-lookup at each depth. Resource names use deterministic natural sorting, object
-keys are sorted, and list order is preserved. Collection identity fields are
-written first. Known root-index skips and separate ACL filenames remain supported.
-Strings are escaped as literal HCL; malformed object or list values produce a
-field-specific error instead of incomplete output.
+Before writing resource files, the importer removes arguments unsupported by
+the provider schema, including nested arguments. It reports them in a Terraform
+warning and `unsupported_arguments.txt`; the scripts print that file after the
+import. Resource names and values are escaped as literal HCL, names have a
+deterministic natural order, and ACL v4/v6 use separate files.
 
 Import blocks use the resource addresses and API names recorded while generating
 configuration. IDs are escaped as literal HCL, and blocks retain importer stage
@@ -502,7 +510,6 @@ before importing.
 
 #### Linux and macOS
 
-
 ```bash
 # Production
 .terraform/providers/registry.terraform.io/be-network/verity/<VERSION>/<OS>_<ARCH>/tools/import_verity_state.sh
@@ -510,8 +517,6 @@ before importing.
 # Local development
 ../tools/import_verity_state.sh
 ```
-
-> **Tip:** For production, you can always locate the `tools` folder inside the provider directory (where the provider binary is installed). Use your file browser or terminal to navigate to the correct folder, then right-click the script and choose "Copy Path" to avoid manually typing the full path.
 
 #### Windows PowerShell
 
@@ -523,8 +528,6 @@ before importing.
 ..\tools\import_verity_state.ps1
 ```
 
-> **Tip:** On Windows, you can use File Explorer to navigate to the provider's `tools` folder, then right-click the script and select "Copy as path" to get the exact path for your command.
-
 > **Note:** Replace:
 > - `<VERSION>` with the actual provider version (e.g. `6.6.0`)
 > - `<OS>` with your operating system (e.g. `linux`, `windows`, `darwin`)
@@ -532,45 +535,38 @@ before importing.
 
 ### Prerequisites
 
-- Terraform must be installed and in your PATH
-- Your Terraform files must include a Verity provider configuration
-- Environment variables for authentication must be set (see "Required Environment Variables" section)
+- Terraform with configuration-driven import blocks must be installed and in PATH.
+- Run the scripts from the Terraform working directory after `terraform init`
+  for a registry-installed provider.
+- A `.tf` file must contain a configured Verity provider, with credentials and
+  mode supplied as described in [Configuration and Environment Variables](#configuration-and-environment-variables).
+- The shell script requires Bash and `awk`; Windows uses PowerShell.
 
 ## Handling Auto-Assigned Fields
 
-When you change an auto-assigned field's flag (such as `auto_assigned_vni`, `auto_assigned_vlan`, etc.) from `false` to `true`, you must remove the corresponding field (such as `vni`, `vlan`, etc.) from your Terraform resource block. Leaving the field present will cause issues, as the backend will automatically assign its value and may overwrite or ignore the value you specify in Terraform.
+When enabling a `<field>_auto_assigned_` flag, leave the corresponding value
+unset in your resource configuration. For example, with
+`verity_service.vni_auto_assigned_ = true`, omit the configured `vni` value.
 
-Our `data_source_state_importer` is designed to check if a field has a corresponding auto-assigned flag. If the flag is set to `true`, the importer will not write that field in the generated Terraform resource file — only the auto-assigned flag will be present. This ensures your configuration matches the backend's behavior and avoids conflicts.
-
-**Best Practice:**
-Whenever you enable auto-assignment for a field, always remove the manually specified value for that field from your `.tf` resource block.
+The importer already omits the value when the API reports that its auto-assigned
+flag is true. Keep that pattern when modifying generated configuration.
 
 ## Unit Tests
 
-The provider includes a unit test suite that runs fully offline using a mock HTTP server — no real Verity API or Terraform state is required.
+Tests use mock HTTP servers and do not require a live Verity system. Lifecycle
+tests run the Terraform CLI with temporary configuration and state; install
+Terraform before running them.
 
 ### Test packages
 
-**`tests/unit/bulkops/`** — Tests for the bulk operations manager:
-- Delete batching: large delete sets are split into batches of ≤100; each batch contains the correct resource names with none missing or duplicated across batches; a batch failure aborts remaining batches immediately; ACL header parameters handling
-- Execution ordering: correct PUT/PATCH/DELETE sequencing for datacenter and campus modes, mixed operations, resource types with no queued operations generate no API calls; ACL v4 and v6 operations are dispatched as two separate PUT calls each carrying the correct `ip_version` query param; a PUT/PATCH/DELETE API failure stops all subsequent operations in the ordered sequence — resources scheduled after the failing type are never sent to the API, while those that already executed are unaffected
-
-**`tests/unit/lifecycle/`** — Generic resource lifecycle tests run against every registered provider resource:
-- Schema discovery: all resources expose a `name` attribute and discoverable fields/blocks
-- PUT body completeness: all schema fields appear in the initial create request, including both the ref field and its `*_ref_type_` companion; integer `0`, bool `false`, and empty string values are present rather than silently omitted
-- PUT body boundaries: a name-only create (only `name` provided in HCL) produces no unexpected extra fields beyond `name` and any auto-assigned flags
-- PATCH correctness: enable field toggling, single string field updates, ref field pairs, nested block updates
-- Nullable field transitions: explicit null vs omitted field handling
-- Auto-assigned field exclusion: when a boolean `*_auto_assigned_` flag is set to `true`, the corresponding value field (e.g. `layer_3_vni`) is omitted from the PUT body — the backend assigns the value instead
-- Mode field exclusion: datacenter-only fields absent in campus mode and vice versa
-- Required query params: ACL `ip_version` param sent correctly for v4/v6
-- Delete and import: resource removal and `terraform import` paths
-- Recorded legacy comparisons (`generic_*_differential_test.go`): `runLifecycle`
-  executes the current provider, while `legacyReference` reads the retired
-  handwritten provider's recorded requests from `testdata/legacy_reference`.
-  These tests do not run a second implementation. Historical test names stay
-  stable because they identify the fixture filenames. Intended semantic changes
-  are asserted explicitly against the recorded behavior.
+| Package | Coverage |
+| --- | --- |
+| `internal/...` | Provider contracts, transport conversion, importer rendering and stale-file checks, bulk bindings and ordering, registry validation, and utility behavior |
+| `tools/...` | Spec extraction, generators, SDK preparation, and reproducibility |
+| `tests/unit/lifecycle/` | Create/read/update/delete/import, null and auto-assigned fields, references, mode exclusions, request goldens, importer output, and state compatibility |
+| `tests/unit/bulkops/` | DELETE batching, operation ordering, ACL query parameters, and failure handling |
+| `tests/unit/sdk/` | Auth-body and session-header log redaction without changing real traffic |
+| `tests/unit/utils/` | HCL configuration parsing |
 
 ### Compatibility evidence
 
@@ -585,14 +581,12 @@ field paths must exist in that independent source; a typo cannot silently skip
 an assertion. Any future Terraform field alias needs an explicit mapping to its
 API field for these checks.
 
-Independent evidence remains checked in: the lifecycle schema snapshot, recorded
-legacy requests, `internal/provider/testdata/legacy_field_policies.json`, the
-historical resource-to-cache-key fixture, bulk wire/order/cache-key goldens, and
-importer output goldens. The cache-key fixture preserves the former handwritten
-test mapping; it is not generated from the current registry. Review changes to
-these baselines explicitly. The schema snapshot update command above refreshes
-that snapshot; it does not implement a state migration or prove that one is
-unnecessary. Historical legacy-request fixtures have no automatic update path.
+Independent baselines include the lifecycle schema snapshot, recorded legacy
+requests, historical field-policy and cache-key fixtures, bulk wire/order/cache-key
+goldens, and importer output goldens. The `generic_*_differential_test.go` tests
+compare current behavior with recorded requests; they do not run a retired provider.
+Review baseline changes explicitly. Historical legacy-request fixtures have no
+automatic update path, and updating a schema snapshot does not provide a migration.
 
 `TestStateCompatibility` separately checks existing field names, types, collection
 element types, and block nesting against
@@ -623,13 +617,10 @@ unreviewed change invalidates that declaration. The declaration loader rejects
 missing or empty upgrade guides, malformed policies, and unknown resource names.
 Future support for in-place migrations remains separate from this release policy.
 
-Release requirements and generation instructions live in tracked documentation.
-Private `refactor/` notes are not required inputs, CI checks, or release gates.
-
 ### Running locally
 
 ```bash
-# Export those env vars to speed up tests
+# Use the CI delay settings for local tests
 export VERITY_DEFAULT_BATCH_DELAY=100ms
 export VERITY_BATCH_COLLECTION_WINDOW=100ms
 export VERITY_MAX_BATCH_DELAY=200ms
@@ -641,6 +632,7 @@ go test ./internal/... ./tools/... -count=1 -timeout 5m
 go test ./tests/unit/lifecycle/ -count=1 -timeout 15m
 go test ./tests/unit/bulkops/ -count=1 -timeout 2m
 go test ./tests/unit/sdk/ -count=1 -timeout 2m
+go test ./tests/unit/utils/ -count=1
 ```
 
 `-count=1` disables Go's test result cache, ensuring tests always execute rather than reusing a previous result.
@@ -649,3 +641,13 @@ go test ./tests/unit/sdk/ -count=1 -timeout 2m
 
 Tests and generated-artifact checks run automatically for PRs and pushes targeting
 `main`, `release/**`, and `dev/**` through `.github/workflows/test.yml`.
+
+## Security Toolchain
+
+Security checks are defined in
+[security-baseline.yml](.github/workflows/security-baseline.yml),
+[codeql.yml](.github/workflows/codeql.yml), and
+[scorecards.yml](.github/workflows/scorecards.yml).
+
+The shared standard is documented in the
+[Security Toolchain Standard](https://github.com/BE-Network/verity-monitoring/blob/main/SECURITY_TOOLCHAIN_STANDARD.md).
