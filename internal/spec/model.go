@@ -1,6 +1,10 @@
 package spec
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
 
 type Mode string
 
@@ -12,6 +16,26 @@ const (
 type APIVersion struct {
 	Major int `json:"major"`
 	Minor int `json:"minor"`
+}
+
+func ParseAPIVersion(value string) (APIVersion, error) {
+	parts := strings.Split(value, ".")
+	if len(parts) != 2 {
+		return APIVersion{}, fmt.Errorf("expected major.minor, got %q", value)
+	}
+	major, err := strconv.Atoi(parts[0])
+	if err != nil || major < 0 {
+		return APIVersion{}, fmt.Errorf("invalid major version %q", parts[0])
+	}
+	minor, err := strconv.Atoi(parts[1])
+	if err != nil || minor < 0 {
+		return APIVersion{}, fmt.Errorf("invalid minor version %q", parts[1])
+	}
+	version := APIVersion{Major: major, Minor: minor}
+	if version.String() != value {
+		return APIVersion{}, fmt.Errorf("API version must use canonical major.minor format, got %q", value)
+	}
+	return version, nil
 }
 
 func (v APIVersion) String() string { return fmt.Sprintf("%d.%d", v.Major, v.Minor) }

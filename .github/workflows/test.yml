@@ -12,20 +12,10 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version: '1.25'
-      - name: Verify generated OpenAPI SDK and auth/session log redaction
-        run: |
-          tools/generate_openapi_sdk.sh --check
-          go test ./tests/unit/sdk/ -count=1 -timeout 2m
-      - name: Verify canonical OpenAPI inputs
-        run: go run ./tools/specgen verify --input-dir specs/openapi/6.6
-      - name: Verify OpenAPI coverage manifest
-        run: go run ./tools/specgen extract --input-dir specs/openapi/6.6 --output specs/generated_manifest.json --check
-      - name: Verify generated resource registry
-        run: go run ./tools/specgen registry --input-dir specs/openapi/6.6 --overrides specs/overrides.yaml --output specs/generated_registry.json --embed-output internal/registry/registry.json --check
-      - name: Verify generated transport adapters
-        run: go run ./tools/specgen adapters --registry specs/generated_registry.json --openapi-dir openapi --output internal/transport/generated_adapters.go --check
-      - name: Verify generated resource documentation
-        run: go run ./tools/specgen docs --registry specs/generated_registry.json --output-dir docs/resources --check
+      - name: Verify generated provider artifacts
+        run: tools/generate_provider.sh --check
+      - name: Verify auth/session log redaction
+        run: go test ./tests/unit/sdk/ -count=1 -timeout 2m
       - name: Verify generated registry matches legacy implementations
         run: go test ./internal/... ./tools/... -count=1 -timeout 5m
       - uses: hashicorp/setup-terraform@v4

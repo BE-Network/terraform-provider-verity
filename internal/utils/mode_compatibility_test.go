@@ -1,6 +1,36 @@
 package utils
 
-import "testing"
+import (
+	"fmt"
+	"strings"
+	"testing"
+
+	"terraform-provider-verity/internal/registry"
+)
+
+func TestAPIVersionCompatibilityUsesEmbeddedSelection(t *testing.T) {
+	version, err := registry.Version()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if GetSupportedAPIVersionString() != version.String() {
+		t.Fatal("supported API version differs from embedded selection")
+	}
+	for _, server := range []string{version.String(), version.String() + ".0.269"} {
+		if err := ValidateAPIVersion(server); err != nil {
+			t.Errorf("matching API version %s refused: %v", server, err)
+		}
+	}
+	for _, server := range []string{
+		fmt.Sprintf("%d.%d", version.Major+1, version.Minor),
+		fmt.Sprintf("%d.%d", version.Major, version.Minor+1),
+		"invalid",
+	} {
+		if err := ValidateAPIVersion(server); err == nil || !strings.Contains(err.Error(), version.String()) {
+			t.Errorf("mismatch diagnostic for %q = %v", server, err)
+		}
+	}
+}
 
 func TestResourceCompatibilityForSwaggerModeChanges(t *testing.T) {
 	tests := []struct {

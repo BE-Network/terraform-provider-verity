@@ -155,14 +155,14 @@ func TestGeneratedIPv4RegistryIsValid(t *testing.T) {
 	repositoryRoot := filepath.Clean(filepath.Join("..", ".."))
 	output := filepath.Join(t.TempDir(), "registry.json")
 	if err := generateRegistry(registryOptions{
-		InputDir:  filepath.Join(repositoryRoot, "specs", "openapi", "6.6"),
+		InputDir:  selectedInputDir(t, repositoryRoot),
 		Overrides: filepath.Join(repositoryRoot, "specs", "overrides.yaml"),
 		Output:    output,
 	}); err != nil {
 		t.Fatalf("generateRegistry() error = %v", err)
 	}
 	if err := generateRegistry(registryOptions{
-		InputDir:  filepath.Join(repositoryRoot, "specs", "openapi", "6.6"),
+		InputDir:  selectedInputDir(t, repositoryRoot),
 		Overrides: filepath.Join(repositoryRoot, "specs", "overrides.yaml"),
 		Output:    output,
 		Check:     true,
@@ -177,7 +177,7 @@ func TestGeneratedIPv4RegistryIsValid(t *testing.T) {
 	if err := json.Unmarshal(raw, &artifact); err != nil {
 		t.Fatal(err)
 	}
-	if artifact.APIVersion != "6.6" || len(artifact.Resources) == 0 || len(artifact.UnrepresentedResources) == 0 {
+	if artifact.APIVersion != filepath.Base(selectedInputDir(t, repositoryRoot)) || len(artifact.Resources) == 0 || len(artifact.UnrepresentedResources) == 0 {
 		t.Fatalf("artifact coverage = %#v", artifact)
 	}
 	if err := artifact.Resources.Validate(); err != nil {
@@ -197,7 +197,7 @@ func TestRegistryRejectsStaleOverrideFieldType(t *testing.T) {
 		t.Fatal(err)
 	}
 	err = generateRegistry(registryOptions{
-		InputDir:  filepath.Join(repositoryRoot, "specs", "openapi", "6.6"),
+		InputDir:  selectedInputDir(t, repositoryRoot),
 		Overrides: overrides,
 		Output:    filepath.Join(t.TempDir(), "registry.json"),
 	})
@@ -330,7 +330,7 @@ func TestRegistryRejectsUnreviewedExtractedField(t *testing.T) {
 		t.Fatal(err)
 	}
 	err = generateRegistry(registryOptions{
-		InputDir:  filepath.Join(repositoryRoot, "specs", "openapi", "6.6"),
+		InputDir:  selectedInputDir(t, repositoryRoot),
 		Overrides: overrides,
 		Output:    filepath.Join(t.TempDir(), "registry.json"),
 	})
@@ -355,7 +355,7 @@ func TestRegistryRejectsModeMismatch(t *testing.T) {
 		t.Fatal(err)
 	}
 	err = generateRegistry(registryOptions{
-		InputDir:  filepath.Join(repositoryRoot, "specs", "openapi", "6.6"),
+		InputDir:  selectedInputDir(t, repositoryRoot),
 		Overrides: overrides,
 		Output:    filepath.Join(t.TempDir(), "registry.json"),
 	})
@@ -410,7 +410,7 @@ func TestRegistryRejectsUnknownProfile(t *testing.T) {
 		t.Fatal(err)
 	}
 	err = generateRegistry(registryOptions{
-		InputDir:  filepath.Join(repositoryRoot, "specs", "openapi", "6.6"),
+		InputDir:  selectedInputDir(t, repositoryRoot),
 		Overrides: overrides,
 		Output:    filepath.Join(t.TempDir(), "registry.json"),
 	})
@@ -560,4 +560,13 @@ func TestDefaultUpdateClearPrefersThePairRuleInsideASingleton(t *testing.T) {
 	if got := defaultUpdateClear("string", false, singleton, true); got != "empty_string" {
 		t.Errorf("paired singleton member = %q, want empty_string", got)
 	}
+}
+
+func selectedInputDir(t *testing.T, repositoryRoot string) string {
+	t.Helper()
+	version, err := selectedVersion(filepath.Join(repositoryRoot, "specs", "overrides.yaml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return filepath.Join(repositoryRoot, "specs", "openapi", version)
 }

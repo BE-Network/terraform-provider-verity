@@ -20,6 +20,7 @@ type artifact struct {
 var (
 	once      sync.Once
 	loaded    spec.Registry
+	version   spec.APIVersion
 	loadError error
 )
 
@@ -30,13 +31,30 @@ func Load() (spec.Registry, error) {
 			loadError = fmt.Errorf("decode embedded registry: %w", err)
 			return
 		}
+		var err error
+		version, err = spec.ParseAPIVersion(decoded.APIVersion)
+		if err != nil {
+			loadError = fmt.Errorf("embedded registry API version: %w", err)
+			return
+		}
 		if err := decoded.Resources.Validate(); err != nil {
 			loadError = fmt.Errorf("validate embedded registry: %w", err)
 			return
 		}
+		for _, resource := range decoded.Resources {
+			if !resource.Versions.Contains(version) {
+				loadError = fmt.Errorf("%s versions do not include embedded API version %s", resource.TerraformType, version)
+				return
+			}
+		}
 		loaded = decoded.Resources
 	})
 	return loaded, loadError
+}
+
+func Version() (spec.APIVersion, error) {
+	_, err := Load()
+	return version, err
 }
 
 func Lookup(terraformType string) (spec.ResourceSpec, error) {

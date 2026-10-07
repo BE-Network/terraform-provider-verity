@@ -4,11 +4,8 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-)
 
-const (
-	SupportedAPIMajor = 6
-	SupportedAPIMinor = 6
+	"terraform-provider-verity/internal/registry"
 )
 
 type OperationMode string
@@ -52,22 +49,30 @@ func ResourceModeFor(resourceType string) (ResourceMode, bool) {
 }
 
 func ValidateAPIVersion(apiVersion string) error {
+	expected, err := registry.Version()
+	if err != nil {
+		return fmt.Errorf("load supported API version: %w", err)
+	}
 	major, minor, err := ParseApiVersion(apiVersion)
 	if err != nil {
 		return fmt.Errorf("failed to parse API version '%s': %w. This Terraform provider requires API version %d.%d",
-			apiVersion, err, SupportedAPIMajor, SupportedAPIMinor)
+			apiVersion, err, expected.Major, expected.Minor)
 	}
 
-	if major != SupportedAPIMajor || minor != SupportedAPIMinor {
+	if major != expected.Major || minor != expected.Minor {
 		return fmt.Errorf("API version mismatch: server is running API version %d.%d, but this Terraform provider is built for API version %d.%d. Please use a Terraform provider version that matches your API version",
-			major, minor, SupportedAPIMajor, SupportedAPIMinor)
+			major, minor, expected.Major, expected.Minor)
 	}
 
 	return nil
 }
 
 func GetSupportedAPIVersionString() string {
-	return fmt.Sprintf("%d.%d", SupportedAPIMajor, SupportedAPIMinor)
+	version, err := registry.Version()
+	if err != nil {
+		panic(err)
+	}
+	return version.String()
 }
 
 func ParseApiVersion(version string) (int, int, error) {

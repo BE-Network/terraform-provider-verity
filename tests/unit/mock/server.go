@@ -13,6 +13,8 @@ import (
 	"strings"
 	"sync"
 	"testing"
+
+	"terraform-provider-verity/internal/utils"
 )
 
 type CapturedRequest struct {
@@ -63,7 +65,7 @@ func NewMockServer(mode string) *MockServer {
 
 	datacenter := mode == "datacenter"
 	ms.versionResponse = []byte(fmt.Sprintf(
-		`{"version":"6.6","datacenter":%t}`, datacenter,
+		`{"version":%q,"datacenter":%t}`, utils.GetSupportedAPIVersionString(), datacenter,
 	))
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

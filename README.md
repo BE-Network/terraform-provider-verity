@@ -190,86 +190,89 @@ provider "verity" {
 
 
 
-## Regenerating the OpenAPI Go SDK
+## Regenerating the provider
 
-### Canonical source inputs
+The selected API version is `api_version` in `specs/overrides.yaml`. Generation
+reads canonical inputs from `specs/openapi/<selected version>/`. The generated
+registry carries that version into the provider's runtime compatibility check
+and the mock server's default version response; no separate version constants
+need updating.
 
-The build-time OpenAPI inputs are committed under `specs/openapi/<API version>/`.
-CI verifies their checksums and canonical JSON formatting without contacting a Verity
-system. Verify the currently supported inputs locally with:
-
-```bash
-go run ./tools/specgen verify --input-dir specs/openapi/6.6
-
-# Regenerate the deterministic API-shape/mode coverage report after a reviewed input update.
-go run ./tools/specgen extract \
-  --input-dir specs/openapi/6.6 \
-  --output specs/generated_manifest.json
-
-# Regenerate the resource registry from the reviewed overrides.
-go run ./tools/specgen registry \
-  --input-dir specs/openapi/6.6 \
-  --overrides specs/overrides.yaml \
-  --output specs/generated_registry.json
-
-# Regenerate the resource pages in docs/resources.
-go run ./tools/specgen docs \
-  --registry specs/generated_registry.json \
-  --output-dir docs/resources
-```
-
-Resource metadata lives in `specs/overrides.yaml`, which records only what differs
-from the defaults declared at the top of that file. Lifecycle policies are named
-profiles and default to `server_managed`; modes and version ranges inherit from the
-resource; the Terraform name follows the API name; and descriptions come from the committed
-OpenAPI documents. Anything a field states explicitly wins, so every line under a
-resource is a deliberate deviation. A description override remains only where the
-API supplies none, or where one endpoint backs two resources (ACL v4/v6).
-`specs/generated_registry.json` is the fully expanded output and is checked for
-drift in CI.
-
-When preparing a new export, preserve the raw files outside the repository and
-normalize them into a new versioned directory. Record the actual export date and a
-provenance note; the normalizer records the source and canonical checksums in its
-manifest.
+Use the same command locally and in CI to verify all generated artifacts:
 
 ```bash
-go run ./tools/specgen normalize \
-  --version 6.6 \
-  --datacenter /path/to/datacenter.json \
-  --campus /path/to/campus.json \
-  --output-dir specs/openapi/6.6 \
-  --source-export-date YYYY-MM-DD \
-  --provenance "Verity API export source"
+tools/generate_provider.sh --check
 ```
 
-The SDK is regenerated only from those committed inputs. The repository pins
-OpenAPI Generator `v7.25.0` in a Docker image and always generates into a
-temporary directory first:
+After updating and reviewing inputs and overrides, regenerate everything with:
 
 ```bash
-# Verify that the tracked SDK matches the committed 6.6 inputs.
-tools/generate_openapi_sdk.sh --check
-
-# Intentionally replace openapi/ after reviewing the generated change.
-tools/generate_openapi_sdk.sh --write
+tools/generate_provider.sh --write
 ```
 
-The command requires Docker, Python 3, Go, and `rsync` for `--write`. Do not
-delete `openapi/` manually and do not install an unpinned global generator.
+The command verifies canonical formatting, checksums, and the selected input
+version, then processes the SDK, extraction manifest, registry and embedded copy,
+transport adapters, and resource documentation. Write mode prepares all outputs
+in temporary directories before copying them into the repository. Generators are
+compiled before any output is replaced, so SDK type changes do not prevent the
+adapter generator from running. Check mode leaves generated files unchanged.
 
-Generation automatically retains only Go SDK sources, excludes generated tests
-and module files, and formats the output. `tools/sdkgen/call_api.go.tmpl` supplies
-the `callAPI` implementation that redacts authentication bodies, authorization
-headers, session headers, and URL user information in debug logs while the actual
-request and response remain intact. Ordinary resource bodies are still logged in
-full and may contain resource secrets; registry-based sensitive-field redaction
-is a separate follow-up. Edit that customization instead of restoring `client.go`
-by hand after generation. See [SDK preparation](tools/sdkgen/README.md) for the
-output policy and the reconciled baseline.
+Resource metadata lives in `specs/overrides.yaml`, which contains reviewed field
+entries and deviations from defaults. Every extracted field requires an entry;
+a conventional field can often declare just `api_name`. Lifecycle profiles supply
+policies, modes and version ranges inherit from the resource, Terraform names
+follow API names, and descriptions come from committed OpenAPI inputs. Explicit
+values override defaults. `specs/generated_registry.json` and its embedded copy
+in `internal/registry/registry.json` are generated together and checked in CI.
 
-CI runs the SDK drift check and debug-log regression tests on every PR and push
-covered by the test workflow, using Docker and Python 3 on the Ubuntu runner.
+### Preparing a new API release
+
+1. Update `api_version` in `specs/overrides.yaml` and review compatibility ranges.
+   Ranges express supported releases and remain explicit policy.
+2. Obtain both mode-specific exports, preserve the raw files outside the
+   repository, and normalize them with the actual export date and provenance:
+
+   ```bash
+   task_api_version=$(go run ./tools/specgen version --overrides specs/overrides.yaml)
+   go run ./tools/specgen normalize \
+     --version "$task_api_version" \
+     --datacenter /path/to/datacenter.json \
+     --campus /path/to/campus.json \
+     --output-dir "specs/openapi/$task_api_version" \
+     --source-export-date YYYY-MM-DD \
+     --provenance "Verity API export source"
+   ```
+
+3. Review endpoint and field changes and adjust override entries, policies,
+   mode-specific metadata, and any handwritten bulk bindings or execution order.
+4. Run `tools/generate_provider.sh --write`, review the diff, then run
+   `tools/generate_provider.sh --check` and the tests. Update mock data and golden
+   fixtures deliberately. Incompatible state changes require a migration.
+5. Validate against a lab system in both modes before releasing. Review README
+   release examples and Dependabot branch targets when the supported release
+   branches change. `.github/dependabot.yml` intentionally follows branch policy,
+   independently of the selected API version. Historical tests and fixtures retain
+   the version they describe.
+
+### SDK generation and logging
+
+OpenAPI Generator `v7.25.0` is pinned by Docker image digest. The generation
+command requires Docker, Python 3, Go, and `rsync` for `--write`.
+`tools/generate_openapi_sdk.sh --check` and `--write` remain available for SDK-only
+work and use the same selected version and preparation pipeline. The complete
+provider command also updates the dependent adapters and metadata.
+
+Generation retains only Go SDK sources, excludes generated tests and module
+files, and formats output. `tools/sdkgen/call_api.go.tmpl` supplies `callAPI` auth
+body, authorization/session header, and URL user-information redaction. Actual
+traffic remains intact. Ordinary resource bodies remain logged in full and may
+contain resource secrets; registry-based sensitive-field redaction is a separate
+follow-up. Edit the customization instead of restoring `client.go` by hand.
+See [SDK preparation](tools/sdkgen/README.md) for the retention policy.
+
+CI runs the complete generated-artifact check and debug-log regression tests on
+every PR and push covered by the test workflow, using Docker and Python 3 on the
+Ubuntu runner.
 
 
 ### Adding or Changing a Resource
@@ -282,7 +285,7 @@ resource.
 To add a resource:
 
 1. **OpenAPI input.** Make sure the endpoint is in the committed inputs under
-   `specs/openapi/6.6/`, and run `specgen verify` (above).
+   `specs/openapi/<selected version>/`, and run the generated-artifact check above.
 2. **Override entry.** Add the resource to `specs/overrides.yaml`: `path`,
    `terraform_type`, `description`, `modes`, `identity_path`, the `api` keys
    (`bulk_key`, `cache_key`, `response_collection_key`, `delete_parameter`),
@@ -301,10 +304,9 @@ To add a resource:
    `<field>_ref_type_` companion becomes a reference pair whose allowed types
    are the companion's enum. A field with a `<field>_auto_assigned_` companion
    becomes an auto-assignment pair.
-3. **Regenerate** with the `specgen` commands above: `extract`, `registry`
-   (with `--embed-output internal/registry/registry.json`), `adapters`,
-   and `docs`. `adapters` skips a resource it cannot serve and
-   prints why.
+3. **Regenerate** with `tools/generate_provider.sh --write`, which updates the
+   SDK, manifest, registry and embedded copy, adapters, and docs together. The
+   adapter generator prints why it cannot serve an unsupported resource.
 4. **Tests.** Coverage tests read the resource path, wrapper, mode, fixed
    headers, and supported operations from the registry. Add a mock response in
    `tests/unit/testdata/responses/<mode>/`, record the golden fixtures and the
@@ -315,16 +317,18 @@ To add a resource:
    UPDATE_SCHEMA_SNAPSHOT=1 go test ./tests/unit/lifecycle/ -run TestSchemaGolden -count=1
    ```
 
-To add or change a field on an existing resource, regenerate as in step 3. A
-field with a conventional OpenAPI shape and policies needs no override. Review
+To add or change a field on an existing resource, update its override entry and
+regenerate as in step 3. Defaults supply conventional shapes and policies, but
+every extracted field still requires an entry. Review
 the regenerated registry, adapter, and docs, then update the golden fixtures
 and schema snapshot as in step 4.
 
 The pages in `docs/resources` are generated from one template,
 `tools/specgen/templates/resource.md.tmpl`. Change the template or the
 registry, never a page. `verity_operation_stage.md` is the one handwritten page.
-In CI, every `specgen` generator runs with `--check`, so a registry, adapter,
-or doc page that no longer matches its inputs fails the build.
+In CI, `tools/generate_provider.sh --check` verifies every generated artifact,
+so a registry, adapter, SDK file, or doc page that differs from its inputs fails
+the build.
 
 ## Using the State Import Scripts
 

@@ -45,10 +45,19 @@ type normalizeOptions struct {
 
 func main() {
 	if len(os.Args) < 2 {
-		fail("usage: specgen <normalize|verify|extract|registry|adapters|docs> [flags]")
+		fail("usage: specgen <version|normalize|verify|extract|registry|adapters|docs> [flags]")
 	}
 
 	switch os.Args[1] {
+	case "version":
+		fs := flag.NewFlagSet("version", flag.ExitOnError)
+		overrides := fs.String("overrides", "specs/overrides.yaml", "reviewed override YAML file")
+		_ = fs.Parse(os.Args[2:])
+		version, err := selectedVersion(*overrides)
+		if err != nil {
+			fail(err.Error())
+		}
+		fmt.Println(version)
 	case "normalize":
 		fs := flag.NewFlagSet("normalize", flag.ExitOnError)
 		opts := normalizeOptions{}
@@ -65,8 +74,9 @@ func main() {
 	case "verify":
 		fs := flag.NewFlagSet("verify", flag.ExitOnError)
 		inputDir := fs.String("input-dir", "", "canonical input directory")
+		expectedVersion := fs.String("api-version", "", "required input API version")
 		_ = fs.Parse(os.Args[2:])
-		if err := verify(*inputDir); err != nil {
+		if err := verifyVersion(*inputDir, *expectedVersion); err != nil {
 			fail(err.Error())
 		}
 	case "extract":
@@ -114,7 +124,7 @@ func main() {
 			fail(err.Error())
 		}
 	default:
-		fail(fmt.Sprintf("unknown command %q; expected normalize, verify, extract, registry, adapters, or docs", os.Args[1]))
+		fail(fmt.Sprintf("unknown command %q; expected version, normalize, verify, extract, registry, adapters, or docs", os.Args[1]))
 	}
 }
 

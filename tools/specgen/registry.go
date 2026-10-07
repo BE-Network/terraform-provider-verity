@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"sort"
-	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -730,19 +729,7 @@ func fieldKindFromOpenAPI(kind string) (spec.FieldKind, error) {
 }
 
 func parseAPIVersion(value string) (spec.APIVersion, error) {
-	parts := strings.Split(value, ".")
-	if len(parts) != 2 {
-		return spec.APIVersion{}, fmt.Errorf("expected major.minor, got %q", value)
-	}
-	major, err := strconv.Atoi(parts[0])
-	if err != nil || major < 0 {
-		return spec.APIVersion{}, fmt.Errorf("invalid major version %q", parts[0])
-	}
-	minor, err := strconv.Atoi(parts[1])
-	if err != nil || minor < 0 {
-		return spec.APIVersion{}, fmt.Errorf("invalid minor version %q", parts[1])
-	}
-	return spec.APIVersion{Major: major, Minor: minor}, nil
+	return spec.ParseAPIVersion(value)
 }
 
 func parseVersionRange(value versionRangeOverride) (spec.VersionRange, error) {
