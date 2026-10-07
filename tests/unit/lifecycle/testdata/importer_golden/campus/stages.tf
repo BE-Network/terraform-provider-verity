@@ -34,8 +34,15 @@ resource "verity_operation_stage" "service_stage" {
   }
 }
 
-resource "verity_operation_stage" "port_acl_stage" {
+resource "verity_operation_stage" "monitoring_acl_stage" {
   depends_on = [verity_operation_stage.service_stage]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "verity_operation_stage" "port_acl_stage" {
+  depends_on = [verity_operation_stage.monitoring_acl_stage]
   lifecycle {
     create_before_destroy = true
   }
@@ -83,8 +90,15 @@ resource "verity_operation_stage" "device_aaa_profile_stage" {
   }
 }
 
-resource "verity_operation_stage" "fabric_stage" {
+resource "verity_operation_stage" "fabric_collection_stage" {
   depends_on = [verity_operation_stage.device_aaa_profile_stage]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "verity_operation_stage" "fabric_stage" {
+  depends_on = [verity_operation_stage.fabric_collection_stage]
   lifecycle {
     create_before_destroy = true
   }
@@ -104,8 +118,15 @@ resource "verity_operation_stage" "diagnostics_profile_stage" {
   }
 }
 
-resource "verity_operation_stage" "authenticated_eth_port_stage" {
+resource "verity_operation_stage" "nac_port_profile_stage" {
   depends_on = [verity_operation_stage.diagnostics_profile_stage]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "verity_operation_stage" "authenticated_eth_port_stage" {
+  depends_on = [verity_operation_stage.nac_port_profile_stage]
   lifecycle {
     create_before_destroy = true
   }

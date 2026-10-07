@@ -1,7 +1,7 @@
 /*
-Verity API
+Manager system API
 
-This application demonstrates the usage of Verity API.
+This application demonstrates the usage of Manager system API.
 
 API version: 6.6
 */
@@ -33,6 +33,8 @@ type EthportsettingsPutRequestEthPortSettingsValue struct {
 	BpduFilter *bool `json:"bpdu_filter,omitempty"`
 	// Block port on BPDU Receive
 	BpduGuard *bool `json:"bpdu_guard,omitempty"`
+	// Force port shutdown/disable when BPDU packets are detected
+	BpduGuardPortDisable *bool `json:"bpdu_guard_port_disable,omitempty"`
 	// Broadcast
 	Broadcast *bool `json:"broadcast,omitempty"`
 	// Enable Traffic Storm Protection which prevents excessive broadcast/multicast/unknown-unicast traffic from overwhelming the Switch CPU
@@ -59,6 +61,8 @@ type EthportsettingsPutRequestEthPortSettingsValue struct {
 	Fec *string `json:"fec,omitempty"`
 	// Enable Cisco Guard Loop
 	GuardLoop *bool `json:"guard_loop,omitempty"`
+	// Enable Guard Root
+	GuardRoot *bool `json:"guard_root,omitempty"`
 	// LLDP enable
 	LldpEnable *bool                                                       `json:"lldp_enable,omitempty"`
 	LldpMed    []EthportsettingsPutRequestEthPortSettingsValueLldpMedInner `json:"lldp_med,omitempty"`
@@ -135,6 +139,8 @@ func NewEthportsettingsPutRequestEthPortSettingsValue() *EthportsettingsPutReque
 	this.BpduFilter = &bpduFilter
 	var bpduGuard bool = false
 	this.BpduGuard = &bpduGuard
+	var bpduGuardPortDisable bool = false
+	this.BpduGuardPortDisable = &bpduGuardPortDisable
 	var broadcast bool = true
 	this.Broadcast = &broadcast
 	var bspEnable bool = false
@@ -161,6 +167,8 @@ func NewEthportsettingsPutRequestEthPortSettingsValue() *EthportsettingsPutReque
 	this.Fec = &fec
 	var guardLoop bool = false
 	this.GuardLoop = &guardLoop
+	var guardRoot bool = false
+	this.GuardRoot = &guardRoot
 	var lldpEnable bool = true
 	this.LldpEnable = &lldpEnable
 	var lldpMedEnable bool = false
@@ -231,6 +239,8 @@ func NewEthportsettingsPutRequestEthPortSettingsValueWithDefaults() *Ethportsett
 	this.BpduFilter = &bpduFilter
 	var bpduGuard bool = false
 	this.BpduGuard = &bpduGuard
+	var bpduGuardPortDisable bool = false
+	this.BpduGuardPortDisable = &bpduGuardPortDisable
 	var broadcast bool = true
 	this.Broadcast = &broadcast
 	var bspEnable bool = false
@@ -257,6 +267,8 @@ func NewEthportsettingsPutRequestEthPortSettingsValueWithDefaults() *Ethportsett
 	this.Fec = &fec
 	var guardLoop bool = false
 	this.GuardLoop = &guardLoop
+	var guardRoot bool = false
+	this.GuardRoot = &guardRoot
 	var lldpEnable bool = true
 	this.LldpEnable = &lldpEnable
 	var lldpMedEnable bool = false
@@ -541,6 +553,38 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) HasBpduGuard() bool {
 // SetBpduGuard gets a reference to the given bool and assigns it to the BpduGuard field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetBpduGuard(v bool) {
 	o.BpduGuard = &v
+}
+
+// GetBpduGuardPortDisable returns the BpduGuardPortDisable field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBpduGuardPortDisable() bool {
+	if o == nil || IsNil(o.BpduGuardPortDisable) {
+		var ret bool
+		return ret
+	}
+	return *o.BpduGuardPortDisable
+}
+
+// GetBpduGuardPortDisableOk returns a tuple with the BpduGuardPortDisable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetBpduGuardPortDisableOk() (*bool, bool) {
+	if o == nil || IsNil(o.BpduGuardPortDisable) {
+		return nil, false
+	}
+	return o.BpduGuardPortDisable, true
+}
+
+// HasBpduGuardPortDisable returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasBpduGuardPortDisable() bool {
+	if o != nil && !IsNil(o.BpduGuardPortDisable) {
+		return true
+	}
+
+	return false
+}
+
+// SetBpduGuardPortDisable gets a reference to the given bool and assigns it to the BpduGuardPortDisable field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetBpduGuardPortDisable(v bool) {
+	o.BpduGuardPortDisable = &v
 }
 
 // GetBroadcast returns the Broadcast field value if set, zero value otherwise.
@@ -957,6 +1001,38 @@ func (o *EthportsettingsPutRequestEthPortSettingsValue) HasGuardLoop() bool {
 // SetGuardLoop gets a reference to the given bool and assigns it to the GuardLoop field.
 func (o *EthportsettingsPutRequestEthPortSettingsValue) SetGuardLoop(v bool) {
 	o.GuardLoop = &v
+}
+
+// GetGuardRoot returns the GuardRoot field value if set, zero value otherwise.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetGuardRoot() bool {
+	if o == nil || IsNil(o.GuardRoot) {
+		var ret bool
+		return ret
+	}
+	return *o.GuardRoot
+}
+
+// GetGuardRootOk returns a tuple with the GuardRoot field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) GetGuardRootOk() (*bool, bool) {
+	if o == nil || IsNil(o.GuardRoot) {
+		return nil, false
+	}
+	return o.GuardRoot, true
+}
+
+// HasGuardRoot returns a boolean if a field has been set.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) HasGuardRoot() bool {
+	if o != nil && !IsNil(o.GuardRoot) {
+		return true
+	}
+
+	return false
+}
+
+// SetGuardRoot gets a reference to the given bool and assigns it to the GuardRoot field.
+func (o *EthportsettingsPutRequestEthPortSettingsValue) SetGuardRoot(v bool) {
+	o.GuardRoot = &v
 }
 
 // GetLldpEnable returns the LldpEnable field value if set, zero value otherwise.
@@ -1974,6 +2050,9 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]inter
 	if !IsNil(o.BpduGuard) {
 		toSerialize["bpdu_guard"] = o.BpduGuard
 	}
+	if !IsNil(o.BpduGuardPortDisable) {
+		toSerialize["bpdu_guard_port_disable"] = o.BpduGuardPortDisable
+	}
 	if !IsNil(o.Broadcast) {
 		toSerialize["broadcast"] = o.Broadcast
 	}
@@ -2012,6 +2091,9 @@ func (o EthportsettingsPutRequestEthPortSettingsValue) ToMap() (map[string]inter
 	}
 	if !IsNil(o.GuardLoop) {
 		toSerialize["guard_loop"] = o.GuardLoop
+	}
+	if !IsNil(o.GuardRoot) {
+		toSerialize["guard_root"] = o.GuardRoot
 	}
 	if !IsNil(o.LldpEnable) {
 		toSerialize["lldp_enable"] = o.LldpEnable

@@ -114,6 +114,8 @@
           "traffic_mirror_num_destination_port": "",
           "traffic_mirror_num_enable": true,
           "traffic_mirror_num_inbound_traffic": true,
+          "traffic_mirror_num_monitoring_acl": "",
+          "traffic_mirror_num_monitoring_acl_ref_type_": "",
           "traffic_mirror_num_outbound_traffic": true,
           "traffic_mirror_num_source_lag_indicator": true,
           "traffic_mirror_num_source_port": ""

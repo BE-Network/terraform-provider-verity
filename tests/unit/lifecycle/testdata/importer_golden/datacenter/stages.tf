@@ -97,8 +97,22 @@ resource "verity_operation_stage" "service_stage" {
   }
 }
 
-resource "verity_operation_stage" "fabric_stage" {
+resource "verity_operation_stage" "monitoring_acl_stage" {
   depends_on = [verity_operation_stage.service_stage]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "verity_operation_stage" "fabric_collection_stage" {
+  depends_on = [verity_operation_stage.monitoring_acl_stage]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "verity_operation_stage" "fabric_stage" {
+  depends_on = [verity_operation_stage.fabric_collection_stage]
   lifecycle {
     create_before_destroy = true
   }

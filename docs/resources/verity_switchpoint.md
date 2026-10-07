@@ -118,6 +118,8 @@ resource "verity_switchpoint" "example" {
     traffic_mirror_num_destination_port = ""
     traffic_mirror_num_enable = false
     traffic_mirror_num_inbound_traffic = false
+    traffic_mirror_num_monitoring_acl = ""
+    traffic_mirror_num_monitoring_acl_ref_type_ = "monitoring_acl"
     traffic_mirror_num_outbound_traffic = false
     traffic_mirror_num_source_lag_indicator = false
     traffic_mirror_num_source_port = ""
@@ -236,6 +238,8 @@ resource "verity_switchpoint" "example" {
     traffic_mirror_num_destination_port = ""
     traffic_mirror_num_enable = false
     traffic_mirror_num_inbound_traffic = false
+    traffic_mirror_num_monitoring_acl = ""
+    traffic_mirror_num_monitoring_acl_ref_type_ = "monitoring_acl"
     traffic_mirror_num_outbound_traffic = false
     traffic_mirror_num_source_lag_indicator = false
     traffic_mirror_num_source_port = ""
@@ -369,6 +373,8 @@ resource "verity_switchpoint" "example" {
   * `traffic_mirror_num_destination_port` (String) - Destination Port for Traffic Mirror.
   * `traffic_mirror_num_enable` (Boolean) - Enable Traffic Mirror.
   * `traffic_mirror_num_inbound_traffic` (Boolean) - Boolean value indicating if the mirror is for inbound traffic.
+  * `traffic_mirror_num_monitoring_acl` (String) - Monitoring ACL whose Service VLANs are mirrored for this Traffic Mirror. Set together with `traffic_mirror_num_monitoring_acl_ref_type_`.
+  * `traffic_mirror_num_monitoring_acl_ref_type_` (String) - Object type for traffic_mirror_num_monitoring_acl field.
   * `traffic_mirror_num_outbound_traffic` (Boolean) - Boolean value indicating if the mirror is for outbound traffic.
   * `traffic_mirror_num_source_lag_indicator` (Boolean) - Source LAG Indicator for Traffic Mirror.
   * `traffic_mirror_num_source_port` (String) - Source Port for Traffic Mirror.
@@ -400,6 +406,7 @@ A reference names another Verity object. Set the reference and its type field to
 | `su` | `su_ref_type_` | `su` |
 | `switch` | `switch_ref_type_` | `switchpoint` |
 | `tenant` | `tenant_ref_type_` | `tenant` |
+| `traffic_mirrors.traffic_mirror_num_monitoring_acl` | `traffic_mirror_num_monitoring_acl_ref_type_` | `monitoring_acl` |
 
 ## Auto-Assigned Fields
 

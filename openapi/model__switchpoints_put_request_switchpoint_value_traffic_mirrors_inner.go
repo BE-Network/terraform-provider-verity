@@ -1,7 +1,7 @@
 /*
-Verity API
+Manager system API
 
-This application demonstrates the usage of Verity API.
+This application demonstrates the usage of Manager system API.
 
 API version: 6.6
 */
@@ -27,6 +27,10 @@ type SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner struct {
 	TrafficMirrorNumEnable *bool `json:"traffic_mirror_num_enable,omitempty"`
 	// Boolean value indicating if the mirror is for inbound traffic
 	TrafficMirrorNumInboundTraffic *bool `json:"traffic_mirror_num_inbound_traffic,omitempty"`
+	// Monitoring ACL whose Service VLANs are mirrored for this Traffic Mirror
+	TrafficMirrorNumMonitoringAcl *string `json:"traffic_mirror_num_monitoring_acl,omitempty"`
+	// Object type for traffic_mirror_num_monitoring_acl field
+	TrafficMirrorNumMonitoringAclRefType *string `json:"traffic_mirror_num_monitoring_acl_ref_type_,omitempty"`
 	// Boolean value indicating if the mirror is for outbound traffic
 	TrafficMirrorNumOutboundTraffic *bool `json:"traffic_mirror_num_outbound_traffic,omitempty"`
 	// Source LAG Indicator for Traffic Mirror
@@ -47,6 +51,8 @@ func NewSwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner() *Switchpoint
 	this.TrafficMirrorNumEnable = &trafficMirrorNumEnable
 	var trafficMirrorNumInboundTraffic bool = false
 	this.TrafficMirrorNumInboundTraffic = &trafficMirrorNumInboundTraffic
+	var trafficMirrorNumMonitoringAcl string = ""
+	this.TrafficMirrorNumMonitoringAcl = &trafficMirrorNumMonitoringAcl
 	var trafficMirrorNumOutboundTraffic bool = false
 	this.TrafficMirrorNumOutboundTraffic = &trafficMirrorNumOutboundTraffic
 	var trafficMirrorNumSourceLagIndicator bool = false
@@ -67,6 +73,8 @@ func NewSwitchpointsPutRequestSwitchpointValueTrafficMirrorsInnerWithDefaults() 
 	this.TrafficMirrorNumEnable = &trafficMirrorNumEnable
 	var trafficMirrorNumInboundTraffic bool = false
 	this.TrafficMirrorNumInboundTraffic = &trafficMirrorNumInboundTraffic
+	var trafficMirrorNumMonitoringAcl string = ""
+	this.TrafficMirrorNumMonitoringAcl = &trafficMirrorNumMonitoringAcl
 	var trafficMirrorNumOutboundTraffic bool = false
 	this.TrafficMirrorNumOutboundTraffic = &trafficMirrorNumOutboundTraffic
 	var trafficMirrorNumSourceLagIndicator bool = false
@@ -204,6 +212,70 @@ func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetTrafficMi
 	o.TrafficMirrorNumInboundTraffic = &v
 }
 
+// GetTrafficMirrorNumMonitoringAcl returns the TrafficMirrorNumMonitoringAcl field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumMonitoringAcl() string {
+	if o == nil || IsNil(o.TrafficMirrorNumMonitoringAcl) {
+		var ret string
+		return ret
+	}
+	return *o.TrafficMirrorNumMonitoringAcl
+}
+
+// GetTrafficMirrorNumMonitoringAclOk returns a tuple with the TrafficMirrorNumMonitoringAcl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumMonitoringAclOk() (*string, bool) {
+	if o == nil || IsNil(o.TrafficMirrorNumMonitoringAcl) {
+		return nil, false
+	}
+	return o.TrafficMirrorNumMonitoringAcl, true
+}
+
+// HasTrafficMirrorNumMonitoringAcl returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) HasTrafficMirrorNumMonitoringAcl() bool {
+	if o != nil && !IsNil(o.TrafficMirrorNumMonitoringAcl) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrafficMirrorNumMonitoringAcl gets a reference to the given string and assigns it to the TrafficMirrorNumMonitoringAcl field.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetTrafficMirrorNumMonitoringAcl(v string) {
+	o.TrafficMirrorNumMonitoringAcl = &v
+}
+
+// GetTrafficMirrorNumMonitoringAclRefType returns the TrafficMirrorNumMonitoringAclRefType field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumMonitoringAclRefType() string {
+	if o == nil || IsNil(o.TrafficMirrorNumMonitoringAclRefType) {
+		var ret string
+		return ret
+	}
+	return *o.TrafficMirrorNumMonitoringAclRefType
+}
+
+// GetTrafficMirrorNumMonitoringAclRefTypeOk returns a tuple with the TrafficMirrorNumMonitoringAclRefType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumMonitoringAclRefTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.TrafficMirrorNumMonitoringAclRefType) {
+		return nil, false
+	}
+	return o.TrafficMirrorNumMonitoringAclRefType, true
+}
+
+// HasTrafficMirrorNumMonitoringAclRefType returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) HasTrafficMirrorNumMonitoringAclRefType() bool {
+	if o != nil && !IsNil(o.TrafficMirrorNumMonitoringAclRefType) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrafficMirrorNumMonitoringAclRefType gets a reference to the given string and assigns it to the TrafficMirrorNumMonitoringAclRefType field.
+func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) SetTrafficMirrorNumMonitoringAclRefType(v string) {
+	o.TrafficMirrorNumMonitoringAclRefType = &v
+}
+
 // GetTrafficMirrorNumOutboundTraffic returns the TrafficMirrorNumOutboundTraffic field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) GetTrafficMirrorNumOutboundTraffic() bool {
 	if o == nil || IsNil(o.TrafficMirrorNumOutboundTraffic) {
@@ -321,6 +393,12 @@ func (o SwitchpointsPutRequestSwitchpointValueTrafficMirrorsInner) ToMap() (map[
 	}
 	if !IsNil(o.TrafficMirrorNumInboundTraffic) {
 		toSerialize["traffic_mirror_num_inbound_traffic"] = o.TrafficMirrorNumInboundTraffic
+	}
+	if !IsNil(o.TrafficMirrorNumMonitoringAcl) {
+		toSerialize["traffic_mirror_num_monitoring_acl"] = o.TrafficMirrorNumMonitoringAcl
+	}
+	if !IsNil(o.TrafficMirrorNumMonitoringAclRefType) {
+		toSerialize["traffic_mirror_num_monitoring_acl_ref_type_"] = o.TrafficMirrorNumMonitoringAclRefType
 	}
 	if !IsNil(o.TrafficMirrorNumOutboundTraffic) {
 		toSerialize["traffic_mirror_num_outbound_traffic"] = o.TrafficMirrorNumOutboundTraffic

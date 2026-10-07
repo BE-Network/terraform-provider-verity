@@ -89,6 +89,18 @@ import {
   id = "service_test1"
 }
 
+# verity_monitoring_acl imports
+import {
+  to = verity_monitoring_acl.test
+  id = "test"
+}
+
+# verity_fabric_collection imports
+import {
+  to = verity_fabric_collection.test
+  id = "test"
+}
+
 # verity_fabric imports
 import {
   to = verity_fabric.TOR_Complex
@@ -295,6 +307,16 @@ import {
 
 import {
   to = verity_operation_stage.service_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.monitoring_acl_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.fabric_collection_stage
   id = "stage"
 }
 

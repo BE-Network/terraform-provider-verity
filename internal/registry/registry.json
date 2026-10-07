@@ -17,6 +17,7 @@
     "/ethportprofiles",
     "/ethportsettings",
     "/extendedcommunitylists",
+    "/fabriccollections",
     "/fabrics",
     "/gatewayprofiles",
     "/gateways",
@@ -28,6 +29,8 @@
     "/lags",
     "/ldapprofiles",
     "/macfilters",
+    "/monitoringacls",
+    "/nacportprofiles",
     "/packetbroker",
     "/packetqueues",
     "/pairs",
@@ -452,11 +455,11 @@
       "import_stages": {
         "campus": {
           "name": "device_aaa_profile_stage",
-          "order": 12
+          "order": 13
         },
         "datacenter": {
           "name": "device_aaa_profile_stage",
-          "order": 23
+          "order": 25
         }
       },
       "modes": [
@@ -1952,6 +1955,34 @@
             },
             {
               "access": "optional_computed",
+              "api_name": "eth_port_profile_num_failed_action_set",
+              "create_null": "omit",
+              "description": "Flag indicating this Eth Port Profile is the Failed Action",
+              "kind": "bool",
+              "modes": [
+                "campus"
+              ],
+              "nullable": false,
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "eth_port_profile_num_failed_action_set",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "false",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            },
+            {
+              "access": "optional_computed",
               "api_name": "eth_port_profile_num_radius_filter_id",
               "create_null": "omit",
               "description": "The value of filter-id in the RADIUS response which will evoke this Eth Port Profile",
@@ -1982,7 +2013,7 @@
               "access": "optional_computed",
               "api_name": "eth_port_profile_num_walled_garden_set",
               "create_null": "omit",
-              "description": "Flag indicating this Eth Port Profile is the Walled Garden",
+              "description": "Flag indicating this Eth Port Profile is the Walled Garden. Will apply to the \"No response\" case if supported",
               "kind": "bool",
               "modes": [
                 "campus"
@@ -2237,7 +2268,7 @@
       "import_stages": {
         "campus": {
           "name": "authenticated_eth_port_stage",
-          "order": 16
+          "order": 19
         }
       },
       "modes": [
@@ -2471,11 +2502,11 @@
       "import_stages": {
         "campus": {
           "name": "badge_stage",
-          "order": 24
+          "order": 27
         },
         "datacenter": {
           "name": "badge_stage",
-          "order": 35
+          "order": 37
         }
       },
       "modes": [
@@ -2866,9 +2897,9 @@
                   "eth_port_profile_",
                   "lag",
                   "nac_port_profile",
+                  "olag",
                   "pb_egress_profile",
-                  "service_port_profile",
-                  "type"
+                  "service_port_profile"
                 ],
                 "type_field": "eth_port_num_eth_port_profile_ref_type_"
               },
@@ -3837,11 +3868,11 @@
       "import_stages": {
         "campus": {
           "name": "bundle_stage",
-          "order": 23
+          "order": 26
         },
         "datacenter": {
           "name": "bundle_stage",
-          "order": 39
+          "order": 41
         }
       },
       "modes": [
@@ -5440,11 +5471,11 @@
       "import_stages": {
         "campus": {
           "name": "device_settings_stage",
-          "order": 17
+          "order": 20
         },
         "datacenter": {
           "name": "device_settings_stage",
-          "order": 30
+          "order": 32
         }
       },
       "modes": [
@@ -7379,7 +7410,7 @@
       "import_stages": {
         "campus": {
           "name": "device_voice_setting_stage",
-          "order": 20
+          "order": 23
         }
       },
       "modes": [
@@ -7520,11 +7551,11 @@
       "import_stages": {
         "campus": {
           "name": "diagnostics_port_profile_stage",
-          "order": 22
+          "order": 25
         },
         "datacenter": {
           "name": "diagnostics_port_profile_stage",
-          "order": 29
+          "order": 31
         }
       },
       "modes": [
@@ -8026,11 +8057,11 @@
       "import_stages": {
         "campus": {
           "name": "diagnostics_profile_stage",
-          "order": 15
+          "order": 17
         },
         "datacenter": {
           "name": "diagnostics_profile_stage",
-          "order": 32
+          "order": 34
         }
       },
       "modes": [
@@ -8943,11 +8974,11 @@
       "import_stages": {
         "campus": {
           "name": "eth_port_profile_stage",
-          "order": 10
+          "order": 11
         },
         "datacenter": {
           "name": "eth_port_profile_stage",
-          "order": 24
+          "order": 26
         }
       },
       "modes": [
@@ -9215,6 +9246,35 @@
           "sensitive": false,
           "state_ownership": "configuration_or_server",
           "terraform_name": "bpdu_guard",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "false",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "bpdu_guard_port_disable",
+          "create_null": "omit",
+          "description": "Force port shutdown/disable when BPDU packets are detected",
+          "kind": "bool",
+          "modes": [
+            "campus",
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "bpdu_guard_port_disable",
           "unknown_plan": "omit_and_read",
           "update_clear": "false",
           "versions": {
@@ -9588,6 +9648,35 @@
           "sensitive": false,
           "state_ownership": "configuration_or_server",
           "terraform_name": "guard_loop",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "false",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "guard_root",
+          "create_null": "omit",
+          "description": "Enable Guard Root",
+          "kind": "bool",
+          "modes": [
+            "campus",
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "guard_root",
           "unknown_plan": "omit_and_read",
           "update_clear": "false",
           "versions": {
@@ -10590,11 +10679,11 @@
       "import_stages": {
         "campus": {
           "name": "eth_port_settings_stage",
-          "order": 21
+          "order": 24
         },
         "datacenter": {
           "name": "eth_port_settings_stage",
-          "order": 34
+          "order": 36
         }
       },
       "modes": [
@@ -12058,6 +12147,62 @@
         },
         {
           "access": "optional_computed",
+          "api_name": "maximum_ebgp_paths",
+          "create_null": "api_null",
+          "description": "Maximum number of equal-cost eBGP paths",
+          "kind": "int64",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": true,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "maximum_ebgp_paths",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "api_null",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "maximum_ebgp_paths_mode",
+          "create_null": "omit",
+          "description": "Configure the maximum number of eBGP paths automatically or manually",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "maximum_ebgp_paths_mode",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
           "api_name": "mlag_delay_restore_timer",
           "create_null": "api_null",
           "description": "MLAG Delay Restore Timer (minimum: 1, maximum: 3600)",
@@ -13158,11 +13303,11 @@
       "import_stages": {
         "campus": {
           "name": "fabric_stage",
-          "order": 13
+          "order": 15
         },
         "datacenter": {
           "name": "fabric_stage",
-          "order": 15
+          "order": 17
         }
       },
       "modes": [
@@ -13177,6 +13322,123 @@
       },
       "schema_version": 0,
       "terraform_type": "verity_fabric",
+      "versions": {
+        "max_exclusive": {
+          "major": 6,
+          "minor": 7
+        },
+        "min_inclusive": {
+          "major": 6,
+          "minor": 6
+        }
+      }
+    },
+    {
+      "api": {
+        "bulk_key": "site_collection",
+        "cache_key": "fabric_collections",
+        "delete_parameter": "site_collection_name",
+        "endpoint_path": "/fabriccollections",
+        "request_wrapper_key": "site_collection",
+        "response_collection_key": "site_collection"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 175,
+          "patch": 115,
+          "put": 105
+        },
+        "datacenter": {
+          "delete": 315,
+          "patch": 135,
+          "put": 125
+        }
+      },
+      "dependencies": {},
+      "description": "Manages a Verity Fabric Collection",
+      "fields": [
+        {
+          "access": "optional_computed",
+          "api_name": "enable",
+          "create_null": "omit",
+          "description": "Enable object.",
+          "kind": "bool",
+          "modes": [
+            "campus",
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "enable",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "false",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "required",
+          "api_name": "name",
+          "create_null": "reject",
+          "description": "Template Name. Must be unique within type.",
+          "kind": "string",
+          "modes": [
+            "campus",
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": true,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration",
+          "terraform_name": "name",
+          "unknown_plan": "reject",
+          "update_clear": "reject",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        }
+      ],
+      "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "fabric_collection_stage",
+          "order": 14
+        },
+        "datacenter": {
+          "name": "fabric_collection_stage",
+          "order": 16
+        }
+      },
+      "modes": [
+        "campus",
+        "datacenter"
+      ],
+      "operations": {
+        "create": true,
+        "delete": true,
+        "read": true,
+        "update": true
+      },
+      "schema_version": 0,
+      "terraform_type": "verity_fabric_collection",
       "versions": {
         "max_exclusive": {
           "major": 6,
@@ -14616,7 +14878,7 @@
       "import_stages": {
         "datacenter": {
           "name": "gateway_stage",
-          "order": 27
+          "order": 29
         }
       },
       "modes": [
@@ -14931,7 +15193,7 @@
       "import_stages": {
         "datacenter": {
           "name": "gateway_profile_stage",
-          "order": 33
+          "order": 35
         }
       },
       "modes": [
@@ -15245,9 +15507,9 @@
                   "grouping_rules",
                   "lag",
                   "nac_port_profile",
+                  "olag",
                   "pod",
-                  "service_port_profile",
-                  "type"
+                  "service_port_profile"
                 ],
                 "type_field": "rule_value_path_ref_type_"
               },
@@ -15357,11 +15619,11 @@
       "import_stages": {
         "campus": {
           "name": "grouping_rule_stage",
-          "order": 25
+          "order": 28
         },
         "datacenter": {
           "name": "grouping_rule_stage",
-          "order": 41
+          "order": 43
         }
       },
       "modes": [
@@ -15495,7 +15757,7 @@
       "import_stages": {
         "datacenter": {
           "name": "ipv4_list_stage",
-          "order": 20
+          "order": 22
         }
       },
       "modes": [
@@ -15999,7 +16261,7 @@
       "import_stages": {
         "datacenter": {
           "name": "ipv6_list_stage",
-          "order": 19
+          "order": 21
         }
       },
       "modes": [
@@ -16879,11 +17141,11 @@
       "import_stages": {
         "campus": {
           "name": "lag_stage",
-          "order": 19
+          "order": 22
         },
         "datacenter": {
           "name": "lag_stage",
-          "order": 31
+          "order": 33
         }
       },
       "modes": [
@@ -18202,11 +18464,11 @@
       "import_stages": {
         "campus": {
           "name": "ldap_profile_stage",
-          "order": 8
+          "order": 9
         },
         "datacenter": {
           "name": "ldap_profile_stage",
-          "order": 17
+          "order": 19
         }
       },
       "modes": [
@@ -18502,6 +18764,603 @@
       },
       "schema_version": 0,
       "terraform_type": "verity_mac_filter",
+      "versions": {
+        "max_exclusive": {
+          "major": 6,
+          "minor": 7
+        },
+        "min_inclusive": {
+          "major": 6,
+          "minor": 6
+        }
+      }
+    },
+    {
+      "api": {
+        "bulk_key": "monitoring_acl",
+        "cache_key": "monitoring_acls",
+        "delete_parameter": "monitoring_acl_name",
+        "endpoint_path": "/monitoringacls",
+        "request_wrapper_key": "monitoring_acl",
+        "response_collection_key": "monitoring_acl"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 245,
+          "patch": 45,
+          "put": 35
+        },
+        "datacenter": {
+          "delete": 319,
+          "patch": 131,
+          "put": 121
+        }
+      },
+      "dependencies": {},
+      "description": "Manages a Verity Monitoring ACL",
+      "fields": [
+        {
+          "access": "optional_computed",
+          "api_name": "enable",
+          "create_null": "omit",
+          "description": "Enable object.",
+          "kind": "bool",
+          "modes": [
+            "campus",
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "enable",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "false",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "required",
+          "api_name": "name",
+          "create_null": "reject",
+          "description": "Template Name. Must be unique within type.",
+          "kind": "string",
+          "modes": [
+            "campus",
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": true,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration",
+          "terraform_name": "name",
+          "unknown_plan": "reject",
+          "update_clear": "reject",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional",
+          "api_name": "services",
+          "collection": {
+            "identity_field": "index",
+            "ordering": "ordered",
+            "strategy": "indexed_patch"
+          },
+          "create_null": "omit",
+          "description": "Services selected for traffic monitoring",
+          "element_kind": "object",
+          "fields": [
+            {
+              "access": "optional_computed",
+              "api_name": "enable",
+              "create_null": "omit",
+              "description": "Enable this service entry",
+              "kind": "bool",
+              "modes": [
+                "campus",
+                "datacenter"
+              ],
+              "nullable": false,
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "enable",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "false",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            },
+            {
+              "access": "optional_computed",
+              "api_name": "index",
+              "create_null": "omit",
+              "description": "The index identifying the object. Zero if you want to add an object to the list.",
+              "kind": "int64",
+              "modes": [
+                "campus",
+                "datacenter"
+              ],
+              "nullable": false,
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "index",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "zero",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            },
+            {
+              "access": "optional_computed",
+              "api_name": "service",
+              "create_null": "omit",
+              "description": "Service whose VLAN traffic will be selected for monitoring",
+              "kind": "string",
+              "modes": [
+                "campus",
+                "datacenter"
+              ],
+              "nullable": false,
+              "reference": {
+                "allowed_types": [
+                  "service"
+                ],
+                "type_field": "service_ref_type_"
+              },
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "service",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "empty_string",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            },
+            {
+              "access": "optional_computed",
+              "api_name": "service_ref_type_",
+              "create_null": "omit",
+              "description": "Object type for service field",
+              "kind": "string",
+              "modes": [
+                "campus",
+                "datacenter"
+              ],
+              "nullable": false,
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "service_ref_type_",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "empty_string",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            }
+          ],
+          "kind": "list",
+          "modes": [
+            "campus",
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration",
+          "terraform_name": "services",
+          "unknown_plan": "reject",
+          "update_clear": "omit",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        }
+      ],
+      "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "monitoring_acl_stage",
+          "order": 6
+        },
+        "datacenter": {
+          "name": "monitoring_acl_stage",
+          "order": 15
+        }
+      },
+      "modes": [
+        "campus",
+        "datacenter"
+      ],
+      "operations": {
+        "create": true,
+        "delete": true,
+        "read": true,
+        "update": true
+      },
+      "schema_version": 0,
+      "terraform_type": "verity_monitoring_acl",
+      "versions": {
+        "max_exclusive": {
+          "major": 6,
+          "minor": 7
+        },
+        "min_inclusive": {
+          "major": 6,
+          "minor": 6
+        }
+      }
+    },
+    {
+      "api": {
+        "bulk_key": "nac_port_profile",
+        "cache_key": "nac_port_profiles",
+        "delete_parameter": "nac_port_profile_name",
+        "endpoint_path": "/nacportprofiles",
+        "request_wrapper_key": "nac_port_profile",
+        "response_collection_key": "nac_port_profile"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 145,
+          "patch": 145,
+          "put": 135
+        }
+      },
+      "dependencies": {},
+      "description": "Manages a Verity NAC Port Profile",
+      "fields": [
+        {
+          "access": "optional_computed",
+          "api_name": "enable",
+          "create_null": "omit",
+          "description": "Enable object.",
+          "kind": "bool",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "enable",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "false",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional",
+          "api_name": "eth_ports",
+          "collection": {
+            "identity_field": "index",
+            "ordering": "ordered",
+            "strategy": "indexed_patch"
+          },
+          "create_null": "omit",
+          "description": "Ethernet port profiles used for network access control",
+          "element_kind": "object",
+          "fields": [
+            {
+              "access": "optional_computed",
+              "api_name": "eth_port_profile_num_enable",
+              "create_null": "omit",
+              "description": "Enable row",
+              "kind": "bool",
+              "modes": [
+                "campus"
+              ],
+              "nullable": false,
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "eth_port_profile_num_enable",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "false",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            },
+            {
+              "access": "optional_computed",
+              "api_name": "eth_port_profile_num_eth_port",
+              "create_null": "omit",
+              "description": "Choose an Eth Port Profile",
+              "kind": "string",
+              "modes": [
+                "campus"
+              ],
+              "nullable": false,
+              "reference": {
+                "allowed_types": [
+                  "eth_port_profile_"
+                ],
+                "type_field": "eth_port_profile_num_eth_port_ref_type_"
+              },
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "eth_port_profile_num_eth_port",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "empty_string",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            },
+            {
+              "access": "optional_computed",
+              "api_name": "eth_port_profile_num_eth_port_ref_type_",
+              "create_null": "omit",
+              "description": "Object type for eth_port_profile_num_eth_port field",
+              "kind": "string",
+              "modes": [
+                "campus"
+              ],
+              "nullable": false,
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "eth_port_profile_num_eth_port_ref_type_",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "empty_string",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            },
+            {
+              "access": "optional_computed",
+              "api_name": "index",
+              "create_null": "omit",
+              "description": "The index identifying the object. Zero if you want to add an object to the list.",
+              "kind": "int64",
+              "modes": [
+                "campus"
+              ],
+              "nullable": false,
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "index",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "zero",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            }
+          ],
+          "kind": "list",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration",
+          "terraform_name": "eth_ports",
+          "unknown_plan": "reject",
+          "update_clear": "omit",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "required",
+          "api_name": "name",
+          "create_null": "reject",
+          "description": "Template Name. Must be unique within type.",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "replace": true,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration",
+          "terraform_name": "name",
+          "unknown_plan": "reject",
+          "update_clear": "reject",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional",
+          "api_name": "object_properties",
+          "collection": {
+            "ordering": "ordered",
+            "strategy": "singleton"
+          },
+          "create_null": "omit",
+          "description": "Object properties for the NAC port profile",
+          "fields": [
+            {
+              "access": "optional_computed",
+              "api_name": "port_monitoring",
+              "create_null": "omit",
+              "description": "Defines importance of Link Down on this port",
+              "kind": "string",
+              "modes": [
+                "campus"
+              ],
+              "nullable": false,
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "port_monitoring",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "omit",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            }
+          ],
+          "kind": "object",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration",
+          "terraform_name": "object_properties",
+          "unknown_plan": "reject",
+          "update_clear": "omit",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        }
+      ],
+      "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "nac_port_profile_stage",
+          "order": 18
+        }
+      },
+      "modes": [
+        "campus"
+      ],
+      "operations": {
+        "create": true,
+        "delete": true,
+        "read": true,
+        "update": true
+      },
+      "schema_version": 0,
+      "terraform_type": "verity_nac_port_profile",
       "versions": {
         "max_exclusive": {
           "major": 6,
@@ -19213,7 +20072,7 @@
       "import_stages": {
         "datacenter": {
           "name": "packet_broker_stage",
-          "order": 25
+          "order": 27
         }
       },
       "modes": [
@@ -19603,11 +20462,11 @@
       "import_stages": {
         "campus": {
           "name": "packet_queue_stage",
-          "order": 11
+          "order": 12
         },
         "datacenter": {
           "name": "packet_queue_stage",
-          "order": 22
+          "order": 24
         }
       },
       "modes": [
@@ -19941,11 +20800,11 @@
       "import_stages": {
         "campus": {
           "name": "pair_stage",
-          "order": 29
+          "order": 32
         },
         "datacenter": {
           "name": "pair_stage",
-          "order": 45
+          "order": 47
         }
       },
       "modes": [
@@ -21239,7 +22098,7 @@
       "import_stages": {
         "datacenter": {
           "name": "plane_stage",
-          "order": 36
+          "order": 38
         }
       },
       "modes": [
@@ -21524,7 +22383,7 @@
       "import_stages": {
         "datacenter": {
           "name": "pod_stage",
-          "order": 21
+          "order": 23
         }
       },
       "modes": [
@@ -22272,11 +23131,11 @@
       "import_stages": {
         "campus": {
           "name": "port_acl_stage",
-          "order": 6
+          "order": 7
         },
         "datacenter": {
           "name": "port_acl_stage",
-          "order": 18
+          "order": 20
         }
       },
       "modes": [
@@ -22534,7 +23393,7 @@
       "import_stages": {
         "datacenter": {
           "name": "rack_stage",
-          "order": 38
+          "order": 40
         }
       },
       "modes": [
@@ -25500,7 +26359,7 @@
       "import_stages": {
         "campus": {
           "name": "service_port_profile_stage",
-          "order": 14
+          "order": 16
         }
       },
       "modes": [
@@ -25670,11 +26529,11 @@
       "import_stages": {
         "campus": {
           "name": "sflow_collector_stage",
-          "order": 9
+          "order": 10
         },
         "datacenter": {
           "name": "sflow_collector_stage",
-          "order": 26
+          "order": 28
         }
       },
       "modes": [
@@ -26203,7 +27062,7 @@
       "import_stages": {
         "datacenter": {
           "name": "spine_plane_stage",
-          "order": 37
+          "order": 39
         }
       },
       "modes": [
@@ -26460,7 +27319,7 @@
       "import_stages": {
         "datacenter": {
           "name": "ssp_group_stage",
-          "order": 40
+          "order": 42
         }
       },
       "modes": [
@@ -26717,7 +27576,7 @@
       "import_stages": {
         "datacenter": {
           "name": "su_stage",
-          "order": 28
+          "order": 30
         }
       },
       "modes": [
@@ -30313,6 +31172,70 @@
             },
             {
               "access": "optional_computed",
+              "api_name": "traffic_mirror_num_monitoring_acl",
+              "create_null": "omit",
+              "description": "Monitoring ACL whose Service VLANs are mirrored for this Traffic Mirror",
+              "kind": "string",
+              "modes": [
+                "campus",
+                "datacenter"
+              ],
+              "nullable": false,
+              "reference": {
+                "allowed_types": [
+                  "monitoring_acl"
+                ],
+                "type_field": "traffic_mirror_num_monitoring_acl_ref_type_"
+              },
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "traffic_mirror_num_monitoring_acl",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "empty_string",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            },
+            {
+              "access": "optional_computed",
+              "api_name": "traffic_mirror_num_monitoring_acl_ref_type_",
+              "create_null": "omit",
+              "description": "Object type for traffic_mirror_num_monitoring_acl field",
+              "kind": "string",
+              "modes": [
+                "campus",
+                "datacenter"
+              ],
+              "nullable": false,
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "traffic_mirror_num_monitoring_acl_ref_type_",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "empty_string",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            },
+            {
+              "access": "optional_computed",
               "api_name": "traffic_mirror_num_outbound_traffic",
               "create_null": "omit",
               "description": "Boolean value indicating if the mirror is for outbound traffic",
@@ -30632,11 +31555,11 @@
       "import_stages": {
         "campus": {
           "name": "switchpoint_stage",
-          "order": 26
+          "order": 29
         },
         "datacenter": {
           "name": "switchpoint_stage",
-          "order": 42
+          "order": 44
         }
       },
       "modes": [
@@ -31018,11 +31941,11 @@
       "import_stages": {
         "campus": {
           "name": "tacacs_profile_stage",
-          "order": 7
+          "order": 8
         },
         "datacenter": {
           "name": "tacacs_profile_stage",
-          "order": 16
+          "order": 18
         }
       },
       "modes": [
@@ -31410,6 +32333,62 @@
           "terraform_name": "layer_3_vni_auto_assigned_",
           "unknown_plan": "omit_and_read",
           "update_clear": "false",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "maximum_ebgp_paths",
+          "create_null": "api_null",
+          "description": "Maximum number of equal-cost eBGP paths",
+          "kind": "int64",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": true,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "maximum_ebgp_paths",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "api_null",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "maximum_ebgp_paths_mode",
+          "create_null": "omit",
+          "description": "Configure the maximum number of eBGP paths automatically or manually",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "maximum_ebgp_paths_mode",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
           "versions": {
             "max_exclusive": {
               "major": 6,
@@ -32599,11 +33578,11 @@
       "import_stages": {
         "campus": {
           "name": "threshold_stage",
-          "order": 27
+          "order": 30
         },
         "datacenter": {
           "name": "threshold_stage",
-          "order": 43
+          "order": 45
         }
       },
       "modes": [
@@ -32736,10 +33715,10 @@
               "nullable": false,
               "reference": {
                 "allowed_types": [
+                  "acs",
                   "ai_service",
-                  "switchpoint",
-                  "type",
-                  "type"
+                  "gaia",
+                  "switchpoint"
                 ],
                 "type_field": "element_ref_type_"
               },
@@ -33246,11 +34225,11 @@
       "import_stages": {
         "campus": {
           "name": "threshold_group_stage",
-          "order": 28
+          "order": 31
         },
         "datacenter": {
           "name": "threshold_group_stage",
-          "order": 44
+          "order": 46
         }
       },
       "modes": [
@@ -34342,7 +35321,7 @@
       "import_stages": {
         "campus": {
           "name": "voice_port_profile_stage",
-          "order": 18
+          "order": 21
         }
       },
       "modes": [
@@ -34373,6 +35352,7 @@
     "/backups",
     "/changesets",
     "/config",
+    "/dellome",
     "/imageupdatesets",
     "/radiusserver",
     "/readmode",

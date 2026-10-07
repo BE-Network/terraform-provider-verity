@@ -12,6 +12,8 @@ resource "verity_tenant" "tenant_test1" {
 	import_route_map_ref_type_ = ""
 	layer_3_vlan_auto_assigned_ = true
 	layer_3_vni_auto_assigned_ = true
+	maximum_ebgp_paths = null
+	maximum_ebgp_paths_mode = "automated"
 	route_distinguisher = ""
 	route_target_export = ""
 	route_target_import = ""

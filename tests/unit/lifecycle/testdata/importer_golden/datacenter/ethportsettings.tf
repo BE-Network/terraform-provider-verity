@@ -7,6 +7,7 @@ resource "verity_eth_port_settings" "eth_create_1" {
 	auto_negotiation = true
 	bpdu_filter = true
 	bpdu_guard = true
+	bpdu_guard_port_disable = false
 	broadcast = true
 	bsp_enable = false
 	duplex_mode = "Auto"
@@ -18,6 +19,7 @@ resource "verity_eth_port_settings" "eth_create_1" {
 	fast_learning_mode = true
 	fec = "unaltered"
 	guard_loop = false
+	guard_root = false
 	max_allowed_unit = "pps"
 	max_allowed_value = 1500
 	max_bit_rate = "-1"

@@ -1,0 +1,19 @@
+{
+  "nac_port_profile": {
+    "test": {
+      "name": "test",
+      "enable": true,
+      "eth_ports": [
+        {
+          "index": 1,
+          "eth_port_profile_num_enable": true,
+          "eth_port_profile_num_eth_port": "test",
+          "eth_port_profile_num_eth_port_ref_type_": "eth_port_profile_"
+        }
+      ],
+      "object_properties": {
+        "port_monitoring": "high"
+      }
+    }
+  }
+}

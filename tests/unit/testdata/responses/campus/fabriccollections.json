@@ -1,0 +1,8 @@
+{
+  "site_collection": {
+    "test": {
+      "name": "test",
+      "enable": true
+    }
+  }
+}

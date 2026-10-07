@@ -1,7 +1,7 @@
 /*
-Verity API
+Manager system API
 
-This application demonstrates the usage of Verity API.
+This application demonstrates the usage of Manager system API.
 
 API version: 6.6
 */
@@ -40,7 +40,7 @@ var (
 	queryDescape    = strings.NewReplacer("%5B", "[", "%5D", "]")
 )
 
-// APIClient manages communication with the Verity API API v6.6
+// APIClient manages communication with the Manager system API API v6.6
 // In most cases there should be only one, shared, APIClient.
 type APIClient struct {
 	cfg    *Configuration
@@ -78,6 +78,8 @@ type APIClient struct {
 
 	ExtendedCommunityListsAPI *ExtendedCommunityListsAPIService
 
+	FabricCollectionsAPI *FabricCollectionsAPIService
+
 	FabricsAPI *FabricsAPIService
 
 	GatewayProfilesAPI *GatewayProfilesAPIService
@@ -101,6 +103,10 @@ type APIClient struct {
 	LDAPProfilesAPI *LDAPProfilesAPIService
 
 	MACFiltersAPI *MACFiltersAPIService
+
+	MonitoringACLsAPI *MonitoringACLsAPIService
+
+	NACPortProfilesAPI *NACPortProfilesAPIService
 
 	PBRoutingAPI *PBRoutingAPIService
 
@@ -184,6 +190,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.EthPortProfilesAPI = (*EthPortProfilesAPIService)(&c.common)
 	c.EthPortSettingsAPI = (*EthPortSettingsAPIService)(&c.common)
 	c.ExtendedCommunityListsAPI = (*ExtendedCommunityListsAPIService)(&c.common)
+	c.FabricCollectionsAPI = (*FabricCollectionsAPIService)(&c.common)
 	c.FabricsAPI = (*FabricsAPIService)(&c.common)
 	c.GatewayProfilesAPI = (*GatewayProfilesAPIService)(&c.common)
 	c.GatewaysAPI = (*GatewaysAPIService)(&c.common)
@@ -196,6 +203,8 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.LAGsAPI = (*LAGsAPIService)(&c.common)
 	c.LDAPProfilesAPI = (*LDAPProfilesAPIService)(&c.common)
 	c.MACFiltersAPI = (*MACFiltersAPIService)(&c.common)
+	c.MonitoringACLsAPI = (*MonitoringACLsAPIService)(&c.common)
+	c.NACPortProfilesAPI = (*NACPortProfilesAPIService)(&c.common)
 	c.PBRoutingAPI = (*PBRoutingAPIService)(&c.common)
 	c.PBRoutingACLAPI = (*PBRoutingACLAPIService)(&c.common)
 	c.PacketBrokerAPI = (*PacketBrokerAPIService)(&c.common)

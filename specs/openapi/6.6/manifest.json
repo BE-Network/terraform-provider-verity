@@ -7,18 +7,18 @@
     {
       "file": "campus.json",
       "mode": "campus",
-      "provenance": "Pre-existing workspace OpenAPI export; source date inferred from file modification time.",
-      "sha256": "85b9ceca087c3c9acfe8b9059090872b59678d8a145c1035122e3ee32298117e",
-      "source_export_date": "2026-09-03",
-      "source_sha256": "a430fbae02eba8d971478932c411b72ed1787d5e01e011713f8f763bf8f2b096"
+      "provenance": "User-supplied dc66.json and campus66.json updated on 2026-10-07; monitoring ACL service index corrected following endpoint verification; complete API build not present in exports",
+      "sha256": "8bece21baf0d78cf1749a5fa678fc33fd7c2fb186f1d85b32a0102a2e549311f",
+      "source_export_date": "2026-10-07",
+      "source_sha256": "01e4278d0bbdbda61adaed70c963c4a8e67d7e6fc58c14439a878369b37f6366"
     },
     {
       "file": "datacenter.json",
       "mode": "datacenter",
-      "provenance": "Pre-existing workspace OpenAPI export; source date inferred from file modification time.",
-      "sha256": "f6f8c865f730ed8cf288f63c5ff4f2cf8237941b4e9969ffe37bc551596a02d4",
-      "source_export_date": "2026-09-03",
-      "source_sha256": "33735e1039b93acbe93339bf8eda3cd23d4583f41de78124854e2c8cd74acf5d"
+      "provenance": "User-supplied dc66.json and campus66.json updated on 2026-10-07; monitoring ACL service index corrected following endpoint verification; complete API build not present in exports",
+      "sha256": "b9a0da5c6d3ba40b183e8528a773364cc0d4fc3648402b8c09e2155cbe448bb6",
+      "source_export_date": "2026-10-07",
+      "source_sha256": "a2a75ead841479b0db4b852ff642d9a2d23a8d6b83313c24dfb16f9698ca3997"
     }
   ],
   "volatile_metadata_allowlist": []

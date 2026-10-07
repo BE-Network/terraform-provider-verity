@@ -1,7 +1,7 @@
 /*
-Verity API
+Manager system API
 
-This application demonstrates the usage of Verity API.
+This application demonstrates the usage of Manager system API.
 
 API version: 6.6
 */
@@ -43,6 +43,10 @@ type TenantsPutRequestTenantValue struct {
 	Layer3Vni NullableInt64 `json:"layer_3_vni,omitempty"`
 	// Whether or not the value in layer_3_vni field has been automatically assigned or not. Set to false and change layer_3_vni value to edit.
 	Layer3VniAutoAssigned *bool `json:"layer_3_vni_auto_assigned_,omitempty"`
+	// Maximum number of equal-cost eBGP paths
+	MaximumEbgpPaths NullableInt64 `json:"maximum_ebgp_paths,omitempty"`
+	// Configure the maximum number of eBGP paths automatically or manually
+	MaximumEbgpPathsMode *string `json:"maximum_ebgp_paths_mode,omitempty"`
 	// Template Name. Must be unique within type.
 	Name *string `json:"name,omitempty"`
 	// Route Aggregation configuration for this tenant
@@ -81,6 +85,8 @@ func NewTenantsPutRequestTenantValue() *TenantsPutRequestTenantValue {
 	this.ExportRouteMap = &exportRouteMap
 	var importRouteMap string = ""
 	this.ImportRouteMap = &importRouteMap
+	var maximumEbgpPathsMode string = "automated"
+	this.MaximumEbgpPathsMode = &maximumEbgpPathsMode
 	var name string = ""
 	this.Name = &name
 	var routeAggregation string = ""
@@ -115,6 +121,8 @@ func NewTenantsPutRequestTenantValueWithDefaults() *TenantsPutRequestTenantValue
 	this.ExportRouteMap = &exportRouteMap
 	var importRouteMap string = ""
 	this.ImportRouteMap = &importRouteMap
+	var maximumEbgpPathsMode string = "automated"
+	this.MaximumEbgpPathsMode = &maximumEbgpPathsMode
 	var name string = ""
 	this.Name = &name
 	var routeAggregation string = ""
@@ -538,6 +546,81 @@ func (o *TenantsPutRequestTenantValue) SetLayer3VniAutoAssigned(v bool) {
 	o.Layer3VniAutoAssigned = &v
 }
 
+// GetMaximumEbgpPaths returns the MaximumEbgpPaths field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *TenantsPutRequestTenantValue) GetMaximumEbgpPaths() int64 {
+	if o == nil || IsNil(o.MaximumEbgpPaths.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.MaximumEbgpPaths.Get()
+}
+
+// GetMaximumEbgpPathsOk returns a tuple with the MaximumEbgpPaths field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *TenantsPutRequestTenantValue) GetMaximumEbgpPathsOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MaximumEbgpPaths.Get(), o.MaximumEbgpPaths.IsSet()
+}
+
+// HasMaximumEbgpPaths returns a boolean if a field has been set.
+func (o *TenantsPutRequestTenantValue) HasMaximumEbgpPaths() bool {
+	if o != nil && o.MaximumEbgpPaths.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMaximumEbgpPaths gets a reference to the given NullableInt64 and assigns it to the MaximumEbgpPaths field.
+func (o *TenantsPutRequestTenantValue) SetMaximumEbgpPaths(v int64) {
+	o.MaximumEbgpPaths.Set(&v)
+}
+
+// SetMaximumEbgpPathsNil sets the value for MaximumEbgpPaths to be an explicit nil
+func (o *TenantsPutRequestTenantValue) SetMaximumEbgpPathsNil() {
+	o.MaximumEbgpPaths.Set(nil)
+}
+
+// UnsetMaximumEbgpPaths ensures that no value is present for MaximumEbgpPaths, not even an explicit nil
+func (o *TenantsPutRequestTenantValue) UnsetMaximumEbgpPaths() {
+	o.MaximumEbgpPaths.Unset()
+}
+
+// GetMaximumEbgpPathsMode returns the MaximumEbgpPathsMode field value if set, zero value otherwise.
+func (o *TenantsPutRequestTenantValue) GetMaximumEbgpPathsMode() string {
+	if o == nil || IsNil(o.MaximumEbgpPathsMode) {
+		var ret string
+		return ret
+	}
+	return *o.MaximumEbgpPathsMode
+}
+
+// GetMaximumEbgpPathsModeOk returns a tuple with the MaximumEbgpPathsMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TenantsPutRequestTenantValue) GetMaximumEbgpPathsModeOk() (*string, bool) {
+	if o == nil || IsNil(o.MaximumEbgpPathsMode) {
+		return nil, false
+	}
+	return o.MaximumEbgpPathsMode, true
+}
+
+// HasMaximumEbgpPathsMode returns a boolean if a field has been set.
+func (o *TenantsPutRequestTenantValue) HasMaximumEbgpPathsMode() bool {
+	if o != nil && !IsNil(o.MaximumEbgpPathsMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaximumEbgpPathsMode gets a reference to the given string and assigns it to the MaximumEbgpPathsMode field.
+func (o *TenantsPutRequestTenantValue) SetMaximumEbgpPathsMode(v string) {
+	o.MaximumEbgpPathsMode = &v
+}
+
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *TenantsPutRequestTenantValue) GetName() string {
 	if o == nil || IsNil(o.Name) {
@@ -903,6 +986,12 @@ func (o TenantsPutRequestTenantValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Layer3VniAutoAssigned) {
 		toSerialize["layer_3_vni_auto_assigned_"] = o.Layer3VniAutoAssigned
+	}
+	if o.MaximumEbgpPaths.IsSet() {
+		toSerialize["maximum_ebgp_paths"] = o.MaximumEbgpPaths.Get()
+	}
+	if !IsNil(o.MaximumEbgpPathsMode) {
+		toSerialize["maximum_ebgp_paths_mode"] = o.MaximumEbgpPathsMode
 	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name

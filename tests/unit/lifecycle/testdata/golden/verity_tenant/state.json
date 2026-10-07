@@ -11,6 +11,8 @@
   "layer_3_vlan_auto_assigned_": "false",
   "layer_3_vni": "42",
   "layer_3_vni_auto_assigned_": "false",
+  "maximum_ebgp_paths": "42",
+  "maximum_ebgp_paths_mode": "",
   "name": "cov_tenant",
   "route_aggregation": "",
   "route_aggregators.#": "1",

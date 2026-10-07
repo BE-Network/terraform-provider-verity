@@ -23,6 +23,7 @@ var GeneratedAdapters = map[string]ResourceValueAdapter{
 	"verity_eth_port_settings":        ethPortSettingsAdapter{},
 	"verity_extended_community_list":  extendedCommunityListAdapter{},
 	"verity_fabric":                   fabricAdapter{},
+	"verity_fabric_collection":        fabricCollectionAdapter{},
 	"verity_gateway":                  gatewayAdapter{},
 	"verity_gateway_profile":          gatewayProfileAdapter{},
 	"verity_grouping_rule":            groupingRuleAdapter{},
@@ -33,6 +34,8 @@ var GeneratedAdapters = map[string]ResourceValueAdapter{
 	"verity_lag":                      lagAdapter{},
 	"verity_ldap_profile":             ldapProfileAdapter{},
 	"verity_mac_filter":               macFilterAdapter{},
+	"verity_monitoring_acl":           monitoringAclAdapter{},
+	"verity_nac_port_profile":         nacPortProfileAdapter{},
 	"verity_packet_broker":            packetBrokerAdapter{},
 	"verity_packet_queue":             packetQueueAdapter{},
 	"verity_pair":                     pairAdapter{},
@@ -472,6 +475,10 @@ func authenticatedEthPortEthPortsValue(wire WireValue, target *[]openapi.Authent
 				}
 			case "eth_port_profile_num_eth_port_ref_type_":
 				if err := wireStringPtr(member, &value.EthPortProfileNumEthPortRefType); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "eth_port_profile_num_failed_action_set":
+				if err := wireBoolPtr(member, &value.EthPortProfileNumFailedActionSet); err != nil {
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
 			case "eth_port_profile_num_radius_filter_id":
@@ -1798,6 +1805,10 @@ func (ethPortSettingsAdapter) ResourceValue(object WireObject) (interface{}, err
 			if err := wireBoolPtr(wire, &value.BpduGuard); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
+		case "bpdu_guard_port_disable":
+			if err := wireBoolPtr(wire, &value.BpduGuardPortDisable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
 		case "broadcast":
 			if err := wireBoolPtr(wire, &value.Broadcast); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -1848,6 +1859,10 @@ func (ethPortSettingsAdapter) ResourceValue(object WireObject) (interface{}, err
 			}
 		case "guard_loop":
 			if err := wireBoolPtr(wire, &value.GuardLoop); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "guard_root":
+			if err := wireBoolPtr(wire, &value.GuardRoot); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "lldp_enable":
@@ -2264,6 +2279,14 @@ func (fabricAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireStringPtr(wire, &value.MaxSwitches); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
+		case "maximum_ebgp_paths":
+			if err := wireNullableInt64(wire, &value.MaximumEbgpPaths); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "maximum_ebgp_paths_mode":
+			if err := wireStringPtr(wire, &value.MaximumEbgpPathsMode); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
 		case "mlag_delay_restore_timer":
 			if err := wireNullableInt64(wire, &value.MlagDelayRestoreTimer); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -2481,6 +2504,27 @@ func fabricRouteAggregatorsValue(wire WireValue, target *[]openapi.FabricsPutReq
 	}
 	*target = values
 	return nil
+}
+
+type fabricCollectionAdapter struct{}
+
+func (fabricCollectionAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.FabriccollectionsPutRequestSiteCollectionValue
+	for name, wire := range object {
+		switch name {
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return nil, fmt.Errorf("FabriccollectionsPutRequestSiteCollectionValue has no field %q", name)
+		}
+	}
+	return value, nil
 }
 
 type gatewayAdapter struct{}
@@ -3502,6 +3546,160 @@ func macFilterFiltersValue(wire WireValue, target *[]openapi.MacfiltersPutReques
 		values = append(values, value)
 	}
 	*target = values
+	return nil
+}
+
+type monitoringAclAdapter struct{}
+
+func (monitoringAclAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.MonitoringaclsPutRequestMonitoringAclValue
+	for name, wire := range object {
+		switch name {
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "services":
+			if err := monitoringAclServicesValue(wire, &value.Services); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return nil, fmt.Errorf("MonitoringaclsPutRequestMonitoringAclValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func monitoringAclServicesValue(wire WireValue, target *[]openapi.MonitoringaclsPutRequestMonitoringAclValueServicesInner) error {
+	entries, err := wireList(wire)
+	if err != nil {
+		return err
+	}
+	values := make([]openapi.MonitoringaclsPutRequestMonitoringAclValueServicesInner, 0, len(entries))
+	for position, entry := range entries {
+		members, err := wireObject(entry)
+		if err != nil {
+			return fmt.Errorf("[%d]: %w", position, err)
+		}
+		var value openapi.MonitoringaclsPutRequestMonitoringAclValueServicesInner
+		for name, member := range members {
+			switch name {
+			case "enable":
+				if err := wireBoolPtr(member, &value.Enable); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "index":
+				if err := wireInt64Ptr(member, &value.Index); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "service":
+				if err := wireStringPtr(member, &value.Service); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "service_ref_type_":
+				if err := wireStringPtr(member, &value.ServiceRefType); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			default:
+				return fmt.Errorf("MonitoringaclsPutRequestMonitoringAclValueServicesInner has no field %q", name)
+			}
+		}
+		values = append(values, value)
+	}
+	*target = values
+	return nil
+}
+
+type nacPortProfileAdapter struct{}
+
+func (nacPortProfileAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.NacportprofilesPutRequestNacPortProfileValue
+	for name, wire := range object {
+		switch name {
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "eth_ports":
+			if err := nacPortProfileEthPortsValue(wire, &value.EthPorts); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "name":
+			if err := wireStringPtr(wire, &value.Name); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := nacPortProfileObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return nil, fmt.Errorf("NacportprofilesPutRequestNacPortProfileValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func nacPortProfileEthPortsValue(wire WireValue, target *[]openapi.NacportprofilesPutRequestNacPortProfileValueEthPortsInner) error {
+	entries, err := wireList(wire)
+	if err != nil {
+		return err
+	}
+	values := make([]openapi.NacportprofilesPutRequestNacPortProfileValueEthPortsInner, 0, len(entries))
+	for position, entry := range entries {
+		members, err := wireObject(entry)
+		if err != nil {
+			return fmt.Errorf("[%d]: %w", position, err)
+		}
+		var value openapi.NacportprofilesPutRequestNacPortProfileValueEthPortsInner
+		for name, member := range members {
+			switch name {
+			case "eth_port_profile_num_enable":
+				if err := wireBoolPtr(member, &value.EthPortProfileNumEnable); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "eth_port_profile_num_eth_port":
+				if err := wireStringPtr(member, &value.EthPortProfileNumEthPort); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "eth_port_profile_num_eth_port_ref_type_":
+				if err := wireStringPtr(member, &value.EthPortProfileNumEthPortRefType); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "index":
+				if err := wireInt64Ptr(member, &value.Index); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			default:
+				return fmt.Errorf("NacportprofilesPutRequestNacPortProfileValueEthPortsInner has no field %q", name)
+			}
+		}
+		values = append(values, value)
+	}
+	*target = values
+	return nil
+}
+
+func nacPortProfileObjectPropertiesValue(wire WireValue, target **openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "port_monitoring":
+			if err := wireStringPtr(member, &value.PortMonitoring); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("AuthenticatedethportsPutRequestAuthenticatedEthPortValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
 	return nil
 }
 
@@ -5942,6 +6140,14 @@ func switchpointTrafficMirrorsValue(wire WireValue, target *[]openapi.Switchpoin
 				if err := wireBoolPtr(member, &value.TrafficMirrorNumInboundTraffic); err != nil {
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
+			case "traffic_mirror_num_monitoring_acl":
+				if err := wireStringPtr(member, &value.TrafficMirrorNumMonitoringAcl); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "traffic_mirror_num_monitoring_acl_ref_type_":
+				if err := wireStringPtr(member, &value.TrafficMirrorNumMonitoringAclRefType); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
 			case "traffic_mirror_num_outbound_traffic":
 				if err := wireBoolPtr(member, &value.TrafficMirrorNumOutboundTraffic); err != nil {
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
@@ -6097,6 +6303,14 @@ func (tenantAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			}
 		case "layer_3_vni_auto_assigned_":
 			if err := wireBoolPtr(wire, &value.Layer3VniAutoAssigned); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "maximum_ebgp_paths":
+			if err := wireNullableInt64(wire, &value.MaximumEbgpPaths); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "maximum_ebgp_paths_mode":
+			if err := wireStringPtr(wire, &value.MaximumEbgpPathsMode); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "name":

@@ -1,7 +1,7 @@
 /*
-Verity API
+Manager system API
 
-This application demonstrates the usage of Verity API.
+This application demonstrates the usage of Manager system API.
 
 API version: 6.6
 */
@@ -99,7 +99,7 @@ func NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner() *Imageupda
 	this.EndpointSetNumTargetUpgradeVersion = &endpointSetNumTargetUpgradeVersion
 	var endpointSetNumTargetUpgradeVersionTime string = ""
 	this.EndpointSetNumTargetUpgradeVersionTime = &endpointSetNumTargetUpgradeVersionTime
-	var endpointSetNumUniqueIdentifier string = "17884410761921"
+	var endpointSetNumUniqueIdentifier string = "17913710597871"
 	this.EndpointSetNumUniqueIdentifier = &endpointSetNumUniqueIdentifier
 	return &this
 }
@@ -141,7 +141,7 @@ func NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionInnerWithDefaults(
 	this.EndpointSetNumTargetUpgradeVersion = &endpointSetNumTargetUpgradeVersion
 	var endpointSetNumTargetUpgradeVersionTime string = ""
 	this.EndpointSetNumTargetUpgradeVersionTime = &endpointSetNumTargetUpgradeVersionTime
-	var endpointSetNumUniqueIdentifier string = "17884410761921"
+	var endpointSetNumUniqueIdentifier string = "17913710597871"
 	this.EndpointSetNumUniqueIdentifier = &endpointSetNumUniqueIdentifier
 	return &this
 }

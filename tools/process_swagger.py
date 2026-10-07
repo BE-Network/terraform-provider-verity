@@ -614,6 +614,7 @@ Examples:
         "/alarms/mask",
         "/config",
         "/changesets",
+        "/dellome",
         "/readmode",
         "/request",
         "/snmp",

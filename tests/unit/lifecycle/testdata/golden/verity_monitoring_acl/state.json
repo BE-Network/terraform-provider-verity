@@ -1,0 +1,10 @@
+{
+  "enable": "true",
+  "name": "cov_monitoring_acl",
+  "services.#": "1",
+  "services.0.%": "4",
+  "services.0.enable": "true",
+  "services.0.index": "1",
+  "services.0.service": "",
+  "services.0.service_ref_type_": ""
+}

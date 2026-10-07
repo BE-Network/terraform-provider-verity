@@ -164,7 +164,7 @@ A reference names another Verity object. Set the reference and its type field to
 | `device_voice_settings` | `device_voice_settings_ref_type_` | `device_voice_settings` |
 | `diagnostics_profile` | `diagnostics_profile_ref_type_` | `diagnostics_profile` |
 | `eth_port_paths.eth_port_num_diagnostics_port_profile` | `eth_port_num_diagnostics_port_profile_ref_type_` | `diagnostics_port_profile` |
-| `eth_port_paths.eth_port_num_eth_port_profile` | `eth_port_num_eth_port_profile_ref_type_` | `authenticated_eth_port`, `eth_port_profile_`, `lag`, `nac_port_profile`, `pb_egress_profile`, `service_port_profile`, `type` |
+| `eth_port_paths.eth_port_num_eth_port_profile` | `eth_port_num_eth_port_profile_ref_type_` | `authenticated_eth_port`, `eth_port_profile_`, `lag`, `nac_port_profile`, `olag`, `pb_egress_profile`, `service_port_profile` |
 | `eth_port_paths.eth_port_num_eth_port_settings` | `eth_port_num_eth_port_settings_ref_type_` | `eth_port_settings` |
 | `eth_port_paths.eth_port_num_gateway_profile` | `eth_port_num_gateway_profile_ref_type_` | `gateway_profile`, `lag` |
 | `rg_services.row_app_connected_service` | `row_app_connected_service_ref_type_` | `service` |

@@ -783,6 +783,66 @@ var resourceRegistry = map[string]ResourceConfig{
 			return c.MACFiltersAPI.MacfiltersGet(ctx).Execute()
 		},
 	},
+	"monitoring_acl": {ResourceType: "monitoring_acl", HeaderSplitKey: "",
+		ResponseCollectionKey: "monitoring_acl",
+		PreparePut: func(data map[string]interface{}) (interface{}, error) {
+			return prepareTypedBulkRequest(data, func(request *openapi.MonitoringaclsPutRequest, values map[string]openapi.MonitoringaclsPutRequestMonitoringAclValue) {
+				request.MonitoringAcl = &values
+			})
+		},
+		PreparePatch: func(data map[string]interface{}) (interface{}, error) {
+			return prepareTypedBulkRequest(data, func(request *openapi.MonitoringaclsPutRequest, values map[string]openapi.MonitoringaclsPutRequestMonitoringAclValue) {
+				request.MonitoringAcl = &values
+			})
+		},
+		PutRequestType:   reflect.TypeOf(openapi.MonitoringaclsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.MonitoringaclsPutRequest{}),
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "monitoring_acl"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.MonitoringACLsAPI.MonitoringaclsPut(ctx).MonitoringaclsPutRequest(*req.(*openapi.MonitoringaclsPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.MonitoringACLsAPI.MonitoringaclsPatch(ctx).MonitoringaclsPutRequest(*req.(*openapi.MonitoringaclsPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.MonitoringACLsAPI.MonitoringaclsDelete(ctx).MonitoringAclName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.MonitoringACLsAPI.MonitoringaclsGet(ctx).Execute()
+		},
+	},
+	"nac_port_profile": {ResourceType: "nac_port_profile", HeaderSplitKey: "",
+		ResponseCollectionKey: "nac_port_profile",
+		PreparePut: func(data map[string]interface{}) (interface{}, error) {
+			return prepareTypedBulkRequest(data, func(request *openapi.NacportprofilesPutRequest, values map[string]openapi.NacportprofilesPutRequestNacPortProfileValue) {
+				request.NacPortProfile = &values
+			})
+		},
+		PreparePatch: func(data map[string]interface{}) (interface{}, error) {
+			return prepareTypedBulkRequest(data, func(request *openapi.NacportprofilesPutRequest, values map[string]openapi.NacportprofilesPutRequestNacPortProfileValue) {
+				request.NacPortProfile = &values
+			})
+		},
+		PutRequestType:   reflect.TypeOf(openapi.NacportprofilesPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.NacportprofilesPutRequest{}),
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "nac_port_profile"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.NACPortProfilesAPI.NacportprofilesPut(ctx).NacportprofilesPutRequest(*req.(*openapi.NacportprofilesPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.NACPortProfilesAPI.NacportprofilesPatch(ctx).NacportprofilesPutRequest(*req.(*openapi.NacportprofilesPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.NACPortProfilesAPI.NacportprofilesDelete(ctx).NacPortProfileName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.NACPortProfilesAPI.NacportprofilesGet(ctx).Execute()
+		},
+	},
 	"packet_broker": {ResourceType: "packet_broker", HeaderSplitKey: "",
 		ResponseCollectionKey: "pb_egress_profile",
 		PreparePut: func(data map[string]interface{}) (interface{}, error) {
@@ -1220,6 +1280,36 @@ var resourceRegistry = map[string]ResourceConfig{
 			return c.SFPBreakoutsAPI.SfpbreakoutsGet(ctx).Execute()
 		},
 	},
+	"site_collection": {ResourceType: "site_collection", HeaderSplitKey: "",
+		ResponseCollectionKey: "site_collection",
+		PreparePut: func(data map[string]interface{}) (interface{}, error) {
+			return prepareTypedBulkRequest(data, func(request *openapi.FabriccollectionsPutRequest, values map[string]openapi.FabriccollectionsPutRequestSiteCollectionValue) {
+				request.SiteCollection = &values
+			})
+		},
+		PreparePatch: func(data map[string]interface{}) (interface{}, error) {
+			return prepareTypedBulkRequest(data, func(request *openapi.FabriccollectionsPutRequest, values map[string]openapi.FabriccollectionsPutRequestSiteCollectionValue) {
+				request.SiteCollection = &values
+			})
+		},
+		PutRequestType:   reflect.TypeOf(openapi.FabriccollectionsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.FabriccollectionsPutRequest{}),
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "site_collection"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.FabricCollectionsAPI.FabriccollectionsPut(ctx).FabriccollectionsPutRequest(*req.(*openapi.FabriccollectionsPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.FabricCollectionsAPI.FabriccollectionsPatch(ctx).FabriccollectionsPutRequest(*req.(*openapi.FabriccollectionsPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.FabricCollectionsAPI.FabriccollectionsDelete(ctx).SiteCollectionName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.FabricCollectionsAPI.FabriccollectionsGet(ctx).Execute()
+		},
+	},
 	"spine_plane": {ResourceType: "spine_plane", HeaderSplitKey: "",
 		ResponseCollectionKey: "spine_plane",
 		PreparePut: func(data map[string]interface{}) (interface{}, error) {
@@ -1506,6 +1596,7 @@ var finalCacheRefreshKeys = []string{
 	"eth_port_profiles",
 	"eth_port_settings",
 	"extended_community_lists",
+	"fabric_collections",
 	"fabrics",
 	"gateway_profiles",
 	"gateways",
@@ -1517,6 +1608,8 @@ var finalCacheRefreshKeys = []string{
 	"lags",
 	"ldap_profiles",
 	"mac_filters",
+	"monitoring_acls",
+	"nac_port_profiles",
 	"packet_brokers",
 	"packet_queues",
 	"pairs",
@@ -1556,6 +1649,8 @@ var datacenterPutOrder = []string{
 	"pb_routing",
 	"tenant",
 	"service",
+	"monitoring_acl",
+	"site_collection",
 	"fabric",
 	"tacacs_profile",
 	"ldap_profile",
@@ -1603,6 +1698,8 @@ var datacenterPatchOrder = []string{
 	"pb_routing",
 	"tenant",
 	"service",
+	"monitoring_acl",
+	"site_collection",
 	"fabric",
 	"tacacs_profile",
 	"ldap_profile",
@@ -1668,6 +1765,8 @@ var datacenterDeleteOrder = []string{
 	"ldap_profile",
 	"tacacs_profile",
 	"fabric",
+	"site_collection",
+	"monitoring_acl",
 	"service",
 	"tenant",
 	"pb_routing",
@@ -1686,6 +1785,7 @@ var campusPutOrder = []string{
 	"acl",
 	"mac_filter",
 	"service",
+	"monitoring_acl",
 	"port_acl",
 	"tacacs_profile",
 	"ldap_profile",
@@ -1693,9 +1793,11 @@ var campusPutOrder = []string{
 	"eth_port_profile",
 	"packet_queue",
 	"device_aaa_profile",
+	"site_collection",
 	"fabric",
 	"service_port_profile",
 	"diagnostics_profile",
+	"nac_port_profile",
 	"authenticated_eth_port",
 	"device_settings",
 	"voice_port_profile",
@@ -1717,6 +1819,7 @@ var campusPatchOrder = []string{
 	"acl",
 	"mac_filter",
 	"service",
+	"monitoring_acl",
 	"port_acl",
 	"tacacs_profile",
 	"ldap_profile",
@@ -1724,9 +1827,11 @@ var campusPatchOrder = []string{
 	"eth_port_profile",
 	"packet_queue",
 	"device_aaa_profile",
+	"site_collection",
 	"fabric",
 	"service_port_profile",
 	"diagnostics_profile",
+	"nac_port_profile",
 	"authenticated_eth_port",
 	"device_settings",
 	"voice_port_profile",
@@ -1758,9 +1863,11 @@ var campusDeleteOrder = []string{
 	"voice_port_profile",
 	"device_settings",
 	"authenticated_eth_port",
+	"nac_port_profile",
 	"diagnostics_profile",
 	"service_port_profile",
 	"fabric",
+	"site_collection",
 	"device_aaa_profile",
 	"packet_queue",
 	"eth_port_profile",
@@ -1768,6 +1875,7 @@ var campusDeleteOrder = []string{
 	"ldap_profile",
 	"tacacs_profile",
 	"port_acl",
+	"monitoring_acl",
 	"service",
 	"mac_filter",
 	"acl",

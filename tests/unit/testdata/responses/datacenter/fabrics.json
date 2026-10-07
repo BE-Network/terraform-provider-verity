@@ -77,7 +77,9 @@
             "graph_num_data": "graph_endpoint_path=::graph_group_name=::graph_lagg_path=::graph_line_set=::graph_processes=::graph_source_mod=::graph_source_path=::graph_sub_path=::graph_time_frame="
           }
         ]
-      }
+      },
+      "maximum_ebgp_paths": null,
+      "maximum_ebgp_paths_mode": "automated"
     }
   }
 }

@@ -51,7 +51,7 @@ A reference names another Verity object. Set the reference and its type field to
 
 | Field | Type field | Allowed types |
 | --- | --- | --- |
-| `rules.rule_value_path` | `rule_value_path_ref_type_` | `authenticated_eth_port`, `diagnostics_port_profile`, `eth_port_profile_`, `fabric`, `gateway_profile`, `grouping_rules`, `lag`, `nac_port_profile`, `pod`, `service_port_profile`, `type` |
+| `rules.rule_value_path` | `rule_value_path_ref_type_` | `authenticated_eth_port`, `diagnostics_port_profile`, `eth_port_profile_`, `fabric`, `gateway_profile`, `grouping_rules`, `lag`, `nac_port_profile`, `olag`, `pod`, `service_port_profile` |
 
 ## Import
 

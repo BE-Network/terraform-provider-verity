@@ -32,7 +32,7 @@ resources:
     modes: [datacenter]
     identity_path: name
     import_stage:
-      datacenter: {name: ipv4_list_stage, order: 20}
+      datacenter: {name: ipv4_list_stage, order: 22}
     bulk_order:
       datacenter: {put: 180, patch: 190, delete: 260}
     api:
@@ -91,7 +91,7 @@ resources:
     modes: [datacenter]
     identity_path: name
     import_stage:
-      datacenter: {name: ipv6_list_stage, order: 19}
+      datacenter: {name: ipv6_list_stage, order: 21}
     bulk_order:
       datacenter: {put: 170, patch: 180, delete: 270}
     api:
@@ -113,8 +113,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: sflow_collector_stage, order: 9}
-      datacenter: {name: sflow_collector_stage, order: 26}
+      campus: {name: sflow_collector_stage, order: 10}
+      datacenter: {name: sflow_collector_stage, order: 28}
     bulk_order:
       campus: {put: 70, patch: 80, delete: 210}
       datacenter: {put: 240, patch: 250, delete: 200}
@@ -251,8 +251,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: device_aaa_profile_stage, order: 12}
-      datacenter: {name: device_aaa_profile_stage, order: 23}
+      campus: {name: device_aaa_profile_stage, order: 13}
+      datacenter: {name: device_aaa_profile_stage, order: 25}
     bulk_order:
       campus: {put: 100, patch: 110, delete: 180}
       datacenter: {put: 210, patch: 220, delete: 230}
@@ -344,7 +344,7 @@ resources:
     modes: [campus]
     identity_path: name
     import_stage:
-      campus: {name: authenticated_eth_port_stage, order: 16}
+      campus: {name: authenticated_eth_port_stage, order: 19}
     bulk_order:
       campus: {put: 140, patch: 150, delete: 140}
     api:
@@ -378,6 +378,8 @@ resources:
             api_kind: boolean
           - api_name: index
             api_kind: integer
+          - api_name: eth_port_profile_num_failed_action_set
+            api_kind: boolean
       - api_name: mac_authentication_holdoff_sec
         api_kind: integer
       - api_name: name
@@ -401,8 +403,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: badge_stage, order: 24}
-      datacenter: {name: badge_stage, order: 35}
+      campus: {name: badge_stage, order: 27}
+      datacenter: {name: badge_stage, order: 37}
     bulk_order:
       campus: {put: 220, patch: 230, delete: 60}
       datacenter: {put: 330, patch: 340, delete: 110}
@@ -435,8 +437,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: bundle_stage, order: 23}
-      datacenter: {name: bundle_stage, order: 39}
+      campus: {name: bundle_stage, order: 26}
+      datacenter: {name: bundle_stage, order: 41}
     bulk_order:
       campus: {put: 210, patch: 220, delete: 70}
       datacenter: {put: 370, patch: 380, delete: 70}
@@ -617,7 +619,7 @@ resources:
     modes: [campus]
     identity_path: name
     import_stage:
-      campus: {name: device_voice_setting_stage, order: 20}
+      campus: {name: device_voice_setting_stage, order: 23}
     bulk_order:
       campus: {put: 180, patch: 190, delete: 100}
     api:
@@ -773,8 +775,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: diagnostics_port_profile_stage, order: 22}
-      datacenter: {name: diagnostics_port_profile_stage, order: 29}
+      campus: {name: diagnostics_port_profile_stage, order: 25}
+      datacenter: {name: diagnostics_port_profile_stage, order: 31}
     bulk_order:
       campus: {put: 200, patch: 210, delete: 80}
       datacenter: {put: 270, patch: 280, delete: 170}
@@ -797,8 +799,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: diagnostics_profile_stage, order: 15}
-      datacenter: {name: diagnostics_profile_stage, order: 32}
+      campus: {name: diagnostics_profile_stage, order: 17}
+      datacenter: {name: diagnostics_profile_stage, order: 34}
     bulk_order:
       campus: {put: 130, patch: 140, delete: 150}
       datacenter: {put: 300, patch: 310, delete: 140}
@@ -845,8 +847,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: eth_port_profile_stage, order: 10}
-      datacenter: {name: eth_port_profile_stage, order: 24}
+      campus: {name: eth_port_profile_stage, order: 11}
+      datacenter: {name: eth_port_profile_stage, order: 26}
     bulk_order:
       campus: {put: 80, patch: 90, delete: 200}
       datacenter: {put: 220, patch: 230, delete: 220}
@@ -938,8 +940,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: eth_port_settings_stage, order: 21}
-      datacenter: {name: eth_port_settings_stage, order: 34}
+      campus: {name: eth_port_settings_stage, order: 24}
+      datacenter: {name: eth_port_settings_stage, order: 36}
     bulk_order:
       campus: {put: 190, patch: 200, delete: 90}
       datacenter: {put: 320, patch: 330, delete: 120}
@@ -1087,6 +1089,10 @@ resources:
       - api_name: wred_drop_probability
         api_kind: integer
         modes: [datacenter]
+      - api_name: bpdu_guard_port_disable
+        api_kind: boolean
+      - api_name: guard_root
+        api_kind: boolean
   - path: /extendedcommunitylists
     terraform_type: verity_extended_community_list
     description: Manages a Verity Extended Community List
@@ -1142,7 +1148,7 @@ resources:
     modes: [datacenter]
     identity_path: name
     import_stage:
-      datacenter: {name: gateway_profile_stage, order: 33}
+      datacenter: {name: gateway_profile_stage, order: 35}
     bulk_order:
       datacenter: {put: 310, patch: 320, delete: 130}
     api:
@@ -1181,8 +1187,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: grouping_rule_stage, order: 25}
-      datacenter: {name: grouping_rule_stage, order: 41}
+      campus: {name: grouping_rule_stage, order: 28}
+      datacenter: {name: grouping_rule_stage, order: 43}
     bulk_order:
       campus: {put: 230, patch: 240, delete: 50}
       datacenter: {put: 390, patch: 400, delete: 50}
@@ -1322,8 +1328,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: lag_stage, order: 19}
-      datacenter: {name: lag_stage, order: 31}
+      campus: {name: lag_stage, order: 22}
+      datacenter: {name: lag_stage, order: 33}
     bulk_order:
       campus: {put: 170, patch: 180, delete: 110}
       datacenter: {put: 290, patch: 300, delete: 150}
@@ -1374,8 +1380,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: ldap_profile_stage, order: 8}
-      datacenter: {name: ldap_profile_stage, order: 17}
+      campus: {name: ldap_profile_stage, order: 9}
+      datacenter: {name: ldap_profile_stage, order: 19}
     bulk_order:
       campus: {put: 60, patch: 70, delete: 220}
       datacenter: {put: 150, patch: 160, delete: 290}
@@ -1489,7 +1495,7 @@ resources:
     modes: [datacenter]
     identity_path: name
     import_stage:
-      datacenter: {name: packet_broker_stage, order: 25}
+      datacenter: {name: packet_broker_stage, order: 27}
     bulk_order:
       datacenter: {put: 230, patch: 240, delete: 210}
     api:
@@ -1569,8 +1575,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: packet_queue_stage, order: 11}
-      datacenter: {name: packet_queue_stage, order: 22}
+      campus: {name: packet_queue_stage, order: 12}
+      datacenter: {name: packet_queue_stage, order: 24}
     bulk_order:
       campus: {put: 90, patch: 100, delete: 190}
       datacenter: {put: 200, patch: 210, delete: 240}
@@ -1620,8 +1626,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: pair_stage, order: 29}
-      datacenter: {name: pair_stage, order: 45}
+      campus: {name: pair_stage, order: 32}
+      datacenter: {name: pair_stage, order: 47}
     bulk_order:
       campus: {put: 270, patch: 280, delete: 10}
       datacenter: {put: 430, patch: 440, delete: 10}
@@ -1775,7 +1781,7 @@ resources:
     modes: [datacenter]
     identity_path: name
     import_stage:
-      datacenter: {name: plane_stage, order: 36}
+      datacenter: {name: plane_stage, order: 38}
     bulk_order:
       datacenter: {put: 340, patch: 350, delete: 100}
     api:
@@ -1809,7 +1815,7 @@ resources:
     modes: [datacenter]
     identity_path: name
     import_stage:
-      datacenter: {name: pod_stage, order: 21}
+      datacenter: {name: pod_stage, order: 23}
     bulk_order:
       datacenter: {put: 190, patch: 200, delete: 250}
     api:
@@ -1845,8 +1851,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: port_acl_stage, order: 6}
-      datacenter: {name: port_acl_stage, order: 18}
+      campus: {name: port_acl_stage, order: 7}
+      datacenter: {name: port_acl_stage, order: 20}
     bulk_order:
       campus: {put: 40, patch: 50, delete: 240}
       datacenter: {put: 160, patch: 170, delete: 280}
@@ -1927,7 +1933,7 @@ resources:
     modes: [datacenter]
     identity_path: name
     import_stage:
-      datacenter: {name: rack_stage, order: 38}
+      datacenter: {name: rack_stage, order: 40}
     bulk_order:
       datacenter: {put: 360, patch: 370, delete: 80}
     api:
@@ -2207,7 +2213,7 @@ resources:
     modes: [campus]
     identity_path: name
     import_stage:
-      campus: {name: service_port_profile_stage, order: 14}
+      campus: {name: service_port_profile_stage, order: 16}
     bulk_order:
       campus: {put: 120, patch: 130, delete: 160}
     api:
@@ -2270,7 +2276,7 @@ resources:
     modes: [datacenter]
     identity_path: name
     import_stage:
-      datacenter: {name: spine_plane_stage, order: 37}
+      datacenter: {name: spine_plane_stage, order: 39}
     bulk_order:
       datacenter: {put: 350, patch: 360, delete: 90}
     api:
@@ -2302,7 +2308,7 @@ resources:
     modes: [datacenter]
     identity_path: name
     import_stage:
-      datacenter: {name: ssp_group_stage, order: 40}
+      datacenter: {name: ssp_group_stage, order: 42}
     bulk_order:
       datacenter: {put: 380, patch: 390, delete: 60}
     api:
@@ -2336,7 +2342,7 @@ resources:
     modes: [datacenter]
     identity_path: name
     import_stage:
-      datacenter: {name: su_stage, order: 28}
+      datacenter: {name: su_stage, order: 30}
     bulk_order:
       datacenter: {put: 260, patch: 270, delete: 180}
     api:
@@ -2370,8 +2376,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: switchpoint_stage, order: 26}
-      datacenter: {name: switchpoint_stage, order: 42}
+      campus: {name: switchpoint_stage, order: 29}
+      datacenter: {name: switchpoint_stage, order: 44}
     bulk_order:
       campus: {put: 240, patch: 250, delete: 40}
       datacenter: {put: 400, patch: 410, delete: 40}
@@ -2687,6 +2693,10 @@ resources:
             api_kind: boolean
           - api_name: traffic_mirror_num_source_port
             api_kind: string
+          - api_name: traffic_mirror_num_monitoring_acl
+            api_kind: string
+          - api_name: traffic_mirror_num_monitoring_acl_ref_type_
+            api_kind: string
       - api_name: type
         api_kind: string
         modes: [datacenter]
@@ -2709,8 +2719,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: tacacs_profile_stage, order: 7}
-      datacenter: {name: tacacs_profile_stage, order: 16}
+      campus: {name: tacacs_profile_stage, order: 8}
+      datacenter: {name: tacacs_profile_stage, order: 18}
     bulk_order:
       campus: {put: 50, patch: 60, delete: 230}
       datacenter: {put: 140, patch: 150, delete: 300}
@@ -2830,14 +2840,18 @@ resources:
         api_kind: string
       - api_name: vrf_name_auto_assigned_
         api_kind: boolean
+      - api_name: maximum_ebgp_paths
+        api_kind: integer
+      - api_name: maximum_ebgp_paths_mode
+        api_kind: string
   - path: /thresholds
     terraform_type: verity_threshold
     description: Manages a Verity Threshold.
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: threshold_stage, order: 27}
-      datacenter: {name: threshold_stage, order: 43}
+      campus: {name: threshold_stage, order: 30}
+      datacenter: {name: threshold_stage, order: 45}
     bulk_order:
       campus: {put: 250, patch: 260, delete: 30}
       datacenter: {put: 410, patch: 420, delete: 30}
@@ -2903,8 +2917,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: threshold_group_stage, order: 28}
-      datacenter: {name: threshold_group_stage, order: 44}
+      campus: {name: threshold_group_stage, order: 31}
+      datacenter: {name: threshold_group_stage, order: 46}
     bulk_order:
       campus: {put: 260, patch: 270, delete: 20}
       datacenter: {put: 420, patch: 430, delete: 20}
@@ -2969,7 +2983,7 @@ resources:
     modes: [campus]
     identity_path: name
     import_stage:
-      campus: {name: voice_port_profile_stage, order: 18}
+      campus: {name: voice_port_profile_stage, order: 21}
     bulk_order:
       campus: {put: 160, patch: 170, delete: 120}
     api:
@@ -3063,8 +3077,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: device_settings_stage, order: 17}
-      datacenter: {name: device_settings_stage, order: 30}
+      campus: {name: device_settings_stage, order: 20}
+      datacenter: {name: device_settings_stage, order: 32}
     bulk_order:
       campus: {put: 150, patch: 160, delete: 130}
       datacenter: {put: 280, patch: 290, delete: 160}
@@ -3187,8 +3201,8 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: fabric_stage, order: 13}
-      datacenter: {name: fabric_stage, order: 15}
+      campus: {name: fabric_stage, order: 15}
+      datacenter: {name: fabric_stage, order: 17}
     bulk_order:
       campus: {put: 110, patch: 120, delete: 170}
       datacenter: {put: 130, patch: 140, delete: 310}
@@ -3400,13 +3414,19 @@ resources:
       - api_name: vtep_id_base_prefix
         api_kind: string
         description: Vtep ID starting IP address
+      - api_name: maximum_ebgp_paths
+        api_kind: integer
+        modes: [datacenter]
+      - api_name: maximum_ebgp_paths_mode
+        api_kind: string
+        modes: [datacenter]
   - path: /gateways
     terraform_type: verity_gateway
     description: Manages a Verity Gateway
     modes: [datacenter]
     identity_path: name
     import_stage:
-      datacenter: {name: gateway_stage, order: 27}
+      datacenter: {name: gateway_stage, order: 29}
     bulk_order:
       datacenter: {put: 250, patch: 260, delete: 190}
     api:
@@ -3573,3 +3593,108 @@ resources:
         profile: container
         description: Object properties.
         collection: {strategy: singleton, ordering: ordered}
+
+  - path: /fabriccollections
+    terraform_type: verity_fabric_collection
+    description: Manages a Verity Fabric Collection
+    modes: [campus, datacenter]
+    identity_path: name
+    import_stage:
+      campus: {name: fabric_collection_stage, order: 14}
+      datacenter: {name: fabric_collection_stage, order: 16}
+    bulk_order:
+      campus: {put: 105, patch: 115, delete: 175}
+      datacenter: {put: 125, patch: 135, delete: 315}
+    api:
+      bulk_key: site_collection
+      cache_key: fabric_collections
+      response_collection_key: site_collection
+      delete_parameter: site_collection_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+
+  - path: /monitoringacls
+    terraform_type: verity_monitoring_acl
+    description: Manages a Verity Monitoring ACL
+    modes: [campus, datacenter]
+    identity_path: name
+    import_stage:
+      campus: {name: monitoring_acl_stage, order: 6}
+      datacenter: {name: monitoring_acl_stage, order: 15}
+    bulk_order:
+      campus: {put: 35, patch: 45, delete: 245}
+      datacenter: {put: 121, patch: 131, delete: 319}
+    api:
+      bulk_key: monitoring_acl
+      cache_key: monitoring_acls
+      response_collection_key: monitoring_acl
+      delete_parameter: monitoring_acl_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: services
+        description: Services selected for traffic monitoring
+        api_kind: array
+        profile: container
+        api_item_kind: object
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: index
+            api_kind: integer
+          - api_name: enable
+            api_kind: boolean
+          - api_name: service
+            api_kind: string
+          - api_name: service_ref_type_
+            api_kind: string
+
+  - path: /nacportprofiles
+    terraform_type: verity_nac_port_profile
+    description: Manages a Verity NAC Port Profile
+    modes: [campus]
+    identity_path: name
+    import_stage:
+      campus: {name: nac_port_profile_stage, order: 18}
+    bulk_order:
+      campus: {put: 135, patch: 145, delete: 145}
+    api:
+      bulk_key: nac_port_profile
+      cache_key: nac_port_profiles
+      response_collection_key: nac_port_profile
+      delete_parameter: nac_port_profile_name
+    fields:
+      - api_name: enable
+        api_kind: boolean
+      - api_name: eth_ports
+        description: Ethernet port profiles used for network access control
+        api_kind: array
+        profile: container
+        api_item_kind: object
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: eth_port_profile_num_enable
+            api_kind: boolean
+          - api_name: eth_port_profile_num_eth_port
+            api_kind: string
+          - api_name: eth_port_profile_num_eth_port_ref_type_
+            api_kind: string
+          - api_name: index
+            api_kind: integer
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        description: Object properties for the NAC port profile
+        api_kind: object
+        profile: container
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: port_monitoring
+            api_kind: string

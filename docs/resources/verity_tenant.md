@@ -19,6 +19,8 @@ resource "verity_tenant" "example" {
   import_route_map_ref_type_ = "route_map"
   layer_3_vlan_auto_assigned_ = true
   layer_3_vni_auto_assigned_ = true
+  maximum_ebgp_paths = null
+  maximum_ebgp_paths_mode = ""
   route_aggregation = ""
   route_distinguisher = ""
   route_target_export = ""
@@ -60,6 +62,8 @@ resource "verity_tenant" "example" {
 * `layer_3_vlan_auto_assigned_` (Boolean) - Whether or not the value in layer_3_vlan field has been automatically assigned or not. Set to false and change layer_3_vlan value to edit.
 * `layer_3_vni` (Integer) - VNI value used to transport traffic between services of a Tenant. Set it to `null` to clear it. Assigned by the server while `layer_3_vni_auto_assigned_` is `true`; it cannot be set then.
 * `layer_3_vni_auto_assigned_` (Boolean) - Whether or not the value in layer_3_vni field has been automatically assigned or not. Set to false and change layer_3_vni value to edit.
+* `maximum_ebgp_paths` (Integer) - Maximum number of equal-cost eBGP paths. Set it to `null` to clear it.
+* `maximum_ebgp_paths_mode` (String) - Configure the maximum number of eBGP paths automatically or manually.
 * `route_aggregation` (String) - Route Aggregation configuration for this tenant.
 * `route_aggregators` (Block List) - Route aggregation entries. Entries are matched by `index`.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.

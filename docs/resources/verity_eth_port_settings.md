@@ -18,6 +18,7 @@ resource "verity_eth_port_settings" "example" {
   auto_negotiation = false
   bpdu_filter = false
   bpdu_guard = false
+  bpdu_guard_port_disable = false
   broadcast = false
   bsp_enable = false
   cli_commands = ""
@@ -28,6 +29,7 @@ resource "verity_eth_port_settings" "example" {
   fast_learning_mode = false
   fec = ""
   guard_loop = false
+  guard_root = false
   lldp_enable = false
   lldp_med_enable = false
   lldp_mode = ""
@@ -69,6 +71,7 @@ resource "verity_eth_port_settings" "example" {
   auto_negotiation = false
   bpdu_filter = false
   bpdu_guard = false
+  bpdu_guard_port_disable = false
   broadcast = false
   bsp_enable = false
   cli_commands = ""
@@ -81,6 +84,7 @@ resource "verity_eth_port_settings" "example" {
   fast_learning_mode = false
   fec = ""
   guard_loop = false
+  guard_root = false
   max_allowed_unit = ""
   max_allowed_value = null
   max_bit_rate = ""
@@ -117,6 +121,7 @@ resource "verity_eth_port_settings" "example" {
 * `auto_negotiation` (Boolean) - Indicates if duplex mode should be auto negotiated.
 * `bpdu_filter` (Boolean) - Drop all Rx and Tx BPDUs.
 * `bpdu_guard` (Boolean) - Block port on BPDU Receive.
+* `bpdu_guard_port_disable` (Boolean) - Force port shutdown/disable when BPDU packets are detected.
 * `broadcast` (Boolean) - Broadcast.
 * `bsp_enable` (Boolean) - Enable Traffic Storm Protection which prevents excessive broadcast/multicast/unknown-unicast traffic from overwhelming the Switch CPU.
 * `cli_commands` (String) - CLI Commands.
@@ -130,6 +135,7 @@ resource "verity_eth_port_settings" "example" {
 * `fast_learning_mode` (Boolean) - Enable Immediate Transition to Forwarding.
 * `fec` (String) - FEC is Forward Error Correction which is error correction on the fiber link. <div class="tab"> Any: Allows switch Negotiation between FC and RS None: Disables FEC on an interface. FC: Enables FEC on supported interfaces. FC stands for fire code. RS: Enables FEC on supported interfaces. RS stands for Reed-Solomon code. None: VnetC doesn't alter the Switch Value. </div>.
 * `guard_loop` (Boolean) - Enable Cisco Guard Loop.
+* `guard_root` (Boolean) - Enable Guard Root.
 * `lldp_enable` (Boolean) - LLDP enable. Campus mode only.
 * `lldp_med` (Block List) - LLDP MED configurations. Entries are matched by `index`. Campus mode only.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.

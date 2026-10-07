@@ -21,6 +21,7 @@ resource "verity_authenticated_eth_port" "example" {
     eth_port_profile_num_enable = false
     eth_port_profile_num_eth_port = ""
     eth_port_profile_num_eth_port_ref_type_ = "eth_port_profile_"
+    eth_port_profile_num_failed_action_set = false
     eth_port_profile_num_radius_filter_id = ""
     eth_port_profile_num_walled_garden_set = false
   }
@@ -46,8 +47,9 @@ resource "verity_authenticated_eth_port" "example" {
   * `eth_port_profile_num_enable` (Boolean) - Enable row.
   * `eth_port_profile_num_eth_port` (String) - Choose an Eth Port Profile. Set together with `eth_port_profile_num_eth_port_ref_type_`.
   * `eth_port_profile_num_eth_port_ref_type_` (String) - Object type for eth_port_profile_num_eth_port field.
+  * `eth_port_profile_num_failed_action_set` (Boolean) - Flag indicating this Eth Port Profile is the Failed Action.
   * `eth_port_profile_num_radius_filter_id` (String) - The value of filter-id in the RADIUS response which will evoke this Eth Port Profile.
-  * `eth_port_profile_num_walled_garden_set` (Boolean) - Flag indicating this Eth Port Profile is the Walled Garden.
+  * `eth_port_profile_num_walled_garden_set` (Boolean) - Flag indicating this Eth Port Profile is the Walled Garden. Will apply to the "No response" case if supported.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
 * `mac_authentication_holdoff_sec` (Integer) - Amount of time in seconds 802.1X authentication is allowed to run before MAC-based authentication has begun. Set it to `null` to clear it.
 * `object_properties` (Block) - Object properties for the authenticated eth-port. At most one block.

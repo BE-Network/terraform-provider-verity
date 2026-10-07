@@ -32,6 +32,8 @@
   "max_pods": "42",
   "max_sus": "42",
   "max_switches": "",
+  "maximum_ebgp_paths": "42",
+  "maximum_ebgp_paths_mode": "",
   "mlag_delay_restore_timer": "42",
   "multi_tenant": "true",
   "name": "cov_fabric",

@@ -1,0 +1,19 @@
+{
+  "nac_port_profile": {
+    "cov_nac_port_profile": {
+      "enable": true,
+      "eth_ports": [
+        {
+          "eth_port_profile_num_enable": true,
+          "eth_port_profile_num_eth_port": "",
+          "eth_port_profile_num_eth_port_ref_type_": "",
+          "index": 1
+        }
+      ],
+      "name": "cov_nac_port_profile",
+      "object_properties": {
+        "port_monitoring": ""
+      }
+    }
+  }
+}

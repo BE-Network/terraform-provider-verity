@@ -28,7 +28,9 @@
       "object_properties": {
         "group": "test"
       },
-      "vrf_name_auto_assigned_": true
+      "vrf_name_auto_assigned_": true,
+      "maximum_ebgp_paths": null,
+      "maximum_ebgp_paths_mode": "automated"
     }
   }
 }

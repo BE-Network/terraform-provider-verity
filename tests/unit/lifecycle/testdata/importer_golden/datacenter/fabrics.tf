@@ -39,6 +39,8 @@ resource "verity_fabric" "TOR_Complex" {
 	leaf_bgp_keep_alive_timer = 60
 	link_state_timeout_value = 60
 	mac_address_aging_time = 600
+	maximum_ebgp_paths = null
+	maximum_ebgp_paths_mode = "automated"
 	mlag_delay_restore_timer = 300
 	read_only_mode = false
 	region_name = ""

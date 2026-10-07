@@ -18,6 +18,12 @@ import {
   id = "Test"
 }
 
+# verity_monitoring_acl imports
+import {
+  to = verity_monitoring_acl.test
+  id = "test"
+}
+
 # verity_port_acl imports
 import {
   to = verity_port_acl.ex
@@ -42,6 +48,12 @@ import {
   id = "test"
 }
 
+# verity_fabric_collection imports
+import {
+  to = verity_fabric_collection.test
+  id = "test"
+}
+
 # verity_fabric imports
 import {
   to = verity_fabric.TOR_Complex
@@ -58,6 +70,12 @@ import {
 import {
   to = verity_diagnostics_profile.diagnostics_profile_test1
   id = "diagnostics_profile_test1"
+}
+
+# verity_nac_port_profile imports
+import {
+  to = verity_nac_port_profile.test
+  id = "test"
 }
 
 # verity_authenticated_eth_port imports
@@ -165,6 +183,11 @@ import {
 }
 
 import {
+  to = verity_operation_stage.monitoring_acl_stage
+  id = "stage"
+}
+
+import {
   to = verity_operation_stage.port_acl_stage
   id = "stage"
 }
@@ -200,6 +223,11 @@ import {
 }
 
 import {
+  to = verity_operation_stage.fabric_collection_stage
+  id = "stage"
+}
+
+import {
   to = verity_operation_stage.fabric_stage
   id = "stage"
 }
@@ -211,6 +239,11 @@ import {
 
 import {
   to = verity_operation_stage.diagnostics_profile_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.nac_port_profile_stage
   id = "stage"
 }
 

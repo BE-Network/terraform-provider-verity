@@ -9,8 +9,8 @@
     }
   },
   "info": {
-    "description": "This application demonstrates the usage of Verity API.\n",
-    "title": "Verity API",
+    "description": "This application demonstrates the usage of Manager system API.\n",
+    "title": "Manager system API",
     "version": "6.6"
   },
   "openapi": "3.0.0",
@@ -799,6 +799,9 @@
             },
             "description": "Length Required"
           },
+          "429": {
+            "description": "Too Many Requests"
+          },
           "500": {
             "content": {
               "application/json": {
@@ -988,6 +991,11 @@
                                   ],
                                   "type": "string"
                                 },
+                                "eth_port_profile_num_failed_action_set": {
+                                  "default": false,
+                                  "description": "Flag indicating this Eth Port Profile is the Failed Action",
+                                  "type": "boolean"
+                                },
                                 "eth_port_profile_num_radius_filter_id": {
                                   "default": "",
                                   "description": "The value of filter-id in the RADIUS response which will evoke this Eth Port Profile",
@@ -996,7 +1004,7 @@
                                 },
                                 "eth_port_profile_num_walled_garden_set": {
                                   "default": false,
-                                  "description": "Flag indicating this Eth Port Profile is the Walled Garden",
+                                  "description": "Flag indicating this Eth Port Profile is the Walled Garden. Will apply to the \"No response\" case if supported",
                                   "type": "boolean"
                                 },
                                 "index": {
@@ -1149,6 +1157,11 @@
                                   ],
                                   "type": "string"
                                 },
+                                "eth_port_profile_num_failed_action_set": {
+                                  "default": false,
+                                  "description": "Flag indicating this Eth Port Profile is the Failed Action",
+                                  "type": "boolean"
+                                },
                                 "eth_port_profile_num_radius_filter_id": {
                                   "default": "",
                                   "description": "The value of filter-id in the RADIUS response which will evoke this Eth Port Profile",
@@ -1157,7 +1170,7 @@
                                 },
                                 "eth_port_profile_num_walled_garden_set": {
                                   "default": false,
-                                  "description": "Flag indicating this Eth Port Profile is the Walled Garden",
+                                  "description": "Flag indicating this Eth Port Profile is the Walled Garden. Will apply to the \"No response\" case if supported",
                                   "type": "boolean"
                                 },
                                 "index": {
@@ -1947,7 +1960,7 @@
                                     "eth_port_profile_",
                                     "service_port_profile",
                                     "lag",
-                                    "type",
+                                    "olag",
                                     "authenticated_eth_port",
                                     "nac_port_profile",
                                     "pb_egress_profile"
@@ -2244,7 +2257,7 @@
                                     "eth_port_profile_",
                                     "service_port_profile",
                                     "lag",
-                                    "type",
+                                    "olag",
                                     "authenticated_eth_port",
                                     "nac_port_profile",
                                     "pb_egress_profile"
@@ -2934,6 +2947,57 @@
             "application/json": {
               "schema": {
                 "properties": {
+                  "acs": {
+                    "properties": {
+                      "acs_name": {
+                        "properties": {
+                          "enable": {
+                            "default": false,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "gateway": {
+                            "default": "",
+                            "description": "Gateway",
+                            "type": "string"
+                          },
+                          "ip_and_mask": {
+                            "default": "",
+                            "description": "IP and Mask",
+                            "type": "string"
+                          },
+                          "ip_source": {
+                            "default": "static",
+                            "description": "IP Source",
+                            "enum": [
+                              "dhcp",
+                              "static"
+                            ],
+                            "type": "string"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "power": {
+                            "default": "on",
+                            "description": "On/Off State",
+                            "type": "string"
+                          },
+                          "sdlc": {
+                            "default": "",
+                            "description": "SDLC that ACS belongs to",
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
                   "ai_provider_config": {
                     "properties": {
                       "ai_provider_config_name": {
@@ -2962,7 +3026,7 @@
                             "type": "string"
                           },
                           "enable": {
-                            "default": true,
+                            "default": false,
                             "description": "Enable object.",
                             "type": "boolean"
                           },
@@ -3215,6 +3279,11 @@
                                   ],
                                   "type": "string"
                                 },
+                                "eth_port_profile_num_failed_action_set": {
+                                  "default": false,
+                                  "description": "Flag indicating this Eth Port Profile is the Failed Action",
+                                  "type": "boolean"
+                                },
                                 "eth_port_profile_num_radius_filter_id": {
                                   "default": "",
                                   "description": "The value of filter-id in the RADIUS response which will evoke this Eth Port Profile",
@@ -3223,7 +3292,7 @@
                                 },
                                 "eth_port_profile_num_walled_garden_set": {
                                   "default": false,
-                                  "description": "Flag indicating this Eth Port Profile is the Walled Garden",
+                                  "description": "Flag indicating this Eth Port Profile is the Walled Garden. Will apply to the \"No response\" case if supported",
                                   "type": "boolean"
                                 },
                                 "index": {
@@ -3274,6 +3343,71 @@
                             "default": false,
                             "description": "Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks.",
                             "type": "boolean"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "authentication_server": {
+                    "properties": {
+                      "authentication_server_name": {
+                        "properties": {
+                          "enable": {
+                            "default": true,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "servers": {
+                            "items": {
+                              "properties": {
+                                "server_num_enable": {
+                                  "default": false,
+                                  "description": "Enable Authentication server",
+                                  "type": "boolean"
+                                },
+                                "server_num_ip": {
+                                  "default": "",
+                                  "description": "Authentication server IP",
+                                  "type": "string"
+                                },
+                                "server_num_port": {
+                                  "default": "1812",
+                                  "description": "Authentication server port",
+                                  "type": "string"
+                                },
+                                "server_num_role": {
+                                  "default": "Auth",
+                                  "description": "Authentication server role",
+                                  "enum": [
+                                    "Auth",
+                                    "Acct",
+                                    "DAS"
+                                  ],
+                                  "type": "string"
+                                },
+                                "server_num_shared_secret": {
+                                  "default": "",
+                                  "description": "Authentication server Shared Secret",
+                                  "type": "string"
+                                },
+                                "server_num_shared_secret_encrypted": {
+                                  "default": "",
+                                  "description": "Authentication server Shared Secret",
+                                  "type": "string"
+                                }
+                              },
+                              "type": "object"
+                            },
+                            "type": "array"
                           }
                         },
                         "type": "object"
@@ -3374,6 +3508,28 @@
                           "object_properties": {
                             "properties": {},
                             "type": "object"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "branding": {
+                    "properties": {
+                      "branding_name": {
+                        "properties": {
+                          "enable": {
+                            "default": true,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
                           }
                         },
                         "type": "object"
@@ -4408,6 +4564,28 @@
                     },
                     "type": "object"
                   },
+                  "dial_plan": {
+                    "properties": {
+                      "dial_plan_name": {
+                        "properties": {
+                          "enable": {
+                            "default": false,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
                   "direct_file": {
                     "properties": {
                       "direct_file_name": {
@@ -4561,7 +4739,7 @@
                                     "eth_port_profile_",
                                     "service_port_profile",
                                     "lag",
-                                    "type",
+                                    "olag",
                                     "authenticated_eth_port",
                                     "nac_port_profile",
                                     "pb_egress_profile"
@@ -4800,11 +4978,11 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
+                                    "bundleFreeform",
                                     "isPreprovisioned",
                                     "endpoint",
                                     "followsSelector",
-                                    "bundleFreeform",
+                                    "bundle_id",
                                     "modelNameFreeform",
                                     "badge_color",
                                     "softwareVersion",
@@ -4846,11 +5024,11 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
+                                    "bundleFreeform",
                                     "isPreprovisioned",
                                     "endpoint",
                                     "followsSelector",
-                                    "bundleFreeform",
+                                    "bundle_id",
                                     "modelNameFreeform",
                                     "badge_color",
                                     "softwareVersion",
@@ -4892,11 +5070,11 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
+                                    "bundleFreeform",
                                     "isPreprovisioned",
                                     "endpoint",
                                     "followsSelector",
-                                    "bundleFreeform",
+                                    "bundle_id",
                                     "modelNameFreeform",
                                     "badge_color",
                                     "softwareVersion",
@@ -5476,6 +5654,11 @@
                             "description": "Block port on BPDU Receive",
                             "type": "boolean"
                           },
+                          "bpdu_guard_port_disable": {
+                            "default": false,
+                            "description": "Force port shutdown/disable when BPDU packets are detected",
+                            "type": "boolean"
+                          },
                           "broadcast": {
                             "default": true,
                             "description": "Broadcast",
@@ -5539,6 +5722,11 @@
                           "guard_loop": {
                             "default": false,
                             "description": "Enable Cisco Guard Loop",
+                            "type": "boolean"
+                          },
+                          "guard_root": {
+                            "default": false,
+                            "description": "Enable Guard Root",
                             "type": "boolean"
                           },
                           "lldp_enable": {
@@ -6161,7 +6349,6 @@
                               "mstp",
                               "port"
                             ],
-                            "minLength": 1,
                             "type": "string"
                           },
                           "starting_octet": {
@@ -6275,6 +6462,57 @@
                             "default": true,
                             "description": "Used by IVNbizd to write connectivity-check in the ztp file",
                             "type": "boolean"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "gaia": {
+                    "properties": {
+                      "gaia_name": {
+                        "properties": {
+                          "enable": {
+                            "default": false,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "gateway": {
+                            "default": "",
+                            "description": "Gateway",
+                            "type": "string"
+                          },
+                          "ip_and_mask": {
+                            "default": "",
+                            "description": "IP and Mask",
+                            "type": "string"
+                          },
+                          "ip_source": {
+                            "default": "static",
+                            "description": "IP Source",
+                            "enum": [
+                              "dhcp",
+                              "static"
+                            ],
+                            "type": "string"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "power_state": {
+                            "default": "on",
+                            "description": "On/Off State",
+                            "type": "string"
+                          },
+                          "sdlc": {
+                            "default": "",
+                            "description": "SDLC that Backend Services belongs to",
+                            "type": "string"
                           }
                         },
                         "type": "object"
@@ -6688,7 +6926,7 @@
                                     "eth_port_profile_",
                                     "service_port_profile",
                                     "lag",
-                                    "type",
+                                    "olag",
                                     "nac_port_profile",
                                     "authenticated_eth_port",
                                     "gateway_profile",
@@ -6793,9 +7031,9 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
                                     "endpoint",
                                     "badge_color",
+                                    "bundle_id",
                                     "badge",
                                     "deviceSerialNumber"
                                   ],
@@ -6826,9 +7064,9 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
                                     "endpoint",
                                     "badge_color",
+                                    "bundle_id",
                                     "badge",
                                     "deviceSerialNumber"
                                   ],
@@ -6859,9 +7097,9 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
                                     "endpoint",
                                     "badge_color",
+                                    "bundle_id",
                                     "badge",
                                     "deviceSerialNumber"
                                   ],
@@ -6877,7 +7115,8 @@
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
                                     "unmanaged",
-                                    "1.9.1.25"
+                                    "1.9.1.34",
+                                    "1.9.1.35"
                                   ],
                                   "type": "string"
                                 },
@@ -6887,7 +7126,7 @@
                                   "type": "string"
                                 },
                                 "endpoint_set_num_unique_identifier": {
-                                  "default": "17884410761921",
+                                  "default": "17913710597871",
                                   "description": "Unique Identifier - not editable",
                                   "type": "string"
                                 }
@@ -6904,7 +7143,8 @@
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
                                     "unmanaged",
-                                    "1.9.1.25"
+                                    "1.9.1.34",
+                                    "1.9.1.35"
                                   ],
                                   "type": "string"
                                 },
@@ -6941,7 +7181,8 @@
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
                                     "unmanaged",
-                                    "1.9.1.25"
+                                    "1.9.1.34",
+                                    "1.9.1.35"
                                   ],
                                   "type": "string"
                                 },
@@ -7835,6 +8076,28 @@
                     },
                     "type": "object"
                   },
+                  "licensing": {
+                    "properties": {
+                      "licensing_name": {
+                        "properties": {
+                          "enable": {
+                            "default": false,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
                   "mac_access_list": {
                     "properties": {
                       "mac_access_list_name": {
@@ -8004,6 +8267,15 @@
                           "services": {
                             "items": {
                               "properties": {
+                                "enable": {
+                                  "default": false,
+                                  "description": "Enable this service entry",
+                                  "type": "boolean"
+                                },
+                                "index": {
+                                  "description": "The index identifying the object. Zero if you want to add an object to the list.",
+                                  "type": "integer"
+                                },
                                 "service": {
                                   "default": "",
                                   "description": "Service whose VLAN traffic will be selected for monitoring",
@@ -8086,6 +8358,41 @@
                               }
                             },
                             "type": "object"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "olag": {
+                    "properties": {
+                      "olag_name": {
+                        "properties": {
+                          "_gui_gui": {
+                            "items": {
+                              "properties": {
+                                "is_systemwide": {
+                                  "default": false,
+                                  "description": "Systemwide",
+                                  "type": "boolean"
+                                }
+                              },
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "enable": {
+                            "default": false,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
                           }
                         },
                         "type": "object"
@@ -9479,6 +9786,68 @@
                             "default": false,
                             "description": "Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks.",
                             "type": "boolean"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "service_report": {
+                    "properties": {
+                      "service_report_name": {
+                        "properties": {
+                          "available_services": {
+                            "default": "",
+                            "description": "List of all available services",
+                            "type": "string"
+                          },
+                          "enable": {
+                            "default": true,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "extras": {
+                            "default": "",
+                            "description": "Extra derived report columns: all, service, vlan, endpoint, fabric, down, org",
+                            "type": "string"
+                          },
+                          "format": {
+                            "default": "",
+                            "description": "Output format",
+                            "type": "string"
+                          },
+                          "immediate_run": {
+                            "default": false,
+                            "description": "Rerun service report immediately",
+                            "type": "boolean"
+                          },
+                          "interlink": {
+                            "default": "",
+                            "description": "Fabric or edge",
+                            "type": "string"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "output": {
+                            "default": "",
+                            "description": "Exported report name",
+                            "type": "string"
+                          },
+                          "propagation": {
+                            "default": "",
+                            "description": "Up or down",
+                            "type": "string"
+                          },
+                          "selected_services": {
+                            "default": "",
+                            "description": "Services selected to be shown on report",
+                            "type": "string"
                           }
                         },
                         "type": "object"
@@ -11239,6 +11608,18 @@
                                   "description": "Boolean value indicating if the mirror is for inbound traffic",
                                   "type": "boolean"
                                 },
+                                "traffic_mirror_num_monitoring_acl": {
+                                  "default": "",
+                                  "description": "Monitoring ACL whose Service VLANs are mirrored for this Traffic Mirror",
+                                  "type": "string"
+                                },
+                                "traffic_mirror_num_monitoring_acl_ref_type_": {
+                                  "description": "Object type for traffic_mirror_num_monitoring_acl field",
+                                  "enum": [
+                                    "monitoring_acl"
+                                  ],
+                                  "type": "string"
+                                },
                                 "traffic_mirror_num_outbound_traffic": {
                                   "default": false,
                                   "description": "Boolean value indicating if the mirror is for outbound traffic",
@@ -11527,6 +11908,23 @@
                           "layer_3_vni_auto_assigned_": {
                             "description": "Whether or not the value in layer_3_vni field has been automatically assigned or not. Set to false and change layer_3_vni value to edit.",
                             "type": "boolean"
+                          },
+                          "maximum_ebgp_paths": {
+                            "default": null,
+                            "description": "Maximum number of equal-cost eBGP paths",
+                            "maximum": 256,
+                            "minimum": 1,
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "maximum_ebgp_paths_mode": {
+                            "default": "automated",
+                            "description": "Configure the maximum number of eBGP paths automatically or manually",
+                            "enum": [
+                              "manual",
+                              "automated"
+                            ],
+                            "type": "string"
                           },
                           "name": {
                             "default": "",
@@ -11928,8 +12326,8 @@
                                   "description": "Object type for element field",
                                   "enum": [
                                     "switchpoint",
-                                    "type",
-                                    "type",
+                                    "gaia",
+                                    "acs",
                                     "ai_service"
                                   ],
                                   "type": "string"
@@ -12032,71 +12430,6 @@
                               "interface"
                             ],
                             "type": "string"
-                          }
-                        },
-                        "type": "object"
-                      }
-                    },
-                    "type": "object"
-                  },
-                  "type": {
-                    "properties": {
-                      "type_name": {
-                        "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
-                          "name": {
-                            "default": "",
-                            "description": "Template Name. Must be unique within type.",
-                            "format": "name",
-                            "minLength": 1,
-                            "type": "string"
-                          },
-                          "servers": {
-                            "items": {
-                              "properties": {
-                                "server_num_enable": {
-                                  "default": false,
-                                  "description": "Enable Authentication server",
-                                  "type": "boolean"
-                                },
-                                "server_num_ip": {
-                                  "default": "",
-                                  "description": "Authentication server IP",
-                                  "type": "string"
-                                },
-                                "server_num_port": {
-                                  "default": "1812",
-                                  "description": "Authentication server port",
-                                  "type": "string"
-                                },
-                                "server_num_role": {
-                                  "default": "Auth",
-                                  "description": "Authentication server role",
-                                  "enum": [
-                                    "Auth",
-                                    "Acct",
-                                    "DAS"
-                                  ],
-                                  "type": "string"
-                                },
-                                "server_num_shared_secret": {
-                                  "default": "",
-                                  "description": "Authentication server Shared Secret",
-                                  "type": "string"
-                                },
-                                "server_num_shared_secret_encrypted": {
-                                  "default": "",
-                                  "description": "Authentication server Shared Secret",
-                                  "type": "string"
-                                }
-                              },
-                              "type": "object"
-                            },
-                            "type": "array"
                           }
                         },
                         "type": "object"
@@ -12210,19 +12543,9 @@
                     "properties": {
                       "user_type_name": {
                         "properties": {
-                          "admin": {
-                            "default": true,
+                          "admin_panel": {
+                            "default": false,
                             "description": "Capability to perform Admin features",
-                            "type": "boolean"
-                          },
-                          "base_provisioning": {
-                            "default": true,
-                            "description": "Capability to edit objects in the provisioning section and non-fabric lags",
-                            "type": "boolean"
-                          },
-                          "device_endpoint": {
-                            "default": true,
-                            "description": "Capability to edit unlocked ONT endpoints",
                             "type": "boolean"
                           },
                           "device_management": {
@@ -12235,30 +12558,20 @@
                             "description": "Enable object.",
                             "type": "boolean"
                           },
-                          "fabric_permissions": {
-                            "default": false,
-                            "description": "Capability to edit Fabrics",
+                          "fabric_panel": {
+                            "default": true,
+                            "description": "Capability to edit Fabrics, Pods, Planes, fabric-level objects and all types of bundles (unlocked and locked)",
                             "type": "boolean"
                           },
-                          "globals": {
-                            "default": true,
-                            "description": "Capability to edit Badges and Radius Servers",
+                          "fabric_permissions": {
+                            "default": false,
+                            "description": "When enabled, user requires explicit permission for each specific fabric to edit that fabric and its associated objects",
                             "type": "boolean"
                           },
                           "idle_time_logout_min": {
                             "default": "240",
                             "description": "Idle Time Logout in minutes",
                             "type": "string"
-                          },
-                          "import": {
-                            "default": true,
-                            "description": "Capability to import",
-                            "type": "boolean"
-                          },
-                          "locked_switch_endpoint": {
-                            "default": true,
-                            "description": "Capability to edit locked switch endpoints",
-                            "type": "boolean"
                           },
                           "mod": {
                             "default": "",
@@ -12272,9 +12585,9 @@
                             "minLength": 1,
                             "type": "string"
                           },
-                          "network": {
+                          "operations_panel": {
                             "default": true,
-                            "description": "Capability to edit Sites, Domains, Switch ordering, LANs, Switch Pairing, and System/Site wide management buttons",
+                            "description": "Capability to import/export, manage badges, endpoint views, and sets",
                             "type": "boolean"
                           },
                           "permitted_fabrics": {
@@ -12307,29 +12620,19 @@
                             ],
                             "type": "string"
                           },
-                          "sd-wan_access": {
+                          "template_panel": {
                             "default": true,
-                            "description": "Capability to access SD-WAN",
+                            "description": "Capability to edit templates, bundles, and provisioning objects",
                             "type": "boolean"
                           },
-                          "services": {
+                          "tenancy_panel": {
                             "default": true,
                             "description": "Capability to edit services",
                             "type": "boolean"
                           },
-                          "sets": {
+                          "unlocked_bundle": {
                             "default": true,
-                            "description": "Capability to edit endpoint sets",
-                            "type": "boolean"
-                          },
-                          "switch_endpoint": {
-                            "default": true,
-                            "description": "Capability to edit unlocked switch endpoints",
-                            "type": "boolean"
-                          },
-                          "views": {
-                            "default": true,
-                            "description": "Capability to edit endpoint views",
+                            "description": "Capability to edit unlocked Bundles",
                             "type": "boolean"
                           }
                         },
@@ -12357,6 +12660,11 @@
                             "description": "Template Name. Must be unique within type.",
                             "format": "name",
                             "minLength": 1,
+                            "type": "string"
+                          },
+                          "unnamed": {
+                            "default": "AI Provider Config",
+                            "description": "",
                             "type": "string"
                           }
                         },
@@ -12782,6 +13090,57 @@
             "application/json": {
               "schema": {
                 "properties": {
+                  "acs": {
+                    "properties": {
+                      "acs_name": {
+                        "properties": {
+                          "enable": {
+                            "default": false,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "gateway": {
+                            "default": "",
+                            "description": "Gateway",
+                            "type": "string"
+                          },
+                          "ip_and_mask": {
+                            "default": "",
+                            "description": "IP and Mask",
+                            "type": "string"
+                          },
+                          "ip_source": {
+                            "default": "static",
+                            "description": "IP Source",
+                            "enum": [
+                              "dhcp",
+                              "static"
+                            ],
+                            "type": "string"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "power": {
+                            "default": "on",
+                            "description": "On/Off State",
+                            "type": "string"
+                          },
+                          "sdlc": {
+                            "default": "",
+                            "description": "SDLC that ACS belongs to",
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
                   "ai_provider_config": {
                     "properties": {
                       "ai_provider_config_name": {
@@ -12810,7 +13169,7 @@
                             "type": "string"
                           },
                           "enable": {
-                            "default": true,
+                            "default": false,
                             "description": "Enable object.",
                             "type": "boolean"
                           },
@@ -13063,6 +13422,11 @@
                                   ],
                                   "type": "string"
                                 },
+                                "eth_port_profile_num_failed_action_set": {
+                                  "default": false,
+                                  "description": "Flag indicating this Eth Port Profile is the Failed Action",
+                                  "type": "boolean"
+                                },
                                 "eth_port_profile_num_radius_filter_id": {
                                   "default": "",
                                   "description": "The value of filter-id in the RADIUS response which will evoke this Eth Port Profile",
@@ -13071,7 +13435,7 @@
                                 },
                                 "eth_port_profile_num_walled_garden_set": {
                                   "default": false,
-                                  "description": "Flag indicating this Eth Port Profile is the Walled Garden",
+                                  "description": "Flag indicating this Eth Port Profile is the Walled Garden. Will apply to the \"No response\" case if supported",
                                   "type": "boolean"
                                 },
                                 "index": {
@@ -13122,6 +13486,71 @@
                             "default": false,
                             "description": "Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks.",
                             "type": "boolean"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "authentication_server": {
+                    "properties": {
+                      "authentication_server_name": {
+                        "properties": {
+                          "enable": {
+                            "default": true,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "servers": {
+                            "items": {
+                              "properties": {
+                                "server_num_enable": {
+                                  "default": false,
+                                  "description": "Enable Authentication server",
+                                  "type": "boolean"
+                                },
+                                "server_num_ip": {
+                                  "default": "",
+                                  "description": "Authentication server IP",
+                                  "type": "string"
+                                },
+                                "server_num_port": {
+                                  "default": "1812",
+                                  "description": "Authentication server port",
+                                  "type": "string"
+                                },
+                                "server_num_role": {
+                                  "default": "Auth",
+                                  "description": "Authentication server role",
+                                  "enum": [
+                                    "Auth",
+                                    "Acct",
+                                    "DAS"
+                                  ],
+                                  "type": "string"
+                                },
+                                "server_num_shared_secret": {
+                                  "default": "",
+                                  "description": "Authentication server Shared Secret",
+                                  "type": "string"
+                                },
+                                "server_num_shared_secret_encrypted": {
+                                  "default": "",
+                                  "description": "Authentication server Shared Secret",
+                                  "type": "string"
+                                }
+                              },
+                              "type": "object"
+                            },
+                            "type": "array"
                           }
                         },
                         "type": "object"
@@ -13222,6 +13651,28 @@
                           "object_properties": {
                             "properties": {},
                             "type": "object"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "branding": {
+                    "properties": {
+                      "branding_name": {
+                        "properties": {
+                          "enable": {
+                            "default": true,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
                           }
                         },
                         "type": "object"
@@ -14256,6 +14707,28 @@
                     },
                     "type": "object"
                   },
+                  "dial_plan": {
+                    "properties": {
+                      "dial_plan_name": {
+                        "properties": {
+                          "enable": {
+                            "default": false,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
                   "direct_file": {
                     "properties": {
                       "direct_file_name": {
@@ -14409,7 +14882,7 @@
                                     "eth_port_profile_",
                                     "service_port_profile",
                                     "lag",
-                                    "type",
+                                    "olag",
                                     "authenticated_eth_port",
                                     "nac_port_profile",
                                     "pb_egress_profile"
@@ -14648,11 +15121,11 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
+                                    "bundleFreeform",
                                     "isPreprovisioned",
                                     "endpoint",
                                     "followsSelector",
-                                    "bundleFreeform",
+                                    "bundle_id",
                                     "modelNameFreeform",
                                     "badge_color",
                                     "softwareVersion",
@@ -14694,11 +15167,11 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
+                                    "bundleFreeform",
                                     "isPreprovisioned",
                                     "endpoint",
                                     "followsSelector",
-                                    "bundleFreeform",
+                                    "bundle_id",
                                     "modelNameFreeform",
                                     "badge_color",
                                     "softwareVersion",
@@ -14740,11 +15213,11 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
+                                    "bundleFreeform",
                                     "isPreprovisioned",
                                     "endpoint",
                                     "followsSelector",
-                                    "bundleFreeform",
+                                    "bundle_id",
                                     "modelNameFreeform",
                                     "badge_color",
                                     "softwareVersion",
@@ -15324,6 +15797,11 @@
                             "description": "Block port on BPDU Receive",
                             "type": "boolean"
                           },
+                          "bpdu_guard_port_disable": {
+                            "default": false,
+                            "description": "Force port shutdown/disable when BPDU packets are detected",
+                            "type": "boolean"
+                          },
                           "broadcast": {
                             "default": true,
                             "description": "Broadcast",
@@ -15387,6 +15865,11 @@
                           "guard_loop": {
                             "default": false,
                             "description": "Enable Cisco Guard Loop",
+                            "type": "boolean"
+                          },
+                          "guard_root": {
+                            "default": false,
+                            "description": "Enable Guard Root",
                             "type": "boolean"
                           },
                           "lldp_enable": {
@@ -16009,7 +16492,6 @@
                               "mstp",
                               "port"
                             ],
-                            "minLength": 1,
                             "type": "string"
                           },
                           "starting_octet": {
@@ -16123,6 +16605,57 @@
                             "default": true,
                             "description": "Used by IVNbizd to write connectivity-check in the ztp file",
                             "type": "boolean"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "gaia": {
+                    "properties": {
+                      "gaia_name": {
+                        "properties": {
+                          "enable": {
+                            "default": false,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "gateway": {
+                            "default": "",
+                            "description": "Gateway",
+                            "type": "string"
+                          },
+                          "ip_and_mask": {
+                            "default": "",
+                            "description": "IP and Mask",
+                            "type": "string"
+                          },
+                          "ip_source": {
+                            "default": "static",
+                            "description": "IP Source",
+                            "enum": [
+                              "dhcp",
+                              "static"
+                            ],
+                            "type": "string"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "power_state": {
+                            "default": "on",
+                            "description": "On/Off State",
+                            "type": "string"
+                          },
+                          "sdlc": {
+                            "default": "",
+                            "description": "SDLC that Backend Services belongs to",
+                            "type": "string"
                           }
                         },
                         "type": "object"
@@ -16536,7 +17069,7 @@
                                     "eth_port_profile_",
                                     "service_port_profile",
                                     "lag",
-                                    "type",
+                                    "olag",
                                     "nac_port_profile",
                                     "authenticated_eth_port",
                                     "gateway_profile",
@@ -16641,9 +17174,9 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
                                     "endpoint",
                                     "badge_color",
+                                    "bundle_id",
                                     "badge",
                                     "deviceSerialNumber"
                                   ],
@@ -16674,9 +17207,9 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
                                     "endpoint",
                                     "badge_color",
+                                    "bundle_id",
                                     "badge",
                                     "deviceSerialNumber"
                                   ],
@@ -16707,9 +17240,9 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
                                     "endpoint",
                                     "badge_color",
+                                    "bundle_id",
                                     "badge",
                                     "deviceSerialNumber"
                                   ],
@@ -16725,7 +17258,8 @@
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
                                     "unmanaged",
-                                    "1.9.1.25"
+                                    "1.9.1.34",
+                                    "1.9.1.35"
                                   ],
                                   "type": "string"
                                 },
@@ -16735,7 +17269,7 @@
                                   "type": "string"
                                 },
                                 "endpoint_set_num_unique_identifier": {
-                                  "default": "17884410761921",
+                                  "default": "17913710597871",
                                   "description": "Unique Identifier - not editable",
                                   "type": "string"
                                 }
@@ -16752,7 +17286,8 @@
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
                                     "unmanaged",
-                                    "1.9.1.25"
+                                    "1.9.1.34",
+                                    "1.9.1.35"
                                   ],
                                   "type": "string"
                                 },
@@ -16789,7 +17324,8 @@
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
                                     "unmanaged",
-                                    "1.9.1.25"
+                                    "1.9.1.34",
+                                    "1.9.1.35"
                                   ],
                                   "type": "string"
                                 },
@@ -17683,6 +18219,28 @@
                     },
                     "type": "object"
                   },
+                  "licensing": {
+                    "properties": {
+                      "licensing_name": {
+                        "properties": {
+                          "enable": {
+                            "default": false,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
                   "mac_access_list": {
                     "properties": {
                       "mac_access_list_name": {
@@ -17852,6 +18410,15 @@
                           "services": {
                             "items": {
                               "properties": {
+                                "enable": {
+                                  "default": false,
+                                  "description": "Enable this service entry",
+                                  "type": "boolean"
+                                },
+                                "index": {
+                                  "description": "The index identifying the object. Zero if you want to add an object to the list.",
+                                  "type": "integer"
+                                },
                                 "service": {
                                   "default": "",
                                   "description": "Service whose VLAN traffic will be selected for monitoring",
@@ -17934,6 +18501,41 @@
                               }
                             },
                             "type": "object"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "olag": {
+                    "properties": {
+                      "olag_name": {
+                        "properties": {
+                          "_gui_gui": {
+                            "items": {
+                              "properties": {
+                                "is_systemwide": {
+                                  "default": false,
+                                  "description": "Systemwide",
+                                  "type": "boolean"
+                                }
+                              },
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "enable": {
+                            "default": false,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
                           }
                         },
                         "type": "object"
@@ -19327,6 +19929,68 @@
                             "default": false,
                             "description": "Trusted Ports do not participate in IP Source Guard, Dynamic ARP Inspection, nor DHCP Snooping, meaning all packets are forwarded without any checks.",
                             "type": "boolean"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "service_report": {
+                    "properties": {
+                      "service_report_name": {
+                        "properties": {
+                          "available_services": {
+                            "default": "",
+                            "description": "List of all available services",
+                            "type": "string"
+                          },
+                          "enable": {
+                            "default": true,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "extras": {
+                            "default": "",
+                            "description": "Extra derived report columns: all, service, vlan, endpoint, fabric, down, org",
+                            "type": "string"
+                          },
+                          "format": {
+                            "default": "",
+                            "description": "Output format",
+                            "type": "string"
+                          },
+                          "immediate_run": {
+                            "default": false,
+                            "description": "Rerun service report immediately",
+                            "type": "boolean"
+                          },
+                          "interlink": {
+                            "default": "",
+                            "description": "Fabric or edge",
+                            "type": "string"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "output": {
+                            "default": "",
+                            "description": "Exported report name",
+                            "type": "string"
+                          },
+                          "propagation": {
+                            "default": "",
+                            "description": "Up or down",
+                            "type": "string"
+                          },
+                          "selected_services": {
+                            "default": "",
+                            "description": "Services selected to be shown on report",
+                            "type": "string"
                           }
                         },
                         "type": "object"
@@ -21087,6 +21751,18 @@
                                   "description": "Boolean value indicating if the mirror is for inbound traffic",
                                   "type": "boolean"
                                 },
+                                "traffic_mirror_num_monitoring_acl": {
+                                  "default": "",
+                                  "description": "Monitoring ACL whose Service VLANs are mirrored for this Traffic Mirror",
+                                  "type": "string"
+                                },
+                                "traffic_mirror_num_monitoring_acl_ref_type_": {
+                                  "description": "Object type for traffic_mirror_num_monitoring_acl field",
+                                  "enum": [
+                                    "monitoring_acl"
+                                  ],
+                                  "type": "string"
+                                },
                                 "traffic_mirror_num_outbound_traffic": {
                                   "default": false,
                                   "description": "Boolean value indicating if the mirror is for outbound traffic",
@@ -21375,6 +22051,23 @@
                           "layer_3_vni_auto_assigned_": {
                             "description": "Whether or not the value in layer_3_vni field has been automatically assigned or not. Set to false and change layer_3_vni value to edit.",
                             "type": "boolean"
+                          },
+                          "maximum_ebgp_paths": {
+                            "default": null,
+                            "description": "Maximum number of equal-cost eBGP paths",
+                            "maximum": 256,
+                            "minimum": 1,
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "maximum_ebgp_paths_mode": {
+                            "default": "automated",
+                            "description": "Configure the maximum number of eBGP paths automatically or manually",
+                            "enum": [
+                              "manual",
+                              "automated"
+                            ],
+                            "type": "string"
                           },
                           "name": {
                             "default": "",
@@ -21776,8 +22469,8 @@
                                   "description": "Object type for element field",
                                   "enum": [
                                     "switchpoint",
-                                    "type",
-                                    "type",
+                                    "gaia",
+                                    "acs",
                                     "ai_service"
                                   ],
                                   "type": "string"
@@ -21880,71 +22573,6 @@
                               "interface"
                             ],
                             "type": "string"
-                          }
-                        },
-                        "type": "object"
-                      }
-                    },
-                    "type": "object"
-                  },
-                  "type": {
-                    "properties": {
-                      "type_name": {
-                        "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
-                          "name": {
-                            "default": "",
-                            "description": "Template Name. Must be unique within type.",
-                            "format": "name",
-                            "minLength": 1,
-                            "type": "string"
-                          },
-                          "servers": {
-                            "items": {
-                              "properties": {
-                                "server_num_enable": {
-                                  "default": false,
-                                  "description": "Enable Authentication server",
-                                  "type": "boolean"
-                                },
-                                "server_num_ip": {
-                                  "default": "",
-                                  "description": "Authentication server IP",
-                                  "type": "string"
-                                },
-                                "server_num_port": {
-                                  "default": "1812",
-                                  "description": "Authentication server port",
-                                  "type": "string"
-                                },
-                                "server_num_role": {
-                                  "default": "Auth",
-                                  "description": "Authentication server role",
-                                  "enum": [
-                                    "Auth",
-                                    "Acct",
-                                    "DAS"
-                                  ],
-                                  "type": "string"
-                                },
-                                "server_num_shared_secret": {
-                                  "default": "",
-                                  "description": "Authentication server Shared Secret",
-                                  "type": "string"
-                                },
-                                "server_num_shared_secret_encrypted": {
-                                  "default": "",
-                                  "description": "Authentication server Shared Secret",
-                                  "type": "string"
-                                }
-                              },
-                              "type": "object"
-                            },
-                            "type": "array"
                           }
                         },
                         "type": "object"
@@ -22058,19 +22686,9 @@
                     "properties": {
                       "user_type_name": {
                         "properties": {
-                          "admin": {
-                            "default": true,
+                          "admin_panel": {
+                            "default": false,
                             "description": "Capability to perform Admin features",
-                            "type": "boolean"
-                          },
-                          "base_provisioning": {
-                            "default": true,
-                            "description": "Capability to edit objects in the provisioning section and non-fabric lags",
-                            "type": "boolean"
-                          },
-                          "device_endpoint": {
-                            "default": true,
-                            "description": "Capability to edit unlocked ONT endpoints",
                             "type": "boolean"
                           },
                           "device_management": {
@@ -22083,30 +22701,20 @@
                             "description": "Enable object.",
                             "type": "boolean"
                           },
-                          "fabric_permissions": {
-                            "default": false,
-                            "description": "Capability to edit Fabrics",
+                          "fabric_panel": {
+                            "default": true,
+                            "description": "Capability to edit Fabrics, Pods, Planes, fabric-level objects and all types of bundles (unlocked and locked)",
                             "type": "boolean"
                           },
-                          "globals": {
-                            "default": true,
-                            "description": "Capability to edit Badges and Radius Servers",
+                          "fabric_permissions": {
+                            "default": false,
+                            "description": "When enabled, user requires explicit permission for each specific fabric to edit that fabric and its associated objects",
                             "type": "boolean"
                           },
                           "idle_time_logout_min": {
                             "default": "240",
                             "description": "Idle Time Logout in minutes",
                             "type": "string"
-                          },
-                          "import": {
-                            "default": true,
-                            "description": "Capability to import",
-                            "type": "boolean"
-                          },
-                          "locked_switch_endpoint": {
-                            "default": true,
-                            "description": "Capability to edit locked switch endpoints",
-                            "type": "boolean"
                           },
                           "mod": {
                             "default": "",
@@ -22120,9 +22728,9 @@
                             "minLength": 1,
                             "type": "string"
                           },
-                          "network": {
+                          "operations_panel": {
                             "default": true,
-                            "description": "Capability to edit Sites, Domains, Switch ordering, LANs, Switch Pairing, and System/Site wide management buttons",
+                            "description": "Capability to import/export, manage badges, endpoint views, and sets",
                             "type": "boolean"
                           },
                           "permitted_fabrics": {
@@ -22155,29 +22763,19 @@
                             ],
                             "type": "string"
                           },
-                          "sd-wan_access": {
+                          "template_panel": {
                             "default": true,
-                            "description": "Capability to access SD-WAN",
+                            "description": "Capability to edit templates, bundles, and provisioning objects",
                             "type": "boolean"
                           },
-                          "services": {
+                          "tenancy_panel": {
                             "default": true,
                             "description": "Capability to edit services",
                             "type": "boolean"
                           },
-                          "sets": {
+                          "unlocked_bundle": {
                             "default": true,
-                            "description": "Capability to edit endpoint sets",
-                            "type": "boolean"
-                          },
-                          "switch_endpoint": {
-                            "default": true,
-                            "description": "Capability to edit unlocked switch endpoints",
-                            "type": "boolean"
-                          },
-                          "views": {
-                            "default": true,
-                            "description": "Capability to edit endpoint views",
+                            "description": "Capability to edit unlocked Bundles",
                             "type": "boolean"
                           }
                         },
@@ -22205,6 +22803,11 @@
                             "description": "Template Name. Must be unique within type.",
                             "format": "name",
                             "minLength": 1,
+                            "type": "string"
+                          },
+                          "unnamed": {
+                            "default": "AI Provider Config",
+                            "description": "",
                             "type": "string"
                           }
                         },
@@ -22610,6 +23213,139 @@
         "summary": "Create or update configuration",
         "tags": [
           "Config"
+        ]
+      }
+    },
+    "/dellome": {
+      "get": {
+        "description": "Retrieves Dell OME configuration.\n",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ],
+        "summary": "Get Dell OME configuration",
+        "tags": [
+          "Dell OME"
+        ]
+      },
+      "put": {
+        "description": "Override Dell OME configuration.\n",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "dell_ome": {
+                    "properties": {
+                      "dell_ome_name": {
+                        "properties": {
+                          "enable": {
+                            "default": true,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "server_credentials": {
+                            "items": {
+                              "properties": {
+                                "password": {
+                                  "default": "",
+                                  "description": "Server Password",
+                                  "type": "string"
+                                },
+                                "password_encrypted": {
+                                  "default": "",
+                                  "description": "Encrypted Server Password",
+                                  "type": "string"
+                                },
+                                "row_num_enable": {
+                                  "default": false,
+                                  "description": "Enable row",
+                                  "type": "boolean"
+                                },
+                                "server_url": {
+                                  "default": "",
+                                  "description": "Server URL",
+                                  "type": "string"
+                                },
+                                "username": {
+                                  "default": "",
+                                  "description": "Server Username",
+                                  "type": "string"
+                                },
+                                "verify_ssl_certificates": {
+                                  "default": true,
+                                  "description": "Verify SSL certificates when connecting to Dell OME servers",
+                                  "type": "boolean"
+                                }
+                              },
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created or Updated"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ],
+        "summary": "Override Dell OME configuration",
+        "tags": [
+          "Dell OME"
         ]
       }
     },
@@ -26290,6 +27026,11 @@
                             "description": "Block port on BPDU Receive",
                             "type": "boolean"
                           },
+                          "bpdu_guard_port_disable": {
+                            "default": false,
+                            "description": "Force port shutdown/disable when BPDU packets are detected",
+                            "type": "boolean"
+                          },
                           "broadcast": {
                             "default": true,
                             "description": "Broadcast",
@@ -26353,6 +27094,11 @@
                           "guard_loop": {
                             "default": false,
                             "description": "Enable Cisco Guard Loop",
+                            "type": "boolean"
+                          },
+                          "guard_root": {
+                            "default": false,
+                            "description": "Enable Guard Root",
                             "type": "boolean"
                           },
                           "lldp_enable": {
@@ -26676,6 +27422,11 @@
                             "description": "Block port on BPDU Receive",
                             "type": "boolean"
                           },
+                          "bpdu_guard_port_disable": {
+                            "default": false,
+                            "description": "Force port shutdown/disable when BPDU packets are detected",
+                            "type": "boolean"
+                          },
                           "broadcast": {
                             "default": true,
                             "description": "Broadcast",
@@ -26739,6 +27490,11 @@
                           "guard_loop": {
                             "default": false,
                             "description": "Enable Cisco Guard Loop",
+                            "type": "boolean"
+                          },
+                          "guard_root": {
+                            "default": false,
+                            "description": "Enable Guard Root",
                             "type": "boolean"
                           },
                           "lldp_enable": {
@@ -26991,6 +27747,263 @@
         "summary": "Create Eth-Port Settings",
         "tags": [
           "Eth-Port Settings"
+        ]
+      }
+    },
+    "/fabriccollections": {
+      "delete": {
+        "description": "Deletes an existing Fabric Collection from the system if changeset_name is empty, from a changeset if its name is provided.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "site_collection_name",
+            "required": true,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "in": "query",
+            "name": "changeset_name",
+            "required": false,
+            "schema": {
+              "description": "Changeset name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ],
+        "summary": "Delete Fabric Collection",
+        "tags": [
+          "Fabric Collections"
+        ]
+      },
+      "get": {
+        "description": "Retrieves all Fabric Collections from the system.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "site_collection_name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_data",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "changeset_name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ],
+        "summary": "Get all Fabric Collections",
+        "tags": [
+          "Fabric Collections"
+        ]
+      },
+      "patch": {
+        "description": "Update Fabric Collection into the system if changeset_name is empty, into a changeset if its name is provided.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "changeset_name",
+            "required": false,
+            "schema": {
+              "description": "Changeset name",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "site_collection": {
+                    "properties": {
+                      "site_collection_name": {
+                        "properties": {
+                          "enable": {
+                            "default": true,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created or Updated"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ],
+        "summary": "Update Fabric Collection",
+        "tags": [
+          "Fabric Collections"
+        ]
+      },
+      "put": {
+        "description": "Create Fabric Collection into the system if changeset_name is empty, into a changeset if its name is provided.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "changeset_name",
+            "required": false,
+            "schema": {
+              "description": "Changeset name",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "site_collection": {
+                    "properties": {
+                      "site_collection_name": {
+                        "properties": {
+                          "enable": {
+                            "default": true,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created or Updated"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ],
+        "summary": "Create Fabric Collection",
+        "tags": [
+          "Fabric Collections"
         ]
       }
     },
@@ -27431,7 +28444,6 @@
                               "mstp",
                               "port"
                             ],
-                            "minLength": 1,
                             "type": "string"
                           },
                           "starting_octet": {
@@ -27856,7 +28868,6 @@
                               "mstp",
                               "port"
                             ],
-                            "minLength": 1,
                             "type": "string"
                           },
                           "starting_octet": {
@@ -28161,7 +29172,7 @@
                                     "eth_port_profile_",
                                     "service_port_profile",
                                     "lag",
-                                    "type",
+                                    "olag",
                                     "nac_port_profile",
                                     "authenticated_eth_port",
                                     "gateway_profile",
@@ -28325,7 +29336,7 @@
                                     "eth_port_profile_",
                                     "service_port_profile",
                                     "lag",
-                                    "type",
+                                    "olag",
                                     "nac_port_profile",
                                     "authenticated_eth_port",
                                     "gateway_profile",
@@ -28538,9 +29549,9 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
                                     "endpoint",
                                     "badge_color",
+                                    "bundle_id",
                                     "badge",
                                     "deviceSerialNumber"
                                   ],
@@ -28571,9 +29582,9 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
                                     "endpoint",
                                     "badge_color",
+                                    "bundle_id",
                                     "badge",
                                     "deviceSerialNumber"
                                   ],
@@ -28604,9 +29615,9 @@
                                   "enum": [
                                     "",
                                     "productClass",
-                                    "bundle_id",
                                     "endpoint",
                                     "badge_color",
+                                    "bundle_id",
                                     "badge",
                                     "deviceSerialNumber"
                                   ],
@@ -28622,7 +29633,8 @@
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
                                     "unmanaged",
-                                    "1.9.1.25"
+                                    "1.9.1.34",
+                                    "1.9.1.35"
                                   ],
                                   "type": "string"
                                 },
@@ -28632,7 +29644,7 @@
                                   "type": "string"
                                 },
                                 "endpoint_set_num_unique_identifier": {
-                                  "default": "17884410761921",
+                                  "default": "17913710597871",
                                   "description": "Unique Identifier - not editable",
                                   "type": "string"
                                 }
@@ -28649,7 +29661,8 @@
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
                                     "unmanaged",
-                                    "1.9.1.25"
+                                    "1.9.1.34",
+                                    "1.9.1.35"
                                   ],
                                   "type": "string"
                                 },
@@ -28686,7 +29699,8 @@
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
                                     "unmanaged",
-                                    "1.9.1.25"
+                                    "1.9.1.34",
+                                    "1.9.1.35"
                                   ],
                                   "type": "string"
                                 },
@@ -30305,6 +31319,666 @@
         "summary": "Create MAC Filter",
         "tags": [
           "MAC Filters"
+        ]
+      }
+    },
+    "/monitoringacls": {
+      "delete": {
+        "description": "Deletes an existing Monitoring ACL from the system if changeset_name is empty, from a changeset if its name is provided.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "monitoring_acl_name",
+            "required": true,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "in": "query",
+            "name": "changeset_name",
+            "required": false,
+            "schema": {
+              "description": "Changeset name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ],
+        "summary": "Delete Monitoring ACL",
+        "tags": [
+          "Monitoring ACLs"
+        ]
+      },
+      "get": {
+        "description": "Downloads all Monitoring ACLs from the system.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "monitoring_acl_name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_data",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "changeset_name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ],
+        "summary": "Get all Monitoring ACLs",
+        "tags": [
+          "Monitoring ACLs"
+        ]
+      },
+      "patch": {
+        "description": "Update Monitoring ACL into the system if changeset_name is empty, into a changeset if its name is provided.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "changeset_name",
+            "required": false,
+            "schema": {
+              "description": "Changeset name",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "monitoring_acl": {
+                    "properties": {
+                      "monitoring_acl_name": {
+                        "properties": {
+                          "enable": {
+                            "default": false,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "services": {
+                            "items": {
+                              "properties": {
+                                "enable": {
+                                  "default": false,
+                                  "description": "Enable this service entry",
+                                  "type": "boolean"
+                                },
+                                "index": {
+                                  "description": "The index identifying the object. Zero if you want to add an object to the list.",
+                                  "type": "integer"
+                                },
+                                "service": {
+                                  "default": "",
+                                  "description": "Service whose VLAN traffic will be selected for monitoring",
+                                  "type": "string"
+                                },
+                                "service_ref_type_": {
+                                  "description": "Object type for service field",
+                                  "enum": [
+                                    "service"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created or Updated"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ],
+        "summary": "Update Monitoring ACL",
+        "tags": [
+          "Monitoring ACLs"
+        ]
+      },
+      "put": {
+        "description": "Create Monitoring ACL into the system if changeset_name is empty, into a changeset if its name is provided.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "changeset_name",
+            "required": false,
+            "schema": {
+              "description": "Changeset name",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "monitoring_acl": {
+                    "properties": {
+                      "monitoring_acl_name": {
+                        "properties": {
+                          "enable": {
+                            "default": false,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "services": {
+                            "items": {
+                              "properties": {
+                                "enable": {
+                                  "default": false,
+                                  "description": "Enable this service entry",
+                                  "type": "boolean"
+                                },
+                                "index": {
+                                  "description": "The index identifying the object. Zero if you want to add an object to the list.",
+                                  "type": "integer"
+                                },
+                                "service": {
+                                  "default": "",
+                                  "description": "Service whose VLAN traffic will be selected for monitoring",
+                                  "type": "string"
+                                },
+                                "service_ref_type_": {
+                                  "description": "Object type for service field",
+                                  "enum": [
+                                    "service"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created or Updated"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ],
+        "summary": "Create Monitoring ACL",
+        "tags": [
+          "Monitoring ACLs"
+        ]
+      }
+    },
+    "/nacportprofiles": {
+      "delete": {
+        "description": "Deletes an existing NAC Port Profile from the system if changeset_name is empty, from a changeset if its name is provided.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "nac_port_profile_name",
+            "required": true,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "in": "query",
+            "name": "changeset_name",
+            "required": false,
+            "schema": {
+              "description": "Changeset name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ],
+        "summary": "Delete NAC Port Profile",
+        "tags": [
+          "NAC Port Profiles"
+        ]
+      },
+      "get": {
+        "description": "Retrieves all NAC Port Profiles from the system.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "nac_port_profile_name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_data",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "changeset_name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ],
+        "summary": "Get all NAC Port Profiles",
+        "tags": [
+          "NAC Port Profiles"
+        ]
+      },
+      "patch": {
+        "description": "Update NAC Port Profile into the system if changeset_name is empty, into a changeset if its name is provided.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "changeset_name",
+            "required": false,
+            "schema": {
+              "description": "Changeset name",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "nac_port_profile": {
+                    "properties": {
+                      "nac_port_profile_name": {
+                        "properties": {
+                          "enable": {
+                            "default": false,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "eth_ports": {
+                            "items": {
+                              "properties": {
+                                "eth_port_profile_num_enable": {
+                                  "default": false,
+                                  "description": "Enable row",
+                                  "type": "boolean"
+                                },
+                                "eth_port_profile_num_eth_port": {
+                                  "default": "",
+                                  "description": "Choose an Eth Port Profile",
+                                  "type": "string"
+                                },
+                                "eth_port_profile_num_eth_port_ref_type_": {
+                                  "description": "Object type for eth_port_profile_num_eth_port field",
+                                  "enum": [
+                                    "eth_port_profile_"
+                                  ],
+                                  "type": "string"
+                                },
+                                "index": {
+                                  "description": "The index identifying the object. Zero if you want to add an object to the list.",
+                                  "type": "integer"
+                                }
+                              },
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "object_properties": {
+                            "properties": {
+                              "port_monitoring": {
+                                "default": "",
+                                "description": "Defines importance of Link Down on this port",
+                                "enum": [
+                                  "critical",
+                                  "high",
+                                  ""
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "type": "object"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created or Updated"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ],
+        "summary": "Update NAC Port Profile",
+        "tags": [
+          "NAC Port Profiles"
+        ]
+      },
+      "put": {
+        "description": "Create NAC Port Profile into the system if changeset_name is empty, into a changeset if its name is provided.\n",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "changeset_name",
+            "required": false,
+            "schema": {
+              "description": "Changeset name",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "nac_port_profile": {
+                    "properties": {
+                      "nac_port_profile_name": {
+                        "properties": {
+                          "enable": {
+                            "default": false,
+                            "description": "Enable object.",
+                            "type": "boolean"
+                          },
+                          "eth_ports": {
+                            "items": {
+                              "properties": {
+                                "eth_port_profile_num_enable": {
+                                  "default": false,
+                                  "description": "Enable row",
+                                  "type": "boolean"
+                                },
+                                "eth_port_profile_num_eth_port": {
+                                  "default": "",
+                                  "description": "Choose an Eth Port Profile",
+                                  "type": "string"
+                                },
+                                "eth_port_profile_num_eth_port_ref_type_": {
+                                  "description": "Object type for eth_port_profile_num_eth_port field",
+                                  "enum": [
+                                    "eth_port_profile_"
+                                  ],
+                                  "type": "string"
+                                },
+                                "index": {
+                                  "description": "The index identifying the object. Zero if you want to add an object to the list.",
+                                  "type": "integer"
+                                }
+                              },
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "name": {
+                            "default": "",
+                            "description": "Template Name. Must be unique within type.",
+                            "format": "name",
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "object_properties": {
+                            "properties": {
+                              "port_monitoring": {
+                                "default": "",
+                                "description": "Defines importance of Link Down on this port",
+                                "enum": [
+                                  "critical",
+                                  "high",
+                                  ""
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "type": "object"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created or Updated"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ],
+        "summary": "Create NAC Port Profile",
+        "tags": [
+          "NAC Port Profiles"
         ]
       }
     },
@@ -34576,6 +36250,18 @@
                                   "description": "Boolean value indicating if the mirror is for inbound traffic",
                                   "type": "boolean"
                                 },
+                                "traffic_mirror_num_monitoring_acl": {
+                                  "default": "",
+                                  "description": "Monitoring ACL whose Service VLANs are mirrored for this Traffic Mirror",
+                                  "type": "string"
+                                },
+                                "traffic_mirror_num_monitoring_acl_ref_type_": {
+                                  "description": "Object type for traffic_mirror_num_monitoring_acl field",
+                                  "enum": [
+                                    "monitoring_acl"
+                                  ],
+                                  "type": "string"
+                                },
                                 "traffic_mirror_num_outbound_traffic": {
                                   "default": false,
                                   "description": "Boolean value indicating if the mirror is for outbound traffic",
@@ -35384,6 +37070,18 @@
                                   "default": false,
                                   "description": "Boolean value indicating if the mirror is for inbound traffic",
                                   "type": "boolean"
+                                },
+                                "traffic_mirror_num_monitoring_acl": {
+                                  "default": "",
+                                  "description": "Monitoring ACL whose Service VLANs are mirrored for this Traffic Mirror",
+                                  "type": "string"
+                                },
+                                "traffic_mirror_num_monitoring_acl_ref_type_": {
+                                  "description": "Object type for traffic_mirror_num_monitoring_acl field",
+                                  "enum": [
+                                    "monitoring_acl"
+                                  ],
+                                  "type": "string"
                                 },
                                 "traffic_mirror_num_outbound_traffic": {
                                   "default": false,
@@ -36417,8 +38115,8 @@
                                   "description": "Object type for element field",
                                   "enum": [
                                     "switchpoint",
-                                    "type",
-                                    "type",
+                                    "gaia",
+                                    "acs",
                                     "ai_service"
                                   ],
                                   "type": "string"
@@ -36607,8 +38305,8 @@
                                   "description": "Object type for element field",
                                   "enum": [
                                     "switchpoint",
-                                    "type",
-                                    "type",
+                                    "gaia",
+                                    "acs",
                                     "ai_service"
                                   ],
                                   "type": "string"

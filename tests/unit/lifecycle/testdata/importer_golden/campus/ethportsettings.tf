@@ -9,6 +9,7 @@ resource "verity_eth_port_settings" "test" {
 	auto_negotiation = true
 	bpdu_filter = false
 	bpdu_guard = false
+	bpdu_guard_port_disable = false
 	broadcast = true
 	bsp_enable = false
 	cli_commands = ""
@@ -19,6 +20,7 @@ resource "verity_eth_port_settings" "test" {
 	fast_learning_mode = true
 	fec = "unaltered"
 	guard_loop = false
+	guard_root = false
 	lldp_enable = true
 	lldp_med {
 		index = 1

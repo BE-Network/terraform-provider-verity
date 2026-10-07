@@ -115,6 +115,8 @@ resource "verity_fabric" "example" {
   max_pods = null
   max_sus = null
   max_switches = ""
+  maximum_ebgp_paths = null
+  maximum_ebgp_paths_mode = ""
   mlag_delay_restore_timer = null
   multi_tenant = false
   paired_ip_subnet = ""
@@ -203,6 +205,8 @@ resource "verity_fabric" "example" {
 * `max_pods` (Integer) - Maximum number of PODs allowed in the Fabric. Set it to `null` to clear it.
 * `max_sus` (Integer) - Maximum number of SUs allowed per POD. Set it to `null` to clear it.
 * `max_switches` (String) - Max number Switches to support in this site.
+* `maximum_ebgp_paths` (Integer) - Maximum number of equal-cost eBGP paths. Datacenter mode only. Set it to `null` to clear it.
+* `maximum_ebgp_paths_mode` (String) - Configure the maximum number of eBGP paths automatically or manually. Datacenter mode only.
 * `mlag_delay_restore_timer` (Integer) - MLAG Delay Restore Timer (minimum: 1, maximum: 3600). Datacenter mode only. Set it to `null` to clear it.
 * `multi_tenant` (Boolean) - Allow multiple tenants to HGX endpoints on this fabric.
 * `object_properties` (Block) - Object properties for the Fabric. At most one block.

@@ -323,6 +323,32 @@
     "response_collection": "mac_filter",
     "wrapper": "mac_filter"
   },
+  "monitoring_acl": {
+    "delete_parameter": "monitoring_acl_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/monitoringacls",
+    "request_type": "MonitoringaclsPutRequest",
+    "response_collection": "monitoring_acl",
+    "wrapper": "monitoring_acl"
+  },
+  "nac_port_profile": {
+    "delete_parameter": "nac_port_profile_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/nacportprofiles",
+    "request_type": "NacportprofilesPutRequest",
+    "response_collection": "nac_port_profile",
+    "wrapper": "nac_port_profile"
+  },
   "packet_broker": {
     "delete_parameter": "pb_egress_profile_name",
     "operations": [
@@ -515,6 +541,19 @@
     "request_type": "SfpbreakoutsPatchRequest",
     "response_collection": "sfp_breakouts",
     "wrapper": "sfp_breakouts"
+  },
+  "site_collection": {
+    "delete_parameter": "site_collection_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/fabriccollections",
+    "request_type": "FabriccollectionsPutRequest",
+    "response_collection": "site_collection",
+    "wrapper": "site_collection"
   },
   "spine_plane": {
     "delete_parameter": "spine_plane_name",

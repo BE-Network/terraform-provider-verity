@@ -67,7 +67,7 @@ A reference names another Verity object. Set the reference and its type field to
 
 | Field | Type field | Allowed types |
 | --- | --- | --- |
-| `targets.element` | `element_ref_type_` | `ai_service`, `switchpoint`, `type`, `type` |
+| `targets.element` | `element_ref_type_` | `acs`, `ai_service`, `gaia`, `switchpoint` |
 | `targets.grouping_rules` | `grouping_rules_ref_type_` | `grouping_rules` |
 | `thresholds.threshold` | `threshold_ref_type_` | `threshold` |
 

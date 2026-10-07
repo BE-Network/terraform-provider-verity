@@ -1,7 +1,7 @@
 /*
-Verity API
+Manager system API
 
-This application demonstrates the usage of Verity API.
+This application demonstrates the usage of Manager system API.
 
 API version: 6.6
 */
@@ -89,6 +89,10 @@ type FabricsPutRequestFabricValue struct {
 	MaxSus NullableInt64 `json:"max_sus,omitempty"`
 	// Max number Switches to support in this site
 	MaxSwitches *string `json:"max_switches,omitempty"`
+	// Maximum number of equal-cost eBGP paths
+	MaximumEbgpPaths NullableInt64 `json:"maximum_ebgp_paths,omitempty"`
+	// Configure the maximum number of eBGP paths automatically or manually
+	MaximumEbgpPathsMode *string `json:"maximum_ebgp_paths_mode,omitempty"`
 	// MLAG Delay Restore Timer
 	MlagDelayRestoreTimer NullableInt64 `json:"mlag_delay_restore_timer,omitempty"`
 	// Allow multiple tenants to HGX endpoints on this fabric.
@@ -221,6 +225,8 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.MacAddressAgingTime = *NewNullableInt64(&macAddressAgingTime)
 	var maxSwitches string = "2000"
 	this.MaxSwitches = &maxSwitches
+	var maximumEbgpPathsMode string = "automated"
+	this.MaximumEbgpPathsMode = &maximumEbgpPathsMode
 	var mlagDelayRestoreTimer int64 = 300
 	this.MlagDelayRestoreTimer = *NewNullableInt64(&mlagDelayRestoreTimer)
 	var multiTenant bool = true
@@ -345,6 +351,8 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.MacAddressAgingTime = *NewNullableInt64(&macAddressAgingTime)
 	var maxSwitches string = "2000"
 	this.MaxSwitches = &maxSwitches
+	var maximumEbgpPathsMode string = "automated"
+	this.MaximumEbgpPathsMode = &maximumEbgpPathsMode
 	var mlagDelayRestoreTimer int64 = 300
 	this.MlagDelayRestoreTimer = *NewNullableInt64(&mlagDelayRestoreTimer)
 	var multiTenant bool = true
@@ -1676,6 +1684,81 @@ func (o *FabricsPutRequestFabricValue) SetMaxSwitches(v string) {
 	o.MaxSwitches = &v
 }
 
+// GetMaximumEbgpPaths returns the MaximumEbgpPaths field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricsPutRequestFabricValue) GetMaximumEbgpPaths() int64 {
+	if o == nil || IsNil(o.MaximumEbgpPaths.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.MaximumEbgpPaths.Get()
+}
+
+// GetMaximumEbgpPathsOk returns a tuple with the MaximumEbgpPaths field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricsPutRequestFabricValue) GetMaximumEbgpPathsOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MaximumEbgpPaths.Get(), o.MaximumEbgpPaths.IsSet()
+}
+
+// HasMaximumEbgpPaths returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasMaximumEbgpPaths() bool {
+	if o != nil && o.MaximumEbgpPaths.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMaximumEbgpPaths gets a reference to the given NullableInt64 and assigns it to the MaximumEbgpPaths field.
+func (o *FabricsPutRequestFabricValue) SetMaximumEbgpPaths(v int64) {
+	o.MaximumEbgpPaths.Set(&v)
+}
+
+// SetMaximumEbgpPathsNil sets the value for MaximumEbgpPaths to be an explicit nil
+func (o *FabricsPutRequestFabricValue) SetMaximumEbgpPathsNil() {
+	o.MaximumEbgpPaths.Set(nil)
+}
+
+// UnsetMaximumEbgpPaths ensures that no value is present for MaximumEbgpPaths, not even an explicit nil
+func (o *FabricsPutRequestFabricValue) UnsetMaximumEbgpPaths() {
+	o.MaximumEbgpPaths.Unset()
+}
+
+// GetMaximumEbgpPathsMode returns the MaximumEbgpPathsMode field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetMaximumEbgpPathsMode() string {
+	if o == nil || IsNil(o.MaximumEbgpPathsMode) {
+		var ret string
+		return ret
+	}
+	return *o.MaximumEbgpPathsMode
+}
+
+// GetMaximumEbgpPathsModeOk returns a tuple with the MaximumEbgpPathsMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetMaximumEbgpPathsModeOk() (*string, bool) {
+	if o == nil || IsNil(o.MaximumEbgpPathsMode) {
+		return nil, false
+	}
+	return o.MaximumEbgpPathsMode, true
+}
+
+// HasMaximumEbgpPathsMode returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasMaximumEbgpPathsMode() bool {
+	if o != nil && !IsNil(o.MaximumEbgpPathsMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetMaximumEbgpPathsMode gets a reference to the given string and assigns it to the MaximumEbgpPathsMode field.
+func (o *FabricsPutRequestFabricValue) SetMaximumEbgpPathsMode(v string) {
+	o.MaximumEbgpPathsMode = &v
+}
+
 // GetMlagDelayRestoreTimer returns the MlagDelayRestoreTimer field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *FabricsPutRequestFabricValue) GetMlagDelayRestoreTimer() int64 {
 	if o == nil || IsNil(o.MlagDelayRestoreTimer.Get()) {
@@ -2902,6 +2985,12 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MaxSwitches) {
 		toSerialize["max_switches"] = o.MaxSwitches
+	}
+	if o.MaximumEbgpPaths.IsSet() {
+		toSerialize["maximum_ebgp_paths"] = o.MaximumEbgpPaths.Get()
+	}
+	if !IsNil(o.MaximumEbgpPathsMode) {
+		toSerialize["maximum_ebgp_paths_mode"] = o.MaximumEbgpPathsMode
 	}
 	if o.MlagDelayRestoreTimer.IsSet() {
 		toSerialize["mlag_delay_restore_timer"] = o.MlagDelayRestoreTimer.Get()

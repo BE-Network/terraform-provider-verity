@@ -438,7 +438,7 @@
     {
       "terraform_type": "verity_authenticated_eth_port",
       "schema_version": 0,
-      "state_type": "tftypes.Object[\"allow_mac_based_authentication\":tftypes.Bool, \"connection_mode\":tftypes.String, \"enable\":tftypes.Bool, \"eth_ports\":tftypes.List[tftypes.Object[\"eth_port_profile_num_enable\":tftypes.Bool, \"eth_port_profile_num_eth_port\":tftypes.String, \"eth_port_profile_num_eth_port_ref_type_\":tftypes.String, \"eth_port_profile_num_radius_filter_id\":tftypes.String, \"eth_port_profile_num_walled_garden_set\":tftypes.Bool, \"index\":tftypes.Number]], \"mac_authentication_holdoff_sec\":tftypes.Number, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"port_monitoring\":tftypes.String]], \"reauthorization_period_sec\":tftypes.Number, \"trusted_port\":tftypes.Bool]",
+      "state_type": "tftypes.Object[\"allow_mac_based_authentication\":tftypes.Bool, \"connection_mode\":tftypes.String, \"enable\":tftypes.Bool, \"eth_ports\":tftypes.List[tftypes.Object[\"eth_port_profile_num_enable\":tftypes.Bool, \"eth_port_profile_num_eth_port\":tftypes.String, \"eth_port_profile_num_eth_port_ref_type_\":tftypes.String, \"eth_port_profile_num_failed_action_set\":tftypes.Bool, \"eth_port_profile_num_radius_filter_id\":tftypes.String, \"eth_port_profile_num_walled_garden_set\":tftypes.Bool, \"index\":tftypes.Number]], \"mac_authentication_holdoff_sec\":tftypes.Number, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"port_monitoring\":tftypes.String]], \"reauthorization_period_sec\":tftypes.Number, \"trusted_port\":tftypes.Bool]",
       "attributes": [
         {
           "name": "allow_mac_based_authentication",
@@ -527,6 +527,14 @@
             {
               "name": "eth_port_profile_num_eth_port_ref_type_",
               "type": "string",
+              "required": false,
+              "optional": true,
+              "computed": true,
+              "sensitive": false
+            },
+            {
+              "name": "eth_port_profile_num_failed_action_set",
+              "type": "bool",
               "required": false,
               "optional": true,
               "computed": true,
@@ -2344,7 +2352,7 @@
     {
       "terraform_type": "verity_eth_port_settings",
       "schema_version": 0,
-      "state_type": "tftypes.Object[\"action\":tftypes.String, \"aging_time\":tftypes.Number, \"aging_type\":tftypes.String, \"allocated_power\":tftypes.String, \"auto_negotiation\":tftypes.Bool, \"bpdu_filter\":tftypes.Bool, \"bpdu_guard\":tftypes.Bool, \"broadcast\":tftypes.Bool, \"bsp_enable\":tftypes.Bool, \"cli_commands\":tftypes.String, \"detect_bridging_loops\":tftypes.Bool, \"duplex_mode\":tftypes.String, \"enable\":tftypes.Bool, \"enable_ecn\":tftypes.Bool, \"enable_speed_control\":tftypes.Bool, \"enable_watchdog_tuning\":tftypes.Bool, \"enable_wred_tuning\":tftypes.Bool, \"fast_learning_mode\":tftypes.Bool, \"fec\":tftypes.String, \"guard_loop\":tftypes.Bool, \"lldp_enable\":tftypes.Bool, \"lldp_med\":tftypes.List[tftypes.Object[\"index\":tftypes.Number, \"lldp_med_row_num_advertised_applicatio\":tftypes.String, \"lldp_med_row_num_dscp_mark\":tftypes.Number, \"lldp_med_row_num_enable\":tftypes.Bool, \"lldp_med_row_num_priority\":tftypes.Number, \"lldp_med_row_num_service\":tftypes.String, \"lldp_med_row_num_service_ref_type_\":tftypes.String]], \"lldp_med_enable\":tftypes.Bool, \"lldp_mode\":tftypes.String, \"mac_limit\":tftypes.Number, \"mac_security_mode\":tftypes.String, \"max_allowed_unit\":tftypes.String, \"max_allowed_value\":tftypes.Number, \"max_bit_rate\":tftypes.String, \"maximum_wred_threshold\":tftypes.Number, \"minimum_wred_threshold\":tftypes.Number, \"mtu\":tftypes.Number, \"multicast\":tftypes.Bool, \"name\":tftypes.String, \"packet_queue\":tftypes.String, \"packet_queue_ref_type_\":tftypes.String, \"poe_enable\":tftypes.Bool, \"priority\":tftypes.String, \"priority_flow_control_watchdog_action\":tftypes.String, \"priority_flow_control_watchdog_detect_time\":tftypes.Number, \"priority_flow_control_watchdog_restore_time\":tftypes.Number, \"security_violation_action\":tftypes.String, \"single_link\":tftypes.Bool, \"standalone_link_training\":tftypes.Bool, \"stp_enable\":tftypes.Bool, \"unidirectional_link_detection\":tftypes.Bool, \"wred_drop_probability\":tftypes.Number]",
+      "state_type": "tftypes.Object[\"action\":tftypes.String, \"aging_time\":tftypes.Number, \"aging_type\":tftypes.String, \"allocated_power\":tftypes.String, \"auto_negotiation\":tftypes.Bool, \"bpdu_filter\":tftypes.Bool, \"bpdu_guard\":tftypes.Bool, \"bpdu_guard_port_disable\":tftypes.Bool, \"broadcast\":tftypes.Bool, \"bsp_enable\":tftypes.Bool, \"cli_commands\":tftypes.String, \"detect_bridging_loops\":tftypes.Bool, \"duplex_mode\":tftypes.String, \"enable\":tftypes.Bool, \"enable_ecn\":tftypes.Bool, \"enable_speed_control\":tftypes.Bool, \"enable_watchdog_tuning\":tftypes.Bool, \"enable_wred_tuning\":tftypes.Bool, \"fast_learning_mode\":tftypes.Bool, \"fec\":tftypes.String, \"guard_loop\":tftypes.Bool, \"guard_root\":tftypes.Bool, \"lldp_enable\":tftypes.Bool, \"lldp_med\":tftypes.List[tftypes.Object[\"index\":tftypes.Number, \"lldp_med_row_num_advertised_applicatio\":tftypes.String, \"lldp_med_row_num_dscp_mark\":tftypes.Number, \"lldp_med_row_num_enable\":tftypes.Bool, \"lldp_med_row_num_priority\":tftypes.Number, \"lldp_med_row_num_service\":tftypes.String, \"lldp_med_row_num_service_ref_type_\":tftypes.String]], \"lldp_med_enable\":tftypes.Bool, \"lldp_mode\":tftypes.String, \"mac_limit\":tftypes.Number, \"mac_security_mode\":tftypes.String, \"max_allowed_unit\":tftypes.String, \"max_allowed_value\":tftypes.Number, \"max_bit_rate\":tftypes.String, \"maximum_wred_threshold\":tftypes.Number, \"minimum_wred_threshold\":tftypes.Number, \"mtu\":tftypes.Number, \"multicast\":tftypes.Bool, \"name\":tftypes.String, \"packet_queue\":tftypes.String, \"packet_queue_ref_type_\":tftypes.String, \"poe_enable\":tftypes.Bool, \"priority\":tftypes.String, \"priority_flow_control_watchdog_action\":tftypes.String, \"priority_flow_control_watchdog_detect_time\":tftypes.Number, \"priority_flow_control_watchdog_restore_time\":tftypes.Number, \"security_violation_action\":tftypes.String, \"single_link\":tftypes.Bool, \"standalone_link_training\":tftypes.Bool, \"stp_enable\":tftypes.Bool, \"unidirectional_link_detection\":tftypes.Bool, \"wred_drop_probability\":tftypes.Number]",
       "attributes": [
         {
           "name": "action",
@@ -2396,6 +2404,14 @@
         },
         {
           "name": "bpdu_guard",
+          "type": "bool",
+          "required": false,
+          "optional": true,
+          "computed": true,
+          "sensitive": false
+        },
+        {
+          "name": "bpdu_guard_port_disable",
           "type": "bool",
           "required": false,
           "optional": true,
@@ -2500,6 +2516,14 @@
         },
         {
           "name": "guard_loop",
+          "type": "bool",
+          "required": false,
+          "optional": true,
+          "computed": true,
+          "sensitive": false
+        },
+        {
+          "name": "guard_root",
           "type": "bool",
           "required": false,
           "optional": true,
@@ -2896,7 +2920,7 @@
     {
       "terraform_type": "verity_fabric",
       "schema_version": 0,
-      "state_type": "tftypes.Object[\"aggressive_reporting\":tftypes.Bool, \"allow_all_underlay_connections\":tftypes.Bool, \"anycast_mac_address\":tftypes.String, \"anycast_mac_address_auto_assigned_\":tftypes.Bool, \"base_bgp_as_number\":tftypes.String, \"bgp_hold_down_timer\":tftypes.Number, \"bgp_keepalive_timer\":tftypes.Number, \"controller_gateway\":tftypes.String, \"controller_ip_base\":tftypes.String, \"domain_for_fabric\":tftypes.String, \"domain_for_fabric_ref_type_\":tftypes.String, \"dscp_to_p_bit_map\":tftypes.String, \"duplicate_address_detection_max_number_of_moves\":tftypes.Number, \"duplicate_address_detection_time\":tftypes.Number, \"enable\":tftypes.Bool, \"enable_dhcp_snooping\":tftypes.Bool, \"enable_dscp\":tftypes.Bool, \"evpn_mac_holdtime\":tftypes.Number, \"evpn_multihoming_startup_delay\":tftypes.Number, \"fabric_type\":tftypes.String, \"force_spanning_tree_on_fabric_ports\":tftypes.Bool, \"gpu_architecture\":tftypes.String, \"hgx_password\":tftypes.String, \"hgx_password_encrypted\":tftypes.String, \"hgx_username\":tftypes.String, \"ip_source_guard\":tftypes.Bool, \"leaf_bgp_advertisement_interval\":tftypes.Number, \"leaf_bgp_connect_timer\":tftypes.Number, \"leaf_bgp_hold_down_timer\":tftypes.Number, \"leaf_bgp_keep_alive_timer\":tftypes.Number, \"link_state_timeout_value\":tftypes.Number, \"mac_address_aging_time\":tftypes.Number, \"max_pods\":tftypes.Number, \"max_sus\":tftypes.Number, \"max_switches\":tftypes.String, \"mlag_delay_restore_timer\":tftypes.Number, \"multi_tenant\":tftypes.Bool, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"system_graphs\":tftypes.List[tftypes.Object[\"index\":tftypes.Number]]]], \"paired_ip_subnet\":tftypes.String, \"pause_validation_alarms\":tftypes.Bool, \"plane_count\":tftypes.String, \"port_admin_polling_interval\":tftypes.Number, \"port_status_polling_interval\":tftypes.Number, \"read_only_mode\":tftypes.Bool, \"region_name\":tftypes.String, \"revision\":tftypes.Number, \"route_aggregation\":tftypes.String, \"route_aggregators\":tftypes.List[tftypes.Object[\"index\":tftypes.Number, \"route_aggregation_num_enable\":tftypes.Bool, \"route_aggregation_num_ip_and_mask\":tftypes.String]], \"router_id_base_prefix\":tftypes.String, \"server_management\":tftypes.Bool, \"service_for_fabric\":tftypes.String, \"service_for_fabric_ref_type_\":tftypes.String, \"set_leaf_router_id_on_bgp\":tftypes.Bool, \"spanning_tree_type\":tftypes.String, \"spine_as_number\":tftypes.Number, \"spine_bgp_advertisement_interval\":tftypes.Number, \"spine_bgp_connect_timer\":tftypes.Number, \"starting_octet\":tftypes.Number, \"su_size\":tftypes.String, \"su_support\":tftypes.Bool, \"switch_gateway\":tftypes.String, \"switch_ip_base\":tftypes.String, \"switch_password\":tftypes.String, \"switch_password_encrypted\":tftypes.String, \"switch_username\":tftypes.String, \"vtep_id_base_prefix\":tftypes.String]",
+      "state_type": "tftypes.Object[\"aggressive_reporting\":tftypes.Bool, \"allow_all_underlay_connections\":tftypes.Bool, \"anycast_mac_address\":tftypes.String, \"anycast_mac_address_auto_assigned_\":tftypes.Bool, \"base_bgp_as_number\":tftypes.String, \"bgp_hold_down_timer\":tftypes.Number, \"bgp_keepalive_timer\":tftypes.Number, \"controller_gateway\":tftypes.String, \"controller_ip_base\":tftypes.String, \"domain_for_fabric\":tftypes.String, \"domain_for_fabric_ref_type_\":tftypes.String, \"dscp_to_p_bit_map\":tftypes.String, \"duplicate_address_detection_max_number_of_moves\":tftypes.Number, \"duplicate_address_detection_time\":tftypes.Number, \"enable\":tftypes.Bool, \"enable_dhcp_snooping\":tftypes.Bool, \"enable_dscp\":tftypes.Bool, \"evpn_mac_holdtime\":tftypes.Number, \"evpn_multihoming_startup_delay\":tftypes.Number, \"fabric_type\":tftypes.String, \"force_spanning_tree_on_fabric_ports\":tftypes.Bool, \"gpu_architecture\":tftypes.String, \"hgx_password\":tftypes.String, \"hgx_password_encrypted\":tftypes.String, \"hgx_username\":tftypes.String, \"ip_source_guard\":tftypes.Bool, \"leaf_bgp_advertisement_interval\":tftypes.Number, \"leaf_bgp_connect_timer\":tftypes.Number, \"leaf_bgp_hold_down_timer\":tftypes.Number, \"leaf_bgp_keep_alive_timer\":tftypes.Number, \"link_state_timeout_value\":tftypes.Number, \"mac_address_aging_time\":tftypes.Number, \"max_pods\":tftypes.Number, \"max_sus\":tftypes.Number, \"max_switches\":tftypes.String, \"maximum_ebgp_paths\":tftypes.Number, \"maximum_ebgp_paths_mode\":tftypes.String, \"mlag_delay_restore_timer\":tftypes.Number, \"multi_tenant\":tftypes.Bool, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"system_graphs\":tftypes.List[tftypes.Object[\"index\":tftypes.Number]]]], \"paired_ip_subnet\":tftypes.String, \"pause_validation_alarms\":tftypes.Bool, \"plane_count\":tftypes.String, \"port_admin_polling_interval\":tftypes.Number, \"port_status_polling_interval\":tftypes.Number, \"read_only_mode\":tftypes.Bool, \"region_name\":tftypes.String, \"revision\":tftypes.Number, \"route_aggregation\":tftypes.String, \"route_aggregators\":tftypes.List[tftypes.Object[\"index\":tftypes.Number, \"route_aggregation_num_enable\":tftypes.Bool, \"route_aggregation_num_ip_and_mask\":tftypes.String]], \"router_id_base_prefix\":tftypes.String, \"server_management\":tftypes.Bool, \"service_for_fabric\":tftypes.String, \"service_for_fabric_ref_type_\":tftypes.String, \"set_leaf_router_id_on_bgp\":tftypes.Bool, \"spanning_tree_type\":tftypes.String, \"spine_as_number\":tftypes.Number, \"spine_bgp_advertisement_interval\":tftypes.Number, \"spine_bgp_connect_timer\":tftypes.Number, \"starting_octet\":tftypes.Number, \"su_size\":tftypes.String, \"su_support\":tftypes.Bool, \"switch_gateway\":tftypes.String, \"switch_ip_base\":tftypes.String, \"switch_password\":tftypes.String, \"switch_password_encrypted\":tftypes.String, \"switch_username\":tftypes.String, \"vtep_id_base_prefix\":tftypes.String]",
       "attributes": [
         {
           "name": "aggressive_reporting",
@@ -3172,6 +3196,22 @@
         },
         {
           "name": "max_switches",
+          "type": "string",
+          "required": false,
+          "optional": true,
+          "computed": true,
+          "sensitive": false
+        },
+        {
+          "name": "maximum_ebgp_paths",
+          "type": "int64",
+          "required": false,
+          "optional": true,
+          "computed": true,
+          "sensitive": false
+        },
+        {
+          "name": "maximum_ebgp_paths_mode",
           "type": "string",
           "required": false,
           "optional": true,
@@ -3478,6 +3518,36 @@
           ]
         }
       ]
+    },
+    {
+      "terraform_type": "verity_fabric_collection",
+      "schema_version": 0,
+      "state_type": "tftypes.Object[\"enable\":tftypes.Bool, \"name\":tftypes.String]",
+      "attributes": [
+        {
+          "name": "enable",
+          "type": "bool",
+          "required": false,
+          "optional": true,
+          "computed": true,
+          "sensitive": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "optional": false,
+          "computed": false,
+          "sensitive": false,
+          "plan_modifiers": [
+            {
+              "type": "stringplanmodifier.requiresReplaceIfModifier",
+              "parameters": "stringplanmodifier.requiresReplaceIfModifier{ifFunc:\u003cfunc\u003e,description:\"If the value of this attribute changes, Terraform will destroy and recreate the resource.\",markdownDescription:\"If the value of this attribute changes, Terraform will destroy and recreate the resource.\"}"
+            }
+          ]
+        }
+      ],
+      "blocks": []
     },
     {
       "terraform_type": "verity_gateway",
@@ -4900,6 +4970,158 @@
             {
               "name": "index",
               "type": "int64",
+              "required": false,
+              "optional": true,
+              "computed": true,
+              "sensitive": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "terraform_type": "verity_monitoring_acl",
+      "schema_version": 0,
+      "state_type": "tftypes.Object[\"enable\":tftypes.Bool, \"name\":tftypes.String, \"services\":tftypes.List[tftypes.Object[\"enable\":tftypes.Bool, \"index\":tftypes.Number, \"service\":tftypes.String, \"service_ref_type_\":tftypes.String]]]",
+      "attributes": [
+        {
+          "name": "enable",
+          "type": "bool",
+          "required": false,
+          "optional": true,
+          "computed": true,
+          "sensitive": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "optional": false,
+          "computed": false,
+          "sensitive": false,
+          "plan_modifiers": [
+            {
+              "type": "stringplanmodifier.requiresReplaceIfModifier",
+              "parameters": "stringplanmodifier.requiresReplaceIfModifier{ifFunc:\u003cfunc\u003e,description:\"If the value of this attribute changes, Terraform will destroy and recreate the resource.\",markdownDescription:\"If the value of this attribute changes, Terraform will destroy and recreate the resource.\"}"
+            }
+          ]
+        }
+      ],
+      "blocks": [
+        {
+          "name": "services",
+          "nesting": "list",
+          "attributes": [
+            {
+              "name": "enable",
+              "type": "bool",
+              "required": false,
+              "optional": true,
+              "computed": true,
+              "sensitive": false
+            },
+            {
+              "name": "index",
+              "type": "int64",
+              "required": false,
+              "optional": true,
+              "computed": true,
+              "sensitive": false
+            },
+            {
+              "name": "service",
+              "type": "string",
+              "required": false,
+              "optional": true,
+              "computed": true,
+              "sensitive": false
+            },
+            {
+              "name": "service_ref_type_",
+              "type": "string",
+              "required": false,
+              "optional": true,
+              "computed": true,
+              "sensitive": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "terraform_type": "verity_nac_port_profile",
+      "schema_version": 0,
+      "state_type": "tftypes.Object[\"enable\":tftypes.Bool, \"eth_ports\":tftypes.List[tftypes.Object[\"eth_port_profile_num_enable\":tftypes.Bool, \"eth_port_profile_num_eth_port\":tftypes.String, \"eth_port_profile_num_eth_port_ref_type_\":tftypes.String, \"index\":tftypes.Number]], \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"port_monitoring\":tftypes.String]]]",
+      "attributes": [
+        {
+          "name": "enable",
+          "type": "bool",
+          "required": false,
+          "optional": true,
+          "computed": true,
+          "sensitive": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "optional": false,
+          "computed": false,
+          "sensitive": false,
+          "plan_modifiers": [
+            {
+              "type": "stringplanmodifier.requiresReplaceIfModifier",
+              "parameters": "stringplanmodifier.requiresReplaceIfModifier{ifFunc:\u003cfunc\u003e,description:\"If the value of this attribute changes, Terraform will destroy and recreate the resource.\",markdownDescription:\"If the value of this attribute changes, Terraform will destroy and recreate the resource.\"}"
+            }
+          ]
+        }
+      ],
+      "blocks": [
+        {
+          "name": "eth_ports",
+          "nesting": "list",
+          "attributes": [
+            {
+              "name": "eth_port_profile_num_enable",
+              "type": "bool",
+              "required": false,
+              "optional": true,
+              "computed": true,
+              "sensitive": false
+            },
+            {
+              "name": "eth_port_profile_num_eth_port",
+              "type": "string",
+              "required": false,
+              "optional": true,
+              "computed": true,
+              "sensitive": false
+            },
+            {
+              "name": "eth_port_profile_num_eth_port_ref_type_",
+              "type": "string",
+              "required": false,
+              "optional": true,
+              "computed": true,
+              "sensitive": false
+            },
+            {
+              "name": "index",
+              "type": "int64",
+              "required": false,
+              "optional": true,
+              "computed": true,
+              "sensitive": false
+            }
+          ]
+        },
+        {
+          "name": "object_properties",
+          "nesting": "list",
+          "attributes": [
+            {
+              "name": "port_monitoring",
+              "type": "string",
               "required": false,
               "optional": true,
               "computed": true,
@@ -7073,7 +7295,7 @@
     {
       "terraform_type": "verity_switchpoint",
       "schema_version": 0,
-      "state_type": "tftypes.Object[\"authentication_protocol\":tftypes.String, \"badges\":tftypes.List[tftypes.Object[\"badge\":tftypes.String, \"badge_ref_type_\":tftypes.String, \"index\":tftypes.Number]], \"bb_switch\":tftypes.Bool, \"bgp_as_number\":tftypes.Number, \"bgp_as_number_auto_assigned_\":tftypes.Bool, \"children\":tftypes.List[tftypes.Object[\"child_num_device\":tftypes.String, \"child_num_endpoint\":tftypes.String, \"child_num_endpoint_ref_type_\":tftypes.String, \"index\":tftypes.Number]], \"cli_access_mode\":tftypes.String, \"comm_type\":tftypes.String, \"communication_mode\":tftypes.String, \"connected_bundle\":tftypes.String, \"connected_bundle_ref_type_\":tftypes.String, \"connection_service\":tftypes.String, \"connection_service_ref_type_\":tftypes.String, \"controller_ip_and_mask\":tftypes.String, \"controller_ip_and_mask_auto_assigned_\":tftypes.Bool, \"device_managed_as\":tftypes.String, \"device_serial_number\":tftypes.String, \"enable\":tftypes.Bool, \"enable_password\":tftypes.String, \"enable_password_encrypted\":tftypes.String, \"eths\":tftypes.List[tftypes.Object[\"breakout\":tftypes.String, \"customer_vlan\":tftypes.String, \"enable\":tftypes.Bool, \"eth_num_icon\":tftypes.String, \"eth_num_label\":tftypes.String, \"index\":tftypes.Number, \"port_name\":tftypes.String]], \"expected_breakout\":tftypes.String, \"expected_breakout_uplink_port\":tftypes.String, \"expected_fabric\":tftypes.String, \"expected_fabric_ref_type_\":tftypes.String, \"expected_uplink_port\":tftypes.Number, \"gateway\":tftypes.String, \"gateway_auto_assigned_\":tftypes.Bool, \"ip_source\":tftypes.String, \"is_fabric\":tftypes.Bool, \"is_top_of_island\":tftypes.Bool, \"lldp_search_string\":tftypes.String, \"lldp_search_string_auto_assigned_\":tftypes.Bool, \"located_by\":tftypes.String, \"locked\":tftypes.Bool, \"managed_on_native_vlan\":tftypes.Bool, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"aggregate\":tftypes.Bool, \"draw_as_edge_device\":tftypes.Bool, \"emulate_rf_video_port\":tftypes.Bool, \"expected_parent_endpoint\":tftypes.String, \"expected_parent_endpoint_ref_type_\":tftypes.String, \"is_host\":tftypes.Bool, \"number_of_multipoints\":tftypes.Number, \"user_notes\":tftypes.String]], \"out_of_band_management\":tftypes.Bool, \"passphrase\":tftypes.String, \"passphrase_encrypted\":tftypes.String, \"password\":tftypes.String, \"password_encrypted\":tftypes.String, \"plane\":tftypes.String, \"plane_ref_type_\":tftypes.String, \"pod\":tftypes.String, \"pod_ref_type_\":tftypes.String, \"port\":tftypes.String, \"position\":tftypes.Number, \"pots\":tftypes.List[tftypes.Object[\"index\":tftypes.Number, \"pots_num_caller_id\":tftypes.String, \"pots_num_enable\":tftypes.Bool, \"pots_num_hot_line\":tftypes.String, \"pots_num_password\":tftypes.String, \"pots_num_password_encrypted\":tftypes.String, \"pots_num_uri\":tftypes.String, \"pots_num_username\":tftypes.String]], \"power_state\":tftypes.String, \"private_password\":tftypes.String, \"private_password_encrypted\":tftypes.String, \"private_protocol\":tftypes.String, \"rack\":tftypes.String, \"rack_info\":tftypes.String, \"rack_ref_type_\":tftypes.String, \"rail_group\":tftypes.Number, \"read_only_mode\":tftypes.Bool, \"sdlc\":tftypes.String, \"security_type\":tftypes.String, \"snmp_community_string\":tftypes.String, \"snmpv3_username\":tftypes.String, \"spine_plane\":tftypes.String, \"spine_plane_ref_type_\":tftypes.String, \"ssh_key_or_password\":tftypes.String, \"ssh_key_or_password_encrypted\":tftypes.String, \"ssh_key_or_password_encrypted_auto_assigned_\":tftypes.Bool, \"ssp_group\":tftypes.String, \"ssp_group_ref_type_\":tftypes.String, \"su\":tftypes.String, \"su_ref_type_\":tftypes.String, \"switch\":tftypes.String, \"switch_gateway\":tftypes.String, \"switch_gateway_auto_assigned_\":tftypes.Bool, \"switch_ip_and_mask\":tftypes.String, \"switch_ip_and_mask_auto_assigned_\":tftypes.Bool, \"switch_ref_type_\":tftypes.String, \"switch_router_id_ip_mask\":tftypes.String, \"switch_router_id_ip_mask_auto_assigned_\":tftypes.Bool, \"switch_vtep_id_ip_mask\":tftypes.String, \"switch_vtep_id_ip_mask_auto_assigned_\":tftypes.Bool, \"tenant\":tftypes.String, \"tenant_ref_type_\":tftypes.String, \"traffic_mirrors\":tftypes.List[tftypes.Object[\"index\":tftypes.Number, \"traffic_mirror_num_destination_port\":tftypes.String, \"traffic_mirror_num_enable\":tftypes.Bool, \"traffic_mirror_num_inbound_traffic\":tftypes.Bool, \"traffic_mirror_num_outbound_traffic\":tftypes.Bool, \"traffic_mirror_num_source_lag_indicator\":tftypes.Bool, \"traffic_mirror_num_source_port\":tftypes.String]], \"type\":tftypes.String, \"uplink_port\":tftypes.String, \"upstream_is_lag\":tftypes.Bool, \"username\":tftypes.String, \"username_auto_assigned_\":tftypes.Bool, \"uses_tagged_packets\":tftypes.Bool, \"ztp_identification\":tftypes.String]",
+      "state_type": "tftypes.Object[\"authentication_protocol\":tftypes.String, \"badges\":tftypes.List[tftypes.Object[\"badge\":tftypes.String, \"badge_ref_type_\":tftypes.String, \"index\":tftypes.Number]], \"bb_switch\":tftypes.Bool, \"bgp_as_number\":tftypes.Number, \"bgp_as_number_auto_assigned_\":tftypes.Bool, \"children\":tftypes.List[tftypes.Object[\"child_num_device\":tftypes.String, \"child_num_endpoint\":tftypes.String, \"child_num_endpoint_ref_type_\":tftypes.String, \"index\":tftypes.Number]], \"cli_access_mode\":tftypes.String, \"comm_type\":tftypes.String, \"communication_mode\":tftypes.String, \"connected_bundle\":tftypes.String, \"connected_bundle_ref_type_\":tftypes.String, \"connection_service\":tftypes.String, \"connection_service_ref_type_\":tftypes.String, \"controller_ip_and_mask\":tftypes.String, \"controller_ip_and_mask_auto_assigned_\":tftypes.Bool, \"device_managed_as\":tftypes.String, \"device_serial_number\":tftypes.String, \"enable\":tftypes.Bool, \"enable_password\":tftypes.String, \"enable_password_encrypted\":tftypes.String, \"eths\":tftypes.List[tftypes.Object[\"breakout\":tftypes.String, \"customer_vlan\":tftypes.String, \"enable\":tftypes.Bool, \"eth_num_icon\":tftypes.String, \"eth_num_label\":tftypes.String, \"index\":tftypes.Number, \"port_name\":tftypes.String]], \"expected_breakout\":tftypes.String, \"expected_breakout_uplink_port\":tftypes.String, \"expected_fabric\":tftypes.String, \"expected_fabric_ref_type_\":tftypes.String, \"expected_uplink_port\":tftypes.Number, \"gateway\":tftypes.String, \"gateway_auto_assigned_\":tftypes.Bool, \"ip_source\":tftypes.String, \"is_fabric\":tftypes.Bool, \"is_top_of_island\":tftypes.Bool, \"lldp_search_string\":tftypes.String, \"lldp_search_string_auto_assigned_\":tftypes.Bool, \"located_by\":tftypes.String, \"locked\":tftypes.Bool, \"managed_on_native_vlan\":tftypes.Bool, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"aggregate\":tftypes.Bool, \"draw_as_edge_device\":tftypes.Bool, \"emulate_rf_video_port\":tftypes.Bool, \"expected_parent_endpoint\":tftypes.String, \"expected_parent_endpoint_ref_type_\":tftypes.String, \"is_host\":tftypes.Bool, \"number_of_multipoints\":tftypes.Number, \"user_notes\":tftypes.String]], \"out_of_band_management\":tftypes.Bool, \"passphrase\":tftypes.String, \"passphrase_encrypted\":tftypes.String, \"password\":tftypes.String, \"password_encrypted\":tftypes.String, \"plane\":tftypes.String, \"plane_ref_type_\":tftypes.String, \"pod\":tftypes.String, \"pod_ref_type_\":tftypes.String, \"port\":tftypes.String, \"position\":tftypes.Number, \"pots\":tftypes.List[tftypes.Object[\"index\":tftypes.Number, \"pots_num_caller_id\":tftypes.String, \"pots_num_enable\":tftypes.Bool, \"pots_num_hot_line\":tftypes.String, \"pots_num_password\":tftypes.String, \"pots_num_password_encrypted\":tftypes.String, \"pots_num_uri\":tftypes.String, \"pots_num_username\":tftypes.String]], \"power_state\":tftypes.String, \"private_password\":tftypes.String, \"private_password_encrypted\":tftypes.String, \"private_protocol\":tftypes.String, \"rack\":tftypes.String, \"rack_info\":tftypes.String, \"rack_ref_type_\":tftypes.String, \"rail_group\":tftypes.Number, \"read_only_mode\":tftypes.Bool, \"sdlc\":tftypes.String, \"security_type\":tftypes.String, \"snmp_community_string\":tftypes.String, \"snmpv3_username\":tftypes.String, \"spine_plane\":tftypes.String, \"spine_plane_ref_type_\":tftypes.String, \"ssh_key_or_password\":tftypes.String, \"ssh_key_or_password_encrypted\":tftypes.String, \"ssh_key_or_password_encrypted_auto_assigned_\":tftypes.Bool, \"ssp_group\":tftypes.String, \"ssp_group_ref_type_\":tftypes.String, \"su\":tftypes.String, \"su_ref_type_\":tftypes.String, \"switch\":tftypes.String, \"switch_gateway\":tftypes.String, \"switch_gateway_auto_assigned_\":tftypes.Bool, \"switch_ip_and_mask\":tftypes.String, \"switch_ip_and_mask_auto_assigned_\":tftypes.Bool, \"switch_ref_type_\":tftypes.String, \"switch_router_id_ip_mask\":tftypes.String, \"switch_router_id_ip_mask_auto_assigned_\":tftypes.Bool, \"switch_vtep_id_ip_mask\":tftypes.String, \"switch_vtep_id_ip_mask_auto_assigned_\":tftypes.Bool, \"tenant\":tftypes.String, \"tenant_ref_type_\":tftypes.String, \"traffic_mirrors\":tftypes.List[tftypes.Object[\"index\":tftypes.Number, \"traffic_mirror_num_destination_port\":tftypes.String, \"traffic_mirror_num_enable\":tftypes.Bool, \"traffic_mirror_num_inbound_traffic\":tftypes.Bool, \"traffic_mirror_num_monitoring_acl\":tftypes.String, \"traffic_mirror_num_monitoring_acl_ref_type_\":tftypes.String, \"traffic_mirror_num_outbound_traffic\":tftypes.Bool, \"traffic_mirror_num_source_lag_indicator\":tftypes.Bool, \"traffic_mirror_num_source_port\":tftypes.String]], \"type\":tftypes.String, \"uplink_port\":tftypes.String, \"upstream_is_lag\":tftypes.Bool, \"username\":tftypes.String, \"username_auto_assigned_\":tftypes.Bool, \"uses_tagged_packets\":tftypes.Bool, \"ztp_identification\":tftypes.String]",
       "attributes": [
         {
           "name": "authentication_protocol",
@@ -8078,6 +8300,22 @@
               "sensitive": false
             },
             {
+              "name": "traffic_mirror_num_monitoring_acl",
+              "type": "string",
+              "required": false,
+              "optional": true,
+              "computed": true,
+              "sensitive": false
+            },
+            {
+              "name": "traffic_mirror_num_monitoring_acl_ref_type_",
+              "type": "string",
+              "required": false,
+              "optional": true,
+              "computed": true,
+              "sensitive": false
+            },
+            {
               "name": "traffic_mirror_num_outbound_traffic",
               "type": "bool",
               "required": false,
@@ -8209,7 +8447,7 @@
     {
       "terraform_type": "verity_tenant",
       "schema_version": 0,
-      "state_type": "tftypes.Object[\"default_originate\":tftypes.Bool, \"dhcp_relay_source_ipv4s_subnet\":tftypes.String, \"dhcp_relay_source_ipv6s_subnet\":tftypes.String, \"enable\":tftypes.Bool, \"export_route_map\":tftypes.String, \"export_route_map_ref_type_\":tftypes.String, \"import_route_map\":tftypes.String, \"import_route_map_ref_type_\":tftypes.String, \"layer_3_vlan\":tftypes.Number, \"layer_3_vlan_auto_assigned_\":tftypes.Bool, \"layer_3_vni\":tftypes.Number, \"layer_3_vni_auto_assigned_\":tftypes.Bool, \"name\":tftypes.String, \"route_aggregation\":tftypes.String, \"route_aggregators\":tftypes.List[tftypes.Object[\"index\":tftypes.Number, \"route_aggregation_num_enable\":tftypes.Bool, \"route_aggregation_num_ip_and_mask\":tftypes.String]], \"route_distinguisher\":tftypes.String, \"route_target_export\":tftypes.String, \"route_target_import\":tftypes.String, \"route_tenants\":tftypes.List[tftypes.Object[\"enable\":tftypes.Bool, \"index\":tftypes.Number, \"tenant\":tftypes.String]], \"tenant_type\":tftypes.String, \"vrf_name\":tftypes.String, \"vrf_name_auto_assigned_\":tftypes.Bool]",
+      "state_type": "tftypes.Object[\"default_originate\":tftypes.Bool, \"dhcp_relay_source_ipv4s_subnet\":tftypes.String, \"dhcp_relay_source_ipv6s_subnet\":tftypes.String, \"enable\":tftypes.Bool, \"export_route_map\":tftypes.String, \"export_route_map_ref_type_\":tftypes.String, \"import_route_map\":tftypes.String, \"import_route_map_ref_type_\":tftypes.String, \"layer_3_vlan\":tftypes.Number, \"layer_3_vlan_auto_assigned_\":tftypes.Bool, \"layer_3_vni\":tftypes.Number, \"layer_3_vni_auto_assigned_\":tftypes.Bool, \"maximum_ebgp_paths\":tftypes.Number, \"maximum_ebgp_paths_mode\":tftypes.String, \"name\":tftypes.String, \"route_aggregation\":tftypes.String, \"route_aggregators\":tftypes.List[tftypes.Object[\"index\":tftypes.Number, \"route_aggregation_num_enable\":tftypes.Bool, \"route_aggregation_num_ip_and_mask\":tftypes.String]], \"route_distinguisher\":tftypes.String, \"route_target_export\":tftypes.String, \"route_target_import\":tftypes.String, \"route_tenants\":tftypes.List[tftypes.Object[\"enable\":tftypes.Bool, \"index\":tftypes.Number, \"tenant\":tftypes.String]], \"tenant_type\":tftypes.String, \"vrf_name\":tftypes.String, \"vrf_name_auto_assigned_\":tftypes.Bool]",
       "attributes": [
         {
           "name": "default_originate",
@@ -8302,6 +8540,22 @@
         {
           "name": "layer_3_vni_auto_assigned_",
           "type": "bool",
+          "required": false,
+          "optional": true,
+          "computed": true,
+          "sensitive": false
+        },
+        {
+          "name": "maximum_ebgp_paths",
+          "type": "int64",
+          "required": false,
+          "optional": true,
+          "computed": true,
+          "sensitive": false
+        },
+        {
+          "name": "maximum_ebgp_paths_mode",
+          "type": "string",
           "required": false,
           "optional": true,
           "computed": true,

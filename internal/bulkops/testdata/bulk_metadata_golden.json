@@ -99,6 +99,14 @@
   "header_split_key": "",
   "resource_type": "mac_filter"
  },
+ "monitoring_acl": {
+  "header_split_key": "",
+  "resource_type": "monitoring_acl"
+ },
+ "nac_port_profile": {
+  "header_split_key": "",
+  "resource_type": "nac_port_profile"
+ },
  "packet_broker": {
   "header_split_key": "",
   "resource_type": "packet_broker"
@@ -158,6 +166,10 @@
  "sfp_breakout": {
   "header_split_key": "",
   "resource_type": "sfp_breakout"
+ },
+ "site_collection": {
+  "header_split_key": "",
+  "resource_type": "site_collection"
  },
  "spine_plane": {
   "header_split_key": "",

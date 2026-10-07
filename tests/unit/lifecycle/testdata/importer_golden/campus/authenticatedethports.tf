@@ -13,6 +13,7 @@ resource "verity_authenticated_eth_port" "test" {
 		eth_port_profile_num_enable = true
 		eth_port_profile_num_eth_port = "data_2"
 		eth_port_profile_num_eth_port_ref_type_ = "eth_port_profile_"
+		eth_port_profile_num_failed_action_set = false
 		eth_port_profile_num_radius_filter_id = "data_2"
 		eth_port_profile_num_walled_garden_set = false
 	}
@@ -21,6 +22,7 @@ resource "verity_authenticated_eth_port" "test" {
 		eth_port_profile_num_enable = true
 		eth_port_profile_num_eth_port = ""
 		eth_port_profile_num_eth_port_ref_type_ = ""
+		eth_port_profile_num_failed_action_set = false
 		eth_port_profile_num_radius_filter_id = ""
 		eth_port_profile_num_walled_garden_set = false
 	}
