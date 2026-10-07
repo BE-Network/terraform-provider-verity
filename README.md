@@ -251,8 +251,12 @@ in `internal/registry/registry.json` are generated together and checked in CI.
 
 ### Preparing a new API release
 
-1. Update `api_version` in `specs/overrides.yaml` and review compatibility ranges.
-   Ranges express supported releases and remain explicit policy.
+1. For a newer build within the same API major/minor (for example, another 6.6
+   build), leave `api_version: "6.6"` and its compatibility ranges unchanged.
+   Replace the inputs under `specs/openapi/6.6/`. For a new minor release such as
+   6.7, change `api_version` in `specs/overrides.yaml` and review compatibility
+   ranges before normalizing into `specs/openapi/6.7/`.
+   Provider patch releases and API build numbers are separate identifiers.
 2. Obtain both mode-specific exports, preserve the raw files outside the
    repository, and normalize them with the actual export date and provenance:
 
@@ -264,20 +268,35 @@ in `internal/registry/registry.json` are generated together and checked in CI.
      --campus /path/to/campus.json \
      --output-dir "specs/openapi/$task_api_version" \
      --source-export-date YYYY-MM-DD \
-     --provenance "Verity API export source"
+     --provenance "Verity API <complete-build-version>, exported from <system>"
    ```
 
-3. Review endpoint and field changes and adjust override entries, policies,
+3. Extract the new coverage manifest before editing overrides:
+
+   ```bash
+   go run ./tools/specgen extract --input-dir "specs/openapi/$task_api_version" \
+     --output specs/generated_manifest.json
+   git diff -- specs/openapi specs/generated_manifest.json
+   ```
+
+   Review endpoint and field changes and adjust override entries, policies,
    mode-specific metadata, and the reviewed bulk operation order. Classify
    removals, renames, type changes, and semantic changes using the compatibility
-   process below before refreshing any fixtures.
+   process below before refreshing any fixtures. Every added field needs an
+   override entry; remove entries for deleted fields. Generation stops on missing
+   or obsolete entries. Descriptions and shape changes are visible in the diff;
+   changed meaning or units also require release-note and lab review.
 4. Run `tools/generate_provider.sh --write`, review the diff, then run
    `tools/generate_provider.sh --check` and the tests. Update mock data and golden
    fixtures deliberately. Incompatible state changes require a reviewed fresh-import
    declaration and upgrade guide; an in-place migration is optional future work.
 5. Validate against a lab system in both modes before releasing. Review README
    release examples and Dependabot branch targets when the supported release
-   branches change. `.github/dependabot.yml` intentionally follows branch policy,
+   branches change. Record the exact supported provider/API release pairs in
+   `docs/index.md`; the runtime check currently checks major/minor only and does
+   not establish compatibility with other builds. The export location and system
+   owner must be supplied by the release maintainer; generation does not fetch
+   schemas from a live system. `.github/dependabot.yml` intentionally follows branch policy,
    independently of the selected API version. Historical tests and fixtures retain
    the version they describe.
 
@@ -588,6 +607,9 @@ Independent baselines include the lifecycle schema snapshot, recorded legacy
 requests, historical field-policy and cache-key fixtures, bulk wire/order/cache-key
 goldens, and importer output goldens. The `generic_*_differential_test.go` tests
 compare current behavior with recorded requests; they do not run a retired provider.
+Their generated configurations use the pinned historical field set, so newly added
+fields do not alter the historical scenarios. Current-schema wire and lifecycle
+tests cover the additions.
 Review baseline changes explicitly. Historical legacy-request fixtures have no
 automatic update path, and updating a schema snapshot does not provide a migration.
 
