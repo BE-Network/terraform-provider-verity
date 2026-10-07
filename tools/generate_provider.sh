@@ -63,6 +63,8 @@ if [[ "$task_mode" == "--check" ]]; then
     --output specs/generated_registry.json --embed-output internal/registry/registry.json --check
   "$task_temp/specgen" adapters --registry specs/generated_registry.json --openapi-dir openapi \
     --output internal/transport/generated_adapters.go --check
+  "$task_temp/specgen" bulk --registry specs/generated_registry.json --openapi-dir openapi \
+    --output internal/bulkops/generated_registry.go --check
   "$task_temp/specgen" docs --registry specs/generated_registry.json --output-dir docs/resources --check
   exit 0
 fi
@@ -70,6 +72,8 @@ fi
 if ! "$task_sdk_only"; then
   "$task_temp/specgen" adapters --registry "$task_temp/registry.json" --openapi-dir "$task_temp/sdk" \
     --output "$task_temp/generated_adapters.go"
+  "$task_temp/specgen" bulk --registry "$task_temp/registry.json" --openapi-dir "$task_temp/sdk" \
+    --output "$task_temp/generated_bulk_registry.go"
   mkdir -p "$task_temp/docs"
   cp docs/resources/verity_operation_stage.md "$task_temp/docs/"
   "$task_temp/specgen" docs --registry "$task_temp/registry.json" --output-dir "$task_temp/docs"
@@ -81,5 +85,6 @@ if ! "$task_sdk_only"; then
   cp "$task_temp/registry.json" specs/generated_registry.json
   cp "$task_temp/embed/registry.json" internal/registry/registry.json
   cp "$task_temp/generated_adapters.go" internal/transport/generated_adapters.go
+  cp "$task_temp/generated_bulk_registry.go" internal/bulkops/generated_registry.go
   rsync -a --delete "$task_temp/docs/" docs/resources/
 fi

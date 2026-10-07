@@ -45,7 +45,7 @@ type normalizeOptions struct {
 
 func main() {
 	if len(os.Args) < 2 {
-		fail("usage: specgen <version|normalize|verify|extract|registry|adapters|docs> [flags]")
+		fail("usage: specgen <version|normalize|verify|extract|registry|adapters|bulk|docs> [flags]")
 	}
 
 	switch os.Args[1] {
@@ -112,6 +112,17 @@ func main() {
 		if err := generateAdapters(opts); err != nil {
 			fail(err.Error())
 		}
+	case "bulk":
+		fs := flag.NewFlagSet("bulk", flag.ExitOnError)
+		opts := bulkOptions{}
+		fs.StringVar(&opts.Registry, "registry", "", "generated registry input path")
+		fs.StringVar(&opts.OpenAPIDir, "openapi-dir", "", "generated SDK package directory")
+		fs.StringVar(&opts.Output, "output", "", "generated bulk binding output path")
+		fs.BoolVar(&opts.Check, "check", false, "fail if output differs from deterministic generation")
+		_ = fs.Parse(os.Args[2:])
+		if err := generateBulk(opts); err != nil {
+			fail(err.Error())
+		}
 	case "docs":
 		fs := flag.NewFlagSet("docs", flag.ExitOnError)
 		opts := docsOptions{}
@@ -124,7 +135,7 @@ func main() {
 			fail(err.Error())
 		}
 	default:
-		fail(fmt.Sprintf("unknown command %q; expected version, normalize, verify, extract, registry, adapters, or docs", os.Args[1]))
+		fail(fmt.Sprintf("unknown command %q; expected version, normalize, verify, extract, registry, adapters, bulk, or docs", os.Args[1]))
 	}
 }
 

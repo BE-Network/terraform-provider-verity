@@ -85,6 +85,10 @@ type ResourceConfig struct {
 	DeleteFunc       func(*openapi.APIClient, context.Context, []string) (*http.Response, error)
 	GetFunc          func(*openapi.APIClient, context.Context) (*http.Response, error)
 
+	ResponseCollectionKey string
+	PreparePut            func(map[string]interface{}) (interface{}, error)
+	PreparePatch          func(map[string]interface{}) (interface{}, error)
+
 	HeaderSplitKey string
 
 	HeaderPutFunc    func(*openapi.APIClient, context.Context, interface{}, map[string]string) (*http.Response, error)

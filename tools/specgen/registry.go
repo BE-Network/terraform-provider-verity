@@ -48,18 +48,19 @@ type policyProfile struct {
 }
 
 type resourceOverride struct {
-	Path          string                         `yaml:"path"`
-	TerraformType string                         `yaml:"terraform_type"`
-	Description   string                         `yaml:"description"`
-	Modes         []string                       `yaml:"modes"`
-	Versions      versionRangeOverride           `yaml:"versions"`
-	IdentityPath  string                         `yaml:"identity_path"`
-	SchemaVersion int64                          `yaml:"schema_version"`
-	API           apiOverride                    `yaml:"api"`
-	Fields        []fieldOverride                `yaml:"fields"`
-	Dependencies  spec.DependencySpec            `yaml:"dependencies"`
-	ImportStages  map[string]importStageOverride `yaml:"import_stage"`
-	Hooks         []string                       `yaml:"hooks"`
+	Path          string                           `yaml:"path"`
+	TerraformType string                           `yaml:"terraform_type"`
+	Description   string                           `yaml:"description"`
+	Modes         []string                         `yaml:"modes"`
+	Versions      versionRangeOverride             `yaml:"versions"`
+	IdentityPath  string                           `yaml:"identity_path"`
+	SchemaVersion int64                            `yaml:"schema_version"`
+	API           apiOverride                      `yaml:"api"`
+	Fields        []fieldOverride                  `yaml:"fields"`
+	Dependencies  spec.DependencySpec              `yaml:"dependencies"`
+	ImportStages  map[string]importStageOverride   `yaml:"import_stage"`
+	BulkOrder     map[spec.Mode]spec.BulkOrderSpec `yaml:"bulk_order"`
+	Hooks         []string                         `yaml:"hooks"`
 }
 
 type importStageOverride struct {
@@ -181,6 +182,9 @@ func generateRegistry(opts registryOptions) error {
 	}
 	if err := resources.Validate(); err != nil {
 		return fmt.Errorf("validate generated registry: %w", err)
+	}
+	if err := resources.ValidateBulkOrders(); err != nil {
+		return fmt.Errorf("validate bulk orders: %w", err)
 	}
 	sort.Slice(resources, func(i, j int) bool { return resources[i].TerraformType < resources[j].TerraformType })
 	artifact := registryArtifact{
@@ -307,6 +311,7 @@ func mergeResourceOverride(coverage coverageResource, override resourceOverride,
 		Fields:       fields,
 		Dependencies: override.Dependencies,
 		ImportStages: importStagesFor(override.ImportStages),
+		BulkOrder:    override.BulkOrder,
 		Hooks:        override.Hooks,
 	}, nil
 }

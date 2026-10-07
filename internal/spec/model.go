@@ -253,6 +253,12 @@ type ImportStageSpec struct {
 	Order int    `json:"order"`
 }
 
+type BulkOrderSpec struct {
+	Put    int `json:"put,omitempty" yaml:"put"`
+	Patch  int `json:"patch,omitempty" yaml:"patch"`
+	Delete int `json:"delete,omitempty" yaml:"delete"`
+}
+
 type DependencySpec struct {
 	Before []string `json:"before,omitempty"`
 	After  []string `json:"after,omitempty"`
@@ -270,5 +276,6 @@ type ResourceSpec struct {
 	Fields        []FieldSpec              `json:"fields"`
 	Dependencies  DependencySpec           `json:"dependencies,omitempty"`
 	ImportStages  map[Mode]ImportStageSpec `json:"import_stages,omitempty"`
+	BulkOrder     map[Mode]BulkOrderSpec   `json:"bulk_order,omitempty"`
 	Hooks         []string                 `json:"hooks,omitempty"`
 }

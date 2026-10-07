@@ -1,0 +1,636 @@
+{
+  "acl": {
+    "delete_parameter": "ip_filter_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/acls",
+    "request_type": "AclsPutRequest",
+    "wrapper": "ip_filter"
+  },
+  "as_path_access_list": {
+    "delete_parameter": "as_path_access_list_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/aspathaccesslists",
+    "request_type": "AspathaccesslistsPutRequest",
+    "response_collection": "as_path_access_list",
+    "wrapper": "as_path_access_list"
+  },
+  "authenticated_eth_port": {
+    "delete_parameter": "authenticated_eth_port_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/authenticatedethports",
+    "request_type": "AuthenticatedethportsPutRequest",
+    "response_collection": "authenticated_eth_port",
+    "wrapper": "authenticated_eth_port"
+  },
+  "badge": {
+    "delete_parameter": "badge_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/badges",
+    "request_type": "BadgesPutRequest",
+    "response_collection": "badge",
+    "wrapper": "badge"
+  },
+  "bundle": {
+    "delete_parameter": "bundle_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/bundles",
+    "request_type": "BundlesPutRequest",
+    "response_collection": "endpoint_bundle",
+    "wrapper": "endpoint_bundle"
+  },
+  "community_list": {
+    "delete_parameter": "community_list_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/communitylists",
+    "request_type": "CommunitylistsPutRequest",
+    "response_collection": "community_list",
+    "wrapper": "community_list"
+  },
+  "device_aaa_profile": {
+    "delete_parameter": "device_aaa_profile_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/deviceaaaprofiles",
+    "request_type": "DeviceaaaprofilesPutRequest",
+    "response_collection": "device_aaa_profile",
+    "wrapper": "device_aaa_profile"
+  },
+  "device_settings": {
+    "delete_parameter": "eth_device_profiles_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/devicesettings",
+    "request_type": "DevicesettingsPutRequest",
+    "response_collection": "eth_device_profiles",
+    "wrapper": "eth_device_profiles"
+  },
+  "device_voice_settings": {
+    "delete_parameter": "device_voice_settings_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/devicevoicesettings",
+    "request_type": "DevicevoicesettingsPutRequest",
+    "response_collection": "device_voice_settings",
+    "wrapper": "device_voice_settings"
+  },
+  "diagnostics_port_profile": {
+    "delete_parameter": "diagnostics_port_profile_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/diagnosticsportprofiles",
+    "request_type": "DiagnosticsportprofilesPutRequest",
+    "response_collection": "diagnostics_port_profile",
+    "wrapper": "diagnostics_port_profile"
+  },
+  "diagnostics_profile": {
+    "delete_parameter": "diagnostics_profile_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/diagnosticsprofiles",
+    "request_type": "DiagnosticsprofilesPutRequest",
+    "response_collection": "diagnostics_profile",
+    "wrapper": "diagnostics_profile"
+  },
+  "eth_port_profile": {
+    "delete_parameter": "profile_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/ethportprofiles",
+    "request_type": "EthportprofilesPutRequest",
+    "response_collection": "eth_port_profile_",
+    "wrapper": "eth_port_profile_"
+  },
+  "eth_port_settings": {
+    "delete_parameter": "port_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/ethportsettings",
+    "request_type": "EthportsettingsPutRequest",
+    "response_collection": "eth_port_settings",
+    "wrapper": "eth_port_settings"
+  },
+  "extended_community_list": {
+    "delete_parameter": "extended_community_list_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/extendedcommunitylists",
+    "request_type": "ExtendedcommunitylistsPutRequest",
+    "response_collection": "extended_community_list",
+    "wrapper": "extended_community_list"
+  },
+  "fabric": {
+    "delete_parameter": "fabric_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/fabrics",
+    "request_type": "FabricsPutRequest",
+    "response_collection": "fabric",
+    "wrapper": "fabric"
+  },
+  "gateway": {
+    "delete_parameter": "gateway_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/gateways",
+    "request_type": "GatewaysPutRequest",
+    "response_collection": "gateway",
+    "wrapper": "gateway"
+  },
+  "gateway_profile": {
+    "delete_parameter": "profile_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/gatewayprofiles",
+    "request_type": "GatewayprofilesPutRequest",
+    "response_collection": "gateway_profile",
+    "wrapper": "gateway_profile"
+  },
+  "grouping_rule": {
+    "delete_parameter": "grouping_rules_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/groupingrules",
+    "request_type": "GroupingrulesPutRequest",
+    "response_collection": "grouping_rules",
+    "wrapper": "grouping_rules"
+  },
+  "ipv4_list": {
+    "delete_parameter": "ipv4_list_filter_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/ipv4lists",
+    "request_type": "Ipv4listsPutRequest",
+    "response_collection": "ipv4_list_filter",
+    "wrapper": "ipv4_list_filter"
+  },
+  "ipv4_prefix_list": {
+    "delete_parameter": "ipv4_prefix_list_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/ipv4prefixlists",
+    "request_type": "Ipv4prefixlistsPutRequest",
+    "response_collection": "ipv4_prefix_list",
+    "wrapper": "ipv4_prefix_list"
+  },
+  "ipv6_list": {
+    "delete_parameter": "ipv6_list_filter_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/ipv6lists",
+    "request_type": "Ipv6listsPutRequest",
+    "response_collection": "ipv6_list_filter",
+    "wrapper": "ipv6_list_filter"
+  },
+  "ipv6_prefix_list": {
+    "delete_parameter": "ipv6_prefix_list_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/ipv6prefixlists",
+    "request_type": "Ipv6prefixlistsPutRequest",
+    "response_collection": "ipv6_prefix_list",
+    "wrapper": "ipv6_prefix_list"
+  },
+  "lag": {
+    "delete_parameter": "lag_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/lags",
+    "request_type": "LagsPutRequest",
+    "response_collection": "lag",
+    "wrapper": "lag"
+  },
+  "ldap_profile": {
+    "delete_parameter": "ldap_profile_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/ldapprofiles",
+    "request_type": "LdapprofilesPutRequest",
+    "response_collection": "ldap_profile",
+    "wrapper": "ldap_profile"
+  },
+  "mac_filter": {
+    "delete_parameter": "mac_filter_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/macfilters",
+    "request_type": "MacfiltersPutRequest",
+    "response_collection": "mac_filter",
+    "wrapper": "mac_filter"
+  },
+  "packet_broker": {
+    "delete_parameter": "pb_egress_profile_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/packetbroker",
+    "request_type": "PacketbrokerPutRequest",
+    "response_collection": "pb_egress_profile",
+    "wrapper": "pb_egress_profile"
+  },
+  "packet_queue": {
+    "delete_parameter": "packet_queue_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/packetqueues",
+    "request_type": "PacketqueuesPutRequest",
+    "response_collection": "packet_queue",
+    "wrapper": "packet_queue"
+  },
+  "pair": {
+    "delete_parameter": "switch_pair_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/pairs",
+    "request_type": "PairsPutRequest",
+    "response_collection": "switch_pair",
+    "wrapper": "switch_pair"
+  },
+  "pb_routing": {
+    "delete_parameter": "pb_routing_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/policybasedrouting",
+    "request_type": "PolicybasedroutingPutRequest",
+    "response_collection": "pb_routing",
+    "wrapper": "pb_routing"
+  },
+  "pb_routing_acl": {
+    "delete_parameter": "pb_routing_acl_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/policybasedroutingacl",
+    "request_type": "PolicybasedroutingaclPutRequest",
+    "response_collection": "pb_routing_acl",
+    "wrapper": "pb_routing_acl"
+  },
+  "plane": {
+    "delete_parameter": "plane_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/planes",
+    "request_type": "PlanesPutRequest",
+    "response_collection": "plane",
+    "wrapper": "plane"
+  },
+  "pod": {
+    "delete_parameter": "pod_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/pods",
+    "request_type": "PodsPutRequest",
+    "response_collection": "pod",
+    "wrapper": "pod"
+  },
+  "port_acl": {
+    "delete_parameter": "port_acl_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/portacls",
+    "request_type": "PortaclsPutRequest",
+    "response_collection": "port_acl",
+    "wrapper": "port_acl"
+  },
+  "rack": {
+    "delete_parameter": "rack_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/racks",
+    "request_type": "RacksPutRequest",
+    "response_collection": "rack",
+    "wrapper": "rack"
+  },
+  "route_map": {
+    "delete_parameter": "route_map_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/routemaps",
+    "request_type": "RoutemapsPutRequest",
+    "response_collection": "route_map",
+    "wrapper": "route_map"
+  },
+  "route_map_clause": {
+    "delete_parameter": "route_map_clause_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/routemapclauses",
+    "request_type": "RoutemapclausesPutRequest",
+    "response_collection": "route_map_clause",
+    "wrapper": "route_map_clause"
+  },
+  "service": {
+    "delete_parameter": "service_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/services",
+    "request_type": "ServicesPutRequest",
+    "response_collection": "service",
+    "wrapper": "service"
+  },
+  "service_port_profile": {
+    "delete_parameter": "service_port_profile_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/serviceportprofiles",
+    "request_type": "ServiceportprofilesPutRequest",
+    "response_collection": "service_port_profile",
+    "wrapper": "service_port_profile"
+  },
+  "sflow_collector": {
+    "delete_parameter": "sflow_collector_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/sflowcollectors",
+    "request_type": "SflowcollectorsPutRequest",
+    "response_collection": "sflow_collector",
+    "wrapper": "sflow_collector"
+  },
+  "sfp_breakout": {
+    "delete_parameter": "",
+    "operations": [
+      "Patch",
+      "Get"
+    ],
+    "path": "/sfpbreakouts",
+    "request_type": "SfpbreakoutsPatchRequest",
+    "response_collection": "sfp_breakouts",
+    "wrapper": "sfp_breakouts"
+  },
+  "spine_plane": {
+    "delete_parameter": "spine_plane_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/spineplanes",
+    "request_type": "SpineplanesPutRequest",
+    "response_collection": "spine_plane",
+    "wrapper": "spine_plane"
+  },
+  "ssp_group": {
+    "delete_parameter": "superspine_group_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/sspgroups",
+    "request_type": "SspgroupsPutRequest",
+    "response_collection": "superspine_group",
+    "wrapper": "superspine_group"
+  },
+  "su": {
+    "delete_parameter": "su_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/sus",
+    "request_type": "SusPutRequest",
+    "response_collection": "su",
+    "wrapper": "su"
+  },
+  "switchpoint": {
+    "delete_parameter": "switchpoint_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/switchpoints",
+    "request_type": "SwitchpointsPutRequest",
+    "response_collection": "switchpoint",
+    "wrapper": "switchpoint"
+  },
+  "tacacs_profile": {
+    "delete_parameter": "tacacs_profile_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/tacacsprofiles",
+    "request_type": "TacacsprofilesPutRequest",
+    "response_collection": "tacacs_profile",
+    "wrapper": "tacacs_profile"
+  },
+  "tenant": {
+    "delete_parameter": "tenant_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/tenants",
+    "request_type": "TenantsPutRequest",
+    "response_collection": "tenant",
+    "wrapper": "tenant"
+  },
+  "threshold": {
+    "delete_parameter": "threshold_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/thresholds",
+    "request_type": "ThresholdsPutRequest",
+    "response_collection": "threshold",
+    "wrapper": "threshold"
+  },
+  "threshold_group": {
+    "delete_parameter": "threshold_group_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/thresholdgroups",
+    "request_type": "ThresholdgroupsPutRequest",
+    "response_collection": "threshold_group",
+    "wrapper": "threshold_group"
+  },
+  "voice_port_profile": {
+    "delete_parameter": "voice_port_profile_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/voiceportprofiles",
+    "request_type": "VoiceportprofilesPutRequest",
+    "response_collection": "voice_port_profiles",
+    "wrapper": "voice_port_profiles"
+  }
+}

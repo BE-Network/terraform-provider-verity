@@ -63,6 +63,18 @@
         "request_wrapper_key": "device_aaa_profile",
         "response_collection_key": "device_aaa_profile"
       },
+      "bulk_order": {
+        "campus": {
+          "delete": 180,
+          "patch": 110,
+          "put": 100
+        },
+        "datacenter": {
+          "delete": 230,
+          "patch": 220,
+          "put": 210
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity Device AAA Profile.",
       "fields": [
@@ -481,6 +493,18 @@
         },
         "request_wrapper_key": "ip_filter",
         "response_collection_key": "ipv4_filter"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 270,
+          "patch": 20,
+          "put": 10
+        },
+        "datacenter": {
+          "delete": 380,
+          "patch": 70,
+          "put": 60
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity IPv4 IP Filter (ACL)",
@@ -944,6 +968,18 @@
         "request_wrapper_key": "ip_filter",
         "response_collection_key": "ipv6_filter"
       },
+      "bulk_order": {
+        "campus": {
+          "delete": 270,
+          "patch": 20,
+          "put": 10
+        },
+        "datacenter": {
+          "delete": 380,
+          "patch": 70,
+          "put": 60
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity IPv6 IP Filter (ACL)",
       "fields": [
@@ -1403,6 +1439,13 @@
         "request_wrapper_key": "as_path_access_list",
         "response_collection_key": "as_path_access_list"
       },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 420,
+          "patch": 30,
+          "put": 20
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity AS Path Access List",
       "fields": [
@@ -1710,6 +1753,13 @@
         "endpoint_path": "/authenticatedethports",
         "request_wrapper_key": "authenticated_eth_port",
         "response_collection_key": "authenticated_eth_port"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 140,
+          "patch": 150,
+          "put": 140
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity Authenticated Eth-Port",
@@ -2221,6 +2271,18 @@
         "request_wrapper_key": "badge",
         "response_collection_key": "badge"
       },
+      "bulk_order": {
+        "campus": {
+          "delete": 60,
+          "patch": 230,
+          "put": 220
+        },
+        "datacenter": {
+          "delete": 110,
+          "patch": 340,
+          "put": 330
+        }
+      },
       "dependencies": {},
       "description": "Manages a Badge resource",
       "fields": [
@@ -2447,6 +2509,18 @@
         "endpoint_path": "/bundles",
         "request_wrapper_key": "endpoint_bundle",
         "response_collection_key": "endpoint_bundle"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 70,
+          "patch": 220,
+          "put": 210
+        },
+        "datacenter": {
+          "delete": 70,
+          "patch": 380,
+          "put": 370
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity Bundle",
@@ -3802,6 +3876,13 @@
         "request_wrapper_key": "community_list",
         "response_collection_key": "community_list"
       },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 430,
+          "patch": 20,
+          "put": 10
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity Community List",
       "fields": [
@@ -4193,6 +4274,18 @@
         "endpoint_path": "/devicesettings",
         "request_wrapper_key": "eth_device_profiles",
         "response_collection_key": "eth_device_profiles"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 130,
+          "patch": 160,
+          "put": 150
+        },
+        "datacenter": {
+          "delete": 160,
+          "patch": 290,
+          "put": 280
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity Device Settings (Eth Device Profile)",
@@ -5385,6 +5478,13 @@
         "endpoint_path": "/devicevoicesettings",
         "request_wrapper_key": "device_voice_settings",
         "response_collection_key": "device_voice_settings"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 100,
+          "patch": 190,
+          "put": 180
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity Device Voice Settings",
@@ -7313,6 +7413,18 @@
         "request_wrapper_key": "diagnostics_port_profile",
         "response_collection_key": "diagnostics_port_profile"
       },
+      "bulk_order": {
+        "campus": {
+          "delete": 80,
+          "patch": 210,
+          "put": 200
+        },
+        "datacenter": {
+          "delete": 170,
+          "patch": 280,
+          "put": 270
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity Diagnostics Port Profile",
       "fields": [
@@ -7446,6 +7558,18 @@
         "endpoint_path": "/diagnosticsprofiles",
         "request_wrapper_key": "diagnostics_profile",
         "response_collection_key": "diagnostics_profile"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 150,
+          "patch": 140,
+          "put": 130
+        },
+        "datacenter": {
+          "delete": 140,
+          "patch": 310,
+          "put": 300
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity Diagnostics Profile",
@@ -7940,6 +8064,18 @@
         "endpoint_path": "/ethportprofiles",
         "request_wrapper_key": "eth_port_profile_",
         "response_collection_key": "eth_port_profile_"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 200,
+          "patch": 90,
+          "put": 80
+        },
+        "datacenter": {
+          "delete": 220,
+          "patch": 230,
+          "put": 220
+        }
       },
       "dependencies": {},
       "description": "Manages an Ethernet Port Profile",
@@ -8845,6 +8981,18 @@
         "endpoint_path": "/ethportsettings",
         "request_wrapper_key": "eth_port_settings",
         "response_collection_key": "eth_port_settings"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 90,
+          "patch": 200,
+          "put": 190
+        },
+        "datacenter": {
+          "delete": 120,
+          "patch": 330,
+          "put": 320
+        }
       },
       "dependencies": {},
       "description": "Manages Ethernet port settings",
@@ -10481,6 +10629,13 @@
         "request_wrapper_key": "extended_community_list",
         "response_collection_key": "extended_community_list"
       },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 390,
+          "patch": 60,
+          "put": 50
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity Extended Community List",
       "fields": [
@@ -10872,6 +11027,18 @@
         "endpoint_path": "/fabrics",
         "request_wrapper_key": "fabric",
         "response_collection_key": "fabric"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 170,
+          "patch": 120,
+          "put": 110
+        },
+        "datacenter": {
+          "delete": 310,
+          "patch": 140,
+          "put": 130
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity Fabric",
@@ -13030,6 +13197,13 @@
         "request_wrapper_key": "gateway",
         "response_collection_key": "gateway"
       },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 190,
+          "patch": 260,
+          "put": 250
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity Gateway",
       "fields": [
@@ -14476,6 +14650,13 @@
         "request_wrapper_key": "gateway_profile",
         "response_collection_key": "gateway_profile"
       },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 130,
+          "patch": 320,
+          "put": 310
+        }
+      },
       "dependencies": {},
       "description": "Manages a Gateway Profile",
       "fields": [
@@ -14783,6 +14964,18 @@
         "endpoint_path": "/groupingrules",
         "request_wrapper_key": "grouping_rules",
         "response_collection_key": "grouping_rules"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 50,
+          "patch": 240,
+          "put": 230
+        },
+        "datacenter": {
+          "delete": 50,
+          "patch": 400,
+          "put": 390
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity Grouping Rule.",
@@ -15203,6 +15396,13 @@
         "request_wrapper_key": "ipv4_list_filter",
         "response_collection_key": "ipv4_list_filter"
       },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 260,
+          "patch": 190,
+          "put": 180
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity IPv4 List Filter",
       "fields": [
@@ -15328,6 +15528,13 @@
         "endpoint_path": "/ipv4prefixlists",
         "request_wrapper_key": "ipv4_prefix_list",
         "response_collection_key": "ipv4_prefix_list"
+      },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 400,
+          "patch": 50,
+          "put": 40
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity IPv4 Prefix List",
@@ -15693,6 +15900,13 @@
         "request_wrapper_key": "ipv6_list_filter",
         "response_collection_key": "ipv6_list_filter"
       },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 270,
+          "patch": 180,
+          "put": 170
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity IPv6 List Filter",
       "fields": [
@@ -15818,6 +16032,13 @@
         "endpoint_path": "/ipv6prefixlists",
         "request_wrapper_key": "ipv6_prefix_list",
         "response_collection_key": "ipv6_prefix_list"
+      },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 410,
+          "patch": 40,
+          "put": 30
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity IPv6 Prefix List",
@@ -16182,6 +16403,18 @@
         "endpoint_path": "/lags",
         "request_wrapper_key": "lag",
         "response_collection_key": "lag"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 110,
+          "patch": 180,
+          "put": 170
+        },
+        "datacenter": {
+          "delete": 150,
+          "patch": 300,
+          "put": 290
+        }
       },
       "dependencies": {},
       "description": "Manages a Link Aggregation Group (LAG)",
@@ -16684,6 +16917,18 @@
         "endpoint_path": "/ldapprofiles",
         "request_wrapper_key": "ldap_profile",
         "response_collection_key": "ldap_profile"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 220,
+          "patch": 70,
+          "put": 60
+        },
+        "datacenter": {
+          "delete": 290,
+          "patch": 160,
+          "put": 150
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity LDAP Profile.",
@@ -17996,6 +18241,13 @@
         "request_wrapper_key": "mac_filter",
         "response_collection_key": "mac_filter"
       },
+      "bulk_order": {
+        "campus": {
+          "delete": 260,
+          "patch": 30,
+          "put": 20
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity MAC Filter.",
       "fields": [
@@ -18269,6 +18521,13 @@
         "endpoint_path": "/packetbroker",
         "request_wrapper_key": "pb_egress_profile",
         "response_collection_key": "pb_egress_profile"
+      },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 210,
+          "patch": 240,
+          "put": 230
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity Packet Broker",
@@ -18988,6 +19247,18 @@
         "request_wrapper_key": "packet_queue",
         "response_collection_key": "packet_queue"
       },
+      "bulk_order": {
+        "campus": {
+          "delete": 190,
+          "patch": 100,
+          "put": 90
+        },
+        "datacenter": {
+          "delete": 240,
+          "patch": 210,
+          "put": 200
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity Packet Queue",
       "fields": [
@@ -19371,6 +19642,18 @@
         "request_wrapper_key": "switch_pair",
         "response_collection_key": "switch_pair"
       },
+      "bulk_order": {
+        "campus": {
+          "delete": 10,
+          "patch": 280,
+          "put": 270
+        },
+        "datacenter": {
+          "delete": 10,
+          "patch": 440,
+          "put": 430
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity Switch Pair.",
       "fields": [
@@ -19697,6 +19980,13 @@
         "request_wrapper_key": "pb_routing",
         "response_collection_key": "pb_routing"
       },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 340,
+          "patch": 110,
+          "put": 100
+        }
+      },
       "dependencies": {},
       "description": "Manages a Policy-Based Routing resource",
       "fields": [
@@ -19948,6 +20238,13 @@
         "endpoint_path": "/policybasedroutingacl",
         "request_wrapper_key": "pb_routing_acl",
         "response_collection_key": "pb_routing_acl"
+      },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 360,
+          "patch": 90,
+          "put": 80
+        }
       },
       "dependencies": {},
       "description": "Manages a Policy-Based Routing ACL resource",
@@ -20719,6 +21016,13 @@
         "request_wrapper_key": "plane",
         "response_collection_key": "plane"
       },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 100,
+          "patch": 350,
+          "put": 340
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity Plane resource",
       "fields": [
@@ -20968,6 +21272,13 @@
         "endpoint_path": "/pods",
         "request_wrapper_key": "pod",
         "response_collection_key": "pod"
+      },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 250,
+          "patch": 200,
+          "put": 190
+        }
       },
       "dependencies": {},
       "description": "Manages a Pod resource",
@@ -21246,6 +21557,18 @@
         "endpoint_path": "/portacls",
         "request_wrapper_key": "port_acl",
         "response_collection_key": "port_acl"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 240,
+          "patch": 50,
+          "put": 40
+        },
+        "datacenter": {
+          "delete": 280,
+          "patch": 170,
+          "put": 160
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity Port ACL",
@@ -21988,6 +22311,13 @@
         "request_wrapper_key": "rack",
         "response_collection_key": "rack"
       },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 80,
+          "patch": 370,
+          "put": 360
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity Rack resource",
       "fields": [
@@ -22237,6 +22567,13 @@
         "endpoint_path": "/routemaps",
         "request_wrapper_key": "route_map",
         "response_collection_key": "route_map"
+      },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 350,
+          "patch": 100,
+          "put": 90
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity Route Map",
@@ -22551,6 +22888,13 @@
         "endpoint_path": "/routemapclauses",
         "request_wrapper_key": "route_map_clause",
         "response_collection_key": "route_map_clause"
+      },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 370,
+          "patch": 80,
+          "put": 70
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity Route Map Clause",
@@ -23628,6 +23972,18 @@
         "request_wrapper_key": "service",
         "response_collection_key": "service"
       },
+      "bulk_order": {
+        "campus": {
+          "delete": 250,
+          "patch": 40,
+          "put": 30
+        },
+        "datacenter": {
+          "delete": 320,
+          "patch": 130,
+          "put": 120
+        }
+      },
       "dependencies": {},
       "description": "Manages a Service resource",
       "fields": [
@@ -24571,6 +24927,13 @@
         "request_wrapper_key": "service_port_profile",
         "response_collection_key": "service_port_profile"
       },
+      "bulk_order": {
+        "campus": {
+          "delete": 160,
+          "patch": 130,
+          "put": 120
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity Service Port Profile",
       "fields": [
@@ -25171,6 +25534,18 @@
         "request_wrapper_key": "sflow_collector",
         "response_collection_key": "sflow_collector"
       },
+      "bulk_order": {
+        "campus": {
+          "delete": 210,
+          "patch": 80,
+          "put": 70
+        },
+        "datacenter": {
+          "delete": 200,
+          "patch": 250,
+          "put": 240
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity SFlow Collector",
       "fields": [
@@ -25333,6 +25708,14 @@
         "endpoint_path": "/sfpbreakouts",
         "request_wrapper_key": "sfp_breakouts",
         "response_collection_key": "sfp_breakouts"
+      },
+      "bulk_order": {
+        "campus": {
+          "patch": 10
+        },
+        "datacenter": {
+          "patch": 10
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity SFP Breakout",
@@ -25625,6 +26008,13 @@
         "request_wrapper_key": "spine_plane",
         "response_collection_key": "spine_plane"
       },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 90,
+          "patch": 360,
+          "put": 350
+        }
+      },
       "dependencies": {},
       "description": "Manages a Spine Plane resource",
       "fields": [
@@ -25846,6 +26236,13 @@
         "endpoint_path": "/sspgroups",
         "request_wrapper_key": "superspine_group",
         "response_collection_key": "superspine_group"
+      },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 60,
+          "patch": 390,
+          "put": 380
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity SuperSpine Group resource",
@@ -26097,6 +26494,13 @@
         "request_wrapper_key": "su",
         "response_collection_key": "su"
       },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 180,
+          "patch": 270,
+          "put": 260
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity SU resource",
       "fields": [
@@ -26346,6 +26750,18 @@
         "endpoint_path": "/switchpoints",
         "request_wrapper_key": "switchpoint",
         "response_collection_key": "switchpoint"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 40,
+          "patch": 250,
+          "put": 240
+        },
+        "datacenter": {
+          "delete": 40,
+          "patch": 410,
+          "put": 400
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity Switchpoint",
@@ -30255,6 +30671,18 @@
         "request_wrapper_key": "tacacs_profile",
         "response_collection_key": "tacacs_profile"
       },
+      "bulk_order": {
+        "campus": {
+          "delete": 230,
+          "patch": 60,
+          "put": 50
+        },
+        "datacenter": {
+          "delete": 300,
+          "patch": 150,
+          "put": 140
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity TACACS Profile.",
       "fields": [
@@ -30628,6 +31056,13 @@
         "endpoint_path": "/tenants",
         "request_wrapper_key": "tenant",
         "response_collection_key": "tenant"
+      },
+      "bulk_order": {
+        "datacenter": {
+          "delete": 330,
+          "patch": 120,
+          "put": 110
+        }
       },
       "dependencies": {},
       "description": "Manages a Tenant resource",
@@ -31492,6 +31927,18 @@
         "request_wrapper_key": "threshold",
         "response_collection_key": "threshold"
       },
+      "bulk_order": {
+        "campus": {
+          "delete": 30,
+          "patch": 260,
+          "put": 250
+        },
+        "datacenter": {
+          "delete": 30,
+          "patch": 420,
+          "put": 410
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity Threshold.",
       "fields": [
@@ -32191,6 +32638,18 @@
         "request_wrapper_key": "threshold_group",
         "response_collection_key": "threshold_group"
       },
+      "bulk_order": {
+        "campus": {
+          "delete": 20,
+          "patch": 270,
+          "put": 260
+        },
+        "datacenter": {
+          "delete": 20,
+          "patch": 430,
+          "put": 420
+        }
+      },
       "dependencies": {},
       "description": "Manages a Verity Threshold Group.",
       "fields": [
@@ -32825,6 +33284,13 @@
         "endpoint_path": "/voiceportprofiles",
         "request_wrapper_key": "voice_port_profiles",
         "response_collection_key": "voice_port_profiles"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 120,
+          "patch": 170,
+          "put": 160
+        }
       },
       "dependencies": {},
       "description": "Manages a Verity Voice Port Profile",

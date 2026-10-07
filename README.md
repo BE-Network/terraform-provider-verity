@@ -212,8 +212,9 @@ tools/generate_provider.sh --write
 
 The command verifies canonical formatting, checksums, and the selected input
 version, then processes the SDK, extraction manifest, registry and embedded copy,
-transport adapters, and resource documentation. Write mode prepares all outputs
-in temporary directories before copying them into the repository. Generators are
+transport adapters, bulk bindings and operation orders, and resource
+documentation. Write mode prepares all outputs in temporary directories before
+copying them into the repository. Generators are
 compiled before any output is replaced, so SDK type changes do not prevent the
 adapter generator from running. Check mode leaves generated files unchanged.
 
@@ -244,7 +245,7 @@ in `internal/registry/registry.json` are generated together and checked in CI.
    ```
 
 3. Review endpoint and field changes and adjust override entries, policies,
-   mode-specific metadata, and any handwritten bulk bindings or execution order.
+   mode-specific metadata, and the reviewed bulk operation order.
 4. Run `tools/generate_provider.sh --write`, review the diff, then run
    `tools/generate_provider.sh --check` and the tests. Update mock data and golden
    fixtures deliberately. Incompatible state changes require a migration.
@@ -253,6 +254,34 @@ in `internal/registry/registry.json` are generated together and checked in CI.
    branches change. `.github/dependabot.yml` intentionally follows branch policy,
    independently of the selected API version. Historical tests and fixtures retain
    the version they describe.
+
+### Bulk bindings and scheduling
+
+`tools/specgen bulk` generates `internal/bulkops/generated_registry.go` from the
+registry and SDK declarations. The unified generation command invokes it for both
+write and check modes. SDK services, request types, body setters, delete query
+parameters, typed-map request preparers, response collection keys, cache keys,
+and fixed split parameters are discovered and checked; missing or ambiguous
+bindings fail generation. Pre-existence checks use the generated GET binding
+and collection key.
+
+Each resource declares `bulk_order` in `specs/overrides.yaml`:
+
+```yaml
+bulk_order:
+  datacenter: {put: 110, patch: 120, delete: 330}
+```
+
+Positive ranks run in ascending order within their operation and mode. Leave an
+unsupported operation absent. Gaps between ranks allow inserting a resource
+without renumbering its neighbors. Every supported mutation needs a rank; ranks
+cannot collide across bulk keys, and variants sharing a key must agree on order.
+PATCH order is independent of PUT order. Validation requires DELETE order to
+reverse PUT order in each mode, and `sfp_breakout` has only a PATCH rank that
+runs first in both modes. ACL variants share `acl` and retain their `ip_version` query split
+and response collection selection. Review ordering metadata when adding or
+changing an endpoint; conventional bindings require no handwritten Go callback
+or operation-list edits. Bulk orders are separate from importer stage orders.
 
 ### SDK generation and logging
 
@@ -292,6 +321,8 @@ To add a resource:
    and its `fields`. Declare only what OpenAPI cannot express:
    - `import_stage`, the state importer's stage name and order for each mode
      the resource supports;
+   - `bulk_order`, independent PUT/PATCH/DELETE ranks for each supported mode;
+     these orders express API dependencies and differ from import stages;
    - `auto_assignment.recomputed_when`, if the server reassigns an
      auto-assigned value when another field changes (see `vni` under
      `verity_service`);
@@ -305,8 +336,9 @@ To add a resource:
    are the companion's enum. A field with a `<field>_auto_assigned_` companion
    becomes an auto-assignment pair.
 3. **Regenerate** with `tools/generate_provider.sh --write`, which updates the
-   SDK, manifest, registry and embedded copy, adapters, and docs together. The
-   adapter generator prints why it cannot serve an unsupported resource.
+   SDK, manifest, registry and embedded copy, adapters, bulk bindings/orders, and
+   docs together. The adapter generator prints why it cannot serve an unsupported
+   resource.
 4. **Tests.** Coverage tests read the resource path, wrapper, mode, fixed
    headers, and supported operations from the registry. Add a mock response in
    `tests/unit/testdata/responses/<mode>/`, record the golden fixtures and the
