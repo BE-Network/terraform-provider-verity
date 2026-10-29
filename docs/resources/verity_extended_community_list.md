@@ -1,21 +1,23 @@
-# Extended Community List Resource
+# verity_extended_community_list (Resource)
 
-Provides a Verity Extended Community List resource. Extended Community Lists are used to match BGP extended communities for route filtering and policy control.
+Manages a Verity Extended Community List.
+
+Supported modes: Datacenter.
 
 ## Example Usage
 
 ```hcl
 resource "verity_extended_community_list" "example" {
   name = "example"
-  any_all = "any"
+  any_all = ""
   enable = false
-  permit_deny = "permit"
-  standard_expanded = "standard"
+  permit_deny = ""
+  standard_expanded = ""
 
   lists {
     index = 1
     enable = false
-    mode = "route"
+    mode = ""
     route_target_expanded_expression = ""
   }
 
@@ -27,24 +29,27 @@ resource "verity_extended_community_list" "example" {
 
 ## Argument Reference
 
-The following arguments are supported:
+### Required
 
-* `name` (String) - Object Name. Must be unique.
-* `enable` (Boolean) - Enable object.
-* `permit_deny` (String) - Action upon match of Community Strings.
+* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+
+### Optional
+
 * `any_all` (String) - BGP does not advertise any or all routes that do not match the Community String.
-* `standard_expanded` (String) - Used Community String or Expanded Expression.
-* `lists` (Array) - 
+* `enable` (Boolean) - Enable object.
+* `lists` (Block List) - List of Extended Community List entries. Entries are matched by `index`.
   * `enable` (Boolean) - Enable of this Extended Community List.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
   * `mode` (String) - Mode.
   * `route_target_expanded_expression` (String) - Match against a BGP extended community of type Route Target.
-  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
-* `object_properties` (Object) - 
+* `object_properties` (Block) - Object properties for the Extended Community List. At most one block.
   * `notes` (String) - User Notes.
+* `permit_deny` (String) - Action upon match of Community Strings.
+* `standard_expanded` (String) - Used Community String or Expanded Expression.
 
 ## Import
 
-Extended Community Lists can be imported using the name:
+Import an existing object by its `name`:
 
 ```sh
 terraform import verity_extended_community_list.<resource_name> <name>

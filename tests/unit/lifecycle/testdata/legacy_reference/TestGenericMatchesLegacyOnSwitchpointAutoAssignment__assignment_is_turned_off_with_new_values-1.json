@@ -1,0 +1,155 @@
+{
+  "DELETE query": {
+    "switchpoint_name": [
+      "diffsp"
+    ]
+  },
+  "PATCH": {
+    "switchpoint": {
+      "diffsp": {
+        "bgp_as_number": 65002,
+        "bgp_as_number_auto_assigned_": false,
+        "controller_ip_and_mask": "10.3.0.2/24",
+        "controller_ip_and_mask_auto_assigned_": false,
+        "gateway": "10.5.0.2",
+        "gateway_auto_assigned_": false,
+        "lldp_search_string": "uplink-two",
+        "lldp_search_string_auto_assigned_": false,
+        "ssh_key_or_password_encrypted": "secret-two",
+        "ssh_key_or_password_encrypted_auto_assigned_": false,
+        "switch_gateway": "10.6.0.2",
+        "switch_gateway_auto_assigned_": false,
+        "switch_ip_and_mask": "10.4.0.2/24",
+        "switch_ip_and_mask_auto_assigned_": false,
+        "switch_router_id_ip_mask": "10.2.0.2/32",
+        "switch_router_id_ip_mask_auto_assigned_": false,
+        "switch_vtep_id_ip_mask": "10.1.0.2/32",
+        "switch_vtep_id_ip_mask_auto_assigned_": false,
+        "username": "operator-two",
+        "username_auto_assigned_": false
+      }
+    }
+  },
+  "PATCH query": {},
+  "PUT": {
+    "switchpoint": {
+      "diffsp": {
+        "authentication_protocol": "",
+        "badges": [
+          {
+            "badge": "",
+            "badge_ref_type_": "",
+            "index": 1
+          }
+        ],
+        "bb_switch": true,
+        "bgp_as_number_auto_assigned_": true,
+        "children": [
+          {
+            "child_num_device": "",
+            "child_num_endpoint": "",
+            "child_num_endpoint_ref_type_": "",
+            "index": 1
+          }
+        ],
+        "cli_access_mode": "",
+        "comm_type": "",
+        "communication_mode": "",
+        "connected_bundle": "",
+        "connected_bundle_ref_type_": "",
+        "controller_ip_and_mask_auto_assigned_": true,
+        "device_serial_number": "",
+        "enable": true,
+        "enable_password": "",
+        "enable_password_encrypted": "",
+        "eths": [
+          {
+            "breakout": "",
+            "customer_vlan": "",
+            "enable": true,
+            "eth_num_icon": "",
+            "eth_num_label": "",
+            "index": 1,
+            "port_name": ""
+          }
+        ],
+        "expected_breakout": "",
+        "expected_breakout_uplink_port": "",
+        "expected_fabric": "",
+        "expected_fabric_ref_type_": "",
+        "expected_uplink_port": 42,
+        "gateway_auto_assigned_": true,
+        "ip_source": "",
+        "is_top_of_island": true,
+        "lldp_search_string_auto_assigned_": true,
+        "located_by": "",
+        "locked": true,
+        "managed_on_native_vlan": true,
+        "name": "diffsp",
+        "object_properties": {
+          "aggregate": true,
+          "emulate_rf_video_port": true,
+          "expected_parent_endpoint": "",
+          "expected_parent_endpoint_ref_type_": "",
+          "is_host": true,
+          "number_of_multipoints": 42,
+          "user_notes": ""
+        },
+        "out_of_band_management": true,
+        "passphrase": "",
+        "passphrase_encrypted": "",
+        "password": "",
+        "password_encrypted": "",
+        "plane": "",
+        "plane_ref_type_": "",
+        "pod": "",
+        "pod_ref_type_": "",
+        "position": 1.5,
+        "power_state": "",
+        "private_password": "",
+        "private_password_encrypted": "",
+        "private_protocol": "",
+        "rack": "",
+        "rack_info": "",
+        "rack_ref_type_": "",
+        "rail_group": 1.5,
+        "read_only_mode": true,
+        "sdlc": "",
+        "security_type": "",
+        "snmp_community_string": "",
+        "snmpv3_username": "",
+        "spine_plane": "",
+        "spine_plane_ref_type_": "",
+        "ssh_key_or_password": "",
+        "ssh_key_or_password_encrypted_auto_assigned_": true,
+        "ssp_group": "",
+        "ssp_group_ref_type_": "",
+        "su": "",
+        "su_ref_type_": "",
+        "switch_gateway_auto_assigned_": true,
+        "switch_ip_and_mask_auto_assigned_": true,
+        "switch_router_id_ip_mask_auto_assigned_": true,
+        "switch_vtep_id_ip_mask_auto_assigned_": true,
+        "tenant": "",
+        "tenant_ref_type_": "",
+        "traffic_mirrors": [
+          {
+            "index": 1,
+            "traffic_mirror_num_destination_port": "",
+            "traffic_mirror_num_enable": true,
+            "traffic_mirror_num_inbound_traffic": true,
+            "traffic_mirror_num_outbound_traffic": true,
+            "traffic_mirror_num_source_lag_indicator": true,
+            "traffic_mirror_num_source_port": ""
+          }
+        ],
+        "type": "",
+        "uplink_port": "",
+        "upstream_is_lag": true,
+        "username_auto_assigned_": true,
+        "ztp_identification": ""
+      }
+    }
+  },
+  "PUT query": {}
+}

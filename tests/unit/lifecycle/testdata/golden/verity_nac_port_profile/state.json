@@ -1,0 +1,13 @@
+{
+  "enable": "true",
+  "eth_ports.#": "1",
+  "eth_ports.0.%": "4",
+  "eth_ports.0.eth_port_profile_num_enable": "true",
+  "eth_ports.0.eth_port_profile_num_eth_port": "",
+  "eth_ports.0.eth_port_profile_num_eth_port_ref_type_": "",
+  "eth_ports.0.index": "1",
+  "name": "cov_nac_port_profile",
+  "object_properties.#": "1",
+  "object_properties.0.%": "1",
+  "object_properties.0.port_monitoring": ""
+}

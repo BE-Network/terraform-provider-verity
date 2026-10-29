@@ -1,17 +1,18 @@
 package provider
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"os"
 	"path/filepath"
-	"regexp"
+	"sort"
 	"strings"
 	"time"
 
 	"terraform-provider-verity/internal/importer"
-	"terraform-provider-verity/internal/utils"
+
+	"github.com/hashicorp/hcl/v2/hclwrite"
+	"github.com/zclconf/go-cty/cty"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -117,8 +118,8 @@ func (d *stateImporterDataSource) Read(ctx context.Context, req datasource.ReadR
 	}
 
 	client := d.client.client
-	imp := importer.NewImporter(client, d.client.mode)
-	err = imp.ImportAll(absPath)
+	imp := importer.NewImporter(client, d.client.mode).WithSupportedFields(importerSupportedFields(ctx))
+	result, err := imp.ImportAll(absPath)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Importing Resources",
@@ -126,26 +127,22 @@ func (d *stateImporterDataSource) Read(ctx context.Context, req datasource.ReadR
 		)
 		return
 	}
+	warning := unsupportedFieldsWarning(imp.UnsupportedFields())
+	if warning != "" {
+		tflog.Warn(ctx, warning)
+		resp.Diagnostics.AddWarning("Some arguments are not supported by this provider version", warning)
+	}
+	if err := writeUnsupportedArgumentsFile(absPath, warning); err != nil {
+		resp.Diagnostics.AddWarning("Error Writing "+unsupportedArgumentsFile, err.Error())
+	}
 
 	data.ImportedFiles = []types.String{}
-
-	entries, err := os.ReadDir(absPath)
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error Reading Directory",
-			fmt.Sprintf("Error reading directory: %v", err),
-		)
-		return
+	sort.Strings(result.Files)
+	for _, filePath := range result.Files {
+		data.ImportedFiles = append(data.ImportedFiles, types.StringValue(filePath))
 	}
 
-	for _, entry := range entries {
-		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".tf") {
-			filePath := filepath.Join(absPath, entry.Name())
-			data.ImportedFiles = append(data.ImportedFiles, types.StringValue(filePath))
-		}
-	}
-
-	importBlocksFile, err := createImportBlocks(ctx, absPath, d.client.mode)
+	importBlocksFile, err := createImportBlocks(absPath, result.Resources)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Generating Import Blocks",
@@ -162,236 +159,23 @@ func (d *stateImporterDataSource) Read(ctx context.Context, req datasource.ReadR
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func createImportBlocks(ctx context.Context, dirPath string, mode string) (string, error) {
+func createImportBlocks(dirPath string, resources []importer.ImportedResource) (string, error) {
+	var output strings.Builder
+	output.WriteString("# Import blocks for Verity resources\n\n")
+	previousType := ""
+	for _, resource := range resources {
+		if resource.TerraformType != previousType {
+			fmt.Fprintf(&output, "# %s imports\n", resource.TerraformType)
+			previousType = resource.TerraformType
+		}
+		id := hclwrite.TokensForValue(cty.StringVal(resource.ID)).Bytes()
+		fmt.Fprintf(&output, "import {\n  to = %s.%s\n  id = %s\n}\n\n",
+			resource.TerraformType, resource.TerraformName, id)
+	}
+
 	outputFile := filepath.Join(dirPath, "import_blocks.tf")
-
-	file, err := os.Create(outputFile)
-	if err != nil {
-		return "", fmt.Errorf("error creating output file: %w", err)
+	if err := os.WriteFile(outputFile, []byte(output.String()), 0644); err != nil {
+		return "", fmt.Errorf("error writing import blocks: %w", err)
 	}
-	defer file.Close()
-
-	if _, err := file.WriteString("# Import blocks for Verity resources\n\n"); err != nil {
-		return "", fmt.Errorf("error writing to output file: %w", err)
-	}
-
-	supportedResources := map[string]struct{}{
-		"verity_service":                  {},
-		"verity_aaa_profile":              {},
-		"verity_ldap_profile":             {},
-		"verity_eth_port_profile":         {},
-		"verity_authenticated_eth_port":   {},
-		"verity_device_voice_settings":    {},
-		"verity_packet_queue":             {},
-		"verity_tacacs_profile":           {},
-		"verity_service_port_profile":     {},
-		"verity_voice_port_profile":       {},
-		"verity_eth_port_settings":        {},
-		"verity_device_settings":          {},
-		"verity_lag":                      {},
-		"verity_sflow_collector":          {},
-		"verity_diagnostics_profile":      {},
-		"verity_diagnostics_port_profile": {},
-		"verity_bundle":                   {},
-		"verity_acl_v4":                   {},
-		"verity_acl_v6":                   {},
-		"verity_ipv4_list":                {},
-		"verity_ipv6_list":                {},
-		"verity_port_acl":                 {},
-		"verity_badge":                    {},
-		"verity_switchpoint":              {},
-		"verity_mac_filter":               {},
-		"verity_fabric":                   {},
-		"verity_plane":                    {},
-		"verity_rack":                     {},
-		"verity_pair":                     {},
-		"verity_tenant":                   {},
-		"verity_gateway_profile":          {},
-		"verity_gateway":                  {},
-		"verity_ipv4_prefix_list":         {},
-		"verity_ipv6_prefix_list":         {},
-		"verity_packet_broker":            {},
-		"verity_pod":                      {},
-		"verity_ssp_group":                {},
-		"verity_su":                       {},
-		"verity_as_path_access_list":      {},
-		"verity_community_list":           {},
-		"verity_extended_community_list":  {},
-		"verity_route_map_clause":         {},
-		"verity_route_map":                {},
-		"verity_pb_routing":               {},
-		"verity_pb_routing_acl":           {},
-		"verity_spine_plane":              {},
-		"verity_sfp_breakout":             {},
-		"verity_grouping_rule":            {},
-		"verity_threshold_group":          {},
-		"verity_threshold":                {},
-	}
-
-	importBlocks := make(map[string][]string)
-
-	entries, err := os.ReadDir(dirPath)
-	if err != nil {
-		return "", fmt.Errorf("error reading directory: %w", err)
-	}
-
-	resourceRegex := regexp.MustCompile(`resource\s+"([^"]+)"\s+"([^"]+)"`)
-	nameRegex := regexp.MustCompile(`name\s*=\s*"([^"]+)"`)
-
-	tflog.Info(ctx, "Processing Terraform files for import blocks")
-
-	for _, entry := range entries {
-		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".tf") {
-			continue
-		}
-
-		if entry.Name() == "import_blocks.tf" {
-			continue
-		}
-
-		filePath := filepath.Join(dirPath, entry.Name())
-
-		hasVerityResources, err := containsVerityResources(filePath)
-		if err != nil {
-			return "", fmt.Errorf("error checking file %s: %w", entry.Name(), err)
-		}
-
-		if !hasVerityResources {
-			tflog.Info(ctx, "Skipping file (no Verity resources)", map[string]any{"file": entry.Name()})
-			continue
-		}
-
-		tflog.Info(ctx, "Processing file", map[string]any{"file": entry.Name()})
-
-		resourceBlocks, err := findResourceBlocks(filePath)
-		if err != nil {
-			return "", fmt.Errorf("error parsing file %s: %w", entry.Name(), err)
-		}
-
-		for _, block := range resourceBlocks {
-			resourceMatches := resourceRegex.FindStringSubmatch(block)
-			if len(resourceMatches) < 3 {
-				continue
-			}
-
-			resourceType := resourceMatches[1]
-
-			// Only process supported Verity resources
-			if _, isSupported := supportedResources[resourceType]; !isSupported {
-				tflog.Debug(ctx, "Skipping unsupported resource type", map[string]any{
-					"resource_type": resourceType,
-					"file":          entry.Name(),
-				})
-				continue
-			}
-
-			if !importerCompatibleWithMode(resourceType, mode) {
-				tflog.Debug(ctx, "Skipping mode-incompatible resource type", map[string]any{
-					"resource_type": resourceType,
-					"file":          entry.Name(),
-					"mode":          mode,
-				})
-				continue
-			}
-
-			hclName := resourceMatches[2]
-
-			nameValue := hclName
-			nameMatches := nameRegex.FindStringSubmatch(block)
-			if len(nameMatches) > 1 {
-				nameValue = nameMatches[1]
-			}
-
-			importBlock := fmt.Sprintf("import {\n  to = %s.%s\n  id = \"%s\"\n}\n",
-				resourceType, hclName, nameValue)
-
-			importBlocks[resourceType] = append(importBlocks[resourceType], importBlock)
-		}
-	}
-
-	// Write all collected import blocks grouped by resource type
-	for resourceType, blocks := range importBlocks {
-		if len(blocks) > 0 {
-			if _, err := file.WriteString(fmt.Sprintf("# %s imports\n", resourceType)); err != nil {
-				return "", fmt.Errorf("error writing to output file: %w", err)
-			}
-			for _, block := range blocks {
-				if _, err := file.WriteString(block + "\n"); err != nil {
-					return "", fmt.Errorf("error writing to output file: %w", err)
-				}
-			}
-		}
-	}
-
 	return outputFile, nil
-}
-
-func importerCompatibleWithMode(resourceType string, mode string) bool {
-	return utils.IsResourceCompatibleWithMode(resourceType, mode)
-}
-
-func containsVerityResources(filePath string) (bool, error) {
-	file, err := os.Open(filePath)
-	if err != nil {
-		return false, fmt.Errorf("error opening file: %w", err)
-	}
-	defer file.Close()
-
-	verityResourcePattern := regexp.MustCompile(`resource\s+"verity_`)
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if verityResourcePattern.MatchString(line) {
-			return true, nil
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		return false, fmt.Errorf("error reading file: %w", err)
-	}
-
-	return false, nil
-}
-
-func findResourceBlocks(filePath string) ([]string, error) {
-	file, err := os.Open(filePath)
-	if err != nil {
-		return nil, fmt.Errorf("error opening file: %w", err)
-	}
-	defer file.Close()
-
-	var blocks []string
-	var currentBlock strings.Builder
-	inBlock := false
-	braceCount := 0
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-
-		if !inBlock && strings.Contains(line, "resource ") {
-			inBlock = true
-			currentBlock.WriteString(line + "\n")
-			braceCount += strings.Count(line, "{") - strings.Count(line, "}")
-			continue
-		}
-
-		if inBlock {
-			currentBlock.WriteString(line + "\n")
-			braceCount += strings.Count(line, "{") - strings.Count(line, "}")
-
-			if braceCount == 0 {
-				blocks = append(blocks, currentBlock.String())
-				currentBlock.Reset()
-				inBlock = false
-			}
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		return nil, fmt.Errorf("error reading file: %w", err)
-	}
-
-	return blocks, nil
 }

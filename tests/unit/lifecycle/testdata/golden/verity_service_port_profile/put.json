@@ -1,0 +1,29 @@
+{
+  "service_port_profile": {
+    "cov_spp": {
+      "enable": true,
+      "ip_mask": "",
+      "name": "cov_spp",
+      "object_properties": {
+        "on_summary": true,
+        "port_monitoring": ""
+      },
+      "port_type": "",
+      "services": [
+        {
+          "index": 1,
+          "row_num_enable": true,
+          "row_num_external_vlan": 42,
+          "row_num_limit_in": 42,
+          "row_num_limit_out": 42,
+          "row_num_service": "",
+          "row_num_service_ref_type_": ""
+        }
+      ],
+      "tls_limit_in": 42,
+      "tls_service": "",
+      "tls_service_ref_type_": "",
+      "trusted_port": true
+    }
+  }
+}

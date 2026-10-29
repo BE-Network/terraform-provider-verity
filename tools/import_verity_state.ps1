@@ -5,6 +5,16 @@ function Log {
     Write-Host "[$([DateTime]::Now.ToString('yyyy-MM-dd HH:mm:ss'))] $message" -ForegroundColor $color
 }
 
+$UnsupportedFile = "unsupported_arguments.txt"
+
+function Show-UnsupportedArguments {
+    if ((Test-Path $UnsupportedFile) -and ((Get-Item $UnsupportedFile).Length -gt 0)) {
+        Log "[WARN] Some arguments are not supported by this provider version:" -color Yellow
+        Get-Content $UnsupportedFile | ForEach-Object { Write-Host "    $_" -ForegroundColor Yellow }
+        Log "[WARN] This list is saved in $UnsupportedFile" -color Yellow
+    }
+}
+
 Log "Verity State Importer Script" -color Cyan
 Log "============================" -color Cyan
 
@@ -13,7 +23,6 @@ if (-not (Get-Command terraform -ErrorAction SilentlyContinue)) {
     exit 1
 }
 
-# Find the main terraform file with the Verity provider
 Log "[INFO] Finding main Terraform file with Verity provider..." -color Cyan
 $mainTfFile = $null
 $tfFiles = Get-ChildItem -Filter "*.tf" -ErrorAction SilentlyContinue
@@ -36,7 +45,6 @@ if (-not $mainTfFile) {
     exit 1
 }
 
-# Check if state importer exists in the file
 $importerExists = $false
 $fileContent = Get-Content $mainTfFile -Raw
 if ($fileContent -match 'verity_state_importer') {
@@ -44,19 +52,16 @@ if ($fileContent -match 'verity_state_importer') {
     Log "[INFO] Found verity_state_importer in $($mainTfFile)" -color Cyan
     Copy-Item -Path $mainTfFile -Destination "$mainTfFile.orig" -Force
     
-    # Create a clean version without the importer block
     $content = Get-Content $mainTfFile
     $cleanContent = New-Object System.Collections.ArrayList
     $skipLines = $false
     
     foreach ($line in $content) {
-        # Start skipping at the data "verity_state_importer" line
         if ($line -match 'data\s+"verity_state_importer"') {
             $skipLines = $true
             continue
         }
         
-        # If we find a closing brace that completes the block, stop skipping after this line
         if ($skipLines -and $line -match '^\s*}\s*$') {
             $skipLines = $false
             continue
@@ -70,20 +75,16 @@ if ($fileContent -match 'verity_state_importer') {
     $cleanContent | Set-Content -Path "$mainTfFile.clean" -Force
 } else {
     Log "[INFO] verity_state_importer not found, will add it temporarily" -color Cyan
-    # Create a backup of the original file (without importer)
     Copy-Item -Path $mainTfFile -Destination "$mainTfFile.clean" -Force
     
-    # Add the state importer data source
     $importerCode = "`ndata `"verity_state_importer`" `"import`" {}`n"
     Add-Content -Path $mainTfFile -Value $importerCode
     Log "[INFO] Added verity_state_importer to $($mainTfFile)" -color Cyan
 }
 
-# First terraform apply to generate import blocks
 Log "[INFO] Running terraform apply to generate resource files and import blocks..." -color Cyan
 terraform apply -auto-approve
 if ($LASTEXITCODE -ne 0) {
-    # Restore the original file
     if ($importerExists -and (Test-Path "$mainTfFile.orig")) {
         Copy-Item -Path "$mainTfFile.orig" -Destination $mainTfFile -Force
         Log "[INFO] Restored original file with importer" -color Yellow
@@ -98,7 +99,6 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# Check if import_blocks.tf was generated
 if (-not (Test-Path "import_blocks.tf")) {
     Log "[ERROR] import_blocks.tf was not generated. Check your configuration." -color Red
     exit 1
@@ -106,7 +106,6 @@ if (-not (Test-Path "import_blocks.tf")) {
     Log "[INFO] Successfully generated import_blocks.tf" -color Green
 }
 
-# Always restore the clean version of the file (without importer)
 if (Test-Path "$mainTfFile.clean") {
     Copy-Item -Path "$mainTfFile.clean" -Destination $mainTfFile -Force
     Remove-Item -Path "$mainTfFile.clean" -Force
@@ -115,15 +114,15 @@ if (Test-Path "$mainTfFile.clean") {
 
 Remove-Item -Path "$mainTfFile.orig" -Force -ErrorAction SilentlyContinue
 
-# Second terraform apply to import resources
 Log "[INFO] Running second terraform apply to import resources into state..." -color Cyan
 terraform apply -auto-approve
 if ($LASTEXITCODE -ne 0) {
+    Show-UnsupportedArguments
     Log "[ERROR] Resource import failed." -color Red
     exit 1
 }
 
-# Remove import_blocks.tf if import was successful
 Log "[INFO] Import successful. Removing import_blocks.tf..." -color Green
 Remove-Item -Path "import_blocks.tf" -Force
 Log "[INFO] Import process completed successfully!" -color Green
+Show-UnsupportedArguments

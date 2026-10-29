@@ -1,0 +1,18 @@
+{
+  "color": "",
+  "crc_failure_threshold": "42",
+  "enable": "true",
+  "eth_port_profile": "",
+  "eth_port_profile_ref_type_": "",
+  "fallback": "true",
+  "fast_rate": "true",
+  "is_peer_link": "true",
+  "lacp": "true",
+  "name": "cov_lag",
+  "object_properties.#": "1",
+  "object_properties.0.%": "2",
+  "object_properties.0.fabric": "",
+  "object_properties.0.fabric_ref_type_": "",
+  "peer_link_vlan": "42",
+  "uplink": "true"
+}

@@ -1,0 +1,65 @@
+{
+  "DELETE query": {
+    "eth_device_profiles_name": [
+      "diffds"
+    ]
+  },
+  "PATCH": {
+    "eth_device_profiles": {
+      "diffds": {
+        "object_properties": {}
+      }
+    }
+  },
+  "PATCH query": {},
+  "PUT": {
+    "eth_device_profiles": {
+      "diffds": {
+        "cli_commands": "",
+        "commit_to_flash_interval": 42,
+        "cut_through_switching": true,
+        "device_aaa_profile": "",
+        "device_aaa_profile_ref_type_": "",
+        "disable_tcp_udp_learned_packet_acceleration": true,
+        "dns_servers": [
+          {
+            "enabled": true,
+            "index": 1,
+            "server": ""
+          }
+        ],
+        "enable": true,
+        "external_battery_power_available": 42,
+        "external_power_available": 42,
+        "login_banner": "",
+        "mode": "",
+        "name": "diffds",
+        "ntp_servers": [
+          {
+            "enabled": true,
+            "index": 1,
+            "server": ""
+          }
+        ],
+        "ntp_vrf": "",
+        "ntp_vrf_tenant": "",
+        "ntp_vrf_tenant_ref_type_": "",
+        "packet_queue": "",
+        "packet_queue_ref_type_": "",
+        "rocev2": true,
+        "security_audit_interval": 42,
+        "syslog_servers": [
+          {
+            "enabled": true,
+            "index": 1,
+            "port": "",
+            "scheme": "",
+            "server": ""
+          }
+        ],
+        "usage_threshold": 1.5
+      }
+    }
+  },
+  "PUT query": {}
+}

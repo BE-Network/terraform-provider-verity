@@ -1,0 +1,22 @@
+{
+  "egress_acl": "",
+  "egress_acl_ref_type_": "",
+  "enable": "true",
+  "ingress_acl": "",
+  "ingress_acl_ref_type_": "",
+  "name": "cov_ethpp",
+  "object_properties.#": "1",
+  "object_properties.0.%": "4",
+  "object_properties.0.port_monitoring": "",
+  "services.#": "1",
+  "services.0.%": "12",
+  "services.0.index": "1",
+  "services.0.row_num_egress_acl": "",
+  "services.0.row_num_egress_acl_ref_type_": "",
+  "services.0.row_num_enable": "true",
+  "services.0.row_num_external_vlan": "42",
+  "services.0.row_num_ingress_acl": "",
+  "services.0.row_num_ingress_acl_ref_type_": "",
+  "services.0.row_num_service": "",
+  "services.0.row_num_service_ref_type_": ""
+}

@@ -1,0 +1,14 @@
+{
+  "plane": {
+    "cov_plane": {
+      "enable": true,
+      "fabric": "",
+      "fabric_ref_type_": "",
+      "name": "cov_plane",
+      "object_properties": {
+        "notes": ""
+      },
+      "position": 1.5
+    }
+  }
+}

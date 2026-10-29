@@ -18,7 +18,6 @@ type requestRecord struct {
 	IPVersion string
 }
 
-// resourceAPIPath maps resource types to their API paths.
 var resourceAPIPath = map[string]string{
 	"ipv6_prefix_list":         "/ipv6prefixlists",
 	"community_list":           "/communitylists",
@@ -163,7 +162,6 @@ var campusDeleteOrder = func() []string {
 	return r
 }()
 
-// dcPatchOrder is dcPutOrder with "sfp_breakout" prepended.
 var dcPatchOrder = func() []string {
 	result := make([]string, 0, len(dcPutOrder)+1)
 	result = append(result, "sfp_breakout")
@@ -635,12 +633,11 @@ func TestErrorAbortsRemainingOperations(t *testing.T) {
 
 	ctx := context.Background()
 
-	// Add PUTs for resources before and after tenant in the DC order
 	mgr.AddPut(ctx, "ipv6_prefix_list", "test_prefix", zeroPutValue("ipv6_prefix_list"))
 	mgr.AddPut(ctx, "route_map_clause", "test_clause", zeroPutValue("route_map_clause"))
 	mgr.AddPut(ctx, "pb_routing", "test_pbr", zeroPutValue("pb_routing"))
 	mgr.AddPut(ctx, "tenant", "test_tenant", zeroPutValue("tenant"))
-	// These come AFTER tenant in the DC order — they should NOT execute.
+
 	mgr.AddPut(ctx, "service", "test_service", zeroPutValue("service"))
 	mgr.AddPut(ctx, "gateway", "test_gw", zeroPutValue("gateway"))
 
@@ -695,7 +692,6 @@ func TestMixedOperationsOrder(t *testing.T) {
 
 	ctx := context.Background()
 
-	// Add a mix of PUT, PATCH, and DELETE for different resources
 	mgr.AddPut(ctx, "badge", "put_badge", zeroPutValue("badge"))
 	mgr.AddPut(ctx, "gateway", "put_gw", zeroPutValue("gateway"))
 	mgr.AddPatch(ctx, "badge", "patch_badge", zeroPatchValue("badge"))
@@ -787,7 +783,6 @@ func TestNoOpsSkipped(t *testing.T) {
 
 	ctx := context.Background()
 
-	// Only add badge PUT — no other resources
 	mgr.AddPut(ctx, "badge", "test_badge", zeroPutValue("badge"))
 
 	diags, _ := mgr.ExecuteDatacenterOperations(ctx)
@@ -871,15 +866,14 @@ func TestPatchErrorAbortsRemainingOperations(t *testing.T) {
 
 	ctx := context.Background()
 
-	// PUT succeeds for a resource that is also PATCHed
 	mgr.AddPut(ctx, "ipv6_prefix_list", "test_prefix", zeroPutValue("ipv6_prefix_list"))
-	// PATCH: early one succeeds, route_map_clause fails, later ones should be skipped
+
 	mgr.AddPatch(ctx, "ipv6_prefix_list", "test_prefix", zeroPatchValue("ipv6_prefix_list"))
 	mgr.AddPatch(ctx, "route_map_clause", "test_clause", zeroPatchValue("route_map_clause"))
-	// These come AFTER route_map_clause in DC PATCH order — should NOT execute
+
 	mgr.AddPatch(ctx, "route_map", "test_rm", zeroPatchValue("route_map"))
 	mgr.AddPatch(ctx, "tenant", "test_tenant", zeroPatchValue("tenant"))
-	// DELETE should also NOT execute after PATCH failure
+
 	mgr.AddDelete(ctx, "badge", "test_badge")
 
 	diags, _ := mgr.ExecuteDatacenterOperations(ctx)
@@ -930,9 +924,8 @@ func TestDeleteErrorAbortsRemainingOperations(t *testing.T) {
 
 	ctx := context.Background()
 
-	// threshold_group is first in reverse DC order — its failure should abort the rest
 	mgr.AddDelete(ctx, "threshold_group", "test_tg")
-	// These come AFTER threshold_group in reverse DC order — should NOT execute
+
 	mgr.AddDelete(ctx, "grouping_rule", "test_gr")
 	mgr.AddDelete(ctx, "badge", "test_badge")
 

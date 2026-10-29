@@ -1,0 +1,16 @@
+{
+  "pb_routing": {
+    "cov_pbr": {
+      "enable": true,
+      "name": "cov_pbr",
+      "policy": [
+        {
+          "enable": true,
+          "index": 1,
+          "pb_routing_acl": "",
+          "pb_routing_acl_ref_type_": ""
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "DELETE query": {
+    "tenant_name": [
+      "difftenant"
+    ]
+  },
+  "PATCH": {
+    "tenant": {
+      "difftenant": {
+        "layer_3_vni": 5000,
+        "layer_3_vni_auto_assigned_": false
+      }
+    }
+  },
+  "PATCH query": {},
+  "PUT": {
+    "tenant": {
+      "difftenant": {
+        "default_originate": true,
+        "dhcp_relay_source_ipv4s_subnet": "",
+        "dhcp_relay_source_ipv6s_subnet": "",
+        "enable": true,
+        "export_route_map": "",
+        "export_route_map_ref_type_": "",
+        "import_route_map": "",
+        "import_route_map_ref_type_": "",
+        "layer_3_vlan": 42,
+        "layer_3_vlan_auto_assigned_": false,
+        "layer_3_vni_auto_assigned_": true,
+        "name": "difftenant",
+        "route_aggregation": "",
+        "route_distinguisher": "",
+        "route_target_export": "",
+        "route_target_import": "",
+        "tenant_type": "",
+        "vrf_name": "TestVrf",
+        "vrf_name_auto_assigned_": false
+      }
+    }
+  },
+  "PUT query": {}
+}

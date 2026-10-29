@@ -1,44 +1,51 @@
-# TACACS Profile Resource
+# verity_tacacs_profile (Resource)
 
-`verity_tacacs_profile` manages TACACS profile resources in Verity.
+Manages a Verity TACACS Profile.
+
+Supported modes: Campus, Datacenter.
 
 ## Example Usage
 
 ```hcl
 resource "verity_tacacs_profile" "example" {
   name = "example"
-  enable = true
+  enable = false
 
   tacacs_servers {
     index = 1
-    enabled = true
-    server = "10.0.0.10"
-    auth_type = "pap"
-    port = "49"
-    timeout = 5
-    secret = "shared-secret"
+    auth_type = ""
+    enabled = false
     enc_secret = ""
+    port = ""
+    secret = ""
+    server = ""
+    timeout = null
   }
 }
 ```
 
 ## Argument Reference
 
-* `name` (String) - Template Name. Must be unique within type.
+### Required
+
+* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+
+### Optional
+
 * `enable` (Boolean) - Enable object.
-* `tacacs_servers` (Array) -
-  * `enabled` (Boolean) - Enable TACACS+ server.
-  * `server` (String) - IPv4, IPv6, or DNS name for TACACS+ server.
+* `tacacs_servers` (Block List) - List of TACACS+ servers. Entries are matched by `index`.
   * `auth_type` (String) - TACACS+ authentication type.
-  * `port` (String) - TACACS+ server port.
-  * `timeout` (Integer) - TACACS+ server timeout in seconds.
-  * `secret` (String) - TACACS+ shared secret.
+  * `enabled` (Boolean) - Enable TACACS+ server.
   * `enc_secret` (String) - TACACS+ shared secret (encrypted).
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
+  * `port` (String) - TACACS+ server port.
+  * `secret` (String) - TACACS+ shared secret.
+  * `server` (String) - IPv4, IPv6, or DNS name for TACACS+ server.
+  * `timeout` (Integer) - TACACS+ server timeout in seconds. Set it to `null` to clear it.
 
 ## Import
 
-TACACS profile resources can be imported using the `name` attribute:
+Import an existing object by its `name`:
 
 ```sh
 terraform import verity_tacacs_profile.<resource_name> <name>

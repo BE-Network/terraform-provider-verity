@@ -36,7 +36,9 @@
       "packet_queue_ref_type_": "",
       "object_properties": {
         "group": ""
-      }
+      },
+      "bpdu_guard_port_disable": false,
+      "guard_root": false
     }
   }
 }

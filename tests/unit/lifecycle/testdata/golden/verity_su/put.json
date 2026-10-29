@@ -1,0 +1,14 @@
+{
+  "su": {
+    "cov_su": {
+      "enable": true,
+      "name": "cov_su",
+      "object_properties": {
+        "notes": ""
+      },
+      "pod": "",
+      "pod_ref_type_": "",
+      "position": 1.5
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "enable": "true",
+  "fabric": "",
+  "fabric_ref_type_": "",
+  "name": "cov_plane",
+  "object_properties.#": "1",
+  "object_properties.0.%": "1",
+  "object_properties.0.notes": "",
+  "position": "1.5"
+}

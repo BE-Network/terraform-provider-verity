@@ -1,0 +1,7 @@
+{
+  "pb_egress_profile": {
+    "cov_pb": {
+      "enable": false
+    }
+  }
+}

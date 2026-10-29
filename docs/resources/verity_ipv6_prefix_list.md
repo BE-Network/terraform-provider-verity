@@ -1,6 +1,8 @@
-# ipv6 Prefix List Resource
+# verity_ipv6_prefix_list (Resource)
 
-Provides a Verity IPv6 Prefix List resource. IPv6 Prefix Lists are used to match and filter IPv6 routes based on prefix and mask criteria.
+Manages a Verity IPv6 Prefix List.
+
+Supported modes: Datacenter.
 
 ## Example Usage
 
@@ -15,7 +17,7 @@ resource "verity_ipv6_prefix_list" "example" {
     greater_than_equal_value = null
     ipv6_prefix = ""
     less_than_equal_value = null
-    permit_deny = "permit"
+    permit_deny = ""
   }
 
   object_properties {
@@ -26,21 +28,26 @@ resource "verity_ipv6_prefix_list" "example" {
 
 ## Argument Reference
 
-* `name` (String) - Object Name. Must be unique.
+### Required
+
+* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+
+### Optional
+
 * `enable` (Boolean) - Enable object.
-* `lists` (Array) - 
+* `lists` (Block List) - List of IPv6 Prefix List entries. Entries are matched by `index`.
   * `enable` (Boolean) - Enable of this IPv6 Prefix List.
-  * `permit_deny` (String) - Action upon match of Community Strings.
-  * `ipv6_prefix` (String) - IPv6 address and subnet to match against.
-  * `greater_than_equal_value` (Integer) - Match IP routes with a subnet mask greater than or equal to the value indicated.
-  * `less_than_equal_value` (Integer) - Match IP routes with a subnet mask less than or equal to the value indicated.
+  * `greater_than_equal_value` (Integer) - Match IP routes with a subnet mask greater than or equal to the value indicated. Set it to `null` to clear it.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
-* `object_properties` (Object) - 
+  * `ipv6_prefix` (String) - IPv6 address and subnet to match against.
+  * `less_than_equal_value` (Integer) - Match IP routes with a subnet mask less than or equal to the value indicated. Set it to `null` to clear it.
+  * `permit_deny` (String) - Action upon match of Community Strings.
+* `object_properties` (Block) - Object properties for the IPv6 Prefix List. At most one block.
   * `notes` (String) - User Notes.
 
 ## Import
 
-IPv6 Prefix Lists can be imported using the name:
+Import an existing object by its `name`:
 
 ```sh
 terraform import verity_ipv6_prefix_list.<resource_name> <name>

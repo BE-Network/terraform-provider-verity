@@ -1,0 +1,7 @@
+{
+  "authenticated_eth_port": {
+    "cov_aep": {
+      "enable": false
+    }
+  }
+}

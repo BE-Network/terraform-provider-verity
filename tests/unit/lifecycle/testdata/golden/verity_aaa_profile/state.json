@@ -1,0 +1,14 @@
+{
+  "enable": "true",
+  "fail_through": "true",
+  "ldap_profile": "",
+  "ldap_profile_ref_type_": "",
+  "login_default.#": "1",
+  "login_default.0.%": "3",
+  "login_default.0.enabled": "true",
+  "login_default.0.index": "1",
+  "login_default.0.login_method": "",
+  "name": "cov_aaa",
+  "tacacs_profile": "",
+  "tacacs_profile_ref_type_": ""
+}

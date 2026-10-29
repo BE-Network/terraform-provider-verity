@@ -1,0 +1,41 @@
+{
+  "endpoint_bundle": {
+    "cov_bundle": {
+      "cli_commands": "",
+      "device_settings": "",
+      "device_settings_ref_type_": "",
+      "diagnostics_profile": "",
+      "diagnostics_profile_ref_type_": "",
+      "enable": true,
+      "eth_port_paths": [
+        {
+          "eth_port_num_diagnostics_port_profile": "",
+          "eth_port_num_diagnostics_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_profile": "",
+          "eth_port_num_eth_port_profile_ref_type_": "",
+          "eth_port_num_eth_port_settings": "",
+          "eth_port_num_eth_port_settings_ref_type_": "",
+          "eth_port_num_gateway_profile": "",
+          "eth_port_num_gateway_profile_ref_type_": "",
+          "index": 1,
+          "port_name": ""
+        }
+      ],
+      "name": "cov_bundle",
+      "object_properties": {
+        "is_for_switch": true
+      },
+      "protocol": "",
+      "user_services": [
+        {
+          "index": 1,
+          "row_app_cli_commands": "",
+          "row_app_connected_service": "",
+          "row_app_connected_service_ref_type_": "",
+          "row_app_enable": true,
+          "row_ip_mask": ""
+        }
+      ]
+    }
+  }
+}

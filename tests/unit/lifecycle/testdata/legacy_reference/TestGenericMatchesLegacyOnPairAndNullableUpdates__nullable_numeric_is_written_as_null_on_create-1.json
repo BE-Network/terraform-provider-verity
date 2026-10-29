@@ -1,0 +1,29 @@
+{
+  "DELETE query": {
+    "diagnostics_profile_name": [
+      "diffp"
+    ]
+  },
+  "PUT": {
+    "diagnostics_profile": {
+      "diffp": {
+        "enable": true,
+        "enable_sflow": true,
+        "erspan_destination_ip": "10.0.0.9",
+        "erspan_dscp": 10,
+        "erspan_gre_type": "0x88be",
+        "erspan_queue": 2,
+        "erspan_ttl": 64,
+        "flow_collector": "collector-a",
+        "flow_collector_ref_type_": "sflow_collector",
+        "monitoring_acl": "acl-a",
+        "monitoring_acl_ref_type_": "monitoring_acl",
+        "name": "diffp",
+        "poll_interval": null,
+        "use_internal_collector": false,
+        "vrf_type": "default"
+      }
+    }
+  },
+  "PUT query": {}
+}

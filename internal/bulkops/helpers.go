@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"reflect"
 	"terraform-provider-verity/internal/utils"
-	"terraform-provider-verity/openapi"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -65,7 +64,6 @@ func (m *Manager) getBatchSize(resourceType, operationType string) int {
 	return 0
 }
 
-// Dynamic function factories that create the appropriate behavior for each resource
 func (m *Manager) createExtractor(resourceType, operationType string) func() (map[string]interface{}, []string) {
 	return func() (map[string]interface{}, []string) {
 		m.mutex.Lock()
@@ -87,7 +85,7 @@ func (m *Manager) createExtractor(resourceType, operationType string) func() (ma
 				originalOperations[k] = v
 				names = append(names, k)
 			}
-			// Clear the unified structure
+
 			res.Put = make(map[string]interface{})
 			return originalOperations, names
 
@@ -101,7 +99,7 @@ func (m *Manager) createExtractor(resourceType, operationType string) func() (ma
 				originalOperations[k] = v
 				names = append(names, k)
 			}
-			// Clear the unified structure
+
 			res.Patch = make(map[string]interface{})
 			return originalOperations, names
 
@@ -115,7 +113,7 @@ func (m *Manager) createExtractor(resourceType, operationType string) func() (ma
 			for _, name := range names {
 				result[name] = true
 			}
-			// Clear the unified structure
+
 			res.Delete = res.Delete[:0]
 			return result, names
 		}
@@ -126,10 +124,13 @@ func (m *Manager) createExtractor(resourceType, operationType string) func() (ma
 
 func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType string) func(context.Context, []string, map[string]interface{}) ([]string, map[string]interface{}, error) {
 	if operationType != "PUT" {
-		return nil // Only PUT operations need pre-existence checking
+		return nil
 	}
 
 	return func(ctx context.Context, resourceNames []string, originalOperations map[string]interface{}) ([]string, map[string]interface{}, error) {
+		if config.GetFunc == nil || config.ResponseCollectionKey == "" {
+			return resourceNames, nil, fmt.Errorf("%s has no pre-existence binding", config.ResourceType)
+		}
 		checker := ResourceExistenceCheck{
 			ResourceType:  config.ResourceType,
 			OperationType: "PUT",
@@ -137,740 +138,22 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 				apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
 				defer cancel()
 
-				switch config.ResourceType {
-				case "gateway":
-					resp, err := m.client.GatewaysAPI.GatewaysGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Gateway map[string]interface{} `json:"gateway"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Gateway, nil
-
-				case "lag":
-					resp, err := m.client.LAGsAPI.LagsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Lag map[string]interface{} `json:"lag"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Lag, nil
-
-				case "tenant":
-					resp, err := m.client.TenantsAPI.TenantsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Tenant map[string]interface{} `json:"tenant"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Tenant, nil
-
-				case "service":
-					resp, err := m.client.ServicesAPI.ServicesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Service map[string]interface{} `json:"service"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Service, nil
-
-				case "gateway_profile":
-					resp, err := m.client.GatewayProfilesAPI.GatewayprofilesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						GatewayProfile map[string]interface{} `json:"gateway_profile"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.GatewayProfile, nil
-
-				case "device_aaa_profile":
-					resp, err := m.client.DeviceAAAProfilesAPI.DeviceaaaprofilesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						DeviceAaaProfile map[string]interface{} `json:"device_aaa_profile"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.DeviceAaaProfile, nil
-
-				case "tacacs_profile":
-					resp, err := m.client.TACACSProfilesAPI.TacacsprofilesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						TacacsProfile map[string]interface{} `json:"tacacs_profile"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.TacacsProfile, nil
-
-				case "ldap_profile":
-					resp, err := m.client.LDAPProfilesAPI.LdapprofilesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						LdapProfile map[string]interface{} `json:"ldap_profile"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.LdapProfile, nil
-
-				case "eth_port_profile":
-					resp, err := m.client.EthPortProfilesAPI.EthportprofilesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						EthPortProfile map[string]interface{} `json:"eth_port_profile_"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.EthPortProfile, nil
-
-				case "eth_port_settings":
-					resp, err := m.client.EthPortSettingsAPI.EthportsettingsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						EthPortSettings map[string]interface{} `json:"eth_port_settings"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.EthPortSettings, nil
-
-				case "device_settings":
-					resp, err := m.client.DeviceSettingsAPI.DevicesettingsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						EthDeviceProfiles map[string]interface{} `json:"eth_device_profiles"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.EthDeviceProfiles, nil
-
-				case "bundle":
-					resp, err := m.client.BundlesAPI.BundlesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Bundle map[string]interface{} `json:"endpoint_bundle"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Bundle, nil
-
-				case "acl":
-					// ACLs require IP version checking - need to check both IPv4 and IPv6
-
-					// Try IPv4
-					resp4, err4 := m.client.ACLsAPI.AclsGet(apiCtx).IpVersion("4").Execute()
-					existingResources := make(map[string]interface{})
-
-					if err4 == nil {
-						defer resp4.Body.Close()
-						var result4 struct {
-							IpFilter map[string]interface{} `json:"ip_filter"`
-						}
-						if err := json.NewDecoder(resp4.Body).Decode(&result4); err == nil {
-							for name, props := range result4.IpFilter {
-								existingResources[name] = props
-							}
-						}
-					}
-
-					// Try IPv6
-					resp6, err6 := m.client.ACLsAPI.AclsGet(apiCtx).IpVersion("6").Execute()
-					if err6 == nil {
-						defer resp6.Body.Close()
-						var result6 struct {
-							IpFilter map[string]interface{} `json:"ip_filter"`
-						}
-						if err := json.NewDecoder(resp6.Body).Decode(&result6); err == nil {
-							for name, props := range result6.IpFilter {
-								existingResources[name] = props
-							}
-						}
-					}
-
-					if err4 != nil && err6 != nil {
-						return nil, err4
-					}
-
-					return existingResources, nil
-
-				case "ipv4_list":
-					resp, err := m.client.IPv4ListFiltersAPI.Ipv4listsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Ipv4ListFilter map[string]interface{} `json:"ipv4_list_filter"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Ipv4ListFilter, nil
-
-				case "ipv4_prefix_list":
-					resp, err := m.client.IPv4PrefixListsAPI.Ipv4prefixlistsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Ipv4PrefixList map[string]interface{} `json:"ipv4_prefix_list"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Ipv4PrefixList, nil
-
-				case "ipv6_list":
-					resp, err := m.client.IPv6ListFiltersAPI.Ipv6listsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Ipv6ListFilter map[string]interface{} `json:"ipv6_list_filter"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Ipv6ListFilter, nil
-
-				case "ipv6_prefix_list":
-					resp, err := m.client.IPv6PrefixListsAPI.Ipv6prefixlistsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Ipv6PrefixList map[string]interface{} `json:"ipv6_prefix_list"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Ipv6PrefixList, nil
-
-				case "authenticated_eth_port":
-					resp, err := m.client.AuthenticatedEthPortsAPI.AuthenticatedethportsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						AuthenticatedEthPort map[string]interface{} `json:"authenticated_eth_port"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.AuthenticatedEthPort, nil
-
-				case "badge":
-					resp, err := m.client.BadgesAPI.BadgesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Badge map[string]interface{} `json:"badge"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Badge, nil
-
-				case "device_voice_settings":
-					resp, err := m.client.DeviceVoiceSettingsAPI.DevicevoicesettingsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						DeviceVoiceSettings map[string]interface{} `json:"device_voice_settings"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.DeviceVoiceSettings, nil
-
-				case "as_path_access_list":
-					resp, err := m.client.ASPathAccessListsAPI.AspathaccesslistsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						AsPathAccessList map[string]interface{} `json:"as_path_access_list"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.AsPathAccessList, nil
-
-				case "community_list":
-					resp, err := m.client.CommunityListsAPI.CommunitylistsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						CommunityList map[string]interface{} `json:"community_list"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.CommunityList, nil
-
-				case "mac_filter":
-					resp, err := m.client.MACFiltersAPI.MacfiltersGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						MacFilter map[string]interface{} `json:"mac_filter"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.MacFilter, nil
-
-				case "extended_community_list":
-					resp, err := m.client.ExtendedCommunityListsAPI.ExtendedcommunitylistsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						ExtendedCommunityList map[string]interface{} `json:"extended_community_list"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.ExtendedCommunityList, nil
-
-				case "route_map_clause":
-					resp, err := m.client.RouteMapClausesAPI.RoutemapclausesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						RouteMapClause map[string]interface{} `json:"route_map_clause"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.RouteMapClause, nil
-
-				case "route_map":
-					resp, err := m.client.RouteMapsAPI.RoutemapsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						RouteMap map[string]interface{} `json:"route_map"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.RouteMap, nil
-
-				case "packet_broker":
-					resp, err := m.client.PacketBrokerAPI.PacketbrokerGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						PacketBroker map[string]interface{} `json:"pb_egress_profile"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.PacketBroker, nil
-
-				case "packet_queue":
-					resp, err := m.client.PacketQueuesAPI.PacketqueuesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						PacketQueue map[string]interface{} `json:"packet_queue"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.PacketQueue, nil
-
-				case "service_port_profile":
-					resp, err := m.client.ServicePortProfilesAPI.ServiceportprofilesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						ServicePortProfile map[string]interface{} `json:"service_port_profile"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.ServicePortProfile, nil
-
-				case "pair":
-					resp, err := m.client.SwitchPairsAPI.PairsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						SwitchPair map[string]interface{} `json:"switch_pair"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.SwitchPair, nil
-
-				case "fabric":
-					resp, err := m.client.FabricsAPI.FabricsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Fabric map[string]interface{} `json:"fabric"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Fabric, nil
-
-				case "plane":
-					resp, err := m.client.PlanesAPI.PlanesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Plane map[string]interface{} `json:"plane"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Plane, nil
-
-				case "switchpoint":
-					resp, err := m.client.SwitchpointsAPI.SwitchpointsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Switchpoint map[string]interface{} `json:"switchpoint"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Switchpoint, nil
-
-				case "voice_port_profile":
-					resp, err := m.client.VoicePortProfilesAPI.VoiceportprofilesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						VoicePortProfile map[string]interface{} `json:"voice_port_profiles"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.VoicePortProfile, nil
-
-				case "pod":
-					resp, err := m.client.PodsAPI.PodsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Pod map[string]interface{} `json:"pod"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Pod, nil
-
-				case "port_acl":
-					resp, err := m.client.PortACLsAPI.PortaclsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						PortAcl map[string]interface{} `json:"port_acl"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.PortAcl, nil
-
-				case "sflow_collector":
-					resp, err := m.client.SFlowCollectorsAPI.SflowcollectorsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						SflowCollector map[string]interface{} `json:"sflow_collector"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.SflowCollector, nil
-
-				case "diagnostics_profile":
-					resp, err := m.client.DiagnosticsProfilesAPI.DiagnosticsprofilesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						DiagnosticsProfile map[string]interface{} `json:"diagnostics_profile"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.DiagnosticsProfile, nil
-
-				case "diagnostics_port_profile":
-					resp, err := m.client.DiagnosticsPortProfilesAPI.DiagnosticsportprofilesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						DiagnosticsPortProfile map[string]interface{} `json:"diagnostics_port_profile"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.DiagnosticsPortProfile, nil
-
-				case "pb_routing":
-					resp, err := m.client.PBRoutingAPI.PolicybasedroutingGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						PbRouting map[string]interface{} `json:"pb_routing"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.PbRouting, nil
-
-				case "pb_routing_acl":
-					resp, err := m.client.PBRoutingACLAPI.PolicybasedroutingaclGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						PbRoutingAcl map[string]interface{} `json:"pb_routing_acl"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.PbRoutingAcl, nil
-
-				case "spine_plane":
-					resp, err := m.client.SpinePlanesAPI.SpineplanesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						SpinePlane map[string]interface{} `json:"spine_plane"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.SpinePlane, nil
-
-				case "ssp_group":
-					resp, err := m.client.SuperSpineGroupsAPI.SspgroupsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						SuperspineGroup map[string]interface{} `json:"superspine_group"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.SuperspineGroup, nil
-
-				case "su":
-					resp, err := m.client.SUsAPI.SusGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Su map[string]interface{} `json:"su"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Su, nil
-
-				case "grouping_rule":
-					resp, err := m.client.GroupingRulesAPI.GroupingrulesGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						GroupingRule map[string]interface{} `json:"grouping_rule"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.GroupingRule, nil
-
-				case "threshold_group":
-					resp, err := m.client.ThresholdGroupsAPI.ThresholdgroupsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						ThresholdGroup map[string]interface{} `json:"threshold_group"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.ThresholdGroup, nil
-
-				case "threshold":
-					resp, err := m.client.ThresholdsAPI.ThresholdsGet(apiCtx).Execute()
-					if err != nil {
-						return nil, err
-					}
-					defer resp.Body.Close()
-
-					var result struct {
-						Threshold map[string]interface{} `json:"threshold"`
-					}
-					if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-						return nil, err
-					}
-					return result.Threshold, nil
-
-				default:
-					// For unknown resource types, assume no existing resources to avoid errors
-					return make(map[string]interface{}), nil
+				resp, err := config.GetFunc(m.client, apiCtx)
+				if err != nil {
+					return nil, err
 				}
+				defer resp.Body.Close()
+				var result map[string]json.RawMessage
+				if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+					return nil, err
+				}
+				var resources map[string]interface{}
+				if data, exists := result[config.ResponseCollectionKey]; exists {
+					if err := json.Unmarshal(data, &resources); err != nil {
+						return nil, err
+					}
+				}
+				return resources, nil
 			},
 		}
 
@@ -891,413 +174,9 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 }
 
 func (m *Manager) createRequestPreparer(config ResourceConfig, operationType string) func(map[string]interface{}) interface{} {
-	return func(filteredData map[string]interface{}) interface{} {
-		// Handle DELETE operations
-		if operationType == "DELETE" {
-			names := make([]string, 0, len(filteredData))
-			for name := range filteredData {
-				names = append(names, name)
-			}
-			return names
-		}
-
-		// Handle PUT and PATCH operations
-		switch config.ResourceType {
-		case "gateway":
-			putRequest := openapi.NewGatewaysPutRequest()
-			gatewayMap := make(map[string]openapi.GatewaysPutRequestGatewayValue)
-			for name, props := range filteredData {
-				gatewayMap[name] = props.(openapi.GatewaysPutRequestGatewayValue)
-			}
-			putRequest.SetGateway(gatewayMap)
-			return putRequest
-		case "lag":
-			putRequest := openapi.NewLagsPutRequest()
-			lagMap := make(map[string]openapi.LagsPutRequestLagValue)
-			for name, props := range filteredData {
-				lagMap[name] = props.(openapi.LagsPutRequestLagValue)
-			}
-			putRequest.SetLag(lagMap)
-			return putRequest
-		case "tenant":
-			putRequest := openapi.NewTenantsPutRequest()
-			tenantMap := make(map[string]openapi.TenantsPutRequestTenantValue)
-			for name, props := range filteredData {
-				tenantMap[name] = props.(openapi.TenantsPutRequestTenantValue)
-			}
-			putRequest.SetTenant(tenantMap)
-			return putRequest
-		case "service":
-			putRequest := openapi.NewServicesPutRequest()
-			serviceMap := make(map[string]openapi.ServicesPutRequestServiceValue)
-			for name, props := range filteredData {
-				serviceMap[name] = props.(openapi.ServicesPutRequestServiceValue)
-			}
-			putRequest.SetService(serviceMap)
-			return putRequest
-		case "gateway_profile":
-			putRequest := openapi.NewGatewayprofilesPutRequest()
-			profileMap := make(map[string]openapi.GatewayprofilesPutRequestGatewayProfileValue)
-			for name, props := range filteredData {
-				profileMap[name] = props.(openapi.GatewayprofilesPutRequestGatewayProfileValue)
-			}
-			putRequest.SetGatewayProfile(profileMap)
-			return putRequest
-		case "device_aaa_profile":
-			putRequest := openapi.NewDeviceaaaprofilesPutRequest()
-			profileMap := make(map[string]openapi.DeviceaaaprofilesPutRequestDeviceAaaProfileValue)
-			for name, props := range filteredData {
-				profileMap[name] = props.(openapi.DeviceaaaprofilesPutRequestDeviceAaaProfileValue)
-			}
-			putRequest.SetDeviceAaaProfile(profileMap)
-			return putRequest
-		case "tacacs_profile":
-			putRequest := openapi.NewTacacsprofilesPutRequest()
-			profileMap := make(map[string]openapi.TacacsprofilesPutRequestTacacsProfileValue)
-			for name, props := range filteredData {
-				profileMap[name] = props.(openapi.TacacsprofilesPutRequestTacacsProfileValue)
-			}
-			putRequest.SetTacacsProfile(profileMap)
-			return putRequest
-		case "ldap_profile":
-			putRequest := openapi.NewLdapprofilesPutRequest()
-			profileMap := make(map[string]openapi.LdapprofilesPutRequestLdapProfileValue)
-			for name, props := range filteredData {
-				profileMap[name] = props.(openapi.LdapprofilesPutRequestLdapProfileValue)
-			}
-			putRequest.SetLdapProfile(profileMap)
-			return putRequest
-		case "eth_port_profile":
-			putRequest := openapi.NewEthportprofilesPutRequest()
-			profileMap := make(map[string]openapi.EthportprofilesPutRequestEthPortProfileValue)
-			for name, props := range filteredData {
-				profileMap[name] = props.(openapi.EthportprofilesPutRequestEthPortProfileValue)
-			}
-			putRequest.SetEthPortProfile(profileMap)
-			return putRequest
-		case "eth_port_settings":
-			putRequest := openapi.NewEthportsettingsPutRequest()
-			settingsMap := make(map[string]openapi.EthportsettingsPutRequestEthPortSettingsValue)
-			for name, props := range filteredData {
-				settingsMap[name] = props.(openapi.EthportsettingsPutRequestEthPortSettingsValue)
-			}
-			putRequest.SetEthPortSettings(settingsMap)
-			return putRequest
-		case "device_settings":
-			putRequest := openapi.NewDevicesettingsPutRequest()
-			settingsMap := make(map[string]openapi.DevicesettingsPutRequestEthDeviceProfilesValue)
-			for name, props := range filteredData {
-				settingsMap[name] = props.(openapi.DevicesettingsPutRequestEthDeviceProfilesValue)
-			}
-			putRequest.SetEthDeviceProfiles(settingsMap)
-			return putRequest
-		case "bundle":
-			putRequest := openapi.NewBundlesPutRequest()
-			bundleMap := make(map[string]openapi.BundlesPutRequestEndpointBundleValue)
-			for name, props := range filteredData {
-				bundleMap[name] = props.(openapi.BundlesPutRequestEndpointBundleValue)
-			}
-			putRequest.SetEndpointBundle(bundleMap)
-			return putRequest
-		case "acl":
-			putRequest := openapi.NewAclsPutRequest()
-			aclMap := make(map[string]openapi.AclsPutRequestIpFilterValue)
-			for name, props := range filteredData {
-				aclMap[name] = props.(openapi.AclsPutRequestIpFilterValue)
-			}
-			putRequest.SetIpFilter(aclMap)
-			return putRequest
-		case "ipv4_list":
-			putRequest := openapi.NewIpv4listsPutRequest()
-			ipv4Map := make(map[string]openapi.Ipv4listsPutRequestIpv4ListFilterValue)
-			for name, props := range filteredData {
-				ipv4Map[name] = props.(openapi.Ipv4listsPutRequestIpv4ListFilterValue)
-			}
-			putRequest.SetIpv4ListFilter(ipv4Map)
-			return putRequest
-		case "ipv4_prefix_list":
-			putRequest := openapi.NewIpv4prefixlistsPutRequest()
-			ipv4PrefixMap := make(map[string]openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue)
-			for name, props := range filteredData {
-				ipv4PrefixMap[name] = props.(openapi.Ipv4prefixlistsPutRequestIpv4PrefixListValue)
-			}
-			putRequest.SetIpv4PrefixList(ipv4PrefixMap)
-			return putRequest
-		case "ipv6_list":
-			putRequest := openapi.NewIpv6listsPutRequest()
-			ipv6Map := make(map[string]openapi.Ipv6listsPutRequestIpv6ListFilterValue)
-			for name, props := range filteredData {
-				ipv6Map[name] = props.(openapi.Ipv6listsPutRequestIpv6ListFilterValue)
-			}
-			putRequest.SetIpv6ListFilter(ipv6Map)
-			return putRequest
-		case "ipv6_prefix_list":
-			putRequest := openapi.NewIpv6prefixlistsPutRequest()
-			ipv6PrefixMap := make(map[string]openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue)
-			for name, props := range filteredData {
-				ipv6PrefixMap[name] = props.(openapi.Ipv6prefixlistsPutRequestIpv6PrefixListValue)
-			}
-			putRequest.SetIpv6PrefixList(ipv6PrefixMap)
-			return putRequest
-		case "authenticated_eth_port":
-			putRequest := openapi.NewAuthenticatedethportsPutRequest()
-			portMap := make(map[string]openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue)
-			for name, props := range filteredData {
-				portMap[name] = props.(openapi.AuthenticatedethportsPutRequestAuthenticatedEthPortValue)
-			}
-			putRequest.SetAuthenticatedEthPort(portMap)
-			return putRequest
-		case "badge":
-			putRequest := openapi.NewBadgesPutRequest()
-			badgeMap := make(map[string]openapi.BadgesPutRequestBadgeValue)
-			for name, props := range filteredData {
-				badgeMap[name] = props.(openapi.BadgesPutRequestBadgeValue)
-			}
-			putRequest.SetBadge(badgeMap)
-			return putRequest
-		case "device_voice_settings":
-			putRequest := openapi.NewDevicevoicesettingsPutRequest()
-			settingsMap := make(map[string]openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)
-			for name, props := range filteredData {
-				settingsMap[name] = props.(openapi.DevicevoicesettingsPutRequestDeviceVoiceSettingsValue)
-			}
-			putRequest.SetDeviceVoiceSettings(settingsMap)
-			return putRequest
-		case "as_path_access_list":
-			putRequest := openapi.NewAspathaccesslistsPutRequest()
-			asPathMap := make(map[string]openapi.AspathaccesslistsPutRequestAsPathAccessListValue)
-			for name, props := range filteredData {
-				asPathMap[name] = props.(openapi.AspathaccesslistsPutRequestAsPathAccessListValue)
-			}
-			putRequest.SetAsPathAccessList(asPathMap)
-			return putRequest
-		case "community_list":
-			putRequest := openapi.NewCommunitylistsPutRequest()
-			communityMap := make(map[string]openapi.CommunitylistsPutRequestCommunityListValue)
-			for name, props := range filteredData {
-				communityMap[name] = props.(openapi.CommunitylistsPutRequestCommunityListValue)
-			}
-			putRequest.SetCommunityList(communityMap)
-			return putRequest
-		case "mac_filter":
-			putRequest := openapi.NewMacfiltersPutRequest()
-			macFilterMap := make(map[string]openapi.MacfiltersPutRequestMacFilterValue)
-			for name, props := range filteredData {
-				macFilterMap[name] = props.(openapi.MacfiltersPutRequestMacFilterValue)
-			}
-			putRequest.SetMacFilter(macFilterMap)
-			return putRequest
-		case "extended_community_list":
-			putRequest := openapi.NewExtendedcommunitylistsPutRequest()
-			extCommunityMap := make(map[string]openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue)
-			for name, props := range filteredData {
-				extCommunityMap[name] = props.(openapi.ExtendedcommunitylistsPutRequestExtendedCommunityListValue)
-			}
-			putRequest.SetExtendedCommunityList(extCommunityMap)
-			return putRequest
-		case "route_map_clause":
-			putRequest := openapi.NewRoutemapclausesPutRequest()
-			routeMapClauseMap := make(map[string]openapi.RoutemapclausesPutRequestRouteMapClauseValue)
-			for name, props := range filteredData {
-				routeMapClauseMap[name] = props.(openapi.RoutemapclausesPutRequestRouteMapClauseValue)
-			}
-			putRequest.SetRouteMapClause(routeMapClauseMap)
-			return putRequest
-		case "route_map":
-			putRequest := openapi.NewRoutemapsPutRequest()
-			routeMapMap := make(map[string]openapi.RoutemapsPutRequestRouteMapValue)
-			for name, props := range filteredData {
-				routeMapMap[name] = props.(openapi.RoutemapsPutRequestRouteMapValue)
-			}
-			putRequest.SetRouteMap(routeMapMap)
-			return putRequest
-		case "sfp_breakout":
-			// SFP Breakouts only support PATCH operations
-			patchRequest := openapi.NewSfpbreakoutsPatchRequest()
-			sfpMap := make(map[string]openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue)
-			for name, props := range filteredData {
-				sfpMap[name] = props.(openapi.SfpbreakoutsPatchRequestSfpBreakoutsValue)
-			}
-			patchRequest.SetSfpBreakouts(sfpMap)
-			return patchRequest
-		case "fabric":
-			putRequest := openapi.NewFabricsPutRequest()
-			fabricMap := make(map[string]openapi.FabricsPutRequestFabricValue)
-			for name, props := range filteredData {
-				fabricMap[name] = props.(openapi.FabricsPutRequestFabricValue)
-			}
-			putRequest.SetFabric(fabricMap)
-			return putRequest
-		case "plane":
-			putRequest := openapi.NewPlanesPutRequest()
-			planeMap := make(map[string]openapi.PlanesPutRequestPlaneValue)
-			for name, props := range filteredData {
-				planeMap[name] = props.(openapi.PlanesPutRequestPlaneValue)
-			}
-			putRequest.SetPlane(planeMap)
-			return putRequest
-		case "rack":
-			putRequest := openapi.NewRacksPutRequest()
-			rackMap := make(map[string]openapi.RacksPutRequestRackValue)
-			for name, props := range filteredData {
-				rackMap[name] = props.(openapi.RacksPutRequestRackValue)
-			}
-			putRequest.SetRack(rackMap)
-			return putRequest
-		case "pair":
-			putRequest := openapi.NewPairsPutRequest()
-			pairMap := make(map[string]openapi.PairsPutRequestSwitchPairValue)
-			for name, props := range filteredData {
-				pairMap[name] = props.(openapi.PairsPutRequestSwitchPairValue)
-			}
-			putRequest.SetSwitchPair(pairMap)
-			return putRequest
-		case "packet_broker":
-			putRequest := openapi.NewPacketbrokerPutRequest()
-			brokerMap := make(map[string]openapi.PacketbrokerPutRequestPbEgressProfileValue)
-			for name, props := range filteredData {
-				brokerMap[name] = props.(openapi.PacketbrokerPutRequestPbEgressProfileValue)
-			}
-			putRequest.SetPbEgressProfile(brokerMap)
-			return putRequest
-		case "packet_queue":
-			putRequest := openapi.NewPacketqueuesPutRequest()
-			queueMap := make(map[string]openapi.PacketqueuesPutRequestPacketQueueValue)
-			for name, props := range filteredData {
-				queueMap[name] = props.(openapi.PacketqueuesPutRequestPacketQueueValue)
-			}
-			putRequest.SetPacketQueue(queueMap)
-			return putRequest
-		case "service_port_profile":
-			putRequest := openapi.NewServiceportprofilesPutRequest()
-			profileMap := make(map[string]openapi.ServiceportprofilesPutRequestServicePortProfileValue)
-			for name, props := range filteredData {
-				profileMap[name] = props.(openapi.ServiceportprofilesPutRequestServicePortProfileValue)
-			}
-			putRequest.SetServicePortProfile(profileMap)
-			return putRequest
-		case "switchpoint":
-			putRequest := openapi.NewSwitchpointsPutRequest()
-			switchpointMap := make(map[string]openapi.SwitchpointsPutRequestSwitchpointValue)
-			for name, props := range filteredData {
-				switchpointMap[name] = props.(openapi.SwitchpointsPutRequestSwitchpointValue)
-			}
-			putRequest.SetSwitchpoint(switchpointMap)
-			return putRequest
-		case "voice_port_profile":
-			putRequest := openapi.NewVoiceportprofilesPutRequest()
-			profileMap := make(map[string]openapi.VoiceportprofilesPutRequestVoicePortProfilesValue)
-			for name, props := range filteredData {
-				profileMap[name] = props.(openapi.VoiceportprofilesPutRequestVoicePortProfilesValue)
-			}
-			putRequest.SetVoicePortProfiles(profileMap)
-			return putRequest
-		case "pod":
-			putRequest := openapi.NewPodsPutRequest()
-			podMap := make(map[string]openapi.PodsPutRequestPodValue)
-			for name, props := range filteredData {
-				podMap[name] = props.(openapi.PodsPutRequestPodValue)
-			}
-			putRequest.SetPod(podMap)
-			return putRequest
-		case "port_acl":
-			putRequest := openapi.NewPortaclsPutRequest()
-			portAclMap := make(map[string]openapi.PortaclsPutRequestPortAclValue)
-			for name, props := range filteredData {
-				portAclMap[name] = props.(openapi.PortaclsPutRequestPortAclValue)
-			}
-			putRequest.SetPortAcl(portAclMap)
-			return putRequest
-		case "sflow_collector":
-			putRequest := openapi.NewSflowcollectorsPutRequest()
-			sflowMap := make(map[string]openapi.SflowcollectorsPutRequestSflowCollectorValue)
-			for name, props := range filteredData {
-				sflowMap[name] = props.(openapi.SflowcollectorsPutRequestSflowCollectorValue)
-			}
-			putRequest.SetSflowCollector(sflowMap)
-			return putRequest
-		case "diagnostics_profile":
-			putRequest := openapi.NewDiagnosticsprofilesPutRequest()
-			diagnosticsMap := make(map[string]openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue)
-			for name, props := range filteredData {
-				diagnosticsMap[name] = props.(openapi.DiagnosticsprofilesPutRequestDiagnosticsProfileValue)
-			}
-			putRequest.SetDiagnosticsProfile(diagnosticsMap)
-			return putRequest
-		case "diagnostics_port_profile":
-			putRequest := openapi.NewDiagnosticsportprofilesPutRequest()
-			diagnosticsPortMap := make(map[string]openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue)
-			for name, props := range filteredData {
-				diagnosticsPortMap[name] = props.(openapi.DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue)
-			}
-			putRequest.SetDiagnosticsPortProfile(diagnosticsPortMap)
-			return putRequest
-		case "pb_routing":
-			putRequest := openapi.NewPolicybasedroutingPutRequest()
-			pbRoutingMap := make(map[string]openapi.PolicybasedroutingPutRequestPbRoutingValue)
-			for name, props := range filteredData {
-				pbRoutingMap[name] = props.(openapi.PolicybasedroutingPutRequestPbRoutingValue)
-			}
-			putRequest.SetPbRouting(pbRoutingMap)
-			return putRequest
-		case "pb_routing_acl":
-			putRequest := openapi.NewPolicybasedroutingaclPutRequest()
-			pbRoutingAclMap := make(map[string]openapi.PolicybasedroutingaclPutRequestPbRoutingAclValue)
-			for name, props := range filteredData {
-				pbRoutingAclMap[name] = props.(openapi.PolicybasedroutingaclPutRequestPbRoutingAclValue)
-			}
-			putRequest.SetPbRoutingAcl(pbRoutingAclMap)
-			return putRequest
-		case "spine_plane":
-			putRequest := openapi.NewSpineplanesPutRequest()
-			spinePlaneMap := make(map[string]openapi.SpineplanesPutRequestSpinePlaneValue)
-			for name, props := range filteredData {
-				spinePlaneMap[name] = props.(openapi.SpineplanesPutRequestSpinePlaneValue)
-			}
-			putRequest.SetSpinePlane(spinePlaneMap)
-			return putRequest
-		case "ssp_group":
-			putRequest := openapi.NewSspgroupsPutRequest()
-			sspGroupMap := make(map[string]openapi.SspgroupsPutRequestSuperspineGroupValue)
-			for name, props := range filteredData {
-				sspGroupMap[name] = props.(openapi.SspgroupsPutRequestSuperspineGroupValue)
-			}
-			putRequest.SetSuperspineGroup(sspGroupMap)
-			return putRequest
-		case "su":
-			putRequest := openapi.NewSusPutRequest()
-			suMap := make(map[string]openapi.SusPutRequestSuValue)
-			for name, props := range filteredData {
-				suMap[name] = props.(openapi.SusPutRequestSuValue)
-			}
-			putRequest.SetSu(suMap)
-			return putRequest
-		case "grouping_rule":
-			putRequest := openapi.NewGroupingrulesPutRequest()
-			groupingRuleMap := make(map[string]openapi.GroupingrulesPutRequestGroupingRulesValue)
-			for name, props := range filteredData {
-				groupingRuleMap[name] = props.(openapi.GroupingrulesPutRequestGroupingRulesValue)
-			}
-			putRequest.SetGroupingRules(groupingRuleMap)
-			return putRequest
-		case "threshold_group":
-			putRequest := openapi.NewThresholdgroupsPutRequest()
-			thresholdGroupMap := make(map[string]openapi.ThresholdgroupsPutRequestThresholdGroupValue)
-			for name, props := range filteredData {
-				thresholdGroupMap[name] = props.(openapi.ThresholdgroupsPutRequestThresholdGroupValue)
-			}
-			putRequest.SetThresholdGroup(thresholdGroupMap)
-			return putRequest
-		case "threshold":
-			putRequest := openapi.NewThresholdsPutRequest()
-			thresholdMap := make(map[string]openapi.ThresholdsPutRequestThresholdValue)
-			for name, props := range filteredData {
-				thresholdMap[name] = props.(openapi.ThresholdsPutRequestThresholdValue)
-			}
-			putRequest.SetThreshold(thresholdMap)
-			return putRequest
-		}
-		return nil
+	return func(data map[string]interface{}) interface{} {
+		request, _ := m.createRequestPreparerWithError(config, operationType)(data)
+		return request
 	}
 }
 
@@ -1318,19 +197,14 @@ func (m *Manager) createRequestExecutor(config ResourceConfig, operationType str
 }
 
 func (m *Manager) createResponseProcessor(config ResourceConfig, operationType string) func(context.Context, *http.Response, map[string]interface{}) error {
-	// Unified processor with nil headers for standard resources
+
 	return m.createResponseProcessorWithHeaders(config, operationType, nil)
 }
 
-// createHeaderAwareResponseProcessor creates a response processor for header-split resources
-// (ACLs with ip_version header)
 func (m *Manager) createHeaderAwareResponseProcessor(config ResourceConfig, operationType string, headers map[string]string) func(context.Context, *http.Response, map[string]interface{}) error {
 	return m.createResponseProcessorWithHeaders(config, operationType, headers)
 }
 
-// createResponseProcessorWithHeaders is a unified response processor that handles both
-// standard resources and header-split resources (like ACLs with ip_version).
-// When headers is nil, it uses GetFunc; when headers is provided, it uses HeaderGetFunc.
 func (m *Manager) createResponseProcessorWithHeaders(config ResourceConfig, operationType string, headers map[string]string) func(context.Context, *http.Response, map[string]interface{}) error {
 	return func(ctx context.Context, resp *http.Response, operations map[string]interface{}) error {
 		delayTime := ResponseProcessorDelay
@@ -1355,9 +229,6 @@ func (m *Manager) createResponseProcessorWithHeaders(config ResourceConfig, oper
 	}
 }
 
-// fetchVerifyAndCacheResourceResponse retries a successful-but-incomplete verification
-// response. This is deliberately separate from transport retries: it addresses backend
-// propagation, not an unsuccessful GET.
 func (m *Manager) fetchVerifyAndCacheResourceResponse(fetchCtx context.Context, logCtx context.Context, config ResourceConfig, res *ResourceOperations, headers map[string]string, operationType string, operations map[string]interface{}) error {
 	resourceData, err := m.fetchResourceResponse(fetchCtx, logCtx, config, headers)
 	if err != nil {
@@ -1387,20 +258,19 @@ func (m *Manager) fetchVerifyAndCacheResourceResponse(fetchCtx context.Context, 
 	return nil
 }
 
-// fetchResourceResponse fetches and extracts resource data without modifying the cache.
 func (m *Manager) fetchResourceResponse(fetchCtx context.Context, logCtx context.Context, config ResourceConfig, headers map[string]string) (map[string]interface{}, error) {
 	var getResp *http.Response
 	var fetchErr error
 
 	if headers != nil {
-		// Header-aware fetch for resources like ACLs with ip_version
+
 		if config.HeaderGetFunc == nil {
 			tflog.Debug(logCtx, fmt.Sprintf("No HeaderGetFunc defined for %s, skipping response caching", config.ResourceType))
 			return nil, nil
 		}
 		getResp, fetchErr = config.HeaderGetFunc(m.client, fetchCtx, headers)
 	} else {
-		// Standard fetch for regular resources
+
 		if config.GetFunc == nil {
 			tflog.Debug(logCtx, fmt.Sprintf("No GetFunc defined for %s, skipping response caching", config.ResourceType))
 			return nil, nil
@@ -1418,7 +288,6 @@ func (m *Manager) fetchResourceResponse(fetchCtx context.Context, logCtx context
 	}
 	defer getResp.Body.Close()
 
-	// Decode the response as raw JSON
 	var rawResponse map[string]interface{}
 	if respErr := json.NewDecoder(getResp.Body).Decode(&rawResponse); respErr != nil {
 		tflog.Error(logCtx, fmt.Sprintf("Failed to decode %s response", config.ResourceType), map[string]interface{}{
@@ -1427,7 +296,6 @@ func (m *Manager) fetchResourceResponse(fetchCtx context.Context, logCtx context
 		return nil, respErr
 	}
 
-	// Extract resource data - use HeaderResponseExtractor if available and headers provided
 	var resourceData map[string]interface{}
 	if headers != nil && config.HeaderResponseExtractor != nil {
 		var err error
@@ -1439,8 +307,8 @@ func (m *Manager) fetchResourceResponse(fetchCtx context.Context, logCtx context
 			return nil, err
 		}
 	} else {
-		// Standard JSON key lookup
-		jsonKey := utils.GetResourceJSONKey(config.ResourceType)
+
+		jsonKey := utils.ResponseCollectionKeyForBulkKey(config.ResourceType)
 		if jsonKey == "" {
 			tflog.Warn(logCtx, fmt.Sprintf("No JSON key mapping found for resource type: %s", config.ResourceType))
 			return nil, nil
@@ -1455,14 +323,13 @@ func (m *Manager) fetchResourceResponse(fetchCtx context.Context, logCtx context
 	return resourceData, nil
 }
 
-// cacheResourceResponse stores the final verification response.
 func (m *Manager) cacheResourceResponse(logCtx context.Context, config ResourceConfig, res *ResourceOperations, headers map[string]string, resourceData map[string]interface{}) {
-	// Cache the response data
+
 	res.ResponsesMutex.Lock()
 	for resourceName, data := range resourceData {
 		if resourceMap, ok := data.(map[string]interface{}); ok {
 			res.Responses[resourceName] = resourceMap
-			// Also cache by name field if different from key
+
 			if name, nameOk := resourceMap["name"].(string); nameOk && name != resourceName {
 				res.Responses[name] = resourceMap
 			}
@@ -1482,14 +349,9 @@ func (m *Manager) cacheResourceResponse(logCtx context.Context, config ResourceC
 
 }
 
-// missingSubmittedResponseKeys compares the JSON shape actually sent to the API with
-// the raw verification response. A JSON null is intentionally not expected: it was
-// not a non-null submitted value and must not cause a readiness retry.
 func missingSubmittedResponseKeys(operations map[string]interface{}, resourceData map[string]interface{}) map[string][]string {
 	missing := make(map[string][]string)
-	// Responses are normally keyed by name, but some endpoints use an API map
-	// key that differs from the object's name. Match cacheResourceResponse's
-	// alias behavior so that does not cause pointless readiness retries.
+
 	responseByName := make(map[string]map[string]interface{}, len(resourceData))
 	for responseKey, data := range resourceData {
 		response, ok := data.(map[string]interface{})
@@ -1504,8 +366,7 @@ func missingSubmittedResponseKeys(operations map[string]interface{}, resourceDat
 	for name, operation := range operations {
 		encoded, err := json.Marshal(operation)
 		if err != nil {
-			// The request was already successfully serialized and sent. Do not turn an
-			// unexpected diagnostic serialization failure into a post-operation failure.
+
 			continue
 		}
 
@@ -1542,7 +403,6 @@ func (m *Manager) createRecentOpsUpdater(resourceType string) func() {
 	}
 }
 
-// FilterPreExistingResources filters out resources that already exist in the system.
 func (m *Manager) FilterPreExistingResources(
 	ctx context.Context,
 	resourceNames []string,
@@ -1560,17 +420,16 @@ func (m *Manager) FilterPreExistingResources(
 
 	for _, name := range resourceNames {
 		if _, exists := existingResources[name]; exists {
-			// Resource already exists
+
 			alreadyExistingResources[name] = true
 			tflog.Info(ctx, fmt.Sprintf("Skipping creation of %s '%s' as it already exists",
 				checker.ResourceType, name))
 		} else {
-			// Resource doesn't exist - add to filtered list
+
 			notExistingResources = append(notExistingResources, name)
 		}
 	}
 
-	// Update operation tracking for already existing resources
 	if len(alreadyExistingResources) > 0 {
 		m.operationMutex.Lock()
 		defer m.operationMutex.Unlock()
@@ -1579,7 +438,7 @@ func (m *Manager) FilterPreExistingResources(
 			if op.ResourceType == checker.ResourceType &&
 				op.OperationType == checker.OperationType &&
 				alreadyExistingResources[op.ResourceName] {
-				// Mark operation as successful
+
 				updatedOp := *op
 				updatedOp.Status = OperationSucceeded
 				m.pendingOperations[opID] = &updatedOp

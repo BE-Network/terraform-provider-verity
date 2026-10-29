@@ -1,0 +1,7 @@
+{
+  "packet_queue": {
+    "cov_pq": {
+      "enable": false
+    }
+  }
+}

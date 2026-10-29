@@ -1,7 +1,7 @@
 /*
-Verity API
+Manager system API
 
-This application demonstrates the usage of Verity API.
+This application demonstrates the usage of Manager system API.
 
 API version: 6.6
 */
@@ -40,7 +40,7 @@ var (
 	queryDescape    = strings.NewReplacer("%5B", "[", "%5D", "]")
 )
 
-// APIClient manages communication with the Verity API API v6.6
+// APIClient manages communication with the Manager system API API v6.6
 // In most cases there should be only one, shared, APIClient.
 type APIClient struct {
 	cfg    *Configuration
@@ -78,6 +78,8 @@ type APIClient struct {
 
 	ExtendedCommunityListsAPI *ExtendedCommunityListsAPIService
 
+	FabricCollectionsAPI *FabricCollectionsAPIService
+
 	FabricsAPI *FabricsAPIService
 
 	GatewayProfilesAPI *GatewayProfilesAPIService
@@ -101,6 +103,10 @@ type APIClient struct {
 	LDAPProfilesAPI *LDAPProfilesAPIService
 
 	MACFiltersAPI *MACFiltersAPIService
+
+	MonitoringACLsAPI *MonitoringACLsAPIService
+
+	NACPortProfilesAPI *NACPortProfilesAPIService
 
 	PBRoutingAPI *PBRoutingAPIService
 
@@ -184,6 +190,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.EthPortProfilesAPI = (*EthPortProfilesAPIService)(&c.common)
 	c.EthPortSettingsAPI = (*EthPortSettingsAPIService)(&c.common)
 	c.ExtendedCommunityListsAPI = (*ExtendedCommunityListsAPIService)(&c.common)
+	c.FabricCollectionsAPI = (*FabricCollectionsAPIService)(&c.common)
 	c.FabricsAPI = (*FabricsAPIService)(&c.common)
 	c.GatewayProfilesAPI = (*GatewayProfilesAPIService)(&c.common)
 	c.GatewaysAPI = (*GatewaysAPIService)(&c.common)
@@ -196,6 +203,8 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.LAGsAPI = (*LAGsAPIService)(&c.common)
 	c.LDAPProfilesAPI = (*LDAPProfilesAPIService)(&c.common)
 	c.MACFiltersAPI = (*MACFiltersAPIService)(&c.common)
+	c.MonitoringACLsAPI = (*MonitoringACLsAPIService)(&c.common)
+	c.NACPortProfilesAPI = (*NACPortProfilesAPIService)(&c.common)
 	c.PBRoutingAPI = (*PBRoutingAPIService)(&c.common)
 	c.PBRoutingACLAPI = (*PBRoutingACLAPIService)(&c.common)
 	c.PacketBrokerAPI = (*PacketBrokerAPIService)(&c.common)
@@ -398,38 +407,32 @@ func parameterToJson(obj interface{}) (string, error) {
 
 // callAPI do the request.
 func (c *APIClient) callAPI(request *http.Request) (*http.Response, error) {
+	isAuthRequest := strings.HasSuffix(request.URL.Path, "/auth") || strings.Contains(request.URL.Path, "/auth/")
 	if c.cfg.Debug {
-		isAuthRequest := strings.HasSuffix(request.URL.Path, "/auth") || strings.Contains(request.URL.Path, "/auth/")
-
+		debugRequest := request.Clone(request.Context())
+		for _, name := range []string{"Authorization", "Proxy-Authorization", "Cookie"} {
+			if debugRequest.Header.Get(name) != "" {
+				debugRequest.Header.Set(name, "[REDACTED]")
+			}
+		}
+		if debugRequest.URL.User != nil {
+			debugRequest.URL.User = url.User("[REDACTED]")
+		}
+		if !isAuthRequest && request.Body != nil {
+			body, err := io.ReadAll(request.Body)
+			if err != nil {
+				return nil, err
+			}
+			request.Body = io.NopCloser(bytes.NewReader(body))
+			debugRequest.Body = io.NopCloser(bytes.NewReader(body))
+		}
+		dump, err := httputil.DumpRequestOut(debugRequest, !isAuthRequest)
+		if err != nil {
+			return nil, err
+		}
+		log.Printf("\n%s\n", string(dump))
 		if isAuthRequest {
-			// For auth requests, create a buffer to read the body
-			var bodyBytes []byte
-			if request.Body != nil {
-				bodyBytes, _ = io.ReadAll(request.Body)
-				// Restore the body for the actual request
-				request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-			}
-
-			// Generate debug output without the body content
-			dump, err := httputil.DumpRequestOut(request, false)
-			if err != nil {
-				return nil, err
-			}
-			log.Printf("\n%s\n[REDACTED AUTH REQUEST BODY]\n", string(dump))
-		} else {
-			// Normal debug output for non-auth requests
-			var bodyBytes []byte
-			if request.Body != nil {
-				bodyBytes, _ = io.ReadAll(request.Body)
-				// Restore the body for the actual request
-				request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-			}
-
-			dump, err := httputil.DumpRequestOut(request, true)
-			if err != nil {
-				return nil, err
-			}
-			log.Printf("\n%s\n", string(dump))
+			log.Printf("[REDACTED AUTH REQUEST BODY]\n")
 		}
 	}
 
@@ -437,15 +440,23 @@ func (c *APIClient) callAPI(request *http.Request) (*http.Response, error) {
 	if err != nil {
 		return resp, err
 	}
-
 	if c.cfg.Debug {
-		dump, err := httputil.DumpResponse(resp, true)
+		debugResponse := *resp
+		debugResponse.Header = resp.Header.Clone()
+		if debugResponse.Header.Get("Set-Cookie") != "" {
+			debugResponse.Header.Set("Set-Cookie", "[REDACTED]")
+		}
+		dump, err := httputil.DumpResponse(&debugResponse, !isAuthRequest)
+		resp.Body = debugResponse.Body
 		if err != nil {
 			return resp, err
 		}
 		log.Printf("\n%s\n", string(dump))
+		if isAuthRequest {
+			log.Printf("[REDACTED AUTH RESPONSE BODY]\n")
+		}
 	}
-	return resp, err
+	return resp, nil
 }
 
 // Allow modification of underlying config for alternate implementations and testing

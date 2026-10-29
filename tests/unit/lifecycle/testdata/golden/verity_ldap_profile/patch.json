@@ -1,0 +1,7 @@
+{
+  "ldap_profile": {
+    "cov_ldap": {
+      "enable": false
+    }
+  }
+}

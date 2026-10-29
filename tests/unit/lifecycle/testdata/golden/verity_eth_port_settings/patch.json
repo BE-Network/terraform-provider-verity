@@ -1,0 +1,7 @@
+{
+  "eth_port_settings": {
+    "cov_ethps": {
+      "enable": false
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "DELETE query": {
+    "badge_name": [
+      "diffbadge"
+    ]
+  },
+  "PUT": {
+    "badge": {
+      "diffbadge": {
+        "color": "red",
+        "enable": true,
+        "name": "diffbadge",
+        "number": 42
+      }
+    }
+  },
+  "PUT query": {}
+}

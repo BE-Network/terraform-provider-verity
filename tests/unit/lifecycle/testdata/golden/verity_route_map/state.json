@@ -1,0 +1,13 @@
+{
+  "enable": "true",
+  "name": "cov_rm",
+  "object_properties.#": "1",
+  "object_properties.0.%": "1",
+  "object_properties.0.notes": "",
+  "route_map_clauses.#": "1",
+  "route_map_clauses.0.%": "4",
+  "route_map_clauses.0.enable": "true",
+  "route_map_clauses.0.index": "1",
+  "route_map_clauses.0.route_map_clause": "",
+  "route_map_clauses.0.route_map_clause_ref_type_": ""
+}

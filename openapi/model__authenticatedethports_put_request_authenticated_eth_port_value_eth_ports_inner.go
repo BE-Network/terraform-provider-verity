@@ -1,7 +1,7 @@
 /*
-Verity API
+Manager system API
 
-This application demonstrates the usage of Verity API. 
+This application demonstrates the usage of Manager system API.
 
 API version: 6.6
 */
@@ -25,10 +25,12 @@ type AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner struc
 	EthPortProfileNumEthPort *string `json:"eth_port_profile_num_eth_port,omitempty"`
 	// Object type for eth_port_profile_num_eth_port field
 	EthPortProfileNumEthPortRefType *string `json:"eth_port_profile_num_eth_port_ref_type_,omitempty"`
-	// Flag indicating this Eth Port Profile is the Walled Garden
-	EthPortProfileNumWalledGardenSet *bool `json:"eth_port_profile_num_walled_garden_set,omitempty"`
+	// Flag indicating this Eth Port Profile is the Failed Action
+	EthPortProfileNumFailedActionSet *bool `json:"eth_port_profile_num_failed_action_set,omitempty"`
 	// The value of filter-id in the RADIUS response which will evoke this Eth Port Profile
 	EthPortProfileNumRadiusFilterId *string `json:"eth_port_profile_num_radius_filter_id,omitempty"`
+	// Flag indicating this Eth Port Profile is the Walled Garden. Will apply to the \"No response\" case if supported
+	EthPortProfileNumWalledGardenSet *bool `json:"eth_port_profile_num_walled_garden_set,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
 }
@@ -43,10 +45,12 @@ func NewAuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner() 
 	this.EthPortProfileNumEnable = &ethPortProfileNumEnable
 	var ethPortProfileNumEthPort string = ""
 	this.EthPortProfileNumEthPort = &ethPortProfileNumEthPort
-	var ethPortProfileNumWalledGardenSet bool = false
-	this.EthPortProfileNumWalledGardenSet = &ethPortProfileNumWalledGardenSet
+	var ethPortProfileNumFailedActionSet bool = false
+	this.EthPortProfileNumFailedActionSet = &ethPortProfileNumFailedActionSet
 	var ethPortProfileNumRadiusFilterId string = ""
 	this.EthPortProfileNumRadiusFilterId = &ethPortProfileNumRadiusFilterId
+	var ethPortProfileNumWalledGardenSet bool = false
+	this.EthPortProfileNumWalledGardenSet = &ethPortProfileNumWalledGardenSet
 	return &this
 }
 
@@ -59,10 +63,12 @@ func NewAuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInnerWit
 	this.EthPortProfileNumEnable = &ethPortProfileNumEnable
 	var ethPortProfileNumEthPort string = ""
 	this.EthPortProfileNumEthPort = &ethPortProfileNumEthPort
-	var ethPortProfileNumWalledGardenSet bool = false
-	this.EthPortProfileNumWalledGardenSet = &ethPortProfileNumWalledGardenSet
+	var ethPortProfileNumFailedActionSet bool = false
+	this.EthPortProfileNumFailedActionSet = &ethPortProfileNumFailedActionSet
 	var ethPortProfileNumRadiusFilterId string = ""
 	this.EthPortProfileNumRadiusFilterId = &ethPortProfileNumRadiusFilterId
+	var ethPortProfileNumWalledGardenSet bool = false
+	this.EthPortProfileNumWalledGardenSet = &ethPortProfileNumWalledGardenSet
 	return &this
 }
 
@@ -162,36 +168,36 @@ func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) 
 	o.EthPortProfileNumEthPortRefType = &v
 }
 
-// GetEthPortProfileNumWalledGardenSet returns the EthPortProfileNumWalledGardenSet field value if set, zero value otherwise.
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) GetEthPortProfileNumWalledGardenSet() bool {
-	if o == nil || IsNil(o.EthPortProfileNumWalledGardenSet) {
+// GetEthPortProfileNumFailedActionSet returns the EthPortProfileNumFailedActionSet field value if set, zero value otherwise.
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) GetEthPortProfileNumFailedActionSet() bool {
+	if o == nil || IsNil(o.EthPortProfileNumFailedActionSet) {
 		var ret bool
 		return ret
 	}
-	return *o.EthPortProfileNumWalledGardenSet
+	return *o.EthPortProfileNumFailedActionSet
 }
 
-// GetEthPortProfileNumWalledGardenSetOk returns a tuple with the EthPortProfileNumWalledGardenSet field value if set, nil otherwise
+// GetEthPortProfileNumFailedActionSetOk returns a tuple with the EthPortProfileNumFailedActionSet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) GetEthPortProfileNumWalledGardenSetOk() (*bool, bool) {
-	if o == nil || IsNil(o.EthPortProfileNumWalledGardenSet) {
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) GetEthPortProfileNumFailedActionSetOk() (*bool, bool) {
+	if o == nil || IsNil(o.EthPortProfileNumFailedActionSet) {
 		return nil, false
 	}
-	return o.EthPortProfileNumWalledGardenSet, true
+	return o.EthPortProfileNumFailedActionSet, true
 }
 
-// HasEthPortProfileNumWalledGardenSet returns a boolean if a field has been set.
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) HasEthPortProfileNumWalledGardenSet() bool {
-	if o != nil && !IsNil(o.EthPortProfileNumWalledGardenSet) {
+// HasEthPortProfileNumFailedActionSet returns a boolean if a field has been set.
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) HasEthPortProfileNumFailedActionSet() bool {
+	if o != nil && !IsNil(o.EthPortProfileNumFailedActionSet) {
 		return true
 	}
 
 	return false
 }
 
-// SetEthPortProfileNumWalledGardenSet gets a reference to the given bool and assigns it to the EthPortProfileNumWalledGardenSet field.
-func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) SetEthPortProfileNumWalledGardenSet(v bool) {
-	o.EthPortProfileNumWalledGardenSet = &v
+// SetEthPortProfileNumFailedActionSet gets a reference to the given bool and assigns it to the EthPortProfileNumFailedActionSet field.
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) SetEthPortProfileNumFailedActionSet(v bool) {
+	o.EthPortProfileNumFailedActionSet = &v
 }
 
 // GetEthPortProfileNumRadiusFilterId returns the EthPortProfileNumRadiusFilterId field value if set, zero value otherwise.
@@ -224,6 +230,38 @@ func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) 
 // SetEthPortProfileNumRadiusFilterId gets a reference to the given string and assigns it to the EthPortProfileNumRadiusFilterId field.
 func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) SetEthPortProfileNumRadiusFilterId(v string) {
 	o.EthPortProfileNumRadiusFilterId = &v
+}
+
+// GetEthPortProfileNumWalledGardenSet returns the EthPortProfileNumWalledGardenSet field value if set, zero value otherwise.
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) GetEthPortProfileNumWalledGardenSet() bool {
+	if o == nil || IsNil(o.EthPortProfileNumWalledGardenSet) {
+		var ret bool
+		return ret
+	}
+	return *o.EthPortProfileNumWalledGardenSet
+}
+
+// GetEthPortProfileNumWalledGardenSetOk returns a tuple with the EthPortProfileNumWalledGardenSet field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) GetEthPortProfileNumWalledGardenSetOk() (*bool, bool) {
+	if o == nil || IsNil(o.EthPortProfileNumWalledGardenSet) {
+		return nil, false
+	}
+	return o.EthPortProfileNumWalledGardenSet, true
+}
+
+// HasEthPortProfileNumWalledGardenSet returns a boolean if a field has been set.
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) HasEthPortProfileNumWalledGardenSet() bool {
+	if o != nil && !IsNil(o.EthPortProfileNumWalledGardenSet) {
+		return true
+	}
+
+	return false
+}
+
+// SetEthPortProfileNumWalledGardenSet gets a reference to the given bool and assigns it to the EthPortProfileNumWalledGardenSet field.
+func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) SetEthPortProfileNumWalledGardenSet(v bool) {
+	o.EthPortProfileNumWalledGardenSet = &v
 }
 
 // GetIndex returns the Index field value if set, zero value otherwise.
@@ -259,7 +297,7 @@ func (o *AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) 
 }
 
 func (o AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -277,11 +315,14 @@ func (o AuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPortsInner) T
 	if !IsNil(o.EthPortProfileNumEthPortRefType) {
 		toSerialize["eth_port_profile_num_eth_port_ref_type_"] = o.EthPortProfileNumEthPortRefType
 	}
-	if !IsNil(o.EthPortProfileNumWalledGardenSet) {
-		toSerialize["eth_port_profile_num_walled_garden_set"] = o.EthPortProfileNumWalledGardenSet
+	if !IsNil(o.EthPortProfileNumFailedActionSet) {
+		toSerialize["eth_port_profile_num_failed_action_set"] = o.EthPortProfileNumFailedActionSet
 	}
 	if !IsNil(o.EthPortProfileNumRadiusFilterId) {
 		toSerialize["eth_port_profile_num_radius_filter_id"] = o.EthPortProfileNumRadiusFilterId
+	}
+	if !IsNil(o.EthPortProfileNumWalledGardenSet) {
+		toSerialize["eth_port_profile_num_walled_garden_set"] = o.EthPortProfileNumWalledGardenSet
 	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index
@@ -324,5 +365,3 @@ func (v *NullableAuthenticatedethportsPutRequestAuthenticatedEthPortValueEthPort
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -1,0 +1,21 @@
+{
+  "grouping_rules": {
+    "cov_gr": {
+      "enable": true,
+      "name": "cov_gr",
+      "operation": "",
+      "rules": [
+        {
+          "enable": true,
+          "index": 1,
+          "rule_invert": true,
+          "rule_type": "",
+          "rule_value": "",
+          "rule_value_path": "",
+          "rule_value_path_ref_type_": ""
+        }
+      ],
+      "type": ""
+    }
+  }
+}

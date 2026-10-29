@@ -1,0 +1,16 @@
+{
+  "monitoring_acl": {
+    "cov_monitoring_acl": {
+      "enable": true,
+      "name": "cov_monitoring_acl",
+      "services": [
+        {
+          "enable": true,
+          "index": 1,
+          "service": "",
+          "service_ref_type_": ""
+        }
+      ]
+    }
+  }
+}

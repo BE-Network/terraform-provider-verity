@@ -1,0 +1,7 @@
+{
+  "pod": {
+    "cov_pod": {
+      "enable": false
+    }
+  }
+}

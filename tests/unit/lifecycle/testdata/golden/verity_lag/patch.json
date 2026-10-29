@@ -1,0 +1,7 @@
+{
+  "lag": {
+    "cov_lag": {
+      "enable": false
+    }
+  }
+}

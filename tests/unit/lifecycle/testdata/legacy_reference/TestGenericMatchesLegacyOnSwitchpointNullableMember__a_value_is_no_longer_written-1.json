@@ -1,0 +1,126 @@
+{
+  "DELETE query": {
+    "switchpoint_name": [
+      "diffsp"
+    ]
+  },
+  "PATCH": {
+    "switchpoint": {
+      "diffsp": {
+        "enable": false
+      }
+    }
+  },
+  "PATCH query": {},
+  "PUT": {
+    "switchpoint": {
+      "diffsp": {
+        "authentication_protocol": "",
+        "badges": [
+          {
+            "badge": "",
+            "badge_ref_type_": "",
+            "index": 1
+          }
+        ],
+        "bb_switch": true,
+        "children": [
+          {
+            "child_num_device": "",
+            "child_num_endpoint": "",
+            "child_num_endpoint_ref_type_": "",
+            "index": 1
+          }
+        ],
+        "cli_access_mode": "",
+        "comm_type": "",
+        "communication_mode": "",
+        "connected_bundle": "",
+        "connected_bundle_ref_type_": "",
+        "device_serial_number": "",
+        "enable": true,
+        "enable_password": "",
+        "enable_password_encrypted": "",
+        "eths": [
+          {
+            "breakout": "",
+            "customer_vlan": "",
+            "enable": true,
+            "eth_num_icon": "",
+            "eth_num_label": "",
+            "index": 1,
+            "port_name": ""
+          }
+        ],
+        "expected_breakout": "",
+        "expected_breakout_uplink_port": "",
+        "expected_fabric": "",
+        "expected_fabric_ref_type_": "",
+        "expected_uplink_port": 42,
+        "ip_source": "",
+        "is_top_of_island": true,
+        "located_by": "",
+        "locked": true,
+        "managed_on_native_vlan": true,
+        "name": "diffsp",
+        "object_properties": {
+          "aggregate": true,
+          "emulate_rf_video_port": true,
+          "expected_parent_endpoint": "",
+          "expected_parent_endpoint_ref_type_": "",
+          "is_host": true,
+          "number_of_multipoints": 5,
+          "user_notes": ""
+        },
+        "out_of_band_management": true,
+        "passphrase": "",
+        "passphrase_encrypted": "",
+        "password": "",
+        "password_encrypted": "",
+        "plane": "",
+        "plane_ref_type_": "",
+        "pod": "",
+        "pod_ref_type_": "",
+        "position": 1.5,
+        "power_state": "",
+        "private_password": "",
+        "private_password_encrypted": "",
+        "private_protocol": "",
+        "rack": "",
+        "rack_info": "",
+        "rack_ref_type_": "",
+        "rail_group": 1.5,
+        "read_only_mode": true,
+        "sdlc": "",
+        "security_type": "",
+        "snmp_community_string": "",
+        "snmpv3_username": "",
+        "spine_plane": "",
+        "spine_plane_ref_type_": "",
+        "ssh_key_or_password": "",
+        "ssp_group": "",
+        "ssp_group_ref_type_": "",
+        "su": "",
+        "su_ref_type_": "",
+        "tenant": "",
+        "tenant_ref_type_": "",
+        "traffic_mirrors": [
+          {
+            "index": 1,
+            "traffic_mirror_num_destination_port": "",
+            "traffic_mirror_num_enable": true,
+            "traffic_mirror_num_inbound_traffic": true,
+            "traffic_mirror_num_outbound_traffic": true,
+            "traffic_mirror_num_source_lag_indicator": true,
+            "traffic_mirror_num_source_port": ""
+          }
+        ],
+        "type": "",
+        "uplink_port": "",
+        "upstream_is_lag": true,
+        "ztp_identification": ""
+      }
+    }
+  },
+  "PUT query": {}
+}

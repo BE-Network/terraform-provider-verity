@@ -36,7 +36,7 @@ func (m *Manager) AddDelete(ctx context.Context, resourceType, resourceName stri
 }
 
 func (m *Manager) addGenericOperation(ctx context.Context, resourceType, resourceName, operationType string, props interface{}, headerParams map[string]string) string {
-	// For resources with HeaderSplitKey, create a composite key to prevent overwrites
+
 	storeKey := resourceName
 	if config, exists := resourceRegistry[resourceType]; exists && config.HeaderSplitKey != "" && headerParams != nil {
 		if headerValue, exists := headerParams[config.HeaderSplitKey]; exists && headerValue != "" {
@@ -46,7 +46,7 @@ func (m *Manager) addGenericOperation(ctx context.Context, resourceType, resourc
 
 	storeFunc := func() {
 		m.storeOperation(resourceType, storeKey, operationType, props)
-		// Store header params and original name for resources that need them
+
 		if len(headerParams) > 0 {
 			if m.resourceHeaderParams == nil {
 				m.resourceHeaderParams = make(map[string]map[string]string)
@@ -56,7 +56,7 @@ func (m *Manager) addGenericOperation(ctx context.Context, resourceType, resourc
 			}
 			paramKey := fmt.Sprintf("%s:%s", resourceType, storeKey)
 			m.resourceHeaderParams[paramKey] = headerParams
-			// Store original name if composite key was created
+
 			if storeKey != resourceName {
 				m.resourceOriginalNames[paramKey] = resourceName
 			}
@@ -83,26 +83,23 @@ func (m *Manager) ExecuteBulk(ctx context.Context, resourceType, operationType s
 		return diags
 	}
 
-	// Check if this resource type needs header-based operation splitting
 	if config.HeaderSplitKey != "" {
 		return m.executeBulkWithHeaderSplit(ctx, resourceType, operationType, config)
 	}
 
 	return m.executeBulkOperation(ctx, BulkOperationConfig{
-		ResourceType:      resourceType,
-		OperationType:     operationType,
-		ExtractOperations: m.createExtractor(resourceType, operationType),
-		CheckPreExistence: m.createPreExistenceChecker(config, operationType),
-		PrepareRequest:    m.createRequestPreparer(config, operationType),
-		ExecuteRequest:    m.createRequestExecutor(config, operationType),
-		ProcessResponse:   m.createResponseProcessor(config, operationType),
-		UpdateRecentOps:   m.createRecentOpsUpdater(resourceType),
+		ResourceType:            resourceType,
+		OperationType:           operationType,
+		ExtractOperations:       m.createExtractor(resourceType, operationType),
+		CheckPreExistence:       m.createPreExistenceChecker(config, operationType),
+		PrepareRequest:          m.createRequestPreparer(config, operationType),
+		PrepareRequestWithError: m.createRequestPreparerWithError(config, operationType),
+		ExecuteRequest:          m.createRequestExecutor(config, operationType),
+		ProcessResponse:         m.createResponseProcessor(config, operationType),
+		UpdateRecentOps:         m.createRecentOpsUpdater(resourceType),
 	})
 }
 
-// executeBulkWithHeaderSplit handles operations for resources that need header-based batch splitting
-// Resources with HeaderSplitKey will have their operations grouped by that header parameter value
-// Example: ACLs split by "ip_version" into separate IPv4 and IPv6 batches
 func (m *Manager) executeBulkWithHeaderSplit(ctx context.Context, resourceType, operationType string, config ResourceConfig) diag.Diagnostics {
 	var diagnostics diag.Diagnostics
 	m.mutex.Lock()
@@ -113,7 +110,6 @@ func (m *Manager) executeBulkWithHeaderSplit(ctx context.Context, resourceType, 
 		return diagnostics
 	}
 
-	// Extract operations based on type
 	var originalOperations map[string]interface{}
 	switch operationType {
 	case "PUT":
@@ -143,13 +139,12 @@ func (m *Manager) executeBulkWithHeaderSplit(ctx context.Context, resourceType, 
 		}
 		originalOperations = make(map[string]interface{})
 		for _, name := range res.Delete {
-			// Use empty struct as placeholder for DELETE operations
+
 			originalOperations[name] = struct{}{}
 		}
 		res.Delete = res.Delete[:0]
 	}
 
-	// Extract header values and original names for all operations
 	headerValues := make(map[string]string)
 	originalNames := make(map[string]string)
 	for k := range originalOperations {
@@ -159,14 +154,14 @@ func (m *Manager) executeBulkWithHeaderSplit(ctx context.Context, resourceType, 
 				headerValues[k] = headerValue
 			}
 		}
-		// Get original name if it was stored
+
 		if origName, exists := m.resourceOriginalNames[paramKey]; exists {
 			originalNames[k] = origName
 		} else {
-			// Composite key not used, k is the original name
+
 			originalNames[k] = k
 		}
-		// Clean up header params and original names
+
 		delete(m.resourceHeaderParams, paramKey)
 		delete(m.resourceOriginalNames, paramKey)
 	}
@@ -176,7 +171,6 @@ func (m *Manager) executeBulkWithHeaderSplit(ctx context.Context, resourceType, 
 		return diagnostics
 	}
 
-	// Group operations by header value using original resource names
 	groupedOps := make(map[string]map[string]interface{})
 	for compositeKey, props := range originalOperations {
 		headerValue := headerValues[compositeKey]
@@ -188,9 +182,6 @@ func (m *Manager) executeBulkWithHeaderSplit(ctx context.Context, resourceType, 
 		groupedOps[headerValue][originalName] = props
 	}
 
-	// Execute operations for each header value group in a deterministic order.
-	// ACLs have an API dependency between IP versions; all other header-aware
-	// resources use lexical ordering for reproducible requests.
 	for _, headerValue := range m.orderedHeaderValues(resourceType, operationType, groupedOps) {
 		ops := groupedOps[headerValue]
 		headers := map[string]string{config.HeaderSplitKey: headerValue}
@@ -198,7 +189,6 @@ func (m *Manager) executeBulkWithHeaderSplit(ctx context.Context, resourceType, 
 		diagnostics = append(diagnostics, groupDiags...)
 	}
 
-	// Update recent operations
 	res.RecentOps = true
 	res.RecentOpTime = time.Now()
 
@@ -238,7 +228,6 @@ func (m *Manager) orderedHeaderValues(resourceType, operationType string, groupe
 	return ordered
 }
 
-// executeOperationsWithHeaders executes a batch of operations with specific header parameters
 func (m *Manager) executeOperationsWithHeaders(ctx context.Context, resourceType, operationType string, operations map[string]interface{}, headers map[string]string, config ResourceConfig) diag.Diagnostics {
 	return m.executeBulkOperation(ctx, BulkOperationConfig{
 		ResourceType:  resourceType,
@@ -275,7 +264,6 @@ func (m *Manager) executeOperationsWithHeaders(ctx context.Context, resourceType
 						return nil, err
 					}
 
-					// Use custom response extractor if configured
 					if config.HeaderResponseExtractor != nil {
 						return config.HeaderResponseExtractor(result, headers)
 					}
@@ -310,6 +298,20 @@ func (m *Manager) executeOperationsWithHeaders(ctx context.Context, resourceType
 			return m.createRequestPreparer(config, operationType)(filteredData)
 		},
 
+		PrepareRequestWithError: func(filteredData map[string]interface{}) (interface{}, error) {
+			if operationType == "DELETE" {
+				names := make([]string, 0, len(filteredData))
+				for name := range filteredData {
+					names = append(names, name)
+				}
+				return names, nil
+			}
+			if preparer := m.createRequestPreparerWithError(config, operationType); preparer != nil {
+				return preparer(filteredData)
+			}
+			return m.createRequestPreparer(config, operationType)(filteredData), nil
+		},
+
 		ExecuteRequest: func(ctx context.Context, request interface{}) (*http.Response, error) {
 			switch operationType {
 			case "PUT":
@@ -331,7 +333,7 @@ func (m *Manager) executeOperationsWithHeaders(ctx context.Context, resourceType
 		ProcessResponse: m.createHeaderAwareResponseProcessor(config, operationType, headers),
 
 		UpdateRecentOps: func() {
-			// Already handled in parent function
+
 		},
 	})
 }

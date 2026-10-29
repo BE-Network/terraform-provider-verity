@@ -1,0 +1,11 @@
+{
+  "breakout.#": "1",
+  "breakout.0.%": "5",
+  "breakout.0.breakout": "1x100G",
+  "breakout.0.enable": "false",
+  "breakout.0.index": "1",
+  "breakout.0.part_number": "",
+  "breakout.0.vendor": "aaa",
+  "name": "SFP Breakouts",
+  "object_properties.#": "0"
+}

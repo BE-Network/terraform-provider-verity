@@ -1,0 +1,7 @@
+{
+  "ipv6_prefix_list": {
+    "cov_ipv6pl": {
+      "enable": false
+    }
+  }
+}

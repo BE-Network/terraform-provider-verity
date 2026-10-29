@@ -13,7 +13,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"terraform-provider-verity/internal/provider"
-	"terraform-provider-verity/internal/utils"
+	"terraform-provider-verity/internal/registry"
+	"terraform-provider-verity/internal/spec"
 	"terraform-provider-verity/tests/unit/mock"
 )
 
@@ -26,6 +27,8 @@ type fieldInfo struct {
 type blockInfo struct {
 	Name   string
 	Fields []fieldInfo
+
+	Blocks []blockInfo
 }
 
 type resourceSchemaInfo struct {
@@ -45,380 +48,147 @@ type ResourceCoverageEntry struct {
 	RequiredQueryParams map[string]string
 }
 
-// Each entry specifies the resource metadata needed to auto-generate HCL
-// from schema introspection and verify PUT field coverage.
-var allResourceTests = []ResourceCoverageEntry{
-	// Resources available in both modes
-	{
-		TerraformType: "verity_badge",
-		Factory:       provider.NewVerityBadgeResource,
-		APIPath:       "/api/badges",
-		WrapperKey:    "badge",
-		Mode:          "datacenter",
-		ResourceName:  "cov_badge",
-	},
-	{
-		TerraformType: "verity_bundle",
-		Factory:       provider.NewVerityBundleResource,
-		APIPath:       "/api/bundles",
-		WrapperKey:    "endpoint_bundle",
-		Mode:          "datacenter",
-		ResourceName:  "cov_bundle",
-	},
-	{
-		TerraformType: "verity_service",
-		Factory:       provider.NewVerityServiceResource,
-		APIPath:       "/api/services",
-		WrapperKey:    "service",
-		Mode:          "datacenter",
-		ResourceName:  "cov_service",
-	},
-	{
-		TerraformType: "verity_aaa_profile",
-		Factory:       provider.NewVerityAaaProfileResource,
-		APIPath:       "/api/deviceaaaprofiles",
-		WrapperKey:    "device_aaa_profile",
-		Mode:          "datacenter",
-		ResourceName:  "cov_aaa",
-	},
-	{
-		TerraformType: "verity_ldap_profile",
-		Factory:       provider.NewVerityLdapProfileResource,
-		APIPath:       "/api/ldapprofiles",
-		WrapperKey:    "ldap_profile",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ldap",
-	},
-	{
-		TerraformType: "verity_fabric",
-		Factory:       provider.NewVerityFabricResource,
-		APIPath:       "/api/fabrics",
-		WrapperKey:    "fabric",
-		Mode:          "datacenter",
-		ResourceName:  "cov_fabric",
-	},
-	{
-		TerraformType: "verity_plane",
-		Factory:       provider.NewVerityPlaneResource,
-		APIPath:       "/api/planes",
-		WrapperKey:    "plane",
-		Mode:          "datacenter",
-		ResourceName:  "cov_plane",
-	},
-	{
-		TerraformType: "verity_rack",
-		Factory:       provider.NewVerityRackResource,
-		APIPath:       "/api/racks",
-		WrapperKey:    "rack",
-		Mode:          "datacenter",
-		ResourceName:  "cov_rack",
-	},
-	{
-		TerraformType: "verity_eth_port_profile",
-		Factory:       provider.NewVerityEthPortProfileResource,
-		APIPath:       "/api/ethportprofiles",
-		WrapperKey:    "eth_port_profile_",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ethpp",
-	},
-	{
-		TerraformType: "verity_eth_port_settings",
-		Factory:       provider.NewVerityEthPortSettingsResource,
-		APIPath:       "/api/ethportsettings",
-		WrapperKey:    "eth_port_settings",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ethps",
-	},
-	{
-		TerraformType: "verity_lag",
-		Factory:       provider.NewVerityLagResource,
-		APIPath:       "/api/lags",
-		WrapperKey:    "lag",
-		Mode:          "datacenter",
-		ResourceName:  "cov_lag",
-	},
-	{
-		TerraformType:       "verity_acl_v4",
-		Factory:             provider.NewVerityACLV4Resource,
-		APIPath:             "/api/acls",
-		WrapperKey:          "ip_filter",
-		Mode:                "datacenter",
-		ResourceName:        "cov_aclv4",
-		RequiredQueryParams: map[string]string{"ip_version": "4"},
-	},
-	{
-		TerraformType:       "verity_acl_v6",
-		Factory:             provider.NewVerityACLV6Resource,
-		APIPath:             "/api/acls",
-		WrapperKey:          "ip_filter",
-		Mode:                "datacenter",
-		ResourceName:        "cov_aclv6",
-		RequiredQueryParams: map[string]string{"ip_version": "6"},
-	},
-	{
-		TerraformType: "verity_sflow_collector",
-		Factory:       provider.NewVeritySflowCollectorResource,
-		APIPath:       "/api/sflowcollectors",
-		WrapperKey:    "sflow_collector",
-		Mode:          "datacenter",
-		ResourceName:  "cov_sflow",
-	},
-	{
-		TerraformType: "verity_switchpoint",
-		Factory:       provider.NewVeritySwitchpointResource,
-		APIPath:       "/api/switchpoints",
-		WrapperKey:    "switchpoint",
-		Mode:          "datacenter",
-		ResourceName:  "cov_sp",
-	},
-	{
-		TerraformType: "verity_device_settings",
-		Factory:       provider.NewVerityDeviceSettingsResource,
-		APIPath:       "/api/devicesettings",
-		WrapperKey:    "eth_device_profiles",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ds",
-	},
-	{
-		TerraformType: "verity_packet_queue",
-		Factory:       provider.NewVerityPacketQueueResource,
-		APIPath:       "/api/packetqueues",
-		WrapperKey:    "packet_queue",
-		Mode:          "datacenter",
-		ResourceName:  "cov_pq",
-	},
-	{
-		TerraformType: "verity_diagnostics_profile",
-		Factory:       provider.NewVerityDiagnosticsProfileResource,
-		APIPath:       "/api/diagnosticsprofiles",
-		WrapperKey:    "diagnostics_profile",
-		Mode:          "datacenter",
-		ResourceName:  "cov_diagp",
-	},
-	{
-		TerraformType: "verity_diagnostics_port_profile",
-		Factory:       provider.NewVerityDiagnosticsPortProfileResource,
-		APIPath:       "/api/diagnosticsportprofiles",
-		WrapperKey:    "diagnostics_port_profile",
-		Mode:          "datacenter",
-		ResourceName:  "cov_diagpp",
-	},
-	{
-		TerraformType: "verity_ipv4_list",
-		Factory:       provider.NewVerityIpv4ListResource,
-		APIPath:       "/api/ipv4lists",
-		WrapperKey:    "ipv4_list_filter",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ipv4l",
-	},
-	{
-		TerraformType: "verity_ipv6_list",
-		Factory:       provider.NewVerityIpv6ListResource,
-		APIPath:       "/api/ipv6lists",
-		WrapperKey:    "ipv6_list_filter",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ipv6l",
-	},
-	{
-		TerraformType: "verity_port_acl",
-		Factory:       provider.NewVerityPortAclResource,
-		APIPath:       "/api/portacls",
-		WrapperKey:    "port_acl",
-		Mode:          "datacenter",
-		ResourceName:  "cov_pacl",
-	},
-	{
-		TerraformType: "verity_pb_routing",
-		Factory:       provider.NewVerityPBRoutingResource,
-		APIPath:       "/api/policybasedrouting",
-		WrapperKey:    "pb_routing",
-		Mode:          "datacenter",
-		ResourceName:  "cov_pbr",
-	},
-	{
-		TerraformType: "verity_pb_routing_acl",
-		Factory:       provider.NewVerityPBRoutingACLResource,
-		APIPath:       "/api/policybasedroutingacl",
-		WrapperKey:    "pb_routing_acl",
-		Mode:          "datacenter",
-		ResourceName:  "cov_pbra",
-	},
-	{
-		TerraformType: "verity_grouping_rule",
-		Factory:       provider.NewVerityGroupingRuleResource,
-		APIPath:       "/api/groupingrules",
-		WrapperKey:    "grouping_rules",
-		Mode:          "datacenter",
-		ResourceName:  "cov_gr",
-	},
-	{
-		TerraformType: "verity_threshold_group",
-		Factory:       provider.NewVerityThresholdGroupResource,
-		APIPath:       "/api/thresholdgroups",
-		WrapperKey:    "threshold_group",
-		Mode:          "datacenter",
-		ResourceName:  "cov_tg",
-	},
-	{
-		TerraformType: "verity_threshold",
-		Factory:       provider.NewVerityThresholdResource,
-		APIPath:       "/api/thresholds",
-		WrapperKey:    "threshold",
-		Mode:          "datacenter",
-		ResourceName:  "cov_th",
-	},
+func init() {
+	byType := map[string]func() resource.Resource{}
+	for _, factory := range provider.New("test")().Resources(context.Background()) {
+		var metadata resource.MetadataResponse
+		factory().Metadata(context.Background(), resource.MetadataRequest{ProviderTypeName: "verity"}, &metadata)
+		byType[metadata.TypeName] = factory
+	}
+	for i := range allResourceTests {
+		factory, registered := byType[allResourceTests[i].TerraformType]
+		if !registered {
+			panic("coverage entry for unregistered resource " + allResourceTests[i].TerraformType)
+		}
+		allResourceTests[i].Factory = factory
+	}
+}
 
-	// Datacenter-only resources
-	{
-		TerraformType: "verity_tenant",
-		Factory:       provider.NewVerityTenantResource,
-		APIPath:       "/api/tenants",
-		WrapperKey:    "tenant",
-		Mode:          "datacenter",
-		ResourceName:  "cov_tenant",
-		Overrides: map[string]string{
-			"vrf_name": `"TestVrf"`,
-		},
-	},
-	{
-		TerraformType: "verity_gateway",
-		Factory:       provider.NewVerityGatewayResource,
-		APIPath:       "/api/gateways",
-		WrapperKey:    "gateway",
-		Mode:          "datacenter",
-		ResourceName:  "cov_gw",
-	},
-	{
-		TerraformType: "verity_gateway_profile",
-		Factory:       provider.NewVerityGatewayProfileResource,
-		APIPath:       "/api/gatewayprofiles",
-		WrapperKey:    "gateway_profile",
-		Mode:          "datacenter",
-		ResourceName:  "cov_gwp",
-	},
-	{
-		TerraformType: "verity_as_path_access_list",
-		Factory:       provider.NewVerityAsPathAccessListResource,
-		APIPath:       "/api/aspathaccesslists",
-		WrapperKey:    "as_path_access_list",
-		Mode:          "datacenter",
-		ResourceName:  "cov_apal",
-	},
-	{
-		TerraformType: "verity_community_list",
-		Factory:       provider.NewVerityCommunityListResource,
-		APIPath:       "/api/communitylists",
-		WrapperKey:    "community_list",
-		Mode:          "datacenter",
-		ResourceName:  "cov_cl",
-	},
-	{
-		TerraformType: "verity_extended_community_list",
-		Factory:       provider.NewVerityExtendedCommunityListResource,
-		APIPath:       "/api/extendedcommunitylists",
-		WrapperKey:    "extended_community_list",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ecl",
-	},
-	{
-		TerraformType: "verity_ipv4_prefix_list",
-		Factory:       provider.NewVerityIpv4PrefixListResource,
-		APIPath:       "/api/ipv4prefixlists",
-		WrapperKey:    "ipv4_prefix_list",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ipv4pl",
-	},
-	{
-		TerraformType: "verity_ipv6_prefix_list",
-		Factory:       provider.NewVerityIpv6PrefixListResource,
-		APIPath:       "/api/ipv6prefixlists",
-		WrapperKey:    "ipv6_prefix_list",
-		Mode:          "datacenter",
-		ResourceName:  "cov_ipv6pl",
-	},
-	{
-		TerraformType: "verity_route_map_clause",
-		Factory:       provider.NewVerityRouteMapClauseResource,
-		APIPath:       "/api/routemapclauses",
-		WrapperKey:    "route_map_clause",
-		Mode:          "datacenter",
-		ResourceName:  "cov_rmc",
-	},
-	{
-		TerraformType: "verity_route_map",
-		Factory:       provider.NewVerityRouteMapResource,
-		APIPath:       "/api/routemaps",
-		WrapperKey:    "route_map",
-		Mode:          "datacenter",
-		ResourceName:  "cov_rm",
-	},
-	{
-		TerraformType: "verity_sfp_breakout",
-		Factory:       provider.NewVeritySfpBreakoutResource,
-		APIPath:       "/api/sfpbreakouts",
-		WrapperKey:    "sfp_breakouts",
-		Mode:          "datacenter",
-		ResourceName:  "cov_sfpb",
-		SkipCreate:    true,
-	},
-	{
-		TerraformType: "verity_pod",
-		Factory:       provider.NewVerityPodResource,
-		APIPath:       "/api/pods",
-		WrapperKey:    "pod",
-		Mode:          "datacenter",
-		ResourceName:  "cov_pod",
-	},
-	{
-		TerraformType: "verity_spine_plane",
-		Factory:       provider.NewVeritySpinePlaneResource,
-		APIPath:       "/api/spineplanes",
-		WrapperKey:    "spine_plane",
-		Mode:          "datacenter",
-		ResourceName:  "cov_spinep",
-	},
-	{
-		TerraformType: "verity_packet_broker",
-		Factory:       provider.NewVerityPacketBrokerResource,
-		APIPath:       "/api/packetbroker",
-		WrapperKey:    "pb_egress_profile",
-		Mode:          "datacenter",
-		ResourceName:  "cov_pb",
-	},
+type coverageTestData struct {
+	ResourceName string
+	Overrides    map[string]string
+}
 
-	// Campus-only resources
-	{
-		TerraformType: "verity_authenticated_eth_port",
-		Factory:       provider.NewVerityAuthenticatedEthPortResource,
-		APIPath:       "/api/authenticatedethports",
-		WrapperKey:    "authenticated_eth_port",
-		Mode:          "campus",
-		ResourceName:  "cov_aep",
+var coverageTestDataByType = map[string]coverageTestData{
+	"verity_aaa_profile":              {ResourceName: "cov_aaa"},
+	"verity_acl_v4":                   {ResourceName: "cov_aclv4"},
+	"verity_acl_v6":                   {ResourceName: "cov_aclv6"},
+	"verity_as_path_access_list":      {ResourceName: "cov_apal"},
+	"verity_authenticated_eth_port":   {ResourceName: "cov_aep"},
+	"verity_badge":                    {ResourceName: "cov_badge"},
+	"verity_bundle":                   {ResourceName: "cov_bundle"},
+	"verity_community_list":           {ResourceName: "cov_cl"},
+	"verity_device_settings":          {ResourceName: "cov_ds"},
+	"verity_device_voice_settings":    {ResourceName: "cov_dvs"},
+	"verity_diagnostics_port_profile": {ResourceName: "cov_diagpp"},
+	"verity_diagnostics_profile":      {ResourceName: "cov_diagp"},
+	"verity_eth_port_profile":         {ResourceName: "cov_ethpp"},
+	"verity_eth_port_settings":        {ResourceName: "cov_ethps"},
+	"verity_extended_community_list":  {ResourceName: "cov_ecl"},
+	"verity_fabric":                   {ResourceName: "cov_fabric"},
+	"verity_gateway":                  {ResourceName: "cov_gw"},
+	"verity_gateway_profile":          {ResourceName: "cov_gwp"},
+	"verity_grouping_rule":            {ResourceName: "cov_gr"},
+	"verity_ipv4_list":                {ResourceName: "cov_ipv4l"},
+	"verity_ipv4_prefix_list":         {ResourceName: "cov_ipv4pl"},
+	"verity_ipv6_list":                {ResourceName: "cov_ipv6l"},
+	"verity_ipv6_prefix_list":         {ResourceName: "cov_ipv6pl"},
+	"verity_lag":                      {ResourceName: "cov_lag"},
+	"verity_ldap_profile":             {ResourceName: "cov_ldap"},
+	"verity_mac_filter":               {ResourceName: "cov_mac_filter"},
+	"verity_packet_broker":            {ResourceName: "cov_pb"},
+	"verity_packet_queue":             {ResourceName: "cov_pq"},
+	"verity_pair":                     {ResourceName: "cov_pair"},
+	"verity_pb_routing":               {ResourceName: "cov_pbr"},
+	"verity_pb_routing_acl":           {ResourceName: "cov_pbra"},
+	"verity_plane":                    {ResourceName: "cov_plane"},
+	"verity_pod":                      {ResourceName: "cov_pod"},
+	"verity_port_acl":                 {ResourceName: "cov_pacl"},
+	"verity_rack":                     {ResourceName: "cov_rack"},
+	"verity_route_map":                {ResourceName: "cov_rm"},
+	"verity_route_map_clause":         {ResourceName: "cov_rmc"},
+	"verity_service":                  {ResourceName: "cov_service"},
+	"verity_service_port_profile":     {ResourceName: "cov_spp"},
+	"verity_sflow_collector":          {ResourceName: "cov_sflow"},
+	"verity_sfp_breakout":             {ResourceName: "cov_sfpb"},
+	"verity_spine_plane":              {ResourceName: "cov_spinep"},
+	"verity_ssp_group":                {ResourceName: "cov_ssp_group"},
+	"verity_su":                       {ResourceName: "cov_su"},
+	"verity_switchpoint":              {ResourceName: "cov_sp"},
+	"verity_tacacs_profile":           {ResourceName: "cov_tacacs_profile"},
+	"verity_tenant": {
+		ResourceName: "cov_tenant",
+		Overrides:    map[string]string{"vrf_name": `"TestVrf"`},
 	},
-	{
-		TerraformType: "verity_device_voice_settings",
-		Factory:       provider.NewVerityDeviceVoiceSettingsResource,
-		APIPath:       "/api/devicevoicesettings",
-		WrapperKey:    "device_voice_settings",
-		Mode:          "campus",
-		ResourceName:  "cov_dvs",
-	},
-	{
-		TerraformType: "verity_service_port_profile",
-		Factory:       provider.NewVerityServicePortProfileResource,
-		APIPath:       "/api/serviceportprofiles",
-		WrapperKey:    "service_port_profile",
-		Mode:          "campus",
-		ResourceName:  "cov_spp",
-	},
-	{
-		TerraformType: "verity_voice_port_profile",
-		Factory:       provider.NewVerityVoicePortProfileResource,
-		APIPath:       "/api/voiceportprofiles",
-		WrapperKey:    "voice_port_profiles",
-		Mode:          "campus",
-		ResourceName:  "cov_vpp",
-	},
+	"verity_threshold":          {ResourceName: "cov_th"},
+	"verity_threshold_group":    {ResourceName: "cov_tg"},
+	"verity_voice_port_profile": {ResourceName: "cov_vpp"},
+}
+
+var allResourceTests = mustCoverageEntries()
+
+func mustCoverageEntries() []ResourceCoverageEntry {
+	entries, err := coverageEntries()
+	if err != nil {
+		panic("build resource coverage entries: " + err.Error())
+	}
+	return entries
+}
+
+func coverageEntries() ([]ResourceCoverageEntry, error) {
+	resources, err := registry.Load()
+	if err != nil {
+		return nil, err
+	}
+	return coverageEntriesFor(resources, coverageTestDataByType)
+}
+
+func coverageEntriesFor(resources spec.Registry, testDataByType map[string]coverageTestData) ([]ResourceCoverageEntry, error) {
+	entries := make([]ResourceCoverageEntry, 0, len(resources))
+	registryTypes := make(map[string]bool, len(resources))
+	for _, resourceSpec := range resources {
+		registryTypes[resourceSpec.TerraformType] = true
+		testData := testDataByType[resourceSpec.TerraformType]
+		resourceName := testData.ResourceName
+		if resourceName == "" {
+			resourceName = "cov_" + strings.TrimPrefix(resourceSpec.TerraformType, "verity_")
+		}
+		mode, err := coverageMode(resourceSpec.Modes)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", resourceSpec.TerraformType, err)
+		}
+		entries = append(entries, ResourceCoverageEntry{
+			TerraformType:       resourceSpec.TerraformType,
+			APIPath:             "/api" + resourceSpec.API.EndpointPath,
+			WrapperKey:          resourceSpec.API.RequestWrapperKey,
+			Mode:                mode,
+			ResourceName:        resourceName,
+			Overrides:           testData.Overrides,
+			SkipCreate:          !resourceSpec.Operations.Create,
+			RequiredQueryParams: resourceSpec.API.FixedHeaders,
+		})
+	}
+	for terraformType := range testDataByType {
+		if !registryTypes[terraformType] {
+			return nil, fmt.Errorf("test data exists for registry-absent resource %s", terraformType)
+		}
+	}
+	sort.Slice(entries, func(i, j int) bool { return entries[i].TerraformType < entries[j].TerraformType })
+	return entries, nil
+}
+
+func coverageMode(modes []spec.Mode) (string, error) {
+	for _, mode := range modes {
+		if mode == spec.ModeDatacenter {
+			return string(mode), nil
+		}
+	}
+	for _, mode := range modes {
+		if mode == spec.ModeCampus {
+			return string(mode), nil
+		}
+	}
+	return "", fmt.Errorf("resource supports no coverage mode")
 }
 
 func attrFieldType(attr fwschema.Attribute) string {
@@ -434,6 +204,21 @@ func attrFieldType(attr fwschema.Attribute) string {
 	default:
 		return ""
 	}
+}
+
+func inspectBlock(name string, lb fwschema.ListNestedBlock) blockInfo {
+	bi := blockInfo{Name: name}
+	for attrName, attr := range lb.NestedObject.Attributes {
+		bi.Fields = append(bi.Fields, fieldInfo{Name: attrName, Type: attrFieldType(attr)})
+	}
+	sort.Slice(bi.Fields, func(i, j int) bool { return bi.Fields[i].Name < bi.Fields[j].Name })
+	for nestedName, nested := range lb.NestedObject.Blocks {
+		if nestedList, ok := nested.(fwschema.ListNestedBlock); ok {
+			bi.Blocks = append(bi.Blocks, inspectBlock(nestedName, nestedList))
+		}
+	}
+	sort.Slice(bi.Blocks, func(i, j int) bool { return bi.Blocks[i].Name < bi.Blocks[j].Name })
+	return bi
 }
 
 func inspectSchema(factory func() resource.Resource) resourceSchemaInfo {
@@ -455,14 +240,7 @@ func inspectSchema(factory func() resource.Resource) resourceSchemaInfo {
 
 	for name, block := range resp.Schema.Blocks {
 		if lb, ok := block.(fwschema.ListNestedBlock); ok {
-			bi := blockInfo{Name: name}
-			for attrName, attr := range lb.NestedObject.Attributes {
-				bi.Fields = append(bi.Fields, fieldInfo{Name: attrName, Type: attrFieldType(attr)})
-			}
-			sort.Slice(bi.Fields, func(i, j int) bool {
-				return bi.Fields[i].Name < bi.Fields[j].Name
-			})
-			rs.Blocks = append(rs.Blocks, bi)
+			rs.Blocks = append(rs.Blocks, inspectBlock(name, lb))
 		}
 	}
 	sort.Slice(rs.Blocks, func(i, j int) bool {
@@ -493,12 +271,12 @@ func defaultHCLValue(fi fieldInfo) string {
 	}
 }
 
-func generateCoverageHCL(rs resourceSchemaInfo, tfType, resourceName, mode, modeFieldsKey string, overrides map[string]string) string {
+func generateCoverageHCL(t *testing.T, rs resourceSchemaInfo, tfType, resourceName, mode, modeFieldsKey string, overrides map[string]string) string {
 	var b strings.Builder
 	b.WriteString(fmt.Sprintf("resource %q %q {\n", tfType, "test"))
 
 	for _, fi := range rs.Attributes {
-		if !utils.FieldAppliesToMode(modeFieldsKey, fi.Name, mode) {
+		if !fieldAppliesToMode(t, modeFieldsKey, fi.Name, mode) {
 			continue
 		}
 		val := defaultHCLValue(fi)
@@ -512,30 +290,45 @@ func generateCoverageHCL(rs resourceSchemaInfo, tfType, resourceName, mode, mode
 	}
 
 	for _, block := range rs.Blocks {
-		if !utils.FieldAppliesToMode(modeFieldsKey, block.Name, mode) {
+		if !fieldAppliesToMode(t, modeFieldsKey, block.Name, mode) {
 			continue
 		}
-		// Skip blocks with no fields
-		if len(block.Fields) == 0 {
+
+		if len(block.Fields) == 0 && len(block.Blocks) == 0 {
 			continue
 		}
-		b.WriteString(fmt.Sprintf("\n  %s {\n", block.Name))
-		for _, fi := range block.Fields {
-			nestedKey := block.Name + "." + fi.Name
-			if !utils.FieldAppliesToMode(modeFieldsKey, nestedKey, mode) {
-				continue
-			}
-			val := defaultHCLValue(fi)
-			if override, ok := overrides[nestedKey]; ok {
-				val = override
-			}
-			b.WriteString(fmt.Sprintf("    %s = %s\n", fi.Name, val))
-		}
-		b.WriteString("  }\n")
+		b.WriteString("\n")
+		writeCoverageBlock(t, &b, block, block.Name, "  ", mode, modeFieldsKey, overrides)
 	}
 
 	b.WriteString("}\n")
 	return b.String()
+}
+
+func writeCoverageBlock(t *testing.T, b *strings.Builder, block blockInfo, path, indent, mode, modeFieldsKey string, overrides map[string]string) {
+	fmt.Fprintf(b, "%s%s {\n", indent, block.Name)
+	for _, fi := range block.Fields {
+		nestedKey := path + "." + fi.Name
+		if !fieldAppliesToMode(t, modeFieldsKey, nestedKey, mode) {
+			continue
+		}
+		val := defaultHCLValue(fi)
+		if override, ok := overrides[nestedKey]; ok {
+			val = override
+		}
+		fmt.Fprintf(b, "%s  %s = %s\n", indent, fi.Name, val)
+	}
+	for _, nested := range block.Blocks {
+		nestedPath := path + "." + nested.Name
+		if !fieldAppliesToMode(t, modeFieldsKey, nestedPath, mode) {
+			continue
+		}
+		if len(nested.Fields) == 0 && len(nested.Blocks) == 0 {
+			continue
+		}
+		writeCoverageBlock(t, b, nested, nestedPath, indent+"  ", mode, modeFieldsKey, overrides)
+	}
+	fmt.Fprintf(b, "%s}\n", indent)
 }
 
 func (e ResourceCoverageEntry) modeFieldsKey() string {
@@ -592,7 +385,7 @@ func TestFieldCoverage_PutContainsAllFields(t *testing.T) {
 
 			rs := inspectSchema(tc.Factory)
 			modeKey := tc.modeFieldsKey()
-			hcl := generateCoverageHCL(rs, tc.TerraformType, tc.ResourceName, tc.Mode, modeKey, tc.Overrides)
+			hcl := generateCoverageHCL(t, rs, tc.TerraformType, tc.ResourceName, tc.Mode, modeKey, tc.Overrides)
 
 			config := mock.ProviderConfig(ms.URL(), tc.Mode) + hcl
 			t.Logf("Generated HCL:\n%s", hcl)
@@ -608,14 +401,27 @@ func TestFieldCoverage_PutContainsAllFields(t *testing.T) {
 							if len(puts) == 0 {
 								return fmt.Errorf("no PUT request captured for %s", tc.APIPath)
 							}
-							body := puts[len(puts)-1].Body
-							return verifyPutFieldCoverage(t, body, tc, rs)
+							put := puts[len(puts)-1]
+							if err := verifyPutFieldCoverage(t, put.Body, tc, rs); err != nil {
+								return err
+							}
+							return verifyRequiredQueryParams(put.QueryParams, tc)
 						},
 					},
 				},
 			})
 		})
 	}
+}
+
+func verifyRequiredQueryParams(params map[string][]string, tc ResourceCoverageEntry) error {
+	for name, expected := range tc.RequiredQueryParams {
+		values := params[name]
+		if len(values) == 0 || values[0] != expected {
+			return fmt.Errorf("%s query parameter %q = %v, want [%s]", tc.TerraformType, name, values, expected)
+		}
+	}
+	return nil
 }
 
 func verifyPutFieldCoverage(t *testing.T, body map[string]interface{}, tc ResourceCoverageEntry, rs resourceSchemaInfo) error {
@@ -632,9 +438,8 @@ func verifyPutFieldCoverage(t *testing.T, body map[string]interface{}, tc Resour
 
 	modeKey := tc.modeFieldsKey()
 
-	// Check top-level attributes
 	for _, fi := range rs.Attributes {
-		if !utils.FieldAppliesToMode(modeKey, fi.Name, tc.Mode) {
+		if !fieldAppliesToMode(t, modeKey, fi.Name, tc.Mode) {
 			continue
 		}
 		if _, exists := res[fi.Name]; !exists {
@@ -642,46 +447,54 @@ func verifyPutFieldCoverage(t *testing.T, body map[string]interface{}, tc Resour
 		}
 	}
 
-	// Check nested block attributes
 	for _, block := range rs.Blocks {
-		if !utils.FieldAppliesToMode(modeKey, block.Name, tc.Mode) {
-			continue
-		}
-		// Skip blocks with no fields defined in schema
-		if len(block.Fields) == 0 {
-			continue
-		}
-
-		// Block may appear as a JSON array (most blocks) or a JSON object (object_properties).
-		var item map[string]interface{}
-		if items, ok := res[block.Name].([]interface{}); ok {
-			if len(items) == 0 {
-				t.Errorf("[%s] block %q is an empty array in PUT body", tc.TerraformType, block.Name)
-				continue
-			}
-			item, ok = items[0].(map[string]interface{})
-			if !ok {
-				t.Errorf("[%s] block %q[0] is not an object", tc.TerraformType, block.Name)
-				continue
-			}
-		} else if obj, ok := res[block.Name].(map[string]interface{}); ok {
-			item = obj
-		} else {
-			t.Errorf("[%s] block %q absent from PUT body", tc.TerraformType, block.Name)
-			continue
-		}
-		for _, fi := range block.Fields {
-			nestedKey := block.Name + "." + fi.Name
-			if !utils.FieldAppliesToMode(modeKey, nestedKey, tc.Mode) {
-				continue
-			}
-			if _, exists := item[fi.Name]; !exists {
-				t.Errorf("[%s] nested field %s.%s absent from PUT body", tc.TerraformType, block.Name, fi.Name)
-			}
-		}
+		verifyBlockFieldCoverage(t, res, block, block.Name, tc, modeKey)
 	}
 
 	return nil
+}
+
+func verifyBlockFieldCoverage(t *testing.T, parent map[string]interface{}, block blockInfo, path string, tc ResourceCoverageEntry, modeKey string) {
+	t.Helper()
+	if !fieldAppliesToMode(t, modeKey, path, tc.Mode) {
+		return
+	}
+	if len(block.Fields) == 0 && len(block.Blocks) == 0 {
+		return
+	}
+
+	var item map[string]interface{}
+	switch value := parent[block.Name].(type) {
+	case []interface{}:
+		if len(value) == 0 {
+			t.Errorf("[%s] block %q is an empty array in PUT body", tc.TerraformType, path)
+			return
+		}
+		object, ok := value[0].(map[string]interface{})
+		if !ok {
+			t.Errorf("[%s] block %q[0] is not an object", tc.TerraformType, path)
+			return
+		}
+		item = object
+	case map[string]interface{}:
+		item = value
+	default:
+		t.Errorf("[%s] block %q absent from PUT body", tc.TerraformType, path)
+		return
+	}
+
+	for _, fi := range block.Fields {
+		nestedKey := path + "." + fi.Name
+		if !fieldAppliesToMode(t, modeKey, nestedKey, tc.Mode) {
+			continue
+		}
+		if _, exists := item[fi.Name]; !exists {
+			t.Errorf("[%s] nested field %s absent from PUT body", tc.TerraformType, nestedKey)
+		}
+	}
+	for _, nested := range block.Blocks {
+		verifyBlockFieldCoverage(t, item, nested, path+"."+nested.Name, tc, modeKey)
+	}
 }
 
 func mapKeys(m map[string]interface{}) []string {
@@ -691,4 +504,51 @@ func mapKeys(m map[string]interface{}) []string {
 	}
 	sort.Strings(keys)
 	return keys
+}
+
+func TestCoverageEntriesReadTheRegistry(t *testing.T) {
+	if _, err := coverageEntries(); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCoverageEntriesDefaultTestDataFromTheRegistry(t *testing.T) {
+	entries, err := coverageEntriesFor(spec.Registry{{
+		TerraformType: "verity_new_resource",
+		Modes:         []spec.Mode{spec.ModeCampus, spec.ModeDatacenter},
+		API: spec.APIResourceSpec{
+			EndpointPath:      "/newresources",
+			RequestWrapperKey: "new_resource",
+			FixedHeaders:      map[string]string{"scope": "global"},
+		},
+		Operations: spec.OperationSpec{Create: false},
+	}}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entries) != 1 {
+		t.Fatalf("entry count = %d, want 1", len(entries))
+	}
+	entry := entries[0]
+	if entry.ResourceName != "cov_new_resource" {
+		t.Errorf("resource name = %q, want cov_new_resource", entry.ResourceName)
+	}
+	if entry.APIPath != "/api/newresources" {
+		t.Errorf("API path = %q, want /api/newresources", entry.APIPath)
+	}
+	if entry.WrapperKey != "new_resource" {
+		t.Errorf("wrapper key = %q, want new_resource", entry.WrapperKey)
+	}
+	if entry.Mode != "datacenter" {
+		t.Errorf("mode = %q, want datacenter", entry.Mode)
+	}
+	if !entry.SkipCreate {
+		t.Error("SkipCreate = false, want true")
+	}
+	if got := entry.RequiredQueryParams["scope"]; got != "global" || len(entry.RequiredQueryParams) != 1 {
+		t.Errorf("required query parameters = %v, want map[scope:global]", entry.RequiredQueryParams)
+	}
+	if err := verifyRequiredQueryParams(map[string][]string{"scope": {"global"}}, entry); err != nil {
+		t.Error(err)
+	}
 }
