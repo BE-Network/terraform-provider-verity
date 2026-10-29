@@ -1,0 +1,22 @@
+{
+  "packet_queue": {
+    "cov_pq": {
+      "enable": true,
+      "name": "cov_pq",
+      "pbit": [
+        {
+          "index": 1,
+          "packet_queue_for_p_bit": 42
+        }
+      ],
+      "queue": [
+        {
+          "bandwidth_for_queue": 42,
+          "index": 1,
+          "scheduler_type": "",
+          "scheduler_weight": 42
+        }
+      ]
+    }
+  }
+}

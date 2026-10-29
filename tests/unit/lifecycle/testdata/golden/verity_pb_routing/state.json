@@ -1,0 +1,10 @@
+{
+  "enable": "true",
+  "name": "cov_pbr",
+  "policy.#": "1",
+  "policy.0.%": "4",
+  "policy.0.enable": "true",
+  "policy.0.index": "1",
+  "policy.0.pb_routing_acl": "",
+  "policy.0.pb_routing_acl_ref_type_": ""
+}

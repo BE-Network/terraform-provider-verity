@@ -13,6 +13,8 @@ import (
 	"strings"
 	"sync"
 	"testing"
+
+	"terraform-provider-verity/internal/utils"
 )
 
 type CapturedRequest struct {
@@ -40,9 +42,6 @@ type postGetOmission struct {
 	remaining int
 }
 
-// SetPostGetOmissions removes selected fields from every GET response for one
-// resource. It simulates an eventually consistent API that accepted a PUT but
-// has not yet serialized all fields back to a verification read.
 func (ms *MockServer) SetPostGetOmissions(path, wrapperKey, resourceName string, fields []string, responseCount int) {
 	ms.mu.Lock()
 	defer ms.mu.Unlock()
@@ -66,7 +65,7 @@ func NewMockServer(mode string) *MockServer {
 
 	datacenter := mode == "datacenter"
 	ms.versionResponse = []byte(fmt.Sprintf(
-		`{"version":"6.6","datacenter":%t}`, datacenter,
+		`{"version":%q,"datacenter":%t}`, utils.GetSupportedAPIVersionString(), datacenter,
 	))
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -276,7 +275,6 @@ func (ms *MockServer) applyPutState(path string, body map[string]interface{}, qu
 			ms.resourceState[path][wrapperKey][resourceName] = deepCopy(data)
 		}
 
-		// ACL special case
 		if path == "/api/acls" && wrapperKey == "ip_filter" {
 			versionKey := aclVersionKey(queryParams)
 			if ms.resourceState[path][versionKey] == nil {
@@ -288,7 +286,6 @@ func (ms *MockServer) applyPutState(path string, body map[string]interface{}, qu
 		}
 	}
 
-	// Merge post-PUT enrichment fields (simulates auto-assigned values)
 	if ms.postPutEnrichment != nil {
 		if pathEnrich, ok := ms.postPutEnrichment[path]; ok {
 			for wk, resources := range pathEnrich {
@@ -313,7 +310,6 @@ func (ms *MockServer) applyPatchState(path string, body map[string]interface{}, 
 			continue
 		}
 
-		// For ACLs, also merge into the version-specific key so GET returns updated state
 		keysToMerge := []string{wrapperKey}
 		if path == "/api/acls" && wrapperKey == "ip_filter" {
 			keysToMerge = append(keysToMerge, aclVersionKey(queryParams))
@@ -325,9 +321,9 @@ func (ms *MockServer) applyPatchState(path string, body map[string]interface{}, 
 				continue
 			}
 			for _, key := range keysToMerge {
-				// Get existing state or create new
+
 				if ms.resourceState[path] == nil || ms.resourceState[path][key] == nil {
-					// No existing state to patch — treat as full set
+
 					ms.applyPutState(path, body, queryParams)
 					return
 				}
@@ -335,12 +331,32 @@ func (ms *MockServer) applyPatchState(path string, body map[string]interface{}, 
 				if !ok {
 					existing = make(map[string]interface{})
 				}
-				// Merge patch fields into existing
+
 				for k, v := range patchFields {
 					if patchArr, ok := v.([]interface{}); ok && isIndexedArray(patchArr) {
 						existingArr, _ := existing[k].([]interface{})
 						existing[k] = mergeIndexedArray(existingArr, patchArr)
 						continue
+					}
+
+					if patchObject, ok := v.(map[string]interface{}); ok {
+						if existingObject, ok := existing[k].(map[string]interface{}); ok {
+							merged := make(map[string]interface{}, len(existingObject)+len(patchObject))
+							for member, value := range existingObject {
+								merged[member] = value
+							}
+							for member, value := range patchObject {
+
+								if patchArr, ok := value.([]interface{}); ok && isIndexedArray(patchArr) {
+									existingArr, _ := existingObject[member].([]interface{})
+									merged[member] = mergeIndexedArray(existingArr, patchArr)
+									continue
+								}
+								merged[member] = value
+							}
+							existing[k] = merged
+							continue
+						}
 					}
 					existing[k] = v
 				}
@@ -381,16 +397,31 @@ func mergeIndexedArray(existing, patch []interface{}) []interface{} {
 			continue
 		}
 
-		if len(m) == 1 {
-			// Delete: only "index" field present
+		existingItem, exists := indexMap[idx]
+		if len(m) == 1 && exists {
+
 			delete(indexMap, idx)
-		} else if existingItem, exists := indexMap[idx]; exists {
-			// Update: merge fields into existing item
+		} else if len(m) == 1 && idx != 0 {
+
+			indexMap[idx] = m
+		} else if exists {
+
 			for k, v := range m {
 				existingItem[k] = v
 			}
+		} else if idx == 0 {
+
+			next := float64(1)
+			for {
+				if _, taken := indexMap[next]; !taken {
+					break
+				}
+				next++
+			}
+			m["index"] = next
+			indexMap[next] = m
 		} else {
-			// Add: new item
+
 			indexMap[idx] = m
 		}
 	}
@@ -452,7 +483,6 @@ func (ms *MockServer) buildGetResponse(path string, queryParams map[string][]str
 		baseResponse = make(map[string]interface{})
 	}
 
-	// Merge live state on top (field-level deep merge preserves canned data for fields not in PUT)
 	if pathState, exists := ms.resourceState[path]; exists {
 		for wrapperKey, resources := range pathState {
 			existing, ok := baseResponse[wrapperKey].(map[string]interface{})
@@ -460,7 +490,7 @@ func (ms *MockServer) buildGetResponse(path string, queryParams map[string][]str
 				existing = make(map[string]interface{})
 			}
 			for name, data := range resources {
-				// Deep merge: merge fields from live state into canned resource data
+
 				if existingResource, ok := existing[name].(map[string]interface{}); ok {
 					if newFields, ok := data.(map[string]interface{}); ok {
 						for k, v := range newFields {

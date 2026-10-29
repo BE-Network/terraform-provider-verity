@@ -1,0 +1,36 @@
+{
+  "DELETE query": {
+    "ip_filter_name": [
+      "diffacl"
+    ],
+    "ip_version": [
+      "4"
+    ]
+  },
+  "PUT": {
+    "ip_filter": {
+      "diffacl": {
+        "bidirectional": true,
+        "destination_ip": "10.0.0.2",
+        "destination_port_1": 443,
+        "destination_port_2": 444,
+        "destination_port_operator": "equal",
+        "enable": true,
+        "name": "diffacl",
+        "object_properties": {
+          "notes": "acl"
+        },
+        "protocol": "tcp",
+        "source_ip": "10.0.0.1",
+        "source_port_1": 80,
+        "source_port_2": 81,
+        "source_port_operator": "equal"
+      }
+    }
+  },
+  "PUT query": {
+    "ip_version": [
+      "4"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+The Verity API returned arguments that this provider version does not support. They were left out of the generated configuration, so Terraform will not manage them:
+
+  verity_authenticated_eth_port: object_properties.group
+  verity_bundle: eth_port_paths.diagnostics_port_profile_num_diagnostics_port_profile, eth_port_paths.diagnostics_port_profile_num_diagnostics_port_profile_ref_type_, object_properties.group
+  verity_device_settings: object_properties.group
+  verity_device_voice_settings: object_properties
+  verity_eth_port_profile: object_properties.group
+  verity_eth_port_settings: object_properties
+  verity_fabric: crc_failure_threshold, islands, object_properties.system_graphs.graph_num_data, pairs
+  verity_packet_queue: object_properties
+  verity_service: object_properties.group, object_properties.on_summary
+  verity_service_port_profile: object_properties.group
+  verity_threshold_group: targets.switchpoint, targets.switchpoint_ref_type_
+  verity_voice_port_profile: object_properties.group
+
+Please check for a newer provider version that supports them.

@@ -1,0 +1,41 @@
+{
+  "DELETE query": {
+    "tacacs_profile_name": [
+      "difftacacs"
+    ]
+  },
+  "PATCH": {
+    "tacacs_profile": {
+      "difftacacs": {
+        "tacacs_servers": [
+          {
+            "index": 1,
+            "timeout": 10
+          }
+        ]
+      }
+    }
+  },
+  "PATCH query": {},
+  "PUT": {
+    "tacacs_profile": {
+      "difftacacs": {
+        "enable": true,
+        "name": "difftacacs",
+        "tacacs_servers": [
+          {
+            "auth_type": "pap",
+            "enabled": true,
+            "enc_secret": "",
+            "index": 1,
+            "port": "49",
+            "secret": "",
+            "server": "10.0.0.1",
+            "timeout": 5
+          }
+        ]
+      }
+    }
+  },
+  "PUT query": {}
+}

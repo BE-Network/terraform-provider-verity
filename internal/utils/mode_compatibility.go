@@ -1,19 +1,11 @@
 package utils
 
 import (
-	"context"
 	"fmt"
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-)
-
-// SupportedAPIVersion defines the API version this provider is built for
-const (
-	SupportedAPIMajor = 6
-	SupportedAPIMinor = 6
+	"terraform-provider-verity/internal/registry"
 )
 
 type OperationMode string
@@ -31,134 +23,58 @@ const (
 	ResourceModeBoth       ResourceMode = "both"
 )
 
-var ResourceCompatibility = map[string]ResourceMode{
-	// Datacenter-only resources
-	"verity_tenant":                  ResourceModeDatacenter,
-	"verity_gateway":                 ResourceModeDatacenter,
-	"verity_gateway_profile":         ResourceModeDatacenter,
-	"verity_pod":                     ResourceModeDatacenter,
-	"verity_spine_plane":             ResourceModeDatacenter,
-	"verity_route_map_clause":        ResourceModeDatacenter,
-	"verity_route_map":               ResourceModeDatacenter,
-	"verity_as_path_access_list":     ResourceModeDatacenter,
-	"verity_community_list":          ResourceModeDatacenter,
-	"verity_extended_community_list": ResourceModeDatacenter,
-	"verity_ipv4_list":               ResourceModeDatacenter,
-	"verity_ipv4_prefix_list":        ResourceModeDatacenter,
-	"verity_ipv6_list":               ResourceModeDatacenter,
-	"verity_ipv6_prefix_list":        ResourceModeDatacenter,
-	"verity_packet_broker":           ResourceModeDatacenter,
-	"verity_pb_routing":              ResourceModeDatacenter,
-	"verity_pb_routing_acl":          ResourceModeDatacenter,
-	"verity_ssp_group":               ResourceModeDatacenter,
-	"verity_su":                      ResourceModeDatacenter,
-	"verity_plane":                   ResourceModeDatacenter,
-	"verity_rack":                    ResourceModeDatacenter,
-
-	// Campus-only resources
-	"verity_authenticated_eth_port": ResourceModeCampus,
-	"verity_device_voice_settings":  ResourceModeCampus,
-	"verity_mac_filter":             ResourceModeCampus,
-	"verity_service_port_profile":   ResourceModeCampus,
-	"verity_voice_port_profile":     ResourceModeCampus,
-
-	// Resources available on both datacenter and campus systems
-	"verity_acl_v4":                   ResourceModeBoth,
-	"verity_acl_v6":                   ResourceModeBoth,
-	"verity_badge":                    ResourceModeBoth,
-	"verity_bundle":                   ResourceModeBoth,
-	"verity_aaa_profile":              ResourceModeBoth,
-	"verity_ldap_profile":             ResourceModeBoth,
-	"verity_device_settings":          ResourceModeBoth,
-	"verity_diagnostics_port_profile": ResourceModeBoth,
-	"verity_diagnostics_profile":      ResourceModeBoth,
-	"verity_eth_port_profile":         ResourceModeBoth,
-	"verity_eth_port_settings":        ResourceModeBoth,
-	"verity_lag":                      ResourceModeBoth,
-	"verity_packet_queue":             ResourceModeBoth,
-	"verity_pair":                     ResourceModeBoth,
-	"verity_port_acl":                 ResourceModeBoth,
-	"verity_service":                  ResourceModeBoth,
-	"verity_sflow_collector":          ResourceModeBoth,
-	"verity_fabric":                   ResourceModeBoth,
-	"verity_sfp_breakout":             ResourceModeBoth,
-	"verity_operation_stage":          ResourceModeBoth,
-	"verity_switchpoint":              ResourceModeBoth,
-	"verity_tacacs_profile":           ResourceModeBoth,
-	"verity_threshold_group":          ResourceModeBoth,
-	"verity_threshold":                ResourceModeBoth,
-	"verity_grouping_rule":            ResourceModeBoth,
+var nonAPIResourceCompatibility = map[string]ResourceMode{
+	"verity_operation_stage": ResourceModeBoth,
 }
 
-// ValidateAPIVersion checks if the API version matches the supported version.
+func ResourceModeFor(resourceType string) (ResourceMode, bool) {
+	if mode, found := nonAPIResourceCompatibility[resourceType]; found {
+		return mode, true
+	}
+	resource, found := registryResource(resourceType)
+	if !found {
+		return "", false
+	}
+	modes := specModeSet(resource.Modes)
+	switch {
+	case modes[string(ModeDatacenter)] && modes[string(ModeCampus)]:
+		return ResourceModeBoth, true
+	case modes[string(ModeDatacenter)]:
+		return ResourceModeDatacenter, true
+	case modes[string(ModeCampus)]:
+		return ResourceModeCampus, true
+	default:
+		return "", false
+	}
+}
+
 func ValidateAPIVersion(apiVersion string) error {
+	expected, err := registry.Version()
+	if err != nil {
+		return fmt.Errorf("load supported API version: %w", err)
+	}
 	major, minor, err := ParseApiVersion(apiVersion)
 	if err != nil {
 		return fmt.Errorf("failed to parse API version '%s': %w. This Terraform provider requires API version %d.%d",
-			apiVersion, err, SupportedAPIMajor, SupportedAPIMinor)
+			apiVersion, err, expected.Major, expected.Minor)
 	}
 
-	if major != SupportedAPIMajor || minor != SupportedAPIMinor {
+	if major != expected.Major || minor != expected.Minor {
 		return fmt.Errorf("API version mismatch: server is running API version %d.%d, but this Terraform provider is built for API version %d.%d. Please use a Terraform provider version that matches your API version",
-			major, minor, SupportedAPIMajor, SupportedAPIMinor)
+			major, minor, expected.Major, expected.Minor)
 	}
 
 	return nil
 }
 
 func GetSupportedAPIVersionString() string {
-	return fmt.Sprintf("%d.%d", SupportedAPIMajor, SupportedAPIMinor)
+	version, err := registry.Version()
+	if err != nil {
+		panic(err)
+	}
+	return version.String()
 }
 
-// FilterResourcesByMode filters resources based on the operation mode (datacenter/campus).
-func FilterResourcesByMode(
-	ctx context.Context,
-	resources []func() resource.Resource,
-	currentMode string,
-	apiVersion string,
-) []func() resource.Resource {
-	tflog.Info(ctx, "Filtering resources by mode", map[string]interface{}{
-		"mode":        currentMode,
-		"api_version": apiVersion,
-	})
-
-	compatibleResources := make([]func() resource.Resource, 0, len(resources))
-	resourceTypeToConstructor := make(map[string]func() resource.Resource, len(resources))
-
-	for _, constructorFn := range resources {
-		instance := constructorFn()
-		metadataResponse := resource.MetadataResponse{}
-		instance.Metadata(ctx, resource.MetadataRequest{ProviderTypeName: "verity"}, &metadataResponse)
-
-		if _, isModeControlled := ResourceCompatibility[metadataResponse.TypeName]; isModeControlled {
-			resourceTypeToConstructor[metadataResponse.TypeName] = constructorFn
-		}
-	}
-
-	for resourceType, constructorFn := range resourceTypeToConstructor {
-		if IsResourceCompatibleWithMode(resourceType, currentMode) {
-			tflog.Debug(ctx, "Resource is compatible with mode", map[string]interface{}{
-				"resource_type": resourceType,
-				"mode":          currentMode,
-			})
-			compatibleResources = append(compatibleResources, constructorFn)
-		} else {
-			tflog.Debug(ctx, "Resource is NOT compatible with mode", map[string]interface{}{
-				"resource_type": resourceType,
-				"mode":          currentMode,
-			})
-		}
-	}
-
-	tflog.Info(ctx, "Resource filtering complete", map[string]interface{}{
-		"total_resources":      len(resources),
-		"compatible_resources": len(compatibleResources),
-	})
-
-	return compatibleResources
-}
-
-// ParseApiVersion extracts major and minor version numbers from a version string.
 func ParseApiVersion(version string) (int, int, error) {
 	parts := strings.Split(version, ".")
 
@@ -179,7 +95,7 @@ func ParseApiVersion(version string) (int, int, error) {
 }
 
 func IsResourceCompatibleWithMode(resourceType string, mode string) bool {
-	compatMode, exists := ResourceCompatibility[resourceType]
+	compatMode, exists := ResourceModeFor(resourceType)
 	if !exists {
 		return false
 	}

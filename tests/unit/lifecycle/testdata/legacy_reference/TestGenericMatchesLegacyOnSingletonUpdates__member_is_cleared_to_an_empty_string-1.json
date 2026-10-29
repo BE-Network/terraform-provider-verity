@@ -1,0 +1,31 @@
+{
+  "DELETE query": {
+    "badge_name": [
+      "diffbadge"
+    ]
+  },
+  "PATCH": {
+    "badge": {
+      "diffbadge": {
+        "object_properties": {
+          "notes": ""
+        }
+      }
+    }
+  },
+  "PATCH query": {},
+  "PUT": {
+    "badge": {
+      "diffbadge": {
+        "color": "red",
+        "enable": true,
+        "name": "diffbadge",
+        "number": 42,
+        "object_properties": {
+          "notes": "first"
+        }
+      }
+    }
+  },
+  "PUT query": {}
+}

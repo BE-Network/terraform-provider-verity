@@ -366,73 +366,25 @@ func getApiVersion(ctx context.Context, provCtx *providerContext) (string, error
 	return versionPayload.Version, nil
 }
 
-func (p *verityProvider) Resources(ctx context.Context) []func() resource.Resource {
-	providerData, ok := ctx.Value("providerData").(*providerContext)
-	if !ok {
-		tflog.Warn(ctx, "Provider context not available, returning all resources")
-		return getAllResources()
-	}
-
-	allResources := getAllResources()
-	compatibleResources := utils.FilterResourcesByMode(ctx, allResources, providerData.mode, providerData.apiVersion)
-
-	return compatibleResources
+func (p *verityProvider) Resources(_ context.Context) []func() resource.Resource {
+	return getAllResources()
 }
 
 func getAllResources() []func() resource.Resource {
-	return []func() resource.Resource{
-		NewVerityOperationStageResource,
-		NewVerityTenantResource,
-		NewVerityGatewayResource,
-		NewVerityServiceResource,
-		NewVerityEthPortProfileResource,
-		NewVerityEthPortSettingsResource,
-		NewVerityBundleResource,
-		NewVerityLagResource,
-		NewVerityGatewayProfileResource,
-		NewVerityAaaProfileResource,
-		NewVerityLdapProfileResource,
-		NewVerityACLV4Resource,
-		NewVerityACLV6Resource,
-		NewVerityBadgeResource,
-		NewVerityAuthenticatedEthPortResource,
-		NewVerityDeviceVoiceSettingsResource,
-		NewVerityPacketBrokerResource,
-		NewVerityPacketQueueResource,
-		NewVerityTacacsProfileResource,
-		NewVerityServicePortProfileResource,
-		NewVerityVoicePortProfileResource,
-		NewVeritySwitchpointResource,
-		NewVerityAsPathAccessListResource,
-		NewVerityCommunityListResource,
-		NewVerityMacFilterResource,
-		NewVerityDeviceSettingsResource,
-		NewVerityExtendedCommunityListResource,
-		NewVerityIpv4ListResource,
-		NewVerityIpv4PrefixListResource,
-		NewVerityIpv6ListResource,
-		NewVerityIpv6PrefixListResource,
-		NewVerityRouteMapClauseResource,
-		NewVerityRouteMapResource,
-		NewVeritySfpBreakoutResource,
-		NewVerityFabricResource,
-		NewVerityPlaneResource,
-		NewVerityRackResource,
-		NewVerityPairResource,
-		NewVerityPodResource,
-		NewVerityPortAclResource,
-		NewVeritySflowCollectorResource,
-		NewVerityDiagnosticsProfileResource,
-		NewVerityDiagnosticsPortProfileResource,
-		NewVerityPBRoutingResource,
-		NewVerityPBRoutingACLResource,
-		NewVeritySpinePlaneResource,
-		NewVeritySspGroupResource,
-		NewVeritySuResource,
-		NewVerityGroupingRuleResource,
-		NewVerityThresholdGroupResource,
-		NewVerityThresholdResource,
+	order := registryResourceOrder()
+	all := make([]func() resource.Resource, 0, len(order)+len(nonAPIResources))
+	for _, terraformType := range order {
+		factory, err := genericConstructor(terraformType)
+		if err != nil {
+			panic("provider: " + err.Error())
+		}
+		all = append(all, factory)
 	}
+	return append(all, nonAPIResources...)
+}
+
+var nonAPIResources = []func() resource.Resource{
+	NewVerityOperationStageResource,
 }
 
 func (p *verityProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
@@ -451,7 +403,6 @@ func (p *providerContext) initBulkOpsTicker(ctx context.Context) {
 				p.debounceTimer.Stop()
 			}
 
-			// when no new ticks arrive, execute operations
 			p.debounceTimer = time.AfterFunc(bulkops.DebounceDelay, func() {
 				tflog.Debug(ctx, "Bulk operation debounce timer expired, executing pending operations")
 				if diags := p.bulkOpsMgr.ExecuteAllPendingOperations(ctx); diags != nil {
@@ -487,14 +438,12 @@ func authenticate(ctx context.Context, provCtx *providerContext) error {
 		return nil
 	}
 
-	auth := openapi.NewAuthPostRequestAuth(
-		provCtx.credentials.username,
-		provCtx.credentials.password,
-	)
-	authReq := openapi.NewAuthPostRequest()
-	authReq.SetAuth(*auth)
+	authReq := openapi.AuthPostRequest{Auth: &openapi.AuthPostRequestAuth{
+		Username: provCtx.credentials.username,
+		Password: provCtx.credentials.password,
+	}}
 
-	resp, err := provCtx.client.AuthorizationAPI.AuthPost(ctx).AuthPostRequest(*authReq).Execute()
+	resp, err := provCtx.client.AuthorizationAPI.AuthPost(ctx).AuthPostRequest(authReq).Execute()
 	if err != nil {
 		return fmt.Errorf("failed to authenticate: %v", err)
 	}

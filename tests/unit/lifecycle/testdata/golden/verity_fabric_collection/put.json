@@ -1,0 +1,8 @@
+{
+  "site_collection": {
+    "cov_fabric_collection": {
+      "enable": true,
+      "name": "cov_fabric_collection"
+    }
+  }
+}

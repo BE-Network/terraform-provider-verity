@@ -1,0 +1,23 @@
+{
+  "enable": "true",
+  "ip_mask": "",
+  "name": "cov_spp",
+  "object_properties.#": "1",
+  "object_properties.0.%": "2",
+  "object_properties.0.on_summary": "true",
+  "object_properties.0.port_monitoring": "",
+  "port_type": "",
+  "services.#": "1",
+  "services.0.%": "7",
+  "services.0.index": "1",
+  "services.0.row_num_enable": "true",
+  "services.0.row_num_external_vlan": "42",
+  "services.0.row_num_limit_in": "42",
+  "services.0.row_num_limit_out": "42",
+  "services.0.row_num_service": "",
+  "services.0.row_num_service_ref_type_": "",
+  "tls_limit_in": "42",
+  "tls_service": "",
+  "tls_service_ref_type_": "",
+  "trusted_port": "true"
+}

@@ -13,10 +13,6 @@ import (
 	"terraform-provider-verity/openapi"
 )
 
-// Resources fall into two categories: without header params (most resources) and with header params (currently only ACLs).
-// Testing badges covers the first category; testing ACLs covers the second. Together they cover all cases.
-
-// TestDeleteBatchSplitting verifies DELETE ops exceeding MaxDeleteBatchSize (100) are split into correct batches.
 func TestDeleteBatchSplitting(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -26,7 +22,7 @@ func TestDeleteBatchSplitting(t *testing.T) {
 		expectedSizes []int
 	}{
 		{"below_limit_50", 50, 1, []int{50}},
-		// 100 does NOT trigger batching (condition is strictly greater than 100)
+
 		{"max_single_batch_100", 100, 1, []int{100}},
 		{"just_over_101", 101, 2, []int{100, 1}},
 		{"double_200", 200, 2, []int{100, 100}},
@@ -193,7 +189,7 @@ func TestDeleteBatchFailureStopsRemaining(t *testing.T) {
 			mu.Unlock()
 
 			if callNum == 2 {
-				// Fail on the second batch
+
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write([]byte(`{"error":"server error"}`))
 				return
@@ -215,7 +211,7 @@ func TestDeleteBatchFailureStopsRemaining(t *testing.T) {
 	mgr := bulkops.GetManager(client, func(ctx context.Context, m interface{}, key string) {}, nil, "datacenter")
 
 	ctx := context.Background()
-	// 250 resources → 3 expected batches, but batch 2 fails
+
 	for i := 0; i < 250; i++ {
 		mgr.AddDelete(ctx, "badge", fmt.Sprintf("badge_%03d", i))
 	}
@@ -228,8 +224,6 @@ func TestDeleteBatchFailureStopsRemaining(t *testing.T) {
 	mu.Lock()
 	defer mu.Unlock()
 
-	// Batch 3 must not execute. GenericOpenAPIError is not retriable, so exactly 2 calls in practice.
-	// maxExpectedCalls guards against future retriable errors: 1 (batch 1) + 1 + 5 retries (batch 2).
 	const maxExpectedCalls = 7
 	if deleteCallCount > maxExpectedCalls {
 		t.Errorf("expected batch 3 to not execute, but got %d total DELETE calls (max allowed: %d)",
@@ -252,7 +246,7 @@ func TestDeleteBatchFirstBatchFailureAbortsImmediately(t *testing.T) {
 			mu.Lock()
 			deleteCallCount++
 			mu.Unlock()
-			// Always fail — simulates batch 1 failure
+
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(`{"error":"server error"}`))
 		default:
@@ -270,7 +264,7 @@ func TestDeleteBatchFirstBatchFailureAbortsImmediately(t *testing.T) {
 	mgr := bulkops.GetManager(client, func(ctx context.Context, m interface{}, key string) {}, nil, "datacenter")
 
 	ctx := context.Background()
-	// 250 resources → 3 batches; batch 1 fails immediately
+
 	for i := 0; i < 250; i++ {
 		mgr.AddDelete(ctx, "badge", fmt.Sprintf("badge_%03d", i))
 	}
@@ -292,8 +286,6 @@ func TestDeleteBatchFirstBatchFailureAbortsImmediately(t *testing.T) {
 	}
 }
 
-// TestDeleteBatchACLHeaderSplitAndBatching verifies ACL DELETEs are first split by ip_version,
-// then each version group is independently batched. 150 IPv4 + 150 IPv6 → 4 DELETE calls total.
 func TestDeleteBatchACLHeaderSplitAndBatching(t *testing.T) {
 	t.Parallel()
 
@@ -335,7 +327,7 @@ func TestDeleteBatchACLHeaderSplitAndBatching(t *testing.T) {
 	mgr := bulkops.GetManager(client, func(ctx context.Context, m interface{}, key string) {}, nil, "datacenter")
 
 	ctx := context.Background()
-	// 150 IPv4 + 150 IPv6 = 300 ACLs total
+
 	for i := 0; i < 150; i++ {
 		mgr.AddDelete(ctx, "acl", fmt.Sprintf("v4_acl_%03d", i), map[string]string{"ip_version": "4"})
 	}
@@ -351,7 +343,6 @@ func TestDeleteBatchACLHeaderSplitAndBatching(t *testing.T) {
 	mu.Lock()
 	defer mu.Unlock()
 
-	// Expect 4 total DELETE calls: 2 for IPv4 (100+50) and 2 for IPv6 (100+50)
 	if len(deleteCalls) != 4 {
 		t.Fatalf("expected 4 DELETE calls (2 per version), got %d", len(deleteCalls))
 	}
@@ -386,7 +377,6 @@ func TestDeleteBatchACLHeaderSplitAndBatching(t *testing.T) {
 		t.Errorf("expected 150 IPv6 names total, got %d", len(v6Names))
 	}
 
-	// Verify no cross-contamination: no v6 name in v4 group and vice versa
 	sort.Strings(v4Names)
 	sort.Strings(v6Names)
 	for _, name := range v4Names {

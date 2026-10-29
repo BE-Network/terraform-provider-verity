@@ -1,0 +1,31 @@
+{
+  "threshold_group": {
+    "cov_tg": {
+      "enable": true,
+      "name": "cov_tg",
+      "targets": [
+        {
+          "element": "",
+          "element_ref_type_": "",
+          "enable": true,
+          "grouping_rules": "",
+          "grouping_rules_ref_type_": "",
+          "index": 1,
+          "port": "",
+          "sdlc": "",
+          "type": ""
+        }
+      ],
+      "thresholds": [
+        {
+          "enable": true,
+          "index": 1,
+          "severity_override": "",
+          "threshold": "",
+          "threshold_ref_type_": ""
+        }
+      ],
+      "type": ""
+    }
+  }
+}

@@ -1,0 +1,138 @@
+package provider
+
+import (
+	"context"
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+
+	"terraform-provider-verity/internal/importer"
+	"terraform-provider-verity/internal/registry"
+)
+
+func TestImporterKeepsEverySupportedArgument(t *testing.T) {
+	resources, err := registry.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	typesByWrapper := map[string][]string{}
+	for _, resource := range resources {
+
+		keys := map[string]bool{resource.API.RequestWrapperKey: true, resource.API.ResponseCollectionKey: true}
+		for key := range keys {
+			if key != "" {
+				typesByWrapper[key] = append(typesByWrapper[key], resource.TerraformType)
+			}
+		}
+	}
+
+	var bodies []string
+	for _, pattern := range []string{
+		"../../tests/unit/lifecycle/testdata/golden/*/put.json",
+		"../../tests/unit/lifecycle/testdata/golden/*/patch.json",
+	} {
+		matches, err := filepath.Glob(pattern)
+		if err != nil {
+			t.Fatal(err)
+		}
+		bodies = append(bodies, matches...)
+	}
+	if len(bodies) < 50 {
+		t.Fatalf("found only %d bodies to check; the test data moved", len(bodies))
+	}
+
+	imp := importer.NewImporter(nil, "datacenter").WithSupportedFields(importerSupportedFields(context.Background()))
+	checked := 0
+	for _, path := range bodies {
+		raw, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var body map[string]map[string]map[string]interface{}
+		if err := json.Unmarshal(raw, &body); err != nil {
+			t.Fatalf("%s: %v", path, err)
+		}
+		for wrapper, objects := range body {
+			resourceTypes := typesByWrapper[wrapper]
+			if len(resourceTypes) == 0 {
+				t.Fatalf("%s: no registry resource uses wrapper key %q", path, wrapper)
+			}
+			for _, resourceType := range resourceTypes {
+				imp.PruneUnsupported(resourceType, objects)
+				checked++
+			}
+		}
+	}
+	if checked == 0 {
+		t.Fatal("nothing was checked")
+	}
+	for resourceType, paths := range imp.UnsupportedFields() {
+		t.Errorf("%s: supported arguments were left out: %s", resourceType, strings.Join(paths, ", "))
+	}
+}
+
+func TestImporterLeavesOutArgumentsFromANewerAPI(t *testing.T) {
+	imp := importer.NewImporter(nil, "datacenter").WithSupportedFields(importerSupportedFields(context.Background()))
+	tenants := map[string]map[string]interface{}{
+		"t1": {"name": "t1", "enable": true, "future_maximum_paths": nil, "future_path_selection_mode": "automated"},
+	}
+	switchpoints := map[string]map[string]interface{}{
+		"Leaf_01": {"name": "Leaf_01", "traffic_mirrors": []interface{}{map[string]interface{}{
+			"index":                                      float64(1),
+			"traffic_mirror_num_enable":                  true,
+			"traffic_mirror_num_future_filter":           "montest",
+			"traffic_mirror_num_future_filter_ref_type_": "monitoring_acl",
+		}}},
+	}
+	imp.PruneUnsupported("verity_tenant", tenants)
+	imp.PruneUnsupported("verity_switchpoint", switchpoints)
+
+	if _, kept := tenants["t1"]["future_maximum_paths"]; kept {
+		t.Error("future_maximum_paths was written")
+	}
+	if _, kept := tenants["t1"]["enable"]; !kept {
+		t.Error("enable was left out")
+	}
+	entry := switchpoints["Leaf_01"]["traffic_mirrors"].([]interface{})[0].(map[string]interface{})
+	if _, kept := entry["traffic_mirror_num_future_filter"]; kept {
+		t.Error("traffic_mirror_num_future_filter was written")
+	}
+	if _, kept := entry["traffic_mirror_num_enable"]; !kept {
+		t.Error("traffic_mirror_num_enable was left out")
+	}
+
+	want := "The Verity API returned arguments that this provider version does not support. " +
+		"They were left out of the generated configuration, so Terraform will not manage them:\n" +
+		"\n  verity_switchpoint: traffic_mirrors.traffic_mirror_num_future_filter, traffic_mirrors.traffic_mirror_num_future_filter_ref_type_" +
+		"\n  verity_tenant: future_maximum_paths, future_path_selection_mode" +
+		"\n\nPlease check for a newer provider version that supports them."
+	if got := unsupportedFieldsWarning(imp.UnsupportedFields()); got != want {
+		t.Errorf("warning =\n%s\nwant\n%s", got, want)
+	}
+	if got := unsupportedFieldsWarning(nil); got != "" {
+		t.Errorf("warning with nothing left out = %q, want none", got)
+	}
+}
+
+func TestUnsupportedArgumentsFileFollowsTheLastImport(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, unsupportedArgumentsFile)
+
+	if err := writeUnsupportedArgumentsFile(dir, "left out"); err != nil {
+		t.Fatal(err)
+	}
+	if written, err := os.ReadFile(path); err != nil || string(written) != "left out\n" {
+		t.Fatalf("file = %q, %v; want the warning", written, err)
+	}
+	if err := writeUnsupportedArgumentsFile(dir, ""); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		t.Fatalf("the file from the earlier import is still there: %v", err)
+	}
+	if err := writeUnsupportedArgumentsFile(dir, ""); err != nil {
+		t.Fatalf("removing a file that is not there failed: %v", err)
+	}
+}

@@ -1,0 +1,54 @@
+{
+  "ldap_profile": {
+    "cov_ldap": {
+      "attribute_maps": [
+        {
+          "enabled": true,
+          "from": "",
+          "index": 1,
+          "map_name": "",
+          "to": ""
+        }
+      ],
+      "base_dn": "",
+      "bind_dn": "",
+      "bind_password": "",
+      "bind_time_limit": 42,
+      "default_port": 42,
+      "enable": true,
+      "encrypted_bind_password": "",
+      "idle_time_limit": 42,
+      "ldap_servers": [
+        {
+          "enabled": true,
+          "index": 1,
+          "port": 42,
+          "priority": 42,
+          "retransmit_attempts": 42,
+          "server": "",
+          "ssl_tls_mode": "",
+          "use_type": ""
+        }
+      ],
+      "ldap_version": "",
+      "name": "cov_ldap",
+      "nss_base_group": "",
+      "nss_base_netgroup": "",
+      "nss_base_passwd": "",
+      "nss_base_shadow": "",
+      "nss_base_sudoers": "",
+      "nss_initgroups_ignore_users": "",
+      "nss_skip_members": true,
+      "pam_filter": "",
+      "pam_group_dn": "",
+      "pam_login_attribute": "",
+      "pam_member_attribute": "",
+      "retransmit_attempts": 42,
+      "search_scope": "",
+      "search_time_limit": 42,
+      "ssl_tls_mode": "",
+      "sudoers_base": "",
+      "sudoers_search_filter": ""
+    }
+  }
+}

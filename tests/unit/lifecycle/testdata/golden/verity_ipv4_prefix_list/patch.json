@@ -1,0 +1,7 @@
+{
+  "ipv4_prefix_list": {
+    "cov_ipv4pl": {
+      "enable": false
+    }
+  }
+}

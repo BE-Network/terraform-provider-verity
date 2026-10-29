@@ -1,0 +1,36 @@
+{
+  "DELETE query": {
+    "service_name": [
+      "diffsvc"
+    ]
+  },
+  "PATCH": {
+    "service": {
+      "diffsvc": {
+        "vlan": 20
+      }
+    }
+  },
+  "PATCH query": {},
+  "PUT": {
+    "service": {
+      "diffsvc": {
+        "anycast_ipv4_mask": "",
+        "anycast_ipv6_mask": "",
+        "dhcp_server_ipv4": "",
+        "dhcp_server_ipv6": "",
+        "enable": true,
+        "ip_attach_host_advertise": 42,
+        "mtu": 1500,
+        "name": "diffsvc",
+        "policy_based_routing": "",
+        "policy_based_routing_ref_type_": "",
+        "tenant": "",
+        "tenant_ref_type_": "",
+        "vlan": 10,
+        "vni_auto_assigned_": true
+      }
+    }
+  },
+  "PUT query": {}
+}

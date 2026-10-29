@@ -1,13 +1,15 @@
-# Spine Plane Resource
+# verity_spine_plane (Resource)
 
-Manages a Spine Plane configuration in Verity. This resource allows you to define named spine plane objects, which can be enabled or disabled and may include additional properties.
+Manages a Spine Plane resource.
+
+Supported modes: Datacenter.
 
 ## Example Usage
 
 ```hcl
 resource "verity_spine_plane" "example" {
-  name   = "example"
-  enable = true
+  name = "example"
+  enable = false
   fabric = ""
   fabric_ref_type_ = "fabric"
 
@@ -19,17 +21,29 @@ resource "verity_spine_plane" "example" {
 
 ## Argument Reference
 
-* `name` (String) - Object Name. Must be unique
-* `enable` (Boolean) - Enable object
-* `fabric` (String) - Fabric this Spine Plane is assigned to
-* `fabric_ref_type_` (String) - Object type for fabric field
-* `object_properties` (Object) - Additional properties for the spine plane
-  * `notes` (String) - User Notes
+### Required
 
+* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+
+### Optional
+
+* `enable` (Boolean) - Enable object.
+* `fabric` (String) - Fabric this Spine Plane is assigned to. Set together with `fabric_ref_type_`.
+* `fabric_ref_type_` (String) - Object type for fabric field.
+* `object_properties` (Block) - Object properties for the spine plane. At most one block.
+  * `notes` (String) - User Notes.
+
+## Reference Fields
+
+A reference names another Verity object. Set the reference and its type field together. When your configuration sets neither, Terraform leaves the reference to the server, including one set in the Verity UI.
+
+| Field | Type field | Allowed types |
+| --- | --- | --- |
+| `fabric` | `fabric_ref_type_` | `fabric` |
 
 ## Import
 
-This resource can be imported using the spine plane name:
+Import an existing object by its `name`:
 
 ```sh
 terraform import verity_spine_plane.<resource_name> <name>

@@ -1,0 +1,16 @@
+{
+  "monitoring_acl": {
+    "test": {
+      "name": "test",
+      "enable": true,
+      "services": [
+        {
+          "enable": true,
+          "service": "test",
+          "service_ref_type_": "service",
+          "index": 1
+        }
+      ]
+    }
+  }
+}

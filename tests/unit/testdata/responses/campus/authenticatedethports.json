@@ -15,7 +15,8 @@
           "eth_port_profile_num_walled_garden_set": false,
           "eth_port_profile_num_radius_filter_id": "data_2",
           "index": 1,
-          "eth_port_profile_num_eth_port_ref_type_": "eth_port_profile_"
+          "eth_port_profile_num_eth_port_ref_type_": "eth_port_profile_",
+          "eth_port_profile_num_failed_action_set": false
         },
         {
           "eth_port_profile_num_enable": true,
@@ -23,7 +24,8 @@
           "eth_port_profile_num_walled_garden_set": false,
           "eth_port_profile_num_radius_filter_id": "",
           "index": 2,
-          "eth_port_profile_num_eth_port_ref_type_": ""
+          "eth_port_profile_num_eth_port_ref_type_": "",
+          "eth_port_profile_num_failed_action_set": false
         }
       ],
       "object_properties": {

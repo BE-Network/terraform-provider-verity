@@ -1,0 +1,7 @@
+{
+  "ipv6_list_filter": {
+    "cov_ipv6l": {
+      "enable": false
+    }
+  }
+}

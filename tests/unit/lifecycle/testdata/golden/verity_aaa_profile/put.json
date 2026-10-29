@@ -1,0 +1,20 @@
+{
+  "device_aaa_profile": {
+    "cov_aaa": {
+      "enable": true,
+      "fail_through": true,
+      "ldap_profile": "",
+      "ldap_profile_ref_type_": "",
+      "login_default": [
+        {
+          "enabled": true,
+          "index": 1,
+          "login_method": ""
+        }
+      ],
+      "name": "cov_aaa",
+      "tacacs_profile": "",
+      "tacacs_profile_ref_type_": ""
+    }
+  }
+}

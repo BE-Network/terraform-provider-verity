@@ -1,0 +1,62 @@
+{
+  "DELETE query": {
+    "pb_egress_profile_name": [
+      "diffpb"
+    ]
+  },
+  "PATCH": {
+    "pb_egress_profile": {
+      "diffpb": {
+        "ipv4_permit": [
+          {
+            "filter": "filter-b",
+            "filter_ref_type_": "ipv4_filter",
+            "index": 1
+          }
+        ]
+      }
+    }
+  },
+  "PATCH query": {},
+  "PUT": {
+    "pb_egress_profile": {
+      "diffpb": {
+        "enable": true,
+        "ipv4_deny": [
+          {
+            "enable": true,
+            "filter": "",
+            "filter_ref_type_": "",
+            "index": 1
+          }
+        ],
+        "ipv4_permit": [
+          {
+            "enable": true,
+            "filter": "filter-a",
+            "filter_ref_type_": "ipv4_filter",
+            "index": 1
+          }
+        ],
+        "ipv6_deny": [
+          {
+            "enable": true,
+            "filter": "",
+            "filter_ref_type_": "",
+            "index": 1
+          }
+        ],
+        "ipv6_permit": [
+          {
+            "enable": true,
+            "filter": "",
+            "filter_ref_type_": "",
+            "index": 1
+          }
+        ],
+        "name": "diffpb"
+      }
+    }
+  },
+  "PUT query": {}
+}

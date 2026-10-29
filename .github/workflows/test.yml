@@ -12,11 +12,19 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version: '1.25'
+      - name: Verify historical state compatibility
+        run: go test ./tests/unit/lifecycle/ -run '^TestStateCompatibility' -count=1 -timeout 2m
+      - name: Verify generated provider artifacts
+        run: tools/generate_provider.sh --check
+      - name: Verify auth/session log redaction
+        run: go test ./tests/unit/sdk/ -count=1 -timeout 2m
+      - name: Verify provider contracts and generators
+        run: go test ./internal/... ./tools/... -count=1 -timeout 5m
       - uses: hashicorp/setup-terraform@v4
         with:
           terraform_wrapper: false
       - run: |
-          go test ./tests/unit/lifecycle/ -count=1 -timeout 5m 2>&1
+          go test ./tests/unit/lifecycle/ -count=1 -timeout 15m 2>&1
           go test ./tests/unit/bulkops/ -count=1 -timeout 2m 2>&1
         env:
           VERITY_DEFAULT_BATCH_DELAY: 100ms

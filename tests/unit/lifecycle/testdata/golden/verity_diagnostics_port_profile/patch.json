@@ -1,0 +1,7 @@
+{
+  "diagnostics_port_profile": {
+    "cov_diagpp": {
+      "enable": false
+    }
+  }
+}

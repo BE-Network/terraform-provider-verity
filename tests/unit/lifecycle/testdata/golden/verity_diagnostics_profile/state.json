@@ -1,0 +1,17 @@
+{
+  "enable": "true",
+  "enable_sflow": "true",
+  "erspan_destination_ip": "",
+  "erspan_dscp": "42",
+  "erspan_gre_type": "",
+  "erspan_queue": "42",
+  "erspan_ttl": "42",
+  "flow_collector": "",
+  "flow_collector_ref_type_": "",
+  "monitoring_acl": "",
+  "monitoring_acl_ref_type_": "",
+  "name": "cov_diagp",
+  "poll_interval": "42",
+  "use_internal_collector": "true",
+  "vrf_type": ""
+}

@@ -1,0 +1,14 @@
+{
+  "enable": "true",
+  "name": "cov_tacacs_profile",
+  "tacacs_servers.#": "1",
+  "tacacs_servers.0.%": "8",
+  "tacacs_servers.0.auth_type": "",
+  "tacacs_servers.0.enabled": "true",
+  "tacacs_servers.0.enc_secret": "",
+  "tacacs_servers.0.index": "1",
+  "tacacs_servers.0.port": "",
+  "tacacs_servers.0.secret": "",
+  "tacacs_servers.0.server": "",
+  "tacacs_servers.0.timeout": "42"
+}

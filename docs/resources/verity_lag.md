@@ -1,23 +1,25 @@
-# Link Aggregation Group (LAG) Resource
+# verity_lag (Resource)
 
-`verity_lag` manages Link Aggregation Groups in Verity, which combine multiple network connections for increased throughput and redundancy.
+Manages a Link Aggregation Group (LAG).
+
+Supported modes: Campus, Datacenter.
 
 ## Example Usage
 
 ```hcl
 resource "verity_lag" "example" {
   name = "example"
-  is_peer_link = false
-  peer_link_vlan = null
-  fallback = true
-  fast_rate = false
-  enable = true
-  color = "chardonnay"
-  lacp = true
-  crc_failure_threshold = 0
+  color = ""
+  crc_failure_threshold = null
+  enable = false
   eth_port_profile = ""
-  uplink = false
   eth_port_profile_ref_type_ = ""
+  fallback = false
+  fast_rate = false
+  is_peer_link = false
+  lacp = false
+  peer_link_vlan = null
+  uplink = false
 
   object_properties {
     fabric = ""
@@ -28,25 +30,39 @@ resource "verity_lag" "example" {
 
 ## Argument Reference
 
-* `name` (String) - Object Name. Must be unique.
-* `enable` (Boolean) - Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
-* `is_peer_link` (Boolean) - Indicates this LAG is used for peer-to-peer Peer-LAG/IDS link.
+### Required
+
+* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+
+### Optional
+
 * `color` (String) - Choose the color to display the connectors on the network view.
-* `lacp` (Boolean) - LACP.
-* `eth_port_profile` (String) - Choose an Eth Port Profile.
+* `crc_failure_threshold` (Integer) - Threshold in Errors per second that when met will disable this LAG's links. Set it to `null` to clear it.
+* `enable` (Boolean) - Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
+* `eth_port_profile` (String) - Choose an Eth Port Profile. Set together with `eth_port_profile_ref_type_`.
 * `eth_port_profile_ref_type_` (String) - Object type for eth_port_profile field.
-* `peer_link_vlan` (Integer) - For peer-peer LAGs. The VLAN used for control.
 * `fallback` (Boolean) - Allows an active member interface to establish a connection with a peer interface before the port channel receives the LACP protocol negotiation from the peer.
 * `fast_rate` (Boolean) - Send LACP packets every second (if disabled, packets are sent every 30 seconds).
-* `crc_failure_threshold` (Integer) - Threshold in errors per second that disables this LAG's links when met.
-* `uplink` (Boolean) - Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN.
-* `object_properties` (Object) -
-  * `fabric` (String) - Choose a Fabric.
+* `is_peer_link` (Boolean) - Indicates this LAG is used for peer-to-peer Peer-LAG/IDS link.
+* `lacp` (Boolean) - LACP.
+* `object_properties` (Block) - Object properties. At most one block.
+  * `fabric` (String) - Choose a Fabric. Set together with `fabric_ref_type_`.
   * `fabric_ref_type_` (String) - Object type for fabric field.
+* `peer_link_vlan` (Integer) - For peer-peer LAGs. The VLAN used for control. Set it to `null` to clear it.
+* `uplink` (Boolean) - Indicates this LAG is designated as an uplink in the case of a spineless pod. Link State Tracking will be applied to BGP Egress VLANs/Interfaces and the MCLAG Peer Link VLAN.
+
+## Reference Fields
+
+A reference names another Verity object. Set the reference and its type field together. When your configuration sets neither, Terraform leaves the reference to the server, including one set in the Verity UI.
+
+| Field | Type field | Allowed types |
+| --- | --- | --- |
+| `eth_port_profile` | `eth_port_profile_ref_type_` | `eth_port_profile_`, `pb_egress_profile`, `service_port_profile` |
+| `object_properties.fabric` | `fabric_ref_type_` | `fabric` |
 
 ## Import
 
-LAG resources can be imported using the `name` attribute:
+Import an existing object by its `name`:
 
 ```sh
 terraform import verity_lag.<resource_name> <name>

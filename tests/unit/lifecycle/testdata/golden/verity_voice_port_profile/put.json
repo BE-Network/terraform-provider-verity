@@ -1,0 +1,44 @@
+{
+  "voice_port_profiles": {
+    "cov_vpp": {
+      "anonymous_call_block_enable": true,
+      "audio_mwi_enable": true,
+      "call_forward_on_busy_enable": true,
+      "call_forward_on_no_answer_ring_count": 42,
+      "call_forward_unconditional_enable": true,
+      "call_hold_enable": true,
+      "call_three_way_enable": true,
+      "call_transfer_enable": true,
+      "call_waiting_caller_id_enable": true,
+      "call_waiting_enable": true,
+      "caller_id_enable": true,
+      "caller_id_name_enable": true,
+      "cid_blocking_enable": true,
+      "cid_name_presentation_status": "",
+      "cid_num_presentation_status": "",
+      "dial_tone_feature_delay": 42,
+      "digit_map": "",
+      "do_not_disturb_enable": true,
+      "echo_cancellation_enable": true,
+      "enable": true,
+      "hotline_enable": true,
+      "intercom_enable": true,
+      "intercom_transfer_enable": true,
+      "jitter_buffer_max": 42,
+      "jitter_target": 42,
+      "mwi_refresh_timer": 42,
+      "name": "cov_vpp",
+      "object_properties": {
+        "format_dial_plan": true,
+        "port_monitoring": ""
+      },
+      "protocol": "",
+      "receive_gain": 42,
+      "release_timer": 42,
+      "roh_timer": 42,
+      "signaling_code": "",
+      "transmit_gain": 42,
+      "visual_mwi_enable": true
+    }
+  }
+}

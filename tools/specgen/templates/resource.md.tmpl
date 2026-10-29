@@ -1,0 +1,72 @@
+{{- define "argument" }}{{ .Indent }}* `{{ .Arg.Name }}` ({{ .Arg.Type }}){{ if .Arg.Description }} - {{ .Arg.Description }}{{ end }}{{ range .Arg.Notes }} {{ . }}{{ end }}
+{{ range .Arg.Children }}{{ template "argument" (dict "Arg" . "Indent" (printf "%s  " $.Indent)) }}{{ end }}{{ end -}}
+# {{ .TerraformType }} (Resource)
+
+{{ .Description }}
+
+Supported modes: {{ range $i, $m := .Modes }}{{ if $i }}, {{ end }}{{ title $m }}{{ end }}.
+{{- if .UpdateOnly }}
+
+This resource can only be updated. The object always exists on the Verity system, so it cannot be created or destroyed through Terraform; import it, then manage its settings.
+{{- end }}
+
+## Example Usage
+{{ range .Examples }}
+{{- if .Mode }}
+
+### {{ .Mode }} mode
+{{- end }}
+
+```hcl
+{{ .HCL }}```
+{{- end }}
+{{- if .Required }}
+
+## Argument Reference
+
+### Required
+
+{{ range .Required }}{{ template "argument" (dict "Arg" . "Indent" "") }}{{ end }}
+{{- end }}
+{{- if .Optional }}
+
+### Optional
+
+{{ range .Optional }}{{ template "argument" (dict "Arg" . "Indent" "") }}{{ end }}
+{{- end }}
+{{- if .ReadOnly }}
+
+### Read-Only
+
+{{ range .ReadOnly }}{{ template "argument" (dict "Arg" . "Indent" "") }}{{ end }}
+{{- end }}
+{{- if .References }}
+
+## Reference Fields
+
+A reference names another Verity object. Set the reference and its type field together. When your configuration sets neither, Terraform leaves the reference to the server, including one set in the Verity UI.
+
+| Field | Type field | Allowed types |
+| --- | --- | --- |
+{{ range .References }}| `{{ if .Path }}{{ .Path }}.{{ end }}{{ .Field }}` | `{{ .TypeField }}` | {{ code .AllowedTypes }} |
+{{ end }}
+{{- end }}
+{{- if .AutoAssigned }}
+
+## Auto-Assigned Fields
+
+While a flag is `true`, the server assigns the paired value and the value cannot be set in the configuration. Set the flag to `false` to set the value yourself; if you leave the value unset, the value the server assigned is kept.
+
+| Field | Flag | Reassigned when |
+| --- | --- | --- |
+{{ range .AutoAssigned }}| `{{ if .Path }}{{ .Path }}.{{ end }}{{ .Field }}` | `{{ .Flag }}` | {{ if .RecomputedWhen }}{{ code .RecomputedWhen }} changes{{ else }}—{{ end }} |
+{{ end }}
+{{- end }}
+
+## Import
+
+Import an existing object by its `{{ .Identity }}`:
+
+```sh
+terraform import {{ .TerraformType }}.<resource_name> <{{ .Identity }}>
+```

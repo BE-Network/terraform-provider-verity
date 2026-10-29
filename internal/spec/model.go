@@ -1,0 +1,281 @@
+package spec
+
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
+type Mode string
+
+const (
+	ModeDatacenter Mode = "datacenter"
+	ModeCampus     Mode = "campus"
+)
+
+type APIVersion struct {
+	Major int `json:"major"`
+	Minor int `json:"minor"`
+}
+
+func ParseAPIVersion(value string) (APIVersion, error) {
+	parts := strings.Split(value, ".")
+	if len(parts) != 2 {
+		return APIVersion{}, fmt.Errorf("expected major.minor, got %q", value)
+	}
+	major, err := strconv.Atoi(parts[0])
+	if err != nil || major < 0 {
+		return APIVersion{}, fmt.Errorf("invalid major version %q", parts[0])
+	}
+	minor, err := strconv.Atoi(parts[1])
+	if err != nil || minor < 0 {
+		return APIVersion{}, fmt.Errorf("invalid minor version %q", parts[1])
+	}
+	version := APIVersion{Major: major, Minor: minor}
+	if version.String() != value {
+		return APIVersion{}, fmt.Errorf("API version must use canonical major.minor format, got %q", value)
+	}
+	return version, nil
+}
+
+func (v APIVersion) String() string { return fmt.Sprintf("%d.%d", v.Major, v.Minor) }
+
+func (v APIVersion) Compare(other APIVersion) int {
+	if v.Major != other.Major {
+		if v.Major < other.Major {
+			return -1
+		}
+		return 1
+	}
+	if v.Minor < other.Minor {
+		return -1
+	}
+	if v.Minor > other.Minor {
+		return 1
+	}
+	return 0
+}
+
+type VersionRange struct {
+	MinInclusive APIVersion `json:"min_inclusive"`
+	MaxExclusive APIVersion `json:"max_exclusive"`
+}
+
+func (r VersionRange) Contains(version APIVersion) bool {
+	return r.MinInclusive.Compare(version) <= 0 && version.Compare(r.MaxExclusive) < 0
+}
+
+type FieldKind string
+
+const (
+	FieldKindString FieldKind = "string"
+	FieldKindBool   FieldKind = "bool"
+	FieldKindInt64  FieldKind = "int64"
+	FieldKindNumber FieldKind = "number"
+	FieldKindObject FieldKind = "object"
+	FieldKindList   FieldKind = "list"
+)
+
+type Access string
+
+const (
+	AccessRequired         Access = "required"
+	AccessOptional         Access = "optional"
+	AccessComputed         Access = "computed"
+	AccessOptionalComputed Access = "optional_computed"
+)
+
+type LiteralKind string
+
+const (
+	LiteralNull    LiteralKind = "null"
+	LiteralString  LiteralKind = "string"
+	LiteralBool    LiteralKind = "bool"
+	LiteralInt64   LiteralKind = "int64"
+	LiteralDecimal LiteralKind = "decimal"
+)
+
+type LiteralSpec struct {
+	Kind  LiteralKind `json:"kind"`
+	Value string      `json:"value"`
+}
+
+type ResponseAbsencePolicy string
+
+const (
+	ResponseAbsenceTerraformNull ResponseAbsencePolicy = "terraform_null"
+	ResponseAbsenceDefault       ResponseAbsencePolicy = "default"
+	ResponseAbsencePreserve      ResponseAbsencePolicy = "preserve"
+	ResponseAbsenceError         ResponseAbsencePolicy = "error"
+)
+
+type CreateNullPolicy string
+
+const (
+	CreateNullOmit    CreateNullPolicy = "omit"
+	CreateNullAPINull CreateNullPolicy = "api_null"
+	CreateNullDefault CreateNullPolicy = "default"
+	CreateNullReject  CreateNullPolicy = "reject"
+)
+
+type UpdateClearPolicy string
+
+const (
+	UpdateClearAPINull     UpdateClearPolicy = "api_null"
+	UpdateClearEmptyString UpdateClearPolicy = "empty_string"
+	UpdateClearZero        UpdateClearPolicy = "zero"
+	UpdateClearFalse       UpdateClearPolicy = "false"
+	UpdateClearDefault     UpdateClearPolicy = "default"
+
+	UpdateClearOmit          UpdateClearPolicy = "omit"
+	UpdateClearOmitUnmanaged UpdateClearPolicy = "omit_unmanaged"
+	UpdateClearReject        UpdateClearPolicy = "reject"
+)
+
+type UnknownPlanPolicy string
+
+const (
+	UnknownPlanOmitAndRead UnknownPlanPolicy = "omit_and_read"
+	UnknownPlanPreserve    UnknownPlanPolicy = "preserve_state"
+	UnknownPlanReject      UnknownPlanPolicy = "reject"
+)
+
+type StateOwnershipPolicy string
+
+const (
+	StateConfiguration         StateOwnershipPolicy = "configuration"
+	StateServer                StateOwnershipPolicy = "server"
+	StateConfigurationOrServer StateOwnershipPolicy = "configuration_or_server"
+)
+
+type CollectionStrategy string
+
+const (
+	CollectionSingleton             CollectionStrategy = "singleton"
+	CollectionIndexedPatch          CollectionStrategy = "indexed_patch"
+	CollectionIndexedServerAssigned CollectionStrategy = "indexed_server_assigned"
+	CollectionReplace               CollectionStrategy = "replace"
+	CollectionComputedSubset        CollectionStrategy = "computed_subset"
+)
+
+type CollectionOrdering string
+
+const (
+	CollectionOrdered   CollectionOrdering = "ordered"
+	CollectionUnordered CollectionOrdering = "unordered"
+)
+
+type CollectionSpec struct {
+	Strategy      CollectionStrategy `json:"strategy"`
+	Ordering      CollectionOrdering `json:"ordering"`
+	IdentityField string             `json:"identity_field,omitempty"`
+}
+
+type ReferenceSpec struct {
+	TypeField    string   `json:"type_field"`
+	AllowedTypes []string `json:"allowed_types"`
+}
+
+type AutoAssignmentSpec struct {
+	FlagField string `json:"flag_field"`
+
+	RecomputedWhen []string `json:"recomputed_when,omitempty"`
+}
+
+type ValidatorKind string
+
+const (
+	ValidatorOneOf        ValidatorKind = "one_of"
+	ValidatorStringLength ValidatorKind = "string_length"
+	ValidatorInt64Range   ValidatorKind = "int64_range"
+	ValidatorNumberRange  ValidatorKind = "number_range"
+	ValidatorStringRegex  ValidatorKind = "string_regex"
+)
+
+type ValidatorSpec struct {
+	Kind     ValidatorKind `json:"kind"`
+	Values   []LiteralSpec `json:"values,omitempty"`
+	Min      *int64        `json:"min,omitempty"`
+	Max      *int64        `json:"max,omitempty"`
+	MinValue *LiteralSpec  `json:"min_value,omitempty"`
+	MaxValue *LiteralSpec  `json:"max_value,omitempty"`
+	Pattern  string        `json:"pattern,omitempty"`
+}
+
+type FieldSpec struct {
+	TerraformName string    `json:"terraform_name"`
+	APIName       string    `json:"api_name"`
+	Kind          FieldKind `json:"kind"`
+	ElementKind   FieldKind `json:"element_kind,omitempty"`
+
+	Unmanaged   bool            `json:"unmanaged,omitempty"`
+	Access      Access          `json:"access"`
+	Description string          `json:"description"`
+	Nullable    bool            `json:"nullable"`
+	Sensitive   bool            `json:"sensitive"`
+	Replace     bool            `json:"replace"`
+	Modes       []Mode          `json:"modes"`
+	Versions    VersionRange    `json:"versions"`
+	Default     *LiteralSpec    `json:"default,omitempty"`
+	Validators  []ValidatorSpec `json:"validators,omitempty"`
+
+	ResponseAbsence ResponseAbsencePolicy `json:"response_absence"`
+	CreateNull      CreateNullPolicy      `json:"create_null"`
+	UpdateClear     UpdateClearPolicy     `json:"update_clear"`
+	UnknownPlan     UnknownPlanPolicy     `json:"unknown_plan"`
+	StateOwnership  StateOwnershipPolicy  `json:"state_ownership"`
+
+	Fields         []FieldSpec         `json:"fields,omitempty"`
+	Collection     *CollectionSpec     `json:"collection,omitempty"`
+	Reference      *ReferenceSpec      `json:"reference,omitempty"`
+	AutoAssignment *AutoAssignmentSpec `json:"auto_assignment,omitempty"`
+}
+
+type APIResourceSpec struct {
+	EndpointPath          string            `json:"endpoint_path"`
+	BulkKey               string            `json:"bulk_key"`
+	RequestWrapperKey     string            `json:"request_wrapper_key"`
+	ResponseCollectionKey string            `json:"response_collection_key"`
+	DeleteParameter       string            `json:"delete_parameter"`
+	CacheKey              string            `json:"cache_key"`
+	FixedHeaders          map[string]string `json:"fixed_headers,omitempty"`
+}
+
+type OperationSpec struct {
+	Create bool `json:"create"`
+	Read   bool `json:"read"`
+	Update bool `json:"update"`
+	Delete bool `json:"delete"`
+}
+
+type ImportStageSpec struct {
+	Name  string `json:"name"`
+	Order int    `json:"order"`
+}
+
+type BulkOrderSpec struct {
+	Put    int `json:"put,omitempty" yaml:"put"`
+	Patch  int `json:"patch,omitempty" yaml:"patch"`
+	Delete int `json:"delete,omitempty" yaml:"delete"`
+}
+
+type DependencySpec struct {
+	Before []string `json:"before,omitempty"`
+	After  []string `json:"after,omitempty"`
+}
+
+type ResourceSpec struct {
+	TerraformType string                   `json:"terraform_type"`
+	Description   string                   `json:"description"`
+	Modes         []Mode                   `json:"modes"`
+	Versions      VersionRange             `json:"versions"`
+	IdentityPath  string                   `json:"identity_path"`
+	SchemaVersion int64                    `json:"schema_version"`
+	API           APIResourceSpec          `json:"api"`
+	Operations    OperationSpec            `json:"operations"`
+	Fields        []FieldSpec              `json:"fields"`
+	Dependencies  DependencySpec           `json:"dependencies,omitempty"`
+	ImportStages  map[Mode]ImportStageSpec `json:"import_stages,omitempty"`
+	BulkOrder     map[Mode]BulkOrderSpec   `json:"bulk_order,omitempty"`
+	Hooks         []string                 `json:"hooks,omitempty"`
+}

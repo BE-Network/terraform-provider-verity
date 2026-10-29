@@ -1,0 +1,7 @@
+{
+  "service": {
+    "cov_service": {
+      "enable": false
+    }
+  }
+}

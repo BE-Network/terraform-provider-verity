@@ -1,0 +1,7 @@
+{
+  "mac_filter": {
+    "cov_mac_filter": {
+      "enable": false
+    }
+  }
+}
