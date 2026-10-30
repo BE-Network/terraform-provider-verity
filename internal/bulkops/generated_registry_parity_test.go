@@ -25,6 +25,18 @@ func TestBulkBindingsCoverGeneratedSpecs(t *testing.T) {
 		t.Fatal("generated registry is empty")
 	}
 	for _, resourceSpec := range artifact.Resources {
+		if resourceSpec.IdentityPath != "name" {
+			t.Fatalf("%s identity no longer follows bulk name convention", resourceSpec.TerraformType)
+		}
+		identityFound := false
+		for _, field := range resourceSpec.Fields {
+			if field.TerraformName == resourceSpec.IdentityPath {
+				identityFound = field.APIName == "name"
+			}
+		}
+		if !identityFound {
+			t.Fatalf("%s API identity no longer follows bulk name convention", resourceSpec.TerraformType)
+		}
 		config, exists := resourceRegistry[resourceSpec.API.BulkKey]
 		if !exists || config.ResourceType != resourceSpec.API.BulkKey {
 			t.Fatalf("bulk registry does not match generated bulk key %q for %s", resourceSpec.API.BulkKey, resourceSpec.TerraformType)

@@ -1,7 +1,9 @@
 package lifecycle
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"strings"
 	"testing"
 
@@ -31,7 +33,7 @@ func TestSwitchpointPostOperationMissingAutoAssignedFields(t *testing.T) {
 		"ssh_key_or_password_encrypted_auto_assigned_", "gateway_auto_assigned_", "switch_gateway_auto_assigned_",
 		"lldp_search_string_auto_assigned_", "username_auto_assigned_",
 	}
-	ms.SetPostGetOmissions("/api/switchpoints", "switchpoint", name, fields, 3)
+	ms.SetPostGetOmissions("/api/switchpoints", "switchpoint", name, fields, 4)
 
 	config := mock.ProviderConfig(ms.URL(), "datacenter") + fmt.Sprintf(`
 resource "verity_switchpoint" "test" {
@@ -50,8 +52,7 @@ resource "verity_switchpoint" "test" {
 `, name)
 
 	resource.UnitTest(t, resource.TestCase{ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(), Steps: []resource.TestStep{{
-		Config:             config,
-		ExpectNonEmptyPlan: true,
+		Config: config,
 		Check: resource.ComposeAggregateTestCheckFunc(
 			resource.TestCheckResourceAttr("verity_switchpoint.test", "bgp_as_number_auto_assigned_", "true"),
 			resource.TestCheckResourceAttr("verity_switchpoint.test", "switch_vtep_id_ip_mask_auto_assigned_", "true"),
@@ -1656,4 +1657,68 @@ func verifyModeExclusion(t *testing.T, tc ResourceCoverageEntry, rs resourceSche
 			},
 		},
 	})
+}
+
+func TestObjectNamesWithoutInnerField(t *testing.T) {
+	for _, tc := range []struct{ mode, resourceType, path, wrapper, name, query string }{
+		{"datacenter", "verity_gateway", "/api/gateways", "gateway", "111111", ""},
+		{"campus", "verity_acl_v4", "/api/acls", "ipv4_filter", "Gateway / Łódź \"edge\"", "?ip_version=4"},
+		{"datacenter", "verity_acl_v6", "/api/acls", "ipv6_filter", "Gateway / London", "?ip_version=6"},
+	} {
+		t.Run(tc.mode+"/"+tc.resourceType, func(t *testing.T) {
+			ms := mock.NewMockServer(tc.mode)
+			defer ms.Close()
+			ms.SetOmitObjectNames(true)
+			config := func(enable bool) string {
+				return mock.ProviderConfig(ms.URL(), tc.mode) + fmt.Sprintf(`
+resource %q "test" {
+ name = %q
+ enable = %t
+}
+`, tc.resourceType, tc.name, enable)
+			}
+			create, update := config(true), config(false)
+			address := tc.resourceType + ".test"
+			check := func(_ *terraform.State) error {
+				resp, err := http.Get(ms.URL() + tc.path + tc.query)
+				if err != nil {
+					return err
+				}
+				defer resp.Body.Close()
+				var decoded map[string]map[string]map[string]interface{}
+				if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+					return err
+				}
+				object, exists := decoded[tc.wrapper][tc.name]
+				if !exists {
+					return fmt.Errorf("missing API key %q", tc.name)
+				}
+				if _, present := object["name"]; present {
+					return fmt.Errorf("mock returned inner name; regression is not exercising the new contract")
+				}
+				puts := ms.GetRequestsByMethodAndPath(http.MethodPut, tc.path)
+				if len(puts) != 1 {
+					return fmt.Errorf("got %d PUTs, expected one create", len(puts))
+				}
+				body := puts[0].Body
+				for _, raw := range body {
+					collection, ok := raw.(map[string]interface{})
+					if !ok {
+						continue
+					}
+					if submitted, ok := collection[tc.name].(map[string]interface{}); ok && submitted["name"] == tc.name {
+						return nil
+					}
+				}
+				return fmt.Errorf("original identity was not preserved in PUT")
+			}
+			resource.UnitTest(t, resource.TestCase{ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(), Steps: []resource.TestStep{
+				{PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), create) }, Config: create, Check: resource.ComposeAggregateTestCheckFunc(resource.TestCheckResourceAttr(address, "name", tc.name), check)},
+				{Config: create, PlanOnly: true},
+				{ResourceName: address, ImportState: true, ImportStateId: tc.name, ImportStateVerify: true, ImportStateVerifyIdentifierAttribute: "name"},
+				{PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), update) }, Config: update, Check: resource.ComposeAggregateTestCheckFunc(resource.TestCheckResourceAttr(address, "name", tc.name), resource.TestCheckResourceAttr(address, "enable", "false"), check)},
+				{Config: update, PlanOnly: true},
+			}})
+		})
+	}
 }

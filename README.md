@@ -662,6 +662,17 @@ go test ./tests/unit/utils/ -count=1
 
 `-count=1` disables Go's test result cache, ensuring tests always execute rather than reusing a previous result.
 
+`VERITY_MOCK_OMIT_OBJECT_NAMES=1` makes mock collection GET responses omit each
+resource object's inner `name`, while preserving its collection key and nested
+fields. The dedicated name-omission regression enables this behavior itself and
+runs in the normal lifecycle suite. For an optional full-suite audit, run:
+
+```bash
+VERITY_MOCK_OMIT_OBJECT_NAMES=1 go test ./tests/unit/lifecycle/ -count=1 -timeout 15m
+```
+
+The setting does not change PUT/PATCH payloads or mock state.
+
 ### CI
 
 Tests and generated-artifact checks run automatically for PRs and pushes targeting

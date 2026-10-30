@@ -326,13 +326,9 @@ func (m *Manager) fetchResourceResponse(fetchCtx context.Context, logCtx context
 func (m *Manager) cacheResourceResponse(logCtx context.Context, config ResourceConfig, res *ResourceOperations, headers map[string]string, resourceData map[string]interface{}) {
 
 	res.ResponsesMutex.Lock()
-	for resourceName, data := range resourceData {
-		if resourceMap, ok := data.(map[string]interface{}); ok {
-			res.Responses[resourceName] = resourceMap
-
-			if name, nameOk := resourceMap["name"].(string); nameOk && name != resourceName {
-				res.Responses[name] = resourceMap
-			}
+	for name, data := range resourceData {
+		if object, ok := data.(map[string]interface{}); ok {
+			res.Responses[name] = object
 		}
 	}
 	res.ResponsesMutex.Unlock()
@@ -352,17 +348,6 @@ func (m *Manager) cacheResourceResponse(logCtx context.Context, config ResourceC
 func missingSubmittedResponseKeys(operations map[string]interface{}, resourceData map[string]interface{}) map[string][]string {
 	missing := make(map[string][]string)
 
-	responseByName := make(map[string]map[string]interface{}, len(resourceData))
-	for responseKey, data := range resourceData {
-		response, ok := data.(map[string]interface{})
-		if !ok {
-			continue
-		}
-		responseByName[responseKey] = response
-		if name, ok := response["name"].(string); ok {
-			responseByName[name] = response
-		}
-	}
 	for name, operation := range operations {
 		encoded, err := json.Marshal(operation)
 		if err != nil {
@@ -375,13 +360,16 @@ func missingSubmittedResponseKeys(operations map[string]interface{}, resourceDat
 			continue
 		}
 
-		response, found := responseByName[name]
+		response, found := resourceData[name].(map[string]interface{})
 		for key, value := range submitted {
 			if value == nil {
 				continue
 			}
 			if !found {
 				missing[name] = append(missing[name], key)
+				continue
+			}
+			if key == "name" {
 				continue
 			}
 			if _, present := response[key]; !present {
