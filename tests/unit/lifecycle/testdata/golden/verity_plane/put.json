@@ -4,7 +4,6 @@
       "enable": true,
       "fabric": "",
       "fabric_ref_type_": "",
-      "name": "cov_plane",
       "object_properties": {
         "notes": ""
       },

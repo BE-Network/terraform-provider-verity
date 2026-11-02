@@ -44,7 +44,6 @@
       "local_port_max": 42,
       "local_port_min": 42,
       "mgcp_dscp_mark": 42,
-      "name": "cov_dvs",
       "outbound_proxy": "",
       "outbound_proxy_port": 42,
       "outbound_proxy_secondary": "",

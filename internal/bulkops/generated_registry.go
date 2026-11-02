@@ -1370,6 +1370,36 @@ var resourceRegistry = map[string]ResourceConfig{
 			return c.SuperSpineGroupsAPI.SspgroupsGet(ctx).Execute()
 		},
 	},
+	"static_ip": {ResourceType: "static_ip", HeaderSplitKey: "",
+		ResponseCollectionKey: "static_ip",
+		PreparePut: func(data map[string]interface{}) (interface{}, error) {
+			return prepareTypedBulkRequest(data, func(request *openapi.StaticipsPutRequest, values map[string]openapi.StaticipsPutRequestStaticIpValue) {
+				request.StaticIp = &values
+			})
+		},
+		PreparePatch: func(data map[string]interface{}) (interface{}, error) {
+			return prepareTypedBulkRequest(data, func(request *openapi.StaticipsPutRequest, values map[string]openapi.StaticipsPutRequestStaticIpValue) {
+				request.StaticIp = &values
+			})
+		},
+		PutRequestType:   reflect.TypeOf(openapi.StaticipsPutRequest{}),
+		PatchRequestType: reflect.TypeOf(openapi.StaticipsPutRequest{}),
+		APIClientGetter: func(c *openapi.APIClient) ResourceAPIClient {
+			return &GenericAPIClient{client: c, resourceType: "static_ip"}
+		},
+		PutFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.StaticIPsAPI.StaticipsPut(ctx).StaticipsPutRequest(*req.(*openapi.StaticipsPutRequest)).Execute()
+		},
+		PatchFunc: func(c *openapi.APIClient, ctx context.Context, req interface{}) (*http.Response, error) {
+			return c.StaticIPsAPI.StaticipsPatch(ctx).StaticipsPutRequest(*req.(*openapi.StaticipsPutRequest)).Execute()
+		},
+		DeleteFunc: func(c *openapi.APIClient, ctx context.Context, names []string) (*http.Response, error) {
+			return c.StaticIPsAPI.StaticipsDelete(ctx).StaticIpName(names).Execute()
+		},
+		GetFunc: func(c *openapi.APIClient, ctx context.Context) (*http.Response, error) {
+			return c.StaticIPsAPI.StaticipsGet(ctx).Execute()
+		},
+	},
 	"su": {ResourceType: "su", HeaderSplitKey: "",
 		ResponseCollectionKey: "su",
 		PreparePut: func(data map[string]interface{}) (interface{}, error) {
@@ -1627,6 +1657,7 @@ var finalCacheRefreshKeys = []string{
 	"sfp_breakouts",
 	"spine_planes",
 	"ssp_groups",
+	"static_ips",
 	"sus",
 	"switchpoints",
 	"tacacs_profiles",
@@ -1811,6 +1842,7 @@ var campusPutOrder = []string{
 	"switchpoint",
 	"threshold",
 	"threshold_group",
+	"static_ip",
 	"pair",
 }
 
@@ -1845,11 +1877,13 @@ var campusPatchOrder = []string{
 	"switchpoint",
 	"threshold",
 	"threshold_group",
+	"static_ip",
 	"pair",
 }
 
 var campusDeleteOrder = []string{
 	"pair",
+	"static_ip",
 	"threshold_group",
 	"threshold",
 	"switchpoint",

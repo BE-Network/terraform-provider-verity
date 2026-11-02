@@ -2,7 +2,6 @@
   "grouping_rules": {
     "cov_gr": {
       "enable": true,
-      "name": "cov_gr",
       "operation": "",
       "rules": [
         {

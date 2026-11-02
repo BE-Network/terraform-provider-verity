@@ -8,7 +8,6 @@
       "enable": true,
       "ip_attach_host_advertise": 42,
       "mtu": 42,
-      "name": "cov_service",
       "object_properties": {},
       "policy_based_routing": "",
       "policy_based_routing_ref_type_": "",

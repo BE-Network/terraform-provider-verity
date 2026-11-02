@@ -156,6 +156,12 @@ import {
   id = "threshold_group_test1"
 }
 
+# verity_static_ip imports
+import {
+  to = verity_static_ip.test
+  id = "test"
+}
+
 # verity_operation_stage imports
 import {
   to = verity_operation_stage.sfp_breakout_stage
@@ -309,6 +315,11 @@ import {
 
 import {
   to = verity_operation_stage.threshold_group_stage
+  id = "stage"
+}
+
+import {
+  to = verity_operation_stage.static_ip_stage
   id = "stage"
 }
 

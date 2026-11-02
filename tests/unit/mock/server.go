@@ -14,7 +14,6 @@ import (
 	"sync"
 	"testing"
 
-	"terraform-provider-verity/internal/registry"
 	"terraform-provider-verity/internal/utils"
 )
 
@@ -26,11 +25,7 @@ type CapturedRequest struct {
 	RawBody     []byte
 }
 
-const OmitObjectNamesEnv = "VERITY_MOCK_OMIT_OBJECT_NAMES"
-
 type MockServer struct {
-	omitObjectNames   bool
-	collectionKeys    map[string]map[string]bool
 	Server            *httptest.Server
 	mu                sync.Mutex
 	requests          []CapturedRequest
@@ -62,31 +57,10 @@ func (ms *MockServer) SetPostGetOmissions(path, wrapperKey, resourceName string,
 	ms.postGetOmissions[path][wrapperKey][resourceName] = postGetOmission{fields: append([]string(nil), fields...), remaining: responseCount}
 }
 
-func (ms *MockServer) SetOmitObjectNames(omit bool) {
-	ms.mu.Lock()
-	defer ms.mu.Unlock()
-	ms.omitObjectNames = omit
-}
-
 func NewMockServer(mode string) *MockServer {
 	ms := &MockServer{
-		omitObjectNames: os.Getenv(OmitObjectNamesEnv) == "1",
-		collectionKeys:  make(map[string]map[string]bool),
-		getResponses:    make(map[string][]byte),
-		resourceState:   make(map[string]map[string]map[string]interface{}),
-	}
-
-	resources, err := registry.Load()
-	if err != nil {
-		panic(fmt.Sprintf("load mock collection registry: %v", err))
-	}
-	for _, resource := range resources {
-		path := "/api" + resource.API.EndpointPath
-		if ms.collectionKeys[path] == nil {
-			ms.collectionKeys[path] = make(map[string]bool)
-		}
-		ms.collectionKeys[path][resource.API.ResponseCollectionKey] = true
-		ms.collectionKeys[path][resource.API.RequestWrapperKey] = true
+		getResponses:  make(map[string][]byte),
+		resourceState: make(map[string]map[string]map[string]interface{}),
 	}
 
 	datacenter := mode == "datacenter"
@@ -534,19 +508,6 @@ func (ms *MockServer) buildGetResponse(path string, queryParams map[string][]str
 		}
 	}
 	baseResponse = deepCopy(baseResponse).(map[string]interface{})
-	if ms.omitObjectNames {
-		for key := range ms.collectionKeys[path] {
-			collection, ok := baseResponse[key].(map[string]interface{})
-			if !ok {
-				continue
-			}
-			for _, rawObject := range collection {
-				if object, ok := rawObject.(map[string]interface{}); ok {
-					delete(object, "name")
-				}
-			}
-		}
-	}
 	if pathOmissions := ms.postGetOmissions[path]; pathOmissions != nil {
 		for wrapperKey, resources := range pathOmissions {
 			wrapper, _ := baseResponse[wrapperKey].(map[string]interface{})

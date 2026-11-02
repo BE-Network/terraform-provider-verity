@@ -12,7 +12,7 @@ pair does not imply support for newer API releases.
 The runtime version check compares API major/minor, not the complete build
 number. Passing that check does not establish support for an unlisted API build.
 For breaking release upgrades, follow the
-[fresh-import upgrade guide](guides/fresh-import-upgrades.md).
+[fresh-import upgrade guide](guides/fresh_import_upgrades.md).
 
 ## Provider Configuration
 

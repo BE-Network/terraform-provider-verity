@@ -33,7 +33,6 @@
       "max_local_as_occurrences": 42,
       "md5_password": "",
       "md5_password_encrypted": "",
-      "name": "cov_gw",
       "neighbor_as_number": 42,
       "neighbor_ip_address": "",
       "next_hop_self": true,

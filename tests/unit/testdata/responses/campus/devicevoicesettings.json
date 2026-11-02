@@ -1,7 +1,6 @@
 {
   "device_voice_settings": {
     "(MGCP Voice Device)": {
-      "name": "(MGCP Voice Device)",
       "enable": true,
       "dtmf_method": "Inband",
       "region": "US",

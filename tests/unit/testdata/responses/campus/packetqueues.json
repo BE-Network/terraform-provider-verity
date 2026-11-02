@@ -1,7 +1,6 @@
 {
   "packet_queue": {
     "test": {
-      "name": "test",
       "enable": true,
       "queue": [
         {

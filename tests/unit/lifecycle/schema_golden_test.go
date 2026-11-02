@@ -18,7 +18,7 @@ import (
 	verityprovider "terraform-provider-verity/internal/provider"
 )
 
-const schemaGoldenPath = "../testdata/schema_golden_v6_6.json"
+const schemaGoldenPath = "../testdata/schema_golden_v6_7.json"
 
 type schemaGolden struct {
 	FormatVersion int                    `json:"format_version"`

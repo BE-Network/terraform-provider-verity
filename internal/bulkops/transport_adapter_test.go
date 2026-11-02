@@ -17,11 +17,10 @@ func TestTransportPreparerUsesGeneratedAdapter(t *testing.T) {
 		{
 			operation: "PUT",
 			object: transport.WireObject{
-				"name":      transport.String("edge-list"),
 				"enable":    transport.Bool(false),
 				"ipv4_list": transport.String(""),
 			},
-			want: `{"ipv4_list_filter":{"edge-list":{"enable":false,"ipv4_list":"","name":"edge-list"}}}`,
+			want: `{"ipv4_list_filter":{"edge-list":{"enable":false,"ipv4_list":""}}}`,
 		},
 		{
 			operation: "PATCH",
@@ -59,9 +58,9 @@ func TestTransportPreparerRejectsUnconvertedWireObjects(t *testing.T) {
 	preparer := (&Manager{}).createRequestPreparerWithError(config, "PUT")
 
 	_, err := preparer(map[string]interface{}{
-		"wire": transport.WireObject{"name": transport.String("wire")},
+		"wire": transport.WireObject{"enable": transport.Bool(true)},
 		"typed": openapi.Ipv4listsPutRequestIpv4ListFilterValue{
-			Name: openapi.PtrString("typed"),
+			Enable: openapi.PtrBool(true),
 		},
 	})
 	if err == nil {

@@ -145,7 +145,7 @@ func TestAutoAssignedValueNotWrittenOnCreateIsOmitted(t *testing.T) {
 	legacy := legacyReference(t)
 	generic := runLifecycle(t, "verity_service", create, create)
 
-	const common = `"anycast_ipv4_mask":"","anycast_ipv6_mask":"","dhcp_server_ipv4":"","dhcp_server_ipv6":"","enable":true,"ip_attach_host_advertise":42,"mtu":1500,"name":"diffsvc","policy_based_routing":"","policy_based_routing_ref_type_":"","tenant":"","tenant_ref_type_":"","vlan":10`
+	const common = `"anycast_ipv4_mask":"","anycast_ipv6_mask":"","dhcp_server_ipv4":"","dhcp_server_ipv6":"","enable":true,"ip_attach_host_advertise":42,"mtu":1500,"policy_based_routing":"","policy_based_routing_ref_type_":"","tenant":"","tenant_ref_type_":"","vlan":10`
 	wantLegacy := `{"service":{"diffsvc":{` + common + `,"vni":0,"vni_auto_assigned_":false}}}`
 	wantGeneric := `{"service":{"diffsvc":{` + common + `,"vni_auto_assigned_":false}}}`
 

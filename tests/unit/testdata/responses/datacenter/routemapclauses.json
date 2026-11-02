@@ -1,7 +1,6 @@
 {
   "route_map_clause": {
     "ipv6_clause": {
-      "name": "ipv6_clause",
       "enable": true,
       "permit_deny": "permit",
       "match_as_path_access_list": "",
@@ -32,8 +31,7 @@
       "match_vrf_ref_type_": "",
       "match_as_path_access_list_ref_type_": "",
       "object_properties": {
-        "notes": "",
-        "match_fields_shown": "match_ipv6_address_prefix_list_path"
+        "notes": ""
       },
       "match_ipv6_next_hop_ipv6_prefix_list_ref_type_": "",
       "match_community_list_ref_type_": ""

@@ -1,0 +1,21 @@
+{
+  "static_ip": {
+    "cov_static_ip": {
+      "allowed_on": "",
+      "enable": true,
+      "ip": "",
+      "lag": "",
+      "lag_ref_type_": "",
+      "mac": "",
+      "object_properties": {
+        "fabric": "",
+        "fabric_ref_type_": ""
+      },
+      "port": "",
+      "service": "",
+      "service_ref_type_": "",
+      "switch": "",
+      "switch_ref_type_": ""
+    }
+  }
+}

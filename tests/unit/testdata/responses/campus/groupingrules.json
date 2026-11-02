@@ -1,7 +1,6 @@
 {
   "grouping_rules": {
     "grouping_rules_test1": {
-      "name": "grouping_rules_test1",
       "enable": false,
       "type": "device",
       "operation": "and",

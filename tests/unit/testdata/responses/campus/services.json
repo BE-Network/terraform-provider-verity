@@ -1,7 +1,6 @@
 {
   "service": {
     "Test": {
-      "name": "Test",
       "enable": true,
       "vlan": 5,
       "max_upstream_rate_mbps": null,

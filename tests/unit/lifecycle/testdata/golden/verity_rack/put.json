@@ -2,7 +2,6 @@
   "rack": {
     "cov_rack": {
       "enable": true,
-      "name": "cov_rack",
       "object_properties": {
         "notes": ""
       },

@@ -7,6 +7,12 @@
       "enable": true,
       "export_route_map": "",
       "export_route_map_ref_type_": "",
+      "hgx_hostnames": [
+        {
+          "hgx_hostname": "",
+          "index": 1
+        }
+      ],
       "import_route_map": "",
       "import_route_map_ref_type_": "",
       "layer_3_vlan": 42,
@@ -15,7 +21,6 @@
       "layer_3_vni_auto_assigned_": false,
       "maximum_ebgp_paths": 42,
       "maximum_ebgp_paths_mode": "",
-      "name": "cov_tenant",
       "route_aggregation": "",
       "route_aggregators": [
         {

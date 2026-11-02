@@ -1,7 +1,6 @@
 {
   "route_map": {
     "Changes_BGP-RouteMaps": {
-      "name": "Changes_BGP-RouteMaps",
       "enable": true,
       "route_map_clauses": [
         {
@@ -16,7 +15,6 @@
       }
     },
     "Route Map": {
-      "name": "Route Map",
       "enable": true,
       "route_map_clauses": [
         {

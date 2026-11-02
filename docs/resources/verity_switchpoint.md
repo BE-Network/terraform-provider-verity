@@ -60,8 +60,6 @@ resource "verity_switchpoint" "example" {
   switch_gateway_auto_assigned_ = true
   switch_ip_and_mask_auto_assigned_ = true
   switch_ref_type_ = "switchpoint"
-  tenant = ""
-  tenant_ref_type_ = "tenant"
   uplink_port = ""
   upstream_is_lag = false
   username_auto_assigned_ = true
@@ -88,6 +86,7 @@ resource "verity_switchpoint" "example" {
     enable = false
     eth_num_icon = ""
     eth_num_label = ""
+    eth_num_role_icon = ""
     port_name = ""
   }
 
@@ -192,8 +191,6 @@ resource "verity_switchpoint" "example" {
   switch_ip_and_mask_auto_assigned_ = true
   switch_router_id_ip_mask_auto_assigned_ = true
   switch_vtep_id_ip_mask_auto_assigned_ = true
-  tenant = ""
-  tenant_ref_type_ = "tenant"
   type = ""
   uplink_port = ""
   upstream_is_lag = false
@@ -220,6 +217,7 @@ resource "verity_switchpoint" "example" {
     enable = false
     eth_num_icon = ""
     eth_num_label = ""
+    eth_num_role_icon = ""
     port_name = ""
   }
 
@@ -251,7 +249,7 @@ resource "verity_switchpoint" "example" {
 
 ### Required
 
-* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+* `name` (String) - Object name. Identifies the object in the API and must be unique within its type. Changing it replaces the resource.
 
 ### Optional
 
@@ -288,6 +286,7 @@ resource "verity_switchpoint" "example" {
   * `enable` (Boolean) - Enable port.
   * `eth_num_icon` (String) - Icon of this Eth Port.
   * `eth_num_label` (String) - Label of this Eth Port.
+  * `eth_num_role_icon` (String) - Icon of this Eth Port.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
   * `port_name` (String) - The name identifying the port. Used for reference only, it won't actually change the port name.
 * `expected_breakout` (String) - Full breakout configuration for the SFP being used as the uplink.
@@ -366,8 +365,6 @@ resource "verity_switchpoint" "example" {
 * `switch_router_id_ip_mask_auto_assigned_` (Boolean) - Whether or not the value in switch_router_id_ip_mask field has been automatically assigned or not. Set to false and change switch_router_id_ip_mask value to edit. Datacenter mode only.
 * `switch_vtep_id_ip_mask` (String) - Switch VETP Identifier. Datacenter mode only. Assigned by the server while `switch_vtep_id_ip_mask_auto_assigned_` is `true`; it cannot be set then.
 * `switch_vtep_id_ip_mask_auto_assigned_` (Boolean) - Whether or not the value in switch_vtep_id_ip_mask field has been automatically assigned or not. Set to false and change switch_vtep_id_ip_mask value to edit. Datacenter mode only.
-* `tenant` (String) - The Tenant of this Device. Set together with `tenant_ref_type_`.
-* `tenant_ref_type_` (String) - Object type for tenant field.
 * `traffic_mirrors` (Block List) - Traffic mirror configurations. Entries are matched by `index`.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
   * `traffic_mirror_num_destination_port` (String) - Destination Port for Traffic Mirror.
@@ -405,7 +402,6 @@ A reference names another Verity object. Set the reference and its type field to
 | `ssp_group` | `ssp_group_ref_type_` | `superspine_group` |
 | `su` | `su_ref_type_` | `su` |
 | `switch` | `switch_ref_type_` | `switchpoint` |
-| `tenant` | `tenant_ref_type_` | `tenant` |
 | `traffic_mirrors.traffic_mirror_num_monitoring_acl` | `traffic_mirror_num_monitoring_acl_ref_type_` | `monitoring_acl` |
 
 ## Auto-Assigned Fields

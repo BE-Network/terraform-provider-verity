@@ -12,7 +12,6 @@
           "permit_deny": ""
         }
       ],
-      "name": "cov_ipv4pl",
       "object_properties": {
         "notes": ""
       }

@@ -1,7 +1,6 @@
 {
   "ipv4_prefix_list": {
     "test1": {
-      "name": "test1",
       "enable": true,
       "lists": [
         {

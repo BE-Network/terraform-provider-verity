@@ -1,0 +1,25 @@
+{
+  "api_version": "6.7",
+  "format_version": 1,
+  "normalization_tool": "tools/specgen",
+  "normalization_tool_version": "1",
+  "sources": [
+    {
+      "file": "campus.json",
+      "mode": "campus",
+      "provenance": "Verity API 6.7.0.6",
+      "sha256": "fa8d2e5a964294069cf1e017899e858cd4540d00cc1b81cbd6fbade0dd1c4432",
+      "source_export_date": "2026-10-30",
+      "source_sha256": "f504a468dab8ec7f486ff8e25500514e65c202bd6c53c6cb665e44ba2ae4e712"
+    },
+    {
+      "file": "datacenter.json",
+      "mode": "datacenter",
+      "provenance": "Verity API 6.7.0.6",
+      "sha256": "57b5a48d7d503cebf8f29412f5402a4b3afda97e581156d8b9270818680d941f",
+      "source_export_date": "2026-10-30",
+      "source_sha256": "bafee8b6d993a1915776bc3f55ad4dd1749195cf1f822dd4ae48b6b7dc9ed0b9"
+    }
+  ],
+  "volatile_metadata_allowlist": []
+}

@@ -1,7 +1,6 @@
 {
   "gateway": {
     "gateway_test1": {
-      "name": "gateway_test1",
       "enable": true,
       "tenant": "Visualizator",
       "neighbor_ip_address": "8.8.8.8",

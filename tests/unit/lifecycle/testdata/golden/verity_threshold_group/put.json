@@ -2,7 +2,6 @@
   "threshold_group": {
     "cov_tg": {
       "enable": true,
-      "name": "cov_tg",
       "targets": [
         {
           "element": "",

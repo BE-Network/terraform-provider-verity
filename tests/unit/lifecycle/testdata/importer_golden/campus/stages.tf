@@ -216,8 +216,15 @@ resource "verity_operation_stage" "threshold_group_stage" {
   }
 }
 
-resource "verity_operation_stage" "pair_stage" {
+resource "verity_operation_stage" "static_ip_stage" {
   depends_on = [verity_operation_stage.threshold_group_stage]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "verity_operation_stage" "pair_stage" {
+  depends_on = [verity_operation_stage.static_ip_stage]
   lifecycle {
     create_before_destroy = true
   }

@@ -1,7 +1,6 @@
 {
   "endpoint_bundle": {
     "Bundle for test": {
-      "name": "Bundle for test",
       "enable": true,
       "protocol": "SIP",
       "device_settings": "",

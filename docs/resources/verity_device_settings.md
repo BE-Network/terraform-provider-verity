@@ -25,8 +25,6 @@ resource "verity_device_settings" "example" {
   mac_aging_timer_override = null
   mode = ""
   ntp_vrf = ""
-  ntp_vrf_tenant = ""
-  ntp_vrf_tenant_ref_type_ = "tenant"
   packet_queue = ""
   packet_queue_ref_type_ = "packet_queue"
   rocev2 = false
@@ -138,9 +136,9 @@ resource "verity_device_settings" "example" {
   * `enabled` (Boolean) - Enable NTP server.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
   * `server` (String) - IPv4, IPv6, or DNS name for NTP server.
-* `ntp_vrf` (String) - VRF used for NTP Servers. Valid values are `default/underlay`, `mgmt` and `tenant`.
-* `ntp_vrf_tenant` (String) - Tenant used for NTP Servers. Set together with `ntp_vrf_tenant_ref_type_`.
-* `ntp_vrf_tenant_ref_type_` (String) - Object type for ntp_vrf_tenant field.
+* `ntp_vrf` (String) - VRF used for NTP Servers. Valid values are `default/underlay`, `mgmt` and, in datacenter mode, `tenant`.
+* `ntp_vrf_tenant` (String) - Tenant used for NTP Servers. Datacenter mode only. Set together with `ntp_vrf_tenant_ref_type_`.
+* `ntp_vrf_tenant_ref_type_` (String) - Object type for ntp_vrf_tenant field. Datacenter mode only.
 * `object_properties` (Block) - Object properties for the Device Settings. At most one block.
 * `packet_queue` (String) - Packet Queue for device. Set together with `packet_queue_ref_type_`.
 * `packet_queue_ref_type_` (String) - Object type for packet_queue field.

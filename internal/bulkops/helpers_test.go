@@ -125,7 +125,7 @@ func TestVerificationWithoutInnerName(t *testing.T) {
 		response map[string]interface{}
 		missing  bool
 	}{
-		{name: "key satisfies identity", response: map[string]interface{}{"one": map[string]interface{}{"flag": true}}},
+		{name: "collection key identifies the object", response: map[string]interface{}{"one": map[string]interface{}{"flag": true}}},
 		{name: "missing object", response: map[string]interface{}{}, missing: true},
 		{name: "other fields still required", response: map[string]interface{}{"one": map[string]interface{}{}}, missing: true},
 		{name: "body names do not override keys", response: map[string]interface{}{"one": map[string]interface{}{"flag": true}, "other": map[string]interface{}{"name": "one"}}},
@@ -133,7 +133,7 @@ func TestVerificationWithoutInnerName(t *testing.T) {
 		{name: "invalid object", response: map[string]interface{}{"one": 42}, missing: true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			missing := missingSubmittedResponseKeys(map[string]interface{}{"one": map[string]interface{}{"name": "one", "flag": true}}, tc.response)
+			missing := missingSubmittedResponseKeys(map[string]interface{}{"one": map[string]interface{}{"flag": true}}, tc.response)
 			if (len(missing) != 0) != tc.missing {
 				t.Fatalf("missing=%v", missing)
 			}
@@ -157,18 +157,39 @@ func TestCacheUsesOnlyCollectionKeys(t *testing.T) {
 	}
 }
 
-func TestVerificationDoesNotRetryForMissingInnerName(t *testing.T) {
+func TestMissingSubmittedResponseKeysForEmptyBody(t *testing.T) {
+	operations := map[string]interface{}{"edge": readinessOperation{}}
+	if missing := missingSubmittedResponseKeys(operations, map[string]interface{}{}); len(missing["edge"]) != 1 || missing["edge"][0] != missingObjectKey {
+		t.Fatalf("an absent object must be reported for an empty request body: %#v", missing)
+	}
+	if missing := missingSubmittedResponseKeys(operations, map[string]interface{}{"edge": map[string]interface{}{}}); len(missing) != 0 {
+		t.Fatalf("an existing empty object must satisfy an empty request body: %#v", missing)
+	}
+}
+
+func TestFetchVerifyAndCacheRetriesUntilEmptyCreateAppears(t *testing.T) {
 	oldRetries, oldBackoff := PostOperationVerificationRetries, PostOperationVerificationBackoff
 	PostOperationVerificationRetries, PostOperationVerificationBackoff = 2, 0
-	defer func() { PostOperationVerificationRetries, PostOperationVerificationBackoff = oldRetries, oldBackoff }()
+	t.Cleanup(func() { PostOperationVerificationRetries, PostOperationVerificationBackoff = oldRetries, oldBackoff })
+
 	calls := 0
 	config := ResourceConfig{ResourceType: "gateway", GetFunc: func(_ *openapi.APIClient, _ context.Context) (*http.Response, error) {
 		calls++
-		return &http.Response{Body: io.NopCloser(strings.NewReader(`{"gateway":{"one":{"flag":true}}}`))}, nil
+		body := `{"gateway":{}}`
+		if calls == 2 {
+			body = `{"gateway":{"edge":{}}}`
+		}
+		return &http.Response{Body: io.NopCloser(strings.NewReader(body))}, nil
 	}}
 	res := NewResourceOperations()
-	err := (&Manager{}).fetchVerifyAndCacheResourceResponse(context.Background(), context.Background(), config, res, nil, "PUT", map[string]interface{}{"one": map[string]interface{}{"name": "one", "flag": true}})
-	if err != nil || calls != 1 || res.Responses["one"]["flag"] != true {
-		t.Fatalf("calls=%d err=%v responses=%v", calls, err, res.Responses)
+	err := (&Manager{}).fetchVerifyAndCacheResourceResponse(context.Background(), context.Background(), config, res, nil, "PUT", map[string]interface{}{"edge": readinessOperation{}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if calls != 2 {
+		t.Fatalf("GET calls = %d, want 2", calls)
+	}
+	if _, cached := res.Responses["edge"]; !cached {
+		t.Fatalf("created object was not cached: %v", res.Responses)
 	}
 }

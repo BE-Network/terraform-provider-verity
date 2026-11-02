@@ -213,7 +213,6 @@
       "bgp_as_number": null,
       "device_serial_number": "",
       "locked": false,
-      "name": "test",
       "switch_vtep_id_ip_mask": "",
       "switch_router_id_ip_mask_auto_assigned_": true,
       "switch_vtep_id_ip_mask_auto_assigned_": true,

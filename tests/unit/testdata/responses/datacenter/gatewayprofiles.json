@@ -1,7 +1,6 @@
 {
   "gateway_profile": {
     "test": {
-      "name": "test",
       "enable": true,
       "external_gateways": [
         {

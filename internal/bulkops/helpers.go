@@ -345,6 +345,8 @@ func (m *Manager) cacheResourceResponse(logCtx context.Context, config ResourceC
 
 }
 
+const missingObjectKey = "<object>"
+
 func missingSubmittedResponseKeys(operations map[string]interface{}, resourceData map[string]interface{}) map[string][]string {
 	missing := make(map[string][]string)
 
@@ -361,15 +363,12 @@ func missingSubmittedResponseKeys(operations map[string]interface{}, resourceDat
 		}
 
 		response, found := resourceData[name].(map[string]interface{})
+		if !found {
+			missing[name] = []string{missingObjectKey}
+			continue
+		}
 		for key, value := range submitted {
 			if value == nil {
-				continue
-			}
-			if !found {
-				missing[name] = append(missing[name], key)
-				continue
-			}
-			if key == "name" {
 				continue
 			}
 			if _, present := response[key]; !present {

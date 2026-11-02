@@ -2,7 +2,6 @@
   "su": {
     "cov_su": {
       "enable": true,
-      "name": "cov_su",
       "object_properties": {
         "notes": ""
       },

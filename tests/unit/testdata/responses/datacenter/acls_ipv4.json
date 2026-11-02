@@ -1,7 +1,6 @@
 {
   "ipv4_filter": {
     "aclv4_test1": {
-      "name": "aclv4_test1",
       "enable": true,
       "protocol": "ip",
       "bidirectional": false,

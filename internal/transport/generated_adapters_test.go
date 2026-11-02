@@ -8,7 +8,6 @@ import (
 
 func TestGeneratedAdapterPreservesKnownZeroValues(t *testing.T) {
 	value, err := GeneratedAdapters["verity_ipv4_list"].ResourceValue(WireObject{
-		"name":      String("edge-list"),
 		"enable":    Bool(false),
 		"ipv4_list": String(""),
 	})
@@ -19,7 +18,7 @@ func TestGeneratedAdapterPreservesKnownZeroValues(t *testing.T) {
 	if err != nil {
 		t.Fatalf("marshal request: %v", err)
 	}
-	want := `{"enable":false,"ipv4_list":"","name":"edge-list"}`
+	want := `{"enable":false,"ipv4_list":""}`
 	if string(got) != want {
 		t.Fatalf("PUT wire JSON = %s, want %s", got, want)
 	}

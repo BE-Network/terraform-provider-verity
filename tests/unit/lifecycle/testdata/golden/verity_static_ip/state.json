@@ -1,0 +1,18 @@
+{
+  "allowed_on": "",
+  "enable": "true",
+  "ip": "",
+  "lag": "",
+  "lag_ref_type_": "",
+  "mac": "",
+  "name": "cov_static_ip",
+  "object_properties.#": "1",
+  "object_properties.0.%": "2",
+  "object_properties.0.fabric": "",
+  "object_properties.0.fabric_ref_type_": "",
+  "port": "",
+  "service": "",
+  "service_ref_type_": "",
+  "switch": "",
+  "switch_ref_type_": ""
+}

@@ -3,7 +3,6 @@
     "cov_spp": {
       "enable": true,
       "ip_mask": "",
-      "name": "cov_spp",
       "object_properties": {
         "on_summary": true,
         "port_monitoring": ""

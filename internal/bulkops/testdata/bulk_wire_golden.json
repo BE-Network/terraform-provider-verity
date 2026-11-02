@@ -581,6 +581,19 @@
     "response_collection": "superspine_group",
     "wrapper": "superspine_group"
   },
+  "static_ip": {
+    "delete_parameter": "static_ip_name",
+    "operations": [
+      "Put",
+      "Patch",
+      "Delete",
+      "Get"
+    ],
+    "path": "/staticips",
+    "request_type": "StaticipsPutRequest",
+    "response_collection": "static_ip",
+    "wrapper": "static_ip"
+  },
   "su": {
     "delete_parameter": "su_name",
     "operations": [

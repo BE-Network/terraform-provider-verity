@@ -305,7 +305,7 @@ in `internal/registry/registry.json` are generated together and checked in CI.
 A new API release may add, remove, rename, or reinterpret endpoints and fields.
 The supported workflow for a breaking release is to start with fresh Terraform
 configuration and empty state, then run `import_verity_state` to adopt the current
-server configuration. See [Fresh-import upgrades](docs/guides/fresh-import-upgrades.md).
+server configuration. See [Fresh-import upgrades](docs/guides/fresh_import_upgrades.md).
 An in-place upgrade of old state is not promised for a release declared this way;
 production state upgraders are not required for that workflow.
 
@@ -661,17 +661,6 @@ go test ./tests/unit/utils/ -count=1
 ```
 
 `-count=1` disables Go's test result cache, ensuring tests always execute rather than reusing a previous result.
-
-`VERITY_MOCK_OMIT_OBJECT_NAMES=1` makes mock collection GET responses omit each
-resource object's inner `name`, while preserving its collection key and nested
-fields. The dedicated name-omission regression enables this behavior itself and
-runs in the normal lifecycle suite. For an optional full-suite audit, run:
-
-```bash
-VERITY_MOCK_OMIT_OBJECT_NAMES=1 go test ./tests/unit/lifecycle/ -count=1 -timeout 15m
-```
-
-The setting does not change PUT/PATCH payloads or mock state.
 
 ### CI
 

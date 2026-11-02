@@ -1,7 +1,6 @@
 {
   "eth_port_profile_": {
     "Test": {
-      "name": "Test",
       "enable": false,
       "tls": false,
       "tls_service": "",

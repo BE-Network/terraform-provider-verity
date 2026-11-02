@@ -1,7 +1,6 @@
 {
   "diagnostics_port_profile": {
     "Example Diagnostic Port Profile": {
-      "name": "Example Diagnostic Port Profile",
       "enable": true,
       "enable_sflow": true
     }

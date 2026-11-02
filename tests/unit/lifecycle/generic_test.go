@@ -412,7 +412,7 @@ func TestGeneric_PutOnlyName(t *testing.T) {
 							}
 							body := puts[len(puts)-1].Body
 							path := tc.WrapperKey + "." + resourceName
-							mock.AssertFieldEquals(t, body, path+".name", resourceName)
+							mock.AssertFieldAbsent(t, body, path+".name")
 
 							val, found := body[tc.WrapperKey]
 							if !found {
@@ -421,7 +421,7 @@ func TestGeneric_PutOnlyName(t *testing.T) {
 							wrapper := val.(map[string]interface{})
 							obj := wrapper[resourceName].(map[string]interface{})
 							for key := range obj {
-								if key == "name" || allowedOptional[key] {
+								if allowedOptional[key] {
 									continue
 								}
 								t.Errorf("unexpected field %q in PUT for name-only create", key)
@@ -1668,7 +1668,6 @@ func TestObjectNamesWithoutInnerField(t *testing.T) {
 		t.Run(tc.mode+"/"+tc.resourceType, func(t *testing.T) {
 			ms := mock.NewMockServer(tc.mode)
 			defer ms.Close()
-			ms.SetOmitObjectNames(true)
 			config := func(enable bool) string {
 				return mock.ProviderConfig(ms.URL(), tc.mode) + fmt.Sprintf(`
 resource %q "test" {
@@ -1694,7 +1693,7 @@ resource %q "test" {
 					return fmt.Errorf("missing API key %q", tc.name)
 				}
 				if _, present := object["name"]; present {
-					return fmt.Errorf("mock returned inner name; regression is not exercising the new contract")
+					return fmt.Errorf("GET returned an inner name")
 				}
 				puts := ms.GetRequestsByMethodAndPath(http.MethodPut, tc.path)
 				if len(puts) != 1 {
@@ -1706,11 +1705,14 @@ resource %q "test" {
 					if !ok {
 						continue
 					}
-					if submitted, ok := collection[tc.name].(map[string]interface{}); ok && submitted["name"] == tc.name {
+					if submitted, ok := collection[tc.name].(map[string]interface{}); ok {
+						if _, present := submitted["name"]; present {
+							return fmt.Errorf("PUT body carries name; it must only be the collection key")
+						}
 						return nil
 					}
 				}
-				return fmt.Errorf("original identity was not preserved in PUT")
+				return fmt.Errorf("PUT did not use the original name %q as its collection key", tc.name)
 			}
 			resource.UnitTest(t, resource.TestCase{ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(), Steps: []resource.TestStep{
 				{PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), create) }, Config: create, Check: resource.ComposeAggregateTestCheckFunc(resource.TestCheckResourceAttr(address, "name", tc.name), check)},

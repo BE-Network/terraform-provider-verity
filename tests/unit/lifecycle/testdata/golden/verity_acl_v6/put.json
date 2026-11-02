@@ -7,7 +7,6 @@
       "destination_port_2": 42,
       "destination_port_operator": "",
       "enable": true,
-      "name": "cov_aclv6",
       "object_properties": {
         "notes": ""
       },

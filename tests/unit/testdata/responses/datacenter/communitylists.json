@@ -1,7 +1,6 @@
 {
   "community_list": {
     "Changes_BGP_CommunityLists": {
-      "name": "Changes_BGP_CommunityLists",
       "enable": true,
       "permit_deny": "permit",
       "any_all": "any",

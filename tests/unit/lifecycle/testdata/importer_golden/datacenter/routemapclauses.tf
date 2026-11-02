@@ -3,7 +3,6 @@ resource "verity_route_map_clause" "ipv6_clause" {
     name = "ipv6_clause"
     depends_on = [verity_operation_stage.route_map_clause_stage]
 	object_properties {
-		match_fields_shown = "match_ipv6_address_prefix_list_path"
 		notes = ""
 	}
 	enable = true

@@ -1,4 +1,23 @@
 {
   "format_version": 1,
-  "releases": []
+  "releases": [
+    {
+      "api_version": "6.7",
+      "baseline_sha256": "017c8873b354249f4898671ae3cc50cd79ce4f9099832a831af9d97dde69266e",
+      "strategy": "fresh_import",
+      "upgrade_guide": "docs/guides/upgrade_6_7.md",
+      "changes": [
+        {
+          "terraform_type": "verity_route_map_clause",
+          "expected_state_sha256": "0d7462a928da40f880850dd50f5e9eaf5cbd1d1a942e9b0a7e720e8a25b49a91",
+          "reason": "API 6.7 removes object_properties.match_fields_shown."
+        },
+        {
+          "terraform_type": "verity_switchpoint",
+          "expected_state_sha256": "11b4c77100f5bc758986d9659af141ea852c4aae74ef0e863825b80b20e808f7",
+          "reason": "API 6.7 removes tenant and tenant_ref_type_."
+        }
+      ]
+    }
+  ]
 }

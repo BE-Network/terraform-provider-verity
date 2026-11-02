@@ -35,12 +35,19 @@ func (r ResourceSpec) Validate() error {
 	if err := validateFields(r.Fields, r.TerraformType, r.Versions, r.Modes); err != nil {
 		return err
 	}
+	identityFound := false
 	for _, field := range r.Fields {
 		if field.TerraformName == r.IdentityPath {
-			return nil
+			identityFound = true
+		}
+		if field.KeyOnly && (field.TerraformName != r.IdentityPath || field.Kind != FieldKindString) {
+			return fmt.Errorf("resource %s: key-only field %q must be the string identity field", r.TerraformType, field.TerraformName)
 		}
 	}
-	return fmt.Errorf("resource %s: identity path %q does not name a top-level field", r.TerraformType, r.IdentityPath)
+	if !identityFound {
+		return fmt.Errorf("resource %s: identity path %q does not name a top-level field", r.TerraformType, r.IdentityPath)
+	}
+	return nil
 }
 
 func (a APIResourceSpec) validate(operations OperationSpec) error {
@@ -216,6 +223,11 @@ func validateField(field FieldSpec, path string, parentRange VersionRange, paren
 	}
 	if err := validateValidators(field.Validators, field.Kind, path); err != nil {
 		return err
+	}
+	for _, member := range field.Fields {
+		if member.KeyOnly {
+			return fmt.Errorf("%s.%s: only the top-level identity field can be key-only", path, member.TerraformName)
+		}
 	}
 	if field.Kind == FieldKindObject {
 		if field.Collection == nil {

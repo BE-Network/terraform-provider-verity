@@ -19,7 +19,32 @@ func legacyReference(t *testing.T) map[string]map[string]interface{} {
 	if err := json.Unmarshal(raw, &captured); err != nil {
 		t.Fatalf("%s: %v", path, err)
 	}
+	for _, body := range captured {
+		for wrapper, collection := range body {
+			objects, _ := collection.(map[string]interface{})
+			for _, object := range objects {
+				fields, ok := object.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				delete(fields, "name")
+				for _, removed := range removedRequestFields[wrapper] {
+					parent, key := fields, removed
+					if container, member, nested := strings.Cut(removed, "."); nested {
+						parent, _ = fields[container].(map[string]interface{})
+						key = member
+					}
+					delete(parent, key)
+				}
+			}
+		}
+	}
 	return captured
+}
+
+var removedRequestFields = map[string][]string{
+	"switchpoint":      {"tenant", "tenant_ref_type_"},
+	"route_map_clause": {"object_properties.match_fields_shown"},
 }
 
 func legacyReferencePath(t *testing.T) string {

@@ -1,0 +1,7 @@
+{
+  "static_ip": {
+    "cov_static_ip": {
+      "enable": false
+    }
+  }
+}
