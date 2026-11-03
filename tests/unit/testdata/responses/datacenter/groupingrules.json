@@ -1,7 +1,6 @@
 {
   "grouping_rules": {
     "test": {
-      "name": "test",
       "enable": true,
       "type": "interface",
       "operation": "and",

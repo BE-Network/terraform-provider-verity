@@ -27,7 +27,6 @@
       "jitter_buffer_max": 42,
       "jitter_target": 42,
       "mwi_refresh_timer": 42,
-      "name": "cov_vpp",
       "object_properties": {
         "format_dial_plan": true,
         "port_monitoring": ""

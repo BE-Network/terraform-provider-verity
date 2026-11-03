@@ -1,7 +1,6 @@
 {
   "sfp_breakouts": {
     "SFP Breakouts": {
-      "name": "SFP Breakouts",
       "enable": false,
       "breakout": [
         {

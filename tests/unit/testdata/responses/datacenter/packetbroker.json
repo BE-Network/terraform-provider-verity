@@ -1,7 +1,6 @@
 {
   "pb_egress_profile": {
     "prof": {
-      "name": "prof",
       "enable": true,
       "ipv6_deny": [
         {

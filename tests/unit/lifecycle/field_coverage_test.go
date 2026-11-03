@@ -442,7 +442,14 @@ func verifyPutFieldCoverage(t *testing.T, body map[string]interface{}, tc Resour
 		if !fieldAppliesToMode(t, modeKey, fi.Name, tc.Mode) {
 			continue
 		}
-		if _, exists := res[fi.Name]; !exists {
+		_, exists := res[fi.Name]
+		if fi.Name == "name" {
+			if exists {
+				t.Errorf("[%s] name must only be the collection key, but the PUT body carries it", tc.TerraformType)
+			}
+			continue
+		}
+		if !exists {
 			t.Errorf("[%s] attribute %q absent from PUT body", tc.TerraformType, fi.Name)
 		}
 	}

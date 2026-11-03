@@ -23,8 +23,6 @@ type BadgesPutRequestBadgeValue struct {
 	Color *string `json:"color,omitempty"`
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Number of Badge
 	Number           NullableInt64                                `json:"number,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
@@ -40,8 +38,6 @@ func NewBadgesPutRequestBadgeValue() *BadgesPutRequestBadgeValue {
 	this.Color = &color
 	var enable bool = true
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	return &this
 }
 
@@ -54,8 +50,6 @@ func NewBadgesPutRequestBadgeValueWithDefaults() *BadgesPutRequestBadgeValue {
 	this.Color = &color
 	var enable bool = true
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	return &this
 }
 
@@ -121,38 +115,6 @@ func (o *BadgesPutRequestBadgeValue) HasEnable() bool {
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *BadgesPutRequestBadgeValue) SetEnable(v bool) {
 	o.Enable = &v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *BadgesPutRequestBadgeValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *BadgesPutRequestBadgeValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *BadgesPutRequestBadgeValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *BadgesPutRequestBadgeValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetNumber returns the Number field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -245,9 +207,6 @@ func (o BadgesPutRequestBadgeValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if o.Number.IsSet() {
 		toSerialize["number"] = o.Number.Get()

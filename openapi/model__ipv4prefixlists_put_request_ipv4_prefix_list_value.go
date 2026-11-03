@@ -20,11 +20,9 @@ var _ MappedNullable = &Ipv4prefixlistsPutRequestIpv4PrefixListValue{}
 // Ipv4prefixlistsPutRequestIpv4PrefixListValue struct for Ipv4prefixlistsPutRequestIpv4PrefixListValue
 type Ipv4prefixlistsPutRequestIpv4PrefixListValue struct {
 	// Enable object.
-	Enable *bool                                                    `json:"enable,omitempty"`
-	Lists  []Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner `json:"lists,omitempty"`
-	// Template Name. Must be unique within type.
-	Name             *string                                      `json:"name,omitempty"`
-	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
+	Enable           *bool                                                    `json:"enable,omitempty"`
+	Lists            []Ipv4prefixlistsPutRequestIpv4PrefixListValueListsInner `json:"lists,omitempty"`
+	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties             `json:"object_properties,omitempty"`
 }
 
 // NewIpv4prefixlistsPutRequestIpv4PrefixListValue instantiates a new Ipv4prefixlistsPutRequestIpv4PrefixListValue object
@@ -35,8 +33,6 @@ func NewIpv4prefixlistsPutRequestIpv4PrefixListValue() *Ipv4prefixlistsPutReques
 	this := Ipv4prefixlistsPutRequestIpv4PrefixListValue{}
 	var enable bool = false
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	return &this
 }
 
@@ -47,8 +43,6 @@ func NewIpv4prefixlistsPutRequestIpv4PrefixListValueWithDefaults() *Ipv4prefixli
 	this := Ipv4prefixlistsPutRequestIpv4PrefixListValue{}
 	var enable bool = false
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	return &this
 }
 
@@ -116,38 +110,6 @@ func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValue) SetLists(v []Ipv4prefixli
 	o.Lists = v
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValue) SetName(v string) {
-	o.Name = &v
-}
-
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
 func (o *Ipv4prefixlistsPutRequestIpv4PrefixListValue) GetObjectProperties() AclsPutRequestIpFilterValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
@@ -195,9 +157,6 @@ func (o Ipv4prefixlistsPutRequestIpv4PrefixListValue) ToMap() (map[string]interf
 	}
 	if !IsNil(o.Lists) {
 		toSerialize["lists"] = o.Lists
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties

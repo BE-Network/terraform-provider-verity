@@ -1,7 +1,6 @@
 {
   "diagnostics_profile": {
     "Example": {
-      "name": "Example",
       "enable": true,
       "enable_sflow": true,
       "flow_collector": "Example Collector",

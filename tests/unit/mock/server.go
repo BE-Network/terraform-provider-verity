@@ -507,6 +507,7 @@ func (ms *MockServer) buildGetResponse(path string, queryParams map[string][]str
 			baseResponse[wrapperKey] = existing
 		}
 	}
+	baseResponse = deepCopy(baseResponse).(map[string]interface{})
 	if pathOmissions := ms.postGetOmissions[path]; pathOmissions != nil {
 		for wrapperKey, resources := range pathOmissions {
 			wrapper, _ := baseResponse[wrapperKey].(map[string]interface{})

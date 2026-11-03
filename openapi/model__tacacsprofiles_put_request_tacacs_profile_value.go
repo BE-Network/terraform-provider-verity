@@ -20,9 +20,7 @@ var _ MappedNullable = &TacacsprofilesPutRequestTacacsProfileValue{}
 // TacacsprofilesPutRequestTacacsProfileValue struct for TacacsprofilesPutRequestTacacsProfileValue
 type TacacsprofilesPutRequestTacacsProfileValue struct {
 	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
-	// Template Name. Must be unique within type.
-	Name          *string                                                        `json:"name,omitempty"`
+	Enable        *bool                                                          `json:"enable,omitempty"`
 	TacacsServers []TacacsprofilesPutRequestTacacsProfileValueTacacsServersInner `json:"tacacs_servers,omitempty"`
 }
 
@@ -34,8 +32,6 @@ func NewTacacsprofilesPutRequestTacacsProfileValue() *TacacsprofilesPutRequestTa
 	this := TacacsprofilesPutRequestTacacsProfileValue{}
 	var enable bool = false
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	return &this
 }
 
@@ -46,8 +42,6 @@ func NewTacacsprofilesPutRequestTacacsProfileValueWithDefaults() *Tacacsprofiles
 	this := TacacsprofilesPutRequestTacacsProfileValue{}
 	var enable bool = false
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	return &this
 }
 
@@ -81,38 +75,6 @@ func (o *TacacsprofilesPutRequestTacacsProfileValue) HasEnable() bool {
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *TacacsprofilesPutRequestTacacsProfileValue) SetEnable(v bool) {
 	o.Enable = &v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *TacacsprofilesPutRequestTacacsProfileValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *TacacsprofilesPutRequestTacacsProfileValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *TacacsprofilesPutRequestTacacsProfileValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *TacacsprofilesPutRequestTacacsProfileValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetTacacsServers returns the TacacsServers field value if set, zero value otherwise.
@@ -159,9 +121,6 @@ func (o TacacsprofilesPutRequestTacacsProfileValue) ToMap() (map[string]interfac
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.TacacsServers) {
 		toSerialize["tacacs_servers"] = o.TacacsServers

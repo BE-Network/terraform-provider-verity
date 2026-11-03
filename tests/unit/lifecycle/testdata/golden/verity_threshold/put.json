@@ -8,7 +8,6 @@
       "escalation_operation": "",
       "for": "",
       "keep_firing_for": "",
-      "name": "cov_th",
       "notice_escalation_value": "",
       "operation": "",
       "rules": [

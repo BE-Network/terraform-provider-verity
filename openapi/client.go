@@ -140,6 +140,8 @@ type APIClient struct {
 
 	SpinePlanesAPI *SpinePlanesAPIService
 
+	StaticIPsAPI *StaticIPsAPIService
+
 	SuperSpineGroupsAPI *SuperSpineGroupsAPIService
 
 	SwitchPairsAPI *SwitchPairsAPIService
@@ -221,6 +223,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.ServicePortProfilesAPI = (*ServicePortProfilesAPIService)(&c.common)
 	c.ServicesAPI = (*ServicesAPIService)(&c.common)
 	c.SpinePlanesAPI = (*SpinePlanesAPIService)(&c.common)
+	c.StaticIPsAPI = (*StaticIPsAPIService)(&c.common)
 	c.SuperSpineGroupsAPI = (*SuperSpineGroupsAPIService)(&c.common)
 	c.SwitchPairsAPI = (*SwitchPairsAPIService)(&c.common)
 	c.SwitchpointsAPI = (*SwitchpointsAPIService)(&c.common)

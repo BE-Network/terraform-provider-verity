@@ -29,6 +29,8 @@ type SwitchpointsPutRequestSwitchpointValueEthsInner struct {
 	EthNumIcon *string `json:"eth_num_icon,omitempty"`
 	// Label of this Eth Port
 	EthNumLabel *string `json:"eth_num_label,omitempty"`
+	// Role of this Eth Port
+	EthNumRole *string `json:"eth_num_role,omitempty"`
 	// The index identifying the object. Zero if you want to add an object to the list.
 	Index *int64 `json:"index,omitempty"`
 	// The name identifying the port. Used for reference only, it won't actually change the port name.
@@ -51,6 +53,8 @@ func NewSwitchpointsPutRequestSwitchpointValueEthsInner() *SwitchpointsPutReques
 	this.EthNumIcon = &ethNumIcon
 	var ethNumLabel string = ""
 	this.EthNumLabel = &ethNumLabel
+	var ethNumRole string = ""
+	this.EthNumRole = &ethNumRole
 	return &this
 }
 
@@ -69,6 +73,8 @@ func NewSwitchpointsPutRequestSwitchpointValueEthsInnerWithDefaults() *Switchpoi
 	this.EthNumIcon = &ethNumIcon
 	var ethNumLabel string = ""
 	this.EthNumLabel = &ethNumLabel
+	var ethNumRole string = ""
+	this.EthNumRole = &ethNumRole
 	return &this
 }
 
@@ -232,6 +238,38 @@ func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetEthNumLabel(v strin
 	o.EthNumLabel = &v
 }
 
+// GetEthNumRole returns the EthNumRole field value if set, zero value otherwise.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEthNumRole() string {
+	if o == nil || IsNil(o.EthNumRole) {
+		var ret string
+		return ret
+	}
+	return *o.EthNumRole
+}
+
+// GetEthNumRoleOk returns a tuple with the EthNumRole field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetEthNumRoleOk() (*string, bool) {
+	if o == nil || IsNil(o.EthNumRole) {
+		return nil, false
+	}
+	return o.EthNumRole, true
+}
+
+// HasEthNumRole returns a boolean if a field has been set.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) HasEthNumRole() bool {
+	if o != nil && !IsNil(o.EthNumRole) {
+		return true
+	}
+
+	return false
+}
+
+// SetEthNumRole gets a reference to the given string and assigns it to the EthNumRole field.
+func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) SetEthNumRole(v string) {
+	o.EthNumRole = &v
+}
+
 // GetIndex returns the Index field value if set, zero value otherwise.
 func (o *SwitchpointsPutRequestSwitchpointValueEthsInner) GetIndex() int64 {
 	if o == nil || IsNil(o.Index) {
@@ -320,6 +358,9 @@ func (o SwitchpointsPutRequestSwitchpointValueEthsInner) ToMap() (map[string]int
 	}
 	if !IsNil(o.EthNumLabel) {
 		toSerialize["eth_num_label"] = o.EthNumLabel
+	}
+	if !IsNil(o.EthNumRole) {
+		toSerialize["eth_num_role"] = o.EthNumRole
 	}
 	if !IsNil(o.Index) {
 		toSerialize["index"] = o.Index

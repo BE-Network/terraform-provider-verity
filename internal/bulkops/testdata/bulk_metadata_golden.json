@@ -179,6 +179,10 @@
   "header_split_key": "",
   "resource_type": "ssp_group"
  },
+ "static_ip": {
+  "header_split_key": "",
+  "resource_type": "static_ip"
+ },
  "su": {
   "header_split_key": "",
   "resource_type": "su"

@@ -31,7 +31,6 @@
         }
       ],
       "ldap_version": "",
-      "name": "cov_ldap",
       "nss_base_group": "",
       "nss_base_netgroup": "",
       "nss_base_passwd": "",

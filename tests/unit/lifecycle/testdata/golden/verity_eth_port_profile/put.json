@@ -6,7 +6,6 @@
       "enable": true,
       "ingress_acl": "",
       "ingress_acl_ref_type_": "",
-      "name": "cov_ethpp",
       "object_properties": {
         "port_monitoring": ""
       },

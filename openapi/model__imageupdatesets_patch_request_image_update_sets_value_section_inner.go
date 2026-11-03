@@ -99,7 +99,7 @@ func NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionInner() *Imageupda
 	this.EndpointSetNumTargetUpgradeVersion = &endpointSetNumTargetUpgradeVersion
 	var endpointSetNumTargetUpgradeVersionTime string = ""
 	this.EndpointSetNumTargetUpgradeVersionTime = &endpointSetNumTargetUpgradeVersionTime
-	var endpointSetNumUniqueIdentifier string = "17913710597871"
+	var endpointSetNumUniqueIdentifier string = "17933778551961"
 	this.EndpointSetNumUniqueIdentifier = &endpointSetNumUniqueIdentifier
 	return &this
 }
@@ -141,7 +141,7 @@ func NewImageupdatesetsPatchRequestImageUpdateSetsValueSectionInnerWithDefaults(
 	this.EndpointSetNumTargetUpgradeVersion = &endpointSetNumTargetUpgradeVersion
 	var endpointSetNumTargetUpgradeVersionTime string = ""
 	this.EndpointSetNumTargetUpgradeVersionTime = &endpointSetNumTargetUpgradeVersionTime
-	var endpointSetNumUniqueIdentifier string = "17913710597871"
+	var endpointSetNumUniqueIdentifier string = "17933778551961"
 	this.EndpointSetNumUniqueIdentifier = &endpointSetNumUniqueIdentifier
 	return &this
 }

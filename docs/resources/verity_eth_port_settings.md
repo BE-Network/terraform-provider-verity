@@ -44,6 +44,7 @@ resource "verity_eth_port_settings" "example" {
   packet_queue_ref_type_ = "packet_queue"
   poe_enable = false
   priority = ""
+  priority_flow_control_cable_length = null
   security_violation_action = ""
   standalone_link_training = false
   stp_enable = false
@@ -96,6 +97,7 @@ resource "verity_eth_port_settings" "example" {
   packet_queue_ref_type_ = "packet_queue"
   poe_enable = false
   priority = ""
+  priority_flow_control_cable_length = null
   priority_flow_control_watchdog_action = ""
   priority_flow_control_watchdog_detect_time = null
   priority_flow_control_watchdog_restore_time = null
@@ -110,7 +112,7 @@ resource "verity_eth_port_settings" "example" {
 
 ### Required
 
-* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+* `name` (String) - Object name. Identifies the object in the API and must be unique within its type. Changing it replaces the resource.
 
 ### Optional
 
@@ -149,7 +151,7 @@ resource "verity_eth_port_settings" "example" {
 * `lldp_mode` (String) - LLDP mode. Enables LLDP Rx and/or LLDP Tx. Campus mode only.
 * `mac_limit` (Integer) - Between 1-1000. Campus mode only. Set it to `null` to clear it.
 * `mac_security_mode` (String) - Dynamic - MACs are learned and aged normally up to the limit. <div class="tab"> Packets will be dropped from clients exceeding the limit. Once a client ages out, a new client can take its slot. When the port goes operationally down (disconnecting or disabling), the MACs will be flushed. </div> Sticky - Semi permenant learning. <div class="tab"> Packets will be dropped from clients exceeding the limit. Addresses do not age out or move within the same switch. Operationally downing a port (disconnecting) does NOT flush the entries. Learned MACs can only be flushed by administratively taking the port down or rebooting the switch. </div>. Campus mode only.
-* `max_allowed_unit` (String) - Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action <div class="tab"> %: Percentage. kbps: kilobits per second mbps: megabits per second gbps: gigabits per second pps: packet per second kpps: kilopacket per second </div>.
+* `max_allowed_unit` (String) - Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action <div class="tab"> %: percentage kbps: kilobits per second pps: packet per second </div>.
 * `max_allowed_value` (Integer) - Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action. Set it to `null` to clear it.
 * `max_bit_rate` (String) - Maximum Bit Rate allowed.
 * `maximum_wred_threshold` (Integer) - A value between 1 to 12480(in KiloBytes). Datacenter mode only. Set it to `null` to clear it.
@@ -160,6 +162,7 @@ resource "verity_eth_port_settings" "example" {
 * `packet_queue_ref_type_` (String) - Object type for packet_queue field.
 * `poe_enable` (Boolean) - Enable PoE on the port.
 * `priority` (String) - Priority given when assigning power in a limited power situation.
+* `priority_flow_control_cable_length` (Integer) - Cable length in meters used to tune Priority Flow Control buffer headroom for propagation delay. Leave empty to use the Switch default. Set it to `null` to clear it.
 * `priority_flow_control_watchdog_action` (String) - Ports with this setting will be disabled when link state tracking takes effect. Datacenter mode only.
 * `priority_flow_control_watchdog_detect_time` (Integer) - A value between 100 to 5000. Datacenter mode only. Set it to `null` to clear it.
 * `priority_flow_control_watchdog_restore_time` (Integer) - A value between 100 to 60000. Datacenter mode only. Set it to `null` to clear it.

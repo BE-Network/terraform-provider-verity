@@ -31,6 +31,7 @@
   "packet_queue_ref_type_": "",
   "poe_enable": "true",
   "priority": "",
+  "priority_flow_control_cable_length": "42",
   "priority_flow_control_watchdog_action": "",
   "priority_flow_control_watchdog_detect_time": "42",
   "priority_flow_control_watchdog_restore_time": "42",

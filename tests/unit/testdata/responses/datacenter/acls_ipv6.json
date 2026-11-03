@@ -1,8 +1,6 @@
 {
   "ipv6_filter": {
-
     "test1": {
-      "name": "test1",
       "enable": true,
       "protocol": "tcp",
       "bidirectional": false,

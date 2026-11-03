@@ -52,10 +52,8 @@ type ServicesPutRequestServiceValue struct {
 	// MTU (Maximum Transmission Unit) The size used by a switch to determine when large packets must be broken up into smaller packets for delivery. If mismatched within a single vlan network, can cause dropped packets.
 	Mtu NullableInt64 `json:"mtu,omitempty"`
 	// Determines how undefined handle multicast packet for Service<ul><li>* \"Multicast Flooding (Normal)\" Multicast packets are broadcast</li><li>* \"Multicast Flooding (AVB/PTP/Cobranet)\" Multicast packets are broadcast with special treatment for critical latency packets such as used by AVB, PTP, and Cobranet</li><li>* \"IPTV Filtering (IGMP Snooping)\" Multicast packets are propagated via IGMP Snooping</li><li>* \"IPTV Filtering (IGMP Report/Leave Flooding)\" Multicast packets are propagated via IGMP Snooping. except that IGMP Report/Leave packets are broadcast</li></ul>
-	MulticastManagementMode *string `json:"multicast_management_mode,omitempty"`
-	// Template Name. Must be unique within type.
-	Name             *string                                         `json:"name,omitempty"`
-	ObjectProperties *ServicesPutRequestServiceValueObjectProperties `json:"object_properties,omitempty"`
+	MulticastManagementMode *string                                         `json:"multicast_management_mode,omitempty"`
+	ObjectProperties        *ServicesPutRequestServiceValueObjectProperties `json:"object_properties,omitempty"`
 	// Priority untagged packets will be tagged with on ingress to the network. If the network is flooded packets of lower priority will be dropped
 	PacketPriority *string `json:"packet_priority,omitempty"`
 	// Policy Based Routing
@@ -112,8 +110,6 @@ func NewServicesPutRequestServiceValue() *ServicesPutRequestServiceValue {
 	this.MstInstance = *NewNullableInt64(&mstInstance)
 	var multicastManagementMode string = "flooding"
 	this.MulticastManagementMode = &multicastManagementMode
-	var name string = ""
-	this.Name = &name
 	var packetPriority string = "0"
 	this.PacketPriority = &packetPriority
 	var policyBasedRouting string = ""
@@ -160,8 +156,6 @@ func NewServicesPutRequestServiceValueWithDefaults() *ServicesPutRequestServiceV
 	this.MstInstance = *NewNullableInt64(&mstInstance)
 	var multicastManagementMode string = "flooding"
 	this.MulticastManagementMode = &multicastManagementMode
-	var name string = ""
-	this.Name = &name
 	var packetPriority string = "0"
 	this.PacketPriority = &packetPriority
 	var policyBasedRouting string = ""
@@ -776,38 +770,6 @@ func (o *ServicesPutRequestServiceValue) SetMulticastManagementMode(v string) {
 	o.MulticastManagementMode = &v
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *ServicesPutRequestServiceValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServicesPutRequestServiceValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *ServicesPutRequestServiceValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *ServicesPutRequestServiceValue) SetName(v string) {
-	o.Name = &v
-}
-
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
 func (o *ServicesPutRequestServiceValue) GetObjectProperties() ServicesPutRequestServiceValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
@@ -1274,9 +1236,6 @@ func (o ServicesPutRequestServiceValue) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.MulticastManagementMode) {
 		toSerialize["multicast_management_mode"] = o.MulticastManagementMode
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties

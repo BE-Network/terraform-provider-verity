@@ -116,8 +116,8 @@ func TestSingletonEmptyBlockOnCreateOmitsUnknownMembers(t *testing.T) {
 	generic := runLifecycle(t, "verity_badge", create, create)
 
 	const (
-		wantLegacy  = `{"badge":{"diffbadge":{"color":"red","enable":true,"name":"diffbadge","number":42,"object_properties":{"notes":""}}}}`
-		wantGeneric = `{"badge":{"diffbadge":{"color":"red","enable":true,"name":"diffbadge","number":42,"object_properties":{}}}}`
+		wantLegacy  = `{"badge":{"diffbadge":{"color":"red","enable":true,"number":42,"object_properties":{"notes":""}}}}`
+		wantGeneric = `{"badge":{"diffbadge":{"color":"red","enable":true,"number":42,"object_properties":{}}}}`
 	)
 	if got := canonical(t, legacy["PUT"]); got != wantLegacy {
 		t.Errorf("legacy PUT = %s, want %s: recorded legacy creates included unknown members", got, wantLegacy)

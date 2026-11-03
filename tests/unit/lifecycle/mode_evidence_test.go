@@ -83,6 +83,12 @@ func parseModeEvidence(raw []byte) (modeEvidence, error) {
 		if err := walk(resource.Fields, "", resource.Modes); err != nil {
 			return nil, err
 		}
+		if fields["name"] == nil {
+			fields["name"] = map[string]bool{}
+			for _, mode := range resource.Modes {
+				fields["name"][mode] = true
+			}
+		}
 		index[endpoint] = fields
 	}
 	return index, nil

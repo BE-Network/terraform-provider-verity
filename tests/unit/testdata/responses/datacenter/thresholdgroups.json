@@ -1,7 +1,6 @@
 {
   "threshold_group": {
     "Test Alarm": {
-      "name": "Test Alarm",
       "enable": true,
       "type": "interface",
       "thresholds": [

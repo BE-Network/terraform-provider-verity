@@ -1,7 +1,6 @@
 {
   "pb_routing": {
     "pbr1": {
-      "name": "pbr1",
       "enable": true,
       "policy": [
         {

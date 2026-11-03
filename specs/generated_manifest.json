@@ -120,19 +120,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "object_properties",
           "fields": [
             {
@@ -454,18 +441,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "object_properties",
           "fields": [
             {
@@ -702,18 +677,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "object_properties",
           "fields": [
             {
@@ -817,19 +780,6 @@
         {
           "api_name": "before",
           "description": "The end time that customers can choose when load is acceptable to the vNetC. The load acceptable window should be no less than 1 hour",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
           "kind": "string",
           "modes": [
             "campus",
@@ -1025,19 +975,6 @@
           "api_name": "enable",
           "description": "Enable object.",
           "kind": "boolean",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "campus",
             "datacenter"
@@ -1414,19 +1351,6 @@
           "review_required": [
             "Terraform access and lifecycle policies",
             "collection identity and update strategy"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
           ]
         },
         {
@@ -1932,18 +1856,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "object_properties",
           "fields": [
             {
@@ -2084,19 +1996,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "power",
                   "description": "On/Off State",
                   "kind": "string",
@@ -2209,19 +2108,6 @@
                   "review_required": [
                     "Terraform access and lifecycle policies"
                   ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
                 }
               ],
               "kind": "object",
@@ -2299,19 +2185,6 @@
                     "dhcp",
                     "static"
                   ],
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -2511,19 +2384,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "kind": "object",
                   "modes": [
@@ -2632,19 +2492,6 @@
                   "review_required": [
                     "Terraform access and lifecycle policies",
                     "collection identity and update strategy"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
                   ]
                 },
                 {
@@ -2890,19 +2737,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "fields": [
                     {
@@ -2994,19 +2828,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -3180,19 +3001,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "number",
                   "description": "Number of Badge",
                   "enum": [
@@ -3315,19 +3123,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "kind": "object",
                   "modes": [
@@ -3374,19 +3169,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -3475,19 +3257,6 @@
                 {
                   "api_name": "label_on_browser_tab",
                   "description": "Label on Browser Tab",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -3673,19 +3442,6 @@
                   "review_required": [
                     "Terraform access and lifecycle policies"
                   ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
                 }
               ],
               "kind": "object",
@@ -3823,19 +3579,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "fields": [
                     {
@@ -3931,19 +3674,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -4081,19 +3811,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -4340,19 +4057,6 @@
                   "review_required": [
                     "Terraform access and lifecycle policies",
                     "collection identity and update strategy"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
                   ]
                 },
                 {
@@ -4971,19 +4675,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "kind": "object",
                   "modes": [
@@ -5430,19 +5121,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "number_of_excluded_addresses_-_high",
                   "description": "Count of excluded addresses that DHCP server will not hand out below the maximum subnet address",
                   "kind": "string",
@@ -5528,19 +5206,6 @@
                   "api_name": "enable_sflow",
                   "description": "Enable sFlow for this Diagnostics Profile ",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -5730,19 +5395,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "poll_interval",
                   "description": "The sampling rate for sFlow polling (seconds)",
                   "kind": "integer",
@@ -5819,19 +5471,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -6008,19 +5647,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -6332,19 +5958,6 @@
                   "review_required": [
                     "Terraform access and lifecycle policies",
                     "collection identity and update strategy"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
                   ]
                 },
                 {
@@ -6713,19 +6326,6 @@
                 {
                   "api_name": "location",
                   "description": "One of Remote|Endpoint|Preprovisioned",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -7351,19 +6951,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "ntp_servers",
                   "fields": [
                     {
@@ -7754,19 +7341,6 @@
                   "enum": [
                     "port_acl"
                   ],
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -8601,10 +8175,10 @@
                 },
                 {
                   "api_name": "max_allowed_unit",
-                  "description": "Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action <br>\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\t\t\t\t\t%: Percentage.<br>\n\t\t\t\t\t\t\t\t\t\t\t\tkbps: kilobits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tmbps: megabits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tgbps: gigabits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tpps: packet per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tkpps: kilopacket per second <br>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t",
+                  "description": "Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action <br>\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\t\t\t\t\t%: percentage <br>\n\t\t\t\t\t\t\t\t\t\t\t\tkbps: kilobits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tpps: packet per second <br>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t",
                   "enum": [
                     "%",
-                    "Kpps",
+                    "kbps",
                     "pps"
                   ],
                   "kind": "string",
@@ -8708,19 +8282,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "kind": "object",
                   "modes": [
@@ -8789,6 +8350,19 @@
                     "datacenter"
                   ],
                   "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "priority_flow_control_cable_length",
+                  "description": "Cable length in meters used to tune Priority Flow Control buffer headroom for propagation delay. Leave empty to use the Switch default.",
+                  "kind": "integer",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": true,
                   "review_required": [
                     "Terraform access and lifecycle policies"
                   ]
@@ -9042,19 +8616,6 @@
                   "review_required": [
                     "Terraform access and lifecycle policies",
                     "collection identity and update strategy"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
                   ]
                 },
                 {
@@ -9664,19 +9225,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "fields": [
                     {
@@ -10204,19 +9752,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "kind": "object",
                   "modes": [
@@ -10370,19 +9905,6 @@
                     "dhcp",
                     "static"
                   ],
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -10881,19 +10403,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "neighbor_as_number",
                   "description": "Autonomous System Number of remote BGP peer ",
                   "kind": "integer",
@@ -11240,19 +10749,6 @@
                     "Terraform access and lifecycle policies",
                     "collection identity and update strategy"
                   ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
                 }
               ],
               "kind": "object",
@@ -11288,19 +10784,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -11530,19 +11013,6 @@
                   "api_name": "installation_on_summary",
                   "description": "Show Installation Pie Chart on Summary",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -11848,8 +11318,7 @@
                       "api_name": "endpoint_set_num_target_upgrade_version",
                       "description": "The target SW version for member devices of the Endpoint Set",
                       "enum": [
-                        "1.9.1.34",
-                        "1.9.1.35",
+                        "1.8.1.79",
                         "unmanaged"
                       ],
                       "kind": "string",
@@ -11908,8 +11377,7 @@
                       "api_name": "endpoint_set_for_all_others_target_upgrade_version",
                       "description": "The target SW version for member devices of the Endpoint Set",
                       "enum": [
-                        "1.9.1.34",
-                        "1.9.1.35",
+                        "1.8.1.79",
                         "unmanaged"
                       ],
                       "kind": "string",
@@ -11994,8 +11462,7 @@
                       "api_name": "endpoint_set_for_endpointless_target_upgrade_version",
                       "description": "The target SW version for member devices of the Endpoint Set",
                       "enum": [
-                        "1.9.1.34",
-                        "1.9.1.35",
+                        "1.8.1.79",
                         "unmanaged"
                       ],
                       "kind": "string",
@@ -12219,19 +11686,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "fields": [
                     {
@@ -12386,19 +11840,6 @@
                   "review_required": [
                     "Terraform access and lifecycle policies"
                   ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
                 }
               ],
               "kind": "object",
@@ -12542,19 +11983,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "fields": [
                     {
@@ -12688,19 +12116,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -12865,19 +12280,6 @@
                   "review_required": [
                     "Terraform access and lifecycle policies"
                   ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
                 }
               ],
               "kind": "object",
@@ -13018,19 +12420,6 @@
                   "review_required": [
                     "Terraform access and lifecycle policies",
                     "collection identity and update strategy"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
                   ]
                 },
                 {
@@ -13212,19 +12601,6 @@
                   "api_name": "lacp",
                   "description": "LACP",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -13678,19 +13054,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "nss_base_group",
                   "description": "NSS search base for group map",
                   "kind": "string",
@@ -13976,19 +13339,6 @@
                   "review_required": [
                     "Terraform access and lifecycle policies"
                   ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
                 }
               ],
               "kind": "object",
@@ -14024,19 +13374,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -14152,19 +13489,6 @@
                     "remark",
                     "transit"
                   ],
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -14375,19 +13699,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "type",
                   "description": "Black vs White MAC Filter",
                   "enum": [
@@ -14438,19 +13749,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -14646,19 +13944,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "fields": [
                     {
@@ -14762,19 +14047,6 @@
                   "review_required": [
                     "Terraform access and lifecycle policies"
                   ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
                 }
               ],
               "kind": "object",
@@ -14810,19 +14082,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -15291,19 +14550,6 @@
                     "Terraform access and lifecycle policies",
                     "collection identity and update strategy"
                   ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
                 }
               ],
               "kind": "object",
@@ -15339,19 +14585,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -15777,19 +15010,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "next_hop_ips",
                   "description": "Next hop IP addresses",
                   "kind": "string",
@@ -15864,19 +15084,6 @@
                   "enum": [
                     "fabric"
                   ],
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -16003,19 +15210,6 @@
                   "enum": [
                     "fabric"
                   ],
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -16393,19 +15587,6 @@
                     "Terraform access and lifecycle policies",
                     "collection identity and update strategy"
                   ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
                 }
               ],
               "kind": "object",
@@ -16441,19 +15622,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -16616,19 +15784,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "servers",
                   "fields": [
                     {
@@ -16778,19 +15933,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -17363,34 +16505,8 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "fields": [
-                    {
-                      "api_name": "match_fields_shown",
-                      "description": "Match fields shown",
-                      "kind": "string",
-                      "modes": [
-                        "campus",
-                        "datacenter"
-                      ],
-                      "nullable": false,
-                      "review_required": [
-                        "Terraform access and lifecycle policies"
-                      ]
-                    },
                     {
                       "api_name": "notes",
                       "description": "User Notes.",
@@ -17429,6 +16545,249 @@
                     "datacenter"
                   ],
                   "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_as_path_prepend_list",
+                  "description": "Comma separated list of AS numbers to prepend to the BGP route AS path attribute",
+                  "kind": "string",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_community",
+                  "description": "Comma separated list of up to 5 communities in AA:NN format to attach to the route",
+                  "kind": "string",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_community_additive",
+                  "description": "Add the communities to the ones already on the route instead of replacing them",
+                  "kind": "boolean",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_community_list_delete",
+                  "description": "Remove communities matching this Community List from the route",
+                  "kind": "string",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_community_list_delete_ref_type_",
+                  "description": "Object type for set_community_list_delete field",
+                  "enum": [
+                    "community_list"
+                  ],
+                  "kind": "string",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_community_local_as",
+                  "description": "BGP does not advertise this route to external peers",
+                  "kind": "boolean",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_community_no_advertise",
+                  "description": "BGP does not advertise this route to any peer",
+                  "kind": "boolean",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_community_no_export",
+                  "description": "BGP does not advertise this route outside the confederation",
+                  "kind": "boolean",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_community_no_peer",
+                  "description": "Do not advertise this route to bilateral peers",
+                  "kind": "boolean",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_extended_community_bandwidth",
+                  "description": "Include the BGP link bandwidth extended community (in Mbps) in route advertisements",
+                  "kind": "integer",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": true,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_extended_community_route_target",
+                  "description": "Attach a BGP extended community of type Route Target to the route",
+                  "kind": "string",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_extended_community_site_of_origin",
+                  "description": "Attach a BGP extended community of type Site of Origin to the route",
+                  "kind": "string",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_ipv4_next_hop_address",
+                  "description": "Set the route IPv4 Next Hop Address",
+                  "kind": "string",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_ipv6_next_hop_address",
+                  "description": "Set the route IPv6 Next Hop Address",
+                  "kind": "string",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_local_preference",
+                  "description": "Set the BGP Local Preference value on the route",
+                  "kind": "integer",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": true,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_metric",
+                  "description": "Set the metric (MED) on the route",
+                  "kind": "integer",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": true,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_origin",
+                  "description": "Set the BGP Origin attribute on the route",
+                  "enum": [
+                    "",
+                    "egp",
+                    "igp",
+                    "incomplete"
+                  ],
+                  "kind": "string",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "set_weight",
+                  "description": "Set the local BGP weight on the route",
+                  "kind": "integer",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": true,
                   "review_required": [
                     "Terraform access and lifecycle policies"
                   ]
@@ -17675,19 +17034,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "fields": [
                     {
@@ -17909,19 +17255,6 @@
                 {
                   "api_name": "ip_mask",
                   "description": "IP/Mask",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -18263,19 +17596,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "output",
                   "description": "Exported report name",
                   "kind": "string",
@@ -18360,19 +17680,6 @@
                 {
                   "api_name": "ip",
                   "description": "IP address of the sFlow Collector ",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -18555,19 +17862,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "kind": "object",
                   "modes": [
@@ -18639,19 +17933,6 @@
                 {
                   "api_name": "before",
                   "description": "The end time that customers can choose when load is acceptable to the vNetC. The load acceptable window should be no less than 1 hour",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -18816,19 +18097,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -19159,19 +18427,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "passphrase",
                   "description": "Passphrase",
                   "kind": "string",
@@ -19400,19 +18655,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -19745,19 +18987,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "fields": [
                     {
@@ -19845,19 +19074,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -20183,19 +19399,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "kind": "object",
                   "modes": [
@@ -20312,19 +19515,6 @@
                 {
                   "api_name": "mac",
                   "description": "MAC",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -20493,19 +19683,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "fields": [
                     {
@@ -20648,19 +19825,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "fields": [
                     {
@@ -20776,19 +19940,6 @@
                   "enum": [
                     "lag"
                   ],
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -21407,6 +20558,25 @@
                       ]
                     },
                     {
+                      "api_name": "eth_num_role",
+                      "description": "Role of this Eth Port",
+                      "enum": [
+                        "",
+                        "gateway",
+                        "server",
+                        "span"
+                      ],
+                      "kind": "string",
+                      "modes": [
+                        "campus",
+                        "datacenter"
+                      ],
+                      "nullable": false,
+                      "review_required": [
+                        "Terraform access and lifecycle policies"
+                      ]
+                    },
+                    {
                       "api_name": "index",
                       "description": "The index identifying the object. Zero if you want to add an object to the list.",
                       "kind": "integer",
@@ -21679,19 +20849,6 @@
                   "api_name": "managed_on_native_vlan",
                   "description": "Managed on native VLAN",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -22501,35 +21658,6 @@
                   ]
                 },
                 {
-                  "api_name": "tenant",
-                  "description": "The Tenant of this Device",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "tenant_ref_type_",
-                  "description": "Object type for tenant field",
-                  "enum": [
-                    "tenant"
-                  ],
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "traffic_mirrors",
                   "fields": [
                     {
@@ -22886,19 +22014,6 @@
                     "Terraform access and lifecycle policies",
                     "collection identity and update strategy"
                   ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
                 }
               ],
               "kind": "object",
@@ -23009,19 +22124,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "paired_leaf_vlan",
                   "description": "VLAN used to establish connection between paired leaf switches ",
                   "kind": "string",
@@ -23081,19 +22183,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -23336,6 +22425,48 @@
                   ]
                 },
                 {
+                  "api_name": "hgx_hostnames",
+                  "fields": [
+                    {
+                      "api_name": "hgx_hostname",
+                      "description": "IP address and mask for route aggregation",
+                      "kind": "string",
+                      "modes": [
+                        "campus",
+                        "datacenter"
+                      ],
+                      "nullable": false,
+                      "review_required": [
+                        "Terraform access and lifecycle policies"
+                      ]
+                    },
+                    {
+                      "api_name": "index",
+                      "description": "The index identifying the object. Zero if you want to add an object to the list.",
+                      "kind": "integer",
+                      "modes": [
+                        "campus",
+                        "datacenter"
+                      ],
+                      "nullable": false,
+                      "review_required": [
+                        "Terraform access and lifecycle policies"
+                      ]
+                    }
+                  ],
+                  "item_kind": "object",
+                  "kind": "array",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies",
+                    "collection identity and update strategy"
+                  ]
+                },
+                {
                   "api_name": "import_route_map",
                   "description": "A route-map applied to routes imported into the current tenant from other tenants with the purpose of filtering or modifying the routes",
                   "kind": "string",
@@ -23434,19 +22565,6 @@
                     "automated",
                     "manual"
                   ],
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -23855,19 +22973,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "notice_escalation_value",
                   "description": "Value to compare the metric to",
                   "kind": "string",
@@ -24194,19 +23299,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "targets",
                   "fields": [
                     {
@@ -24508,19 +23600,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "user_list",
                   "fields": [
                     {
@@ -24789,7 +23868,7 @@
                 },
                 {
                   "api_name": "fabric_panel",
-                  "description": "Capability to edit Fabrics, Pods, Planes, fabric-level objects and all types of bundles (unlocked and locked)",
+                  "description": "Capability to edit Fabrics, Pods, Planes, fabric-level objects.",
                   "kind": "boolean",
                   "modes": [
                     "campus",
@@ -24829,19 +23908,6 @@
                 {
                   "api_name": "mod",
                   "description": "Role Modifier",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -24908,6 +23974,19 @@
                   "review_required": [
                     "Terraform access and lifecycle policies",
                     "collection identity and update strategy"
+                  ]
+                },
+                {
+                  "api_name": "port_panel",
+                  "description": "Capability to edit bundle ports, including all types of bundles (unlocked and locked)",
+                  "kind": "boolean",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
                   ]
                 },
                 {
@@ -25013,19 +24092,6 @@
                   "api_name": "enable",
                   "description": "Enable object.",
                   "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
                   "modes": [
                     "campus",
                     "datacenter"
@@ -25210,19 +24276,6 @@
                 {
                   "api_name": "management_vlan",
                   "description": "VLAN used by vNetC for communicating with managed devices. Non-editable for a Edge-located VNC",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -25701,19 +24754,6 @@
                   ]
                 },
                 {
-                  "api_name": "name",
-                  "description": "Template Name. Must be unique within type.",
-                  "kind": "string",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "fields": [
                     {
@@ -25901,19 +24941,6 @@
           "api_name": "enable",
           "description": "Enable object.",
           "kind": "boolean",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "campus",
             "datacenter"
@@ -26170,19 +25197,6 @@
           "review_required": [
             "Terraform access and lifecycle policies",
             "collection identity and update strategy"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
           ]
         },
         {
@@ -26488,19 +25502,6 @@
             "IEEE 802.3af",
             "Manual"
           ],
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
           "kind": "string",
           "modes": [
             "campus",
@@ -27361,18 +26362,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "object_properties",
           "kind": "object",
           "modes": [
@@ -27760,19 +26749,6 @@
           "review_required": [
             "Terraform access and lifecycle policies"
           ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
         }
       ],
       "modes": [
@@ -27966,19 +26942,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "poll_interval",
           "description": "The sampling rate for sFlow polling (seconds)",
           "kind": "integer",
@@ -28124,19 +27087,6 @@
           "enum": [
             "port_acl"
           ],
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
           "kind": "string",
           "modes": [
             "campus",
@@ -28983,10 +27933,10 @@
         },
         {
           "api_name": "max_allowed_unit",
-          "description": "Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action <br>\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\t\t\t\t\t%: Percentage.<br>\n\t\t\t\t\t\t\t\t\t\t\t\tkbps: kilobits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tmbps: megabits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tgbps: gigabits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tpps: packet per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tkpps: kilopacket per second <br>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t",
+          "description": "Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action <br>\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\t\t\t\t\t%: percentage <br>\n\t\t\t\t\t\t\t\t\t\t\t\tkbps: kilobits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tpps: packet per second <br>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t",
           "enum": [
             "%",
-            "Kpps",
+            "kbps",
             "pps"
           ],
           "kind": "string",
@@ -29090,19 +28040,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "object_properties",
           "kind": "object",
           "modes": [
@@ -29171,6 +28108,19 @@
             "datacenter"
           ],
           "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "priority_flow_control_cable_length",
+          "description": "Cable length in meters used to tune Priority Flow Control buffer headroom for propagation delay. Leave empty to use the Switch default.",
+          "kind": "integer",
+          "modes": [
+            "campus",
+            "datacenter"
+          ],
+          "nullable": true,
           "review_required": [
             "Terraform access and lifecycle policies"
           ]
@@ -29430,18 +28380,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "object_properties",
           "fields": [
             {
@@ -29544,19 +28482,6 @@
           "api_name": "enable",
           "description": "Enable object.",
           "kind": "boolean",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "campus",
             "datacenter"
@@ -30113,19 +29038,6 @@
           "api_name": "multi_tenant",
           "description": "Allow multiple tenants to HGX endpoints on this fabric.",
           "kind": "boolean",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "campus",
             "datacenter"
@@ -30747,18 +29659,6 @@
             "Terraform access and lifecycle policies",
             "collection identity and update strategy"
           ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
         }
       ],
       "modes": [
@@ -31199,18 +30099,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "neighbor_as_number",
           "description": "Autonomous System Number of remote BGP peer ",
           "kind": "integer",
@@ -31467,19 +30355,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "operation",
           "description": "How to combine rules",
           "enum": [
@@ -31690,19 +30565,6 @@
           "api_name": "installation_on_summary",
           "description": "Show Installation Pie Chart on Summary",
           "kind": "boolean",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "campus",
             "datacenter"
@@ -32008,8 +30870,7 @@
               "api_name": "endpoint_set_num_target_upgrade_version",
               "description": "The target SW version for member devices of the Endpoint Set",
               "enum": [
-                "1.9.1.34",
-                "1.9.1.35",
+                "1.8.1.79",
                 "unmanaged"
               ],
               "kind": "string",
@@ -32068,8 +30929,7 @@
               "api_name": "endpoint_set_for_all_others_target_upgrade_version",
               "description": "The target SW version for member devices of the Endpoint Set",
               "enum": [
-                "1.9.1.34",
-                "1.9.1.35",
+                "1.8.1.79",
                 "unmanaged"
               ],
               "kind": "string",
@@ -32154,8 +31014,7 @@
               "api_name": "endpoint_set_for_endpointless_target_upgrade_version",
               "description": "The target SW version for member devices of the Endpoint Set",
               "enum": [
-                "1.9.1.34",
-                "1.9.1.35",
+                "1.8.1.79",
                 "unmanaged"
               ],
               "kind": "string",
@@ -32324,18 +31183,6 @@
           "review_required": [
             "Terraform access and lifecycle policies"
           ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
         }
       ],
       "modes": [
@@ -32480,18 +31327,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "object_properties",
           "fields": [
             {
@@ -32571,18 +31406,6 @@
         {
           "api_name": "ipv6_list",
           "description": "Comma separated list of IPv6 addresses",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
           "kind": "string",
           "modes": [
             "datacenter"
@@ -32732,18 +31555,6 @@
           "review_required": [
             "Terraform access and lifecycle policies",
             "collection identity and update strategy"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
           ]
         },
         {
@@ -32934,19 +31745,6 @@
           "api_name": "lacp",
           "description": "LACP",
           "kind": "boolean",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "campus",
             "datacenter"
@@ -33412,19 +32210,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "nss_base_group",
           "description": "NSS search base for group map",
           "kind": "string",
@@ -33784,18 +32569,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "type",
           "description": "Black vs White MAC Filter",
           "enum": [
@@ -33856,19 +32629,6 @@
           "api_name": "enable",
           "description": "Enable object.",
           "kind": "boolean",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "campus",
             "datacenter"
@@ -34065,18 +32825,6 @@
           "review_required": [
             "Terraform access and lifecycle policies",
             "collection identity and update strategy"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
           ]
         },
         {
@@ -34428,18 +33176,6 @@
             "Terraform access and lifecycle policies",
             "collection identity and update strategy"
           ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
         }
       ],
       "modes": [
@@ -34486,19 +33222,6 @@
           "api_name": "enable",
           "description": "Enable object.",
           "kind": "boolean",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "campus",
             "datacenter"
@@ -34735,19 +33458,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "switchpoint_1",
           "description": "Switchpoint",
           "kind": "string",
@@ -34875,18 +33585,6 @@
           "enum": [
             "fabric"
           ],
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
           "kind": "string",
           "modes": [
             "datacenter"
@@ -35025,18 +33723,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "object_properties",
           "fields": [
             {
@@ -35117,18 +33803,6 @@
           "api_name": "enable",
           "description": "Enable object.",
           "kind": "boolean",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "datacenter"
           ],
@@ -35535,18 +34209,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "next_hop_ips",
           "description": "Next hop IP addresses",
           "kind": "string",
@@ -35895,19 +34557,6 @@
             "Terraform access and lifecycle policies",
             "collection identity and update strategy"
           ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
         }
       ],
       "modes": [
@@ -35953,18 +34602,6 @@
           "api_name": "enable",
           "description": "Enable object.",
           "kind": "boolean",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "datacenter"
           ],
@@ -36100,19 +34737,6 @@
         {
           "api_name": "max_simultaneous_read-write_users",
           "description": "Max number of concurrent sessions for Read-Write users. Minimum limit is 0",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
           "kind": "string",
           "modes": [
             "campus",
@@ -36698,32 +35322,8 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "object_properties",
           "fields": [
-            {
-              "api_name": "match_fields_shown",
-              "description": "Match fields shown",
-              "kind": "string",
-              "modes": [
-                "datacenter"
-              ],
-              "nullable": false,
-              "review_required": [
-                "Terraform access and lifecycle policies"
-              ]
-            },
             {
               "api_name": "notes",
               "description": "User Notes.",
@@ -36759,6 +35359,231 @@
             "datacenter"
           ],
           "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_as_path_prepend_list",
+          "description": "Comma separated list of AS numbers to prepend to the BGP route AS path attribute",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_community",
+          "description": "Comma separated list of up to 5 communities in AA:NN format to attach to the route",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_community_additive",
+          "description": "Add the communities to the ones already on the route instead of replacing them",
+          "kind": "boolean",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_community_list_delete",
+          "description": "Remove communities matching this Community List from the route",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_community_list_delete_ref_type_",
+          "description": "Object type for set_community_list_delete field",
+          "enum": [
+            "community_list"
+          ],
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_community_local_as",
+          "description": "BGP does not advertise this route to external peers",
+          "kind": "boolean",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_community_no_advertise",
+          "description": "BGP does not advertise this route to any peer",
+          "kind": "boolean",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_community_no_export",
+          "description": "BGP does not advertise this route outside the confederation",
+          "kind": "boolean",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_community_no_peer",
+          "description": "Do not advertise this route to bilateral peers",
+          "kind": "boolean",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_extended_community_bandwidth",
+          "description": "Include the BGP link bandwidth extended community (in Mbps) in route advertisements",
+          "kind": "integer",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": true,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_extended_community_route_target",
+          "description": "Attach a BGP extended community of type Route Target to the route",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_extended_community_site_of_origin",
+          "description": "Attach a BGP extended community of type Site of Origin to the route",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_ipv4_next_hop_address",
+          "description": "Set the route IPv4 Next Hop Address",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_ipv6_next_hop_address",
+          "description": "Set the route IPv6 Next Hop Address",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_local_preference",
+          "description": "Set the BGP Local Preference value on the route",
+          "kind": "integer",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": true,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_metric",
+          "description": "Set the metric (MED) on the route",
+          "kind": "integer",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": true,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_origin",
+          "description": "Set the BGP Origin attribute on the route",
+          "enum": [
+            "",
+            "egp",
+            "igp",
+            "incomplete"
+          ],
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "set_weight",
+          "description": "Set the local BGP weight on the route",
+          "kind": "integer",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": true,
           "review_required": [
             "Terraform access and lifecycle policies"
           ]
@@ -36806,18 +35631,6 @@
           "api_name": "enable",
           "description": "Enable object.",
           "kind": "boolean",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "datacenter"
           ],
@@ -37016,18 +35829,6 @@
         {
           "api_name": "ip_mask",
           "description": "IP/Mask",
-          "kind": "string",
-          "modes": [
-            "campus"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
           "kind": "string",
           "modes": [
             "campus"
@@ -37505,19 +36306,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "object_properties",
           "fields": [
             {
@@ -37762,19 +36550,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "port",
           "description": "Port",
           "kind": "integer",
@@ -37934,19 +36709,6 @@
           "review_required": [
             "Terraform access and lifecycle policies",
             "collection identity and update strategy"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
           ]
         },
         {
@@ -38272,19 +37034,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "passphrase",
           "description": "Passphrase",
           "kind": "string",
@@ -38557,18 +37306,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "object_properties",
           "fields": [
             {
@@ -38673,18 +37410,6 @@
           ]
         },
         {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "object_properties",
           "fields": [
             {
@@ -38745,6 +37470,229 @@
         {
           "kind": "string",
           "modes": [
+            "campus"
+          ],
+          "name": "changeset_name",
+          "required": false
+        },
+        {
+          "item_kind": "string",
+          "kind": "array",
+          "modes": [
+            "campus"
+          ],
+          "name": "static_ip_name",
+          "required": true
+        }
+      ],
+      "fields": [
+        {
+          "api_name": "allowed_on",
+          "description": "Allowed On",
+          "enum": [
+            "Static Port"
+          ],
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "enable",
+          "description": "Enable object.",
+          "kind": "boolean",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "ip",
+          "description": "IP",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "lag",
+          "description": "LAG",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "lag_ref_type_",
+          "description": "Object type for lag field",
+          "enum": [
+            "lag"
+          ],
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "mac",
+          "description": "MAC",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "object_properties",
+          "fields": [
+            {
+              "api_name": "fabric",
+              "description": "Choose a Fabric",
+              "kind": "string",
+              "modes": [
+                "campus"
+              ],
+              "nullable": false,
+              "review_required": [
+                "Terraform access and lifecycle policies"
+              ]
+            },
+            {
+              "api_name": "fabric_ref_type_",
+              "description": "Object type for fabric field",
+              "enum": [
+                "fabric"
+              ],
+              "kind": "string",
+              "modes": [
+                "campus"
+              ],
+              "nullable": false,
+              "review_required": [
+                "Terraform access and lifecycle policies"
+              ]
+            }
+          ],
+          "kind": "object",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies",
+            "nested collection strategy"
+          ]
+        },
+        {
+          "api_name": "port",
+          "description": "Port",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "service",
+          "description": "Service",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "service_ref_type_",
+          "description": "Object type for service field",
+          "enum": [
+            "service"
+          ],
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "switch",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "switch_ref_type_",
+          "description": "Object type for switch field",
+          "enum": [
+            "switchpoint"
+          ],
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        }
+      ],
+      "modes": [
+        "campus"
+      ],
+      "operations": [
+        "delete",
+        "get",
+        "patch",
+        "put"
+      ],
+      "path": "/staticips",
+      "request_wrapper_key": "static_ip",
+      "review_required": [
+        "GET response schema is unavailable",
+        "Terraform type, identity, aliases, and lifecycle policies",
+        "cache key requires reviewed override"
+      ]
+    },
+    {
+      "delete_parameters": [
+        {
+          "kind": "string",
+          "modes": [
             "datacenter"
           ],
           "name": "changeset_name",
@@ -38765,18 +37713,6 @@
           "api_name": "enable",
           "description": "Enable object.",
           "kind": "boolean",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "datacenter"
           ],
@@ -39411,6 +38347,25 @@
               ]
             },
             {
+              "api_name": "eth_num_role",
+              "description": "Role of this Eth Port",
+              "enum": [
+                "",
+                "gateway",
+                "server",
+                "span"
+              ],
+              "kind": "string",
+              "modes": [
+                "campus",
+                "datacenter"
+              ],
+              "nullable": false,
+              "review_required": [
+                "Terraform access and lifecycle policies"
+              ]
+            },
+            {
               "api_name": "index",
               "description": "The index identifying the object. Zero if you want to add an object to the list.",
               "kind": "integer",
@@ -39696,19 +38651,6 @@
           "api_name": "managed_on_native_vlan",
           "description": "Managed on native VLAN",
           "kind": "boolean",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "campus",
             "datacenter"
@@ -40518,35 +39460,6 @@
           ]
         },
         {
-          "api_name": "tenant",
-          "description": "The Tenant of this Device",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "tenant_ref_type_",
-          "description": "Object type for tenant field",
-          "enum": [
-            "tenant"
-          ],
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "traffic_mirrors",
           "fields": [
             {
@@ -40984,19 +39897,6 @@
             "Terraform access and lifecycle policies",
             "collection identity and update strategy"
           ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
         }
       ],
       "modes": [
@@ -41085,19 +39985,6 @@
           "api_name": "enable",
           "description": "Enable object.",
           "kind": "boolean",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "campus",
             "datacenter"
@@ -41348,6 +40235,45 @@
           ]
         },
         {
+          "api_name": "hgx_hostnames",
+          "fields": [
+            {
+              "api_name": "hgx_hostname",
+              "description": "IP address and mask for route aggregation",
+              "kind": "string",
+              "modes": [
+                "datacenter"
+              ],
+              "nullable": false,
+              "review_required": [
+                "Terraform access and lifecycle policies"
+              ]
+            },
+            {
+              "api_name": "index",
+              "description": "The index identifying the object. Zero if you want to add an object to the list.",
+              "kind": "integer",
+              "modes": [
+                "datacenter"
+              ],
+              "nullable": false,
+              "review_required": [
+                "Terraform access and lifecycle policies"
+              ]
+            }
+          ],
+          "item_kind": "object",
+          "kind": "array",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies",
+            "collection identity and update strategy"
+          ]
+        },
+        {
           "api_name": "import_route_map",
           "description": "A route-map applied to routes imported into the current tenant from other tenants with the purpose of filtering or modifying the routes",
           "kind": "string",
@@ -41441,18 +40367,6 @@
             "automated",
             "manual"
           ],
-          "kind": "string",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
           "kind": "string",
           "modes": [
             "datacenter"
@@ -41702,19 +40616,6 @@
           "api_name": "enable",
           "description": "Enable object.",
           "kind": "boolean",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
           "modes": [
             "campus",
             "datacenter"
@@ -42175,19 +41076,6 @@
         {
           "api_name": "keep_firing_for",
           "description": "Duration in minutes to keep firing the alarm after the threshold is no longer met",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
           "kind": "string",
           "modes": [
             "campus",
@@ -43025,18 +41913,6 @@
             "campus"
           ],
           "nullable": true,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "name",
-          "description": "Template Name. Must be unique within type.",
-          "kind": "string",
-          "modes": [
-            "campus"
-          ],
-          "nullable": false,
           "review_required": [
             "Terraform access and lifecycle policies"
           ]

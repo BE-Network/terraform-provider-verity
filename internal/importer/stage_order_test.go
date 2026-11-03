@@ -38,7 +38,7 @@ func TestGeneratedStagesMatchExecutorOrder(t *testing.T) {
 				"service_port_profile_stage", "diagnostics_profile_stage", "nac_port_profile_stage", "authenticated_eth_port_stage",
 				"device_settings_stage", "voice_port_profile_stage", "lag_stage", "device_voice_setting_stage",
 				"eth_port_settings_stage", "diagnostics_port_profile_stage", "bundle_stage", "badge_stage",
-				"grouping_rule_stage", "switchpoint_stage", "threshold_stage", "threshold_group_stage", "pair_stage",
+				"grouping_rule_stage", "switchpoint_stage", "threshold_stage", "threshold_group_stage", "static_ip_stage", "pair_stage",
 			},
 		},
 		{

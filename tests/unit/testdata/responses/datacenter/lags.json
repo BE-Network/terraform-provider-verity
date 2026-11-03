@@ -1,7 +1,6 @@
 {
   "lag": {
     "Changes_Lag": {
-      "name": "Changes_Lag",
       "enable": true,
       "is_peer_link": false,
       "color": "anakiwa",

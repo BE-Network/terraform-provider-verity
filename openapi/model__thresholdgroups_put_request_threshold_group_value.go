@@ -20,9 +20,7 @@ var _ MappedNullable = &ThresholdgroupsPutRequestThresholdGroupValue{}
 // ThresholdgroupsPutRequestThresholdGroupValue struct for ThresholdgroupsPutRequestThresholdGroupValue
 type ThresholdgroupsPutRequestThresholdGroupValue struct {
 	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
-	// Template Name. Must be unique within type.
-	Name       *string                                                       `json:"name,omitempty"`
+	Enable     *bool                                                         `json:"enable,omitempty"`
 	Targets    []ThresholdgroupsPutRequestThresholdGroupValueTargetsInner    `json:"targets,omitempty"`
 	Thresholds []ThresholdgroupsPutRequestThresholdGroupValueThresholdsInner `json:"thresholds,omitempty"`
 	// Type of elements to apply thresholds to
@@ -37,8 +35,6 @@ func NewThresholdgroupsPutRequestThresholdGroupValue() *ThresholdgroupsPutReques
 	this := ThresholdgroupsPutRequestThresholdGroupValue{}
 	var enable bool = false
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	var type_ string = "device"
 	this.Type = &type_
 	return &this
@@ -51,8 +47,6 @@ func NewThresholdgroupsPutRequestThresholdGroupValueWithDefaults() *Thresholdgro
 	this := ThresholdgroupsPutRequestThresholdGroupValue{}
 	var enable bool = false
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	var type_ string = "device"
 	this.Type = &type_
 	return &this
@@ -88,38 +82,6 @@ func (o *ThresholdgroupsPutRequestThresholdGroupValue) HasEnable() bool {
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *ThresholdgroupsPutRequestThresholdGroupValue) SetEnable(v bool) {
 	o.Enable = &v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *ThresholdgroupsPutRequestThresholdGroupValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *ThresholdgroupsPutRequestThresholdGroupValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *ThresholdgroupsPutRequestThresholdGroupValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetTargets returns the Targets field value if set, zero value otherwise.
@@ -230,9 +192,6 @@ func (o ThresholdgroupsPutRequestThresholdGroupValue) ToMap() (map[string]interf
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.Targets) {
 		toSerialize["targets"] = o.Targets

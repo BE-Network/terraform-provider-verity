@@ -16,7 +16,6 @@
         }
       ],
       "mac_authentication_holdoff_sec": 42,
-      "name": "cov_aep",
       "object_properties": {
         "port_monitoring": ""
       },

@@ -1,7 +1,6 @@
 {
   "ipv6_prefix_list": {
     "ipv6_list": {
-      "name": "ipv6_list",
       "enable": true,
       "lists": [
         {

@@ -2,7 +2,6 @@
   "tacacs_profile": {
     "cov_tacacs_profile": {
       "enable": true,
-      "name": "cov_tacacs_profile",
       "tacacs_servers": [
         {
           "auth_type": "",

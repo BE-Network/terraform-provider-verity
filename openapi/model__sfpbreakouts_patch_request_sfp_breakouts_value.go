@@ -19,10 +19,8 @@ var _ MappedNullable = &SfpbreakoutsPatchRequestSfpBreakoutsValue{}
 
 // SfpbreakoutsPatchRequestSfpBreakoutsValue struct for SfpbreakoutsPatchRequestSfpBreakoutsValue
 type SfpbreakoutsPatchRequestSfpBreakoutsValue struct {
-	Breakout []SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner `json:"breakout,omitempty"`
-	// Template Name. Must be unique within type.
-	Name             *string                `json:"name,omitempty"`
-	ObjectProperties map[string]interface{} `json:"object_properties,omitempty"`
+	Breakout         []SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner `json:"breakout,omitempty"`
+	ObjectProperties map[string]interface{}                                   `json:"object_properties,omitempty"`
 }
 
 // NewSfpbreakoutsPatchRequestSfpBreakoutsValue instantiates a new SfpbreakoutsPatchRequestSfpBreakoutsValue object
@@ -31,8 +29,6 @@ type SfpbreakoutsPatchRequestSfpBreakoutsValue struct {
 // will change when the set of required properties is changed
 func NewSfpbreakoutsPatchRequestSfpBreakoutsValue() *SfpbreakoutsPatchRequestSfpBreakoutsValue {
 	this := SfpbreakoutsPatchRequestSfpBreakoutsValue{}
-	var name string = ""
-	this.Name = &name
 	return &this
 }
 
@@ -41,8 +37,6 @@ func NewSfpbreakoutsPatchRequestSfpBreakoutsValue() *SfpbreakoutsPatchRequestSfp
 // but it doesn't guarantee that properties required by API are set
 func NewSfpbreakoutsPatchRequestSfpBreakoutsValueWithDefaults() *SfpbreakoutsPatchRequestSfpBreakoutsValue {
 	this := SfpbreakoutsPatchRequestSfpBreakoutsValue{}
-	var name string = ""
-	this.Name = &name
 	return &this
 }
 
@@ -76,38 +70,6 @@ func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) HasBreakout() bool {
 // SetBreakout gets a reference to the given []SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner and assigns it to the Breakout field.
 func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) SetBreakout(v []SfpbreakoutsPatchRequestSfpBreakoutsValueBreakoutInner) {
 	o.Breakout = v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *SfpbreakoutsPatchRequestSfpBreakoutsValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -154,9 +116,6 @@ func (o SfpbreakoutsPatchRequestSfpBreakoutsValue) ToMap() (map[string]interface
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Breakout) {
 		toSerialize["breakout"] = o.Breakout
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties

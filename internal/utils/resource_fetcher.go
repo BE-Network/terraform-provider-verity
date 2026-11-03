@@ -43,16 +43,3 @@ func FetchResourceWithRetry[T any](
 
 	return result, err
 }
-
-func FindResourceByAPIName[T any](
-	resources map[string]T,
-	targetName string,
-	nameExtractor func(T) (string, bool),
-) (resource T, actualAPIName string, exists bool) {
-	for apiName, res := range resources {
-		if extractedName, ok := nameExtractor(res); ok && extractedName == targetName {
-			return res, apiName, true
-		}
-	}
-	return resource, "", false
-}

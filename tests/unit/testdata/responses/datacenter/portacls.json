@@ -1,7 +1,6 @@
 {
   "port_acl": {
     "Port_acl_1": {
-      "name": "Port_acl_1",
       "enable": true,
       "ipv6_deny": [
         {

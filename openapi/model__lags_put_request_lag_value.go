@@ -36,9 +36,7 @@ type LagsPutRequestLagValue struct {
 	// Indicates this LAG is used for peer-to-peer Peer-LAG/IDS link
 	IsPeerLink *bool `json:"is_peer_link,omitempty"`
 	// LACP
-	Lacp *bool `json:"lacp,omitempty"`
-	// Template Name. Must be unique within type.
-	Name             *string                                 `json:"name,omitempty"`
+	Lacp             *bool                                   `json:"lacp,omitempty"`
 	ObjectProperties *LagsPutRequestLagValueObjectProperties `json:"object_properties,omitempty"`
 	// For peer-peer LAGs. The VLAN used for control
 	PeerLinkVlan NullableInt64 `json:"peer_link_vlan,omitempty"`
@@ -66,8 +64,6 @@ func NewLagsPutRequestLagValue() *LagsPutRequestLagValue {
 	this.IsPeerLink = &isPeerLink
 	var lacp bool = true
 	this.Lacp = &lacp
-	var name string = ""
-	this.Name = &name
 	var uplink bool = false
 	this.Uplink = &uplink
 	return &this
@@ -92,8 +88,6 @@ func NewLagsPutRequestLagValueWithDefaults() *LagsPutRequestLagValue {
 	this.IsPeerLink = &isPeerLink
 	var lacp bool = true
 	this.Lacp = &lacp
-	var name string = ""
-	this.Name = &name
 	var uplink bool = false
 	this.Uplink = &uplink
 	return &this
@@ -398,38 +392,6 @@ func (o *LagsPutRequestLagValue) SetLacp(v bool) {
 	o.Lacp = &v
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *LagsPutRequestLagValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LagsPutRequestLagValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *LagsPutRequestLagValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *LagsPutRequestLagValue) SetName(v string) {
-	o.Name = &v
-}
-
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
 func (o *LagsPutRequestLagValue) GetObjectProperties() LagsPutRequestLagValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
@@ -573,9 +535,6 @@ func (o LagsPutRequestLagValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Lacp) {
 		toSerialize["lacp"] = o.Lacp
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties

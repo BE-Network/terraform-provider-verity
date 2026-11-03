@@ -1,7 +1,6 @@
 {
   "tenant": {
     "tenant_test1": {
-      "name": "tenant_test1",
       "enable": true,
       "layer_3_vni": 102004,
       "layer_3_vlan": 2004,

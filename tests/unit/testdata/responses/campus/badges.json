@@ -1,7 +1,6 @@
 {
   "badge": {
     "test": {
-      "name": "test",
       "enable": true,
       "color": "blue",
       "number": 1,

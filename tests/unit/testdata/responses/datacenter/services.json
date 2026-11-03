@@ -1,7 +1,6 @@
 {
   "service": {
     "service_test1": {
-      "name": "service_test1",
       "enable": false,
       "vlan": 108,
       "vni": 100108,

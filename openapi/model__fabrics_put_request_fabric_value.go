@@ -96,9 +96,7 @@ type FabricsPutRequestFabricValue struct {
 	// MLAG Delay Restore Timer
 	MlagDelayRestoreTimer NullableInt64 `json:"mlag_delay_restore_timer,omitempty"`
 	// Allow multiple tenants to HGX endpoints on this fabric.
-	MultiTenant *bool `json:"multi_tenant,omitempty"`
-	// Template Name. Must be unique within type.
-	Name             *string                                       `json:"name,omitempty"`
+	MultiTenant      *bool                                         `json:"multi_tenant,omitempty"`
 	ObjectProperties *FabricsPutRequestFabricValueObjectProperties `json:"object_properties,omitempty"`
 	// IP address range reserved for communication between paired switches
 	PairedIpSubnet *string `json:"paired_ip_subnet,omitempty"`
@@ -231,8 +229,6 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.MlagDelayRestoreTimer = *NewNullableInt64(&mlagDelayRestoreTimer)
 	var multiTenant bool = true
 	this.MultiTenant = &multiTenant
-	var name string = ""
-	this.Name = &name
 	var pairedIpSubnet string = "192.168.254.0/24"
 	this.PairedIpSubnet = &pairedIpSubnet
 	var pauseValidationAlarms bool = false
@@ -357,8 +353,6 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.MlagDelayRestoreTimer = *NewNullableInt64(&mlagDelayRestoreTimer)
 	var multiTenant bool = true
 	this.MultiTenant = &multiTenant
-	var name string = ""
-	this.Name = &name
 	var pairedIpSubnet string = "192.168.254.0/24"
 	this.PairedIpSubnet = &pairedIpSubnet
 	var pauseValidationAlarms bool = false
@@ -1834,38 +1828,6 @@ func (o *FabricsPutRequestFabricValue) SetMultiTenant(v bool) {
 	o.MultiTenant = &v
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *FabricsPutRequestFabricValue) SetName(v string) {
-	o.Name = &v
-}
-
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
 func (o *FabricsPutRequestFabricValue) GetObjectProperties() FabricsPutRequestFabricValueObjectProperties {
 	if o == nil || IsNil(o.ObjectProperties) {
@@ -2997,9 +2959,6 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MultiTenant) {
 		toSerialize["multi_tenant"] = o.MultiTenant
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties

@@ -20,11 +20,9 @@ var _ MappedNullable = &AspathaccesslistsPutRequestAsPathAccessListValue{}
 // AspathaccesslistsPutRequestAsPathAccessListValue struct for AspathaccesslistsPutRequestAsPathAccessListValue
 type AspathaccesslistsPutRequestAsPathAccessListValue struct {
 	// Enable object.
-	Enable *bool                                                        `json:"enable,omitempty"`
-	Lists  []AspathaccesslistsPutRequestAsPathAccessListValueListsInner `json:"lists,omitempty"`
-	// Template Name. Must be unique within type.
-	Name             *string                                      `json:"name,omitempty"`
-	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
+	Enable           *bool                                                        `json:"enable,omitempty"`
+	Lists            []AspathaccesslistsPutRequestAsPathAccessListValueListsInner `json:"lists,omitempty"`
+	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties                 `json:"object_properties,omitempty"`
 	// Action upon match of Community Strings.
 	PermitDeny *string `json:"permit_deny,omitempty"`
 }
@@ -37,8 +35,6 @@ func NewAspathaccesslistsPutRequestAsPathAccessListValue() *AspathaccesslistsPut
 	this := AspathaccesslistsPutRequestAsPathAccessListValue{}
 	var enable bool = false
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	var permitDeny string = "permit"
 	this.PermitDeny = &permitDeny
 	return &this
@@ -51,8 +47,6 @@ func NewAspathaccesslistsPutRequestAsPathAccessListValueWithDefaults() *Aspathac
 	this := AspathaccesslistsPutRequestAsPathAccessListValue{}
 	var enable bool = false
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	var permitDeny string = "permit"
 	this.PermitDeny = &permitDeny
 	return &this
@@ -120,38 +114,6 @@ func (o *AspathaccesslistsPutRequestAsPathAccessListValue) HasLists() bool {
 // SetLists gets a reference to the given []AspathaccesslistsPutRequestAsPathAccessListValueListsInner and assigns it to the Lists field.
 func (o *AspathaccesslistsPutRequestAsPathAccessListValue) SetLists(v []AspathaccesslistsPutRequestAsPathAccessListValueListsInner) {
 	o.Lists = v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *AspathaccesslistsPutRequestAsPathAccessListValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AspathaccesslistsPutRequestAsPathAccessListValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *AspathaccesslistsPutRequestAsPathAccessListValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *AspathaccesslistsPutRequestAsPathAccessListValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -233,9 +195,6 @@ func (o AspathaccesslistsPutRequestAsPathAccessListValue) ToMap() (map[string]in
 	}
 	if !IsNil(o.Lists) {
 		toSerialize["lists"] = o.Lists
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties

@@ -22,9 +22,7 @@ type ServiceportprofilesPutRequestServicePortProfileValue struct {
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
 	// IP/Mask
-	IpMask *string `json:"ip_mask,omitempty"`
-	// Template Name. Must be unique within type.
-	Name             *string                                                               `json:"name,omitempty"`
+	IpMask           *string                                                               `json:"ip_mask,omitempty"`
 	ObjectProperties *ServiceportprofilesPutRequestServicePortProfileValueObjectProperties `json:"object_properties,omitempty"`
 	// Determines what Service are provisioned on the port and if those Services are propagated upstream<ul><li>* \"Upstream Switchport\" Services specified below.  Services are not propagated.</li><li>* \"Downstream Switchport\" Services specified below. Services are propagated.</li><li>* \"Crosslink Switchport\" Services is union of all Services on each switch.  Services are not propagated.</li><li>* \"Upstream L3 (L2/L3 Switches Only\" No Services.</li></ul>
 	PortType *string                                                             `json:"port_type,omitempty"`
@@ -49,8 +47,6 @@ func NewServiceportprofilesPutRequestServicePortProfileValue() *Serviceportprofi
 	this.Enable = &enable
 	var ipMask string = ""
 	this.IpMask = &ipMask
-	var name string = ""
-	this.Name = &name
 	var portType string = "up"
 	this.PortType = &portType
 	var tlsLimitIn int64 = 1000
@@ -71,8 +67,6 @@ func NewServiceportprofilesPutRequestServicePortProfileValueWithDefaults() *Serv
 	this.Enable = &enable
 	var ipMask string = ""
 	this.IpMask = &ipMask
-	var name string = ""
-	this.Name = &name
 	var portType string = "up"
 	this.PortType = &portType
 	var tlsLimitIn int64 = 1000
@@ -146,38 +140,6 @@ func (o *ServiceportprofilesPutRequestServicePortProfileValue) HasIpMask() bool 
 // SetIpMask gets a reference to the given string and assigns it to the IpMask field.
 func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetIpMask(v string) {
 	o.IpMask = &v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *ServiceportprofilesPutRequestServicePortProfileValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -430,9 +392,6 @@ func (o ServiceportprofilesPutRequestServicePortProfileValue) ToMap() (map[strin
 	}
 	if !IsNil(o.IpMask) {
 		toSerialize["ip_mask"] = o.IpMask
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties

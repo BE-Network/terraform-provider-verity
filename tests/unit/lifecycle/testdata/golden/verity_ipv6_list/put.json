@@ -2,8 +2,7 @@
   "ipv6_list_filter": {
     "cov_ipv6l": {
       "enable": true,
-      "ipv6_list": "",
-      "name": "cov_ipv6l"
+      "ipv6_list": ""
     }
   }
 }

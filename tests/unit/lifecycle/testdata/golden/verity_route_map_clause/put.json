@@ -31,12 +31,28 @@
       "match_vni": 42,
       "match_vrf": "",
       "match_vrf_ref_type_": "",
-      "name": "cov_rmc",
       "object_properties": {
-        "match_fields_shown": "",
         "notes": ""
       },
-      "permit_deny": ""
+      "permit_deny": "",
+      "set_as_path_prepend_list": "",
+      "set_community": "",
+      "set_community_additive": true,
+      "set_community_list_delete": "",
+      "set_community_list_delete_ref_type_": "",
+      "set_community_local_as": true,
+      "set_community_no_advertise": true,
+      "set_community_no_export": true,
+      "set_community_no_peer": true,
+      "set_extended_community_bandwidth": 42,
+      "set_extended_community_route_target": "",
+      "set_extended_community_site_of_origin": "",
+      "set_ipv4_next_hop_address": "",
+      "set_ipv6_next_hop_address": "",
+      "set_local_preference": 42,
+      "set_metric": 42,
+      "set_origin": "",
+      "set_weight": 42
     }
   }
 }

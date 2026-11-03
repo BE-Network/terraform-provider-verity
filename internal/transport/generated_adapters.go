@@ -53,6 +53,7 @@ var GeneratedAdapters = map[string]ResourceValueAdapter{
 	"verity_sfp_breakout":             sfpBreakoutAdapter{},
 	"verity_spine_plane":              spinePlaneAdapter{},
 	"verity_ssp_group":                sspGroupAdapter{},
+	"verity_static_ip":                staticIpAdapter{},
 	"verity_su":                       suAdapter{},
 	"verity_switchpoint":              switchpointAdapter{},
 	"verity_tacacs_profile":           tacacsProfileAdapter{},
@@ -86,10 +87,6 @@ func (aaaProfileAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			}
 		case "login_default":
 			if err := aaaProfileLoginDefaultValue(wire, &value.LoginDefault); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "tacacs_profile":
@@ -173,10 +170,6 @@ func (aclV4Adapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireBoolPtr(wire, &value.Enable); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "object_properties":
 			if err := aclV4ObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -258,10 +251,6 @@ func (aclV6Adapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireBoolPtr(wire, &value.Enable); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "object_properties":
 			if err := aclV6ObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -325,10 +314,6 @@ func (asPathAccessListAdapter) ResourceValue(object WireObject) (interface{}, er
 			}
 		case "lists":
 			if err := asPathAccessListListsValue(wire, &value.Lists); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":
@@ -426,10 +411,6 @@ func (authenticatedEthPortAdapter) ResourceValue(object WireObject) (interface{}
 			}
 		case "mac_authentication_holdoff_sec":
 			if err := wireNullableInt64(wire, &value.MacAuthenticationHoldoffSec); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":
@@ -537,10 +518,6 @@ func (badgeAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireBoolPtr(wire, &value.Enable); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "number":
 			if err := wireNullableInt64(wire, &value.Number); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -616,10 +593,6 @@ func (bundleAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			}
 		case "eth_port_paths":
 			if err := bundleEthPortPathsValue(wire, &value.EthPortPaths); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":
@@ -887,10 +860,6 @@ func (communityListAdapter) ResourceValue(object WireObject) (interface{}, error
 			if err := communityListListsValue(wire, &value.Lists); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "object_properties":
 			if err := communityListObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -1030,10 +999,6 @@ func (deviceSettingsAdapter) ResourceValue(object WireObject) (interface{}, erro
 			}
 		case "mode":
 			if err := wireStringPtr(wire, &value.Mode); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "ntp_servers":
@@ -1353,10 +1318,6 @@ func (deviceVoiceSettingsAdapter) ResourceValue(object WireObject) (interface{},
 			if err := wireNullableInt64(wire, &value.MgcpDscpMark); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "outbound_proxy":
 			if err := wireStringPtr(wire, &value.OutboundProxy); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -1522,10 +1483,6 @@ func (diagnosticsPortProfileAdapter) ResourceValue(object WireObject) (interface
 			if err := wireBoolPtr(wire, &value.EnableSflow); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		default:
 			return nil, fmt.Errorf("DiagnosticsportprofilesPutRequestDiagnosticsPortProfileValue has no field %q", name)
 		}
@@ -1583,10 +1540,6 @@ func (diagnosticsProfileAdapter) ResourceValue(object WireObject) (interface{}, 
 			if err := wireStringPtr(wire, &value.MonitoringAclRefType); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "poll_interval":
 			if err := wireNullableInt64(wire, &value.PollInterval); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -1630,10 +1583,6 @@ func (ethPortProfileAdapter) ResourceValue(object WireObject) (interface{}, erro
 			}
 		case "ingress_acl_ref_type_":
 			if err := wireStringPtr(wire, &value.IngressAclRefType); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":
@@ -1917,10 +1866,6 @@ func (ethPortSettingsAdapter) ResourceValue(object WireObject) (interface{}, err
 			if err := wireBoolPtr(wire, &value.Multicast); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "packet_queue":
 			if err := wireStringPtr(wire, &value.PacketQueue); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -1935,6 +1880,10 @@ func (ethPortSettingsAdapter) ResourceValue(object WireObject) (interface{}, err
 			}
 		case "priority":
 			if err := wireStringPtr(wire, &value.Priority); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "priority_flow_control_cable_length":
+			if err := wireNullableInt64(wire, &value.PriorityFlowControlCableLength); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "priority_flow_control_watchdog_action":
@@ -2048,10 +1997,6 @@ func (extendedCommunityListAdapter) ResourceValue(object WireObject) (interface{
 			}
 		case "lists":
 			if err := extendedCommunityListListsValue(wire, &value.Lists); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":
@@ -2295,10 +2240,6 @@ func (fabricAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireBoolPtr(wire, &value.MultiTenant); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "object_properties":
 			if err := fabricObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -2516,10 +2457,6 @@ func (fabricCollectionAdapter) ResourceValue(object WireObject) (interface{}, er
 			if err := wireBoolPtr(wire, &value.Enable); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		default:
 			return nil, fmt.Errorf("FabriccollectionsPutRequestSiteCollectionValue has no field %q", name)
 		}
@@ -2661,10 +2598,6 @@ func (gatewayAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireStringPtr(wire, &value.Md5PasswordEncrypted); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "neighbor_as_number":
 			if err := wireNullableInt64(wire, &value.NeighborAsNumber); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -2774,10 +2707,6 @@ func (gatewayProfileAdapter) ResourceValue(object WireObject) (interface{}, erro
 			if err := gatewayProfileExternalGatewaysValue(wire, &value.ExternalGateways); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		default:
 			return nil, fmt.Errorf("GatewayprofilesPutRequestGatewayProfileValue has no field %q", name)
 		}
@@ -2841,10 +2770,6 @@ func (groupingRuleAdapter) ResourceValue(object WireObject) (interface{}, error)
 		switch name {
 		case "enable":
 			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "operation":
@@ -2932,10 +2857,6 @@ func (ipv4ListAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireStringPtr(wire, &value.Ipv4List); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		default:
 			return nil, fmt.Errorf("Ipv4listsPutRequestIpv4ListFilterValue has no field %q", name)
 		}
@@ -2955,10 +2876,6 @@ func (ipv4PrefixListAdapter) ResourceValue(object WireObject) (interface{}, erro
 			}
 		case "lists":
 			if err := ipv4PrefixListListsValue(wire, &value.Lists); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":
@@ -3054,10 +2971,6 @@ func (ipv6ListAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireStringPtr(wire, &value.Ipv6List); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		default:
 			return nil, fmt.Errorf("Ipv6listsPutRequestIpv6ListFilterValue has no field %q", name)
 		}
@@ -3077,10 +2990,6 @@ func (ipv6PrefixListAdapter) ResourceValue(object WireObject) (interface{}, erro
 			}
 		case "lists":
 			if err := ipv6PrefixListListsValue(wire, &value.Lists); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":
@@ -3204,10 +3113,6 @@ func (lagAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireBoolPtr(wire, &value.Lacp); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "object_properties":
 			if err := lagObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -3299,10 +3204,6 @@ func (ldapProfileAdapter) ResourceValue(object WireObject) (interface{}, error) 
 			}
 		case "ldap_version":
 			if err := wireStringPtr(wire, &value.LdapVersion); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "nss_base_group":
@@ -3494,10 +3395,6 @@ func (macFilterAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := macFilterFiltersValue(wire, &value.Filters); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "type":
 			if err := wireStringPtr(wire, &value.Type); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -3557,10 +3454,6 @@ func (monitoringAclAdapter) ResourceValue(object WireObject) (interface{}, error
 		switch name {
 		case "enable":
 			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "services":
@@ -3626,10 +3519,6 @@ func (nacPortProfileAdapter) ResourceValue(object WireObject) (interface{}, erro
 			}
 		case "eth_ports":
 			if err := nacPortProfileEthPortsValue(wire, &value.EthPorts); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":
@@ -3727,10 +3616,6 @@ func (packetBrokerAdapter) ResourceValue(object WireObject) (interface{}, error)
 			}
 		case "ipv6_permit":
 			if err := packetBrokerIpv6PermitValue(wire, &value.Ipv6Permit); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		default:
@@ -3910,10 +3795,6 @@ func (packetQueueAdapter) ResourceValue(object WireObject) (interface{}, error) 
 			if err := wireBoolPtr(wire, &value.Enable); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "pbit":
 			if err := packetQueuePbitValue(wire, &value.Pbit); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -4023,10 +3904,6 @@ func (pairAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireStringPtr(wire, &value.LagRefType); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "switchpoint_1":
 			if err := wireStringPtr(wire, &value.Switchpoint1); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -4058,10 +3935,6 @@ func (pbRoutingAdapter) ResourceValue(object WireObject) (interface{}, error) {
 		switch name {
 		case "enable":
 			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "policy":
@@ -4143,10 +4016,6 @@ func (pbRoutingAclAdapter) ResourceValue(object WireObject) (interface{}, error)
 			}
 		case "ipv6_permit":
 			if err := pbRoutingAclIpv6PermitValue(wire, &value.Ipv6Permit); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "next_hop_ips":
@@ -4338,10 +4207,6 @@ func (planeAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireStringPtr(wire, &value.FabricRefType); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "object_properties":
 			if err := planeObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -4397,10 +4262,6 @@ func (podAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			}
 		case "fabric_ref_type_":
 			if err := wireStringPtr(wire, &value.FabricRefType); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":
@@ -4462,10 +4323,6 @@ func (portAclAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			}
 		case "ipv6_permit":
 			if err := portAclIpv6PermitValue(wire, &value.Ipv6Permit); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		default:
@@ -4645,10 +4502,6 @@ func (rackAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireBoolPtr(wire, &value.Enable); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "object_properties":
 			if err := rackObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -4700,10 +4553,6 @@ func (routeMapAdapter) ResourceValue(object WireObject) (interface{}, error) {
 		switch name {
 		case "enable":
 			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":
@@ -4907,16 +4756,84 @@ func (routeMapClauseAdapter) ResourceValue(object WireObject) (interface{}, erro
 			if err := wireStringPtr(wire, &value.MatchVrfRefType); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "object_properties":
 			if err := routeMapClauseObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "permit_deny":
 			if err := wireStringPtr(wire, &value.PermitDeny); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_as_path_prepend_list":
+			if err := wireStringPtr(wire, &value.SetAsPathPrependList); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_community":
+			if err := wireStringPtr(wire, &value.SetCommunity); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_community_additive":
+			if err := wireBoolPtr(wire, &value.SetCommunityAdditive); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_community_list_delete":
+			if err := wireStringPtr(wire, &value.SetCommunityListDelete); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_community_list_delete_ref_type_":
+			if err := wireStringPtr(wire, &value.SetCommunityListDeleteRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_community_local_as":
+			if err := wireBoolPtr(wire, &value.SetCommunityLocalAs); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_community_no_advertise":
+			if err := wireBoolPtr(wire, &value.SetCommunityNoAdvertise); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_community_no_export":
+			if err := wireBoolPtr(wire, &value.SetCommunityNoExport); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_community_no_peer":
+			if err := wireBoolPtr(wire, &value.SetCommunityNoPeer); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_extended_community_bandwidth":
+			if err := wireNullableInt64(wire, &value.SetExtendedCommunityBandwidth); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_extended_community_route_target":
+			if err := wireStringPtr(wire, &value.SetExtendedCommunityRouteTarget); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_extended_community_site_of_origin":
+			if err := wireStringPtr(wire, &value.SetExtendedCommunitySiteOfOrigin); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_ipv4_next_hop_address":
+			if err := wireStringPtr(wire, &value.SetIpv4NextHopAddress); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_ipv6_next_hop_address":
+			if err := wireStringPtr(wire, &value.SetIpv6NextHopAddress); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_local_preference":
+			if err := wireNullableInt64(wire, &value.SetLocalPreference); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_metric":
+			if err := wireNullableInt64(wire, &value.SetMetric); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_origin":
+			if err := wireStringPtr(wire, &value.SetOrigin); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "set_weight":
+			if err := wireNullableInt64(wire, &value.SetWeight); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		default:
@@ -4926,24 +4843,20 @@ func (routeMapClauseAdapter) ResourceValue(object WireObject) (interface{}, erro
 	return value, nil
 }
 
-func routeMapClauseObjectPropertiesValue(wire WireValue, target **openapi.RoutemapclausesPutRequestRouteMapClauseValueObjectProperties) error {
+func routeMapClauseObjectPropertiesValue(wire WireValue, target **openapi.AclsPutRequestIpFilterValueObjectProperties) error {
 	members, err := wireObject(wire)
 	if err != nil {
 		return err
 	}
-	var value openapi.RoutemapclausesPutRequestRouteMapClauseValueObjectProperties
+	var value openapi.AclsPutRequestIpFilterValueObjectProperties
 	for name, member := range members {
 		switch name {
-		case "match_fields_shown":
-			if err := wireStringPtr(member, &value.MatchFieldsShown); err != nil {
-				return fmt.Errorf("%s: %w", name, err)
-			}
 		case "notes":
 			if err := wireStringPtr(member, &value.Notes); err != nil {
 				return fmt.Errorf("%s: %w", name, err)
 			}
 		default:
-			return fmt.Errorf("RoutemapclausesPutRequestRouteMapClauseValueObjectProperties has no field %q", name)
+			return fmt.Errorf("AclsPutRequestIpFilterValueObjectProperties has no field %q", name)
 		}
 	}
 	*target = &value
@@ -5022,10 +4935,6 @@ func (serviceAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			}
 		case "multicast_management_mode":
 			if err := wireStringPtr(wire, &value.MulticastManagementMode); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":
@@ -5115,10 +5024,6 @@ func (servicePortProfileAdapter) ResourceValue(object WireObject) (interface{}, 
 			}
 		case "ip_mask":
 			if err := wireStringPtr(wire, &value.IpMask); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":
@@ -5246,10 +5151,6 @@ func (sflowCollectorAdapter) ResourceValue(object WireObject) (interface{}, erro
 			if err := wireStringPtr(wire, &value.Ip); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "port":
 			if err := wireNullableInt64(wire, &value.Port); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -5269,10 +5170,6 @@ func (sfpBreakoutAdapter) ResourceValue(object WireObject) (interface{}, error) 
 		switch name {
 		case "breakout":
 			if err := sfpBreakoutBreakoutValue(wire, &value.Breakout); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":
@@ -5348,10 +5245,6 @@ func (spinePlaneAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireStringPtr(wire, &value.FabricRefType); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "object_properties":
 			if err := spinePlaneObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -5401,10 +5294,6 @@ func (sspGroupAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireStringPtr(wire, &value.FabricRefType); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "object_properties":
 			if err := sspGroupObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -5440,6 +5329,91 @@ func sspGroupObjectPropertiesValue(wire WireValue, target **openapi.AclsPutReque
 	return nil
 }
 
+type staticIpAdapter struct{}
+
+func (staticIpAdapter) ResourceValue(object WireObject) (interface{}, error) {
+	var value openapi.StaticipsPutRequestStaticIpValue
+	for name, wire := range object {
+		switch name {
+		case "allowed_on":
+			if err := wireStringPtr(wire, &value.AllowedOn); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "enable":
+			if err := wireBoolPtr(wire, &value.Enable); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "ip":
+			if err := wireStringPtr(wire, &value.Ip); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "lag":
+			if err := wireStringPtr(wire, &value.Lag); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "lag_ref_type_":
+			if err := wireStringPtr(wire, &value.LagRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "mac":
+			if err := wireStringPtr(wire, &value.Mac); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "object_properties":
+			if err := staticIpObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "port":
+			if err := wireStringPtr(wire, &value.Port); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "service":
+			if err := wireStringPtr(wire, &value.Service); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "service_ref_type_":
+			if err := wireStringPtr(wire, &value.ServiceRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch":
+			if err := wireStringPtr(wire, &value.Switch); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		case "switch_ref_type_":
+			if err := wireStringPtr(wire, &value.SwitchRefType); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return nil, fmt.Errorf("StaticipsPutRequestStaticIpValue has no field %q", name)
+		}
+	}
+	return value, nil
+}
+
+func staticIpObjectPropertiesValue(wire WireValue, target **openapi.LagsPutRequestLagValueObjectProperties) error {
+	members, err := wireObject(wire)
+	if err != nil {
+		return err
+	}
+	var value openapi.LagsPutRequestLagValueObjectProperties
+	for name, member := range members {
+		switch name {
+		case "fabric":
+			if err := wireStringPtr(member, &value.Fabric); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		case "fabric_ref_type_":
+			if err := wireStringPtr(member, &value.FabricRefType); err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+		default:
+			return fmt.Errorf("LagsPutRequestLagValueObjectProperties has no field %q", name)
+		}
+	}
+	*target = &value
+	return nil
+}
+
 type suAdapter struct{}
 
 func (suAdapter) ResourceValue(object WireObject) (interface{}, error) {
@@ -5448,10 +5422,6 @@ func (suAdapter) ResourceValue(object WireObject) (interface{}, error) {
 		switch name {
 		case "enable":
 			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":
@@ -5647,10 +5617,6 @@ func (switchpointAdapter) ResourceValue(object WireObject) (interface{}, error) 
 			if err := wireBoolPtr(wire, &value.ManagedOnNativeVlan); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "object_properties":
 			if err := switchpointObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -5831,14 +5797,6 @@ func (switchpointAdapter) ResourceValue(object WireObject) (interface{}, error) 
 			if err := wireBoolPtr(wire, &value.SwitchVtepIdIpMaskAutoAssigned); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "tenant":
-			if err := wireStringPtr(wire, &value.Tenant); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "tenant_ref_type_":
-			if err := wireStringPtr(wire, &value.TenantRefType); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "traffic_mirrors":
 			if err := switchpointTrafficMirrorsValue(wire, &value.TrafficMirrors); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -5986,6 +5944,10 @@ func switchpointEthsValue(wire WireValue, target *[]openapi.SwitchpointsPutReque
 				}
 			case "eth_num_label":
 				if err := wireStringPtr(member, &value.EthNumLabel); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "eth_num_role":
+				if err := wireStringPtr(member, &value.EthNumRole); err != nil {
 					return fmt.Errorf("[%d].%s: %w", position, name, err)
 				}
 			case "index":
@@ -6180,10 +6142,6 @@ func (tacacsProfileAdapter) ResourceValue(object WireObject) (interface{}, error
 			if err := wireBoolPtr(wire, &value.Enable); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "tacacs_servers":
 			if err := tacacsProfileTacacsServersValue(wire, &value.TacacsServers); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -6281,6 +6239,10 @@ func (tenantAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireStringPtr(wire, &value.ExportRouteMapRefType); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
+		case "hgx_hostnames":
+			if err := tenantHgxHostnamesValue(wire, &value.HgxHostnames); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
 		case "import_route_map":
 			if err := wireStringPtr(wire, &value.ImportRouteMap); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -6311,10 +6273,6 @@ func (tenantAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			}
 		case "maximum_ebgp_paths_mode":
 			if err := wireStringPtr(wire, &value.MaximumEbgpPathsMode); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "route_aggregation":
@@ -6358,6 +6316,38 @@ func (tenantAdapter) ResourceValue(object WireObject) (interface{}, error) {
 		}
 	}
 	return value, nil
+}
+
+func tenantHgxHostnamesValue(wire WireValue, target *[]openapi.TenantsPutRequestTenantValueHgxHostnamesInner) error {
+	entries, err := wireList(wire)
+	if err != nil {
+		return err
+	}
+	values := make([]openapi.TenantsPutRequestTenantValueHgxHostnamesInner, 0, len(entries))
+	for position, entry := range entries {
+		members, err := wireObject(entry)
+		if err != nil {
+			return fmt.Errorf("[%d]: %w", position, err)
+		}
+		var value openapi.TenantsPutRequestTenantValueHgxHostnamesInner
+		for name, member := range members {
+			switch name {
+			case "hgx_hostname":
+				if err := wireStringPtr(member, &value.HgxHostname); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			case "index":
+				if err := wireInt64Ptr(member, &value.Index); err != nil {
+					return fmt.Errorf("[%d].%s: %w", position, name, err)
+				}
+			default:
+				return fmt.Errorf("TenantsPutRequestTenantValueHgxHostnamesInner has no field %q", name)
+			}
+		}
+		values = append(values, value)
+	}
+	*target = values
+	return nil
 }
 
 func tenantRouteAggregatorsValue(wire WireValue, target *[]openapi.FabricsPutRequestFabricValueRouteAggregatorsInner) error {
@@ -6466,10 +6456,6 @@ func (thresholdAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireStringPtr(wire, &value.KeepFiringFor); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "notice_escalation_value":
 			if err := wireStringPtr(wire, &value.NoticeEscalationValue); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -6565,10 +6551,6 @@ func (thresholdGroupAdapter) ResourceValue(object WireObject) (interface{}, erro
 		switch name {
 		case "enable":
 			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "targets":
@@ -6802,10 +6784,6 @@ func (voicePortProfileAdapter) ResourceValue(object WireObject) (interface{}, er
 			}
 		case "mwi_refresh_timer":
 			if err := wireNullableInt64(wire, &value.MwiRefreshTimer); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		case "name":
-			if err := wireStringPtr(wire, &value.Name); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
 		case "object_properties":

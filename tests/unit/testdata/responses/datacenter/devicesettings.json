@@ -1,7 +1,6 @@
 {
   "eth_device_profiles": {
     "device_settings_test1": {
-      "name": "device_settings_test1",
       "enable": true,
       "mode": "IEEE 802.3af",
       "usage_threshold": 0.95,

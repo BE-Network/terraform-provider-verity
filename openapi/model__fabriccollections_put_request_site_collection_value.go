@@ -21,8 +21,6 @@ var _ MappedNullable = &FabriccollectionsPutRequestSiteCollectionValue{}
 type FabriccollectionsPutRequestSiteCollectionValue struct {
 	// Enable object.
 	Enable *bool `json:"enable,omitempty"`
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 }
 
 // NewFabriccollectionsPutRequestSiteCollectionValue instantiates a new FabriccollectionsPutRequestSiteCollectionValue object
@@ -33,8 +31,6 @@ func NewFabriccollectionsPutRequestSiteCollectionValue() *FabriccollectionsPutRe
 	this := FabriccollectionsPutRequestSiteCollectionValue{}
 	var enable bool = true
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	return &this
 }
 
@@ -45,8 +41,6 @@ func NewFabriccollectionsPutRequestSiteCollectionValueWithDefaults() *Fabriccoll
 	this := FabriccollectionsPutRequestSiteCollectionValue{}
 	var enable bool = true
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	return &this
 }
 
@@ -82,38 +76,6 @@ func (o *FabriccollectionsPutRequestSiteCollectionValue) SetEnable(v bool) {
 	o.Enable = &v
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *FabriccollectionsPutRequestSiteCollectionValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabriccollectionsPutRequestSiteCollectionValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *FabriccollectionsPutRequestSiteCollectionValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *FabriccollectionsPutRequestSiteCollectionValue) SetName(v string) {
-	o.Name = &v
-}
-
 func (o FabriccollectionsPutRequestSiteCollectionValue) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -126,9 +88,6 @@ func (o FabriccollectionsPutRequestSiteCollectionValue) ToMap() (map[string]inte
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	return toSerialize, nil
 }

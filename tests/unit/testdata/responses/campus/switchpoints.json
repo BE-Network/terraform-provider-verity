@@ -5,7 +5,6 @@
       "connected_bundle_ref_type_": "endpoint_bundle",
       "enable": true,
       "locked": false,
-      "name": "sim",
       "traffic_mirrors": [],
       "read_only_mode": false,
       "is_fabric": false,

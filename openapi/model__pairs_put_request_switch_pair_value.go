@@ -27,8 +27,6 @@ type PairsPutRequestSwitchPairValue struct {
 	Lag *string `json:"lag,omitempty"`
 	// Object type for lag field
 	LagRefType *string `json:"lag_ref_type_,omitempty"`
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Switchpoint
 	Switchpoint1 *string `json:"switchpoint_1,omitempty"`
 	// Object type for switchpoint_1 field
@@ -51,8 +49,6 @@ func NewPairsPutRequestSwitchPairValue() *PairsPutRequestSwitchPairValue {
 	this.IsWhiteboxPair = &isWhiteboxPair
 	var lag string = ""
 	this.Lag = &lag
-	var name string = ""
-	this.Name = &name
 	var switchpoint1 string = ""
 	this.Switchpoint1 = &switchpoint1
 	var switchpoint2 string = ""
@@ -71,8 +67,6 @@ func NewPairsPutRequestSwitchPairValueWithDefaults() *PairsPutRequestSwitchPairV
 	this.IsWhiteboxPair = &isWhiteboxPair
 	var lag string = ""
 	this.Lag = &lag
-	var name string = ""
-	this.Name = &name
 	var switchpoint1 string = ""
 	this.Switchpoint1 = &switchpoint1
 	var switchpoint2 string = ""
@@ -206,38 +200,6 @@ func (o *PairsPutRequestSwitchPairValue) HasLagRefType() bool {
 // SetLagRefType gets a reference to the given string and assigns it to the LagRefType field.
 func (o *PairsPutRequestSwitchPairValue) SetLagRefType(v string) {
 	o.LagRefType = &v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *PairsPutRequestSwitchPairValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PairsPutRequestSwitchPairValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *PairsPutRequestSwitchPairValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *PairsPutRequestSwitchPairValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetSwitchpoint1 returns the Switchpoint1 field value if set, zero value otherwise.
@@ -389,9 +351,6 @@ func (o PairsPutRequestSwitchPairValue) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.LagRefType) {
 		toSerialize["lag_ref_type_"] = o.LagRefType
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.Switchpoint1) {
 		toSerialize["switchpoint_1"] = o.Switchpoint1

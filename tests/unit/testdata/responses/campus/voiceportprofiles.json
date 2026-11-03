@@ -1,7 +1,6 @@
 {
   "voice_port_profiles": {
     "(MGCP Voice Port)": {
-      "name": "(MGCP Voice Port)",
       "enable": true,
       "protocol": "MGCP",
       "digit_map": "(T)",

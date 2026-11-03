@@ -305,7 +305,7 @@ in `internal/registry/registry.json` are generated together and checked in CI.
 A new API release may add, remove, rename, or reinterpret endpoints and fields.
 The supported workflow for a breaking release is to start with fresh Terraform
 configuration and empty state, then run `import_verity_state` to adopt the current
-server configuration. See [Fresh-import upgrades](docs/guides/fresh-import-upgrades.md).
+server configuration. See [Fresh-import upgrades](docs/guides/fresh_import_upgrades.md).
 An in-place upgrade of old state is not promised for a release declared this way;
 production state upgraders are not required for that workflow.
 

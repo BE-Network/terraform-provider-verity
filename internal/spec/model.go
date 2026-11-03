@@ -209,6 +209,7 @@ type FieldSpec struct {
 	ElementKind   FieldKind `json:"element_kind,omitempty"`
 
 	Unmanaged   bool            `json:"unmanaged,omitempty"`
+	KeyOnly     bool            `json:"key_only,omitempty"`
 	Access      Access          `json:"access"`
 	Description string          `json:"description"`
 	Nullable    bool            `json:"nullable"`

@@ -1,7 +1,6 @@
 {
   "eth_port_settings": {
     "eth_create_1": {
-      "name": "eth_create_1",
       "enable": false,
       "auto_negotiation": true,
       "enable_speed_control": true,

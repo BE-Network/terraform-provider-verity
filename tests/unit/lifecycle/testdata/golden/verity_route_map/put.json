@@ -2,7 +2,6 @@
   "route_map": {
     "cov_rm": {
       "enable": true,
-      "name": "cov_rm",
       "object_properties": {
         "notes": ""
       },

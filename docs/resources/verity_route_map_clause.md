@@ -40,9 +40,26 @@ resource "verity_route_map_clause" "example" {
   match_vrf = ""
   match_vrf_ref_type_ = "tenant"
   permit_deny = ""
+  set_as_path_prepend_list = ""
+  set_community = ""
+  set_community_additive = false
+  set_community_list_delete = ""
+  set_community_list_delete_ref_type_ = "community_list"
+  set_community_local_as = false
+  set_community_no_advertise = false
+  set_community_no_export = false
+  set_community_no_peer = false
+  set_extended_community_bandwidth = null
+  set_extended_community_route_target = ""
+  set_extended_community_site_of_origin = ""
+  set_ipv4_next_hop_address = ""
+  set_ipv6_next_hop_address = ""
+  set_local_preference = null
+  set_metric = null
+  set_origin = ""
+  set_weight = null
 
   object_properties {
-    match_fields_shown = ""
     notes = ""
   }
 }
@@ -52,7 +69,7 @@ resource "verity_route_map_clause" "example" {
 
 ### Required
 
-* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+* `name` (String) - Object name. Identifies the object in the API and must be unique within its type. Changing it replaces the resource.
 
 ### Optional
 
@@ -87,9 +104,26 @@ resource "verity_route_map_clause" "example" {
 * `match_vrf` (String) - Match VRF the route is associated with. Set together with `match_vrf_ref_type_`.
 * `match_vrf_ref_type_` (String) - Object type for match_vrf field.
 * `object_properties` (Block) - Object properties for the Route Map Clause. At most one block.
-  * `match_fields_shown` (String) - Match fields shown.
   * `notes` (String) - User Notes.
 * `permit_deny` (String) - Action upon match of Community Strings.
+* `set_as_path_prepend_list` (String) - Comma separated list of AS numbers to prepend to the BGP route AS path attribute.
+* `set_community` (String) - Comma separated list of up to 5 communities in AA:NN format to attach to the route.
+* `set_community_additive` (Boolean) - Add the communities to the ones already on the route instead of replacing them.
+* `set_community_list_delete` (String) - Remove communities matching this Community List from the route. Set together with `set_community_list_delete_ref_type_`.
+* `set_community_list_delete_ref_type_` (String) - Object type for set_community_list_delete field.
+* `set_community_local_as` (Boolean) - BGP does not advertise this route to external peers.
+* `set_community_no_advertise` (Boolean) - BGP does not advertise this route to any peer.
+* `set_community_no_export` (Boolean) - BGP does not advertise this route outside the confederation.
+* `set_community_no_peer` (Boolean) - Do not advertise this route to bilateral peers.
+* `set_extended_community_bandwidth` (Integer) - Include the BGP link bandwidth extended community (in Mbps) in route advertisements. Set it to `null` to clear it.
+* `set_extended_community_route_target` (String) - Attach a BGP extended community of type Route Target to the route.
+* `set_extended_community_site_of_origin` (String) - Attach a BGP extended community of type Site of Origin to the route.
+* `set_ipv4_next_hop_address` (String) - Set the route IPv4 Next Hop Address.
+* `set_ipv6_next_hop_address` (String) - Set the route IPv6 Next Hop Address.
+* `set_local_preference` (Integer) - Set the BGP Local Preference value on the route. Set it to `null` to clear it.
+* `set_metric` (Integer) - Set the metric (MED) on the route. Set it to `null` to clear it.
+* `set_origin` (String) - Set the BGP Origin attribute on the route.
+* `set_weight` (Integer) - Set the local BGP weight on the route. Set it to `null` to clear it.
 
 ## Reference Fields
 
@@ -105,6 +139,7 @@ A reference names another Verity object. Set the reference and its type field to
 | `match_ipv6_address_ipv6_prefix_list` | `match_ipv6_address_ipv6_prefix_list_ref_type_` | `ipv6_prefix_list` |
 | `match_ipv6_next_hop_ipv6_prefix_list` | `match_ipv6_next_hop_ipv6_prefix_list_ref_type_` | `ipv6_prefix_list` |
 | `match_vrf` | `match_vrf_ref_type_` | `tenant` |
+| `set_community_list_delete` | `set_community_list_delete_ref_type_` | `community_list` |
 
 ## Import
 

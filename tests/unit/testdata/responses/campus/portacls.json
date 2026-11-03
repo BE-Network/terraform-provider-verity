@@ -1,7 +1,6 @@
 {
   "port_acl": {
     "ex": {
-      "name": "ex",
       "enable": true
     }
   }

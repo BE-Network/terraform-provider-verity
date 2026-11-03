@@ -314,6 +314,7 @@ func TestRegistryPoliciesMatchRecordedLegacyEvidence(t *testing.T) {
 			}
 		}
 	}
+	freshImport := declaredFreshImports(t)
 	for _, resourceSpec := range registry {
 		fields, exists := evidence[resourceSpec.TerraformType]
 		if !exists {
@@ -321,12 +322,50 @@ func TestRegistryPoliciesMatchRecordedLegacyEvidence(t *testing.T) {
 		}
 		walk(resourceSpec.Fields, fields, "", resourceSpec.TerraformType, resourceSpec.IdentityPath, "")
 		for path := range fields {
-			if !seen[resourceSpec.TerraformType+"."+path] {
+			if !seen[resourceSpec.TerraformType+"."+path] && !freshImport[resourceSpec.TerraformType] {
 				t.Errorf("historical field %s.%s is missing", resourceSpec.TerraformType, path)
 			}
 		}
 	}
 	t.Logf("%d policy assertions checked, %d fields excluded by category", checked, excluded)
+}
+
+func declaredFreshImports(t *testing.T) map[string]bool {
+	t.Helper()
+	var artifact struct {
+		APIVersion string `json:"api_version"`
+	}
+	var policy struct {
+		Releases []struct {
+			APIVersion string `json:"api_version"`
+			Strategy   string `json:"strategy"`
+			Changes    []struct {
+				TerraformType string `json:"terraform_type"`
+			} `json:"changes"`
+		} `json:"releases"`
+	}
+	for target, path := range map[interface{}]string{
+		&artifact: filepath.Join("..", "..", "specs", "generated_registry.json"),
+		&policy:   filepath.Join("..", "..", "specs", "state_transitions.json"),
+	} {
+		raw, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := json.Unmarshal(raw, target); err != nil {
+			t.Fatalf("%s: %v", path, err)
+		}
+	}
+	declared := make(map[string]bool)
+	for _, release := range policy.Releases {
+		if release.APIVersion != artifact.APIVersion || release.Strategy != "fresh_import" {
+			continue
+		}
+		for _, change := range release.Changes {
+			declared[change.TerraformType] = true
+		}
+	}
+	return declared
 }
 
 func TestGeneratedPairsAreModelled(t *testing.T) {

@@ -30,9 +30,7 @@ type AclsPutRequestIpFilterValue struct {
 	// This field determines which match operation will be applied to TCP/UDP ports. The choices are equal, greater, less or range.
 	DestinationPortOperator *string `json:"destination_port_operator,omitempty"`
 	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
-	// Template Name. Must be unique within type.
-	Name             *string                                      `json:"name,omitempty"`
+	Enable           *bool                                        `json:"enable,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 	// Value must be ip/tcp/udp/icmp or a number between 0 and 255 to match packets.  Value IP will match all IP protocols.
 	Protocol *string `json:"protocol,omitempty"`
@@ -60,8 +58,6 @@ func NewAclsPutRequestIpFilterValue() *AclsPutRequestIpFilterValue {
 	this.DestinationPortOperator = &destinationPortOperator
 	var enable bool = false
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	var protocol string = ""
 	this.Protocol = &protocol
 	var sourceIp string = ""
@@ -84,8 +80,6 @@ func NewAclsPutRequestIpFilterValueWithDefaults() *AclsPutRequestIpFilterValue {
 	this.DestinationPortOperator = &destinationPortOperator
 	var enable bool = false
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	var protocol string = ""
 	this.Protocol = &protocol
 	var sourceIp string = ""
@@ -307,38 +301,6 @@ func (o *AclsPutRequestIpFilterValue) HasEnable() bool {
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *AclsPutRequestIpFilterValue) SetEnable(v bool) {
 	o.Enable = &v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *AclsPutRequestIpFilterValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AclsPutRequestIpFilterValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *AclsPutRequestIpFilterValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *AclsPutRequestIpFilterValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -582,9 +544,6 @@ func (o AclsPutRequestIpFilterValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties

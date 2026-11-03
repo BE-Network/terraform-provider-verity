@@ -2,7 +2,6 @@
   "packet_queue": {
     "cov_pq": {
       "enable": true,
-      "name": "cov_pq",
       "pbit": [
         {
           "index": 1,

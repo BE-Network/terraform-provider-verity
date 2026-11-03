@@ -10,7 +10,6 @@
       "fast_rate": true,
       "is_peer_link": true,
       "lacp": true,
-      "name": "cov_lag",
       "object_properties": {
         "fabric": "",
         "fabric_ref_type_": ""

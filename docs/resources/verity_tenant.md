@@ -28,6 +28,11 @@ resource "verity_tenant" "example" {
   tenant_type = ""
   vrf_name_auto_assigned_ = true
 
+  hgx_hostnames {
+    index = 1
+    hgx_hostname = ""
+  }
+
   route_aggregators {
     index = 1
     route_aggregation_num_enable = false
@@ -46,7 +51,7 @@ resource "verity_tenant" "example" {
 
 ### Required
 
-* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+* `name` (String) - Object name. Identifies the object in the API and must be unique within its type. Changing it replaces the resource.
 
 ### Optional
 
@@ -56,6 +61,9 @@ resource "verity_tenant" "example" {
 * `enable` (Boolean) - Enable object. It's highly recommended to set this value to true so that validation on the object will be ran.
 * `export_route_map` (String) - A route-map applied to routes exported from the current tenant to other tenants with the purpose of filtering or modifying the routes. Set together with `export_route_map_ref_type_`.
 * `export_route_map_ref_type_` (String) - Object type for export_route_map field.
+* `hgx_hostnames` (Block List) - HGX hostnames. Entries are matched by `index`.
+  * `hgx_hostname` (String) - HGX hostname.
+  * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
 * `import_route_map` (String) - A route-map applied to routes imported into the current tenant from other tenants with the purpose of filtering or modifying the routes. Set together with `import_route_map_ref_type_`.
 * `import_route_map_ref_type_` (String) - Object type for import_route_map field.
 * `layer_3_vlan` (Integer) - VLAN value used to transport traffic between services of a Tenant. Set it to `null` to clear it. Assigned by the server while `layer_3_vlan_auto_assigned_` is `true`; it cannot be set then.

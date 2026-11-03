@@ -1,7 +1,6 @@
 {
   "threshold": {
     "newtest": {
-      "name": "newtest",
       "enable": true,
       "type": "interface",
       "operation": "and",

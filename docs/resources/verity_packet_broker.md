@@ -45,7 +45,7 @@ resource "verity_packet_broker" "example" {
 
 ### Required
 
-* `name` (String) - Template Name. Must be unique within type. Changing it replaces the resource.
+* `name` (String) - Object name. Identifies the object in the API and must be unique within its type. Changing it replaces the resource.
 
 ### Optional
 

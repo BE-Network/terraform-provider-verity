@@ -25,8 +25,6 @@ type PortaclsPutRequestPortAclValue struct {
 	Ipv4Permit []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner `json:"ipv4_permit,omitempty"`
 	Ipv6Deny   []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner `json:"ipv6_deny,omitempty"`
 	Ipv6Permit []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner `json:"ipv6_permit,omitempty"`
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 }
 
 // NewPortaclsPutRequestPortAclValue instantiates a new PortaclsPutRequestPortAclValue object
@@ -37,8 +35,6 @@ func NewPortaclsPutRequestPortAclValue() *PortaclsPutRequestPortAclValue {
 	this := PortaclsPutRequestPortAclValue{}
 	var enable bool = false
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	return &this
 }
 
@@ -49,8 +45,6 @@ func NewPortaclsPutRequestPortAclValueWithDefaults() *PortaclsPutRequestPortAclV
 	this := PortaclsPutRequestPortAclValue{}
 	var enable bool = false
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	return &this
 }
 
@@ -214,38 +208,6 @@ func (o *PortaclsPutRequestPortAclValue) SetIpv6Permit(v []Policybasedroutingacl
 	o.Ipv6Permit = v
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *PortaclsPutRequestPortAclValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PortaclsPutRequestPortAclValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *PortaclsPutRequestPortAclValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *PortaclsPutRequestPortAclValue) SetName(v string) {
-	o.Name = &v
-}
-
 func (o PortaclsPutRequestPortAclValue) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -270,9 +232,6 @@ func (o PortaclsPutRequestPortAclValue) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.Ipv6Permit) {
 		toSerialize["ipv6_permit"] = o.Ipv6Permit
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	return toSerialize, nil
 }

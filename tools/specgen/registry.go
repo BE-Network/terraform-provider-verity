@@ -45,6 +45,8 @@ type policyProfile struct {
 	UpdateClear     string `yaml:"update_clear"`
 	UnknownPlan     string `yaml:"unknown_plan"`
 	StateOwnership  string `yaml:"state_ownership"`
+	KeyOnly         bool   `yaml:"key_only"`
+	Description     string `yaml:"description"`
 }
 
 type resourceOverride struct {
@@ -322,6 +324,7 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 		coverageByName[field.APIName] = field
 	}
 	overrideByName := make(map[string]fieldOverride, len(overrides))
+	keyOnly := make([]spec.FieldSpec, 0)
 	for _, override := range overrides {
 		if override.APIName == "" {
 			return nil, errors.New("field api_name is required")
@@ -329,12 +332,28 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 		if _, exists := overrideByName[override.APIName]; exists {
 			return nil, fmt.Errorf("duplicate field override %q", override.APIName)
 		}
+		profile, exists := profiles[override.Profile]
+		if override.Profile != "" && !exists {
+			return nil, fmt.Errorf("field %q references unknown profile %q", override.APIName, override.Profile)
+		}
+		if profile.KeyOnly {
+			if _, present := coverageByName[override.APIName]; present {
+				return nil, fmt.Errorf("key-only field %q is present in extracted OpenAPI; review whether the API sends it again", override.APIName)
+			}
+			field, err := keyOnlyField(override, profile, parentVersions, selectedVersion, profiles, defaultProfile, inheritModes, inheritVersions, enclosing)
+			if err != nil {
+				return nil, err
+			}
+			overrideByName[override.APIName] = override
+			keyOnly = append(keyOnly, field)
+			continue
+		}
 		if _, exists := coverageByName[override.APIName]; !exists {
 			return nil, fmt.Errorf("field override %q is not present in extracted OpenAPI", override.APIName)
 		}
 		overrideByName[override.APIName] = override
 	}
-	if len(overrideByName) != len(coverageByName) {
+	if len(overrideByName)-len(keyOnly) != len(coverageByName) {
 		missing := make([]string, 0)
 		for name := range coverageByName {
 			if _, exists := overrideByName[name]; !exists {
@@ -354,7 +373,7 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 		}
 	}
 
-	fields := make([]spec.FieldSpec, 0, len(overrides))
+	fields := append(make([]spec.FieldSpec, 0, len(overrides)), keyOnly...)
 	for _, source := range coverage {
 		override, err := resolveFieldOverride(overrideByName[source.APIName], profiles, defaultProfile, apiNullable(source.Kind, source.APIName), pairedNames[source.APIName], enclosing, inheritModes, inheritVersions)
 		if err != nil {
@@ -448,6 +467,50 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 	}
 	sort.Slice(fields, func(i, j int) bool { return fields[i].TerraformName < fields[j].TerraformName })
 	return fields, nil
+}
+
+func keyOnlyField(override fieldOverride, profile policyProfile, parentVersions spec.VersionRange, selectedVersion spec.APIVersion, profiles map[string]policyProfile, defaultProfile string, inheritModes []string, inheritVersions versionRangeOverride, enclosing string) (spec.FieldSpec, error) {
+	if enclosing != "" || override.APIKind != "string" {
+		return spec.FieldSpec{}, fmt.Errorf("key-only field %q must be a top-level string", override.APIName)
+	}
+	resolved, err := resolveFieldOverride(override, profiles, defaultProfile, false, false, enclosing, inheritModes, inheritVersions)
+	if err != nil {
+		return spec.FieldSpec{}, err
+	}
+	description := resolved.Description
+	if description == "" {
+		description = profile.Description
+	}
+	if description == "" {
+		return spec.FieldSpec{}, fmt.Errorf("key-only field %q requires a description in its override or profile", override.APIName)
+	}
+	modes, err := reviewedModes(resolved.Modes, inheritModes, fmt.Sprintf("field %q", override.APIName))
+	if err != nil {
+		return spec.FieldSpec{}, err
+	}
+	versions, err := parseVersionRange(resolved.Versions)
+	if err != nil {
+		return spec.FieldSpec{}, fmt.Errorf("field %q versions: %w", override.APIName, err)
+	}
+	if !versionRangeSubset(versions, parentVersions) || !versions.Contains(selectedVersion) {
+		return spec.FieldSpec{}, fmt.Errorf("field %q versions must be contained by resource versions and include %s", override.APIName, selectedVersion)
+	}
+	return spec.FieldSpec{
+		TerraformName:   resolved.TerraformName,
+		APIName:         override.APIName,
+		Kind:            spec.FieldKindString,
+		KeyOnly:         true,
+		Access:          spec.Access(resolved.Access),
+		Description:     description,
+		Replace:         resolved.Replace,
+		Modes:           modes,
+		Versions:        versions,
+		ResponseAbsence: spec.ResponseAbsencePolicy(resolved.ResponseAbsence),
+		CreateNull:      spec.CreateNullPolicy(resolved.CreateNull),
+		UpdateClear:     spec.UpdateClearPolicy(resolved.UpdateClear),
+		UnknownPlan:     spec.UnknownPlanPolicy(resolved.UnknownPlan),
+		StateOwnership:  spec.StateOwnershipPolicy(resolved.StateOwnership),
+	}, nil
 }
 
 func fieldElementKind(source coverageField, override fieldOverride) (spec.FieldKind, error) {

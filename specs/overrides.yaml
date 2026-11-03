@@ -13,6 +13,8 @@ defaults:
       unknown_plan: reject
       state_ownership: configuration
       replace: true
+      key_only: true
+      description: Object name. Identifies the object in the API and must be unique within its type.
     server_managed:
       access: optional_computed
       response_absence: terraform_null
@@ -1064,6 +1066,8 @@ resources:
         api_kind: boolean
       - api_name: priority
         api_kind: string
+      - api_name: priority_flow_control_cable_length
+        api_kind: integer
       - api_name: priority_flow_control_watchdog_action
         api_kind: string
         modes: [datacenter]
@@ -1626,7 +1630,7 @@ resources:
     modes: [campus, datacenter]
     identity_path: name
     import_stage:
-      campus: {name: pair_stage, order: 32}
+      campus: {name: pair_stage, order: 33}
       datacenter: {name: pair_stage, order: 47}
     bulk_order:
       campus: {put: 270, patch: 280, delete: 10}
@@ -2088,12 +2092,46 @@ resources:
         description: Object properties for the Route Map Clause
         collection: {strategy: singleton, ordering: ordered}
         fields:
-          - api_name: match_fields_shown
-            api_kind: string
           - api_name: notes
             api_kind: string
       - api_name: permit_deny
         api_kind: string
+      - api_name: set_as_path_prepend_list
+        api_kind: string
+      - api_name: set_community
+        api_kind: string
+      - api_name: set_community_additive
+        api_kind: boolean
+      - api_name: set_community_list_delete
+        api_kind: string
+      - api_name: set_community_list_delete_ref_type_
+        api_kind: string
+      - api_name: set_community_local_as
+        api_kind: boolean
+      - api_name: set_community_no_advertise
+        api_kind: boolean
+      - api_name: set_community_no_export
+        api_kind: boolean
+      - api_name: set_community_no_peer
+        api_kind: boolean
+      - api_name: set_extended_community_bandwidth
+        api_kind: integer
+      - api_name: set_extended_community_route_target
+        api_kind: string
+      - api_name: set_extended_community_site_of_origin
+        api_kind: string
+      - api_name: set_ipv4_next_hop_address
+        api_kind: string
+      - api_name: set_ipv6_next_hop_address
+        api_kind: string
+      - api_name: set_local_preference
+        api_kind: integer
+      - api_name: set_metric
+        api_kind: integer
+      - api_name: set_origin
+        api_kind: string
+      - api_name: set_weight
+        api_kind: integer
   - path: /services
     terraform_type: verity_service
     description: Manages a Service resource
@@ -2473,6 +2511,8 @@ resources:
             api_kind: string
           - api_name: eth_num_label
             api_kind: string
+          - api_name: eth_num_role
+            api_kind: string
           - api_name: index
             api_kind: integer
           - api_name: port_name
@@ -2668,10 +2708,6 @@ resources:
       - api_name: switch_vtep_id_ip_mask_auto_assigned_
         api_kind: boolean
         modes: [datacenter]
-      - api_name: tenant
-        api_kind: string
-      - api_name: tenant_ref_type_
-        api_kind: string
       - api_name: traffic_mirrors
         api_kind: array
         api_item_kind: object
@@ -2785,6 +2821,18 @@ resources:
         api_kind: string
       - api_name: export_route_map_ref_type_
         api_kind: string
+      - api_name: hgx_hostnames
+        api_kind: array
+        api_item_kind: object
+        profile: container
+        description: HGX hostnames
+        collection: {strategy: indexed_patch, ordering: ordered, identity_field: index}
+        fields:
+          - api_name: hgx_hostname
+            api_kind: string
+            description: HGX hostname
+          - api_name: index
+            api_kind: integer
       - api_name: import_route_map
         api_kind: string
       - api_name: import_route_map_ref_type_
@@ -3698,3 +3746,55 @@ resources:
         fields:
           - api_name: port_monitoring
             api_kind: string
+
+  - path: /staticips
+    terraform_type: verity_static_ip
+    description: Manages a Verity Static IP
+    modes: [campus]
+    identity_path: name
+    import_stage:
+      campus: {name: static_ip_stage, order: 32}
+    bulk_order:
+      campus: {put: 265, patch: 275, delete: 15}
+    api:
+      bulk_key: static_ip
+      cache_key: static_ips
+      response_collection_key: static_ip
+      delete_parameter: static_ip_name
+    fields:
+      - api_name: allowed_on
+        api_kind: string
+      - api_name: enable
+        api_kind: boolean
+      - api_name: ip
+        api_kind: string
+      - api_name: lag
+        api_kind: string
+      - api_name: lag_ref_type_
+        api_kind: string
+      - api_name: mac
+        api_kind: string
+      - api_name: name
+        api_kind: string
+        profile: identity
+      - api_name: object_properties
+        api_kind: object
+        profile: container
+        description: Object properties for the Static IP
+        collection: {strategy: singleton, ordering: ordered}
+        fields:
+          - api_name: fabric
+            api_kind: string
+          - api_name: fabric_ref_type_
+            api_kind: string
+      - api_name: port
+        api_kind: string
+      - api_name: service
+        api_kind: string
+      - api_name: service_ref_type_
+        api_kind: string
+      - api_name: switch
+        api_kind: string
+        description: Switchpoint
+      - api_name: switch_ref_type_
+        api_kind: string

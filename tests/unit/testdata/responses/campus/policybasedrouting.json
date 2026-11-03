@@ -1,7 +1,6 @@
 {
   "pb_routing": {
     "pb_routing_test1": {
-      "name": "pb_routing_test1",
       "enable": false,
       "policy": [
         {

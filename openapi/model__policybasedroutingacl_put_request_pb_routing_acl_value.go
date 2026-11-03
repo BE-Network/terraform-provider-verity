@@ -27,8 +27,6 @@ type PolicybasedroutingaclPutRequestPbRoutingAclValue struct {
 	Ipv4Permit []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv4DenyInner `json:"ipv4_permit,omitempty"`
 	Ipv6Deny   []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner `json:"ipv6_deny,omitempty"`
 	Ipv6Permit []PolicybasedroutingaclPutRequestPbRoutingAclValueIpv6DenyInner `json:"ipv6_permit,omitempty"`
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Next hop IP addresses
 	NextHopIps *string `json:"next_hop_ips,omitempty"`
 }
@@ -43,8 +41,6 @@ func NewPolicybasedroutingaclPutRequestPbRoutingAclValue() *Policybasedroutingac
 	this.Enable = &enable
 	var ipVersion string = "ipv4"
 	this.IpVersion = &ipVersion
-	var name string = ""
-	this.Name = &name
 	var nextHopIps string = ""
 	this.NextHopIps = &nextHopIps
 	return &this
@@ -59,8 +55,6 @@ func NewPolicybasedroutingaclPutRequestPbRoutingAclValueWithDefaults() *Policyba
 	this.Enable = &enable
 	var ipVersion string = "ipv4"
 	this.IpVersion = &ipVersion
-	var name string = ""
-	this.Name = &name
 	var nextHopIps string = ""
 	this.NextHopIps = &nextHopIps
 	return &this
@@ -258,38 +252,6 @@ func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) SetIpv6Permit(v []Pol
 	o.Ipv6Permit = v
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) SetName(v string) {
-	o.Name = &v
-}
-
 // GetNextHopIps returns the NextHopIps field value if set, zero value otherwise.
 func (o *PolicybasedroutingaclPutRequestPbRoutingAclValue) GetNextHopIps() string {
 	if o == nil || IsNil(o.NextHopIps) {
@@ -349,9 +311,6 @@ func (o PolicybasedroutingaclPutRequestPbRoutingAclValue) ToMap() (map[string]in
 	}
 	if !IsNil(o.Ipv6Permit) {
 		toSerialize["ipv6_permit"] = o.Ipv6Permit
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.NextHopIps) {
 		toSerialize["next_hop_ips"] = o.NextHopIps

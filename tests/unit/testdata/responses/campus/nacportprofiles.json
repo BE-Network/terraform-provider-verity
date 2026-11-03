@@ -1,7 +1,6 @@
 {
   "nac_port_profile": {
     "test": {
-      "name": "test",
       "enable": true,
       "eth_ports": [
         {

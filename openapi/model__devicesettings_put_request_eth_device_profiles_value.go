@@ -45,9 +45,7 @@ type DevicesettingsPutRequestEthDeviceProfilesValue struct {
 	// Blank uses the Device's default; otherwise an integer between 1 to 1,000,000 seconds
 	MacAgingTimerOverride NullableInt64 `json:"mac_aging_timer_override,omitempty"`
 	// Mode
-	Mode *string `json:"mode,omitempty"`
-	// Template Name. Must be unique within type.
-	Name       *string                                                         `json:"name,omitempty"`
+	Mode       *string                                                         `json:"mode,omitempty"`
 	NtpServers []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner `json:"ntp_servers,omitempty"`
 	// VRF used for NTP Servers
 	NtpVrf *string `json:"ntp_vrf,omitempty"`
@@ -99,8 +97,6 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValue() *DevicesettingsPutReque
 	this.LoginBanner = &loginBanner
 	var mode string = "IEEE 802.3af"
 	this.Mode = &mode
-	var name string = ""
-	this.Name = &name
 	var ntpVrf string = "mgmt"
 	this.NtpVrf = &ntpVrf
 	var ntpVrfTenant string = ""
@@ -143,8 +139,6 @@ func NewDevicesettingsPutRequestEthDeviceProfilesValueWithDefaults() *Devicesett
 	this.LoginBanner = &loginBanner
 	var mode string = "IEEE 802.3af"
 	this.Mode = &mode
-	var name string = ""
-	this.Name = &name
 	var ntpVrf string = "mgmt"
 	this.NtpVrf = &ntpVrf
 	var ntpVrfTenant string = ""
@@ -663,38 +657,6 @@ func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetMode(v string) {
 	o.Mode = &v
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *DevicesettingsPutRequestEthDeviceProfilesValue) SetName(v string) {
-	o.Name = &v
-}
-
 // GetNtpServers returns the NtpServers field value if set, zero value otherwise.
 func (o *DevicesettingsPutRequestEthDeviceProfilesValue) GetNtpServers() []DevicesettingsPutRequestEthDeviceProfilesValueNtpServersInner {
 	if o == nil || IsNil(o.NtpServers) {
@@ -1152,9 +1114,6 @@ func (o DevicesettingsPutRequestEthDeviceProfilesValue) ToMap() (map[string]inte
 	}
 	if !IsNil(o.Mode) {
 		toSerialize["mode"] = o.Mode
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.NtpServers) {
 		toSerialize["ntp_servers"] = o.NtpServers

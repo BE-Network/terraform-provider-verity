@@ -20,9 +20,7 @@ var _ MappedNullable = &MonitoringaclsPutRequestMonitoringAclValue{}
 // MonitoringaclsPutRequestMonitoringAclValue struct for MonitoringaclsPutRequestMonitoringAclValue
 type MonitoringaclsPutRequestMonitoringAclValue struct {
 	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
-	// Template Name. Must be unique within type.
-	Name     *string                                                   `json:"name,omitempty"`
+	Enable   *bool                                                     `json:"enable,omitempty"`
 	Services []MonitoringaclsPutRequestMonitoringAclValueServicesInner `json:"services,omitempty"`
 }
 
@@ -34,8 +32,6 @@ func NewMonitoringaclsPutRequestMonitoringAclValue() *MonitoringaclsPutRequestMo
 	this := MonitoringaclsPutRequestMonitoringAclValue{}
 	var enable bool = false
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	return &this
 }
 
@@ -46,8 +42,6 @@ func NewMonitoringaclsPutRequestMonitoringAclValueWithDefaults() *Monitoringacls
 	this := MonitoringaclsPutRequestMonitoringAclValue{}
 	var enable bool = false
 	this.Enable = &enable
-	var name string = ""
-	this.Name = &name
 	return &this
 }
 
@@ -81,38 +75,6 @@ func (o *MonitoringaclsPutRequestMonitoringAclValue) HasEnable() bool {
 // SetEnable gets a reference to the given bool and assigns it to the Enable field.
 func (o *MonitoringaclsPutRequestMonitoringAclValue) SetEnable(v bool) {
 	o.Enable = &v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *MonitoringaclsPutRequestMonitoringAclValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *MonitoringaclsPutRequestMonitoringAclValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *MonitoringaclsPutRequestMonitoringAclValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *MonitoringaclsPutRequestMonitoringAclValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetServices returns the Services field value if set, zero value otherwise.
@@ -159,9 +121,6 @@ func (o MonitoringaclsPutRequestMonitoringAclValue) ToMap() (map[string]interfac
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Enable) {
 		toSerialize["enable"] = o.Enable
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.Services) {
 		toSerialize["services"] = o.Services

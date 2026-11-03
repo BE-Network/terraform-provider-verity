@@ -1,7 +1,6 @@
 {
   "threshold": {
     "threshold_name": {
-      "name": "threshold_name",
       "enable": false,
       "type": "device",
       "operation": "and",

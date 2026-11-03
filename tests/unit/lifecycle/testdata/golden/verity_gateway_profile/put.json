@@ -11,8 +11,7 @@
           "peer_gw": true,
           "source_ip_mask": ""
         }
-      ],
-      "name": "cov_gwp"
+      ]
     }
   }
 }

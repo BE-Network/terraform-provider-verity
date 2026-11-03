@@ -30,7 +30,8 @@ type TenantsPutRequestTenantValue struct {
 	// A route-map applied to routes exported from the current tenant to other tenants with the purpose of filtering or modifying the routes
 	ExportRouteMap *string `json:"export_route_map,omitempty"`
 	// Object type for export_route_map field
-	ExportRouteMapRefType *string `json:"export_route_map_ref_type_,omitempty"`
+	ExportRouteMapRefType *string                                         `json:"export_route_map_ref_type_,omitempty"`
+	HgxHostnames          []TenantsPutRequestTenantValueHgxHostnamesInner `json:"hgx_hostnames,omitempty"`
 	// A route-map applied to routes imported into the current tenant from other tenants with the purpose of filtering or modifying the routes
 	ImportRouteMap *string `json:"import_route_map,omitempty"`
 	// Object type for import_route_map field
@@ -47,8 +48,6 @@ type TenantsPutRequestTenantValue struct {
 	MaximumEbgpPaths NullableInt64 `json:"maximum_ebgp_paths,omitempty"`
 	// Configure the maximum number of eBGP paths automatically or manually
 	MaximumEbgpPathsMode *string `json:"maximum_ebgp_paths_mode,omitempty"`
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// Route Aggregation configuration for this tenant
 	RouteAggregation *string                                             `json:"route_aggregation,omitempty"`
 	RouteAggregators []FabricsPutRequestFabricValueRouteAggregatorsInner `json:"route_aggregators,omitempty"`
@@ -87,8 +86,6 @@ func NewTenantsPutRequestTenantValue() *TenantsPutRequestTenantValue {
 	this.ImportRouteMap = &importRouteMap
 	var maximumEbgpPathsMode string = "automated"
 	this.MaximumEbgpPathsMode = &maximumEbgpPathsMode
-	var name string = ""
-	this.Name = &name
 	var routeAggregation string = ""
 	this.RouteAggregation = &routeAggregation
 	var routeDistinguisher string = ""
@@ -123,8 +120,6 @@ func NewTenantsPutRequestTenantValueWithDefaults() *TenantsPutRequestTenantValue
 	this.ImportRouteMap = &importRouteMap
 	var maximumEbgpPathsMode string = "automated"
 	this.MaximumEbgpPathsMode = &maximumEbgpPathsMode
-	var name string = ""
-	this.Name = &name
 	var routeAggregation string = ""
 	this.RouteAggregation = &routeAggregation
 	var routeDistinguisher string = ""
@@ -330,6 +325,38 @@ func (o *TenantsPutRequestTenantValue) HasExportRouteMapRefType() bool {
 // SetExportRouteMapRefType gets a reference to the given string and assigns it to the ExportRouteMapRefType field.
 func (o *TenantsPutRequestTenantValue) SetExportRouteMapRefType(v string) {
 	o.ExportRouteMapRefType = &v
+}
+
+// GetHgxHostnames returns the HgxHostnames field value if set, zero value otherwise.
+func (o *TenantsPutRequestTenantValue) GetHgxHostnames() []TenantsPutRequestTenantValueHgxHostnamesInner {
+	if o == nil || IsNil(o.HgxHostnames) {
+		var ret []TenantsPutRequestTenantValueHgxHostnamesInner
+		return ret
+	}
+	return o.HgxHostnames
+}
+
+// GetHgxHostnamesOk returns a tuple with the HgxHostnames field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TenantsPutRequestTenantValue) GetHgxHostnamesOk() ([]TenantsPutRequestTenantValueHgxHostnamesInner, bool) {
+	if o == nil || IsNil(o.HgxHostnames) {
+		return nil, false
+	}
+	return o.HgxHostnames, true
+}
+
+// HasHgxHostnames returns a boolean if a field has been set.
+func (o *TenantsPutRequestTenantValue) HasHgxHostnames() bool {
+	if o != nil && !IsNil(o.HgxHostnames) {
+		return true
+	}
+
+	return false
+}
+
+// SetHgxHostnames gets a reference to the given []TenantsPutRequestTenantValueHgxHostnamesInner and assigns it to the HgxHostnames field.
+func (o *TenantsPutRequestTenantValue) SetHgxHostnames(v []TenantsPutRequestTenantValueHgxHostnamesInner) {
+	o.HgxHostnames = v
 }
 
 // GetImportRouteMap returns the ImportRouteMap field value if set, zero value otherwise.
@@ -619,38 +646,6 @@ func (o *TenantsPutRequestTenantValue) HasMaximumEbgpPathsMode() bool {
 // SetMaximumEbgpPathsMode gets a reference to the given string and assigns it to the MaximumEbgpPathsMode field.
 func (o *TenantsPutRequestTenantValue) SetMaximumEbgpPathsMode(v string) {
 	o.MaximumEbgpPathsMode = &v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *TenantsPutRequestTenantValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *TenantsPutRequestTenantValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *TenantsPutRequestTenantValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *TenantsPutRequestTenantValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetRouteAggregation returns the RouteAggregation field value if set, zero value otherwise.
@@ -969,6 +964,9 @@ func (o TenantsPutRequestTenantValue) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ExportRouteMapRefType) {
 		toSerialize["export_route_map_ref_type_"] = o.ExportRouteMapRefType
 	}
+	if !IsNil(o.HgxHostnames) {
+		toSerialize["hgx_hostnames"] = o.HgxHostnames
+	}
 	if !IsNil(o.ImportRouteMap) {
 		toSerialize["import_route_map"] = o.ImportRouteMap
 	}
@@ -992,9 +990,6 @@ func (o TenantsPutRequestTenantValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.MaximumEbgpPathsMode) {
 		toSerialize["maximum_ebgp_paths_mode"] = o.MaximumEbgpPathsMode
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.RouteAggregation) {
 		toSerialize["route_aggregation"] = o.RouteAggregation

@@ -45,6 +45,7 @@
   "sfp_breakouts",
   "spine_planes",
   "ssp_groups",
+  "static_ips",
   "sus",
   "switchpoints",
   "tacacs_profiles",

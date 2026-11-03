@@ -204,7 +204,7 @@ func planOne(resource spec.ResourceSpec, structs map[string]goStruct) (resourceA
 func planFields(terraformType string, fields []spec.FieldSpec, value goStruct, structs map[string]goStruct) ([]adapterField, string) {
 	planned := make([]adapterField, 0, len(fields))
 	for _, field := range fields {
-		if field.Unmanaged {
+		if field.Unmanaged || field.KeyOnly {
 			continue
 		}
 		target, found := value.Fields[field.APIName]

@@ -10,7 +10,6 @@
           "index": 1
         }
       ],
-      "name": "cov_nac_port_profile",
       "object_properties": {
         "port_monitoring": ""
       }

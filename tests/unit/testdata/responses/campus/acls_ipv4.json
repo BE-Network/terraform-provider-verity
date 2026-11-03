@@ -1,7 +1,6 @@
 {
   "ipv4_filter": {
     "hello-world-ipv4-filter": {
-      "name": "hello-world-ipv4-filter",
       "enable": true,
       "protocol": "tcp",
       "bidirectional": false,

@@ -123,6 +123,7 @@ func TestResourceSpecValidateRejectsIncompleteAndContradictoryFields(t *testing.
 			spec.Fields[1].Versions = VersionRange{MinInclusive: APIVersion{Major: 6, Minor: 7}, MaxExclusive: APIVersion{Major: 6, Minor: 8}}
 		}, "unavailable in one or more field API versions"},
 		{"identity path missing", func(spec *ResourceSpec) { spec.IdentityPath = "missing" }, "does not name a top-level field"},
+		{"key-only field is not the identity", func(spec *ResourceSpec) { spec.Fields[2].KeyOnly = true }, "must be the string identity field"},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {

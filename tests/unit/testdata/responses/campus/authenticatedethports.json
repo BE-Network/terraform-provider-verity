@@ -1,7 +1,6 @@
 {
   "authenticated_eth_port": {
     "test": {
-      "name": "test",
       "enable": true,
       "connection_mode": "PortMode",
       "reauthorization_period_sec": 3600,

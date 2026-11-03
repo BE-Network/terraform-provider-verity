@@ -2,6 +2,7 @@
   "campus": {
     "DELETE": [
       "pair",
+      "static_ip",
       "threshold_group",
       "threshold",
       "switchpoint",
@@ -63,6 +64,7 @@
       "switchpoint",
       "threshold",
       "threshold_group",
+      "static_ip",
       "pair"
     ],
     "PUT": [
@@ -95,6 +97,7 @@
       "switchpoint",
       "threshold",
       "threshold_group",
+      "static_ip",
       "pair"
     ]
   },

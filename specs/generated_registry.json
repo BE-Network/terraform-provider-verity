@@ -48,6 +48,7 @@
     "/sfpbreakouts",
     "/spineplanes",
     "/sspgroups",
+    "/staticips",
     "/sus",
     "/switchpoints",
     "/tacacsprofiles",
@@ -361,7 +362,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -691,6 +693,7 @@
           "api_name": "name",
           "create_null": "reject",
           "description": "Object Name. Must be unique.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -1165,6 +1168,7 @@
           "api_name": "name",
           "create_null": "reject",
           "description": "Object Name. Must be unique.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -1604,7 +1608,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -2121,7 +2126,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus"
@@ -2379,7 +2385,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -3164,7 +3171,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -4125,7 +4133,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -4831,6 +4840,7 @@
           "api_name": "name",
           "create_null": "reject",
           "description": "Object Name. Must be unique.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -6681,7 +6691,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus"
@@ -7521,7 +7532,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -7940,7 +7952,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -8272,7 +8285,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -10072,7 +10086,7 @@
           "access": "optional_computed",
           "api_name": "max_allowed_unit",
           "create_null": "omit",
-          "description": "Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action <br>\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\t\t\t\t\t%: Percentage.<br>\n\t\t\t\t\t\t\t\t\t\t\t\tkbps: kilobits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tmbps: megabits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tgbps: gigabits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tpps: packet per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tkpps: kilopacket per second <br>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t",
+          "description": "Max Percentage of the ports bandwidth allowed for broadcast/multicast/unknown-unicast traffic before invoking the protective action <br>\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"tab\">\n\t\t\t\t\t\t\t\t\t\t\t\t%: percentage <br>\n\t\t\t\t\t\t\t\t\t\t\t\tkbps: kilobits per second <br>\n\t\t\t\t\t\t\t\t\t\t\t\tpps: packet per second <br>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t",
           "kind": "string",
           "modes": [
             "campus",
@@ -10273,7 +10287,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -10409,6 +10424,35 @@
           "terraform_name": "priority",
           "unknown_plan": "omit_and_read",
           "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "priority_flow_control_cable_length",
+          "create_null": "api_null",
+          "description": "Cable length in meters used to tune Priority Flow Control buffer headroom for propagation delay. Leave empty to use the Switch default.",
+          "kind": "int64",
+          "modes": [
+            "campus",
+            "datacenter"
+          ],
+          "nullable": true,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "priority_flow_control_cable_length",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "api_null",
           "versions": {
             "max_exclusive": {
               "major": 6,
@@ -10936,7 +10980,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -12263,6 +12308,7 @@
           "api_name": "name",
           "create_null": "reject",
           "description": "Object Name. Must be unique.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -13390,7 +13436,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -14388,6 +14435,7 @@
           "api_name": "name",
           "create_null": "reject",
           "description": "Object Name. Must be unique.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -15164,7 +15212,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -15275,7 +15324,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -15728,7 +15778,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -16037,7 +16088,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -16232,7 +16284,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -16541,7 +16594,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -16954,7 +17008,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -17941,7 +17996,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -18693,7 +18749,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus"
@@ -18832,7 +18889,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -19256,7 +19314,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus"
@@ -20043,7 +20102,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -20184,7 +20244,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -20642,7 +20703,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -20800,7 +20862,7 @@
       "import_stages": {
         "campus": {
           "name": "pair_stage",
-          "order": 32
+          "order": 33
         },
         "datacenter": {
           "name": "pair_stage",
@@ -20881,7 +20943,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -21784,7 +21847,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -21979,7 +22043,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -22264,7 +22329,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -23101,7 +23167,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -23212,7 +23279,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -23469,7 +23537,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -24650,7 +24719,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -24684,34 +24754,6 @@
           "create_null": "omit",
           "description": "Object properties for the Route Map Clause",
           "fields": [
-            {
-              "access": "optional_computed",
-              "api_name": "match_fields_shown",
-              "create_null": "omit",
-              "description": "Match fields shown",
-              "kind": "string",
-              "modes": [
-                "datacenter"
-              ],
-              "nullable": false,
-              "replace": false,
-              "response_absence": "terraform_null",
-              "sensitive": false,
-              "state_ownership": "configuration_or_server",
-              "terraform_name": "match_fields_shown",
-              "unknown_plan": "omit_and_read",
-              "update_clear": "omit",
-              "versions": {
-                "max_exclusive": {
-                  "major": 6,
-                  "minor": 7
-                },
-                "min_inclusive": {
-                  "major": 6,
-                  "minor": 6
-                }
-              }
-            },
             {
               "access": "optional_computed",
               "api_name": "notes",
@@ -24781,6 +24823,516 @@
           "terraform_name": "permit_deny",
           "unknown_plan": "omit_and_read",
           "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_as_path_prepend_list",
+          "create_null": "omit",
+          "description": "Comma separated list of AS numbers to prepend to the BGP route AS path attribute",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_as_path_prepend_list",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_community",
+          "create_null": "omit",
+          "description": "Comma separated list of up to 5 communities in AA:NN format to attach to the route",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_community",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_community_additive",
+          "create_null": "omit",
+          "description": "Add the communities to the ones already on the route instead of replacing them",
+          "kind": "bool",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_community_additive",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "false",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_community_list_delete",
+          "create_null": "omit",
+          "description": "Remove communities matching this Community List from the route",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "reference": {
+            "allowed_types": [
+              "community_list"
+            ],
+            "type_field": "set_community_list_delete_ref_type_"
+          },
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_community_list_delete",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_community_list_delete_ref_type_",
+          "create_null": "omit",
+          "description": "Object type for set_community_list_delete field",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_community_list_delete_ref_type_",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_community_local_as",
+          "create_null": "omit",
+          "description": "BGP does not advertise this route to external peers",
+          "kind": "bool",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_community_local_as",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "false",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_community_no_advertise",
+          "create_null": "omit",
+          "description": "BGP does not advertise this route to any peer",
+          "kind": "bool",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_community_no_advertise",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "false",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_community_no_export",
+          "create_null": "omit",
+          "description": "BGP does not advertise this route outside the confederation",
+          "kind": "bool",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_community_no_export",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "false",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_community_no_peer",
+          "create_null": "omit",
+          "description": "Do not advertise this route to bilateral peers",
+          "kind": "bool",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_community_no_peer",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "false",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_extended_community_bandwidth",
+          "create_null": "api_null",
+          "description": "Include the BGP link bandwidth extended community (in Mbps) in route advertisements",
+          "kind": "int64",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": true,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_extended_community_bandwidth",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "api_null",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_extended_community_route_target",
+          "create_null": "omit",
+          "description": "Attach a BGP extended community of type Route Target to the route",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_extended_community_route_target",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_extended_community_site_of_origin",
+          "create_null": "omit",
+          "description": "Attach a BGP extended community of type Site of Origin to the route",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_extended_community_site_of_origin",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_ipv4_next_hop_address",
+          "create_null": "omit",
+          "description": "Set the route IPv4 Next Hop Address",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_ipv4_next_hop_address",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_ipv6_next_hop_address",
+          "create_null": "omit",
+          "description": "Set the route IPv6 Next Hop Address",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_ipv6_next_hop_address",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_local_preference",
+          "create_null": "api_null",
+          "description": "Set the BGP Local Preference value on the route",
+          "kind": "int64",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": true,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_local_preference",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "api_null",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_metric",
+          "create_null": "api_null",
+          "description": "Set the metric (MED) on the route",
+          "kind": "int64",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": true,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_metric",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "api_null",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_origin",
+          "create_null": "omit",
+          "description": "Set the BGP Origin attribute on the route",
+          "kind": "string",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_origin",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "set_weight",
+          "create_null": "api_null",
+          "description": "Set the local BGP weight on the route",
+          "kind": "int64",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": true,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "set_weight",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "api_null",
           "versions": {
             "max_exclusive": {
               "major": 6,
@@ -25327,7 +25879,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -25856,7 +26409,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus"
@@ -26470,7 +27024,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -26766,6 +27321,7 @@
           "api_name": "name",
           "create_null": "reject",
           "description": "Object Name. Must be unique.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -26971,7 +27527,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -27200,7 +27757,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -27346,6 +27904,506 @@
     },
     {
       "api": {
+        "bulk_key": "static_ip",
+        "cache_key": "static_ips",
+        "delete_parameter": "static_ip_name",
+        "endpoint_path": "/staticips",
+        "request_wrapper_key": "static_ip",
+        "response_collection_key": "static_ip"
+      },
+      "bulk_order": {
+        "campus": {
+          "delete": 15,
+          "patch": 275,
+          "put": 265
+        }
+      },
+      "dependencies": {},
+      "description": "Manages a Verity Static IP",
+      "fields": [
+        {
+          "access": "optional_computed",
+          "api_name": "allowed_on",
+          "create_null": "omit",
+          "description": "Allowed On",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "allowed_on",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "enable",
+          "create_null": "omit",
+          "description": "Enable object.",
+          "kind": "bool",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "enable",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "false",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "ip",
+          "create_null": "omit",
+          "description": "IP",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "ip",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "lag",
+          "create_null": "omit",
+          "description": "LAG",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "reference": {
+            "allowed_types": [
+              "lag"
+            ],
+            "type_field": "lag_ref_type_"
+          },
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "lag",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "lag_ref_type_",
+          "create_null": "omit",
+          "description": "Object type for lag field",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "lag_ref_type_",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "mac",
+          "create_null": "omit",
+          "description": "MAC",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "mac",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "required",
+          "api_name": "name",
+          "create_null": "reject",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "replace": true,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration",
+          "terraform_name": "name",
+          "unknown_plan": "reject",
+          "update_clear": "reject",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional",
+          "api_name": "object_properties",
+          "collection": {
+            "ordering": "ordered",
+            "strategy": "singleton"
+          },
+          "create_null": "omit",
+          "description": "Object properties for the Static IP",
+          "fields": [
+            {
+              "access": "optional_computed",
+              "api_name": "fabric",
+              "create_null": "omit",
+              "description": "Choose a Fabric",
+              "kind": "string",
+              "modes": [
+                "campus"
+              ],
+              "nullable": false,
+              "reference": {
+                "allowed_types": [
+                  "fabric"
+                ],
+                "type_field": "fabric_ref_type_"
+              },
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "fabric",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "empty_string",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            },
+            {
+              "access": "optional_computed",
+              "api_name": "fabric_ref_type_",
+              "create_null": "omit",
+              "description": "Object type for fabric field",
+              "kind": "string",
+              "modes": [
+                "campus"
+              ],
+              "nullable": false,
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "fabric_ref_type_",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "empty_string",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            }
+          ],
+          "kind": "object",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration",
+          "terraform_name": "object_properties",
+          "unknown_plan": "reject",
+          "update_clear": "omit",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "port",
+          "create_null": "omit",
+          "description": "Port",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "port",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "service",
+          "create_null": "omit",
+          "description": "Service",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "reference": {
+            "allowed_types": [
+              "service"
+            ],
+            "type_field": "service_ref_type_"
+          },
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "service",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "service_ref_type_",
+          "create_null": "omit",
+          "description": "Object type for service field",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "service_ref_type_",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "switch",
+          "create_null": "omit",
+          "description": "Switchpoint",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "reference": {
+            "allowed_types": [
+              "switchpoint"
+            ],
+            "type_field": "switch_ref_type_"
+          },
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "switch",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
+          "api_name": "switch_ref_type_",
+          "create_null": "omit",
+          "description": "Object type for switch field",
+          "kind": "string",
+          "modes": [
+            "campus"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "switch_ref_type_",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        }
+      ],
+      "identity_path": "name",
+      "import_stages": {
+        "campus": {
+          "name": "static_ip_stage",
+          "order": 32
+        }
+      },
+      "modes": [
+        "campus"
+      ],
+      "operations": {
+        "create": true,
+        "delete": true,
+        "read": true,
+        "update": true
+      },
+      "schema_version": 0,
+      "terraform_type": "verity_static_ip",
+      "versions": {
+        "max_exclusive": {
+          "major": 6,
+          "minor": 7
+        },
+        "min_inclusive": {
+          "major": 6,
+          "minor": 6
+        }
+      }
+    },
+    {
+      "api": {
         "bulk_key": "su",
         "cache_key": "sus",
         "delete_parameter": "su_name",
@@ -27395,7 +28453,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -28608,6 +29667,35 @@
             },
             {
               "access": "optional_computed",
+              "api_name": "eth_num_role",
+              "create_null": "omit",
+              "description": "Role of this Eth Port",
+              "kind": "string",
+              "modes": [
+                "campus",
+                "datacenter"
+              ],
+              "nullable": false,
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "eth_num_role",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "empty_string",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            },
+            {
+              "access": "optional_computed",
               "api_name": "index",
               "create_null": "omit",
               "description": "The index identifying the object. Zero if you want to add an object to the list.",
@@ -29139,7 +30227,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -30979,70 +32068,6 @@
           }
         },
         {
-          "access": "optional_computed",
-          "api_name": "tenant",
-          "create_null": "omit",
-          "description": "The Tenant of this Device",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "reference": {
-            "allowed_types": [
-              "tenant"
-            ],
-            "type_field": "tenant_ref_type_"
-          },
-          "replace": false,
-          "response_absence": "terraform_null",
-          "sensitive": false,
-          "state_ownership": "configuration_or_server",
-          "terraform_name": "tenant",
-          "unknown_plan": "omit_and_read",
-          "update_clear": "empty_string",
-          "versions": {
-            "max_exclusive": {
-              "major": 6,
-              "minor": 7
-            },
-            "min_inclusive": {
-              "major": 6,
-              "minor": 6
-            }
-          }
-        },
-        {
-          "access": "optional_computed",
-          "api_name": "tenant_ref_type_",
-          "create_null": "omit",
-          "description": "Object type for tenant field",
-          "kind": "string",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "replace": false,
-          "response_absence": "terraform_null",
-          "sensitive": false,
-          "state_ownership": "configuration_or_server",
-          "terraform_name": "tenant_ref_type_",
-          "unknown_plan": "omit_and_read",
-          "update_clear": "empty_string",
-          "versions": {
-            "max_exclusive": {
-              "major": 6,
-              "minor": 7
-            },
-            "min_inclusive": {
-              "major": 6,
-              "minor": 6
-            }
-          }
-        },
-        {
           "access": "optional",
           "api_name": "traffic_mirrors",
           "collection": {
@@ -31642,7 +32667,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -32165,6 +33191,98 @@
           }
         },
         {
+          "access": "optional",
+          "api_name": "hgx_hostnames",
+          "collection": {
+            "identity_field": "index",
+            "ordering": "ordered",
+            "strategy": "indexed_patch"
+          },
+          "create_null": "omit",
+          "description": "HGX hostnames",
+          "element_kind": "object",
+          "fields": [
+            {
+              "access": "optional_computed",
+              "api_name": "hgx_hostname",
+              "create_null": "omit",
+              "description": "HGX hostname",
+              "kind": "string",
+              "modes": [
+                "datacenter"
+              ],
+              "nullable": false,
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "hgx_hostname",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "empty_string",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            },
+            {
+              "access": "optional_computed",
+              "api_name": "index",
+              "create_null": "omit",
+              "description": "The index identifying the object. Zero if you want to add an object to the list.",
+              "kind": "int64",
+              "modes": [
+                "datacenter"
+              ],
+              "nullable": false,
+              "replace": false,
+              "response_absence": "terraform_null",
+              "sensitive": false,
+              "state_ownership": "configuration_or_server",
+              "terraform_name": "index",
+              "unknown_plan": "omit_and_read",
+              "update_clear": "zero",
+              "versions": {
+                "max_exclusive": {
+                  "major": 6,
+                  "minor": 7
+                },
+                "min_inclusive": {
+                  "major": 6,
+                  "minor": 6
+                }
+              }
+            }
+          ],
+          "kind": "list",
+          "modes": [
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration",
+          "terraform_name": "hgx_hostnames",
+          "unknown_plan": "reject",
+          "update_clear": "omit",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 7
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
           "access": "optional_computed",
           "api_name": "import_route_map",
           "create_null": "omit",
@@ -32404,7 +33522,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "datacenter"
@@ -33128,7 +34247,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -33665,7 +34785,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus",
@@ -35006,7 +36127,8 @@
           "access": "required",
           "api_name": "name",
           "create_null": "reject",
-          "description": "Template Name. Must be unique within type.",
+          "description": "Object name. Identifies the object in the API and must be unique within its type.",
+          "key_only": true,
           "kind": "string",
           "modes": [
             "campus"

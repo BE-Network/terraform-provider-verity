@@ -1,7 +1,6 @@
 {
   "as_path_access_list": {
     "as_path_access_list_test1": {
-      "name": "as_path_access_list_test1",
       "enable": true,
       "permit_deny": "permit",
       "lists": [

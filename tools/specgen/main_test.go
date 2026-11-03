@@ -570,3 +570,27 @@ func selectedInputDir(t *testing.T, repositoryRoot string) string {
 	}
 	return filepath.Join(repositoryRoot, "specs", "openapi", version)
 }
+
+func TestMergeFieldOverridesSynthesizesKeyOnlyIdentity(t *testing.T) {
+	profiles := map[string]policyProfile{"identity": {
+		Access: "required", Replace: true, ResponseAbsence: "terraform_null", CreateNull: "reject",
+		UpdateClear: "reject", UnknownPlan: "reject", StateOwnership: "configuration", KeyOnly: true, Description: "Object name.",
+	}}
+	versions := versionRangeOverride{MinInclusive: "6.6", MaxExclusive: "6.8"}
+	parent := spec.VersionRange{MinInclusive: spec.APIVersion{Major: 6, Minor: 6}, MaxExclusive: spec.APIVersion{Major: 6, Minor: 8}}
+	selected := spec.APIVersion{Major: 6, Minor: 7}
+	overrides := []fieldOverride{{APIName: "name", APIKind: "string", Profile: "identity"}}
+
+	fields, err := mergeFieldOverrides(nil, overrides, parent, selected, profiles, "", []string{"datacenter"}, versions, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fields) != 1 || !fields[0].KeyOnly || fields[0].TerraformName != "name" || fields[0].Description != "Object name." || fields[0].Access != spec.AccessRequired {
+		t.Fatalf("fields = %#v", fields)
+	}
+
+	coverage := []coverageField{{APIName: "name", Kind: "string", Description: "Name", Modes: []string{"datacenter"}}}
+	if _, err := mergeFieldOverrides(coverage, overrides, parent, selected, profiles, "", []string{"datacenter"}, versions, ""); err == nil || !strings.Contains(err.Error(), "present in extracted OpenAPI") {
+		t.Fatalf("error = %v, want rejection of a key-only field the API sends", err)
+	}
+}

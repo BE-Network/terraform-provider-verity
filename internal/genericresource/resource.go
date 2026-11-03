@@ -316,6 +316,9 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	}
 
 	name := r.identityOf(plan)
+	if !r.validateIdentity(plan, &resp.Diagnostics) {
+		return
+	}
 	object, err := buildCreate(r.spec.Fields, plan, r.nullableSource(ctx, req.Config, name, &resp.Diagnostics))
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid Configuration", fmt.Sprintf("%s %s: %s", r.spec.TerraformType, name, err))
@@ -354,6 +357,9 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 	}
 
 	name := r.identityOf(plan)
+	if !r.validateIdentity(plan, &resp.Diagnostics) || !r.validateIdentity(state, &resp.Diagnostics) {
+		return
+	}
 	object, changed, err := buildUpdate(r.spec.Fields, plan, state, r.nullableSource(ctx, req.Config, name, &resp.Diagnostics), &resp.Diagnostics)
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid Configuration", fmt.Sprintf("%s %s: %s", r.spec.TerraformType, name, err))
@@ -446,6 +452,9 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 	}
 
 	name := r.identityOf(state)
+	if !r.validateIdentity(state, &resp.Diagnostics) {
+		return
+	}
 	if !bulkops.ExecuteResourceOperationWithOptions(ctx, r.runtime.BulkManager(), r.runtime.NotifyOperationAdded,
 		"delete", r.spec.API.BulkKey, name, nil, &resp.Diagnostics, r.operationOptions()) {
 		return
@@ -470,6 +479,9 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	}
 
 	name := r.identityOf(state)
+	if !r.validateIdentity(state, &resp.Diagnostics) {
+		return
+	}
 	manager := r.runtime.BulkManager()
 
 	if manager != nil {
@@ -493,14 +505,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 		return
 	}
 
-	data, actualAPIName, exists := utils.FindResourceByAPIName(collection, name, func(candidate interface{}) (string, bool) {
-		object, ok := candidate.(map[string]interface{})
-		if !ok {
-			return "", false
-		}
-		identity, ok := object[r.spec.IdentityPath].(string)
-		return identity, ok
-	})
+	data, exists := collection[name]
 	if !exists {
 		tflog.Debug(ctx, fmt.Sprintf("%s with name '%s' not found in API response", r.spec.TerraformType, name))
 		resp.State.RemoveResource(ctx)
@@ -514,7 +519,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 		)
 		return
 	}
-	tflog.Debug(ctx, fmt.Sprintf("Found %s '%s' under API key '%s'", r.spec.TerraformType, name, actualAPIName))
+	tflog.Debug(ctx, fmt.Sprintf("Found %s under API key %q", r.spec.TerraformType, name))
 
 	r.applyResponse(ctx, applyFallback(ctx, object), state, &resp.State, &resp.Diagnostics)
 }
@@ -537,12 +542,7 @@ func (r *Resource) settleAfterWrite(ctx context.Context, name string, plan map[s
 	if manager := r.runtime.BulkManager(); manager != nil {
 		if data, exists := manager.GetResourceResponse(r.spec.API.BulkKey, name); exists {
 			merged := r.mergePlanScalars(data, plan)
-			values, err := stateFromAPI(r.spec.Fields, merged, r.runtime.Mode(), plan)
-			if err != nil {
-				diagnostics.AddError("Invalid Response", fmt.Sprintf("%s %s: %s", r.spec.TerraformType, name, err))
-				return
-			}
-			diagnostics.Append(r.setState(ctx, state, values)...)
+			r.applyResponse(ctx, merged, plan, state, diagnostics)
 			return
 		}
 	}
@@ -563,6 +563,7 @@ func (r *Resource) applyResponse(ctx context.Context, data map[string]interface{
 		diagnostics.AddError("Invalid Response", fmt.Sprintf("%s: %s", r.spec.TerraformType, err))
 		return
 	}
+	values[r.spec.IdentityPath] = types.StringValue(r.identityOf(prior))
 	diagnostics.Append(r.setState(ctx, state, values)...)
 }
 
@@ -675,4 +676,12 @@ func nullifyUnknown(fields []spec.FieldSpec, values map[string]attr.Value) map[s
 		settled[field.TerraformName] = value
 	}
 	return settled
+}
+
+func (r *Resource) validateIdentity(values map[string]attr.Value, diagnostics *diag.Diagnostics) bool {
+	if r.identityOf(values) != "" {
+		return true
+	}
+	diagnostics.AddError("Invalid Resource Identity", fmt.Sprintf("%s requires a known, nonempty %s. If existing state has lost its identity, back up the state and reimport the resource using its exact API name.", r.spec.TerraformType, r.spec.IdentityPath))
+	return false
 }

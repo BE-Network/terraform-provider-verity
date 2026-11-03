@@ -39,8 +39,6 @@ type LdapprofilesPutRequestLdapProfileValue struct {
 	LdapServers   []LdapprofilesPutRequestLdapProfileValueLdapServersInner `json:"ldap_servers,omitempty"`
 	// LDAP protocol version
 	LdapVersion *string `json:"ldap_version,omitempty"`
-	// Template Name. Must be unique within type.
-	Name *string `json:"name,omitempty"`
 	// NSS search base for group map
 	NssBaseGroup *string `json:"nss_base_group,omitempty"`
 	// NSS search base for netgroup map
@@ -96,8 +94,6 @@ func NewLdapprofilesPutRequestLdapProfileValue() *LdapprofilesPutRequestLdapProf
 	this.EncryptedBindPassword = &encryptedBindPassword
 	var ldapVersion string = "3"
 	this.LdapVersion = &ldapVersion
-	var name string = ""
-	this.Name = &name
 	var nssBaseGroup string = ""
 	this.NssBaseGroup = &nssBaseGroup
 	var nssBaseNetgroup string = ""
@@ -148,8 +144,6 @@ func NewLdapprofilesPutRequestLdapProfileValueWithDefaults() *LdapprofilesPutReq
 	this.EncryptedBindPassword = &encryptedBindPassword
 	var ldapVersion string = "3"
 	this.LdapVersion = &ldapVersion
-	var name string = ""
-	this.Name = &name
 	var nssBaseGroup string = ""
 	this.NssBaseGroup = &nssBaseGroup
 	var nssBaseNetgroup string = ""
@@ -566,38 +560,6 @@ func (o *LdapprofilesPutRequestLdapProfileValue) HasLdapVersion() bool {
 // SetLdapVersion gets a reference to the given string and assigns it to the LdapVersion field.
 func (o *LdapprofilesPutRequestLdapProfileValue) SetLdapVersion(v string) {
 	o.LdapVersion = &v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *LdapprofilesPutRequestLdapProfileValue) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *LdapprofilesPutRequestLdapProfileValue) SetName(v string) {
-	o.Name = &v
 }
 
 // GetNssBaseGroup returns the NssBaseGroup field value if set, zero value otherwise.
@@ -1240,9 +1202,6 @@ func (o LdapprofilesPutRequestLdapProfileValue) ToMap() (map[string]interface{},
 	}
 	if !IsNil(o.LdapVersion) {
 		toSerialize["ldap_version"] = o.LdapVersion
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
 	}
 	if !IsNil(o.NssBaseGroup) {
 		toSerialize["nss_base_group"] = o.NssBaseGroup

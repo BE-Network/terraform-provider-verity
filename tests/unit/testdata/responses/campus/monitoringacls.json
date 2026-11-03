@@ -1,7 +1,6 @@
 {
   "monitoring_acl": {
     "test": {
-      "name": "test",
       "enable": true,
       "services": [
         {

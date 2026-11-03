@@ -21,7 +21,6 @@
           "port_name": ""
         }
       ],
-      "name": "cov_bundle",
       "object_properties": {
         "is_for_switch": true
       },
