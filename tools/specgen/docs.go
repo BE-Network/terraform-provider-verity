@@ -223,6 +223,12 @@ func docArgumentFor(field spec.FieldSpec, resourceModes []spec.Mode) docArgument
 	if field.Sensitive {
 		argument.Notes = append(argument.Notes, "Sensitive.")
 	}
+	switch field.Secret {
+	case spec.SecretWriteOnly:
+		argument.Notes = append(argument.Notes, "The API never returns this value, so it is not imported and changes made outside Terraform are not detected.")
+	case spec.SecretMasked:
+		argument.Notes = append(argument.Notes, fmt.Sprintf("The API returns `%s` instead of the value, so it is not imported and changes made outside Terraform are not detected. Never set it to that text.", spec.MaskedSecretPlaceholder))
+	}
 	if field.Nullable {
 		argument.Notes = append(argument.Notes, "Set it to `null` to clear it.")
 	}

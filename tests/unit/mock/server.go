@@ -33,6 +33,7 @@ type MockServer struct {
 	resourceState     map[string]map[string]map[string]interface{}
 	postPutEnrichment map[string]map[string]map[string]map[string]interface{}
 	postGetOmissions  map[string]map[string]map[string]postGetOmission
+	secretMasks       map[string]map[string]string
 	testLogger        testing.TB
 	versionResponse   []byte
 }
@@ -55,6 +56,17 @@ func (ms *MockServer) SetPostGetOmissions(path, wrapperKey, resourceName string,
 		ms.postGetOmissions[path][wrapperKey] = make(map[string]postGetOmission)
 	}
 	ms.postGetOmissions[path][wrapperKey][resourceName] = postGetOmission{fields: append([]string(nil), fields...), remaining: responseCount}
+}
+
+const MaskedSecretPlaceholder = "this field has been set"
+
+func (ms *MockServer) SetSecretMasking(path string, fields map[string]string) {
+	ms.mu.Lock()
+	defer ms.mu.Unlock()
+	if ms.secretMasks == nil {
+		ms.secretMasks = make(map[string]map[string]string)
+	}
+	ms.secretMasks[path] = fields
 }
 
 func NewMockServer(mode string) *MockServer {
@@ -522,6 +534,30 @@ func (ms *MockServer) buildGetResponse(path string, queryParams map[string][]str
 				}
 				omission.remaining--
 				resources[resourceName] = omission
+			}
+		}
+	}
+
+	if masks := ms.secretMasks[path]; masks != nil {
+		for _, wrapper := range baseResponse {
+			resources, ok := wrapper.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			for _, data := range resources {
+				resource, ok := data.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				for field, kind := range masks {
+					value, present := resource[field]
+					switch {
+					case kind == "write_only":
+						resource[field] = ""
+					case kind == "masked" && present && value != nil && value != "":
+						resource[field] = MaskedSecretPlaceholder
+					}
+				}
 			}
 		}
 	}

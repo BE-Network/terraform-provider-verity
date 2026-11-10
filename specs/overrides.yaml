@@ -2580,12 +2580,20 @@ resources:
         api_kind: boolean
       - api_name: passphrase
         api_kind: string
+        sensitive: true
+        secret: write_only
       - api_name: passphrase_encrypted
         api_kind: string
+        sensitive: true
+        secret: masked
       - api_name: password
         api_kind: string
+        sensitive: true
+        secret: write_only
       - api_name: password_encrypted
         api_kind: string
+        sensitive: true
+        secret: masked
       - api_name: plane
         api_kind: string
         modes: [datacenter]
@@ -2632,8 +2640,12 @@ resources:
         api_kind: string
       - api_name: private_password
         api_kind: string
+        sensitive: true
+        secret: write_only
       - api_name: private_password_encrypted
         api_kind: string
+        sensitive: true
+        secret: masked
       - api_name: private_protocol
         api_kind: string
       - api_name: rack
@@ -2666,8 +2678,12 @@ resources:
         modes: [datacenter]
       - api_name: ssh_key_or_password
         api_kind: string
+        sensitive: true
+        secret: write_only
       - api_name: ssh_key_or_password_encrypted
         api_kind: string
+        sensitive: true
+        secret: masked
       - api_name: ssh_key_or_password_encrypted_auto_assigned_
         api_kind: boolean
       - api_name: ssp_group
@@ -3554,8 +3570,12 @@ resources:
         api_kind: integer
       - api_name: md5_password
         api_kind: string
+        sensitive: true
+        secret: write_only
       - api_name: md5_password_encrypted
         api_kind: string
+        sensitive: true
+        secret: masked
       - api_name: name
         api_kind: string
         profile: identity

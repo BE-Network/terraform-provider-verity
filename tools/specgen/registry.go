@@ -91,6 +91,7 @@ type fieldOverride struct {
 	Versions        versionRangeOverride    `yaml:"versions"`
 	Access          string                  `yaml:"access"`
 	Sensitive       bool                    `yaml:"sensitive"`
+	Secret          string                  `yaml:"secret"`
 	Replace         bool                    `yaml:"replace"`
 	ResponseAbsence string                  `yaml:"response_absence"`
 	CreateNull      string                  `yaml:"create_null"`
@@ -441,6 +442,7 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 			Description:     description,
 			Nullable:        apiNullable(source.Kind, source.APIName),
 			Sensitive:       override.Sensitive,
+			Secret:          spec.SecretKind(override.Secret),
 			Replace:         override.Replace,
 			Modes:           modes,
 			Versions:        versions,
@@ -635,8 +637,8 @@ func rejectManagedOverrideFields(override fieldOverride) error {
 	if override.Collection != nil || len(override.Fields) != 0 || override.Reference != nil || override.AutoAssignment != nil {
 		return fmt.Errorf("field %q is unmanaged and cannot declare nested structure", override.APIName)
 	}
-	if override.APIItemKind != "" || override.Sensitive || override.Replace {
-		return fmt.Errorf("field %q is unmanaged and cannot declare item kind, sensitivity, or replacement", override.APIName)
+	if override.APIItemKind != "" || override.Sensitive || override.Secret != "" || override.Replace {
+		return fmt.Errorf("field %q is unmanaged and cannot declare item kind, sensitivity, secrecy, or replacement", override.APIName)
 	}
 	return nil
 }

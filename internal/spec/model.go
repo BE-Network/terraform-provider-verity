@@ -148,6 +148,19 @@ const (
 	StateConfigurationOrServer StateOwnershipPolicy = "configuration_or_server"
 )
 
+type SecretKind string
+
+const (
+	SecretWriteOnly SecretKind = "write_only"
+	SecretMasked    SecretKind = "masked"
+)
+
+const MaskedSecretPlaceholder = "this field has been set"
+
+func IsMaskedSecretPlaceholder(value string) bool {
+	return strings.EqualFold(strings.TrimSpace(value), MaskedSecretPlaceholder)
+}
+
 type CollectionStrategy string
 
 const (
@@ -214,6 +227,7 @@ type FieldSpec struct {
 	Description string          `json:"description"`
 	Nullable    bool            `json:"nullable"`
 	Sensitive   bool            `json:"sensitive"`
+	Secret      SecretKind      `json:"secret,omitempty"`
 	Replace     bool            `json:"replace"`
 	Modes       []Mode          `json:"modes"`
 	Versions    VersionRange    `json:"versions"`
