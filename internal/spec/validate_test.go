@@ -318,3 +318,39 @@ func TestAutoAssignmentRecomputedWhenMustNameASiblingScalar(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateSecret(t *testing.T) {
+	for _, tc := range []struct {
+		name  string
+		field FieldSpec
+		ok    bool
+	}{
+		{name: "not secret", field: FieldSpec{Kind: FieldKindString}, ok: true},
+		{name: "masked sensitive string", field: FieldSpec{Kind: FieldKindString, Sensitive: true, Secret: SecretMasked}, ok: true},
+		{name: "write-only sensitive string", field: FieldSpec{Kind: FieldKindString, Sensitive: true, Secret: SecretWriteOnly}, ok: true},
+		{name: "not sensitive", field: FieldSpec{Kind: FieldKindString, Secret: SecretMasked}},
+		{name: "not a string", field: FieldSpec{Kind: FieldKindBool, Sensitive: true, Secret: SecretWriteOnly}},
+		{name: "unknown kind", field: FieldSpec{Kind: FieldKindString, Sensitive: true, Secret: "hidden"}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if err := validateSecret(tc.field, "field"); (err == nil) != tc.ok {
+				t.Fatalf("validateSecret() error = %v, want ok=%v", err, tc.ok)
+			}
+		})
+	}
+}
+
+func TestIsMaskedSecretPlaceholder(t *testing.T) {
+	for value, want := range map[string]bool{
+		"this field has been set":     true,
+		"This field has been set":     true,
+		"  THIS FIELD HAS BEEN SET  ": true,
+		"this field has been set!":    false,
+		"":                            false,
+		"$enc$abc":                    false,
+	} {
+		if got := IsMaskedSecretPlaceholder(value); got != want {
+			t.Errorf("IsMaskedSecretPlaceholder(%q) = %v, want %v", value, got, want)
+		}
+	}
+}

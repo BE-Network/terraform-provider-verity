@@ -216,6 +216,9 @@ func validateField(field FieldSpec, path string, parentRange VersionRange, paren
 	if err := validateOwnership(field, path); err != nil {
 		return err
 	}
+	if err := validateSecret(field, path); err != nil {
+		return err
+	}
 	if field.Default != nil {
 		if err := validateLiteral(*field.Default, field.Kind); err != nil {
 			return fmt.Errorf("%s: default: %w", path, err)
@@ -480,4 +483,21 @@ func validateDecimalBound(name string, bound *LiteralSpec) error {
 		return fmt.Errorf("%s must be a decimal literal", name)
 	}
 	return validateLiteral(*bound, FieldKindNumber)
+}
+
+func validateSecret(field FieldSpec, path string) error {
+	switch field.Secret {
+	case "":
+		return nil
+	case SecretWriteOnly, SecretMasked:
+	default:
+		return fmt.Errorf("%s: unknown secret kind %q", path, field.Secret)
+	}
+	if field.Kind != FieldKindString {
+		return fmt.Errorf("%s: only string fields can be secret, but kind is %q", path, field.Kind)
+	}
+	if !field.Sensitive {
+		return fmt.Errorf("%s: secret fields must also be sensitive", path)
+	}
+	return nil
 }
