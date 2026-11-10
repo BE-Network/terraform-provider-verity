@@ -9,7 +9,6 @@ Supported modes: Campus, Datacenter.
 ```hcl
 resource "verity_pair" "example" {
   name = "example"
-  enable = false
   is_whitebox_pair = false
   lag = ""
   lag_ref_type_ = "lag"
@@ -28,7 +27,6 @@ resource "verity_pair" "example" {
 
 ### Optional
 
-* `enable` (Boolean) - Enable object.
 * `is_whitebox_pair` (Boolean) - Is Whitebox Pair.
 * `lag` (String) - LAG. Set together with `lag_ref_type_`.
 * `lag_ref_type_` (String) - Object type for lag field.

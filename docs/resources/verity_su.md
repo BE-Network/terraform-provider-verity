@@ -9,7 +9,6 @@ Supported modes: Datacenter.
 ```hcl
 resource "verity_su" "example" {
   name = "example"
-  enable = false
   pod = ""
   pod_ref_type_ = "pod"
   position = null
@@ -28,7 +27,6 @@ resource "verity_su" "example" {
 
 ### Optional
 
-* `enable` (Boolean) - Enable object.
 * `object_properties` (Block) - Object properties for the SU. At most one block.
   * `notes` (String) - User Notes.
 * `pod` (String) - Pod this SU is assigned to. Set together with `pod_ref_type_`.

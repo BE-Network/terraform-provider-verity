@@ -1,7 +1,7 @@
 {
   "fabric": {
     "cov_fabric": {
-      "enable": false
+      "aggressive_reporting": false
     }
   }
 }

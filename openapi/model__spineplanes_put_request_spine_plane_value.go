@@ -19,8 +19,6 @@ var _ MappedNullable = &SpineplanesPutRequestSpinePlaneValue{}
 
 // SpineplanesPutRequestSpinePlaneValue struct for SpineplanesPutRequestSpinePlaneValue
 type SpineplanesPutRequestSpinePlaneValue struct {
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
 	// Fabric this Spine Plane is assigned to
 	Fabric *string `json:"fabric,omitempty"`
 	// Object type for fabric field
@@ -34,8 +32,6 @@ type SpineplanesPutRequestSpinePlaneValue struct {
 // will change when the set of required properties is changed
 func NewSpineplanesPutRequestSpinePlaneValue() *SpineplanesPutRequestSpinePlaneValue {
 	this := SpineplanesPutRequestSpinePlaneValue{}
-	var enable bool = true
-	this.Enable = &enable
 	var fabric string = ""
 	this.Fabric = &fabric
 	return &this
@@ -46,43 +42,9 @@ func NewSpineplanesPutRequestSpinePlaneValue() *SpineplanesPutRequestSpinePlaneV
 // but it doesn't guarantee that properties required by API are set
 func NewSpineplanesPutRequestSpinePlaneValueWithDefaults() *SpineplanesPutRequestSpinePlaneValue {
 	this := SpineplanesPutRequestSpinePlaneValue{}
-	var enable bool = true
-	this.Enable = &enable
 	var fabric string = ""
 	this.Fabric = &fabric
 	return &this
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *SpineplanesPutRequestSpinePlaneValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SpineplanesPutRequestSpinePlaneValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *SpineplanesPutRequestSpinePlaneValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *SpineplanesPutRequestSpinePlaneValue) SetEnable(v bool) {
-	o.Enable = &v
 }
 
 // GetFabric returns the Fabric field value if set, zero value otherwise.
@@ -191,9 +153,6 @@ func (o SpineplanesPutRequestSpinePlaneValue) MarshalJSON() ([]byte, error) {
 
 func (o SpineplanesPutRequestSpinePlaneValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
 	if !IsNil(o.Fabric) {
 		toSerialize["fabric"] = o.Fabric
 	}

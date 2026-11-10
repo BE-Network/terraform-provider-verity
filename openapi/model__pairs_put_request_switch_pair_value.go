@@ -19,8 +19,6 @@ var _ MappedNullable = &PairsPutRequestSwitchPairValue{}
 
 // PairsPutRequestSwitchPairValue struct for PairsPutRequestSwitchPairValue
 type PairsPutRequestSwitchPairValue struct {
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
 	// Is Whitebox Pair
 	IsWhiteboxPair *bool `json:"is_whitebox_pair,omitempty"`
 	// LAG
@@ -43,8 +41,6 @@ type PairsPutRequestSwitchPairValue struct {
 // will change when the set of required properties is changed
 func NewPairsPutRequestSwitchPairValue() *PairsPutRequestSwitchPairValue {
 	this := PairsPutRequestSwitchPairValue{}
-	var enable bool = true
-	this.Enable = &enable
 	var isWhiteboxPair bool = false
 	this.IsWhiteboxPair = &isWhiteboxPair
 	var lag string = ""
@@ -61,8 +57,6 @@ func NewPairsPutRequestSwitchPairValue() *PairsPutRequestSwitchPairValue {
 // but it doesn't guarantee that properties required by API are set
 func NewPairsPutRequestSwitchPairValueWithDefaults() *PairsPutRequestSwitchPairValue {
 	this := PairsPutRequestSwitchPairValue{}
-	var enable bool = true
-	this.Enable = &enable
 	var isWhiteboxPair bool = false
 	this.IsWhiteboxPair = &isWhiteboxPair
 	var lag string = ""
@@ -72,38 +66,6 @@ func NewPairsPutRequestSwitchPairValueWithDefaults() *PairsPutRequestSwitchPairV
 	var switchpoint2 string = ""
 	this.Switchpoint2 = &switchpoint2
 	return &this
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *PairsPutRequestSwitchPairValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PairsPutRequestSwitchPairValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *PairsPutRequestSwitchPairValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *PairsPutRequestSwitchPairValue) SetEnable(v bool) {
-	o.Enable = &v
 }
 
 // GetIsWhiteboxPair returns the IsWhiteboxPair field value if set, zero value otherwise.
@@ -340,9 +302,6 @@ func (o PairsPutRequestSwitchPairValue) MarshalJSON() ([]byte, error) {
 
 func (o PairsPutRequestSwitchPairValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
 	if !IsNil(o.IsWhiteboxPair) {
 		toSerialize["is_whitebox_pair"] = o.IsWhiteboxPair
 	}

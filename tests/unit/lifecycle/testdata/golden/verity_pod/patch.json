@@ -1,7 +1,7 @@
 {
   "pod": {
     "cov_pod": {
-      "enable": false
+      "expected_spine_count": 3
     }
   }
 }

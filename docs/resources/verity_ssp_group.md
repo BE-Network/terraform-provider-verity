@@ -9,7 +9,6 @@ Supported modes: Datacenter.
 ```hcl
 resource "verity_ssp_group" "example" {
   name = "example"
-  enable = false
   fabric = ""
   fabric_ref_type_ = "fabric"
   position = null
@@ -28,7 +27,6 @@ resource "verity_ssp_group" "example" {
 
 ### Optional
 
-* `enable` (Boolean) - Enable object.
 * `fabric` (String) - Fabric this SuperSpine Group is assigned to. Set together with `fabric_ref_type_`.
 * `fabric_ref_type_` (String) - Object type for fabric field.
 * `object_properties` (Block) - Object properties for the superspine group. At most one block.

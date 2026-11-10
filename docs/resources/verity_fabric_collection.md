@@ -9,7 +9,6 @@ Supported modes: Campus, Datacenter.
 ```hcl
 resource "verity_fabric_collection" "example" {
   name = "example"
-  enable = false
 }
 ```
 
@@ -18,10 +17,6 @@ resource "verity_fabric_collection" "example" {
 ### Required
 
 * `name` (String) - Object name. Identifies the object in the API and must be unique within its type. Changing it replaces the resource.
-
-### Optional
-
-* `enable` (Boolean) - Enable object.
 
 ## Import
 

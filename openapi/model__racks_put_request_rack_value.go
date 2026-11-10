@@ -19,8 +19,6 @@ var _ MappedNullable = &RacksPutRequestRackValue{}
 
 // RacksPutRequestRackValue struct for RacksPutRequestRackValue
 type RacksPutRequestRackValue struct {
-	// Enable object.
-	Enable           *bool                                        `json:"enable,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 	// Position of the Rack
 	Position NullableFloat64 `json:"position,omitempty"`
@@ -36,8 +34,6 @@ type RacksPutRequestRackValue struct {
 // will change when the set of required properties is changed
 func NewRacksPutRequestRackValue() *RacksPutRequestRackValue {
 	this := RacksPutRequestRackValue{}
-	var enable bool = true
-	this.Enable = &enable
 	var su string = ""
 	this.Su = &su
 	return &this
@@ -48,43 +44,9 @@ func NewRacksPutRequestRackValue() *RacksPutRequestRackValue {
 // but it doesn't guarantee that properties required by API are set
 func NewRacksPutRequestRackValueWithDefaults() *RacksPutRequestRackValue {
 	this := RacksPutRequestRackValue{}
-	var enable bool = true
-	this.Enable = &enable
 	var su string = ""
 	this.Su = &su
 	return &this
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *RacksPutRequestRackValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RacksPutRequestRackValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *RacksPutRequestRackValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *RacksPutRequestRackValue) SetEnable(v bool) {
-	o.Enable = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -236,9 +198,6 @@ func (o RacksPutRequestRackValue) MarshalJSON() ([]byte, error) {
 
 func (o RacksPutRequestRackValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
 	}

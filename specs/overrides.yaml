@@ -1648,8 +1648,6 @@ resources:
       response_collection_key: switch_pair
       delete_parameter: switch_pair_name
     fields:
-      - api_name: enable
-        api_kind: boolean
       - api_name: is_whitebox_pair
         api_kind: boolean
       - api_name: lag
@@ -1801,8 +1799,6 @@ resources:
       response_collection_key: plane
       delete_parameter: plane_name
     fields:
-      - api_name: enable
-        api_kind: boolean
       - api_name: fabric
         api_kind: string
       - api_name: fabric_ref_type_
@@ -1835,8 +1831,6 @@ resources:
       response_collection_key: pod
       delete_parameter: pod_name
     fields:
-      - api_name: enable
-        api_kind: boolean
       - api_name: expected_spine_count
         api_kind: integer
       - api_name: fabric
@@ -1953,8 +1947,6 @@ resources:
       response_collection_key: rack
       delete_parameter: rack_name
     fields:
-      - api_name: enable
-        api_kind: boolean
       - api_name: name
         api_kind: string
         profile: identity
@@ -2330,8 +2322,6 @@ resources:
       response_collection_key: spine_plane
       delete_parameter: spine_plane_name
     fields:
-      - api_name: enable
-        api_kind: boolean
       - api_name: fabric
         api_kind: string
       - api_name: fabric_ref_type_
@@ -2362,8 +2352,6 @@ resources:
       response_collection_key: superspine_group
       delete_parameter: superspine_group_name
     fields:
-      - api_name: enable
-        api_kind: boolean
       - api_name: fabric
         api_kind: string
       - api_name: fabric_ref_type_
@@ -2396,8 +2384,6 @@ resources:
       response_collection_key: su
       delete_parameter: su_name
     fields:
-      - api_name: enable
-        api_kind: boolean
       - api_name: name
         api_kind: string
         profile: identity
@@ -3343,8 +3329,6 @@ resources:
       - api_name: duplicate_address_detection_time
         api_kind: integer
         description: Duplicate Address Detection Time
-      - api_name: enable
-        api_kind: boolean
       - api_name: enable_dhcp_snooping
         api_kind: boolean
         modes: [campus]
@@ -3500,6 +3484,8 @@ resources:
       - api_name: switch_password_encrypted
         api_kind: string
       - api_name: switch_username
+        api_kind: string
+      - api_name: underlay_link_addressing
         api_kind: string
       - api_name: vtep_id_base_prefix
         api_kind: string
@@ -3705,8 +3691,6 @@ resources:
       response_collection_key: site_collection
       delete_parameter: site_collection_name
     fields:
-      - api_name: enable
-        api_kind: boolean
       - api_name: name
         api_kind: string
         profile: identity

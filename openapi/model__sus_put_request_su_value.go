@@ -19,8 +19,6 @@ var _ MappedNullable = &SusPutRequestSuValue{}
 
 // SusPutRequestSuValue struct for SusPutRequestSuValue
 type SusPutRequestSuValue struct {
-	// Enable object.
-	Enable           *bool                                        `json:"enable,omitempty"`
 	ObjectProperties *AclsPutRequestIpFilterValueObjectProperties `json:"object_properties,omitempty"`
 	// Pod this SU is assigned to
 	Pod *string `json:"pod,omitempty"`
@@ -36,8 +34,6 @@ type SusPutRequestSuValue struct {
 // will change when the set of required properties is changed
 func NewSusPutRequestSuValue() *SusPutRequestSuValue {
 	this := SusPutRequestSuValue{}
-	var enable bool = true
-	this.Enable = &enable
 	var pod string = ""
 	this.Pod = &pod
 	return &this
@@ -48,43 +44,9 @@ func NewSusPutRequestSuValue() *SusPutRequestSuValue {
 // but it doesn't guarantee that properties required by API are set
 func NewSusPutRequestSuValueWithDefaults() *SusPutRequestSuValue {
 	this := SusPutRequestSuValue{}
-	var enable bool = true
-	this.Enable = &enable
 	var pod string = ""
 	this.Pod = &pod
 	return &this
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *SusPutRequestSuValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SusPutRequestSuValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *SusPutRequestSuValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *SusPutRequestSuValue) SetEnable(v bool) {
-	o.Enable = &v
 }
 
 // GetObjectProperties returns the ObjectProperties field value if set, zero value otherwise.
@@ -236,9 +198,6 @@ func (o SusPutRequestSuValue) MarshalJSON() ([]byte, error) {
 
 func (o SusPutRequestSuValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
 	if !IsNil(o.ObjectProperties) {
 		toSerialize["object_properties"] = o.ObjectProperties
 	}

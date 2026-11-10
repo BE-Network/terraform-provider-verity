@@ -19,7 +19,7 @@ var _ MappedNullable = &FabriccollectionsPutRequest{}
 
 // FabriccollectionsPutRequest struct for FabriccollectionsPutRequest
 type FabriccollectionsPutRequest struct {
-	SiteCollection *map[string]FabriccollectionsPutRequestSiteCollectionValue `json:"site_collection,omitempty"`
+	SiteCollection map[string]map[string]interface{} `json:"site_collection,omitempty"`
 }
 
 // NewFabriccollectionsPutRequest instantiates a new FabriccollectionsPutRequest object
@@ -40,19 +40,19 @@ func NewFabriccollectionsPutRequestWithDefaults() *FabriccollectionsPutRequest {
 }
 
 // GetSiteCollection returns the SiteCollection field value if set, zero value otherwise.
-func (o *FabriccollectionsPutRequest) GetSiteCollection() map[string]FabriccollectionsPutRequestSiteCollectionValue {
+func (o *FabriccollectionsPutRequest) GetSiteCollection() map[string]map[string]interface{} {
 	if o == nil || IsNil(o.SiteCollection) {
-		var ret map[string]FabriccollectionsPutRequestSiteCollectionValue
+		var ret map[string]map[string]interface{}
 		return ret
 	}
-	return *o.SiteCollection
+	return o.SiteCollection
 }
 
 // GetSiteCollectionOk returns a tuple with the SiteCollection field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FabriccollectionsPutRequest) GetSiteCollectionOk() (*map[string]FabriccollectionsPutRequestSiteCollectionValue, bool) {
+func (o *FabriccollectionsPutRequest) GetSiteCollectionOk() (map[string]map[string]interface{}, bool) {
 	if o == nil || IsNil(o.SiteCollection) {
-		return nil, false
+		return map[string]map[string]interface{}{}, false
 	}
 	return o.SiteCollection, true
 }
@@ -66,9 +66,9 @@ func (o *FabriccollectionsPutRequest) HasSiteCollection() bool {
 	return false
 }
 
-// SetSiteCollection gets a reference to the given map[string]FabriccollectionsPutRequestSiteCollectionValue and assigns it to the SiteCollection field.
-func (o *FabriccollectionsPutRequest) SetSiteCollection(v map[string]FabriccollectionsPutRequestSiteCollectionValue) {
-	o.SiteCollection = &v
+// SetSiteCollection gets a reference to the given map[string]map[string]interface{} and assigns it to the SiteCollection field.
+func (o *FabriccollectionsPutRequest) SetSiteCollection(v map[string]map[string]interface{}) {
+	o.SiteCollection = v
 }
 
 func (o FabriccollectionsPutRequest) MarshalJSON() ([]byte, error) {

@@ -1,7 +1,5 @@
 {
   "site_collection": {
-    "cov_fabric_collection": {
-      "enable": true
-    }
+    "cov_fabric_collection": {}
   }
 }

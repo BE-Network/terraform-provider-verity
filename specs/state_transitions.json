@@ -8,9 +8,49 @@
       "upgrade_guide": "docs/guides/upgrade_6_7.md",
       "changes": [
         {
+          "terraform_type": "verity_fabric",
+          "expected_state_sha256": "ebc75bf7a4f380ea89ab4da24081814ddc860e0d46a76166d80ce274c11d0392",
+          "reason": "API 6.7.0.10 removes enable and adds underlay_link_addressing."
+        },
+        {
+          "terraform_type": "verity_pair",
+          "expected_state_sha256": "28e33def2015d0c114f717e120ae8fc5f01fd63150ac8d1e71a956d430c4954c",
+          "reason": "API 6.7.0.10 removes enable."
+        },
+        {
+          "terraform_type": "verity_plane",
+          "expected_state_sha256": "235c1bb8897dc3e5d7c1509f241d817871b054f838e0e9255b652c329089f737",
+          "reason": "API 6.7.0.10 removes enable."
+        },
+        {
+          "terraform_type": "verity_pod",
+          "expected_state_sha256": "f7ad1a71c6b83181faf6c1c67fedfb4560edf7f7b5b13e637414bdbf9ef2ab2a",
+          "reason": "API 6.7.0.10 removes enable."
+        },
+        {
+          "terraform_type": "verity_rack",
+          "expected_state_sha256": "b919a84af905e78346ef1f2eed8a4e418ce40b4f7cb9ddb5665e3d1ca7330dc2",
+          "reason": "API 6.7.0.10 removes enable."
+        },
+        {
           "terraform_type": "verity_route_map_clause",
           "expected_state_sha256": "0d7462a928da40f880850dd50f5e9eaf5cbd1d1a942e9b0a7e720e8a25b49a91",
           "reason": "API 6.7 removes object_properties.match_fields_shown."
+        },
+        {
+          "terraform_type": "verity_spine_plane",
+          "expected_state_sha256": "4efa95a7e550d1714f5c5125ea20880bf2c58256ad38b6197d13559f7e849c75",
+          "reason": "API 6.7.0.10 removes enable."
+        },
+        {
+          "terraform_type": "verity_ssp_group",
+          "expected_state_sha256": "cb6923d59ce8a19f792f0e5796ceff568ea98bb310daa3adf71ee498677daf41",
+          "reason": "API 6.7.0.10 removes enable."
+        },
+        {
+          "terraform_type": "verity_su",
+          "expected_state_sha256": "120d8298df0cb287d94b149602b9ddc2ac70e052e9bedc53d65e7c313e93e0c0",
+          "reason": "API 6.7.0.10 removes enable."
         },
         {
           "terraform_type": "verity_switchpoint",

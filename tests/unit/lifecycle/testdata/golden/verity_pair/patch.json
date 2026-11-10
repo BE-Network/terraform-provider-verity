@@ -1,7 +1,7 @@
 {
   "switch_pair": {
     "cov_pair": {
-      "enable": false
+      "is_whitebox_pair": false
     }
   }
 }

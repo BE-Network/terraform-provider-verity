@@ -5,7 +5,6 @@ resource "verity_pod" "Pod_1" {
 	object_properties {
 		notes = ""
 	}
-	enable = true
 	expected_spine_count = 2
 }
 

@@ -11588,35 +11588,6 @@
         },
         {
           "access": "optional_computed",
-          "api_name": "enable",
-          "create_null": "omit",
-          "description": "Enable object.",
-          "kind": "bool",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "replace": false,
-          "response_absence": "terraform_null",
-          "sensitive": false,
-          "state_ownership": "configuration_or_server",
-          "terraform_name": "enable",
-          "unknown_plan": "omit_and_read",
-          "update_clear": "false",
-          "versions": {
-            "max_exclusive": {
-              "major": 6,
-              "minor": 8
-            },
-            "min_inclusive": {
-              "major": 6,
-              "minor": 6
-            }
-          }
-        },
-        {
-          "access": "optional_computed",
           "api_name": "enable_dhcp_snooping",
           "create_null": "omit",
           "description": "Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report.",
@@ -13315,6 +13286,35 @@
         },
         {
           "access": "optional_computed",
+          "api_name": "underlay_link_addressing",
+          "create_null": "omit",
+          "description": "Specifies the addressing mode for underlay links",
+          "kind": "string",
+          "modes": [
+            "campus",
+            "datacenter"
+          ],
+          "nullable": false,
+          "replace": false,
+          "response_absence": "terraform_null",
+          "sensitive": false,
+          "state_ownership": "configuration_or_server",
+          "terraform_name": "underlay_link_addressing",
+          "unknown_plan": "omit_and_read",
+          "update_clear": "empty_string",
+          "versions": {
+            "max_exclusive": {
+              "major": 6,
+              "minor": 8
+            },
+            "min_inclusive": {
+              "major": 6,
+              "minor": 6
+            }
+          }
+        },
+        {
+          "access": "optional_computed",
           "api_name": "vtep_id_base_prefix",
           "create_null": "omit",
           "description": "Vtep ID starting IP address",
@@ -13401,35 +13401,6 @@
       "dependencies": {},
       "description": "Manages a Verity Fabric Collection",
       "fields": [
-        {
-          "access": "optional_computed",
-          "api_name": "enable",
-          "create_null": "omit",
-          "description": "Enable object.",
-          "kind": "bool",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "replace": false,
-          "response_absence": "terraform_null",
-          "sensitive": false,
-          "state_ownership": "configuration_or_server",
-          "terraform_name": "enable",
-          "unknown_plan": "omit_and_read",
-          "update_clear": "false",
-          "versions": {
-            "max_exclusive": {
-              "major": 6,
-              "minor": 8
-            },
-            "min_inclusive": {
-              "major": 6,
-              "minor": 6
-            }
-          }
-        },
         {
           "access": "required",
           "api_name": "name",
@@ -20579,35 +20550,6 @@
       "fields": [
         {
           "access": "optional_computed",
-          "api_name": "enable",
-          "create_null": "omit",
-          "description": "Enable object.",
-          "kind": "bool",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "replace": false,
-          "response_absence": "terraform_null",
-          "sensitive": false,
-          "state_ownership": "configuration_or_server",
-          "terraform_name": "enable",
-          "unknown_plan": "omit_and_read",
-          "update_clear": "false",
-          "versions": {
-            "max_exclusive": {
-              "major": 6,
-              "minor": 8
-            },
-            "min_inclusive": {
-              "major": 6,
-              "minor": 6
-            }
-          }
-        },
-        {
-          "access": "optional_computed",
           "api_name": "is_whitebox_pair",
           "create_null": "omit",
           "description": "Is Whitebox Pair",
@@ -21951,34 +21893,6 @@
       "fields": [
         {
           "access": "optional_computed",
-          "api_name": "enable",
-          "create_null": "omit",
-          "description": "Enable object.",
-          "kind": "bool",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "replace": false,
-          "response_absence": "terraform_null",
-          "sensitive": false,
-          "state_ownership": "configuration_or_server",
-          "terraform_name": "enable",
-          "unknown_plan": "omit_and_read",
-          "update_clear": "false",
-          "versions": {
-            "max_exclusive": {
-              "major": 6,
-              "minor": 8
-            },
-            "min_inclusive": {
-              "major": 6,
-              "minor": 6
-            }
-          }
-        },
-        {
-          "access": "optional_computed",
           "api_name": "fabric",
           "create_null": "omit",
           "description": "Fabric this Plane is assigned to",
@@ -22207,34 +22121,6 @@
       "dependencies": {},
       "description": "Manages a Pod resource",
       "fields": [
-        {
-          "access": "optional_computed",
-          "api_name": "enable",
-          "create_null": "omit",
-          "description": "Enable object.",
-          "kind": "bool",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "replace": false,
-          "response_absence": "terraform_null",
-          "sensitive": false,
-          "state_ownership": "configuration_or_server",
-          "terraform_name": "enable",
-          "unknown_plan": "omit_and_read",
-          "update_clear": "false",
-          "versions": {
-            "max_exclusive": {
-              "major": 6,
-              "minor": 8
-            },
-            "min_inclusive": {
-              "major": 6,
-              "minor": 6
-            }
-          }
-        },
         {
           "access": "optional_computed",
           "api_name": "expected_spine_count",
@@ -23247,34 +23133,6 @@
       "dependencies": {},
       "description": "Manages a Verity Rack resource",
       "fields": [
-        {
-          "access": "optional_computed",
-          "api_name": "enable",
-          "create_null": "omit",
-          "description": "Enable object.",
-          "kind": "bool",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "replace": false,
-          "response_absence": "terraform_null",
-          "sensitive": false,
-          "state_ownership": "configuration_or_server",
-          "terraform_name": "enable",
-          "unknown_plan": "omit_and_read",
-          "update_clear": "false",
-          "versions": {
-            "max_exclusive": {
-              "major": 6,
-              "minor": 8
-            },
-            "min_inclusive": {
-              "major": 6,
-              "minor": 6
-            }
-          }
-        },
         {
           "access": "required",
           "api_name": "name",
@@ -27435,34 +27293,6 @@
       "fields": [
         {
           "access": "optional_computed",
-          "api_name": "enable",
-          "create_null": "omit",
-          "description": "Enable object.",
-          "kind": "bool",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "replace": false,
-          "response_absence": "terraform_null",
-          "sensitive": false,
-          "state_ownership": "configuration_or_server",
-          "terraform_name": "enable",
-          "unknown_plan": "omit_and_read",
-          "update_clear": "false",
-          "versions": {
-            "max_exclusive": {
-              "major": 6,
-              "minor": 8
-            },
-            "min_inclusive": {
-              "major": 6,
-              "minor": 6
-            }
-          }
-        },
-        {
-          "access": "optional_computed",
           "api_name": "fabric",
           "create_null": "omit",
           "description": "Fabric this Spine Plane is assigned to",
@@ -27663,34 +27493,6 @@
       "dependencies": {},
       "description": "Manages a Verity SuperSpine Group resource",
       "fields": [
-        {
-          "access": "optional_computed",
-          "api_name": "enable",
-          "create_null": "omit",
-          "description": "Enable object.",
-          "kind": "bool",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "replace": false,
-          "response_absence": "terraform_null",
-          "sensitive": false,
-          "state_ownership": "configuration_or_server",
-          "terraform_name": "enable",
-          "unknown_plan": "omit_and_read",
-          "update_clear": "false",
-          "versions": {
-            "max_exclusive": {
-              "major": 6,
-              "minor": 8
-            },
-            "min_inclusive": {
-              "major": 6,
-              "minor": 6
-            }
-          }
-        },
         {
           "access": "optional_computed",
           "api_name": "fabric",
@@ -28421,34 +28223,6 @@
       "dependencies": {},
       "description": "Manages a Verity SU resource",
       "fields": [
-        {
-          "access": "optional_computed",
-          "api_name": "enable",
-          "create_null": "omit",
-          "description": "Enable object.",
-          "kind": "bool",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "replace": false,
-          "response_absence": "terraform_null",
-          "sensitive": false,
-          "state_ownership": "configuration_or_server",
-          "terraform_name": "enable",
-          "unknown_plan": "omit_and_read",
-          "update_clear": "false",
-          "versions": {
-            "max_exclusive": {
-              "major": 6,
-              "minor": 8
-            },
-            "min_inclusive": {
-              "major": 6,
-              "minor": 6
-            }
-          }
-        },
         {
           "access": "required",
           "api_name": "name",

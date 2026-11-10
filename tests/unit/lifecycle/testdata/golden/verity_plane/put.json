@@ -1,7 +1,6 @@
 {
   "plane": {
     "cov_plane": {
-      "enable": true,
       "fabric": "",
       "fabric_ref_type_": "",
       "object_properties": {

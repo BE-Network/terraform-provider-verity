@@ -2928,7 +2928,7 @@
     {
       "terraform_type": "verity_fabric",
       "schema_version": 0,
-      "state_type": "tftypes.Object[\"aggressive_reporting\":tftypes.Bool, \"allow_all_underlay_connections\":tftypes.Bool, \"anycast_mac_address\":tftypes.String, \"anycast_mac_address_auto_assigned_\":tftypes.Bool, \"base_bgp_as_number\":tftypes.String, \"bgp_hold_down_timer\":tftypes.Number, \"bgp_keepalive_timer\":tftypes.Number, \"controller_gateway\":tftypes.String, \"controller_ip_base\":tftypes.String, \"domain_for_fabric\":tftypes.String, \"domain_for_fabric_ref_type_\":tftypes.String, \"dscp_to_p_bit_map\":tftypes.String, \"duplicate_address_detection_max_number_of_moves\":tftypes.Number, \"duplicate_address_detection_time\":tftypes.Number, \"enable\":tftypes.Bool, \"enable_dhcp_snooping\":tftypes.Bool, \"enable_dscp\":tftypes.Bool, \"evpn_mac_holdtime\":tftypes.Number, \"evpn_multihoming_startup_delay\":tftypes.Number, \"fabric_type\":tftypes.String, \"force_spanning_tree_on_fabric_ports\":tftypes.Bool, \"gpu_architecture\":tftypes.String, \"hgx_password\":tftypes.String, \"hgx_password_encrypted\":tftypes.String, \"hgx_username\":tftypes.String, \"ip_source_guard\":tftypes.Bool, \"leaf_bgp_advertisement_interval\":tftypes.Number, \"leaf_bgp_connect_timer\":tftypes.Number, \"leaf_bgp_hold_down_timer\":tftypes.Number, \"leaf_bgp_keep_alive_timer\":tftypes.Number, \"link_state_timeout_value\":tftypes.Number, \"mac_address_aging_time\":tftypes.Number, \"max_pods\":tftypes.Number, \"max_sus\":tftypes.Number, \"max_switches\":tftypes.String, \"maximum_ebgp_paths\":tftypes.Number, \"maximum_ebgp_paths_mode\":tftypes.String, \"mlag_delay_restore_timer\":tftypes.Number, \"multi_tenant\":tftypes.Bool, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"system_graphs\":tftypes.List[tftypes.Object[\"index\":tftypes.Number]]]], \"paired_ip_subnet\":tftypes.String, \"pause_validation_alarms\":tftypes.Bool, \"plane_count\":tftypes.String, \"port_admin_polling_interval\":tftypes.Number, \"port_status_polling_interval\":tftypes.Number, \"read_only_mode\":tftypes.Bool, \"region_name\":tftypes.String, \"revision\":tftypes.Number, \"route_aggregation\":tftypes.String, \"route_aggregators\":tftypes.List[tftypes.Object[\"index\":tftypes.Number, \"route_aggregation_num_enable\":tftypes.Bool, \"route_aggregation_num_ip_and_mask\":tftypes.String]], \"router_id_base_prefix\":tftypes.String, \"server_management\":tftypes.Bool, \"service_for_fabric\":tftypes.String, \"service_for_fabric_ref_type_\":tftypes.String, \"set_leaf_router_id_on_bgp\":tftypes.Bool, \"spanning_tree_type\":tftypes.String, \"spine_as_number\":tftypes.Number, \"spine_bgp_advertisement_interval\":tftypes.Number, \"spine_bgp_connect_timer\":tftypes.Number, \"starting_octet\":tftypes.Number, \"su_size\":tftypes.String, \"su_support\":tftypes.Bool, \"switch_gateway\":tftypes.String, \"switch_ip_base\":tftypes.String, \"switch_password\":tftypes.String, \"switch_password_encrypted\":tftypes.String, \"switch_username\":tftypes.String, \"vtep_id_base_prefix\":tftypes.String]",
+      "state_type": "tftypes.Object[\"aggressive_reporting\":tftypes.Bool, \"allow_all_underlay_connections\":tftypes.Bool, \"anycast_mac_address\":tftypes.String, \"anycast_mac_address_auto_assigned_\":tftypes.Bool, \"base_bgp_as_number\":tftypes.String, \"bgp_hold_down_timer\":tftypes.Number, \"bgp_keepalive_timer\":tftypes.Number, \"controller_gateway\":tftypes.String, \"controller_ip_base\":tftypes.String, \"domain_for_fabric\":tftypes.String, \"domain_for_fabric_ref_type_\":tftypes.String, \"dscp_to_p_bit_map\":tftypes.String, \"duplicate_address_detection_max_number_of_moves\":tftypes.Number, \"duplicate_address_detection_time\":tftypes.Number, \"enable_dhcp_snooping\":tftypes.Bool, \"enable_dscp\":tftypes.Bool, \"evpn_mac_holdtime\":tftypes.Number, \"evpn_multihoming_startup_delay\":tftypes.Number, \"fabric_type\":tftypes.String, \"force_spanning_tree_on_fabric_ports\":tftypes.Bool, \"gpu_architecture\":tftypes.String, \"hgx_password\":tftypes.String, \"hgx_password_encrypted\":tftypes.String, \"hgx_username\":tftypes.String, \"ip_source_guard\":tftypes.Bool, \"leaf_bgp_advertisement_interval\":tftypes.Number, \"leaf_bgp_connect_timer\":tftypes.Number, \"leaf_bgp_hold_down_timer\":tftypes.Number, \"leaf_bgp_keep_alive_timer\":tftypes.Number, \"link_state_timeout_value\":tftypes.Number, \"mac_address_aging_time\":tftypes.Number, \"max_pods\":tftypes.Number, \"max_sus\":tftypes.Number, \"max_switches\":tftypes.String, \"maximum_ebgp_paths\":tftypes.Number, \"maximum_ebgp_paths_mode\":tftypes.String, \"mlag_delay_restore_timer\":tftypes.Number, \"multi_tenant\":tftypes.Bool, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"system_graphs\":tftypes.List[tftypes.Object[\"index\":tftypes.Number]]]], \"paired_ip_subnet\":tftypes.String, \"pause_validation_alarms\":tftypes.Bool, \"plane_count\":tftypes.String, \"port_admin_polling_interval\":tftypes.Number, \"port_status_polling_interval\":tftypes.Number, \"read_only_mode\":tftypes.Bool, \"region_name\":tftypes.String, \"revision\":tftypes.Number, \"route_aggregation\":tftypes.String, \"route_aggregators\":tftypes.List[tftypes.Object[\"index\":tftypes.Number, \"route_aggregation_num_enable\":tftypes.Bool, \"route_aggregation_num_ip_and_mask\":tftypes.String]], \"router_id_base_prefix\":tftypes.String, \"server_management\":tftypes.Bool, \"service_for_fabric\":tftypes.String, \"service_for_fabric_ref_type_\":tftypes.String, \"set_leaf_router_id_on_bgp\":tftypes.Bool, \"spanning_tree_type\":tftypes.String, \"spine_as_number\":tftypes.Number, \"spine_bgp_advertisement_interval\":tftypes.Number, \"spine_bgp_connect_timer\":tftypes.Number, \"starting_octet\":tftypes.Number, \"su_size\":tftypes.String, \"su_support\":tftypes.Bool, \"switch_gateway\":tftypes.String, \"switch_ip_base\":tftypes.String, \"switch_password\":tftypes.String, \"switch_password_encrypted\":tftypes.String, \"switch_username\":tftypes.String, \"underlay_link_addressing\":tftypes.String, \"vtep_id_base_prefix\":tftypes.String]",
       "attributes": [
         {
           "name": "aggressive_reporting",
@@ -3037,14 +3037,6 @@
         {
           "name": "duplicate_address_detection_time",
           "type": "int64",
-          "required": false,
-          "optional": true,
-          "computed": true,
-          "sensitive": false
-        },
-        {
-          "name": "enable",
-          "type": "bool",
           "required": false,
           "optional": true,
           "computed": true,
@@ -3465,6 +3457,14 @@
           "sensitive": false
         },
         {
+          "name": "underlay_link_addressing",
+          "type": "string",
+          "required": false,
+          "optional": true,
+          "computed": true,
+          "sensitive": false
+        },
+        {
           "name": "vtep_id_base_prefix",
           "type": "string",
           "required": false,
@@ -3530,16 +3530,8 @@
     {
       "terraform_type": "verity_fabric_collection",
       "schema_version": 0,
-      "state_type": "tftypes.Object[\"enable\":tftypes.Bool, \"name\":tftypes.String]",
+      "state_type": "tftypes.Object[\"name\":tftypes.String]",
       "attributes": [
-        {
-          "name": "enable",
-          "type": "bool",
-          "required": false,
-          "optional": true,
-          "computed": true,
-          "sensitive": false
-        },
         {
           "name": "name",
           "type": "string",
@@ -5432,16 +5424,8 @@
     {
       "terraform_type": "verity_pair",
       "schema_version": 0,
-      "state_type": "tftypes.Object[\"enable\":tftypes.Bool, \"is_whitebox_pair\":tftypes.Bool, \"lag\":tftypes.String, \"lag_ref_type_\":tftypes.String, \"name\":tftypes.String, \"switchpoint_1\":tftypes.String, \"switchpoint_1_ref_type_\":tftypes.String, \"switchpoint_2\":tftypes.String, \"switchpoint_2_ref_type_\":tftypes.String]",
+      "state_type": "tftypes.Object[\"is_whitebox_pair\":tftypes.Bool, \"lag\":tftypes.String, \"lag_ref_type_\":tftypes.String, \"name\":tftypes.String, \"switchpoint_1\":tftypes.String, \"switchpoint_1_ref_type_\":tftypes.String, \"switchpoint_2\":tftypes.String, \"switchpoint_2_ref_type_\":tftypes.String]",
       "attributes": [
-        {
-          "name": "enable",
-          "type": "bool",
-          "required": false,
-          "optional": true,
-          "computed": true,
-          "sensitive": false
-        },
         {
           "name": "is_whitebox_pair",
           "type": "bool",
@@ -5786,16 +5770,8 @@
     {
       "terraform_type": "verity_plane",
       "schema_version": 0,
-      "state_type": "tftypes.Object[\"enable\":tftypes.Bool, \"fabric\":tftypes.String, \"fabric_ref_type_\":tftypes.String, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"notes\":tftypes.String]], \"position\":tftypes.Number]",
+      "state_type": "tftypes.Object[\"fabric\":tftypes.String, \"fabric_ref_type_\":tftypes.String, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"notes\":tftypes.String]], \"position\":tftypes.Number]",
       "attributes": [
-        {
-          "name": "enable",
-          "type": "bool",
-          "required": false,
-          "optional": true,
-          "computed": true,
-          "sensitive": false
-        },
         {
           "name": "fabric",
           "type": "string",
@@ -5855,16 +5831,8 @@
     {
       "terraform_type": "verity_pod",
       "schema_version": 0,
-      "state_type": "tftypes.Object[\"enable\":tftypes.Bool, \"expected_spine_count\":tftypes.Number, \"fabric\":tftypes.String, \"fabric_ref_type_\":tftypes.String, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"notes\":tftypes.String]], \"position\":tftypes.Number]",
+      "state_type": "tftypes.Object[\"expected_spine_count\":tftypes.Number, \"fabric\":tftypes.String, \"fabric_ref_type_\":tftypes.String, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"notes\":tftypes.String]], \"position\":tftypes.Number]",
       "attributes": [
-        {
-          "name": "enable",
-          "type": "bool",
-          "required": false,
-          "optional": true,
-          "computed": true,
-          "sensitive": false
-        },
         {
           "name": "expected_spine_count",
           "type": "int64",
@@ -6115,16 +6083,8 @@
     {
       "terraform_type": "verity_rack",
       "schema_version": 0,
-      "state_type": "tftypes.Object[\"enable\":tftypes.Bool, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"notes\":tftypes.String]], \"position\":tftypes.Number, \"su\":tftypes.String, \"su_ref_type_\":tftypes.String]",
+      "state_type": "tftypes.Object[\"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"notes\":tftypes.String]], \"position\":tftypes.Number, \"su\":tftypes.String, \"su_ref_type_\":tftypes.String]",
       "attributes": [
-        {
-          "name": "enable",
-          "type": "bool",
-          "required": false,
-          "optional": true,
-          "computed": true,
-          "sensitive": false
-        },
         {
           "name": "name",
           "type": "string",
@@ -7240,16 +7200,8 @@
     {
       "terraform_type": "verity_spine_plane",
       "schema_version": 0,
-      "state_type": "tftypes.Object[\"enable\":tftypes.Bool, \"fabric\":tftypes.String, \"fabric_ref_type_\":tftypes.String, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"notes\":tftypes.String]]]",
+      "state_type": "tftypes.Object[\"fabric\":tftypes.String, \"fabric_ref_type_\":tftypes.String, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"notes\":tftypes.String]]]",
       "attributes": [
-        {
-          "name": "enable",
-          "type": "bool",
-          "required": false,
-          "optional": true,
-          "computed": true,
-          "sensitive": false
-        },
         {
           "name": "fabric",
           "type": "string",
@@ -7301,16 +7253,8 @@
     {
       "terraform_type": "verity_ssp_group",
       "schema_version": 0,
-      "state_type": "tftypes.Object[\"enable\":tftypes.Bool, \"fabric\":tftypes.String, \"fabric_ref_type_\":tftypes.String, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"notes\":tftypes.String]], \"position\":tftypes.Number]",
+      "state_type": "tftypes.Object[\"fabric\":tftypes.String, \"fabric_ref_type_\":tftypes.String, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"notes\":tftypes.String]], \"position\":tftypes.Number]",
       "attributes": [
-        {
-          "name": "enable",
-          "type": "bool",
-          "required": false,
-          "optional": true,
-          "computed": true,
-          "sensitive": false
-        },
         {
           "name": "fabric",
           "type": "string",
@@ -7503,16 +7447,8 @@
     {
       "terraform_type": "verity_su",
       "schema_version": 0,
-      "state_type": "tftypes.Object[\"enable\":tftypes.Bool, \"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"notes\":tftypes.String]], \"pod\":tftypes.String, \"pod_ref_type_\":tftypes.String, \"position\":tftypes.Number]",
+      "state_type": "tftypes.Object[\"name\":tftypes.String, \"object_properties\":tftypes.List[tftypes.Object[\"notes\":tftypes.String]], \"pod\":tftypes.String, \"pod_ref_type_\":tftypes.String, \"position\":tftypes.Number]",
       "attributes": [
-        {
-          "name": "enable",
-          "type": "bool",
-          "required": false,
-          "optional": true,
-          "computed": true,
-          "sensitive": false
-        },
         {
           "name": "name",
           "type": "string",

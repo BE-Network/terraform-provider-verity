@@ -1,7 +1,7 @@
 {
   "rack": {
     "cov_rack": {
-      "enable": false
+      "position": 2.5
     }
   }
 }

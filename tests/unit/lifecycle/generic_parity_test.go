@@ -54,9 +54,13 @@ func assertGoldenParity(t *testing.T, terraformType string) {
 	createConfig := mock.ProviderConfig(ms.URL(), entry.Mode) +
 		generateCoverageHCL(t, rs, entry.TerraformType, entry.ResourceName, entry.Mode, modeKey,
 			mergeOverrides(entry.Overrides, map[string]string{"enable": "true"}))
+	update := entry.Update
+	if update == nil {
+		update = map[string]string{"enable": "false"}
+	}
 	updateConfig := mock.ProviderConfig(ms.URL(), entry.Mode) +
 		generateCoverageHCL(t, rs, entry.TerraformType, entry.ResourceName, entry.Mode, modeKey,
-			mergeOverrides(entry.Overrides, map[string]string{"enable": "false"}))
+			mergeOverrides(entry.Overrides, update))
 
 	address := entry.TerraformType + ".test"
 
@@ -81,23 +85,32 @@ func assertGoldenParity(t *testing.T, terraformType string) {
 		return
 	}
 
+	createStep := fwresource.TestStep{
+		PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), createConfig) },
+		Config:    createConfig,
+		Check: func(s *terraform.State) error {
+			puts := ms.GetRequestsByMethodAndPath("PUT", entry.APIPath)
+			if len(puts) == 0 {
+				return fmt.Errorf("the generic engine sent no PUT to %s", entry.APIPath)
+			}
+			if err := compareGolden(t, entry.TerraformType, "put", puts[len(puts)-1].Body); err != nil {
+				return err
+			}
+			return compareGoldenState(t, entry.TerraformType, address, s)
+		},
+	}
+	if entry.NoUpdate {
+		fwresource.UnitTest(t, fwresource.TestCase{
+			ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(),
+			Steps:                    []fwresource.TestStep{createStep},
+		})
+		return
+	}
+
 	fwresource.UnitTest(t, fwresource.TestCase{
 		ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(),
 		Steps: []fwresource.TestStep{
-			{
-				PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), createConfig) },
-				Config:    createConfig,
-				Check: func(s *terraform.State) error {
-					puts := ms.GetRequestsByMethodAndPath("PUT", entry.APIPath)
-					if len(puts) == 0 {
-						return fmt.Errorf("the generic engine sent no PUT to %s", entry.APIPath)
-					}
-					if err := compareGolden(t, entry.TerraformType, "put", puts[len(puts)-1].Body); err != nil {
-						return err
-					}
-					return compareGoldenState(t, entry.TerraformType, address, s)
-				},
-			},
+			createStep,
 			{
 				PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), updateConfig) },
 				Config:    updateConfig,

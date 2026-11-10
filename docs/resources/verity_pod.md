@@ -9,7 +9,6 @@ Supported modes: Datacenter.
 ```hcl
 resource "verity_pod" "example" {
   name = "example"
-  enable = false
   expected_spine_count = null
   fabric = ""
   fabric_ref_type_ = "fabric"
@@ -29,7 +28,6 @@ resource "verity_pod" "example" {
 
 ### Optional
 
-* `enable` (Boolean) - Enable object.
 * `expected_spine_count` (Integer) - Number of spine switches expected in this pod. Set it to `null` to clear it.
 * `fabric` (String) - Fabric this Pod is assigned to. Set together with `fabric_ref_type_`.
 * `fabric_ref_type_` (String) - Object type for fabric field.

@@ -5,6 +5,5 @@ resource "verity_spine_plane" "spine_plane_test1" {
 	object_properties {
 		notes = ""
 	}
-	enable = true
 }
 

@@ -13,6 +13,18 @@ records:
 | --- | --- |
 | `verity_switchpoint` | `tenant`, `tenant_ref_type_` |
 | `verity_route_map_clause` | `object_properties.match_fields_shown` |
+| `verity_fabric` | `enable` |
+| `verity_pair` | `enable` |
+| `verity_plane` | `enable` |
+| `verity_pod` | `enable` |
+| `verity_rack` | `enable` |
+| `verity_spine_plane` | `enable` |
+| `verity_ssp_group` | `enable` |
+| `verity_su` | `enable` |
+
+API 6.7.0.10 also removes `enable` from `verity_fabric_collection`. A fabric
+collection now has no arguments besides `name`: it is an empty object that
+fabrics join through `verity_fabric.domain_for_fabric`.
 
 Follow the [fresh-import procedure](fresh_import_upgrades.md) with this provider
 release. Remove the removed arguments from any configuration you carry over.
@@ -28,6 +40,15 @@ spelling; only generated Terraform resource labels are sanitized.
 
 - `verity_device_settings`: `ntp_vrf_tenant` and `ntp_vrf_tenant_ref_type_` are
   datacenter-only. In campus mode, `ntp_vrf` no longer accepts `tenant`.
+- `verity_fabric`: new `underlay_link_addressing` argument (`unnumbered`,
+  `ipv4_numbered` or `ipv6_numbered`; the API default is `unnumbered`).
+- `verity_bundle` and `verity_switchpoint`: `port_name` in `eth_port_paths` and
+  `eths` is read-only. The API fills it in from the device. Remove `port_name`
+  lines from carried-over configuration.
+- Password fields (`verity_switchpoint`: `password`, `private_password`,
+  `passphrase`, `ssh_key_or_password`; `verity_gateway`: `md5_password`; each
+  with its `_encrypted` pair) are never imported, because the API doesn't return
+  them. Set them in configuration after a fresh import.
 - `verity_eth_port_settings`: `max_allowed_unit` accepts `kbps` instead of
   `Kpps`. Update configurations that set `Kpps`. The new
   `priority_flow_control_cable_length` argument is available.

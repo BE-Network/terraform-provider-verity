@@ -1283,13 +1283,13 @@ var resourceRegistry = map[string]ResourceConfig{
 	"site_collection": {ResourceType: "site_collection", HeaderSplitKey: "",
 		ResponseCollectionKey: "site_collection",
 		PreparePut: func(data map[string]interface{}) (interface{}, error) {
-			return prepareTypedBulkRequest(data, func(request *openapi.FabriccollectionsPutRequest, values map[string]openapi.FabriccollectionsPutRequestSiteCollectionValue) {
-				request.SiteCollection = &values
+			return prepareTypedBulkRequest(data, func(request *openapi.FabriccollectionsPutRequest, values map[string]map[string]interface{}) {
+				request.SiteCollection = values
 			})
 		},
 		PreparePatch: func(data map[string]interface{}) (interface{}, error) {
-			return prepareTypedBulkRequest(data, func(request *openapi.FabriccollectionsPutRequest, values map[string]openapi.FabriccollectionsPutRequestSiteCollectionValue) {
-				request.SiteCollection = &values
+			return prepareTypedBulkRequest(data, func(request *openapi.FabriccollectionsPutRequest, values map[string]map[string]interface{}) {
+				request.SiteCollection = values
 			})
 		},
 		PutRequestType:   reflect.TypeOf(openapi.FabriccollectionsPutRequest{}),

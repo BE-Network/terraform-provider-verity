@@ -1,7 +1,5 @@
 {
   "site_collection": {
-    "test": {
-      "enable": true
-    }
+    "test": {}
   }
 }

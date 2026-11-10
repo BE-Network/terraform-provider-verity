@@ -19,8 +19,6 @@ var _ MappedNullable = &PodsPutRequestPodValue{}
 
 // PodsPutRequestPodValue struct for PodsPutRequestPodValue
 type PodsPutRequestPodValue struct {
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
 	// Number of spine switches expected in this pod
 	ExpectedSpineCount NullableInt64 `json:"expected_spine_count,omitempty"`
 	// Fabric this Pod is assigned to
@@ -38,8 +36,6 @@ type PodsPutRequestPodValue struct {
 // will change when the set of required properties is changed
 func NewPodsPutRequestPodValue() *PodsPutRequestPodValue {
 	this := PodsPutRequestPodValue{}
-	var enable bool = true
-	this.Enable = &enable
 	var expectedSpineCount int64 = 1
 	this.ExpectedSpineCount = *NewNullableInt64(&expectedSpineCount)
 	var fabric string = ""
@@ -52,45 +48,11 @@ func NewPodsPutRequestPodValue() *PodsPutRequestPodValue {
 // but it doesn't guarantee that properties required by API are set
 func NewPodsPutRequestPodValueWithDefaults() *PodsPutRequestPodValue {
 	this := PodsPutRequestPodValue{}
-	var enable bool = true
-	this.Enable = &enable
 	var expectedSpineCount int64 = 1
 	this.ExpectedSpineCount = *NewNullableInt64(&expectedSpineCount)
 	var fabric string = ""
 	this.Fabric = &fabric
 	return &this
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *PodsPutRequestPodValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PodsPutRequestPodValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *PodsPutRequestPodValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *PodsPutRequestPodValue) SetEnable(v bool) {
-	o.Enable = &v
 }
 
 // GetExpectedSpineCount returns the ExpectedSpineCount field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -285,9 +247,6 @@ func (o PodsPutRequestPodValue) MarshalJSON() ([]byte, error) {
 
 func (o PodsPutRequestPodValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
 	if o.ExpectedSpineCount.IsSet() {
 		toSerialize["expected_spine_count"] = o.ExpectedSpineCount.Get()
 	}

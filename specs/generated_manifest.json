@@ -8889,19 +8889,6 @@
                   ]
                 },
                 {
-                  "api_name": "enable",
-                  "description": "Enable object.",
-                  "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "enable_dhcp_snooping",
                   "description": "Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report.",
                   "kind": "boolean",
@@ -9669,6 +9656,24 @@
                 {
                   "api_name": "switch_username",
                   "description": "Default username for managed switches in this Fabric",
+                  "kind": "string",
+                  "modes": [
+                    "campus",
+                    "datacenter"
+                  ],
+                  "nullable": false,
+                  "review_required": [
+                    "Terraform access and lifecycle policies"
+                  ]
+                },
+                {
+                  "api_name": "underlay_link_addressing",
+                  "description": "Specifies the addressing mode for underlay links",
+                  "enum": [
+                    "ipv4_numbered",
+                    "ipv6_numbered",
+                    "unnumbered"
+                  ],
                   "kind": "string",
                   "modes": [
                     "campus",
@@ -11315,8 +11320,10 @@
                       "api_name": "endpoint_set_num_target_upgrade_version",
                       "description": "The target SW version for member devices of the Endpoint Set",
                       "enum": [
-                        "1.9.1.40",
-                        "1.9.1.41",
+                        "1.9.1.42",
+                        "1.9.1.43",
+                        "1.9.1.44",
+                        "1.9.1.45",
                         "unmanaged"
                       ],
                       "kind": "string",
@@ -11375,8 +11382,10 @@
                       "api_name": "endpoint_set_for_all_others_target_upgrade_version",
                       "description": "The target SW version for member devices of the Endpoint Set",
                       "enum": [
-                        "1.9.1.40",
-                        "1.9.1.41",
+                        "1.9.1.42",
+                        "1.9.1.43",
+                        "1.9.1.44",
+                        "1.9.1.45",
                         "unmanaged"
                       ],
                       "kind": "string",
@@ -11461,8 +11470,10 @@
                       "api_name": "endpoint_set_for_endpointless_target_upgrade_version",
                       "description": "The target SW version for member devices of the Endpoint Set",
                       "enum": [
-                        "1.9.1.40",
-                        "1.9.1.41",
+                        "1.9.1.42",
+                        "1.9.1.43",
+                        "1.9.1.44",
+                        "1.9.1.45",
                         "unmanaged"
                       ],
                       "kind": "string",
@@ -15053,19 +15064,6 @@
               "api_name": "plane_name",
               "fields": [
                 {
-                  "api_name": "enable",
-                  "description": "Enable object.",
-                  "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "fabric",
                   "description": "Fabric this Plane is assigned to",
                   "kind": "string",
@@ -15165,19 +15163,6 @@
             {
               "api_name": "pod_name",
               "fields": [
-                {
-                  "api_name": "enable",
-                  "description": "Enable object.",
-                  "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
                 {
                   "api_name": "expected_spine_count",
                   "description": "Number of spine switches expected in this pod",
@@ -15618,19 +15603,6 @@
             {
               "api_name": "rack_name",
               "fields": [
-                {
-                  "api_name": "enable",
-                  "description": "Enable object.",
-                  "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
                 {
                   "api_name": "object_properties",
                   "fields": [
@@ -18092,21 +18064,6 @@
           "fields": [
             {
               "api_name": "site_collection_name",
-              "fields": [
-                {
-                  "api_name": "enable",
-                  "description": "Enable object.",
-                  "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                }
-              ],
               "kind": "object",
               "modes": [
                 "campus",
@@ -18945,19 +18902,6 @@
               "api_name": "spine_plane_name",
               "fields": [
                 {
-                  "api_name": "enable",
-                  "description": "Enable object.",
-                  "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "fabric",
                   "description": "Fabric this Spine Plane is assigned to",
                   "kind": "string",
@@ -19670,19 +19614,6 @@
               "api_name": "su_name",
               "fields": [
                 {
-                  "api_name": "enable",
-                  "description": "Enable object.",
-                  "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "object_properties",
                   "fields": [
                     {
@@ -19783,19 +19714,6 @@
               "api_name": "superspine_group_name",
               "fields": [
                 {
-                  "api_name": "enable",
-                  "description": "Enable object.",
-                  "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
-                {
                   "api_name": "fabric",
                   "description": "Fabric this SuperSpine Group is assigned to",
                   "kind": "string",
@@ -19895,19 +19813,6 @@
             {
               "api_name": "switch_pair_name",
               "fields": [
-                {
-                  "api_name": "enable",
-                  "description": "Enable object.",
-                  "kind": "boolean",
-                  "modes": [
-                    "campus",
-                    "datacenter"
-                  ],
-                  "nullable": false,
-                  "review_required": [
-                    "Terraform access and lifecycle policies"
-                  ]
-                },
                 {
                   "api_name": "is_whitebox_pair",
                   "description": "Is Whitebox Pair",
@@ -28474,21 +28379,7 @@
           "required": true
         }
       ],
-      "fields": [
-        {
-          "api_name": "enable",
-          "description": "Enable object.",
-          "kind": "boolean",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        }
-      ],
+      "fields": null,
       "modes": [
         "campus",
         "datacenter"
@@ -28707,19 +28598,6 @@
             "datacenter"
           ],
           "nullable": true,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
-          "api_name": "enable",
-          "description": "Enable object.",
-          "kind": "boolean",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
           "review_required": [
             "Terraform access and lifecycle policies"
           ]
@@ -29492,6 +29370,24 @@
         {
           "api_name": "switch_username",
           "description": "Default username for managed switches in this Fabric",
+          "kind": "string",
+          "modes": [
+            "campus",
+            "datacenter"
+          ],
+          "nullable": false,
+          "review_required": [
+            "Terraform access and lifecycle policies"
+          ]
+        },
+        {
+          "api_name": "underlay_link_addressing",
+          "description": "Specifies the addressing mode for underlay links",
+          "enum": [
+            "ipv4_numbered",
+            "ipv6_numbered",
+            "unnumbered"
+          ],
           "kind": "string",
           "modes": [
             "campus",
@@ -30867,8 +30763,10 @@
               "api_name": "endpoint_set_num_target_upgrade_version",
               "description": "The target SW version for member devices of the Endpoint Set",
               "enum": [
-                "1.9.1.40",
-                "1.9.1.41",
+                "1.9.1.42",
+                "1.9.1.43",
+                "1.9.1.44",
+                "1.9.1.45",
                 "unmanaged"
               ],
               "kind": "string",
@@ -30927,8 +30825,10 @@
               "api_name": "endpoint_set_for_all_others_target_upgrade_version",
               "description": "The target SW version for member devices of the Endpoint Set",
               "enum": [
-                "1.9.1.40",
-                "1.9.1.41",
+                "1.9.1.42",
+                "1.9.1.43",
+                "1.9.1.44",
+                "1.9.1.45",
                 "unmanaged"
               ],
               "kind": "string",
@@ -31013,8 +30913,10 @@
               "api_name": "endpoint_set_for_endpointless_target_upgrade_version",
               "description": "The target SW version for member devices of the Endpoint Set",
               "enum": [
-                "1.9.1.40",
-                "1.9.1.41",
+                "1.9.1.42",
+                "1.9.1.43",
+                "1.9.1.44",
+                "1.9.1.45",
                 "unmanaged"
               ],
               "kind": "string",
@@ -33403,19 +33305,6 @@
       ],
       "fields": [
         {
-          "api_name": "enable",
-          "description": "Enable object.",
-          "kind": "boolean",
-          "modes": [
-            "campus",
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "is_whitebox_pair",
           "description": "Is Whitebox Pair",
           "kind": "boolean",
@@ -33556,18 +33445,6 @@
       ],
       "fields": [
         {
-          "api_name": "enable",
-          "description": "Enable object.",
-          "kind": "boolean",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "fabric",
           "description": "Fabric this Plane is assigned to",
           "kind": "string",
@@ -33671,18 +33548,6 @@
         }
       ],
       "fields": [
-        {
-          "api_name": "enable",
-          "description": "Enable object.",
-          "kind": "boolean",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
         {
           "api_name": "expected_spine_count",
           "description": "Number of spine switches expected in this pod",
@@ -34598,18 +34463,6 @@
         }
       ],
       "fields": [
-        {
-          "api_name": "enable",
-          "description": "Enable object.",
-          "kind": "boolean",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
         {
           "api_name": "object_properties",
           "fields": [
@@ -37267,18 +37120,6 @@
       ],
       "fields": [
         {
-          "api_name": "enable",
-          "description": "Enable object.",
-          "kind": "boolean",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
-        {
           "api_name": "fabric",
           "description": "Fabric this Spine Plane is assigned to",
           "kind": "string",
@@ -37370,18 +37211,6 @@
         }
       ],
       "fields": [
-        {
-          "api_name": "enable",
-          "description": "Enable object.",
-          "kind": "boolean",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
         {
           "api_name": "fabric",
           "description": "Fabric this SuperSpine Group is assigned to",
@@ -37709,18 +37538,6 @@
         }
       ],
       "fields": [
-        {
-          "api_name": "enable",
-          "description": "Enable object.",
-          "kind": "boolean",
-          "modes": [
-            "datacenter"
-          ],
-          "nullable": false,
-          "review_required": [
-            "Terraform access and lifecycle policies"
-          ]
-        },
         {
           "api_name": "object_properties",
           "fields": [

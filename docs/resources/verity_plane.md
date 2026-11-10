@@ -9,7 +9,6 @@ Supported modes: Datacenter.
 ```hcl
 resource "verity_plane" "example" {
   name = "example"
-  enable = false
   fabric = ""
   fabric_ref_type_ = "fabric"
   position = null
@@ -28,7 +27,6 @@ resource "verity_plane" "example" {
 
 ### Optional
 
-* `enable` (Boolean) - Enable object.
 * `fabric` (String) - Fabric this Plane is assigned to. Set together with `fabric_ref_type_`.
 * `fabric_ref_type_` (String) - Object type for fabric field.
 * `object_properties` (Block) - Object properties for the Plane. At most one block.

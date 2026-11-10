@@ -2140,10 +2140,6 @@ func (fabricAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireNullableInt64(wire, &value.DuplicateAddressDetectionTime); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
-		case "enable":
-			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "enable_dhcp_snooping":
 			if err := wireBoolPtr(wire, &value.EnableDhcpSnooping); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -2352,6 +2348,10 @@ func (fabricAdapter) ResourceValue(object WireObject) (interface{}, error) {
 			if err := wireStringPtr(wire, &value.SwitchUsername); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
 			}
+		case "underlay_link_addressing":
+			if err := wireStringPtr(wire, &value.UnderlayLinkAddressing); err != nil {
+				return nil, fmt.Errorf("%s: %w", name, err)
+			}
 		case "vtep_id_base_prefix":
 			if err := wireStringPtr(wire, &value.VtepIdBasePrefix); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -2450,18 +2450,10 @@ func fabricRouteAggregatorsValue(wire WireValue, target *[]openapi.FabricsPutReq
 type fabricCollectionAdapter struct{}
 
 func (fabricCollectionAdapter) ResourceValue(object WireObject) (interface{}, error) {
-	var value openapi.FabriccollectionsPutRequestSiteCollectionValue
-	for name, wire := range object {
-		switch name {
-		case "enable":
-			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
-		default:
-			return nil, fmt.Errorf("FabriccollectionsPutRequestSiteCollectionValue has no field %q", name)
-		}
+	for name := range object {
+		return nil, fmt.Errorf("FabriccollectionsPutRequest.SiteCollection takes no fields, got %q", name)
 	}
-	return value, nil
+	return map[string]interface{}{}, nil
 }
 
 type gatewayAdapter struct{}
@@ -3888,10 +3880,6 @@ func (pairAdapter) ResourceValue(object WireObject) (interface{}, error) {
 	var value openapi.PairsPutRequestSwitchPairValue
 	for name, wire := range object {
 		switch name {
-		case "enable":
-			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "is_whitebox_pair":
 			if err := wireBoolPtr(wire, &value.IsWhiteboxPair); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -4195,10 +4183,6 @@ func (planeAdapter) ResourceValue(object WireObject) (interface{}, error) {
 	var value openapi.PlanesPutRequestPlaneValue
 	for name, wire := range object {
 		switch name {
-		case "enable":
-			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "fabric":
 			if err := wireStringPtr(wire, &value.Fabric); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -4248,10 +4232,6 @@ func (podAdapter) ResourceValue(object WireObject) (interface{}, error) {
 	var value openapi.PodsPutRequestPodValue
 	for name, wire := range object {
 		switch name {
-		case "enable":
-			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "expected_spine_count":
 			if err := wireNullableInt64(wire, &value.ExpectedSpineCount); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -4498,10 +4478,6 @@ func (rackAdapter) ResourceValue(object WireObject) (interface{}, error) {
 	var value openapi.RacksPutRequestRackValue
 	for name, wire := range object {
 		switch name {
-		case "enable":
-			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "object_properties":
 			if err := rackObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -5233,10 +5209,6 @@ func (spinePlaneAdapter) ResourceValue(object WireObject) (interface{}, error) {
 	var value openapi.SpineplanesPutRequestSpinePlaneValue
 	for name, wire := range object {
 		switch name {
-		case "enable":
-			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "fabric":
 			if err := wireStringPtr(wire, &value.Fabric); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -5282,10 +5254,6 @@ func (sspGroupAdapter) ResourceValue(object WireObject) (interface{}, error) {
 	var value openapi.SspgroupsPutRequestSuperspineGroupValue
 	for name, wire := range object {
 		switch name {
-		case "enable":
-			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "fabric":
 			if err := wireStringPtr(wire, &value.Fabric); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)
@@ -5420,10 +5388,6 @@ func (suAdapter) ResourceValue(object WireObject) (interface{}, error) {
 	var value openapi.SusPutRequestSuValue
 	for name, wire := range object {
 		switch name {
-		case "enable":
-			if err := wireBoolPtr(wire, &value.Enable); err != nil {
-				return nil, fmt.Errorf("%s: %w", name, err)
-			}
 		case "object_properties":
 			if err := suObjectPropertiesValue(wire, &value.ObjectProperties); err != nil {
 				return nil, fmt.Errorf("%s: %w", name, err)

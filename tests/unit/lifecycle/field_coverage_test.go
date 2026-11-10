@@ -44,6 +44,8 @@ type ResourceCoverageEntry struct {
 	Mode                string
 	ResourceName        string
 	Overrides           map[string]string
+	Update              map[string]string
+	NoUpdate            bool
 	SkipCreate          bool
 	RequiredQueryParams map[string]string
 }
@@ -67,6 +69,8 @@ func init() {
 type coverageTestData struct {
 	ResourceName string
 	Overrides    map[string]string
+	Update       map[string]string
+	NoUpdate     bool
 }
 
 var coverageTestDataByType = map[string]coverageTestData{
@@ -85,7 +89,8 @@ var coverageTestDataByType = map[string]coverageTestData{
 	"verity_eth_port_profile":         {ResourceName: "cov_ethpp"},
 	"verity_eth_port_settings":        {ResourceName: "cov_ethps"},
 	"verity_extended_community_list":  {ResourceName: "cov_ecl"},
-	"verity_fabric":                   {ResourceName: "cov_fabric"},
+	"verity_fabric":                   {ResourceName: "cov_fabric", Update: map[string]string{"aggressive_reporting": "false"}},
+	"verity_fabric_collection":        {ResourceName: "cov_fabric_collection", NoUpdate: true},
 	"verity_gateway":                  {ResourceName: "cov_gw"},
 	"verity_gateway_profile":          {ResourceName: "cov_gwp"},
 	"verity_grouping_rule":            {ResourceName: "cov_gr"},
@@ -98,22 +103,22 @@ var coverageTestDataByType = map[string]coverageTestData{
 	"verity_mac_filter":               {ResourceName: "cov_mac_filter"},
 	"verity_packet_broker":            {ResourceName: "cov_pb"},
 	"verity_packet_queue":             {ResourceName: "cov_pq"},
-	"verity_pair":                     {ResourceName: "cov_pair"},
+	"verity_pair":                     {ResourceName: "cov_pair", Update: map[string]string{"is_whitebox_pair": "false"}},
 	"verity_pb_routing":               {ResourceName: "cov_pbr"},
 	"verity_pb_routing_acl":           {ResourceName: "cov_pbra"},
-	"verity_plane":                    {ResourceName: "cov_plane"},
-	"verity_pod":                      {ResourceName: "cov_pod"},
+	"verity_plane":                    {ResourceName: "cov_plane", Update: map[string]string{"position": "2.5"}},
+	"verity_pod":                      {ResourceName: "cov_pod", Update: map[string]string{"expected_spine_count": "3"}},
 	"verity_port_acl":                 {ResourceName: "cov_pacl"},
-	"verity_rack":                     {ResourceName: "cov_rack"},
+	"verity_rack":                     {ResourceName: "cov_rack", Update: map[string]string{"position": "2.5"}},
 	"verity_route_map":                {ResourceName: "cov_rm"},
 	"verity_route_map_clause":         {ResourceName: "cov_rmc"},
 	"verity_service":                  {ResourceName: "cov_service"},
 	"verity_service_port_profile":     {ResourceName: "cov_spp"},
 	"verity_sflow_collector":          {ResourceName: "cov_sflow"},
 	"verity_sfp_breakout":             {ResourceName: "cov_sfpb"},
-	"verity_spine_plane":              {ResourceName: "cov_spinep"},
-	"verity_ssp_group":                {ResourceName: "cov_ssp_group"},
-	"verity_su":                       {ResourceName: "cov_su"},
+	"verity_spine_plane":              {ResourceName: "cov_spinep", Update: map[string]string{"object_properties.notes": `"updated"`}},
+	"verity_ssp_group":                {ResourceName: "cov_ssp_group", Update: map[string]string{"position": "2.5"}},
+	"verity_su":                       {ResourceName: "cov_su", Update: map[string]string{"position": "2.5"}},
 	"verity_switchpoint":              {ResourceName: "cov_sp"},
 	"verity_tacacs_profile":           {ResourceName: "cov_tacacs_profile"},
 	"verity_tenant": {
@@ -164,6 +169,8 @@ func coverageEntriesFor(resources spec.Registry, testDataByType map[string]cover
 			Mode:                mode,
 			ResourceName:        resourceName,
 			Overrides:           testData.Overrides,
+			Update:              testData.Update,
+			NoUpdate:            testData.NoUpdate,
 			SkipCreate:          !resourceSpec.Operations.Create,
 			RequiredQueryParams: resourceSpec.API.FixedHeaders,
 		})

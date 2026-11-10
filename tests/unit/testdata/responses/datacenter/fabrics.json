@@ -1,7 +1,6 @@
 {
   "fabric": {
     "TOR Complex": {
-      "enable": true,
       "service_for_fabric": "Management",
       "spanning_tree_type": "",
       "region_name": "",

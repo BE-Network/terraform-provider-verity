@@ -21,7 +21,6 @@ resource "verity_fabric" "example" {
   dscp_to_p_bit_map = ""
   duplicate_address_detection_max_number_of_moves = null
   duplicate_address_detection_time = null
-  enable = false
   enable_dhcp_snooping = false
   enable_dscp = false
   evpn_mac_holdtime = null
@@ -61,6 +60,7 @@ resource "verity_fabric" "example" {
   switch_password = ""
   switch_password_encrypted = ""
   switch_username = ""
+  underlay_link_addressing = ""
   vtep_id_base_prefix = ""
 
   object_properties {
@@ -96,7 +96,6 @@ resource "verity_fabric" "example" {
   dscp_to_p_bit_map = ""
   duplicate_address_detection_max_number_of_moves = null
   duplicate_address_detection_time = null
-  enable = false
   enable_dscp = false
   evpn_mac_holdtime = null
   evpn_multihoming_startup_delay = null
@@ -145,6 +144,7 @@ resource "verity_fabric" "example" {
   switch_password = ""
   switch_password_encrypted = ""
   switch_username = ""
+  underlay_link_addressing = ""
   vtep_id_base_prefix = ""
 
   object_properties {
@@ -184,7 +184,6 @@ resource "verity_fabric" "example" {
 * `dscp_to_p_bit_map` (String) - For any Service that is using DSCP to TC map packet prioritization. A string of length 64 with a 0-7 in each position (maxLength: 64).
 * `duplicate_address_detection_max_number_of_moves` (Integer) - Duplicate Address Detection Max Number of Moves. Set it to `null` to clear it.
 * `duplicate_address_detection_time` (Integer) - Duplicate Address Detection Time. Set it to `null` to clear it.
-* `enable` (Boolean) - Enable object.
 * `enable_dhcp_snooping` (Boolean) - Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report. Campus mode only.
 * `enable_dscp` (Boolean) - Enable DSCP to p-bit/TC configuration. When enabled, DSCP to p-bit/TC mappings are applied.
 * `evpn_mac_holdtime` (Integer) - MAC Holdtime. Set it to `null` to clear it.
@@ -242,6 +241,7 @@ resource "verity_fabric" "example" {
 * `switch_password` (String) - Default password for managed switches in this Fabric.
 * `switch_password_encrypted` (String) - Default password for managed switches in this Fabric.
 * `switch_username` (String) - Default username for managed switches in this Fabric.
+* `underlay_link_addressing` (String) - Specifies the addressing mode for underlay links.
 * `vtep_id_base_prefix` (String) - Vtep ID starting IP address.
 
 ## Reference Fields

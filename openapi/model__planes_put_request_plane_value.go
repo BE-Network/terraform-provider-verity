@@ -19,8 +19,6 @@ var _ MappedNullable = &PlanesPutRequestPlaneValue{}
 
 // PlanesPutRequestPlaneValue struct for PlanesPutRequestPlaneValue
 type PlanesPutRequestPlaneValue struct {
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
 	// Fabric this Plane is assigned to
 	Fabric *string `json:"fabric,omitempty"`
 	// Object type for fabric field
@@ -36,8 +34,6 @@ type PlanesPutRequestPlaneValue struct {
 // will change when the set of required properties is changed
 func NewPlanesPutRequestPlaneValue() *PlanesPutRequestPlaneValue {
 	this := PlanesPutRequestPlaneValue{}
-	var enable bool = true
-	this.Enable = &enable
 	var fabric string = ""
 	this.Fabric = &fabric
 	return &this
@@ -48,43 +44,9 @@ func NewPlanesPutRequestPlaneValue() *PlanesPutRequestPlaneValue {
 // but it doesn't guarantee that properties required by API are set
 func NewPlanesPutRequestPlaneValueWithDefaults() *PlanesPutRequestPlaneValue {
 	this := PlanesPutRequestPlaneValue{}
-	var enable bool = true
-	this.Enable = &enable
 	var fabric string = ""
 	this.Fabric = &fabric
 	return &this
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *PlanesPutRequestPlaneValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PlanesPutRequestPlaneValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *PlanesPutRequestPlaneValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *PlanesPutRequestPlaneValue) SetEnable(v bool) {
-	o.Enable = &v
 }
 
 // GetFabric returns the Fabric field value if set, zero value otherwise.
@@ -236,9 +198,6 @@ func (o PlanesPutRequestPlaneValue) MarshalJSON() ([]byte, error) {
 
 func (o PlanesPutRequestPlaneValue) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
 	if !IsNil(o.Fabric) {
 		toSerialize["fabric"] = o.Fabric
 	}

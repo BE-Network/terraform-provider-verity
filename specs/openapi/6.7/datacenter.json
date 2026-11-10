@@ -5702,11 +5702,6 @@
                             "nullable": true,
                             "type": "integer"
                           },
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "enable_dscp": {
                             "default": true,
                             "description": "Enable DSCP to p-bit/TC configuration. When enabled, DSCP to p-bit/TC mappings are applied.",
@@ -6058,6 +6053,16 @@
                           "switch_username": {
                             "default": "",
                             "description": "Default username for managed switches in this Fabric",
+                            "type": "string"
+                          },
+                          "underlay_link_addressing": {
+                            "default": "unnumbered",
+                            "description": "Specifies the addressing mode for underlay links",
+                            "enum": [
+                              "ipv4_numbered",
+                              "unnumbered",
+                              "ipv6_numbered"
+                            ],
                             "type": "string"
                           },
                           "vtep_id_base_prefix": {
@@ -6788,9 +6793,10 @@
                                   "default": "unmanaged",
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
-                                    "unmanaged",
-                                    "1.9.1.41",
-                                    "1.9.1.40"
+                                    "1.9.1.45",
+                                    "1.9.1.44",
+                                    "1.9.1.43",
+                                    "unmanaged"
                                   ],
                                   "type": "string"
                                 },
@@ -6800,7 +6806,7 @@
                                   "type": "string"
                                 },
                                 "endpoint_set_num_unique_identifier": {
-                                  "default": "17933582345731",
+                                  "default": "17943256867501",
                                   "description": "Unique Identifier - not editable",
                                   "type": "string"
                                 }
@@ -6816,9 +6822,10 @@
                                   "default": "unmanaged",
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
-                                    "unmanaged",
-                                    "1.9.1.41",
-                                    "1.9.1.40"
+                                    "1.9.1.45",
+                                    "1.9.1.44",
+                                    "1.9.1.43",
+                                    "unmanaged"
                                   ],
                                   "type": "string"
                                 },
@@ -6854,9 +6861,10 @@
                                   "default": "unmanaged",
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
-                                    "unmanaged",
-                                    "1.9.1.41",
-                                    "1.9.1.40"
+                                    "1.9.1.45",
+                                    "1.9.1.44",
+                                    "1.9.1.43",
+                                    "unmanaged"
                                   ],
                                   "type": "string"
                                 },
@@ -8344,11 +8352,6 @@
                     "properties": {
                       "plane_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "fabric": {
                             "default": "",
                             "description": "Fabric this Plane is assigned to",
@@ -8386,11 +8389,6 @@
                     "properties": {
                       "pod_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "expected_spine_count": {
                             "default": 1,
                             "description": "Number of spine switches expected in this pod",
@@ -8565,11 +8563,6 @@
                     "properties": {
                       "rack_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "object_properties": {
                             "properties": {
                               "notes": {
@@ -9512,13 +9505,7 @@
                   "site_collection": {
                     "properties": {
                       "site_collection_name": {
-                        "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          }
-                        },
+                        "properties": {},
                         "type": "object"
                       }
                     },
@@ -9864,11 +9851,6 @@
                     "properties": {
                       "spine_plane_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "fabric": {
                             "default": "",
                             "description": "Fabric this Spine Plane is assigned to",
@@ -10146,11 +10128,6 @@
                     "properties": {
                       "su_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "object_properties": {
                             "properties": {
                               "notes": {
@@ -10188,11 +10165,6 @@
                     "properties": {
                       "superspine_group_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "fabric": {
                             "default": "",
                             "description": "Fabric this SuperSpine Group is assigned to",
@@ -10230,11 +10202,6 @@
                     "properties": {
                       "switch_pair_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "is_whitebox_pair": {
                             "default": false,
                             "description": "Is Whitebox Pair",
@@ -15145,11 +15112,6 @@
                             "nullable": true,
                             "type": "integer"
                           },
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "enable_dscp": {
                             "default": true,
                             "description": "Enable DSCP to p-bit/TC configuration. When enabled, DSCP to p-bit/TC mappings are applied.",
@@ -15501,6 +15463,16 @@
                           "switch_username": {
                             "default": "",
                             "description": "Default username for managed switches in this Fabric",
+                            "type": "string"
+                          },
+                          "underlay_link_addressing": {
+                            "default": "unnumbered",
+                            "description": "Specifies the addressing mode for underlay links",
+                            "enum": [
+                              "ipv4_numbered",
+                              "unnumbered",
+                              "ipv6_numbered"
+                            ],
                             "type": "string"
                           },
                           "vtep_id_base_prefix": {
@@ -16231,9 +16203,10 @@
                                   "default": "unmanaged",
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
-                                    "unmanaged",
-                                    "1.9.1.41",
-                                    "1.9.1.40"
+                                    "1.9.1.45",
+                                    "1.9.1.44",
+                                    "1.9.1.43",
+                                    "unmanaged"
                                   ],
                                   "type": "string"
                                 },
@@ -16243,7 +16216,7 @@
                                   "type": "string"
                                 },
                                 "endpoint_set_num_unique_identifier": {
-                                  "default": "17933582345731",
+                                  "default": "17943256867501",
                                   "description": "Unique Identifier - not editable",
                                   "type": "string"
                                 }
@@ -16259,9 +16232,10 @@
                                   "default": "unmanaged",
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
-                                    "unmanaged",
-                                    "1.9.1.41",
-                                    "1.9.1.40"
+                                    "1.9.1.45",
+                                    "1.9.1.44",
+                                    "1.9.1.43",
+                                    "unmanaged"
                                   ],
                                   "type": "string"
                                 },
@@ -16297,9 +16271,10 @@
                                   "default": "unmanaged",
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
-                                    "unmanaged",
-                                    "1.9.1.41",
-                                    "1.9.1.40"
+                                    "1.9.1.45",
+                                    "1.9.1.44",
+                                    "1.9.1.43",
+                                    "unmanaged"
                                   ],
                                   "type": "string"
                                 },
@@ -17787,11 +17762,6 @@
                     "properties": {
                       "plane_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "fabric": {
                             "default": "",
                             "description": "Fabric this Plane is assigned to",
@@ -17829,11 +17799,6 @@
                     "properties": {
                       "pod_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "expected_spine_count": {
                             "default": 1,
                             "description": "Number of spine switches expected in this pod",
@@ -18008,11 +17973,6 @@
                     "properties": {
                       "rack_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "object_properties": {
                             "properties": {
                               "notes": {
@@ -18955,13 +18915,7 @@
                   "site_collection": {
                     "properties": {
                       "site_collection_name": {
-                        "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          }
-                        },
+                        "properties": {},
                         "type": "object"
                       }
                     },
@@ -19307,11 +19261,6 @@
                     "properties": {
                       "spine_plane_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "fabric": {
                             "default": "",
                             "description": "Fabric this Spine Plane is assigned to",
@@ -19589,11 +19538,6 @@
                     "properties": {
                       "su_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "object_properties": {
                             "properties": {
                               "notes": {
@@ -19631,11 +19575,6 @@
                     "properties": {
                       "superspine_group_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "fabric": {
                             "default": "",
                             "description": "Fabric this SuperSpine Group is assigned to",
@@ -19673,11 +19612,6 @@
                     "properties": {
                       "switch_pair_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "is_whitebox_pair": {
                             "default": false,
                             "description": "Is Whitebox Pair",
@@ -25412,13 +25346,7 @@
                   "site_collection": {
                     "properties": {
                       "site_collection_name": {
-                        "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          }
-                        },
+                        "properties": {},
                         "type": "object"
                       }
                     },
@@ -25478,13 +25406,7 @@
                   "site_collection": {
                     "properties": {
                       "site_collection_name": {
-                        "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          }
-                        },
+                        "properties": {},
                         "type": "object"
                       }
                     },
@@ -25741,11 +25663,6 @@
                             "nullable": true,
                             "type": "integer"
                           },
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "enable_dscp": {
                             "default": true,
                             "description": "Enable DSCP to p-bit/TC configuration. When enabled, DSCP to p-bit/TC mappings are applied.",
@@ -26097,6 +26014,16 @@
                           "switch_username": {
                             "default": "",
                             "description": "Default username for managed switches in this Fabric",
+                            "type": "string"
+                          },
+                          "underlay_link_addressing": {
+                            "default": "unnumbered",
+                            "description": "Specifies the addressing mode for underlay links",
+                            "enum": [
+                              "ipv4_numbered",
+                              "unnumbered",
+                              "ipv6_numbered"
+                            ],
                             "type": "string"
                           },
                           "vtep_id_base_prefix": {
@@ -26250,11 +26177,6 @@
                             "nullable": true,
                             "type": "integer"
                           },
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "enable_dscp": {
                             "default": true,
                             "description": "Enable DSCP to p-bit/TC configuration. When enabled, DSCP to p-bit/TC mappings are applied.",
@@ -26606,6 +26528,16 @@
                           "switch_username": {
                             "default": "",
                             "description": "Default username for managed switches in this Fabric",
+                            "type": "string"
+                          },
+                          "underlay_link_addressing": {
+                            "default": "unnumbered",
+                            "description": "Specifies the addressing mode for underlay links",
+                            "enum": [
+                              "ipv4_numbered",
+                              "unnumbered",
+                              "ipv6_numbered"
+                            ],
                             "type": "string"
                           },
                           "vtep_id_base_prefix": {
@@ -28465,9 +28397,10 @@
                                   "default": "unmanaged",
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
-                                    "unmanaged",
-                                    "1.9.1.41",
-                                    "1.9.1.40"
+                                    "1.9.1.45",
+                                    "1.9.1.44",
+                                    "1.9.1.43",
+                                    "unmanaged"
                                   ],
                                   "type": "string"
                                 },
@@ -28477,7 +28410,7 @@
                                   "type": "string"
                                 },
                                 "endpoint_set_num_unique_identifier": {
-                                  "default": "17933582345731",
+                                  "default": "17943256867501",
                                   "description": "Unique Identifier - not editable",
                                   "type": "string"
                                 }
@@ -28493,9 +28426,10 @@
                                   "default": "unmanaged",
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
-                                    "unmanaged",
-                                    "1.9.1.41",
-                                    "1.9.1.40"
+                                    "1.9.1.45",
+                                    "1.9.1.44",
+                                    "1.9.1.43",
+                                    "unmanaged"
                                   ],
                                   "type": "string"
                                 },
@@ -28531,9 +28465,10 @@
                                   "default": "unmanaged",
                                   "description": "The target SW version for member devices of the Endpoint Set",
                                   "enum": [
-                                    "unmanaged",
-                                    "1.9.1.41",
-                                    "1.9.1.40"
+                                    "1.9.1.45",
+                                    "1.9.1.44",
+                                    "1.9.1.43",
+                                    "unmanaged"
                                   ],
                                   "type": "string"
                                 },
@@ -32305,11 +32240,6 @@
                     "properties": {
                       "switch_pair_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "is_whitebox_pair": {
                             "default": false,
                             "description": "Is Whitebox Pair",
@@ -32412,11 +32342,6 @@
                     "properties": {
                       "switch_pair_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "is_whitebox_pair": {
                             "default": false,
                             "description": "Is Whitebox Pair",
@@ -32630,11 +32555,6 @@
                     "properties": {
                       "plane_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "fabric": {
                             "default": "",
                             "description": "Fabric this Plane is assigned to",
@@ -32723,11 +32643,6 @@
                     "properties": {
                       "plane_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "fabric": {
                             "default": "",
                             "description": "Fabric this Plane is assigned to",
@@ -32927,11 +32842,6 @@
                     "properties": {
                       "pod_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "expected_spine_count": {
                             "default": 1,
                             "description": "Number of spine switches expected in this pod",
@@ -33026,11 +32936,6 @@
                     "properties": {
                       "pod_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "expected_spine_count": {
                             "default": 1,
                             "description": "Number of spine switches expected in this pod",
@@ -34515,11 +34420,6 @@
                     "properties": {
                       "rack_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "object_properties": {
                             "properties": {
                               "notes": {
@@ -34608,11 +34508,6 @@
                     "properties": {
                       "rack_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "object_properties": {
                             "properties": {
                               "notes": {
@@ -37894,11 +37789,6 @@
                     "properties": {
                       "spine_plane_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "fabric": {
                             "default": "",
                             "description": "Fabric this Spine Plane is assigned to",
@@ -37982,11 +37872,6 @@
                     "properties": {
                       "spine_plane_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "fabric": {
                             "default": "",
                             "description": "Fabric this Spine Plane is assigned to",
@@ -38181,11 +38066,6 @@
                     "properties": {
                       "superspine_group_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "fabric": {
                             "default": "",
                             "description": "Fabric this SuperSpine Group is assigned to",
@@ -38274,11 +38154,6 @@
                     "properties": {
                       "superspine_group_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "fabric": {
                             "default": "",
                             "description": "Fabric this SuperSpine Group is assigned to",
@@ -38478,11 +38353,6 @@
                     "properties": {
                       "su_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "object_properties": {
                             "properties": {
                               "notes": {
@@ -38571,11 +38441,6 @@
                     "properties": {
                       "su_name": {
                         "properties": {
-                          "enable": {
-                            "default": true,
-                            "description": "Enable object.",
-                            "type": "boolean"
-                          },
                           "object_properties": {
                             "properties": {
                               "notes": {

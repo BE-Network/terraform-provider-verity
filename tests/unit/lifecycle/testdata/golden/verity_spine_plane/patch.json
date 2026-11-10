@@ -1,7 +1,9 @@
 {
   "spine_plane": {
     "cov_spinep": {
-      "enable": false
+      "object_properties": {
+        "notes": "updated"
+      }
     }
   }
 }

@@ -1,7 +1,6 @@
 {
   "switch_pair": {
     "cov_pair": {
-      "enable": true,
       "is_whitebox_pair": true,
       "lag": "",
       "lag_ref_type_": "",

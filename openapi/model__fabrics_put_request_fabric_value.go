@@ -47,8 +47,6 @@ type FabricsPutRequestFabricValue struct {
 	DuplicateAddressDetectionMaxNumberOfMoves NullableInt64 `json:"duplicate_address_detection_max_number_of_moves,omitempty"`
 	// Controls duplicate MAC address detection (DAD) time for EVPN (Ethernet VPN) within the BGP address-family. Time in seconds (2 to 1800; default 180 if left blank)
 	DuplicateAddressDetectionTime NullableInt64 `json:"duplicate_address_detection_time,omitempty"`
-	// Enable object.
-	Enable *bool `json:"enable,omitempty"`
 	// Enables the switches to monitor DHCP traffic and collect assigned IP addresses which are then placed in the DHCP assigned IPs report.
 	EnableDhcpSnooping *bool `json:"enable_dhcp_snooping,omitempty"`
 	// Enable DSCP to p-bit/TC configuration. When enabled, DSCP to p-bit/TC mappings are applied.
@@ -151,6 +149,8 @@ type FabricsPutRequestFabricValue struct {
 	SwitchPasswordEncrypted *string `json:"switch_password_encrypted,omitempty"`
 	// Default username for managed switches in this Fabric
 	SwitchUsername *string `json:"switch_username,omitempty"`
+	// Specifies the addressing mode for underlay links
+	UnderlayLinkAddressing *string `json:"underlay_link_addressing,omitempty"`
 	// Vtep ID starting IP address
 	VtepIdBasePrefix *string `json:"vtep_id_base_prefix,omitempty"`
 }
@@ -185,8 +185,6 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.DuplicateAddressDetectionMaxNumberOfMoves = *NewNullableInt64(&duplicateAddressDetectionMaxNumberOfMoves)
 	var duplicateAddressDetectionTime int64 = 180
 	this.DuplicateAddressDetectionTime = *NewNullableInt64(&duplicateAddressDetectionTime)
-	var enable bool = true
-	this.Enable = &enable
 	var enableDhcpSnooping bool = false
 	this.EnableDhcpSnooping = &enableDhcpSnooping
 	var enableDscp bool = true
@@ -275,6 +273,8 @@ func NewFabricsPutRequestFabricValue() *FabricsPutRequestFabricValue {
 	this.SwitchPasswordEncrypted = &switchPasswordEncrypted
 	var switchUsername string = ""
 	this.SwitchUsername = &switchUsername
+	var underlayLinkAddressing string = "unnumbered"
+	this.UnderlayLinkAddressing = &underlayLinkAddressing
 	var vtepIdBasePrefix string = "172.16.10.0"
 	this.VtepIdBasePrefix = &vtepIdBasePrefix
 	return &this
@@ -309,8 +309,6 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.DuplicateAddressDetectionMaxNumberOfMoves = *NewNullableInt64(&duplicateAddressDetectionMaxNumberOfMoves)
 	var duplicateAddressDetectionTime int64 = 180
 	this.DuplicateAddressDetectionTime = *NewNullableInt64(&duplicateAddressDetectionTime)
-	var enable bool = true
-	this.Enable = &enable
 	var enableDhcpSnooping bool = false
 	this.EnableDhcpSnooping = &enableDhcpSnooping
 	var enableDscp bool = true
@@ -399,6 +397,8 @@ func NewFabricsPutRequestFabricValueWithDefaults() *FabricsPutRequestFabricValue
 	this.SwitchPasswordEncrypted = &switchPasswordEncrypted
 	var switchUsername string = ""
 	this.SwitchUsername = &switchUsername
+	var underlayLinkAddressing string = "unnumbered"
+	this.UnderlayLinkAddressing = &underlayLinkAddressing
 	var vtepIdBasePrefix string = "172.16.10.0"
 	this.VtepIdBasePrefix = &vtepIdBasePrefix
 	return &this
@@ -894,38 +894,6 @@ func (o *FabricsPutRequestFabricValue) SetDuplicateAddressDetectionTimeNil() {
 // UnsetDuplicateAddressDetectionTime ensures that no value is present for DuplicateAddressDetectionTime, not even an explicit nil
 func (o *FabricsPutRequestFabricValue) UnsetDuplicateAddressDetectionTime() {
 	o.DuplicateAddressDetectionTime.Unset()
-}
-
-// GetEnable returns the Enable field value if set, zero value otherwise.
-func (o *FabricsPutRequestFabricValue) GetEnable() bool {
-	if o == nil || IsNil(o.Enable) {
-		var ret bool
-		return ret
-	}
-	return *o.Enable
-}
-
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricsPutRequestFabricValue) GetEnableOk() (*bool, bool) {
-	if o == nil || IsNil(o.Enable) {
-		return nil, false
-	}
-	return o.Enable, true
-}
-
-// HasEnable returns a boolean if a field has been set.
-func (o *FabricsPutRequestFabricValue) HasEnable() bool {
-	if o != nil && !IsNil(o.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the Enable field.
-func (o *FabricsPutRequestFabricValue) SetEnable(v bool) {
-	o.Enable = &v
 }
 
 // GetEnableDhcpSnooping returns the EnableDhcpSnooping field value if set, zero value otherwise.
@@ -2801,6 +2769,38 @@ func (o *FabricsPutRequestFabricValue) SetSwitchUsername(v string) {
 	o.SwitchUsername = &v
 }
 
+// GetUnderlayLinkAddressing returns the UnderlayLinkAddressing field value if set, zero value otherwise.
+func (o *FabricsPutRequestFabricValue) GetUnderlayLinkAddressing() string {
+	if o == nil || IsNil(o.UnderlayLinkAddressing) {
+		var ret string
+		return ret
+	}
+	return *o.UnderlayLinkAddressing
+}
+
+// GetUnderlayLinkAddressingOk returns a tuple with the UnderlayLinkAddressing field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricsPutRequestFabricValue) GetUnderlayLinkAddressingOk() (*string, bool) {
+	if o == nil || IsNil(o.UnderlayLinkAddressing) {
+		return nil, false
+	}
+	return o.UnderlayLinkAddressing, true
+}
+
+// HasUnderlayLinkAddressing returns a boolean if a field has been set.
+func (o *FabricsPutRequestFabricValue) HasUnderlayLinkAddressing() bool {
+	if o != nil && !IsNil(o.UnderlayLinkAddressing) {
+		return true
+	}
+
+	return false
+}
+
+// SetUnderlayLinkAddressing gets a reference to the given string and assigns it to the UnderlayLinkAddressing field.
+func (o *FabricsPutRequestFabricValue) SetUnderlayLinkAddressing(v string) {
+	o.UnderlayLinkAddressing = &v
+}
+
 // GetVtepIdBasePrefix returns the VtepIdBasePrefix field value if set, zero value otherwise.
 func (o *FabricsPutRequestFabricValue) GetVtepIdBasePrefix() string {
 	if o == nil || IsNil(o.VtepIdBasePrefix) {
@@ -2884,9 +2884,6 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	}
 	if o.DuplicateAddressDetectionTime.IsSet() {
 		toSerialize["duplicate_address_detection_time"] = o.DuplicateAddressDetectionTime.Get()
-	}
-	if !IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
 	}
 	if !IsNil(o.EnableDhcpSnooping) {
 		toSerialize["enable_dhcp_snooping"] = o.EnableDhcpSnooping
@@ -3043,6 +3040,9 @@ func (o FabricsPutRequestFabricValue) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SwitchUsername) {
 		toSerialize["switch_username"] = o.SwitchUsername
+	}
+	if !IsNil(o.UnderlayLinkAddressing) {
+		toSerialize["underlay_link_addressing"] = o.UnderlayLinkAddressing
 	}
 	if !IsNil(o.VtepIdBasePrefix) {
 		toSerialize["vtep_id_base_prefix"] = o.VtepIdBasePrefix

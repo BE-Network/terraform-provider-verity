@@ -1,7 +1,7 @@
 {
   "plane": {
     "cov_plane": {
-      "enable": false
+      "position": 2.5
     }
   }
 }

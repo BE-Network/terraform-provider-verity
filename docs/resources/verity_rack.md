@@ -9,7 +9,6 @@ Supported modes: Datacenter.
 ```hcl
 resource "verity_rack" "example" {
   name = "example"
-  enable = false
   position = null
   su = ""
   su_ref_type_ = "su"
@@ -28,7 +27,6 @@ resource "verity_rack" "example" {
 
 ### Optional
 
-* `enable` (Boolean) - Enable object.
 * `object_properties` (Block) - Object properties for the Rack. At most one block.
   * `notes` (String) - User Notes.
 * `position` (Number) - Position of the Rack. Set it to `null` to clear it.

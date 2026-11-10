@@ -53,6 +53,7 @@ func legacyReference(t *testing.T) map[string]map[string]interface{} {
 
 var removedRequestFields = map[string][]string{
 	"switchpoint":      {"tenant", "tenant_ref_type_", "eths.port_name"},
+	"fabric":           {"enable"},
 	"route_map_clause": {"object_properties.match_fields_shown"},
 }
 

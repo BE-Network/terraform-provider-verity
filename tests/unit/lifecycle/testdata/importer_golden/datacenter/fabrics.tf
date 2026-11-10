@@ -29,7 +29,6 @@ resource "verity_fabric" "TOR_Complex" {
 	dscp_to_p_bit_map = "0000000011111111222222223333333344444444555555556666666677777777"
 	duplicate_address_detection_max_number_of_moves = 5
 	duplicate_address_detection_time = 180
-	enable = true
 	evpn_mac_holdtime = 1080
 	evpn_multihoming_startup_delay = 300
 	force_spanning_tree_on_fabric_ports = false

@@ -24,6 +24,7 @@ func TestGenericMatchesLegacyOnListInsideSingleton(t *testing.T) {
 		name           string
 		create, update string
 		outcome        lifecycleOutcome
+		patch          string
 	}{
 		{name: "a graph is added", create: fabric(1), update: fabric(1, 2)},
 		{name: "a graph is removed", create: fabric(1, 2), update: fabric(1)},
@@ -33,7 +34,8 @@ func TestGenericMatchesLegacyOnListInsideSingleton(t *testing.T) {
 		{name: "the block is removed with its graph", create: fabric(1), update: noBlock,
 			outcome: lifecycleOutcome{applyError: regexp.MustCompile(`(?s)inconsistent result after apply.*object_properties: block count changed from 0 to 1`)}},
 		{name: "graphs are untouched while another field changes", create: fabric(1),
-			update: strings.Replace(fabric(1), "enable = true", "enable = false", 1)},
+			update: strings.Replace(fabric(1), "aggressive_reporting = true", "aggressive_reporting = false", 1),
+			patch:  `{"fabric":{"difffabric":{"aggressive_reporting":false}}}`},
 	}
 
 	for _, scenario := range scenarios {
@@ -42,6 +44,9 @@ func TestGenericMatchesLegacyOnListInsideSingleton(t *testing.T) {
 			generic := runLifecycle(t, entry.TerraformType, scenario.create, scenario.update, scenario.outcome)
 			for _, operation := range []string{"PUT", "PATCH"} {
 				want, got := canonical(t, legacy[operation]), canonical(t, generic[operation])
+				if operation == "PATCH" && scenario.patch != "" {
+					want = scenario.patch
+				}
 				if want != got {
 					t.Errorf("%s differs from the recorded legacy reference\n  legacy:  %s\n  generic: %s", operation, want, got)
 				}

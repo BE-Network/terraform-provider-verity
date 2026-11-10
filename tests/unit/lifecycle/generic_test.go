@@ -445,6 +445,13 @@ func TestGeneric_PatchEnableField(t *testing.T) {
 			}
 
 			rs := inspectSchema(tc.Factory)
+			hasEnable := false
+			for _, attribute := range rs.Attributes {
+				hasEnable = hasEnable || attribute.Name == "enable"
+			}
+			if !hasEnable {
+				t.Skipf("%s has no enable field", tc.TerraformType)
+			}
 
 			ms := mock.NewMockServer(tc.Mode)
 			defer ms.Close()

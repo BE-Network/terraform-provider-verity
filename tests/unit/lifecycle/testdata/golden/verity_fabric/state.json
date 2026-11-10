@@ -13,7 +13,6 @@
   "dscp_to_p_bit_map": "",
   "duplicate_address_detection_max_number_of_moves": "42",
   "duplicate_address_detection_time": "42",
-  "enable": "true",
   "enable_dscp": "true",
   "evpn_mac_holdtime": "42",
   "evpn_multihoming_startup_delay": "42",
@@ -73,5 +72,6 @@
   "switch_password": "",
   "switch_password_encrypted": "",
   "switch_username": "",
+  "underlay_link_addressing": "",
   "vtep_id_base_prefix": ""
 }

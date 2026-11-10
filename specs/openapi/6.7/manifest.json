@@ -7,18 +7,18 @@
     {
       "file": "campus.json",
       "mode": "campus",
-      "provenance": "Verity API 6.7.0.6",
-      "sha256": "fa8d2e5a964294069cf1e017899e858cd4540d00cc1b81cbd6fbade0dd1c4432",
-      "source_export_date": "2026-10-30",
-      "source_sha256": "f504a468dab8ec7f486ff8e25500514e65c202bd6c53c6cb665e44ba2ae4e712"
+      "provenance": "Verity API 6.7.0.10",
+      "sha256": "032225cced77b832dc156ad80c39a5ad9c16e424907c469094c9bf0d1270105f",
+      "source_export_date": "2026-11-10",
+      "source_sha256": "c5adc1ec36e652060dfc6f1d854138867a6016e479771e2d0ae44f6ef13f0e39"
     },
     {
       "file": "datacenter.json",
       "mode": "datacenter",
-      "provenance": "Verity API 6.7.0.6",
-      "sha256": "57b5a48d7d503cebf8f29412f5402a4b3afda97e581156d8b9270818680d941f",
-      "source_export_date": "2026-10-30",
-      "source_sha256": "bafee8b6d993a1915776bc3f55ad4dd1749195cf1f822dd4ae48b6b7dc9ed0b9"
+      "provenance": "Verity API 6.7.0.10",
+      "sha256": "11cdc1bea1176cb2785f6ed8aaa6c5af96dca457814e740d262bef70d6b69aa2",
+      "source_export_date": "2026-11-10",
+      "source_sha256": "5fa597bafd57b0016917689d84f8562c7d677f6dc0887b23d742207c0de784a8"
     }
   ],
   "volatile_metadata_allowlist": []
