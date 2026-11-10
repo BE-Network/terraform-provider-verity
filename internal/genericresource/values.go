@@ -459,7 +459,7 @@ func absentValue(field spec.FieldSpec, prior map[string]attr.Value) (attr.Value,
 	case spec.ResponseAbsenceTerraformNull:
 		return nullFor(field), nil
 	case spec.ResponseAbsencePreserve:
-		if previous, held := prior[field.TerraformName]; held && previous != nil {
+		if previous, held := prior[field.TerraformName]; held && previous != nil && !previous.IsUnknown() {
 			return previous, nil
 		}
 		return nullFor(field), nil

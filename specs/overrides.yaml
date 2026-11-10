@@ -2447,6 +2447,7 @@ resources:
         modes: [datacenter]
       - api_name: bgp_as_number_auto_assigned_
         api_kind: boolean
+        response_absence: preserve
         modes: [datacenter]
       - api_name: children
         api_kind: array
@@ -2483,6 +2484,7 @@ resources:
         api_kind: string
       - api_name: controller_ip_and_mask_auto_assigned_
         api_kind: boolean
+        response_absence: preserve
       - api_name: device_managed_as
         api_kind: string
         modes: [campus]
@@ -2531,6 +2533,7 @@ resources:
         api_kind: string
       - api_name: gateway_auto_assigned_
         api_kind: boolean
+        response_absence: preserve
       - api_name: ip_source
         api_kind: string
       - api_name: is_fabric
@@ -2542,6 +2545,7 @@ resources:
         api_kind: string
       - api_name: lldp_search_string_auto_assigned_
         api_kind: boolean
+        response_absence: preserve
       - api_name: located_by
         api_kind: string
       - api_name: locked
@@ -2686,6 +2690,7 @@ resources:
         secret: masked
       - api_name: ssh_key_or_password_encrypted_auto_assigned_
         api_kind: boolean
+        response_absence: preserve
       - api_name: ssp_group
         api_kind: string
         modes: [datacenter]
@@ -2705,10 +2710,12 @@ resources:
         api_kind: string
       - api_name: switch_gateway_auto_assigned_
         api_kind: boolean
+        response_absence: preserve
       - api_name: switch_ip_and_mask
         api_kind: string
       - api_name: switch_ip_and_mask_auto_assigned_
         api_kind: boolean
+        response_absence: preserve
       - api_name: switch_ref_type_
         api_kind: string
         modes: [campus]
@@ -2717,12 +2724,14 @@ resources:
         modes: [datacenter]
       - api_name: switch_router_id_ip_mask_auto_assigned_
         api_kind: boolean
+        response_absence: preserve
         modes: [datacenter]
       - api_name: switch_vtep_id_ip_mask
         api_kind: string
         modes: [datacenter]
       - api_name: switch_vtep_id_ip_mask_auto_assigned_
         api_kind: boolean
+        response_absence: preserve
         modes: [datacenter]
       - api_name: traffic_mirrors
         api_kind: array
@@ -2760,6 +2769,7 @@ resources:
         api_kind: string
       - api_name: username_auto_assigned_
         api_kind: boolean
+        response_absence: preserve
       - api_name: uses_tagged_packets
         api_kind: boolean
         modes: [campus]
