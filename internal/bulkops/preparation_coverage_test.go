@@ -31,15 +31,23 @@ func TestEveryBulkBindingPreparesTypedValues(t *testing.T) {
 				var valueType reflect.Type
 				for index := 0; index < requestType.NumField(); index++ {
 					field := requestType.Field(index)
-					if field.Type.Kind() == reflect.Pointer && field.Type.Elem().Kind() == reflect.Map {
+					switch {
+					case field.Type.Kind() == reflect.Pointer && field.Type.Elem().Kind() == reflect.Map:
 						wrapper = strings.Split(field.Tag.Get("json"), ",")[0]
 						valueType = field.Type.Elem().Elem()
+					case field.Type.Kind() == reflect.Map && field.Type.Elem().Kind() == reflect.Map:
+						wrapper = strings.Split(field.Tag.Get("json"), ",")[0]
+						valueType = field.Type.Elem()
 					}
 				}
 				if valueType == nil {
 					t.Fatal("missing name-keyed wrapper")
 				}
-				data := map[string]interface{}{"unit": reflect.Zero(valueType).Interface()}
+				unit := reflect.Zero(valueType)
+				if valueType.Kind() == reflect.Map {
+					unit = reflect.MakeMap(valueType)
+				}
+				data := map[string]interface{}{"unit": unit.Interface()}
 				request, err := (&Manager{}).createRequestPreparerWithError(config, operation)(data)
 				if err != nil {
 					t.Fatal(err)

@@ -99,6 +99,7 @@ type resourceAdapter struct {
 	TerraformType string
 	GoTypeName    string
 	Fields        []adapterField
+	EmptyBody     bool
 }
 
 type adapterField struct {
@@ -184,6 +185,12 @@ func planOne(resource spec.ResourceSpec, structs map[string]goStruct) (resourceA
 	wrapper, found := request.Fields[resource.API.RequestWrapperKey]
 	if !found {
 		return resourceAdapter{}, fmt.Sprintf("%s carries no %q field", requestName, resource.API.RequestWrapperKey)
+	}
+	if wrapper.GoType == "map[string]map[string]interface{}" {
+		if _, reason := planFields(resource.TerraformType, resource.Fields, goStruct{Name: requestName + "." + wrapper.GoName}, structs); reason != "" {
+			return resourceAdapter{}, reason
+		}
+		return resourceAdapter{TerraformType: resource.TerraformType, GoTypeName: requestName + "." + wrapper.GoName, EmptyBody: true}, ""
 	}
 	valueTypeName := strings.TrimPrefix(wrapper.GoType, "*map[string]")
 	if valueTypeName == wrapper.GoType {
@@ -299,6 +306,12 @@ func generateAdapters(opts adapterOptions) error {
 		typeName := adapterTypeName(adapter.TerraformType)
 		fmt.Fprintf(&buf, "\ntype %s struct{}\n\n", typeName)
 		fmt.Fprintf(&buf, "func (%s) ResourceValue(object WireObject) (interface{}, error) {\n", typeName)
+		if adapter.EmptyBody {
+			buf.WriteString("\tfor name := range object {\n")
+			fmt.Fprintf(&buf, "\t\treturn nil, fmt.Errorf(\"%s takes no fields, got %%q\", name)\n", adapter.GoTypeName)
+			buf.WriteString("\t}\n\treturn map[string]interface{}{}, nil\n}\n")
+			continue
+		}
 		fmt.Fprintf(&buf, "\tvar value openapi.%s\n", adapter.GoTypeName)
 		buf.WriteString("\tfor name, wire := range object {\n\t\tswitch name {\n")
 		for _, field := range adapter.Fields {

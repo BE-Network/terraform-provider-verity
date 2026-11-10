@@ -35,6 +35,7 @@ type bulkOperation struct {
 	BodyField   string
 	ValueType   string
 	BodyType    string
+	Untyped     bool
 	Setter      string
 	SplitSetter string
 }
@@ -180,7 +181,7 @@ func (sdk bulkSDK) operation(resource spec.ResourceSpec, operation, splitKey str
 	if operation == "PUT" || operation == "PATCH" {
 		var bodies []string
 		for name, structure := range sdk.structs {
-			if wrapper, ok := structure.Fields[resource.API.RequestWrapperKey]; ok && strings.HasPrefix(wrapper.GoType, "*map[string]") {
+			if wrapper, ok := structure.Fields[resource.API.RequestWrapperKey]; ok && (strings.HasPrefix(wrapper.GoType, "*map[string]") || wrapper.GoType == untypedBulkWrapper) {
 				if _, err := sdk.setter(request, "", name); err == nil {
 					bodies = append(bodies, name)
 				}
@@ -193,9 +194,13 @@ func (sdk bulkSDK) operation(resource spec.ResourceSpec, operation, splitKey str
 		result.BodyType = bodies[0]
 		wrapper := sdk.structs[result.BodyType].Fields[resource.API.RequestWrapperKey]
 		result.BodyField = wrapper.GoName
-		result.ValueType = strings.TrimPrefix(wrapper.GoType, "*map[string]")
-		if _, exists := sdk.structs[result.ValueType]; !exists {
-			return bulkOperation{}, fmt.Errorf("%s wrapper has no SDK value struct %s", result.BodyType, result.ValueType)
+		if wrapper.GoType == untypedBulkWrapper {
+			result.ValueType, result.Untyped = "map[string]interface{}", true
+		} else {
+			result.ValueType = strings.TrimPrefix(wrapper.GoType, "*map[string]")
+			if _, exists := sdk.structs[result.ValueType]; !exists {
+				return bulkOperation{}, fmt.Errorf("%s wrapper has no SDK value struct %s", result.BodyType, result.ValueType)
+			}
 		}
 		result.Setter, _ = sdk.setter(request, "", result.BodyType)
 	}
@@ -221,6 +226,8 @@ func (sdk bulkSDK) operation(resource spec.ResourceSpec, operation, splitKey str
 	}
 	return result, nil
 }
+
+const untypedBulkWrapper = "map[string]map[string]interface{}"
 
 func planBulkBindings(registry spec.Registry, sdk bulkSDK) ([]bulkBinding, error) {
 	if err := registry.ValidateBulkOrders(); err != nil {
@@ -318,7 +325,11 @@ func renderBulkBindings(registry spec.Registry, bindings []bulkBinding) ([]byte,
 		for _, verb := range []string{"PUT", "PATCH"} {
 			if op, exists := binding.Operations[verb]; exists {
 				name := strings.ToUpper(verb[:1]) + strings.ToLower(verb[1:])
-				fmt.Fprintf(&buf, "Prepare%s: func(data map[string]interface{}) (interface{}, error) { return prepareTypedBulkRequest(data, func(request *openapi.%s, values map[string]openapi.%s) { request.%s = &values }) },\n", name, op.BodyType, op.ValueType, op.BodyField)
+				if op.Untyped {
+					fmt.Fprintf(&buf, "Prepare%s: func(data map[string]interface{}) (interface{}, error) { return prepareTypedBulkRequest(data, func(request *openapi.%s, values map[string]map[string]interface{}) { request.%s = values }) },\n", name, op.BodyType, op.BodyField)
+				} else {
+					fmt.Fprintf(&buf, "Prepare%s: func(data map[string]interface{}) (interface{}, error) { return prepareTypedBulkRequest(data, func(request *openapi.%s, values map[string]openapi.%s) { request.%s = &values }) },\n", name, op.BodyType, op.ValueType, op.BodyField)
+				}
 			}
 		}
 		if put.BodyType != "" {
