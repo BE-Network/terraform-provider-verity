@@ -101,7 +101,7 @@ func (m *Manager) FailAllPendingOperations(ctx context.Context, err error) {
 		if op.Status == OperationPending {
 			updatedOp := op
 			updatedOp.Status = OperationFailed
-			updatedOp.Error = fmt.Errorf("operation aborted due to previous failure: %v", err)
+			updatedOp.Error = fmt.Errorf("not sent because %v", err)
 			m.pendingOperations[opID] = updatedOp
 			m.operationErrors[opID] = updatedOp.Error
 			m.operationResults[opID] = false
