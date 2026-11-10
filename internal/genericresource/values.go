@@ -73,7 +73,7 @@ func buildCreate(fields []spec.FieldSpec, plan map[string]attr.Value, nullables 
 	}
 
 	for _, field := range fields {
-		if field.Unmanaged || field.KeyOnly || autoPaired[field.TerraformName] {
+		if field.Unmanaged || serverOwned(field) || field.KeyOnly || autoPaired[field.TerraformName] {
 			continue
 		}
 
@@ -239,7 +239,7 @@ func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value, nul
 	}
 
 	for _, field := range fields {
-		if field.Unmanaged || field.KeyOnly || paired[field.TerraformName] || autoPaired[field.TerraformName] {
+		if field.Unmanaged || serverOwned(field) || field.KeyOnly || paired[field.TerraformName] || autoPaired[field.TerraformName] {
 			continue
 		}
 
@@ -541,4 +541,8 @@ func attributeTypes(fields []spec.FieldSpec) map[string]attr.Type {
 		}
 	}
 	return types_
+}
+
+func serverOwned(field spec.FieldSpec) bool {
+	return field.Access == spec.AccessComputed
 }

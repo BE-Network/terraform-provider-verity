@@ -281,3 +281,27 @@ func TestRendererNeverWritesSecrets(t *testing.T) {
 		t.Fatalf("generated HCL does not parse: %v", diags)
 	}
 }
+
+func TestRendererNeverWritesReadOnlyFields(t *testing.T) {
+	fields := []spec.FieldSpec{
+		{APIName: "eth_port_paths", TerraformName: "eth_port_paths", Kind: spec.FieldKindList, ElementKind: spec.FieldKindObject,
+			Collection: &spec.CollectionSpec{IdentityField: "index"}, Fields: []spec.FieldSpec{
+				{APIName: "index", TerraformName: "index", Kind: spec.FieldKindInt64},
+				{APIName: "port_name", TerraformName: "port_name", Kind: spec.FieldKindString, Access: spec.AccessComputed},
+				{APIName: "eth_port_num_ee_profile", TerraformName: "eth_port_num_ee_profile", Kind: spec.FieldKindString},
+			}},
+	}
+	objects := map[string]map[string]interface{}{"b1": {"eth_port_paths": []interface{}{
+		map[string]interface{}{"index": float64(1), "port_name": "Eth1/1", "eth_port_num_ee_profile": "p1"},
+	}}}
+	got, _, err := (&Importer{}).generateResourceTF(objects, ResourceConfig{ResourceType: "bundle", StageName: "bundle_stage", Fields: fields})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(got, "port_name") {
+		t.Fatalf("a read-only field was written:\n%s", got)
+	}
+	if !strings.Contains(got, `eth_port_num_ee_profile = "p1"`) || !strings.Contains(got, "index = 1") {
+		t.Fatalf("other members are missing:\n%s", got)
+	}
+}

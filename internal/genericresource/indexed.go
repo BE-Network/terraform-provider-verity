@@ -37,7 +37,7 @@ func listEntries(field spec.FieldSpec, value attr.Value) ([]map[string]attr.Valu
 func createEntry(field spec.FieldSpec, entry map[string]attr.Value, nullables nullableSource) (transport.WireValue, error) {
 	object := make(transport.WireObject, len(field.Fields))
 	for _, member := range field.Fields {
-		if member.Unmanaged {
+		if member.Unmanaged || serverOwned(member) {
 			continue
 		}
 		value, held := entry[member.TerraformName]
@@ -148,7 +148,7 @@ func updateList(field spec.FieldSpec, plan, state attr.Value, nullables nullable
 			entryChanged = entryChanged || pairChanged
 		}
 		for _, member := range field.Fields {
-			if member.Unmanaged || paired[member.TerraformName] || member.TerraformName == identity.TerraformName {
+			if member.Unmanaged || serverOwned(member) || paired[member.TerraformName] || member.TerraformName == identity.TerraformName {
 				continue
 			}
 			value, held := entry[member.TerraformName]

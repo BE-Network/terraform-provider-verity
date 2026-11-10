@@ -3114,10 +3114,10 @@
               }
             },
             {
-              "access": "optional_computed",
+              "access": "computed",
               "api_name": "port_name",
               "create_null": "omit",
-              "description": "The name identifying the port. Used for reference only, it won't actually change the port name.",
+              "description": "Name of the port, read from the device. Ports are identified by `index`; the API fills this in once the device exists.",
               "kind": "string",
               "modes": [
                 "campus",
@@ -3127,10 +3127,10 @@
               "replace": false,
               "response_absence": "terraform_null",
               "sensitive": false,
-              "state_ownership": "configuration_or_server",
+              "state_ownership": "server",
               "terraform_name": "port_name",
               "unknown_plan": "omit_and_read",
-              "update_clear": "empty_string",
+              "update_clear": "omit_unmanaged",
               "versions": {
                 "max_exclusive": {
                   "major": 6,
@@ -29724,10 +29724,10 @@
               }
             },
             {
-              "access": "optional_computed",
+              "access": "computed",
               "api_name": "port_name",
               "create_null": "omit",
-              "description": "The name identifying the port. Used for reference only, it won't actually change the port name.",
+              "description": "Name of the port, read from the device. Ports are identified by `index`; the API fills this in once the device exists.",
               "kind": "string",
               "modes": [
                 "campus",
@@ -29737,10 +29737,10 @@
               "replace": false,
               "response_absence": "terraform_null",
               "sensitive": false,
-              "state_ownership": "configuration_or_server",
+              "state_ownership": "server",
               "terraform_name": "port_name",
               "unknown_plan": "omit_and_read",
-              "update_clear": "empty_string",
+              "update_clear": "omit_unmanaged",
               "versions": {
                 "max_exclusive": {
                   "major": 6,

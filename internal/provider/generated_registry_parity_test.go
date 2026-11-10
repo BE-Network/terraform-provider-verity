@@ -343,6 +343,8 @@ var intentionalPolicyDeviations = func() map[string]string {
 	} {
 		deviations["verity_switchpoint."+flag+" response_absence"] = string(spec.ResponseAbsencePreserve)
 	}
+	deviations["verity_bundle.eth_port_paths.port_name update_clear"] = string(spec.UpdateClearOmitUnmanaged)
+	deviations["verity_switchpoint.eths.port_name update_clear"] = string(spec.UpdateClearOmitUnmanaged)
 	return deviations
 }()
 

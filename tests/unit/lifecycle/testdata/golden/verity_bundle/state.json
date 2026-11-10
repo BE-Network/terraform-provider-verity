@@ -16,7 +16,6 @@
   "eth_port_paths.0.eth_port_num_gateway_profile": "",
   "eth_port_paths.0.eth_port_num_gateway_profile_ref_type_": "",
   "eth_port_paths.0.index": "1",
-  "eth_port_paths.0.port_name": "",
   "name": "cov_bundle",
   "object_properties.#": "1",
   "object_properties.0.%": "2",

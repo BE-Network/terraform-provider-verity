@@ -497,6 +497,13 @@ resources:
             api_kind: integer
           - api_name: port_name
             api_kind: string
+            access: computed
+            state_ownership: server
+            response_absence: terraform_null
+            create_null: omit
+            update_clear: omit_unmanaged
+            unknown_plan: omit_and_read
+            description: Name of the port, read from the device. Ports are identified by `index`; the API fills this in once the device exists.
       - api_name: name
         api_kind: string
         profile: identity
@@ -2519,6 +2526,13 @@ resources:
             api_kind: integer
           - api_name: port_name
             api_kind: string
+            access: computed
+            state_ownership: server
+            response_absence: terraform_null
+            create_null: omit
+            update_clear: omit_unmanaged
+            unknown_plan: omit_and_read
+            description: Name of the port, read from the device. Ports are identified by `index`; the API fills this in once the device exists.
       - api_name: expected_breakout
         api_kind: string
       - api_name: expected_breakout_uplink_port

@@ -816,7 +816,7 @@
               "name": "port_name",
               "type": "string",
               "required": false,
-              "optional": true,
+              "optional": false,
               "computed": true,
               "sensitive": false
             }
@@ -8386,7 +8386,7 @@
               "name": "port_name",
               "type": "string",
               "required": false,
-              "optional": true,
+              "optional": false,
               "computed": true,
               "sensitive": false
             }

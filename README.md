@@ -26,6 +26,7 @@ import output details.
   - [Prerequisites](#prerequisites)
 - [Handling Auto-Assigned Fields](#handling-auto-assigned-fields)
 - [Passwords and Other Secrets](#passwords-and-other-secrets)
+- [Read-Only Port Names](#read-only-port-names)
 - [Destroying Objects](#destroying-objects)
 - [Unit Tests](#unit-tests)
   - [Test packages](#test-packages)
@@ -606,6 +607,16 @@ back empty, and the matching `_encrypted` fields come back as the text
 
 Password changes made outside Terraform, for example in the GUI, are not
 detected.
+
+## Read-Only Port Names
+
+`port_name` in `verity_bundle.eth_port_paths` and `verity_switchpoint.eths` is
+read-only. Ports are identified by `index`, and the API fills in the name from the
+device once the device exists in the system; before that it is empty. The
+provider never sends it and the importer doesn't write it. Configurations
+imported by older provider versions still contain `port_name` lines; Terraform
+rejects them ("Invalid Configuration for Read-Only Attribute"). Remove those
+lines, or re-import.
 
 ## Destroying Objects
 

@@ -87,7 +87,6 @@ resource "verity_switchpoint" "example" {
     eth_num_icon = ""
     eth_num_label = ""
     eth_num_role_icon = ""
-    port_name = ""
   }
 
   object_properties {
@@ -218,7 +217,6 @@ resource "verity_switchpoint" "example" {
     eth_num_icon = ""
     eth_num_label = ""
     eth_num_role_icon = ""
-    port_name = ""
   }
 
   object_properties {
@@ -288,7 +286,7 @@ resource "verity_switchpoint" "example" {
   * `eth_num_label` (String) - Label of this Eth Port.
   * `eth_num_role_icon` (String) - Icon of this Eth Port.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
-  * `port_name` (String) - The name identifying the port. Used for reference only, it won't actually change the port name.
+  * `port_name` (String) - Name of the port, read from the device. Ports are identified by `index`; the API fills this in once the device exists.
 * `expected_breakout` (String) - Full breakout configuration for the SFP being used as the uplink.
 * `expected_breakout_uplink_port` (String) - Uplink Ethernet Port identifier in the format 1/# or 1/#/#.
 * `expected_fabric` (String) - Expected Fabric. Set together with `expected_fabric_ref_type_`.

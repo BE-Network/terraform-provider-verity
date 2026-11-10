@@ -19,7 +19,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 2
@@ -29,7 +28,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 3
@@ -39,7 +37,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 4
@@ -49,7 +46,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 5
@@ -59,7 +55,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 6
@@ -69,7 +64,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 7
@@ -79,7 +73,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 8
@@ -89,7 +82,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 9
@@ -99,7 +91,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 10
@@ -109,7 +100,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 11
@@ -119,7 +109,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 12
@@ -129,7 +118,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 13
@@ -139,7 +127,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 14
@@ -149,7 +136,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 15
@@ -159,7 +145,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 16
@@ -169,7 +154,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 17
@@ -179,7 +163,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 18
@@ -189,7 +172,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 19
@@ -199,7 +181,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 20
@@ -209,7 +190,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 21
@@ -219,7 +199,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 22
@@ -229,7 +208,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 23
@@ -239,7 +217,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	eth_port_paths {
 		index = 24
@@ -249,7 +226,6 @@ resource "verity_bundle" "Bundle_for_test" {
 		eth_port_num_eth_port_settings_ref_type_ = ""
 		eth_port_num_gateway_profile = ""
 		eth_port_num_gateway_profile_ref_type_ = ""
-		port_name = ""
 	}
 	protocol = "SIP"
 	user_services {
