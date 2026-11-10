@@ -25,6 +25,7 @@ type Operation struct {
 	StoreKey           string
 	Status             OperationStatus
 	Error              error
+	Warning            string
 	ExecutionStartTime time.Time
 }
 

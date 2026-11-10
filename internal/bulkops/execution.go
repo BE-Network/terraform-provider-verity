@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"strings"
 	"terraform-provider-verity/internal/utils"
 	"time"
 
@@ -190,39 +191,15 @@ func (m *Manager) executeBulkOperation(ctx context.Context, config BulkOperation
 
 	m.markOperationsAsExecuting(config.ResourceType, config.OperationType, filteredResourceNames)
 
-	retryConfig := utils.DefaultRetryConfig()
-	var opErr error
-	var apiResp *http.Response
+	apiResp, opErr := m.sendWithRetries(ctx, config, request)
 
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delayTime := utils.CalculateBackoff(retry, retryConfig)
-			tflog.Debug(ctx, fmt.Sprintf("Retrying bulk %s %s operation after %v",
-				config.ResourceType, config.OperationType, delayTime))
-			time.Sleep(delayTime)
+	if opErr != nil && config.OperationType == "DELETE" {
+		if partialDiags, handled := m.handlePartialDelete(ctx, config, filteredOperations, filteredResourceNames, opErr); handled {
+			if !partialDiags.HasError() {
+				config.UpdateRecentOps()
+			}
+			return partialDiags
 		}
-
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-		apiResp, opErr = config.ExecuteRequest(apiCtx, request)
-		cancel()
-
-		if opErr == nil {
-			break
-		}
-
-		if !utils.IsRetriableError(opErr) {
-			break
-		}
-
-		delayTime := utils.CalculateBackoff(retry, retryConfig)
-		tflog.Debug(ctx, fmt.Sprintf("Bulk %s %s operation failed with retriable error, retrying",
-			config.ResourceType, config.OperationType),
-			map[string]interface{}{
-				"attempt":     retry + 1,
-				"error":       opErr.Error(),
-				"delay_ms":    delayTime.Milliseconds(),
-				"max_retries": retryConfig.MaxRetries,
-			})
 	}
 
 	if opErr == nil && apiResp != nil && config.ProcessResponse != nil {
@@ -290,10 +267,10 @@ func (m *Manager) executeBatchedDeleteOperation(ctx context.Context, config Bulk
 			UpdateRecentOps:         func() {},
 		}
 
-		batchDiags := m.executeSingleDeleteBatch(ctx, batchConfig, batchOperations, batchNames)
+		batchDiags, partial := m.executeSingleDeleteBatch(ctx, batchConfig, batchOperations, batchNames)
 		diagnostics.Append(batchDiags...)
 
-		if batchDiags.HasError() {
+		if batchDiags.HasError() && !partial {
 			tflog.Error(ctx, fmt.Sprintf("DELETE batch %d/%d failed for %s, stopping further batches",
 				batchNum+1, batchCount, config.ResourceType))
 			return diagnostics
@@ -304,14 +281,16 @@ func (m *Manager) executeBatchedDeleteOperation(ctx context.Context, config Bulk
 		}
 	}
 
+	if diagnostics.HasError() {
+		return diagnostics
+	}
 	config.UpdateRecentOps()
 
 	tflog.Info(ctx, fmt.Sprintf("Successfully completed all %d DELETE batches for %s", batchCount, config.ResourceType))
 	return diagnostics
 }
 
-func (m *Manager) executeSingleDeleteBatch(ctx context.Context, config BulkOperationConfig, operations map[string]interface{}, resourceNames []string) diag.Diagnostics {
-	var diagnostics diag.Diagnostics
+func (m *Manager) executeSingleDeleteBatch(ctx context.Context, config BulkOperationConfig, operations map[string]interface{}, resourceNames []string) (diagnostics diag.Diagnostics, partial bool) {
 
 	tflog.Debug(ctx, fmt.Sprintf("Executing bulk %s %s operation", config.ResourceType, config.OperationType),
 		map[string]interface{}{
@@ -326,44 +305,17 @@ func (m *Manager) executeSingleDeleteBatch(ctx context.Context, config BulkOpera
 			fmt.Sprintf("Failed to prepare bulk %s %s request", config.ResourceType, config.OperationType),
 			prepareErr.Error(),
 		)
-		return diagnostics
+		return diagnostics, false
 	}
 
 	m.markOperationsAsExecuting(config.ResourceType, config.OperationType, resourceNames)
 
-	retryConfig := utils.DefaultRetryConfig()
-	var opErr error
-	var apiResp *http.Response
+	apiResp, opErr := m.sendWithRetries(ctx, config, request)
 
-	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
-		if retry > 0 {
-			delayTime := utils.CalculateBackoff(retry, retryConfig)
-			tflog.Debug(ctx, fmt.Sprintf("Retrying bulk %s %s operation after %v",
-				config.ResourceType, config.OperationType, delayTime))
-			time.Sleep(delayTime)
+	if opErr != nil {
+		if partialDiags, handled := m.handlePartialDelete(ctx, config, operations, resourceNames, opErr); handled {
+			return partialDiags, true
 		}
-
-		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
-		apiResp, opErr = config.ExecuteRequest(apiCtx, request)
-		cancel()
-
-		if opErr == nil {
-			break
-		}
-
-		if !utils.IsRetriableError(opErr) {
-			break
-		}
-
-		delayTime := utils.CalculateBackoff(retry, retryConfig)
-		tflog.Debug(ctx, fmt.Sprintf("Bulk %s %s operation failed with retriable error, retrying",
-			config.ResourceType, config.OperationType),
-			map[string]interface{}{
-				"attempt":     retry + 1,
-				"error":       opErr.Error(),
-				"delay_ms":    delayTime.Milliseconds(),
-				"max_retries": retryConfig.MaxRetries,
-			})
 	}
 
 	if opErr == nil && apiResp != nil && config.ProcessResponse != nil {
@@ -382,7 +334,7 @@ func (m *Manager) executeSingleDeleteBatch(ctx context.Context, config BulkOpera
 		)
 	}
 
-	return diagnostics
+	return diagnostics, false
 }
 
 func generateOperationID(resourceType, resourceName, operationType string) string {
@@ -492,6 +444,53 @@ func (m *Manager) updateOperationStatuses(ctx context.Context, resourceType, ope
 	for _, opID := range idsToClose {
 		m.safeCloseChannel(opID, false)
 	}
+}
+
+func (m *Manager) settleOperations(resourceType, operationType string, names []string, opErr error, warning string) {
+	wanted := make(map[string]bool, len(names))
+	for _, name := range names {
+		wanted[name] = true
+	}
+	var idsToClose []string
+
+	m.operationMutex.Lock()
+	for opID, op := range m.pendingOperations {
+		matchesType := op.ResourceType == resourceType
+		if resourceType == "acl_v4" || resourceType == "acl_v6" {
+			matchesType = op.ResourceType == "acl"
+		}
+		if !matchesType || op.OperationType != operationType || !wanted[op.ResourceName] {
+			continue
+		}
+		if op.Status != OperationPending && op.Status != OperationExecuting {
+			continue
+		}
+		if opErr != nil {
+			op.Status = OperationFailed
+			op.Error = opErr
+			m.operationErrors[opID] = opErr
+			m.operationResults[opID] = false
+		} else {
+			op.Status = OperationSucceeded
+			op.Warning = warning
+			m.operationResults[opID] = true
+		}
+		idsToClose = append(idsToClose, opID)
+	}
+	m.operationMutex.Unlock()
+
+	for _, opID := range idsToClose {
+		m.safeCloseChannel(opID, false)
+	}
+}
+
+func (m *Manager) OperationWarning(operationID string) string {
+	m.operationMutex.Lock()
+	defer m.operationMutex.Unlock()
+	if op := m.pendingOperations[operationID]; op != nil {
+		return op.Warning
+	}
+	return ""
 }
 
 func (m *Manager) markOperationsAsExecuting(resourceType, operationType string, resourceNames []string) {
@@ -786,4 +785,98 @@ func bulkErrorDetail(err error) string {
 		return fmt.Sprintf("Error: %s\nDetails: %s", err, reason)
 	}
 	return fmt.Sprintf("Error: %s", err)
+}
+
+func (m *Manager) sendWithRetries(ctx context.Context, config BulkOperationConfig, request interface{}) (*http.Response, error) {
+	retryConfig := utils.DefaultRetryConfig()
+	var opErr error
+	var apiResp *http.Response
+
+	for retry := 0; retry < retryConfig.MaxRetries; retry++ {
+		if retry > 0 {
+			delayTime := utils.CalculateBackoff(retry, retryConfig)
+			tflog.Debug(ctx, fmt.Sprintf("Retrying bulk %s %s operation after %v",
+				config.ResourceType, config.OperationType, delayTime))
+			time.Sleep(delayTime)
+		}
+
+		apiCtx, cancel := context.WithTimeout(context.Background(), OperationTimeout)
+		apiResp, opErr = config.ExecuteRequest(apiCtx, request)
+		cancel()
+
+		if opErr == nil {
+			break
+		}
+
+		if !utils.IsRetriableError(opErr) {
+			break
+		}
+
+		delayTime := utils.CalculateBackoff(retry, retryConfig)
+		tflog.Debug(ctx, fmt.Sprintf("Bulk %s %s operation failed with retriable error, retrying",
+			config.ResourceType, config.OperationType),
+			map[string]interface{}{
+				"attempt":     retry + 1,
+				"error":       opErr.Error(),
+				"delay_ms":    delayTime.Milliseconds(),
+				"max_retries": retryConfig.MaxRetries,
+			})
+	}
+	return apiResp, opErr
+}
+
+func (m *Manager) handlePartialDelete(ctx context.Context, config BulkOperationConfig, operations map[string]interface{}, names []string, opErr error) (diag.Diagnostics, bool) {
+	blocks, ok := ParseDeleteReply(utils.APIErrorMessage(opErr), names)
+	if !ok {
+		return nil, false
+	}
+
+	var diagnostics diag.Diagnostics
+	var blocked, remaining []string
+	for _, name := range names {
+		block, isBlocked := blocks[name]
+		switch {
+		case !isBlocked:
+			remaining = append(remaining, name)
+		case block.Category == DeleteBlockedPredefined:
+			m.settleOperations(config.ResourceType, config.OperationType, []string{name}, nil,
+				fmt.Sprintf("%s %q is a predefined object and can't be deleted. It was removed from Terraform state only.", config.ResourceType, name))
+		default:
+			m.settleOperations(config.ResourceType, config.OperationType, []string{name},
+				fmt.Errorf("%s %q could not be deleted: %s", config.ResourceType, name, block.Reason), "")
+			blocked = append(blocked, name)
+		}
+	}
+	tflog.Warn(ctx, fmt.Sprintf("Bulk %s DELETE was rejected for specific objects", config.ResourceType), map[string]interface{}{
+		"blocked":   blocked,
+		"retrying":  remaining,
+		"rejection": utils.APIErrorMessage(opErr),
+	})
+
+	if len(remaining) > 0 {
+		retryOperations := make(map[string]interface{}, len(remaining))
+		for _, name := range remaining {
+			retryOperations[name] = operations[name]
+		}
+		request, err := config.prepareRequest(retryOperations)
+		var apiResp *http.Response
+		if err == nil {
+			apiResp, err = m.sendWithRetries(ctx, config, request)
+		}
+		if err == nil && apiResp != nil && config.ProcessResponse != nil {
+			if processErr := config.ProcessResponse(ctx, apiResp, retryOperations); processErr != nil {
+				tflog.Warn(ctx, fmt.Sprintf("Post-processing failed for bulk %s DELETE retry: %v", config.ResourceType, processErr))
+			}
+		}
+		m.settleOperations(config.ResourceType, config.OperationType, remaining, err, "")
+		if err != nil {
+			diagnostics.AddError(fmt.Sprintf("Failed to execute bulk %s DELETE operation", config.ResourceType), bulkErrorDetail(err))
+		}
+	}
+
+	if len(blocked) > 0 {
+		diagnostics.AddError(fmt.Sprintf("Some %s objects could not be deleted", config.ResourceType),
+			fmt.Sprintf("The API rejected deleting: %s", strings.Join(blocked, ", ")))
+	}
+	return diagnostics, true
 }
