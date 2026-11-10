@@ -22,6 +22,7 @@ type Operation struct {
 	ResourceType       string
 	ResourceName       string
 	OperationType      string
+	StoreKey           string
 	Status             OperationStatus
 	Error              error
 	ExecutionStartTime time.Time

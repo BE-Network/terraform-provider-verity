@@ -45,7 +45,7 @@ func (m *Manager) addGenericOperation(ctx context.Context, resourceType, resourc
 	}
 
 	storeFunc := func() {
-		m.storeOperation(resourceType, storeKey, operationType, props)
+		m.storeOperationLocked(resourceType, storeKey, operationType, props)
 
 		if len(headerParams) > 0 {
 			if m.resourceHeaderParams == nil {
@@ -65,14 +65,13 @@ func (m *Manager) addGenericOperation(ctx context.Context, resourceType, resourc
 
 	logDetails := map[string]interface{}{
 		fmt.Sprintf("%s_name", resourceType): resourceName,
-		"batch_size":                         m.getBatchSize(resourceType, operationType) + 1,
 	}
 
 	for key, value := range headerParams {
 		logDetails[key] = value
 	}
 
-	return m.addOperation(ctx, resourceType, resourceName, operationType, storeFunc, logDetails)
+	return m.addOperation(ctx, resourceType, resourceName, storeKey, operationType, storeFunc, logDetails)
 }
 
 func (m *Manager) ExecuteBulk(ctx context.Context, resourceType, operationType string) diag.Diagnostics {

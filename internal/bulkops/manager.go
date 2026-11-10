@@ -89,6 +89,10 @@ func (m *Manager) HasPendingOrRecentOperations(resourceType string) bool {
 }
 
 func (m *Manager) FailAllPendingOperations(ctx context.Context, err error) {
+	if cancelStartedHook != nil {
+		cancelStartedHook()
+	}
+	m.mutex.Lock()
 	m.operationMutex.Lock()
 	var idsToClose []string
 	failCount := 0
@@ -101,12 +105,14 @@ func (m *Manager) FailAllPendingOperations(ctx context.Context, err error) {
 			m.pendingOperations[opID] = updatedOp
 			m.operationErrors[opID] = updatedOp.Error
 			m.operationResults[opID] = false
+			m.removeQueuedPayloadLocked(op)
 			idsToClose = append(idsToClose, opID)
 			failCount++
 		}
 	}
 
 	m.operationMutex.Unlock()
+	m.mutex.Unlock()
 
 	for _, opID := range idsToClose {
 		m.safeCloseChannel(opID, false)
@@ -115,6 +121,34 @@ func (m *Manager) FailAllPendingOperations(ctx context.Context, err error) {
 	if failCount > 0 {
 		fmt.Printf("Failed %d pending operations due to error: %v\n", failCount, err)
 	}
+}
+
+var cancelStartedHook func()
+
+func (m *Manager) removeQueuedPayloadLocked(op *Operation) {
+	key := op.StoreKey
+	if key == "" {
+		key = op.ResourceName
+	}
+	if res, exists := m.resources[op.ResourceType]; exists {
+		switch op.OperationType {
+		case "PUT":
+			delete(res.Put, key)
+		case "PATCH":
+			delete(res.Patch, key)
+		case "DELETE":
+			kept := res.Delete[:0]
+			for _, name := range res.Delete {
+				if name != key {
+					kept = append(kept, name)
+				}
+			}
+			res.Delete = kept
+		}
+	}
+	paramKey := fmt.Sprintf("%s:%s", op.ResourceType, key)
+	delete(m.resourceHeaderParams, paramKey)
+	delete(m.resourceOriginalNames, paramKey)
 }
 
 func (m *Manager) safeCloseChannel(opID string, lockAlreadyHeld bool) {
