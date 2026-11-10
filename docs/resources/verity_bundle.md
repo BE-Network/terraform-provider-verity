@@ -29,7 +29,6 @@ resource "verity_bundle" "example" {
     eth_port_num_eth_port_profile_ref_type_ = ""
     eth_port_num_eth_port_settings = ""
     eth_port_num_eth_port_settings_ref_type_ = "eth_port_settings"
-    port_name = ""
   }
 
   object_properties {
@@ -86,7 +85,6 @@ resource "verity_bundle" "example" {
     eth_port_num_eth_port_settings_ref_type_ = "eth_port_settings"
     eth_port_num_gateway_profile = ""
     eth_port_num_gateway_profile_ref_type_ = ""
-    port_name = ""
   }
 
   object_properties {
@@ -130,7 +128,7 @@ resource "verity_bundle" "example" {
   * `eth_port_num_gateway_profile` (String) - Gateway Profile for Eth Port. Datacenter mode only. Set together with `eth_port_num_gateway_profile_ref_type_`.
   * `eth_port_num_gateway_profile_ref_type_` (String) - Object type for eth_port_num_gateway_profile field. Datacenter mode only.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
-  * `port_name` (String) - The name identifying the port. Used for reference only, it won't actually change the port name.
+  * `port_name` (String) - Name of the port, read from the device. Ports are identified by `index`; the API fills this in once the device exists.
 * `object_properties` (Block) - Object properties for the bundle. At most one block.
   * `is_for_switch` (Boolean) - Denotes a Switch Bundle.
   * `is_public` (Boolean) - Denotes a shared Switch Bundle. Campus mode only.

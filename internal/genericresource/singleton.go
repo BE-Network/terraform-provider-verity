@@ -54,7 +54,7 @@ func createSingleton(field spec.FieldSpec, value attr.Value, nullables nullableS
 	}
 	object := make(transport.WireObject, len(field.Fields))
 	for _, member := range field.Fields {
-		if member.Unmanaged {
+		if member.Unmanaged || serverOwned(member) {
 			continue
 		}
 		memberValue, held := members[member.TerraformName]
@@ -177,7 +177,7 @@ func updateSingleton(field spec.FieldSpec, plan, state attr.Value, nullables nul
 	}
 
 	for _, member := range field.Fields {
-		if member.Unmanaged || paired[member.TerraformName] || member.Kind == spec.FieldKindList {
+		if member.Unmanaged || serverOwned(member) || paired[member.TerraformName] || member.Kind == spec.FieldKindList {
 			continue
 		}
 		value, held := planned[member.TerraformName]

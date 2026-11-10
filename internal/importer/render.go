@@ -79,6 +79,9 @@ func renderFields(output *strings.Builder, object map[string]interface{}, fields
 		if !found || skip[key] || skip[field.TerraformName] {
 			continue
 		}
+		if field.Access == spec.AccessComputed {
+			continue
+		}
 		if field.AutoAssignment != nil {
 			for flagKey, flagField := range byAPIName {
 				if flagField.TerraformName == field.AutoAssignment.FlagField && object[flagKey] == true {

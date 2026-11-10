@@ -39,8 +39,7 @@
           "eth_num_icon": "",
           "eth_num_label": "",
           "eth_num_role": "",
-          "index": 1,
-          "port_name": ""
+          "index": 1
         }
       ],
       "expected_breakout": "",

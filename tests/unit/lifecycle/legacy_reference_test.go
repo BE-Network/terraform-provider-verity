@@ -29,12 +29,21 @@ func legacyReference(t *testing.T) map[string]map[string]interface{} {
 				}
 				delete(fields, "name")
 				for _, removed := range removedRequestFields[wrapper] {
-					parent, key := fields, removed
-					if container, member, nested := strings.Cut(removed, "."); nested {
-						parent, _ = fields[container].(map[string]interface{})
-						key = member
+					container, member, nested := strings.Cut(removed, ".")
+					if !nested {
+						delete(fields, removed)
+						continue
 					}
-					delete(parent, key)
+					switch value := fields[container].(type) {
+					case map[string]interface{}:
+						delete(value, member)
+					case []interface{}:
+						for _, entry := range value {
+							if entryFields, ok := entry.(map[string]interface{}); ok {
+								delete(entryFields, member)
+							}
+						}
+					}
 				}
 			}
 		}
@@ -43,7 +52,7 @@ func legacyReference(t *testing.T) map[string]map[string]interface{} {
 }
 
 var removedRequestFields = map[string][]string{
-	"switchpoint":      {"tenant", "tenant_ref_type_"},
+	"switchpoint":      {"tenant", "tenant_ref_type_", "eths.port_name"},
 	"route_map_clause": {"object_properties.match_fields_shown"},
 }
 
