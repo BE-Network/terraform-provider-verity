@@ -307,6 +307,9 @@ func TestRegistryPoliciesMatchRecordedLegacyEvidence(t *testing.T) {
 					continue
 				}
 				checked++
+				if deviation, intended := intentionalPolicyDeviations[resourceType+"."+path+" "+policy]; intended && got[policy] == deviation {
+					continue
+				}
 				if got[policy] != want {
 					t.Errorf("%s.%s %s = %q, legacy behavior is %q",
 						resourceType, path, policy, got[policy], want)
@@ -329,6 +332,19 @@ func TestRegistryPoliciesMatchRecordedLegacyEvidence(t *testing.T) {
 	}
 	t.Logf("%d policy assertions checked, %d fields excluded by category", checked, excluded)
 }
+
+var intentionalPolicyDeviations = func() map[string]string {
+	deviations := map[string]string{}
+	for _, flag := range []string{
+		"bgp_as_number_auto_assigned_", "controller_ip_and_mask_auto_assigned_", "gateway_auto_assigned_",
+		"lldp_search_string_auto_assigned_", "ssh_key_or_password_encrypted_auto_assigned_",
+		"switch_gateway_auto_assigned_", "switch_ip_and_mask_auto_assigned_",
+		"switch_router_id_ip_mask_auto_assigned_", "switch_vtep_id_ip_mask_auto_assigned_", "username_auto_assigned_",
+	} {
+		deviations["verity_switchpoint."+flag+" response_absence"] = string(spec.ResponseAbsencePreserve)
+	}
+	return deviations
+}()
 
 func declaredFreshImports(t *testing.T) map[string]bool {
 	t.Helper()

@@ -236,3 +236,24 @@ func TestStateFromAPIPreservesFourByteASN(t *testing.T) {
 		t.Fatalf("bgp_as_number = %d, want %d", got.ValueInt64(), fourByteASN)
 	}
 }
+
+func TestPreserveAbsenceNeverKeepsUnknown(t *testing.T) {
+	t.Parallel()
+	field := spec.FieldSpec{TerraformName: "flag", APIName: "flag", Kind: spec.FieldKindBool, ResponseAbsence: spec.ResponseAbsencePreserve}
+	for name, tc := range map[string]struct {
+		prior attr.Value
+		want  attr.Value
+	}{
+		"known prior is kept":        {types.BoolValue(true), types.BoolValue(true)},
+		"unknown prior becomes null": {types.BoolUnknown(), types.BoolNull()},
+		"null prior stays null":      {types.BoolNull(), types.BoolNull()},
+	} {
+		got, err := absentValue(field, map[string]attr.Value{"flag": tc.prior})
+		if err != nil {
+			t.Fatalf("%s: %v", name, err)
+		}
+		if !got.Equal(tc.want) {
+			t.Errorf("%s: got %v, want %v", name, got, tc.want)
+		}
+	}
+}
