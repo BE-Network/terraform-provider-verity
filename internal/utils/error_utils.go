@@ -3,10 +3,40 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
+
+const maxAPIErrorLines = 20
+
+var htmlLineBreak = regexp.MustCompile(`(?i)<br\s*/?>|</br>`)
+
+func APIErrorMessage(err error) string {
+	withBody, ok := err.(interface{ Body() []byte })
+	if !ok {
+		return ""
+	}
+	var body map[string]interface{}
+	if json.Unmarshal(withBody.Body(), &body) != nil {
+		return ""
+	}
+	for _, key := range []string{"message", "Error", "error", "payload"} {
+		if text, ok := body[key].(string); ok && strings.TrimSpace(text) != "" {
+			return strings.TrimSpace(htmlLineBreak.ReplaceAllString(text, "\n"))
+		}
+	}
+	return ""
+}
+
+func truncateLines(text string, limit int) string {
+	lines := strings.Split(text, "\n")
+	if len(lines) <= limit {
+		return text
+	}
+	return strings.Join(lines[:limit], "\n") + fmt.Sprintf("\n… and %d more lines", len(lines)-limit)
+}
 
 func FormatOpenAPIError(err error, message string) diag.Diagnostics {
 	var diagnostics diag.Diagnostics
@@ -19,18 +49,12 @@ func FormatOpenAPIError(err error, message string) diag.Diagnostics {
 		return diagnostics
 	}
 
-	if openAPIErr, ok := err.(interface{ Body() []byte }); ok {
-		body := openAPIErr.Body()
-		var respBody map[string]interface{}
-		if jsonErr := json.Unmarshal(body, &respBody); jsonErr == nil {
-			if payload, ok := respBody["payload"].(string); ok {
-				diagnostics.AddError(
-					message,
-					fmt.Sprintf("%v\nDetails: %s", err, payload),
-				)
-				return diagnostics
-			}
-		}
+	if reason := APIErrorMessage(err); reason != "" {
+		diagnostics.AddError(
+			message,
+			fmt.Sprintf("%v\nDetails: %s", err, truncateLines(reason, maxAPIErrorLines)),
+		)
+		return diagnostics
 	}
 
 	diagnostics.AddError(
