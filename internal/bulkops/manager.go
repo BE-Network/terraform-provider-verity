@@ -125,7 +125,7 @@ func (m *Manager) FailAllPendingOperations(ctx context.Context, err error) {
 	}
 
 	if failCount > 0 {
-		fmt.Printf("Failed %d pending operations due to error: %v\n", failCount, err)
+		tflog.Warn(ctx, fmt.Sprintf("[BULK-OPS] Cancelled %d queued operation(s): %v", failCount, err))
 	}
 }
 
