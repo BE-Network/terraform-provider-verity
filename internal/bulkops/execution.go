@@ -273,6 +273,10 @@ func (m *Manager) executeBatchedDeleteOperation(ctx context.Context, config Bulk
 		if batchDiags.HasError() && !partial {
 			tflog.Error(ctx, fmt.Sprintf("DELETE batch %d/%d failed for %s, stopping further batches",
 				batchNum+1, batchCount, config.ResourceType))
+			if end < totalResources {
+				m.settleOperations(config.ResourceType, config.OperationType, resourceNames[end:],
+					fmt.Errorf("not sent because %s DELETE batch %d/%d failed: %s", config.ResourceType, batchNum+1, batchCount, firstErrorDetail(batchDiags)), "")
+			}
 			return diagnostics
 		}
 
@@ -662,9 +666,14 @@ func (s orderedExecutionState) execute(opType string, count int, execFunc func(c
 	tflog.Info(s.ctx, fmt.Sprintf("[BULK-OPS] >>> Proceeding with %s %s for %d resource(s) — sending API request...", resourceName, opType, count))
 	diags := execFunc(s.ctx)
 	s.diagnostics.Append(diags...)
+	if diags.HasError() && opType == "DELETE" {
+		tflog.Error(s.ctx, fmt.Sprintf("[BULK-OPS] <<< FAILED %s %s — continuing with the remaining DELETE types", resourceName, opType))
+		*s.operationsPerformed = true
+		return true
+	}
 	if diags.HasError() {
 		tflog.Error(s.ctx, fmt.Sprintf("[BULK-OPS] <<< FAILED %s %s — aborting remaining operations", resourceName, opType))
-		s.manager.FailAllPendingOperations(s.ctx, fmt.Errorf("bulk %s %s operation failed", resourceName, opType))
+		s.manager.FailAllPendingOperations(s.ctx, fmt.Errorf("the %s %s request failed: %s", resourceName, opType, firstErrorDetail(diags)))
 		return false
 	}
 
@@ -879,4 +888,13 @@ func (m *Manager) handlePartialDelete(ctx context.Context, config BulkOperationC
 			fmt.Sprintf("The API rejected deleting: %s", strings.Join(blocked, ", ")))
 	}
 	return diagnostics, true
+}
+
+func firstErrorDetail(diags diag.Diagnostics) string {
+	for _, d := range diags {
+		if d.Severity() == diag.SeverityError {
+			return strings.Join(strings.Fields(strings.ReplaceAll(d.Detail(), "\n", "; ")), " ")
+		}
+	}
+	return "unknown error"
 }

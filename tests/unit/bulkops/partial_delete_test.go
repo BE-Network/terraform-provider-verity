@@ -132,15 +132,18 @@ func TestPartialDeleteReferencedObjectsFailAndTheRestIsDeleted(t *testing.T) {
 	if err := waitFor(t, mgr, free); err != nil {
 		t.Errorf("the unblocked object must be deleted by the retry: %v", err)
 	}
-	if err := waitFor(t, mgr, laterType); err == nil {
-		t.Error("the later DELETE type should have been cancelled after the failure")
+	if err := waitFor(t, mgr, laterType); err != nil {
+		t.Errorf("the later DELETE type must still be sent after the failure: %v", err)
 	}
 	got := calls()
-	if len(got) != 2 {
-		t.Fatalf("calls = %+v, want the original request and one retry", got)
+	if len(got) != 3 {
+		t.Fatalf("calls = %+v, want the original request, one retry, and the tenant DELETE", got)
 	}
 	if len(got[1].names) != 1 || got[1].names[0] != "Threshold C" {
 		t.Fatalf("retry = %+v, want only Threshold C", got[1])
+	}
+	if got[2].path != "/tenants" {
+		t.Fatalf("third call = %+v, want the tenant DELETE", got[2])
 	}
 }
 
