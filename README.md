@@ -25,6 +25,8 @@ import output details.
   - [Running the Scripts](#running-the-scripts)
   - [Prerequisites](#prerequisites)
 - [Handling Auto-Assigned Fields](#handling-auto-assigned-fields)
+- [Passwords and Other Secrets](#passwords-and-other-secrets)
+- [Destroying Objects](#destroying-objects)
 - [Unit Tests](#unit-tests)
   - [Test packages](#test-packages)
   - [Compatibility evidence](#compatibility-evidence)
@@ -170,20 +172,29 @@ bulk API requests. Lower parallelism processes resources in waves, potentially
 splitting a resource type across multiple requests; batching windows and the
 dependency graph also affect how operations are grouped.
 
-For larger applies, the existing `500` setting is a starting point. Adjust it to
-your environment rather than treating it as a requirement or a guarantee that
-all operations fit into one request.
+The provider is designed for high parallelism. Don't lower it to work around
+errors: that splits resource types across more requests and makes large runs
+much slower. For larger applies, the existing `500` setting is a starting point.
+Adjust it to your environment rather than treating it as a requirement or a
+guarantee that all operations fit into one request. When operations of a type
+arrive after that type's request was already sent, the provider logs a
+`[BULK-OPS]` warning.
+
+Set it for `destroy` as well. `TF_CLI_ARGS_apply` does not apply to
+`terraform destroy`, which otherwise runs at Terraform's default of 10.
 
 For Linux and macOS:
 
 ```bash
 export TF_CLI_ARGS_apply="-parallelism=500"
+export TF_CLI_ARGS_destroy="-parallelism=500"
 ```
 
 For Windows PowerShell:
 
 ```powershell
 $env:TF_CLI_ARGS_apply="-parallelism=500"
+$env:TF_CLI_ARGS_destroy="-parallelism=500"
 ```
 
 Terraform's [apply parallelism](https://developer.hashicorp.com/terraform/cli/commands/apply#apply-options)
@@ -572,6 +583,42 @@ unset in your resource configuration. For example, with
 
 The importer already omits the value when the API reports that its auto-assigned
 flag is true. Keep that pattern when modifying generated configuration.
+
+## Passwords and Other Secrets
+
+The API never returns passwords. Plaintext password fields (for example
+`verity_switchpoint.ssh_key_or_password` or `verity_gateway.md5_password`) come
+back empty, and the matching `_encrypted` fields come back as the text
+`this field has been set`. The provider therefore:
+
+- keeps the configured value in state instead of the server's empty or masked
+  value, so setting a password doesn't produce an "inconsistent result" error;
+- never imports these fields. Where the API reports a password is set, the
+  importer writes a comment instead. Restoring a system from imported
+  configuration needs the passwords supplied, for example through a
+  `sensitive` variable;
+- rejects `this field has been set` as a value when creating an object or
+  changing a password. In configuration imported by older versions, an
+  unchanged placeholder only produces a warning and is never sent. Remove it
+  from the configuration;
+- requires a real password when turning off
+  `ssh_key_or_password_encrypted_auto_assigned_`.
+
+Password changes made outside Terraform, for example in the GUI, are not
+detected.
+
+## Destroying Objects
+
+- **Predefined objects** (for example `(Device Settings)`, `(Packet Queue)`,
+  `(Port Settings)` or `Compute Fabric`) can't be deleted. When the API reports an
+  object as predefined, the provider removes it from Terraform state with a
+  warning instead of failing; the object stays on the system.
+- **Objects that are still referenced** fail with the API's reason, naming the
+  referencing object. The other objects in the same request are still deleted.
+- **Don't manage the same system with the GUI and Terraform at the same time.**
+  A fabric that is open in a GUI session can't be deleted ("being viewed by
+  users"). Objects referenced by things Terraform doesn't manage, such as badges
+  used by System Sections, have to be released there first.
 
 ## Unit Tests
 
