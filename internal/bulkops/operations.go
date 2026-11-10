@@ -86,10 +86,15 @@ func (m *Manager) ExecuteBulk(ctx context.Context, resourceType, operationType s
 		return m.executeBulkWithHeaderSplit(ctx, resourceType, operationType, config)
 	}
 
+	extract := m.createExtractor(resourceType, operationType)
 	return m.executeBulkOperation(ctx, BulkOperationConfig{
-		ResourceType:            resourceType,
-		OperationType:           operationType,
-		ExtractOperations:       m.createExtractor(resourceType, operationType),
+		ResourceType:  resourceType,
+		OperationType: operationType,
+		ExtractOperations: func() (map[string]interface{}, []string) {
+			operations, names := extract()
+			m.noteFlush(ctx, resourceType, operationType, len(names))
+			return operations, names
+		},
 		CheckPreExistence:       m.createPreExistenceChecker(config, operationType),
 		PrepareRequest:          m.createRequestPreparer(config, operationType),
 		PrepareRequestWithError: m.createRequestPreparerWithError(config, operationType),
@@ -169,6 +174,7 @@ func (m *Manager) executeBulkWithHeaderSplit(ctx context.Context, resourceType, 
 	if len(originalOperations) == 0 {
 		return diagnostics
 	}
+	m.noteFlush(ctx, resourceType, operationType, len(originalOperations))
 
 	groupedOps := make(map[string]map[string]interface{})
 	for compositeKey, props := range originalOperations {

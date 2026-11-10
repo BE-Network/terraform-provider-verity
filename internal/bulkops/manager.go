@@ -3,6 +3,7 @@ package bulkops
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"sync"
 	"terraform-provider-verity/openapi"
 	"time"
@@ -22,6 +23,9 @@ type Manager struct {
 	resourceHeaderParams map[string]map[string]string
 
 	resourceOriginalNames map[string]string
+
+	flushed     map[string]bool
+	lateFlushes map[string]int
 
 	pendingOperations     map[string]*Operation
 	operationResults      map[string]bool
@@ -51,6 +55,8 @@ func NewManager(client *openapi.APIClient, contextProvider ContextProviderFunc, 
 		resources:             initializeResourceOperations(),
 		resourceHeaderParams:  make(map[string]map[string]string),
 		resourceOriginalNames: make(map[string]string),
+		flushed:               make(map[string]bool),
+		lateFlushes:           make(map[string]int),
 		pendingOperations:     make(map[string]*Operation),
 		operationResults:      make(map[string]bool),
 		operationErrors:       make(map[string]error),
@@ -163,4 +169,31 @@ func (m *Manager) safeCloseChannel(opID string, lockAlreadyHeld bool) {
 			m.closedChannels[opID] = true
 		}
 	}
+}
+
+func (m *Manager) noteFlush(ctx context.Context, resourceType, operationType string, count int) {
+	if count == 0 {
+		return
+	}
+	key := resourceType + " " + operationType
+	m.mutex.Lock()
+	late := m.flushed[key]
+	m.flushed[key] = true
+	if late {
+		m.lateFlushes[key]++
+	}
+	m.mutex.Unlock()
+	if late {
+		tflog.Warn(ctx, fmt.Sprintf("[BULK-OPS] %d %s %s operation(s) arrived after the %s %s request was already sent, so they are sent in a separate request", count, resourceType, operationType, resourceType, operationType))
+	}
+}
+
+func (m *Manager) LateFlushes() map[string]int {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	result := make(map[string]int, len(m.lateFlushes))
+	for key, count := range m.lateFlushes {
+		result[key] = count
+	}
+	return result
 }
