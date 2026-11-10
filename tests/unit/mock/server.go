@@ -34,6 +34,7 @@ type MockServer struct {
 	postPutEnrichment map[string]map[string]map[string]map[string]interface{}
 	postGetOmissions  map[string]map[string]map[string]postGetOmission
 	secretMasks       map[string]map[string]string
+	predefined        map[string]predefinedObjects
 	testLogger        testing.TB
 	versionResponse   []byte
 }
@@ -67,6 +68,43 @@ func (ms *MockServer) SetSecretMasking(path string, fields map[string]string) {
 		ms.secretMasks = make(map[string]map[string]string)
 	}
 	ms.secretMasks[path] = fields
+}
+
+type predefinedObjects struct {
+	param   string
+	apiType string
+	names   map[string]bool
+}
+
+func (ms *MockServer) SetPredefinedObjects(path, deleteParam, apiType string, names ...string) {
+	ms.mu.Lock()
+	defer ms.mu.Unlock()
+	if ms.predefined == nil {
+		ms.predefined = make(map[string]predefinedObjects)
+	}
+	set := make(map[string]bool, len(names))
+	for _, name := range names {
+		set[name] = true
+	}
+	ms.predefined[path] = predefinedObjects{param: deleteParam, apiType: apiType, names: set}
+}
+
+func (ms *MockServer) predefinedRejection(path string, queryParams map[string][]string) string {
+	objects, ok := ms.predefined[path]
+	if !ok {
+		return ""
+	}
+	var entries []string
+	for _, name := range queryParams[objects.param] {
+		if objects.names[name] {
+			entries = append(entries, objects.apiType+"|"+name+"|")
+		}
+	}
+	if len(entries) == 0 {
+		return ""
+	}
+	message, _ := json.Marshal("Object(s) could not be deleted as they are predefined objects:</br>" + strings.Join(entries, "</br>"))
+	return `{"status": "failed", "message": ` + string(message) + `}`
 }
 
 func NewMockServer(mode string) *MockServer {
@@ -243,6 +281,15 @@ func (ms *MockServer) handleRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	queryParams := r.URL.Query()
+	if r.Method == http.MethodDelete {
+		if rejection := ms.predefinedRejection(r.URL.Path, queryParams); rejection != "" {
+			ms.mu.Unlock()
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(rejection))
+			return
+		}
+	}
 	if r.Method == http.MethodPut && captured.Body != nil {
 		ms.applyPutState(r.URL.Path, captured.Body, queryParams)
 	} else if r.Method == http.MethodPatch && captured.Body != nil {
