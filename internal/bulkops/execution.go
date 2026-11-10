@@ -237,7 +237,7 @@ func (m *Manager) executeBulkOperation(ctx context.Context, config BulkOperation
 	if opErr != nil {
 		diagnostics.AddError(
 			fmt.Sprintf("Failed to execute bulk %s %s operation", config.ResourceType, config.OperationType),
-			fmt.Sprintf("Error: %s", opErr),
+			bulkErrorDetail(opErr),
 		)
 		return diagnostics
 	}
@@ -378,7 +378,7 @@ func (m *Manager) executeSingleDeleteBatch(ctx context.Context, config BulkOpera
 	if opErr != nil {
 		diagnostics.AddError(
 			fmt.Sprintf("Failed to execute bulk %s %s operation", config.ResourceType, config.OperationType),
-			fmt.Sprintf("Error: %s", opErr),
+			bulkErrorDetail(opErr),
 		)
 	}
 
@@ -779,4 +779,11 @@ func (m *Manager) ExecuteIfMultipleOperations(ctx context.Context) diag.Diagnost
 
 	tflog.Debug(ctx, "Multiple operations detected, executing in sequence", summary)
 	return m.ExecuteAllPendingOperations(ctx)
+}
+
+func bulkErrorDetail(err error) string {
+	if reason := utils.APIErrorMessage(err); reason != "" {
+		return fmt.Sprintf("Error: %s\nDetails: %s", err, reason)
+	}
+	return fmt.Sprintf("Error: %s", err)
 }
