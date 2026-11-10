@@ -5,17 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"reflect"
 	"terraform-provider-verity/internal/utils"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
-func (m *Manager) storeOperation(resourceType, resourceName, operationType string, props interface{}) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
-
+func (m *Manager) storeOperationLocked(resourceType, resourceName, operationType string, props interface{}) {
 	res, exists := m.resources[resourceType]
 	if !exists {
 		return
@@ -38,30 +34,6 @@ func (m *Manager) storeOperation(resourceType, resourceName, operationType strin
 
 	res.RecentOps = true
 	res.RecentOpTime = time.Now()
-}
-
-func (m *Manager) getBatchSize(resourceType, operationType string) int {
-	data := m.GetResourceOperationData(resourceType)
-	if data == nil {
-		return 0
-	}
-
-	switch operationType {
-	case "PUT":
-		if v := reflect.ValueOf(data.PutOperations); v.IsValid() && !v.IsNil() {
-			return v.Len()
-		}
-	case "PATCH":
-		if v := reflect.ValueOf(data.PatchOperations); v.IsValid() && !v.IsNil() {
-			return v.Len()
-		}
-	case "DELETE":
-		if data.DeleteOperations != nil {
-			return len(*data.DeleteOperations)
-		}
-		return 0
-	}
-	return 0
 }
 
 func (m *Manager) createExtractor(resourceType, operationType string) func() (map[string]interface{}, []string) {

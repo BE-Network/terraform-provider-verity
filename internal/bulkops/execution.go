@@ -77,15 +77,25 @@ func (m *Manager) hasPendingOrRecentOperations(
 	return hasPending || hasRecent
 }
 
+var afterStoreHook func()
+
 func (m *Manager) addOperation(
 	ctx context.Context,
 	resourceType string,
 	resourceName string,
+	storeKey string,
 	operationType string,
 	storeFunc func(),
 	logDetails map[string]interface{},
 ) string {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
 	storeFunc()
+
+	if afterStoreHook != nil {
+		afterStoreHook()
+	}
 
 	operationID := generateOperationID(resourceType, resourceName, operationType)
 	m.operationMutex.Lock()
@@ -94,6 +104,7 @@ func (m *Manager) addOperation(
 	m.pendingOperations[operationID] = &Operation{
 		ResourceType:  resourceType,
 		ResourceName:  resourceName,
+		StoreKey:      storeKey,
 		OperationType: operationType,
 		Status:        OperationPending,
 	}
@@ -107,6 +118,7 @@ func (m *Manager) addOperation(
 	}
 
 	if logDetails != nil {
+		logDetails["batch_size"] = m.getOperationCountLocked(resourceType, operationType)
 		logDetails["operation_id"] = operationID
 		tflog.Debug(ctx, fmt.Sprintf("Added %s to %s batch", resourceType, operationType), logDetails)
 	}
