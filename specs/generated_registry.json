@@ -27133,6 +27133,7 @@
           "patch": 10
         }
       },
+      "delete_behavior": "forget",
       "dependencies": {},
       "description": "Manages a Verity SFP Breakout",
       "fields": [

@@ -449,6 +449,12 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 	if !r.ready(&resp.Diagnostics) {
 		return
 	}
+	if r.spec.DeleteBehavior == spec.DeleteBehaviorForget {
+		resp.Diagnostics.AddWarning("Removed from Terraform state only",
+			fmt.Sprintf("%s %s is a persistent settings object and can't be deleted. It was removed from Terraform state only; its current settings remain applied on the system.", r.spec.TerraformType, r.identityOf(state)))
+		resp.State.RemoveResource(ctx)
+		return
+	}
 	if !r.spec.Operations.Delete {
 		resp.Diagnostics.AddError(
 			"Delete Not Supported",

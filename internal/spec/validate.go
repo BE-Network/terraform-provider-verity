@@ -29,6 +29,15 @@ func (r ResourceSpec) Validate() error {
 	if !r.Operations.Read || (!r.Operations.Create && !r.Operations.Update) {
 		return fmt.Errorf("resource %s: operations must include read and at least one mutation", r.TerraformType)
 	}
+	switch r.DeleteBehavior {
+	case DeleteBehaviorAPI:
+	case DeleteBehaviorForget:
+		if r.Operations.Delete {
+			return fmt.Errorf("resource %s: delete_behavior forget is only allowed when the API can't delete the object", r.TerraformType)
+		}
+	default:
+		return fmt.Errorf("resource %s: unknown delete_behavior %q", r.TerraformType, r.DeleteBehavior)
+	}
 	if err := r.API.validate(r.Operations); err != nil {
 		return fmt.Errorf("resource %s: api: %w", r.TerraformType, err)
 	}
