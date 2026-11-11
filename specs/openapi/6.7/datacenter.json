@@ -3570,7 +3570,7 @@
                             "type": "string"
                           },
                           "docs_url": {
-                            "default": "https://docs.be-net.com",
+                            "default": "",
                             "description": "Docs URL",
                             "type": "string"
                           },
@@ -6806,7 +6806,7 @@
                                   "type": "string"
                                 },
                                 "endpoint_set_num_unique_identifier": {
-                                  "default": "17943256867501",
+                                  "default": "17943423699781",
                                   "description": "Unique Identifier - not editable",
                                   "type": "string"
                                 }
@@ -12980,7 +12980,7 @@
                             "type": "string"
                           },
                           "docs_url": {
-                            "default": "https://docs.be-net.com",
+                            "default": "",
                             "description": "Docs URL",
                             "type": "string"
                           },
@@ -16216,7 +16216,7 @@
                                   "type": "string"
                                 },
                                 "endpoint_set_num_unique_identifier": {
-                                  "default": "17943256867501",
+                                  "default": "17943423699781",
                                   "description": "Unique Identifier - not editable",
                                   "type": "string"
                                 }
@@ -28410,7 +28410,7 @@
                                   "type": "string"
                                 },
                                 "endpoint_set_num_unique_identifier": {
-                                  "default": "17943256867501",
+                                  "default": "17943423699781",
                                   "description": "Unique Identifier - not editable",
                                   "type": "string"
                                 }

@@ -11320,7 +11320,6 @@
                       "api_name": "endpoint_set_num_target_upgrade_version",
                       "description": "The target SW version for member devices of the Endpoint Set",
                       "enum": [
-                        "1.9.1.42",
                         "1.9.1.43",
                         "1.9.1.44",
                         "1.9.1.45",
@@ -11382,7 +11381,6 @@
                       "api_name": "endpoint_set_for_all_others_target_upgrade_version",
                       "description": "The target SW version for member devices of the Endpoint Set",
                       "enum": [
-                        "1.9.1.42",
                         "1.9.1.43",
                         "1.9.1.44",
                         "1.9.1.45",
@@ -11470,7 +11468,6 @@
                       "api_name": "endpoint_set_for_endpointless_target_upgrade_version",
                       "description": "The target SW version for member devices of the Endpoint Set",
                       "enum": [
-                        "1.9.1.42",
                         "1.9.1.43",
                         "1.9.1.44",
                         "1.9.1.45",
@@ -30763,7 +30760,6 @@
               "api_name": "endpoint_set_num_target_upgrade_version",
               "description": "The target SW version for member devices of the Endpoint Set",
               "enum": [
-                "1.9.1.42",
                 "1.9.1.43",
                 "1.9.1.44",
                 "1.9.1.45",
@@ -30825,7 +30821,6 @@
               "api_name": "endpoint_set_for_all_others_target_upgrade_version",
               "description": "The target SW version for member devices of the Endpoint Set",
               "enum": [
-                "1.9.1.42",
                 "1.9.1.43",
                 "1.9.1.44",
                 "1.9.1.45",
@@ -30913,7 +30908,6 @@
               "api_name": "endpoint_set_for_endpointless_target_upgrade_version",
               "description": "The target SW version for member devices of the Endpoint Set",
               "enum": [
-                "1.9.1.42",
                 "1.9.1.43",
                 "1.9.1.44",
                 "1.9.1.45",

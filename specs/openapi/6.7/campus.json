@@ -3422,7 +3422,7 @@
                             "type": "string"
                           },
                           "docs_url": {
-                            "default": "https://docs.be-net.com",
+                            "default": "",
                             "description": "Docs URL",
                             "type": "string"
                           },
@@ -6809,7 +6809,6 @@
                                   "enum": [
                                     "1.9.1.45",
                                     "1.9.1.44",
-                                    "1.9.1.42",
                                     "1.9.1.43",
                                     "unmanaged"
                                   ],
@@ -6821,7 +6820,7 @@
                                   "type": "string"
                                 },
                                 "endpoint_set_num_unique_identifier": {
-                                  "default": "17942432107631",
+                                  "default": "17943301688951",
                                   "description": "Unique Identifier - not editable",
                                   "type": "string"
                                 }
@@ -6839,7 +6838,6 @@
                                   "enum": [
                                     "1.9.1.45",
                                     "1.9.1.44",
-                                    "1.9.1.42",
                                     "1.9.1.43",
                                     "unmanaged"
                                   ],
@@ -6879,7 +6877,6 @@
                                   "enum": [
                                     "1.9.1.45",
                                     "1.9.1.44",
-                                    "1.9.1.42",
                                     "1.9.1.43",
                                     "unmanaged"
                                   ],
@@ -13035,7 +13032,7 @@
                             "type": "string"
                           },
                           "docs_url": {
-                            "default": "https://docs.be-net.com",
+                            "default": "",
                             "description": "Docs URL",
                             "type": "string"
                           },
@@ -16422,7 +16419,6 @@
                                   "enum": [
                                     "1.9.1.45",
                                     "1.9.1.44",
-                                    "1.9.1.42",
                                     "1.9.1.43",
                                     "unmanaged"
                                   ],
@@ -16434,7 +16430,7 @@
                                   "type": "string"
                                 },
                                 "endpoint_set_num_unique_identifier": {
-                                  "default": "17942432107631",
+                                  "default": "17943301688951",
                                   "description": "Unique Identifier - not editable",
                                   "type": "string"
                                 }
@@ -16452,7 +16448,6 @@
                                   "enum": [
                                     "1.9.1.45",
                                     "1.9.1.44",
-                                    "1.9.1.42",
                                     "1.9.1.43",
                                     "unmanaged"
                                   ],
@@ -16492,7 +16487,6 @@
                                   "enum": [
                                     "1.9.1.45",
                                     "1.9.1.44",
-                                    "1.9.1.42",
                                     "1.9.1.43",
                                     "unmanaged"
                                   ],
@@ -28343,7 +28337,6 @@
                                   "enum": [
                                     "1.9.1.45",
                                     "1.9.1.44",
-                                    "1.9.1.42",
                                     "1.9.1.43",
                                     "unmanaged"
                                   ],
@@ -28355,7 +28348,7 @@
                                   "type": "string"
                                 },
                                 "endpoint_set_num_unique_identifier": {
-                                  "default": "17942432107631",
+                                  "default": "17943301688951",
                                   "description": "Unique Identifier - not editable",
                                   "type": "string"
                                 }
@@ -28373,7 +28366,6 @@
                                   "enum": [
                                     "1.9.1.45",
                                     "1.9.1.44",
-                                    "1.9.1.42",
                                     "1.9.1.43",
                                     "unmanaged"
                                   ],
@@ -28413,7 +28405,6 @@
                                   "enum": [
                                     "1.9.1.45",
                                     "1.9.1.44",
-                                    "1.9.1.42",
                                     "1.9.1.43",
                                     "unmanaged"
                                   ],
