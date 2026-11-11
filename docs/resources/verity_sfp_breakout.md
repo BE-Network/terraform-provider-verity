@@ -4,7 +4,7 @@ Manages a Verity SFP Breakout.
 
 Supported modes: Campus, Datacenter.
 
-This resource can only be updated. The object always exists on the Verity system, so it cannot be created or destroyed through Terraform; import it, then manage its settings.
+This resource can only be updated. The object always exists on the Verity system, so it cannot be created through Terraform; import it, then manage its settings. `terraform destroy` removes it from Terraform state only: the object and its current settings stay on the system, nothing is reset.
 
 ## Example Usage
 

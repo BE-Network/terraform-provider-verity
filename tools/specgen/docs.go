@@ -52,17 +52,18 @@ type docExample struct {
 }
 
 type docResource struct {
-	TerraformType string
-	Description   string
-	Modes         []string
-	UpdateOnly    bool
-	Identity      string
-	Examples      []docExample
-	Required      []docArgument
-	Optional      []docArgument
-	ReadOnly      []docArgument
-	References    []docReference
-	AutoAssigned  []docAutoAssignment
+	TerraformType  string
+	Description    string
+	Modes          []string
+	UpdateOnly     bool
+	ForgetOnDelete bool
+	Identity       string
+	Examples       []docExample
+	Required       []docArgument
+	Optional       []docArgument
+	ReadOnly       []docArgument
+	References     []docReference
+	AutoAssigned   []docAutoAssignment
 }
 
 func generateDocs(opts docsOptions) error {
@@ -164,10 +165,11 @@ func staleDocs(dir string, outputs map[string][]byte, keep map[string]bool) ([]s
 
 func buildDocResource(resource spec.ResourceSpec) docResource {
 	doc := docResource{
-		TerraformType: resource.TerraformType,
-		Description:   docText(resource.Description),
-		UpdateOnly:    !resource.Operations.Create,
-		Identity:      resource.IdentityPath,
+		TerraformType:  resource.TerraformType,
+		Description:    docText(resource.Description),
+		UpdateOnly:     !resource.Operations.Create,
+		ForgetOnDelete: resource.DeleteBehavior == spec.DeleteBehaviorForget,
+		Identity:       resource.IdentityPath,
 	}
 	for _, mode := range resource.Modes {
 		doc.Modes = append(doc.Modes, string(mode))

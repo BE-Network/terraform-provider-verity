@@ -50,19 +50,20 @@ type policyProfile struct {
 }
 
 type resourceOverride struct {
-	Path          string                           `yaml:"path"`
-	TerraformType string                           `yaml:"terraform_type"`
-	Description   string                           `yaml:"description"`
-	Modes         []string                         `yaml:"modes"`
-	Versions      versionRangeOverride             `yaml:"versions"`
-	IdentityPath  string                           `yaml:"identity_path"`
-	SchemaVersion int64                            `yaml:"schema_version"`
-	API           apiOverride                      `yaml:"api"`
-	Fields        []fieldOverride                  `yaml:"fields"`
-	Dependencies  spec.DependencySpec              `yaml:"dependencies"`
-	ImportStages  map[string]importStageOverride   `yaml:"import_stage"`
-	BulkOrder     map[spec.Mode]spec.BulkOrderSpec `yaml:"bulk_order"`
-	Hooks         []string                         `yaml:"hooks"`
+	Path           string                           `yaml:"path"`
+	TerraformType  string                           `yaml:"terraform_type"`
+	Description    string                           `yaml:"description"`
+	Modes          []string                         `yaml:"modes"`
+	Versions       versionRangeOverride             `yaml:"versions"`
+	IdentityPath   string                           `yaml:"identity_path"`
+	SchemaVersion  int64                            `yaml:"schema_version"`
+	API            apiOverride                      `yaml:"api"`
+	Fields         []fieldOverride                  `yaml:"fields"`
+	Dependencies   spec.DependencySpec              `yaml:"dependencies"`
+	ImportStages   map[string]importStageOverride   `yaml:"import_stage"`
+	BulkOrder      map[spec.Mode]spec.BulkOrderSpec `yaml:"bulk_order"`
+	Hooks          []string                         `yaml:"hooks"`
+	DeleteBehavior string                           `yaml:"delete_behavior"`
 }
 
 type importStageOverride struct {
@@ -310,12 +311,13 @@ func mergeResourceOverride(coverage coverageResource, override resourceOverride,
 			CacheKey:              override.API.CacheKey,
 			FixedHeaders:          override.API.FixedHeaders,
 		},
-		Operations:   operations,
-		Fields:       fields,
-		Dependencies: override.Dependencies,
-		ImportStages: importStagesFor(override.ImportStages),
-		BulkOrder:    override.BulkOrder,
-		Hooks:        override.Hooks,
+		Operations:     operations,
+		Fields:         fields,
+		Dependencies:   override.Dependencies,
+		ImportStages:   importStagesFor(override.ImportStages),
+		BulkOrder:      override.BulkOrder,
+		Hooks:          override.Hooks,
+		DeleteBehavior: spec.DeleteBehavior(override.DeleteBehavior),
 	}, nil
 }
 

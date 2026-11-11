@@ -624,6 +624,9 @@ lines, or re-import.
   `(Port Settings)` or `Compute Fabric`) can't be deleted. When the API reports an
   object as predefined, the provider removes it from Terraform state with a
   warning instead of failing; the object stays on the system.
+- **Persistent settings objects** that the API can't delete (`verity_sfp_breakout`)
+  are removed from Terraform state with a warning. The object and its current
+  settings stay on the system; nothing is reset.
 - **Objects that are still referenced** fail with the API's reason, naming the
   referencing object. The other objects in the same request are still deleted.
 - **Don't manage the same system with the GUI and Terraform at the same time.**

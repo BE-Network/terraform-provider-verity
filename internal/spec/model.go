@@ -280,17 +280,25 @@ type DependencySpec struct {
 }
 
 type ResourceSpec struct {
-	TerraformType string                   `json:"terraform_type"`
-	Description   string                   `json:"description"`
-	Modes         []Mode                   `json:"modes"`
-	Versions      VersionRange             `json:"versions"`
-	IdentityPath  string                   `json:"identity_path"`
-	SchemaVersion int64                    `json:"schema_version"`
-	API           APIResourceSpec          `json:"api"`
-	Operations    OperationSpec            `json:"operations"`
-	Fields        []FieldSpec              `json:"fields"`
-	Dependencies  DependencySpec           `json:"dependencies,omitempty"`
-	ImportStages  map[Mode]ImportStageSpec `json:"import_stages,omitempty"`
-	BulkOrder     map[Mode]BulkOrderSpec   `json:"bulk_order,omitempty"`
-	Hooks         []string                 `json:"hooks,omitempty"`
+	TerraformType  string                   `json:"terraform_type"`
+	Description    string                   `json:"description"`
+	Modes          []Mode                   `json:"modes"`
+	Versions       VersionRange             `json:"versions"`
+	IdentityPath   string                   `json:"identity_path"`
+	SchemaVersion  int64                    `json:"schema_version"`
+	API            APIResourceSpec          `json:"api"`
+	Operations     OperationSpec            `json:"operations"`
+	Fields         []FieldSpec              `json:"fields"`
+	Dependencies   DependencySpec           `json:"dependencies,omitempty"`
+	ImportStages   map[Mode]ImportStageSpec `json:"import_stages,omitempty"`
+	BulkOrder      map[Mode]BulkOrderSpec   `json:"bulk_order,omitempty"`
+	Hooks          []string                 `json:"hooks,omitempty"`
+	DeleteBehavior DeleteBehavior           `json:"delete_behavior,omitempty"`
 }
+
+type DeleteBehavior string
+
+const (
+	DeleteBehaviorAPI    DeleteBehavior = ""
+	DeleteBehaviorForget DeleteBehavior = "forget"
+)
