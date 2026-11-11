@@ -76,6 +76,11 @@ func (r *Resource) planSecrets(ctx context.Context, req resource.ModifyPlanReque
 		if resp.Diagnostics.HasError() {
 			return
 		}
+		var configured types.String
+		resp.Diagnostics.Append(req.Config.GetAttribute(ctx, attributePath, &configured)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
 		var prior types.String
 		if !creating {
 			resp.Diagnostics.Append(req.State.GetAttribute(ctx, attributePath, &prior)...)
@@ -92,7 +97,7 @@ func (r *Resource) planSecrets(ctx context.Context, req resource.ModifyPlanReque
 			case !isPlaceholder(prior):
 				resp.Diagnostics.AddAttributeError(attributePath, "Password placeholder in configuration",
 					fmt.Sprintf("%s would change to %q, which is the API's placeholder, not a password. Remove the attribute or set the real password.", field.TerraformName, planned.ValueString()))
-			default:
+			case isPlaceholder(configured):
 				resp.Diagnostics.AddAttributeWarning(attributePath, "Password placeholder in configuration",
 					fmt.Sprintf("%s is set to the API's placeholder %q, probably from an earlier import. It is not sent to the API. Remove the attribute, or set the real password if Terraform should manage it.", field.TerraformName, planned.ValueString()))
 			}
