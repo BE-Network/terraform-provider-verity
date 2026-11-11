@@ -215,3 +215,56 @@ func TestPartialDeleteInBatchedDeleteKeepsLaterBatchesRunning(t *testing.T) {
 		t.Fatalf("successfully sent %d names, want all 149 unblocked ones across sub-batches and the retry", total)
 	}
 }
+
+func TestPartialDeleteSingleLinePredefinedReply(t *testing.T) {
+	t.Parallel()
+	reply := func(_ string, names []string) string {
+		if contains(names, "(Packet Queue)") {
+			return `Cannot delete packet_queue "(Packet Queue)"  it is a predefined object`
+		}
+		return ""
+	}
+
+	t.Run("only the predefined object", func(t *testing.T) {
+		t.Parallel()
+		server, calls := deleteRejectingServer(t, "packet_queue_name", reply)
+		mgr := bulkops.GetManager(newTestClient(server.URL), nopClearCache, nil, "datacenter")
+		ctx := context.Background()
+		predefined := mgr.AddDelete(ctx, "packet_queue", "(Packet Queue)")
+
+		if diags, _ := mgr.ExecuteDatacenterOperations(ctx); diags.HasError() {
+			t.Fatalf("a lone predefined object must not fail the delete: %v", diags)
+		}
+		if err := waitFor(t, mgr, predefined); err != nil {
+			t.Fatal(err)
+		}
+		if warning := mgr.OperationWarning(predefined); !strings.Contains(warning, "predefined") {
+			t.Fatalf("warning = %q", warning)
+		}
+		if got := calls(); len(got) != 1 {
+			t.Fatalf("calls = %+v, want no retry when nothing else is left", got)
+		}
+	})
+
+	t.Run("predefined and ordinary objects", func(t *testing.T) {
+		t.Parallel()
+		server, calls := deleteRejectingServer(t, "packet_queue_name", reply)
+		mgr := bulkops.GetManager(newTestClient(server.URL), nopClearCache, nil, "datacenter")
+		ctx := context.Background()
+		predefined := mgr.AddDelete(ctx, "packet_queue", "(Packet Queue)")
+		ordinary := mgr.AddDelete(ctx, "packet_queue", "Queue A")
+
+		if diags, _ := mgr.ExecuteDatacenterOperations(ctx); diags.HasError() {
+			t.Fatalf("unexpected error: %v", diags)
+		}
+		for _, id := range []string{predefined, ordinary} {
+			if err := waitFor(t, mgr, id); err != nil {
+				t.Fatal(err)
+			}
+		}
+		got := calls()
+		if len(got) != 2 || len(got[1].names) != 1 || got[1].names[0] != "Queue A" {
+			t.Fatalf("calls = %+v, want the original request and a retry with only Queue A", got)
+		}
+	})
+}

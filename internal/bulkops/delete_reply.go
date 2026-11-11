@@ -22,6 +22,7 @@ type DeleteBlock struct {
 var (
 	deleteReplyHeader     = regexp.MustCompile(`^Object\(s\) could not be deleted as they are (.+):$`)
 	deleteReplyEntry      = regexp.MustCompile(`^([A-Za-z0-9_]+)\|([^|]*)\|(.*)$`)
+	deleteReplyPredefined = regexp.MustCompile(`^Cannot delete ([A-Za-z0-9_]+) "([^"]*)"\s+it is a predefined object$`)
 	deleteReplyUnresolved = regexp.MustCompile(`^Cannot resolve object reference: ([A-Za-z0-9_]+) "([^"]*)" is missing from the database or import payload, but is referenced by ([A-Za-z0-9_]+) "([^"]*)"$`)
 )
 
@@ -67,6 +68,12 @@ func ParseDeleteReply(message string, requested []string) (map[string]DeleteBloc
 			}
 			category = known
 			entries = 0
+			continue
+		}
+		if match := deleteReplyPredefined.FindStringSubmatch(line); match != nil {
+			if !record(match[2], DeleteBlock{Category: DeleteBlockedPredefined, Reason: "it is a predefined object"}) {
+				return nil, false
+			}
 			continue
 		}
 		if match := deleteReplyUnresolved.FindStringSubmatch(line); match != nil {

@@ -9,11 +9,12 @@ import (
 )
 
 const (
-	replyPredefined = `{"status": "failed", "message": "Object(s) could not be deleted as they are predefined objects:</br>eth_device_profile|(Device Settings)|"}`
-	replyReferenced = `{"status": "failed", "message": "Object(s) could not be deleted as they are referenced by other objects:</br>threshold|Threshold A| could not be deleted as it was referenced by threshold_group|Group A|</br>threshold|Threshold B| could not be deleted as it was referenced by threshold_group|Group B|</br>"}`
-	replyInUse      = `{"status": "failed", "message": "Object(s) could not be deleted as they are being used by users:</br>archipelago|Fabric A| could not be deleted as it is being viewed by users user_state|User State 8| and user_state|User State 18|"}`
-	replyUnresolved = `{"status": "failed", "message": "Cannot resolve object reference: badges \"Badge A\" is missing from the database or import payload, but is referenced by system_sections \"System Sections BlackBox\""}`
-	replyMixed      = `{"status": "failed", "message": "Object(s) could not be deleted as they are predefined objects:</br>packet_queue|(Packet Queue)|</br>Object(s) could not be deleted as they are referenced by other objects:</br>packet_queue|Queue A| could not be deleted as it was referenced by eth_device_profile|Settings A|"}`
+	replyPredefined       = `{"status": "failed", "message": "Object(s) could not be deleted as they are predefined objects:</br>eth_device_profile|(Device Settings)|"}`
+	replyReferenced       = `{"status": "failed", "message": "Object(s) could not be deleted as they are referenced by other objects:</br>threshold|Threshold A| could not be deleted as it was referenced by threshold_group|Group A|</br>threshold|Threshold B| could not be deleted as it was referenced by threshold_group|Group B|</br>"}`
+	replyInUse            = `{"status": "failed", "message": "Object(s) could not be deleted as they are being used by users:</br>archipelago|Fabric A| could not be deleted as it is being viewed by users user_state|User State 8| and user_state|User State 18|"}`
+	replyUnresolved       = `{"status": "failed", "message": "Cannot resolve object reference: badges \"Badge A\" is missing from the database or import payload, but is referenced by system_sections \"System Sections BlackBox\""}`
+	replyPredefinedSingle = `{"status": "failed", "message": "Cannot delete packet_queue \"(Packet Queue)\"  it is a predefined object"}`
+	replyMixed            = `{"status": "failed", "message": "Object(s) could not be deleted as they are predefined objects:</br>packet_queue|(Packet Queue)|</br>Object(s) could not be deleted as they are referenced by other objects:</br>packet_queue|Queue A| could not be deleted as it was referenced by eth_device_profile|Settings A|"}`
 )
 
 type replyError struct{ body string }
@@ -53,6 +54,11 @@ func TestParseDeleteReplyAcceptsKnownShapes(t *testing.T) {
 			requested: []string{"Badge A", "Badge B"},
 			want: map[string]DeleteBlock{"Badge A": {Category: DeleteBlockedUnresolved,
 				Reason: `deleting it would leave system_sections "System Sections BlackBox" with a reference to a missing object`}},
+		},
+		"predefined, single-line format": {
+			body:      replyPredefinedSingle,
+			requested: []string{"(Packet Queue)"},
+			want:      map[string]DeleteBlock{"(Packet Queue)": {Category: DeleteBlockedPredefined, Reason: "it is a predefined object"}},
 		},
 		"several categories in one reply": {
 			body:      replyMixed,
@@ -109,6 +115,18 @@ func TestParseDeleteReplyRejectsAnythingNotFullyUnderstood(t *testing.T) {
 			requested: []string{"Threshold A"},
 		},
 		"empty": {message: "", requested: []string{"Threshold A"}},
+		"single-line predefined, name not in the request": {
+			message:   reason(replyPredefinedSingle),
+			requested: []string{"Queue A"},
+		},
+		"single-line predefined with trailing text": {
+			message:   `Cannot delete packet_queue "(Packet Queue)"  it is a predefined object, sorry`,
+			requested: []string{"(Packet Queue)"},
+		},
+		"single-line with a different verb": {
+			message:   `Cannot update packet_queue "(Packet Queue)"  it is a predefined object`,
+			requested: []string{"(Packet Queue)"},
+		},
 		"category header with no entries after a valid one (truncated)": {
 			message:   "Object(s) could not be deleted as they are predefined objects:\npacket_queue|(Packet Queue)|\nObject(s) could not be deleted as they are referenced by other objects:",
 			requested: []string{"(Packet Queue)", "Queue A"},
