@@ -322,6 +322,11 @@ func TestFlagToggleDoesNotResendPlaceholder(t *testing.T) {
 
 func runModifyPlan(t *testing.T, r *Resource, prior map[string]attr.Value, planned map[string]attr.Value) diag.Diagnostics {
 	t.Helper()
+	return runModifyPlanWithConfig(t, r, prior, planned, planned)
+}
+
+func runModifyPlanWithConfig(t *testing.T, r *Resource, prior, planned, configured map[string]attr.Value) diag.Diagnostics {
+	t.Helper()
 	ctx := context.Background()
 	object := func(values map[string]attr.Value) types.Object {
 		value, diags := types.ObjectValue(attributeTypes(r.spec.Fields), values)
@@ -334,7 +339,11 @@ func runModifyPlan(t *testing.T, r *Resource, prior map[string]attr.Value, plann
 	if diags := plan.Set(ctx, object(planned)); diags.HasError() {
 		t.Fatal(diags)
 	}
-	config := tfsdk.Config{Schema: r.schema, Raw: plan.Raw}
+	configPlan := tfsdk.Plan{Schema: r.schema}
+	if diags := configPlan.Set(ctx, object(configured)); diags.HasError() {
+		t.Fatal(diags)
+	}
+	config := tfsdk.Config{Schema: r.schema, Raw: configPlan.Raw}
 	state := tfsdk.State{Schema: r.schema, Raw: tftypes.NewValue(r.schema.Type().TerraformType(ctx), nil)}
 	if prior != nil {
 		if diags := state.Set(ctx, object(prior)); diags.HasError() {
@@ -535,5 +544,15 @@ func TestResendPlaintextOnlyWhenTurningTheFlagOff(t *testing.T) {
 	resendPlaintextOnFlagOff(fields, values, values, object)
 	if _, present := object["ssh_key_or_password"]; present {
 		t.Fatalf("the password must not be resent with an unrelated update: %v", object)
+	}
+}
+
+func TestPlanSecretsPlaceholderOnlyInStateIsSilent(t *testing.T) {
+	t.Parallel()
+	r := secretResource(t, &readRuntime{mode: "datacenter"})
+	fromState := secretValues(map[string]attr.Value{"ssh_key_or_password_encrypted": types.StringValue(placeholder)})
+	unconfigured := secretValues(map[string]attr.Value{"ssh_key_or_password_encrypted": types.StringNull()})
+	if diags := runModifyPlanWithConfig(t, r, fromState, fromState, unconfigured); len(diags) != 0 {
+		t.Fatalf("a placeholder that only comes from state must not produce diagnostics, got: %s", diagnosticText(diags))
 	}
 }
