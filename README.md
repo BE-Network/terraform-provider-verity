@@ -627,6 +627,10 @@ lines, or re-import.
 - **Persistent settings objects** that the API can't delete (`verity_sfp_breakout`)
   are removed from Terraform state with a warning. The object and its current
   settings stay on the system; nothing is reset.
+- **Route map clauses that reference a tenant** (`match_vrf`): when a clause and
+  the tenant it references are destroyed together, the provider first clears the
+  clause's `match_vrf`, so the tenant can be deleted. Clauses that stay are never
+  changed.
 - **Objects that are still referenced** fail with the API's reason, naming the
   referencing object. The other objects in the same request are still deleted.
 - **Don't manage the same system with the GUI and Terraform at the same time.**

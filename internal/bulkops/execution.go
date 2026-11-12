@@ -706,6 +706,7 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 		return diagnostics, operationsPerformed
 	}
 
+	m.clearMatchVrfBeforeDeletes(ctx)
 	if !execution.executeSequence("DELETE", datacenterDeleteOrder) {
 		return diagnostics, operationsPerformed
 	}
@@ -726,6 +727,7 @@ func (m *Manager) ExecuteCampusOperations(ctx context.Context) (diag.Diagnostics
 		return diagnostics, operationsPerformed
 	}
 
+	m.clearMatchVrfBeforeDeletes(ctx)
 	if !execution.executeSequence("DELETE", campusDeleteOrder) {
 		return diagnostics, operationsPerformed
 	}
