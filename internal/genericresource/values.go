@@ -429,11 +429,13 @@ func stateFromAPI(fields []spec.FieldSpec, data map[string]interface{}, mode str
 			continue
 		}
 		if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
-			decode := singletonFromAPI
+			var decoded attr.Value
+			var err error
 			if field.Kind == spec.FieldKindList {
-				decode = listFromAPI
+				decoded, err = orderedListFromAPI(field, raw, mode, prior[field.TerraformName])
+			} else {
+				decoded, err = singletonFromAPI(field, raw, mode)
 			}
-			decoded, err := decode(field, raw, mode)
 			if err != nil {
 				return nil, err
 			}

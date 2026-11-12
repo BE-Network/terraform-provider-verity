@@ -48,6 +48,11 @@ func (g genericRuntime) FetchCollection(ctx context.Context, resourceSpec spec.R
 	)
 }
 
+func (g genericRuntime) FetchCollectionStrict(ctx context.Context, resourceSpec spec.ResourceSpec) (map[string]interface{}, error) {
+	return transport.FetchCollectionStrict(ctx, g.provCtx.client, resourceSpec.TerraformType,
+		resourceSpec.API.EndpointPath, resourceSpec.API.FixedHeaders, resourceSpec.API.ResponseCollectionKey)
+}
+
 func (g genericRuntime) get(ctx context.Context, resourceSpec spec.ResourceSpec) (map[string]interface{}, error) {
 	return transport.FetchCollection(ctx, g.provCtx.client, resourceSpec.TerraformType,
 		resourceSpec.API.EndpointPath, resourceSpec.API.FixedHeaders, resourceSpec.API.ResponseCollectionKey)

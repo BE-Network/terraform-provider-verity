@@ -304,6 +304,10 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	if !r.ready(&resp.Diagnostics) {
 		return
 	}
+	if !r.spec.Operations.Create && r.spec.CreateBehavior == spec.CreateBehaviorAdoptExisting {
+		r.adopt(ctx, req, resp, plan)
+		return
+	}
 	if !r.spec.Operations.Create {
 
 		resp.Diagnostics.AddError(

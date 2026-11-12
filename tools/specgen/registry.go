@@ -64,6 +64,7 @@ type resourceOverride struct {
 	BulkOrder      map[spec.Mode]spec.BulkOrderSpec `yaml:"bulk_order"`
 	Hooks          []string                         `yaml:"hooks"`
 	DeleteBehavior string                           `yaml:"delete_behavior"`
+	CreateBehavior string                           `yaml:"create_behavior"`
 }
 
 type importStageOverride struct {
@@ -318,6 +319,7 @@ func mergeResourceOverride(coverage coverageResource, override resourceOverride,
 		BulkOrder:      override.BulkOrder,
 		Hooks:          override.Hooks,
 		DeleteBehavior: spec.DeleteBehavior(override.DeleteBehavior),
+		CreateBehavior: spec.CreateBehavior(override.CreateBehavior),
 	}, nil
 }
 

@@ -84,9 +84,8 @@ func TestGenericMatchesLegacyOnIndexedCollections(t *testing.T) {
 		{
 
 			name: "entries are reordered", terraformType: "verity_mac_filter",
-			create:  macFilter("", filter("1", "00:11:22:33:44:55", true), filter("2", "66:77:88:99:aa:bb", false)),
-			update:  macFilter("", filter("2", "66:77:88:99:aa:bb", false), filter("1", "00:11:22:33:44:55", true)),
-			outcome: lifecycleOutcome{driftAfterApply: true},
+			create: macFilter("", filter("1", "00:11:22:33:44:55", true), filter("2", "66:77:88:99:aa:bb", false)),
+			update: macFilter("", filter("2", "66:77:88:99:aa:bb", false), filter("1", "00:11:22:33:44:55", true)),
 		},
 		{
 
