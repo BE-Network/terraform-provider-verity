@@ -281,27 +281,7 @@ import {
 }
 
 import {
-  to = verity_operation_stage.route_map_clause_stage
-  id = "stage"
-}
-
-import {
-  to = verity_operation_stage.pb_routing_acl_stage
-  id = "stage"
-}
-
-import {
-  to = verity_operation_stage.route_map_stage
-  id = "stage"
-}
-
-import {
-  to = verity_operation_stage.pb_routing_stage
-  id = "stage"
-}
-
-import {
-  to = verity_operation_stage.tenant_stage
+  to = verity_operation_stage.route_map_tenant_stage
   id = "stage"
 }
 

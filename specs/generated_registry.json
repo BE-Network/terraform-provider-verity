@@ -461,7 +461,7 @@
         },
         "datacenter": {
           "name": "device_aaa_profile_stage",
-          "order": 25
+          "order": 21
         }
       },
       "modes": [
@@ -2513,7 +2513,7 @@
         },
         "datacenter": {
           "name": "badge_stage",
-          "order": 37
+          "order": 33
         }
       },
       "modes": [
@@ -3880,7 +3880,7 @@
         },
         "datacenter": {
           "name": "bundle_stage",
-          "order": 41
+          "order": 37
         }
       },
       "modes": [
@@ -5483,7 +5483,7 @@
         },
         "datacenter": {
           "name": "device_settings_stage",
-          "order": 32
+          "order": 28
         }
       },
       "modes": [
@@ -7565,7 +7565,7 @@
         },
         "datacenter": {
           "name": "diagnostics_port_profile_stage",
-          "order": 31
+          "order": 27
         }
       },
       "modes": [
@@ -8072,7 +8072,7 @@
         },
         "datacenter": {
           "name": "diagnostics_profile_stage",
-          "order": 34
+          "order": 30
         }
       },
       "modes": [
@@ -8990,7 +8990,7 @@
         },
         "datacenter": {
           "name": "eth_port_profile_stage",
-          "order": 26
+          "order": 22
         }
       },
       "modes": [
@@ -10725,7 +10725,7 @@
         },
         "datacenter": {
           "name": "eth_port_settings_stage",
-          "order": 36
+          "order": 32
         }
       },
       "modes": [
@@ -13351,7 +13351,7 @@
         },
         "datacenter": {
           "name": "fabric_stage",
-          "order": 17
+          "order": 13
         }
       },
       "modes": [
@@ -13440,7 +13440,7 @@
         },
         "datacenter": {
           "name": "fabric_collection_stage",
-          "order": 16
+          "order": 12
         }
       },
       "modes": [
@@ -14897,7 +14897,7 @@
       "import_stages": {
         "datacenter": {
           "name": "gateway_stage",
-          "order": 29
+          "order": 25
         }
       },
       "modes": [
@@ -15213,7 +15213,7 @@
       "import_stages": {
         "datacenter": {
           "name": "gateway_profile_stage",
-          "order": 35
+          "order": 31
         }
       },
       "modes": [
@@ -15644,7 +15644,7 @@
         },
         "datacenter": {
           "name": "grouping_rule_stage",
-          "order": 43
+          "order": 39
         }
       },
       "modes": [
@@ -15779,7 +15779,7 @@
       "import_stages": {
         "datacenter": {
           "name": "ipv4_list_stage",
-          "order": 22
+          "order": 18
         }
       },
       "modes": [
@@ -16285,7 +16285,7 @@
       "import_stages": {
         "datacenter": {
           "name": "ipv6_list_stage",
-          "order": 21
+          "order": 17
         }
       },
       "modes": [
@@ -17171,7 +17171,7 @@
         },
         "datacenter": {
           "name": "lag_stage",
-          "order": 33
+          "order": 29
         }
       },
       "modes": [
@@ -18495,7 +18495,7 @@
         },
         "datacenter": {
           "name": "ldap_profile_stage",
-          "order": 19
+          "order": 15
         }
       },
       "modes": [
@@ -19054,7 +19054,7 @@
         },
         "datacenter": {
           "name": "monitoring_acl_stage",
-          "order": 15
+          "order": 11
         }
       },
       "modes": [
@@ -20103,7 +20103,7 @@
       "import_stages": {
         "datacenter": {
           "name": "packet_broker_stage",
-          "order": 27
+          "order": 23
         }
       },
       "modes": [
@@ -20498,7 +20498,7 @@
         },
         "datacenter": {
           "name": "packet_queue_stage",
-          "order": 24
+          "order": 20
         }
       },
       "modes": [
@@ -20808,7 +20808,7 @@
         },
         "datacenter": {
           "name": "pair_stage",
-          "order": 47
+          "order": 43
         }
       },
       "modes": [
@@ -21068,8 +21068,8 @@
       "identity_path": "name",
       "import_stages": {
         "datacenter": {
-          "name": "pb_routing_stage",
-          "order": 12
+          "name": "route_map_tenant_stage",
+          "order": 9
         }
       },
       "modes": [
@@ -21846,8 +21846,8 @@
       "identity_path": "name",
       "import_stages": {
         "datacenter": {
-          "name": "pb_routing_acl_stage",
-          "order": 10
+          "name": "route_map_tenant_stage",
+          "order": 9
         }
       },
       "modes": [
@@ -22077,7 +22077,7 @@
       "import_stages": {
         "datacenter": {
           "name": "plane_stage",
-          "order": 38
+          "order": 34
         }
       },
       "modes": [
@@ -22335,7 +22335,7 @@
       "import_stages": {
         "datacenter": {
           "name": "pod_stage",
-          "order": 23
+          "order": 19
         }
       },
       "modes": [
@@ -23088,7 +23088,7 @@
         },
         "datacenter": {
           "name": "port_acl_stage",
-          "order": 20
+          "order": 16
         }
       },
       "modes": [
@@ -23319,7 +23319,7 @@
       "import_stages": {
         "datacenter": {
           "name": "rack_stage",
-          "order": 40
+          "order": 36
         }
       },
       "modes": [
@@ -23640,8 +23640,8 @@
       "identity_path": "name",
       "import_stages": {
         "datacenter": {
-          "name": "route_map_stage",
-          "order": 11
+          "name": "route_map_tenant_stage",
+          "order": 9
         }
       },
       "modes": [
@@ -25206,7 +25206,7 @@
       "identity_path": "name",
       "import_stages": {
         "datacenter": {
-          "name": "route_map_clause_stage",
+          "name": "route_map_tenant_stage",
           "order": 9
         }
       },
@@ -26162,7 +26162,7 @@
         },
         "datacenter": {
           "name": "service_stage",
-          "order": 14
+          "order": 10
         }
       },
       "modes": [
@@ -26946,7 +26946,7 @@
         },
         "datacenter": {
           "name": "sflow_collector_stage",
-          "order": 28
+          "order": 24
         }
       },
       "modes": [
@@ -27451,7 +27451,7 @@
       "import_stages": {
         "datacenter": {
           "name": "spine_plane_stage",
-          "order": 39
+          "order": 35
         }
       },
       "modes": [
@@ -27681,7 +27681,7 @@
       "import_stages": {
         "datacenter": {
           "name": "ssp_group_stage",
-          "order": 42
+          "order": 38
         }
       },
       "modes": [
@@ -28411,7 +28411,7 @@
       "import_stages": {
         "datacenter": {
           "name": "su_stage",
-          "order": 30
+          "order": 26
         }
       },
       "modes": [
@@ -32368,7 +32368,7 @@
         },
         "datacenter": {
           "name": "switchpoint_stage",
-          "order": 44
+          "order": 40
         }
       },
       "modes": [
@@ -32755,7 +32755,7 @@
         },
         "datacenter": {
           "name": "tacacs_profile_stage",
-          "order": 18
+          "order": 14
         }
       },
       "modes": [
@@ -33774,8 +33774,8 @@
       "identity_path": "name",
       "import_stages": {
         "datacenter": {
-          "name": "tenant_stage",
-          "order": 13
+          "name": "route_map_tenant_stage",
+          "order": 9
         }
       },
       "modes": [
@@ -34486,7 +34486,7 @@
         },
         "datacenter": {
           "name": "threshold_stage",
-          "order": 45
+          "order": 41
         }
       },
       "modes": [
@@ -35134,7 +35134,7 @@
         },
         "datacenter": {
           "name": "threshold_group_stage",
-          "order": 46
+          "order": 42
         }
       },
       "modes": [

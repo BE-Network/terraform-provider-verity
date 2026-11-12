@@ -55,43 +55,15 @@ resource "verity_operation_stage" "acl_v4_stage" {
   }
 }
 
-resource "verity_operation_stage" "route_map_clause_stage" {
+resource "verity_operation_stage" "route_map_tenant_stage" {
   depends_on = [verity_operation_stage.acl_v4_stage]
   lifecycle {
     create_before_destroy = true
   }
 }
 
-resource "verity_operation_stage" "pb_routing_acl_stage" {
-  depends_on = [verity_operation_stage.route_map_clause_stage]
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "verity_operation_stage" "route_map_stage" {
-  depends_on = [verity_operation_stage.pb_routing_acl_stage]
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "verity_operation_stage" "pb_routing_stage" {
-  depends_on = [verity_operation_stage.route_map_stage]
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "verity_operation_stage" "tenant_stage" {
-  depends_on = [verity_operation_stage.pb_routing_stage]
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
 resource "verity_operation_stage" "service_stage" {
-  depends_on = [verity_operation_stage.tenant_stage]
+  depends_on = [verity_operation_stage.route_map_tenant_stage]
   lifecycle {
     create_before_destroy = true
   }

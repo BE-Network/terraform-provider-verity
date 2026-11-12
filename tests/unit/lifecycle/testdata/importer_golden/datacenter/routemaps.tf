@@ -1,7 +1,7 @@
 
 resource "verity_route_map" "Changes_BGP-RouteMaps" {
     name = "Changes_BGP-RouteMaps"
-    depends_on = [verity_operation_stage.route_map_stage]
+    depends_on = [verity_operation_stage.route_map_tenant_stage]
 	object_properties {
 		notes = ""
 	}
@@ -17,7 +17,7 @@ resource "verity_route_map" "Changes_BGP-RouteMaps" {
 
 resource "verity_route_map" "Route_Map" {
     name = "Route Map"
-    depends_on = [verity_operation_stage.route_map_stage]
+    depends_on = [verity_operation_stage.route_map_tenant_stage]
 	object_properties {
 		notes = ""
 	}

@@ -18,9 +18,9 @@ func TestRegistryValidateImportStages(t *testing.T) {
 		want string
 	}{
 		{"missing stage", func(r Registry) { delete(r[1].ImportStages, ModeDatacenter) }, "declares no import stage"},
-		{"duplicate name", func(r Registry) {
+		{"shared name with another order", func(r Registry) {
 			r[1].ImportStages[ModeDatacenter] = ImportStageSpec{Name: "datacenter_one", Order: 2}
-		}, "declared by both"},
+		}, "declared with order 1"},
 		{"duplicate order", func(r Registry) {
 			r[1].ImportStages[ModeDatacenter] = ImportStageSpec{Name: "datacenter_two", Order: 1}
 		}, "order 1 is declared by both"},
@@ -39,6 +39,14 @@ func TestRegistryValidateImportStages(t *testing.T) {
 				t.Fatalf("Validate() error = %v, want substring %q", err, test.want)
 			}
 		})
+	}
+}
+
+func TestRegistryAcceptsASharedImportStage(t *testing.T) {
+	registry := validImportStageRegistry()
+	registry[1].ImportStages[ModeDatacenter] = ImportStageSpec{Name: "datacenter_one", Order: 1}
+	if err := registry.Validate(); err != nil {
+		t.Fatalf("two resources sharing one stage must be valid: %v", err)
 	}
 }
 

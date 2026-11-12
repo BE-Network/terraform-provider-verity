@@ -1,7 +1,7 @@
 
 resource "verity_tenant" "tenant_test1" {
     name = "tenant_test1"
-    depends_on = [verity_operation_stage.tenant_stage]
+    depends_on = [verity_operation_stage.route_map_tenant_stage]
 	default_originate = false
 	dhcp_relay_source_ipv4s_subnet = ""
 	dhcp_relay_source_ipv6s_subnet = ""
