@@ -425,6 +425,13 @@ func (m *Manager) updateOperationStatuses(ctx context.Context, resourceType, ope
 
 			if resourceMap[op.ResourceName] {
 				updatedOp := op
+				if m.isHeldLocked(op.ResourceType, operationType, op.ResourceName) {
+					if opErr == nil {
+						op.ExecutionStartTime = time.Time{}
+						continue
+					}
+					delete(m.heldPuts, op.ResourceName)
+				}
 				if opErr == nil {
 
 					updatedOp.Status = OperationSucceeded
@@ -682,6 +689,19 @@ func (s orderedExecutionState) execute(opType string, count int, execFunc func(c
 	return true
 }
 
+func (s orderedExecutionState) restoreMatchVrf() bool {
+	err := s.manager.restoreMatchVrf(s.ctx)
+	if err == nil {
+		return true
+	}
+	*s.operationsPerformed = true
+	s.diagnostics.AddError("Failed to set match_vrf on route map clauses", err.Error())
+	tflog.Error(s.ctx, fmt.Sprintf("[BULK-OPS] <<< FAILED route_map_clause match_vrf restore — aborting remaining operations: %v", err))
+	s.manager.failHeld(err)
+	s.manager.FailAllPendingOperations(s.ctx, err)
+	return false
+}
+
 func (s orderedExecutionState) executeSequence(opType string, resourceTypes []string) bool {
 	for _, resourceType := range resourceTypes {
 		if !s.execute(opType, s.manager.getOperationCount(resourceType, opType), func(ctx context.Context) diag.Diagnostics {
@@ -698,7 +718,17 @@ func (m *Manager) ExecuteDatacenterOperations(ctx context.Context) (diag.Diagnos
 	operationsPerformed := false
 	execution := orderedExecutionState{m, ctx, &diagnostics, &operationsPerformed}
 
-	if !execution.executeSequence("PUT", datacenterPutOrder) {
+	head, tail := splitAfter(datacenterPutOrder, "tenant")
+	m.armMatchVrfHold()
+	defer m.disarmMatchVrfHold(fmt.Errorf("match_vrf was not set because the apply stopped before the tenant step completed"))
+	if !execution.executeSequence("PUT", head) {
+		m.failHeld(fmt.Errorf("match_vrf was not set because a PUT request in the same apply failed: %s", firstErrorDetail(diagnostics)))
+		return diagnostics, operationsPerformed
+	}
+	if !execution.restoreMatchVrf() {
+		return diagnostics, operationsPerformed
+	}
+	if !execution.executeSequence("PUT", tail) {
 		return diagnostics, operationsPerformed
 	}
 

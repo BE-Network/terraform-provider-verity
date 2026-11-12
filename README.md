@@ -618,6 +618,17 @@ imported by older provider versions still contain `port_name` lines; Terraform
 rejects them ("Invalid Configuration for Read-Only Attribute"). Remove those
 lines, or re-import.
 
+## Route Map Clauses and Tenants
+
+A route map clause can reference a tenant (`match_vrf`), and a tenant references
+route maps, which reference clauses. When a clause is created together with the
+tenant it references, the provider creates the clause without `match_vrf` and
+sets it right after the tenant is created. If setting it fails, the apply stops
+with the reason, and the next `terraform apply` sets it. Both objects need to be
+created in the same apply step: if the tenant is created later than the clause
+(for example because the parallelism is lower than the number of objects), the
+API can reject the clause.
+
 ## Destroying Objects
 
 - **Predefined objects** (for example `(Device Settings)`, `(Packet Queue)`,

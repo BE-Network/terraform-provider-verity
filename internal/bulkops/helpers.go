@@ -129,6 +129,12 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 			},
 		}
 
+		if config.ResourceType == routeMapClauseType {
+			checker.KeepOpen = func(name string, existing interface{}) bool {
+				return m.keepClauseOpen(name, existing, originalOperations[name])
+			}
+		}
+
 		filteredNames, err := m.FilterPreExistingResources(ctx, resourceNames, checker)
 		if err != nil {
 			return resourceNames, nil, err
@@ -376,11 +382,15 @@ func (m *Manager) FilterPreExistingResources(
 
 	var notExistingResources []string
 	alreadyExistingResources := make(map[string]bool)
+	keptOpen := make(map[string]bool)
 
 	for _, name := range resourceNames {
-		if _, exists := existingResources[name]; exists {
+		if existing, exists := existingResources[name]; exists {
 
 			alreadyExistingResources[name] = true
+			if checker.KeepOpen != nil && checker.KeepOpen(name, existing) {
+				keptOpen[name] = true
+			}
 			tflog.Info(ctx, fmt.Sprintf("Skipping creation of %s '%s' as it already exists",
 				checker.ResourceType, name))
 		} else {
@@ -397,6 +407,16 @@ func (m *Manager) FilterPreExistingResources(
 			if op.ResourceType == checker.ResourceType &&
 				op.OperationType == checker.OperationType &&
 				alreadyExistingResources[op.ResourceName] {
+
+				if keptOpen[op.ResourceName] {
+					if op.Status == OperationPending || op.Status == OperationExecuting {
+						updatedOp := *op
+						updatedOp.Status = OperationExecuting
+						updatedOp.ExecutionStartTime = time.Time{}
+						m.pendingOperations[opID] = &updatedOp
+					}
+					continue
+				}
 
 				updatedOp := *op
 				updatedOp.Status = OperationSucceeded

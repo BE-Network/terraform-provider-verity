@@ -92,6 +92,9 @@ func (m *Manager) ExecuteBulk(ctx context.Context, resourceType, operationType s
 		OperationType: operationType,
 		ExtractOperations: func() (map[string]interface{}, []string) {
 			operations, names := extract()
+			if resourceType == routeMapClauseType && operationType == "PUT" {
+				m.holdMatchVrfAtExtraction(ctx, operations)
+			}
 			m.noteFlush(ctx, resourceType, operationType, len(names))
 			return operations, names
 		},
