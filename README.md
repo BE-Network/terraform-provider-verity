@@ -175,11 +175,21 @@ dependency graph also affect how operations are grouped.
 
 The provider is designed for high parallelism. Don't lower it to work around
 errors: that splits resource types across more requests and makes large runs
-much slower. For larger applies, the existing `500` setting is a starting point.
-Adjust it to your environment rather than treating it as a requirement or a
-guarantee that all operations fit into one request. When operations of a type
-arrive after that type's request was already sent, the provider logs a
-`[BULK-OPS]` warning.
+much slower.
+
+**Recommendation: set parallelism above the number of resources in your
+configuration** (`terraform state list | wc -l` after an import gives the
+count). Then every resource type is sent in one request per run, and the
+provider's per-type order (create referenced objects first, delete them last)
+covers references between objects. With a lower value, a type can be split
+across several requests, and objects can be sent before or after the objects
+they reference, which the API rejects. In testing, about 310 resources ran
+cleanly at `-parallelism=1500`. The examples below use `500`; raise it for larger
+configurations.
+
+When operations of a type arrive after that type's request was already sent,
+the provider logs a `[BULK-OPS]` warning; that's a sign the parallelism is too
+low.
 
 Set it for `destroy` as well. `TF_CLI_ARGS_apply` does not apply to
 `terraform destroy`, which otherwise runs at Terraform's default of 10.
