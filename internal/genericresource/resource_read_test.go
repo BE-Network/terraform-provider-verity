@@ -38,6 +38,11 @@ func (f *readRuntime) FetchCollection(_ context.Context, s spec.ResourceSpec, _ 
 	f.fetchedSpec = s
 	return f.collection, nil
 }
+func (f *readRuntime) FetchCollectionStrict(_ context.Context, s spec.ResourceSpec) (map[string]interface{}, error) {
+	f.fetches++
+	f.fetchedSpec = s
+	return f.collection, nil
+}
 func (*readRuntime) ConfiguredAttributes(context.Context, string, string) *utils.ConfiguredAttributes {
 	return nil
 }

@@ -294,7 +294,15 @@ type ResourceSpec struct {
 	BulkOrder      map[Mode]BulkOrderSpec   `json:"bulk_order,omitempty"`
 	Hooks          []string                 `json:"hooks,omitempty"`
 	DeleteBehavior DeleteBehavior           `json:"delete_behavior,omitempty"`
+	CreateBehavior CreateBehavior           `json:"create_behavior,omitempty"`
 }
+
+type CreateBehavior string
+
+const (
+	CreateBehaviorAPI           CreateBehavior = ""
+	CreateBehaviorAdoptExisting CreateBehavior = "adopt_existing"
+)
 
 type DeleteBehavior string
 

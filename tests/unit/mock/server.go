@@ -466,13 +466,22 @@ func (ms *MockServer) applyPatchState(path string, body map[string]interface{}, 
 			for _, key := range keysToMerge {
 
 				if ms.resourceState[path] == nil || ms.resourceState[path][key] == nil {
-
-					ms.applyPutState(path, body, queryParams)
-					return
+					base, seeded := ms.baseObject(path, key, resourceName)
+					if !seeded {
+						ms.applyPutState(path, body, queryParams)
+						return
+					}
+					if ms.resourceState[path] == nil {
+						ms.resourceState[path] = make(map[string]map[string]interface{})
+					}
+					ms.resourceState[path][key] = map[string]interface{}{resourceName: base}
 				}
 				existing, ok := ms.resourceState[path][key][resourceName].(map[string]interface{})
 				if !ok {
-					existing = make(map[string]interface{})
+					existing, ok = ms.baseObject(path, key, resourceName)
+					if !ok {
+						existing = make(map[string]interface{})
+					}
 				}
 
 				for k, v := range patchFields {
@@ -507,6 +516,24 @@ func (ms *MockServer) applyPatchState(path string, body map[string]interface{}, 
 			}
 		}
 	}
+}
+
+func (ms *MockServer) baseObject(path, wrapperKey, resourceName string) (map[string]interface{}, bool) {
+	data, ok := ms.getResponses[path]
+	if !ok {
+		return nil, false
+	}
+	var decoded map[string]interface{}
+	if json.Unmarshal(data, &decoded) != nil {
+		return nil, false
+	}
+	objects, _ := decoded[wrapperKey].(map[string]interface{})
+	object, ok := objects[resourceName].(map[string]interface{})
+	if !ok {
+		return nil, false
+	}
+	copied, _ := deepCopy(object).(map[string]interface{})
+	return copied, copied != nil
 }
 
 func isIndexedArray(arr []interface{}) bool {

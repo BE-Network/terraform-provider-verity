@@ -57,6 +57,7 @@ type docResource struct {
 	Modes          []string
 	UpdateOnly     bool
 	ForgetOnDelete bool
+	AdoptOnCreate  bool
 	Identity       string
 	Examples       []docExample
 	Required       []docArgument
@@ -169,6 +170,7 @@ func buildDocResource(resource spec.ResourceSpec) docResource {
 		Description:    docText(resource.Description),
 		UpdateOnly:     !resource.Operations.Create,
 		ForgetOnDelete: resource.DeleteBehavior == spec.DeleteBehaviorForget,
+		AdoptOnCreate:  resource.CreateBehavior == spec.CreateBehaviorAdoptExisting,
 		Identity:       resource.IdentityPath,
 	}
 	for _, mode := range resource.Modes {

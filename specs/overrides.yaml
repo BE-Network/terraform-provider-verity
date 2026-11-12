@@ -3635,6 +3635,7 @@ resources:
     terraform_type: verity_sfp_breakout
     description: Manages a Verity SFP Breakout
     delete_behavior: forget
+    create_behavior: adopt_existing
     modes: [campus, datacenter]
     identity_path: name
     import_stage:

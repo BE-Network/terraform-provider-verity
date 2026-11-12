@@ -3,6 +3,7 @@ package transport
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -16,6 +17,39 @@ import (
 )
 
 func FetchCollection(ctx context.Context, client *openapi.APIClient, label, endpointPath string, fixedHeaders map[string]string, collectionKey string) (map[string]interface{}, error) {
+	decoded, err := fetchDecoded(ctx, client, label, endpointPath, fixedHeaders)
+	if err != nil {
+		return nil, err
+	}
+	collection, ok := decoded[collectionKey].(map[string]interface{})
+	if !ok {
+		if _, present := decoded[collectionKey]; !present {
+			return map[string]interface{}{}, nil
+		}
+		return nil, fmt.Errorf("%s response key %q is not an object", label, collectionKey)
+	}
+	return collection, nil
+}
+
+var ErrMalformedCollection = errors.New("malformed collection response")
+
+func FetchCollectionStrict(ctx context.Context, client *openapi.APIClient, label, endpointPath string, fixedHeaders map[string]string, collectionKey string) (map[string]interface{}, error) {
+	decoded, err := fetchDecoded(ctx, client, label, endpointPath, fixedHeaders)
+	if err != nil {
+		return nil, err
+	}
+	raw, present := decoded[collectionKey]
+	if !present {
+		return nil, fmt.Errorf("%w: %s response has no %q collection", ErrMalformedCollection, label, collectionKey)
+	}
+	collection, ok := raw.(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("%w: %s response key %q is not an object", ErrMalformedCollection, label, collectionKey)
+	}
+	return collection, nil
+}
+
+func fetchDecoded(ctx context.Context, client *openapi.APIClient, label, endpointPath string, fixedHeaders map[string]string) (map[string]interface{}, error) {
 	config := client.GetConfig()
 	base, err := config.ServerURLWithContext(ctx, "")
 	if err != nil {
@@ -67,12 +101,5 @@ func FetchCollection(ctx context.Context, client *openapi.APIClient, label, endp
 	if err := json.NewDecoder(response.Body).Decode(&decoded); err != nil {
 		return nil, fmt.Errorf("failed to decode %s response: %w", label, err)
 	}
-	collection, ok := decoded[collectionKey].(map[string]interface{})
-	if !ok {
-		if _, present := decoded[collectionKey]; !present {
-			return map[string]interface{}{}, nil
-		}
-		return nil, fmt.Errorf("%s response key %q is not an object", label, collectionKey)
-	}
-	return collection, nil
+	return decoded, nil
 }

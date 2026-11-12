@@ -33,3 +33,38 @@ func TestDeleteBehaviorValidation(t *testing.T) {
 		t.Fatalf("an unknown delete_behavior must be rejected, got %v", err)
 	}
 }
+
+func TestCreateBehaviorValidation(t *testing.T) {
+	base, err := registry.Lookup("verity_sfp_breakout")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if base.CreateBehavior != spec.CreateBehaviorAdoptExisting {
+		t.Fatalf("verity_sfp_breakout create_behavior = %q, want adopt_existing", base.CreateBehavior)
+	}
+	if err := base.Validate(); err != nil {
+		t.Fatalf("adopt_existing on an update-only resource must be valid: %v", err)
+	}
+
+	creatable := base
+	creatable.Operations.Create = true
+	if err := creatable.Validate(); err == nil || !strings.Contains(err.Error(), "create_behavior adopt_existing") {
+		t.Fatalf("adopt_existing on a creatable resource must be rejected, got %v", err)
+	}
+
+	unknown := base
+	unknown.CreateBehavior = "clone"
+	if err := unknown.Validate(); err == nil || !strings.Contains(err.Error(), "unknown create_behavior") {
+		t.Fatalf("an unknown create_behavior must be rejected, got %v", err)
+	}
+
+	all, err := registry.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, resource := range all {
+		if resource.CreateBehavior != spec.CreateBehaviorAPI && resource.TerraformType != "verity_sfp_breakout" {
+			t.Fatalf("%s has create_behavior %q; only verity_sfp_breakout opts in", resource.TerraformType, resource.CreateBehavior)
+		}
+	}
+}

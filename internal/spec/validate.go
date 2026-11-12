@@ -38,6 +38,15 @@ func (r ResourceSpec) Validate() error {
 	default:
 		return fmt.Errorf("resource %s: unknown delete_behavior %q", r.TerraformType, r.DeleteBehavior)
 	}
+	switch r.CreateBehavior {
+	case CreateBehaviorAPI:
+	case CreateBehaviorAdoptExisting:
+		if r.Operations.Create || !r.Operations.Update {
+			return fmt.Errorf("resource %s: create_behavior adopt_existing is only allowed when the API can't create the object but can update it", r.TerraformType)
+		}
+	default:
+		return fmt.Errorf("resource %s: unknown create_behavior %q", r.TerraformType, r.CreateBehavior)
+	}
 	if err := r.API.validate(r.Operations); err != nil {
 		return fmt.Errorf("resource %s: api: %w", r.TerraformType, err)
 	}
