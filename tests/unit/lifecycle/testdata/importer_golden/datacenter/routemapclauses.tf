@@ -1,7 +1,7 @@
 
 resource "verity_route_map_clause" "ipv6_clause" {
     name = "ipv6_clause"
-    depends_on = [verity_operation_stage.route_map_clause_stage]
+    depends_on = [verity_operation_stage.route_map_tenant_stage]
 	object_properties {
 		notes = ""
 	}

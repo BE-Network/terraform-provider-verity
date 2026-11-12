@@ -276,6 +276,7 @@ type stageDefinition struct {
 	ResourceType   string
 	DependsOnStage string
 	order          int
+	putOrder       int
 }
 
 func stageOrder(mode string) ([]stageDefinition, error) {
@@ -289,13 +290,23 @@ func stageOrder(mode string) ([]stageDefinition, error) {
 		if !declared {
 			continue
 		}
-		stages = append(stages, stageDefinition{StageName: stage.Name, ResourceType: resource.TerraformType, order: stage.Order})
+		stages = append(stages, stageDefinition{StageName: stage.Name, ResourceType: resource.TerraformType, order: stage.Order, putOrder: resource.BulkOrder[spec.Mode(mode)].Put})
 	}
-	sort.Slice(stages, func(i, j int) bool { return stages[i].order < stages[j].order })
-	for index := range stages {
-		if index > 0 {
-			stages[index].DependsOnStage = stages[index-1].StageName
+	sort.SliceStable(stages, func(i, j int) bool {
+		if stages[i].order != stages[j].order {
+			return stages[i].order < stages[j].order
 		}
+		if stages[i].putOrder != stages[j].putOrder {
+			return stages[i].putOrder < stages[j].putOrder
+		}
+		return stages[i].ResourceType < stages[j].ResourceType
+	})
+	previous := ""
+	for index := range stages {
+		if index > 0 && stages[index].StageName != stages[index-1].StageName {
+			previous = stages[index-1].StageName
+		}
+		stages[index].DependsOnStage = previous
 	}
 	return stages, nil
 }
@@ -328,9 +339,14 @@ func (i *Importer) generateStagesTF() (string, []ImportedResource, error) {
 
 	var compatibleStages []stageDefinition
 	var lastCompatibleStage string
+	emitted := make(map[string]bool)
 
 	for _, stage := range stages {
 		if utils.IsResourceCompatibleWithMode(stage.ResourceType, i.Mode) {
+			if emitted[stage.StageName] {
+				continue
+			}
+			emitted[stage.StageName] = true
 			if stage.DependsOnStage != "" && lastCompatibleStage != "" && stage.DependsOnStage != lastCompatibleStage {
 				stage.DependsOnStage = lastCompatibleStage
 			}

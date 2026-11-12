@@ -50,14 +50,16 @@ func (r Registry) validateImportStages() error {
 		}
 	}
 	for _, mode := range []Mode{ModeCampus, ModeDatacenter} {
-		names := make(map[string]string)
+		type stageOwner struct {
+			order    int
+			resource string
+		}
+		names := make(map[string]stageOwner)
 		orders := make(map[int]string)
-		expected := 0
 		for _, resource := range r {
 			if !resourceSupportsMode(resource, mode) {
 				continue
 			}
-			expected++
 			stage, declared := resource.ImportStages[mode]
 			if !declared {
 				return fmt.Errorf("%s supports %s but declares no import stage for it", resource.TerraformType, mode)
@@ -66,17 +68,20 @@ func (r Registry) validateImportStages() error {
 				return fmt.Errorf("%s declares an unnamed %s import stage", resource.TerraformType, mode)
 			}
 			if owner, taken := names[stage.Name]; taken {
-				return fmt.Errorf("%s import stage %q is declared by both %s and %s", mode, stage.Name, owner, resource.TerraformType)
+				if owner.order != stage.Order {
+					return fmt.Errorf("%s import stage %q is declared with order %d by %s and order %d by %s", mode, stage.Name, owner.order, owner.resource, stage.Order, resource.TerraformType)
+				}
+				continue
 			}
-			names[stage.Name] = resource.TerraformType
+			names[stage.Name] = stageOwner{order: stage.Order, resource: resource.TerraformType}
 			if owner, taken := orders[stage.Order]; taken {
 				return fmt.Errorf("%s import stage order %d is declared by both %s and %s", mode, stage.Order, owner, resource.TerraformType)
 			}
 			orders[stage.Order] = resource.TerraformType
 		}
-		for order := 1; order <= expected; order++ {
+		for order := 1; order <= len(names); order++ {
 			if _, declared := orders[order]; !declared {
-				return fmt.Errorf("%s import stage order %d is missing; the %d resources in that mode must form one sequence", mode, order, expected)
+				return fmt.Errorf("%s import stage order %d is missing; the %d stages in that mode must form one sequence", mode, order, len(names))
 			}
 		}
 	}
