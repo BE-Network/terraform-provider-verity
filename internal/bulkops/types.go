@@ -33,6 +33,7 @@ type ResourceExistenceCheck struct {
 	FetchResources func(ctx context.Context) (map[string]interface{}, error)
 	ResourceType   string
 	OperationType  string
+	KeepOpen       func(name string, existing interface{}) bool
 }
 
 type BulkOperationConfig struct {

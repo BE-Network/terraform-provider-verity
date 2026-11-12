@@ -3,10 +3,11 @@ package bulkops
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"sync"
 	"terraform-provider-verity/openapi"
 	"time"
+
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 type Manager struct {
@@ -33,6 +34,9 @@ type Manager struct {
 	operationWaitChannels map[string]chan struct{}
 	operationMutex        sync.Mutex
 	closedChannels        map[string]bool
+
+	heldPuts          map[string]matchVrfValue
+	matchVrfHoldArmed bool
 }
 
 func initializeResourceOperations() map[string]*ResourceOperations {
@@ -62,6 +66,7 @@ func NewManager(client *openapi.APIClient, contextProvider ContextProviderFunc, 
 		operationErrors:       make(map[string]error),
 		operationWaitChannels: make(map[string]chan struct{}),
 		closedChannels:        make(map[string]bool),
+		heldPuts:              make(map[string]matchVrfValue),
 	}
 }
 

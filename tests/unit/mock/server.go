@@ -37,6 +37,79 @@ type MockServer struct {
 	predefined        map[string]predefinedObjects
 	testLogger        testing.TB
 	versionResponse   []byte
+	failures          map[string]*requestFailure
+	references        map[string]referenceCheck
+}
+
+type requestFailure struct {
+	remaining int
+	message   string
+}
+
+type referenceCheck struct {
+	wrapperKey       string
+	field            string
+	targetPath       string
+	targetWrapperKey string
+}
+
+func (ms *MockServer) FailRequests(method, path string, count int, message string) {
+	ms.mu.Lock()
+	defer ms.mu.Unlock()
+	if ms.failures == nil {
+		ms.failures = make(map[string]*requestFailure)
+	}
+	ms.failures[method+" "+path] = &requestFailure{remaining: count, message: message}
+}
+
+func (ms *MockServer) SetReferenceCheck(path, wrapperKey, field, targetPath, targetWrapperKey string) {
+	ms.mu.Lock()
+	defer ms.mu.Unlock()
+	if ms.references == nil {
+		ms.references = make(map[string]referenceCheck)
+	}
+	ms.references[path] = referenceCheck{wrapperKey: wrapperKey, field: field, targetPath: targetPath, targetWrapperKey: targetWrapperKey}
+}
+
+func (ms *MockServer) injectedFailure(method, path string) string {
+	failure, ok := ms.failures[method+" "+path]
+	if !ok || failure.remaining <= 0 {
+		return ""
+	}
+	failure.remaining--
+	message, _ := json.Marshal(failure.message)
+	return `{"status": "failed", "message": ` + string(message) + `}`
+}
+
+func (ms *MockServer) unresolvedReference(path string, body map[string]interface{}) string {
+	check, ok := ms.references[path]
+	if !ok {
+		return ""
+	}
+	objects, _ := body[check.wrapperKey].(map[string]interface{})
+	if len(objects) == 0 {
+		return ""
+	}
+	var targets map[string]interface{}
+	json.Unmarshal(ms.buildGetResponse(check.targetPath, nil), &targets)
+	existing, _ := targets[check.targetWrapperKey].(map[string]interface{})
+	names := make([]string, 0, len(objects))
+	for name := range objects {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	for _, name := range names {
+		fields, _ := objects[name].(map[string]interface{})
+		target, _ := fields[check.field].(string)
+		if target == "" {
+			continue
+		}
+		if _, found := existing[target]; !found {
+			message, _ := json.Marshal(fmt.Sprintf("Cannot resolve object reference: %s %q is missing from the database or import payload, but is referenced by %s %q", check.targetWrapperKey, target, check.wrapperKey, name))
+			return `{"status": "failed", "message": ` + string(message) + `}`
+		}
+	}
+	return ""
 }
 
 type postGetOmission struct {
@@ -281,6 +354,17 @@ func (ms *MockServer) handleRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	queryParams := r.URL.Query()
+	rejection := ms.injectedFailure(r.Method, r.URL.Path)
+	if rejection == "" && r.Method == http.MethodPut && captured.Body != nil {
+		rejection = ms.unresolvedReference(r.URL.Path, captured.Body)
+	}
+	if rejection != "" {
+		ms.mu.Unlock()
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(rejection))
+		return
+	}
 	if r.Method == http.MethodDelete {
 		if rejection := ms.predefinedRejection(r.URL.Path, queryParams); rejection != "" {
 			ms.mu.Unlock()
