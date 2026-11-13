@@ -137,3 +137,77 @@ func TestFlagOffKeepsThePasswordWithoutSendingIt(t *testing.T) {
 		t.Fatalf("turning the flag off on 6.6 needs no password, and none must be sent: %s", flagPatch)
 	}
 }
+
+func hashingSecretMock(t *testing.T) (*mock.MockServer, ResourceCoverageEntry, string) {
+	t.Helper()
+	ms, entry := secretMock(t)
+	t.Cleanup(ms.Close)
+	ms.SetPasswordHashing(entry.APIPath, "ssh_key_or_password", "ssh_key_or_password_encrypted")
+	return ms, entry, mock.ProviderConfig(ms.URL(), entry.Mode)
+}
+
+func TestNewPasswordWithTheImportedHashStillConfiguredIsRejected(t *testing.T) {
+	ms, entry, provider := hashingSecretMock(t)
+	base := switchpointBase(t)
+	imported := provider + secretSwitchpoint(t, base,
+		"  ssh_key_or_password_encrypted = \"$hash$old\"\n  ssh_key_or_password_encrypted_auto_assigned_ = false\n")
+	both := provider + secretSwitchpoint(t, base,
+		"  ssh_key_or_password = \"NewPass1\"\n  ssh_key_or_password_encrypted = \"$hash$old\"\n  ssh_key_or_password_encrypted_auto_assigned_ = false\n")
+
+	fwresource.UnitTest(t, fwresource.TestCase{
+		ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(),
+		Steps: []fwresource.TestStep{
+			{PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), imported) }, Config: imported},
+			{
+				PreConfig:   func() { mock.WriteTFConfig(t, ms.URL(), both) },
+				Config:      both,
+				ExpectError: regexp.MustCompile(`Remove ssh_key_or_password_encrypted`),
+			},
+		},
+	})
+
+	for _, patch := range ms.GetRequestsByMethodAndPath("PATCH", entry.APIPath) {
+		if strings.Contains(canonical(t, patch.Body), "NewPass1") {
+			t.Fatalf("the rejected change must not be sent: %s", canonical(t, patch.Body))
+		}
+	}
+}
+
+func TestNewPasswordAfterRemovingTheImportedHashApplies(t *testing.T) {
+	ms, entry, provider := hashingSecretMock(t)
+	base := switchpointBase(t)
+	imported := provider + secretSwitchpoint(t, base,
+		"  ssh_key_or_password_encrypted = \"$hash$old\"\n  ssh_key_or_password_encrypted_auto_assigned_ = false\n")
+	plaintext := provider + secretSwitchpoint(t, base,
+		"  ssh_key_or_password = \"NewPass1\"\n  ssh_key_or_password_encrypted_auto_assigned_ = false\n")
+
+	fwresource.UnitTest(t, fwresource.TestCase{
+		ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(),
+		Steps: []fwresource.TestStep{
+			{PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), imported) }, Config: imported},
+			{
+				PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), plaintext) },
+				Config:    plaintext,
+				Check: fwresource.ComposeTestCheckFunc(
+					fwresource.TestCheckResourceAttr("verity_switchpoint.test", "ssh_key_or_password", "NewPass1"),
+					fwresource.TestCheckResourceAttr("verity_switchpoint.test", "ssh_key_or_password_encrypted", mock.MockPasswordHash("NewPass1")),
+				),
+			},
+			{Config: plaintext, PlanOnly: true},
+		},
+	})
+
+	var sent bool
+	for _, patch := range ms.GetRequestsByMethodAndPath("PATCH", entry.APIPath) {
+		body := canonical(t, patch.Body)
+		if strings.Contains(body, `"ssh_key_or_password":"NewPass1"`) {
+			sent = true
+			if strings.Contains(body, `"ssh_key_or_password_encrypted"`) {
+				t.Fatalf("the old hash must not be sent with the new password: %s", body)
+			}
+		}
+	}
+	if !sent {
+		t.Fatal("the new password was not sent")
+	}
+}

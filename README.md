@@ -613,7 +613,11 @@ therefore:
   value, so setting a password doesn't produce an "inconsistent result" error;
 - doesn't import the plaintext fields. The `_encrypted` fields are imported, so
   a restore from imported configuration sends the hashes back as before;
-- marks all of these fields `sensitive`, so plans don't show them.
+- marks all of these fields `sensitive`, so plans don't show them;
+- rejects setting a plaintext password while its `_encrypted` field is also in
+  the configuration. The API computes a new hash from the password, so the old
+  hash would no longer match. When you switch from the imported hash to a
+  plaintext password, remove the `_encrypted` line.
 
 A password changed outside Terraform, for example in the GUI, shows up as a
 changed `_encrypted` hash when the configuration sets that field (imported

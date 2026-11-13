@@ -64,6 +64,44 @@ func isPlaceholder(value attr.Value) bool {
 	return ok && !text.IsNull() && !text.IsUnknown() && spec.IsMaskedSecretPlaceholder(text.ValueString())
 }
 
+func (r *Resource) planHashedCompanions(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	creating := req.State.Raw.IsNull()
+	for _, field := range r.spec.Fields {
+		if field.Secret != spec.SecretWriteOnly || field.Unmanaged {
+			continue
+		}
+		companion, found := r.hashedCompanion(field)
+		if !found {
+			continue
+		}
+		var planned, prior, configured types.String
+		resp.Diagnostics.Append(resp.Plan.GetAttribute(ctx, path.Root(field.TerraformName), &planned)...)
+		resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root(companion.TerraformName), &configured)...)
+		if !creating {
+			resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root(field.TerraformName), &prior)...)
+		}
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		settingPassword := isRealSecret(planned) && (creating || !planned.Equal(prior))
+		if !settingPassword || configured.IsNull() || configured.IsUnknown() {
+			continue
+		}
+		resp.Diagnostics.AddAttributeError(path.Root(companion.TerraformName), "Conflicting password settings",
+			fmt.Sprintf("Remove %s from the configuration when setting %s: the API computes a new hash from the password, so the configured hash would no longer match.", companion.TerraformName, field.TerraformName))
+	}
+}
+
+func (r *Resource) hashedCompanion(field spec.FieldSpec) (spec.FieldSpec, bool) {
+	name := field.TerraformName + "_encrypted"
+	for _, candidate := range r.spec.Fields {
+		if candidate.TerraformName == name && candidate.Secret == "" && !candidate.Unmanaged && candidate.Kind == spec.FieldKindString {
+			return candidate, true
+		}
+	}
+	return spec.FieldSpec{}, false
+}
+
 func (r *Resource) planSecrets(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	creating := req.State.Raw.IsNull()
 	for _, field := range r.spec.Fields {

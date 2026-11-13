@@ -120,11 +120,13 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 
 		r.planAutoAssignment(ctx, req, resp)
 		r.planSecrets(ctx, req, resp)
+		r.planHashedCompanions(ctx, req, resp)
 		return
 	}
 	r.planExplicitNulls(ctx, req, resp)
 	r.planAutoAssignment(ctx, req, resp)
 	r.planSecrets(ctx, req, resp)
+	r.planHashedCompanions(ctx, req, resp)
 }
 
 func (r *Resource) nullifyOutOfModeMembers(ctx context.Context, field spec.FieldSpec, mode string, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {

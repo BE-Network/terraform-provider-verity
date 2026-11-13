@@ -51,7 +51,10 @@ configuration that already follows all of them.
   empty, so Terraform keeps the configured value instead of reporting an
   "inconsistent result" after setting a password. The importer doesn't write
   them. Their `_encrypted` companions are `sensitive` too; on 6.6 the API
-  returns the real hash, so they are imported and restored as before.
+  returns the real hash, so they are imported and restored as before. To set
+  or change a password, put the plaintext in the configuration and remove the
+  imported `_encrypted` line; setting both is rejected at plan time, because
+  the API computes a new hash.
 - **`port_name` is read-only** in `verity_bundle.eth_port_paths` and
   `verity_switchpoint.eths`. Ports are identified by `index`; the API fills the
   name in from the device. Remove `port_name` lines from existing

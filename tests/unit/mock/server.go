@@ -34,6 +34,7 @@ type MockServer struct {
 	postPutEnrichment map[string]map[string]map[string]map[string]interface{}
 	postGetOmissions  map[string]map[string]map[string]postGetOmission
 	secretMasks       map[string]map[string]string
+	passwordHashing   map[string]map[string]string
 	predefined        map[string]predefinedObjects
 	testLogger        testing.TB
 	versionResponse   []byte
@@ -376,8 +377,10 @@ func (ms *MockServer) handleRequest(w http.ResponseWriter, r *http.Request) {
 	}
 	if r.Method == http.MethodPut && captured.Body != nil {
 		ms.applyPutState(r.URL.Path, captured.Body, queryParams)
+		ms.applyPasswordHashing(r.URL.Path, captured.Body)
 	} else if r.Method == http.MethodPatch && captured.Body != nil {
 		ms.applyPatchState(r.URL.Path, captured.Body, queryParams)
+		ms.applyPasswordHashing(r.URL.Path, captured.Body)
 	} else if r.Method == http.MethodDelete {
 		ms.applyDeleteState(r.URL.Path, queryParams)
 	}
@@ -399,6 +402,50 @@ func (ms *MockServer) handleRequest(w http.ResponseWriter, r *http.Request) {
 		w.Write(captured.RawBody)
 	} else {
 		w.Write([]byte(`{"status":"success"}`))
+	}
+}
+
+func (ms *MockServer) SetPasswordHashing(path, plaintextField, encryptedField string) {
+	ms.mu.Lock()
+	defer ms.mu.Unlock()
+	if ms.passwordHashing == nil {
+		ms.passwordHashing = make(map[string]map[string]string)
+	}
+	if ms.passwordHashing[path] == nil {
+		ms.passwordHashing[path] = make(map[string]string)
+	}
+	ms.passwordHashing[path][plaintextField] = encryptedField
+}
+
+func MockPasswordHash(plaintext string) string {
+	return "$hash$" + plaintext
+}
+
+func (ms *MockServer) applyPasswordHashing(path string, body map[string]interface{}) {
+	pairs := ms.passwordHashing[path]
+	if len(pairs) == 0 {
+		return
+	}
+	for wrapperKey, wrapper := range body {
+		resources, ok := wrapper.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		for resourceName, data := range resources {
+			fields, ok := data.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			for plaintextField, encryptedField := range pairs {
+				plaintext, ok := fields[plaintextField].(string)
+				if !ok || plaintext == "" {
+					continue
+				}
+				if stored, ok := ms.resourceState[path][wrapperKey][resourceName].(map[string]interface{}); ok {
+					stored[encryptedField] = MockPasswordHash(plaintext)
+				}
+			}
+		}
 	}
 }
 
