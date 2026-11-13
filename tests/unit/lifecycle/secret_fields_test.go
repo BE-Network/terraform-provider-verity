@@ -25,13 +25,12 @@ func secretMock(t *testing.T) (*mock.MockServer, ResourceCoverageEntry) {
 		t.Fatal(err)
 	}
 	ms.SetSecretMasking(entry.APIPath, map[string]string{
-		"ssh_key_or_password":           "write_only",
-		"ssh_key_or_password_encrypted": "masked",
+		"ssh_key_or_password": "write_only",
 	})
 	return ms, entry
 }
 
-func TestSecretFieldsRoundTripWithMaskingAPI(t *testing.T) {
+func TestSecretFieldsRoundTripWithTheV66API(t *testing.T) {
 	ms, entry := secretMock(t)
 	defer ms.Close()
 	base := switchpointBase(t)
@@ -85,33 +84,36 @@ func TestSecretFieldsRoundTripWithMaskingAPI(t *testing.T) {
 	}
 }
 
-func TestSecretPlaceholderOnCreateFailsBeforeSending(t *testing.T) {
+func TestEncryptedPasswordFromTheAPIIsKept(t *testing.T) {
 	ms, entry := secretMock(t)
 	defer ms.Close()
+	ms.SetPostPutEnrichment(entry.APIPath, "switchpoint", "diffsp", map[string]interface{}{"ssh_key_or_password_encrypted": "$enc$from-api"})
 	config := mock.ProviderConfig(ms.URL(), entry.Mode) + secretSwitchpoint(t, switchpointBase(t),
-		"  ssh_key_or_password_encrypted = \"this field has been set\"\n  ssh_key_or_password_encrypted_auto_assigned_ = false\n")
+		"  ssh_key_or_password = \"test-password-1\"\n  ssh_key_or_password_encrypted_auto_assigned_ = false\n")
 
 	fwresource.UnitTest(t, fwresource.TestCase{
 		ProtoV6ProviderFactories: mock.ProtoV6ProviderFactories(),
-		Steps: []fwresource.TestStep{{
-			PreConfig:   func() { mock.WriteTFConfig(t, ms.URL(), config) },
-			Config:      config,
-			ExpectError: regexp.MustCompile(`placeholder`),
-		}},
+		Steps: []fwresource.TestStep{
+			{
+				PreConfig: func() { mock.WriteTFConfig(t, ms.URL(), config) },
+				Config:    config,
+				Check: fwresource.ComposeTestCheckFunc(
+					fwresource.TestCheckResourceAttr("verity_switchpoint.test", "ssh_key_or_password", "test-password-1"),
+					fwresource.TestCheckResourceAttr("verity_switchpoint.test", "ssh_key_or_password_encrypted", "$enc$from-api"),
+				),
+			},
+			{Config: config, PlanOnly: true},
+		},
 	})
-	if puts := ms.GetRequestsByMethodAndPath("PUT", entry.APIPath); len(puts) != 0 {
-		t.Fatalf("got %d switchpoint PUTs, want none", len(puts))
-	}
 }
 
-func TestFlagOffResendsUnchangedPlaintextPassword(t *testing.T) {
+func TestFlagOffKeepsThePasswordWithoutSendingIt(t *testing.T) {
 	ms, entry := secretMock(t)
 	defer ms.Close()
 	base := switchpointBase(t)
 	provider := mock.ProviderConfig(ms.URL(), entry.Mode)
 	config := func(flag string) string {
-		return provider + secretSwitchpoint(t, base,
-			"  ssh_key_or_password = \"test-password-1\"\n  ssh_key_or_password_encrypted_auto_assigned_ = "+flag+"\n")
+		return provider + secretSwitchpoint(t, base, "  ssh_key_or_password_encrypted_auto_assigned_ = "+flag+"\n")
 	}
 
 	fwresource.UnitTest(t, fwresource.TestCase{
@@ -131,10 +133,7 @@ func TestFlagOffResendsUnchangedPlaintextPassword(t *testing.T) {
 	if flagPatch == "" {
 		t.Fatal("no PATCH turned the flag off")
 	}
-	if !strings.Contains(flagPatch, `"ssh_key_or_password":"test-password-1"`) {
-		t.Fatalf("the flag-off PATCH must carry the password: %s", flagPatch)
-	}
-	if strings.Contains(strings.ToLower(flagPatch), mock.MaskedSecretPlaceholder) {
-		t.Fatalf("the placeholder was sent: %s", flagPatch)
+	if strings.Contains(flagPatch, `"ssh_key_or_password"`) || strings.Contains(flagPatch, `"ssh_key_or_password_encrypted"`) {
+		t.Fatalf("turning the flag off on 6.6 needs no password, and none must be sent: %s", flagPatch)
 	}
 }

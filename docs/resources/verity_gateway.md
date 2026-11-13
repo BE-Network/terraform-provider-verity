@@ -101,7 +101,7 @@ resource "verity_gateway" "example" {
 * `local_as_number` (Integer) - Local AS Number to use as an override to switch AS number. Set it to `null` to clear it.
 * `max_local_as_occurrences` (Integer) - Allow routes with the local AS number in the AS-path, specifying the maximum occurrences permitted before declaring a routing loop. Leave blank or '0' to disable. Set it to `null` to clear it.
 * `md5_password` (String) - MD5 Password used in the BGP session. Sensitive. The API never returns this value, so it is not imported and changes made outside Terraform are not detected.
-* `md5_password_encrypted` (String) - MD5 Password Encrypted used in the BGP session. Sensitive. The API returns `this field has been set` instead of the value, so it is not imported and changes made outside Terraform are not detected. Never set it to that text.
+* `md5_password_encrypted` (String) - MD5 Password Encrypted used in the BGP session. Sensitive.
 * `neighbor_as_number` (Integer) - Autonomous System Number of remote BGP peer. Set it to `null` to clear it.
 * `neighbor_ip_address` (String) - IP address of remote BGP peer.
 * `next_hop_self` (Boolean) - Optional attribute that disables the normal BGP calculation of next-hops for advertised routes and instead sets the next-hops for advertised routes to the IP address of the switch itself.

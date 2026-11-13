@@ -604,26 +604,20 @@ flag is true. Keep that pattern when modifying generated configuration.
 
 ## Passwords and Other Secrets
 
-The API never returns passwords. Plaintext password fields (for example
-`verity_switchpoint.ssh_key_or_password` or `verity_gateway.md5_password`) come
-back empty, and the matching `_encrypted` fields come back as the text
-`this field has been set`. The provider therefore:
+Plaintext password fields (for example `verity_switchpoint.ssh_key_or_password`
+or `verity_gateway.md5_password`) are write-only: the API returns them empty.
+On API 6.6 the matching `_encrypted` fields return the real hash. The provider
+therefore:
 
-- keeps the configured value in state instead of the server's empty or masked
+- keeps the configured plaintext value in state instead of the server's empty
   value, so setting a password doesn't produce an "inconsistent result" error;
-- never imports these fields. Where the API reports a password is set, the
-  importer writes a comment instead. Restoring a system from imported
-  configuration needs the passwords supplied, for example through a
-  `sensitive` variable;
-- rejects `this field has been set` as a value when creating an object or
-  changing a password. In configuration imported by older versions, an
-  unchanged placeholder only produces a warning and is never sent. Remove it
-  from the configuration;
-- requires a real password when turning off
-  `ssh_key_or_password_encrypted_auto_assigned_`.
+- doesn't import the plaintext fields. The `_encrypted` fields are imported, so
+  a restore from imported configuration sends the hashes back as before;
+- marks all of these fields `sensitive`, so plans don't show them.
 
-Password changes made outside Terraform, for example in the GUI, are not
-detected.
+A password changed outside Terraform, for example in the GUI, shows up as a
+changed `_encrypted` hash when the configuration sets that field (imported
+configuration does).
 
 ## Read-Only Port Names
 

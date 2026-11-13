@@ -2603,7 +2603,6 @@ resources:
       - api_name: passphrase_encrypted
         api_kind: string
         sensitive: true
-        secret: masked
       - api_name: password
         api_kind: string
         sensitive: true
@@ -2611,7 +2610,6 @@ resources:
       - api_name: password_encrypted
         api_kind: string
         sensitive: true
-        secret: masked
       - api_name: plane
         api_kind: string
         modes: [datacenter]
@@ -2663,7 +2661,6 @@ resources:
       - api_name: private_password_encrypted
         api_kind: string
         sensitive: true
-        secret: masked
       - api_name: private_protocol
         api_kind: string
       - api_name: rack
@@ -2701,7 +2698,6 @@ resources:
       - api_name: ssh_key_or_password_encrypted
         api_kind: string
         sensitive: true
-        secret: masked
       - api_name: ssh_key_or_password_encrypted_auto_assigned_
         api_kind: boolean
         response_absence: preserve
@@ -3599,7 +3595,6 @@ resources:
       - api_name: md5_password_encrypted
         api_kind: string
         sensitive: true
-        secret: masked
       - api_name: name
         api_kind: string
         profile: identity

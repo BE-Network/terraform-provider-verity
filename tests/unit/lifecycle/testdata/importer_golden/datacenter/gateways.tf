@@ -29,6 +29,7 @@ resource "verity_gateway" "gateway_test1" {
 	local_as_no_prepend = true
 	local_as_number = 10
 	max_local_as_occurrences = 0
+	md5_password_encrypted = ""
 	neighbor_as_number = 12
 	neighbor_ip_address = "8.8.8.8"
 	next_hop_self = false

@@ -45,17 +45,13 @@ configuration that already follows all of them.
 
 ### Configuration changes
 
-- **Password fields are secrets.** `verity_switchpoint` `password`,
-  `private_password`, `passphrase`, `ssh_key_or_password` and
-  `verity_gateway` `md5_password` are write-only; their `_encrypted`
-  companions are masked by the API (`this field has been set`). All ten are
-  `sensitive`. The importer no longer writes them, and the provider never sends
-  the placeholder back: a configuration that sets `this field has been set` is
-  rejected when creating an object or changing a password. Put real passwords
-  in the configuration (for example from a `sensitive` variable) if a restore
-  should set them. Turning off `ssh_key_or_password_encrypted_auto_assigned_`
-  requires a real password in the configuration; an existing configured
-  password is reused.
+- **Plaintext password fields are write-only.** `verity_switchpoint`
+  `password`, `private_password`, `passphrase`, `ssh_key_or_password` and
+  `verity_gateway` `md5_password` are `sensitive`, and the API returns them
+  empty, so Terraform keeps the configured value instead of reporting an
+  "inconsistent result" after setting a password. The importer doesn't write
+  them. Their `_encrypted` companions are `sensitive` too; on 6.6 the API
+  returns the real hash, so they are imported and restored as before.
 - **`port_name` is read-only** in `verity_bundle.eth_port_paths` and
   `verity_switchpoint.eths`. Ports are identified by `index`; the API fills the
   name in from the device. Remove `port_name` lines from existing
