@@ -35,3 +35,58 @@ spelling; only generated Terraform resource labels are sanitized.
 - `verity_switchpoint`: `eths` entries accept `eth_num_role`.
 - `verity_tenant`: new `hgx_hostnames` block (datacenter).
 - New `verity_static_ip` resource (campus).
+
+## Behaviour changes in this provider release
+
+These changes come from fixes for destroy and re-create. Some need changes to
+existing configurations; the simplest path is the
+[fresh-import procedure](fresh_import_upgrades.md), which generates
+configuration that already follows all of them.
+
+### Configuration changes
+
+- **Password fields are secrets.** `verity_switchpoint` `password`,
+  `private_password`, `passphrase`, `ssh_key_or_password` and
+  `verity_gateway` `md5_password` are write-only; their `_encrypted`
+  companions are masked by the API (`this field has been set`). All ten are
+  `sensitive`. The importer no longer writes them, and the provider never sends
+  the placeholder back: a configuration that sets `this field has been set` is
+  rejected when creating an object or changing a password. Put real passwords
+  in the configuration (for example from a `sensitive` variable) if a restore
+  should set them. Turning off `ssh_key_or_password_encrypted_auto_assigned_`
+  requires a real password in the configuration; an existing configured
+  password is reused.
+- **`port_name` is read-only** in `verity_bundle.eth_port_paths` and
+  `verity_switchpoint.eths`. Ports are identified by `index`; the API fills the
+  name in from the device. Remove `port_name` lines from existing
+  configurations (Terraform rejects them as "Invalid Configuration for
+  Read-Only Attribute"), or re-import.
+- **One stage for route maps, policy-based routing and tenants** (datacenter).
+  The importer now puts `verity_route_map_clause`, `verity_pb_routing_acl`,
+  `verity_route_map`, `verity_pb_routing` and `verity_tenant` behind one
+  `verity_operation_stage`, `route_map_tenant_stage`. Configurations generated
+  before this release have a separate stage for each type, and re-creating
+  route map clauses that reference a tenant then fails ("Cannot resolve object
+  reference"). Regenerate the configuration, or make all five types depend on
+  one stage.
+
+### Behaviour changes without configuration changes
+
+- **Destroy:** predefined objects (for example `(Packet Queue)`,
+  `(Device Settings)`) are removed from Terraform state with a warning instead
+  of failing. A blocked object no longer fails a whole DELETE request; the
+  others are deleted and the blocked one fails with the API's reason. Route map
+  clauses deleted together with the tenant they reference get `match_vrf`
+  cleared first.
+- **`verity_sfp_breakout`:** the API can neither create nor delete it. Destroy
+  removes it from state and leaves its settings applied; applying the
+  configuration again adopts the existing object and sends only the settings
+  that differ. No import needed.
+- **Route map clauses created together with their tenant** are created without
+  `match_vrf`, which is set right after the tenant exists. A failed restore can
+  leave the clause without `match_vrf`; the next apply repairs it.
+- **Indexed lists** (for example `breakout`, `eths`) keep the order of the
+  configuration; reordering entries no longer leaves a permanent diff.
+- **Errors** show the API's reason instead of only "400 Bad Request".
+- **Parallelism:** set it above the number of resources in the configuration,
+  for `apply` and `destroy` (`TF_CLI_ARGS_destroy`). See the README.
