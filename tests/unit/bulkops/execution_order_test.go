@@ -913,7 +913,7 @@ func TestPatchErrorAbortsRemainingOperations(t *testing.T) {
 	}
 }
 
-func TestDeleteErrorAbortsRemainingOperations(t *testing.T) {
+func TestDeleteErrorContinuesWithLaterDeleteTypes(t *testing.T) {
 	t.Parallel()
 	server, records, mu := failingOrderTrackingServer(t, func(r *http.Request) bool {
 		return r.Method == http.MethodDelete && r.URL.Path == "/thresholdgroups"
@@ -935,20 +935,5 @@ func TestDeleteErrorAbortsRemainingOperations(t *testing.T) {
 	}
 
 	deletePaths := filterRecords(snapshotRecords(mu, records), http.MethodDelete)
-
-	for _, path := range deletePaths {
-		if path == "/groupingrules" || path == "/badges" {
-			t.Errorf("path %q should NOT have been deleted after threshold_group DELETE failure", path)
-		}
-	}
-
-	foundTG := false
-	for _, path := range deletePaths {
-		if path == "/thresholdgroups" {
-			foundTG = true
-		}
-	}
-	if !foundTG {
-		t.Error("threshold_group DELETE should have been attempted")
-	}
+	assertOrderedSubset(t, "DELETE after a failure", deletePaths, []string{"/thresholdgroups", "/groupingrules", "/badges"})
 }

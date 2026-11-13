@@ -1,7 +1,7 @@
 
 resource "verity_pb_routing" "pbr1" {
     name = "pbr1"
-    depends_on = [verity_operation_stage.pb_routing_stage]
+    depends_on = [verity_operation_stage.route_map_tenant_stage]
 	enable = true
 	policy {
 		index = 1

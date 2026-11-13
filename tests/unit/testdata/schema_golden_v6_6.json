@@ -816,7 +816,7 @@
               "name": "port_name",
               "type": "string",
               "required": false,
-              "optional": true,
+              "optional": false,
               "computed": true,
               "sensitive": false
             }
@@ -3808,7 +3808,7 @@
           "required": false,
           "optional": true,
           "computed": true,
-          "sensitive": false
+          "sensitive": true
         },
         {
           "name": "md5_password_encrypted",
@@ -3816,7 +3816,7 @@
           "required": false,
           "optional": true,
           "computed": true,
-          "sensitive": false
+          "sensitive": true
         },
         {
           "name": "name",
@@ -7866,7 +7866,7 @@
           "required": false,
           "optional": true,
           "computed": true,
-          "sensitive": false
+          "sensitive": true
         },
         {
           "name": "passphrase_encrypted",
@@ -7874,7 +7874,7 @@
           "required": false,
           "optional": true,
           "computed": true,
-          "sensitive": false
+          "sensitive": true
         },
         {
           "name": "password",
@@ -7882,7 +7882,7 @@
           "required": false,
           "optional": true,
           "computed": true,
-          "sensitive": false
+          "sensitive": true
         },
         {
           "name": "password_encrypted",
@@ -7890,7 +7890,7 @@
           "required": false,
           "optional": true,
           "computed": true,
-          "sensitive": false
+          "sensitive": true
         },
         {
           "name": "plane",
@@ -7954,7 +7954,7 @@
           "required": false,
           "optional": true,
           "computed": true,
-          "sensitive": false
+          "sensitive": true
         },
         {
           "name": "private_password_encrypted",
@@ -7962,7 +7962,7 @@
           "required": false,
           "optional": true,
           "computed": true,
-          "sensitive": false
+          "sensitive": true
         },
         {
           "name": "private_protocol",
@@ -8066,7 +8066,7 @@
           "required": false,
           "optional": true,
           "computed": true,
-          "sensitive": false
+          "sensitive": true
         },
         {
           "name": "ssh_key_or_password_encrypted",
@@ -8074,7 +8074,7 @@
           "required": false,
           "optional": true,
           "computed": true,
-          "sensitive": false
+          "sensitive": true
         },
         {
           "name": "ssh_key_or_password_encrypted_auto_assigned_",
@@ -8386,7 +8386,7 @@
               "name": "port_name",
               "type": "string",
               "required": false,
-              "optional": true,
+              "optional": false,
               "computed": true,
               "sensitive": false
             }

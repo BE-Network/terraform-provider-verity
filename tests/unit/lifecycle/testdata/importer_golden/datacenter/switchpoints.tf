@@ -20,7 +20,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 2
@@ -28,7 +27,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 3
@@ -36,7 +34,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 4
@@ -44,7 +41,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 5
@@ -52,7 +48,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 6
@@ -60,7 +55,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 7
@@ -68,7 +62,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 8
@@ -76,7 +69,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 9
@@ -84,7 +76,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 10
@@ -92,7 +83,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 11
@@ -100,7 +90,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 12
@@ -108,7 +97,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 13
@@ -116,7 +104,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 14
@@ -124,7 +111,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 15
@@ -132,7 +118,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 16
@@ -140,7 +125,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 17
@@ -148,7 +132,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 18
@@ -156,7 +139,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 19
@@ -164,7 +146,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 20
@@ -172,7 +153,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 21
@@ -180,7 +160,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 22
@@ -188,7 +167,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 23
@@ -196,7 +174,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	eths {
 		index = 24
@@ -204,7 +181,6 @@ resource "verity_switchpoint" "test" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = ""
 	}
 	locked = false
 	out_of_band_management = false

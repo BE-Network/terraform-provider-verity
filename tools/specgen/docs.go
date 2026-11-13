@@ -52,17 +52,19 @@ type docExample struct {
 }
 
 type docResource struct {
-	TerraformType string
-	Description   string
-	Modes         []string
-	UpdateOnly    bool
-	Identity      string
-	Examples      []docExample
-	Required      []docArgument
-	Optional      []docArgument
-	ReadOnly      []docArgument
-	References    []docReference
-	AutoAssigned  []docAutoAssignment
+	TerraformType  string
+	Description    string
+	Modes          []string
+	UpdateOnly     bool
+	ForgetOnDelete bool
+	AdoptOnCreate  bool
+	Identity       string
+	Examples       []docExample
+	Required       []docArgument
+	Optional       []docArgument
+	ReadOnly       []docArgument
+	References     []docReference
+	AutoAssigned   []docAutoAssignment
 }
 
 func generateDocs(opts docsOptions) error {
@@ -164,10 +166,12 @@ func staleDocs(dir string, outputs map[string][]byte, keep map[string]bool) ([]s
 
 func buildDocResource(resource spec.ResourceSpec) docResource {
 	doc := docResource{
-		TerraformType: resource.TerraformType,
-		Description:   docText(resource.Description),
-		UpdateOnly:    !resource.Operations.Create,
-		Identity:      resource.IdentityPath,
+		TerraformType:  resource.TerraformType,
+		Description:    docText(resource.Description),
+		UpdateOnly:     !resource.Operations.Create,
+		ForgetOnDelete: resource.DeleteBehavior == spec.DeleteBehaviorForget,
+		AdoptOnCreate:  resource.CreateBehavior == spec.CreateBehaviorAdoptExisting,
+		Identity:       resource.IdentityPath,
 	}
 	for _, mode := range resource.Modes {
 		doc.Modes = append(doc.Modes, string(mode))
@@ -222,6 +226,12 @@ func docArgumentFor(field spec.FieldSpec, resourceModes []spec.Mode) docArgument
 	}
 	if field.Sensitive {
 		argument.Notes = append(argument.Notes, "Sensitive.")
+	}
+	switch field.Secret {
+	case spec.SecretWriteOnly:
+		argument.Notes = append(argument.Notes, "The API never returns this value, so it is not imported and changes made outside Terraform are not detected.")
+	case spec.SecretMasked:
+		argument.Notes = append(argument.Notes, fmt.Sprintf("The API returns `%s` instead of the value, so it is not imported and changes made outside Terraform are not detected. Never set it to that text.", spec.MaskedSecretPlaceholder))
 	}
 	if field.Nullable {
 		argument.Notes = append(argument.Notes, "Set it to `null` to clear it.")

@@ -33,8 +33,84 @@ type MockServer struct {
 	resourceState     map[string]map[string]map[string]interface{}
 	postPutEnrichment map[string]map[string]map[string]map[string]interface{}
 	postGetOmissions  map[string]map[string]map[string]postGetOmission
+	secretMasks       map[string]map[string]string
+	passwordHashing   map[string]map[string]string
+	predefined        map[string]predefinedObjects
 	testLogger        testing.TB
 	versionResponse   []byte
+	failures          map[string]*requestFailure
+	references        map[string]referenceCheck
+}
+
+type requestFailure struct {
+	remaining int
+	message   string
+}
+
+type referenceCheck struct {
+	wrapperKey       string
+	field            string
+	targetPath       string
+	targetWrapperKey string
+}
+
+func (ms *MockServer) FailRequests(method, path string, count int, message string) {
+	ms.mu.Lock()
+	defer ms.mu.Unlock()
+	if ms.failures == nil {
+		ms.failures = make(map[string]*requestFailure)
+	}
+	ms.failures[method+" "+path] = &requestFailure{remaining: count, message: message}
+}
+
+func (ms *MockServer) SetReferenceCheck(path, wrapperKey, field, targetPath, targetWrapperKey string) {
+	ms.mu.Lock()
+	defer ms.mu.Unlock()
+	if ms.references == nil {
+		ms.references = make(map[string]referenceCheck)
+	}
+	ms.references[path] = referenceCheck{wrapperKey: wrapperKey, field: field, targetPath: targetPath, targetWrapperKey: targetWrapperKey}
+}
+
+func (ms *MockServer) injectedFailure(method, path string) string {
+	failure, ok := ms.failures[method+" "+path]
+	if !ok || failure.remaining <= 0 {
+		return ""
+	}
+	failure.remaining--
+	message, _ := json.Marshal(failure.message)
+	return `{"status": "failed", "message": ` + string(message) + `}`
+}
+
+func (ms *MockServer) unresolvedReference(path string, body map[string]interface{}) string {
+	check, ok := ms.references[path]
+	if !ok {
+		return ""
+	}
+	objects, _ := body[check.wrapperKey].(map[string]interface{})
+	if len(objects) == 0 {
+		return ""
+	}
+	var targets map[string]interface{}
+	json.Unmarshal(ms.buildGetResponse(check.targetPath, nil), &targets)
+	existing, _ := targets[check.targetWrapperKey].(map[string]interface{})
+	names := make([]string, 0, len(objects))
+	for name := range objects {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	for _, name := range names {
+		fields, _ := objects[name].(map[string]interface{})
+		target, _ := fields[check.field].(string)
+		if target == "" {
+			continue
+		}
+		if _, found := existing[target]; !found {
+			message, _ := json.Marshal(fmt.Sprintf("Cannot resolve object reference: %s %q is missing from the database or import payload, but is referenced by %s %q", check.targetWrapperKey, target, check.wrapperKey, name))
+			return `{"status": "failed", "message": ` + string(message) + `}`
+		}
+	}
+	return ""
 }
 
 type postGetOmission struct {
@@ -55,6 +131,54 @@ func (ms *MockServer) SetPostGetOmissions(path, wrapperKey, resourceName string,
 		ms.postGetOmissions[path][wrapperKey] = make(map[string]postGetOmission)
 	}
 	ms.postGetOmissions[path][wrapperKey][resourceName] = postGetOmission{fields: append([]string(nil), fields...), remaining: responseCount}
+}
+
+const MaskedSecretPlaceholder = "this field has been set"
+
+func (ms *MockServer) SetSecretMasking(path string, fields map[string]string) {
+	ms.mu.Lock()
+	defer ms.mu.Unlock()
+	if ms.secretMasks == nil {
+		ms.secretMasks = make(map[string]map[string]string)
+	}
+	ms.secretMasks[path] = fields
+}
+
+type predefinedObjects struct {
+	param   string
+	apiType string
+	names   map[string]bool
+}
+
+func (ms *MockServer) SetPredefinedObjects(path, deleteParam, apiType string, names ...string) {
+	ms.mu.Lock()
+	defer ms.mu.Unlock()
+	if ms.predefined == nil {
+		ms.predefined = make(map[string]predefinedObjects)
+	}
+	set := make(map[string]bool, len(names))
+	for _, name := range names {
+		set[name] = true
+	}
+	ms.predefined[path] = predefinedObjects{param: deleteParam, apiType: apiType, names: set}
+}
+
+func (ms *MockServer) predefinedRejection(path string, queryParams map[string][]string) string {
+	objects, ok := ms.predefined[path]
+	if !ok {
+		return ""
+	}
+	var entries []string
+	for _, name := range queryParams[objects.param] {
+		if objects.names[name] {
+			entries = append(entries, objects.apiType+"|"+name+"|")
+		}
+	}
+	if len(entries) == 0 {
+		return ""
+	}
+	message, _ := json.Marshal("Object(s) could not be deleted as they are predefined objects:</br>" + strings.Join(entries, "</br>"))
+	return `{"status": "failed", "message": ` + string(message) + `}`
 }
 
 func NewMockServer(mode string) *MockServer {
@@ -231,10 +355,32 @@ func (ms *MockServer) handleRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	queryParams := r.URL.Query()
+	rejection := ms.injectedFailure(r.Method, r.URL.Path)
+	if rejection == "" && r.Method == http.MethodPut && captured.Body != nil {
+		rejection = ms.unresolvedReference(r.URL.Path, captured.Body)
+	}
+	if rejection != "" {
+		ms.mu.Unlock()
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(rejection))
+		return
+	}
+	if r.Method == http.MethodDelete {
+		if rejection := ms.predefinedRejection(r.URL.Path, queryParams); rejection != "" {
+			ms.mu.Unlock()
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(rejection))
+			return
+		}
+	}
 	if r.Method == http.MethodPut && captured.Body != nil {
 		ms.applyPutState(r.URL.Path, captured.Body, queryParams)
+		ms.applyPasswordHashing(r.URL.Path, captured.Body)
 	} else if r.Method == http.MethodPatch && captured.Body != nil {
 		ms.applyPatchState(r.URL.Path, captured.Body, queryParams)
+		ms.applyPasswordHashing(r.URL.Path, captured.Body)
 	} else if r.Method == http.MethodDelete {
 		ms.applyDeleteState(r.URL.Path, queryParams)
 	}
@@ -256,6 +402,50 @@ func (ms *MockServer) handleRequest(w http.ResponseWriter, r *http.Request) {
 		w.Write(captured.RawBody)
 	} else {
 		w.Write([]byte(`{"status":"success"}`))
+	}
+}
+
+func (ms *MockServer) SetPasswordHashing(path, plaintextField, encryptedField string) {
+	ms.mu.Lock()
+	defer ms.mu.Unlock()
+	if ms.passwordHashing == nil {
+		ms.passwordHashing = make(map[string]map[string]string)
+	}
+	if ms.passwordHashing[path] == nil {
+		ms.passwordHashing[path] = make(map[string]string)
+	}
+	ms.passwordHashing[path][plaintextField] = encryptedField
+}
+
+func MockPasswordHash(plaintext string) string {
+	return "$hash$" + plaintext
+}
+
+func (ms *MockServer) applyPasswordHashing(path string, body map[string]interface{}) {
+	pairs := ms.passwordHashing[path]
+	if len(pairs) == 0 {
+		return
+	}
+	for wrapperKey, wrapper := range body {
+		resources, ok := wrapper.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		for resourceName, data := range resources {
+			fields, ok := data.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			for plaintextField, encryptedField := range pairs {
+				plaintext, ok := fields[plaintextField].(string)
+				if !ok || plaintext == "" {
+					continue
+				}
+				if stored, ok := ms.resourceState[path][wrapperKey][resourceName].(map[string]interface{}); ok {
+					stored[encryptedField] = MockPasswordHash(plaintext)
+				}
+			}
+		}
 	}
 }
 
@@ -323,13 +513,22 @@ func (ms *MockServer) applyPatchState(path string, body map[string]interface{}, 
 			for _, key := range keysToMerge {
 
 				if ms.resourceState[path] == nil || ms.resourceState[path][key] == nil {
-
-					ms.applyPutState(path, body, queryParams)
-					return
+					base, seeded := ms.baseObject(path, key, resourceName)
+					if !seeded {
+						ms.applyPutState(path, body, queryParams)
+						return
+					}
+					if ms.resourceState[path] == nil {
+						ms.resourceState[path] = make(map[string]map[string]interface{})
+					}
+					ms.resourceState[path][key] = map[string]interface{}{resourceName: base}
 				}
 				existing, ok := ms.resourceState[path][key][resourceName].(map[string]interface{})
 				if !ok {
-					existing = make(map[string]interface{})
+					existing, ok = ms.baseObject(path, key, resourceName)
+					if !ok {
+						existing = make(map[string]interface{})
+					}
 				}
 
 				for k, v := range patchFields {
@@ -364,6 +563,24 @@ func (ms *MockServer) applyPatchState(path string, body map[string]interface{}, 
 			}
 		}
 	}
+}
+
+func (ms *MockServer) baseObject(path, wrapperKey, resourceName string) (map[string]interface{}, bool) {
+	data, ok := ms.getResponses[path]
+	if !ok {
+		return nil, false
+	}
+	var decoded map[string]interface{}
+	if json.Unmarshal(data, &decoded) != nil {
+		return nil, false
+	}
+	objects, _ := decoded[wrapperKey].(map[string]interface{})
+	object, ok := objects[resourceName].(map[string]interface{})
+	if !ok {
+		return nil, false
+	}
+	copied, _ := deepCopy(object).(map[string]interface{})
+	return copied, copied != nil
 }
 
 func isIndexedArray(arr []interface{}) bool {
@@ -522,6 +739,30 @@ func (ms *MockServer) buildGetResponse(path string, queryParams map[string][]str
 				}
 				omission.remaining--
 				resources[resourceName] = omission
+			}
+		}
+	}
+
+	if masks := ms.secretMasks[path]; masks != nil {
+		for _, wrapper := range baseResponse {
+			resources, ok := wrapper.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			for _, data := range resources {
+				resource, ok := data.(map[string]interface{})
+				if !ok {
+					continue
+				}
+				for field, kind := range masks {
+					value, present := resource[field]
+					switch {
+					case kind == "write_only":
+						resource[field] = ""
+					case kind == "masked" && present && value != nil && value != "":
+						resource[field] = MaskedSecretPlaceholder
+					}
+				}
 			}
 		}
 	}

@@ -73,9 +73,13 @@ func (i *Importer) generateResourceTF(objects map[string]map[string]interface{},
 func renderFields(output *strings.Builder, object map[string]interface{}, fields []spec.FieldSpec, skip map[string]bool, indent, identity string, objectsFirst bool) error {
 	byAPIName := fieldsByAPIName(fields)
 	keys := make([]string, 0, len(object))
+	var secretNotes []string
 	for key := range object {
 		field, found := byAPIName[key]
 		if !found || skip[key] || skip[field.TerraformName] {
+			continue
+		}
+		if field.Access == spec.AccessComputed {
 			continue
 		}
 		if field.AutoAssignment != nil {
@@ -88,6 +92,12 @@ func renderFields(output *strings.Builder, object map[string]interface{}, fields
 			if !found {
 				continue
 			}
+		}
+		if field.Secret != "" {
+			if text, ok := object[key].(string); ok && field.Secret == spec.SecretMasked && spec.IsMaskedSecretPlaceholder(text) {
+				secretNotes = append(secretNotes, field.TerraformName)
+			}
+			continue
 		}
 		keys = append(keys, key)
 	}
@@ -105,6 +115,10 @@ func renderFields(output *strings.Builder, object map[string]interface{}, fields
 		if err := renderField(output, byAPIName[key], object[key], indent); err != nil {
 			return fmt.Errorf("%s: %w", key, err)
 		}
+	}
+	sort.Strings(secretNotes)
+	for _, name := range secretNotes {
+		fmt.Fprintf(output, "%s# %s: a password is set on the system, but the API doesn't return it. Set it here if Terraform should manage it.\n", indent, name)
 	}
 	return nil
 }

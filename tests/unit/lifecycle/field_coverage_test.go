@@ -206,9 +206,16 @@ func attrFieldType(attr fwschema.Attribute) string {
 	}
 }
 
+func readOnly(attr fwschema.Attribute) bool {
+	return attr.IsComputed() && !attr.IsOptional() && !attr.IsRequired()
+}
+
 func inspectBlock(name string, lb fwschema.ListNestedBlock) blockInfo {
 	bi := blockInfo{Name: name}
 	for attrName, attr := range lb.NestedObject.Attributes {
+		if readOnly(attr) {
+			continue
+		}
 		bi.Fields = append(bi.Fields, fieldInfo{Name: attrName, Type: attrFieldType(attr)})
 	}
 	sort.Slice(bi.Fields, func(i, j int) bool { return bi.Fields[i].Name < bi.Fields[j].Name })
@@ -228,6 +235,9 @@ func inspectSchema(factory func() resource.Resource) resourceSchemaInfo {
 
 	var rs resourceSchemaInfo
 	for name, attr := range resp.Schema.Attributes {
+		if readOnly(attr) {
+			continue
+		}
 		fi := fieldInfo{Name: name, Type: attrFieldType(attr)}
 		if sa, ok := attr.(fwschema.StringAttribute); ok {
 			fi.Required = sa.Required

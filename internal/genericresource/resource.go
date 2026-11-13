@@ -119,10 +119,14 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 	if req.State.Raw.IsNull() {
 
 		r.planAutoAssignment(ctx, req, resp)
+		r.planSecrets(ctx, req, resp)
+		r.planHashedCompanions(ctx, req, resp)
 		return
 	}
 	r.planExplicitNulls(ctx, req, resp)
 	r.planAutoAssignment(ctx, req, resp)
+	r.planSecrets(ctx, req, resp)
+	r.planHashedCompanions(ctx, req, resp)
 }
 
 func (r *Resource) nullifyOutOfModeMembers(ctx context.Context, field spec.FieldSpec, mode string, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
@@ -302,6 +306,10 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	if !r.ready(&resp.Diagnostics) {
 		return
 	}
+	if !r.spec.Operations.Create && r.spec.CreateBehavior == spec.CreateBehaviorAdoptExisting {
+		r.adopt(ctx, req, resp, plan)
+		return
+	}
 	if !r.spec.Operations.Create {
 
 		resp.Diagnostics.AddError(
@@ -322,6 +330,10 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	object, err := buildCreate(r.spec.Fields, plan, r.nullableSource(ctx, req.Config, name, &resp.Diagnostics))
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid Configuration", fmt.Sprintf("%s %s: %s", r.spec.TerraformType, name, err))
+		return
+	}
+	guardOutboundSecrets(r.spec.Fields, object, true, fmt.Sprintf("%s %s", r.spec.TerraformType, name), &resp.Diagnostics)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 	value, err := r.adapter.ResourceValue(object)
@@ -368,6 +380,10 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 
 	if resp.Diagnostics.HasError() {
 		return
+	}
+	if changed {
+		resendPlaintextOnFlagOff(r.spec.Fields, plan, state, object)
+		guardOutboundSecrets(r.spec.Fields, object, false, fmt.Sprintf("%s %s", r.spec.TerraformType, name), &resp.Diagnostics)
 	}
 	if !changed {
 
@@ -437,6 +453,12 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 		return
 	}
 	if !r.ready(&resp.Diagnostics) {
+		return
+	}
+	if r.spec.DeleteBehavior == spec.DeleteBehaviorForget {
+		resp.Diagnostics.AddWarning("Removed from Terraform state only",
+			fmt.Sprintf("%s %s is a persistent settings object and can't be deleted. It was removed from Terraform state only; its current settings remain applied on the system.", r.spec.TerraformType, r.identityOf(state)))
+		resp.State.RemoveResource(ctx)
 		return
 	}
 	if !r.spec.Operations.Delete {
@@ -558,6 +580,7 @@ func (r *Resource) settleAfterWrite(ctx context.Context, name string, plan map[s
 }
 
 func (r *Resource) applyResponse(ctx context.Context, data map[string]interface{}, prior map[string]attr.Value, state *tfsdk.State, diagnostics *diag.Diagnostics) {
+	data = preserveSecrets(r.spec.Fields, data, prior)
 	values, err := stateFromAPI(r.spec.Fields, data, r.runtime.Mode(), prior)
 	if err != nil {
 		diagnostics.AddError("Invalid Response", fmt.Sprintf("%s: %s", r.spec.TerraformType, err))
@@ -591,7 +614,7 @@ func (r *Resource) mergePlanScalars(data map[string]interface{}, plan map[string
 			merged[field.APIName] = scalar
 		}
 	}
-	return merged
+	return preserveSecrets(r.spec.Fields, merged, plan)
 }
 
 func (r *Resource) setState(ctx context.Context, state *tfsdk.State, values map[string]attr.Value) diag.Diagnostics {

@@ -37,7 +37,7 @@ func listEntries(field spec.FieldSpec, value attr.Value) ([]map[string]attr.Valu
 func createEntry(field spec.FieldSpec, entry map[string]attr.Value, nullables nullableSource) (transport.WireValue, error) {
 	object := make(transport.WireObject, len(field.Fields))
 	for _, member := range field.Fields {
-		if member.Unmanaged {
+		if member.Unmanaged || serverOwned(member) {
 			continue
 		}
 		value, held := entry[member.TerraformName]
@@ -148,7 +148,7 @@ func updateList(field spec.FieldSpec, plan, state attr.Value, nullables nullable
 			entryChanged = entryChanged || pairChanged
 		}
 		for _, member := range field.Fields {
-			if member.Unmanaged || paired[member.TerraformName] || member.TerraformName == identity.TerraformName {
+			if member.Unmanaged || serverOwned(member) || paired[member.TerraformName] || member.TerraformName == identity.TerraformName {
 				continue
 			}
 			value, held := entry[member.TerraformName]
@@ -190,6 +190,39 @@ func updateList(field spec.FieldSpec, plan, state attr.Value, nullables nullable
 		return transport.WireValue{}, false, nil
 	}
 	return transport.List(sent), true, nil
+}
+
+func orderedListFromAPI(field spec.FieldSpec, raw interface{}, mode string, prior attr.Value) (attr.Value, error) {
+	decoded, err := listFromAPI(field, raw, mode)
+	if err != nil || field.Collection == nil || field.Collection.IdentityField == "" {
+		return decoded, err
+	}
+	reference, present, err := listEntries(field, prior)
+	if err != nil || !present {
+		return decoded, nil
+	}
+	entries, present, err := listEntries(field, decoded)
+	if err != nil || !present {
+		return decoded, nil
+	}
+	position := make(map[int64]int, len(reference))
+	for at, entry := range reference {
+		if index, ok := entryIndex(field, entry); ok {
+			if _, seen := position[index]; !seen {
+				position[index] = at
+			}
+		}
+	}
+	rank := func(entry map[string]attr.Value) int {
+		if index, ok := entryIndex(field, entry); ok {
+			if at, known := position[index]; known {
+				return at
+			}
+		}
+		return len(reference)
+	}
+	sort.SliceStable(entries, func(i, j int) bool { return rank(entries[i]) < rank(entries[j]) })
+	return listValue(field, entries)
 }
 
 func listFromAPI(field spec.FieldSpec, raw interface{}, mode string) (attr.Value, error) {

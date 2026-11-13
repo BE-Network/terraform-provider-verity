@@ -29,6 +29,24 @@ func (r ResourceSpec) Validate() error {
 	if !r.Operations.Read || (!r.Operations.Create && !r.Operations.Update) {
 		return fmt.Errorf("resource %s: operations must include read and at least one mutation", r.TerraformType)
 	}
+	switch r.DeleteBehavior {
+	case DeleteBehaviorAPI:
+	case DeleteBehaviorForget:
+		if r.Operations.Delete {
+			return fmt.Errorf("resource %s: delete_behavior forget is only allowed when the API can't delete the object", r.TerraformType)
+		}
+	default:
+		return fmt.Errorf("resource %s: unknown delete_behavior %q", r.TerraformType, r.DeleteBehavior)
+	}
+	switch r.CreateBehavior {
+	case CreateBehaviorAPI:
+	case CreateBehaviorAdoptExisting:
+		if r.Operations.Create || !r.Operations.Update {
+			return fmt.Errorf("resource %s: create_behavior adopt_existing is only allowed when the API can't create the object but can update it", r.TerraformType)
+		}
+	default:
+		return fmt.Errorf("resource %s: unknown create_behavior %q", r.TerraformType, r.CreateBehavior)
+	}
 	if err := r.API.validate(r.Operations); err != nil {
 		return fmt.Errorf("resource %s: api: %w", r.TerraformType, err)
 	}
@@ -214,6 +232,9 @@ func validateField(field FieldSpec, path string, parentRange VersionRange, paren
 		}
 	}
 	if err := validateOwnership(field, path); err != nil {
+		return err
+	}
+	if err := validateSecret(field, path); err != nil {
 		return err
 	}
 	if field.Default != nil {
@@ -480,4 +501,21 @@ func validateDecimalBound(name string, bound *LiteralSpec) error {
 		return fmt.Errorf("%s must be a decimal literal", name)
 	}
 	return validateLiteral(*bound, FieldKindNumber)
+}
+
+func validateSecret(field FieldSpec, path string) error {
+	switch field.Secret {
+	case "":
+		return nil
+	case SecretWriteOnly, SecretMasked:
+	default:
+		return fmt.Errorf("%s: unknown secret kind %q", path, field.Secret)
+	}
+	if field.Kind != FieldKindString {
+		return fmt.Errorf("%s: only string fields can be secret, but kind is %q", path, field.Kind)
+	}
+	if !field.Sensitive {
+		return fmt.Errorf("%s: secret fields must also be sensitive", path)
+	}
+	return nil
 }

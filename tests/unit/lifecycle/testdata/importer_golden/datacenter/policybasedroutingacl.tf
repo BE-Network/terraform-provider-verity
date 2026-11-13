@@ -1,7 +1,7 @@
 
 resource "verity_pb_routing_acl" "pbr_acl_ipv4_2" {
     name = "pbr_acl_ipv4_2"
-    depends_on = [verity_operation_stage.pb_routing_acl_stage]
+    depends_on = [verity_operation_stage.route_map_tenant_stage]
 	enable = true
 	ipv4_deny {
 		index = 1

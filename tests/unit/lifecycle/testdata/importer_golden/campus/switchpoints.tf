@@ -20,7 +20,6 @@ resource "verity_switchpoint" "sim" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = "vwan0"
 	}
 	eths {
 		index = 2
@@ -28,7 +27,6 @@ resource "verity_switchpoint" "sim" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = "Eth1"
 	}
 	eths {
 		index = 3
@@ -36,7 +34,6 @@ resource "verity_switchpoint" "sim" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = "Eth2"
 	}
 	eths {
 		index = 4
@@ -44,7 +41,6 @@ resource "verity_switchpoint" "sim" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = "Eth3"
 	}
 	eths {
 		index = 5
@@ -52,7 +48,6 @@ resource "verity_switchpoint" "sim" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = "Eth4"
 	}
 	eths {
 		index = 6
@@ -60,7 +55,6 @@ resource "verity_switchpoint" "sim" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = "Eth5"
 	}
 	eths {
 		index = 7
@@ -68,7 +62,6 @@ resource "verity_switchpoint" "sim" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = "Eth6"
 	}
 	eths {
 		index = 8
@@ -76,7 +69,6 @@ resource "verity_switchpoint" "sim" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = "Eth7"
 	}
 	eths {
 		index = 9
@@ -84,7 +76,6 @@ resource "verity_switchpoint" "sim" {
 		enable = true
 		eth_num_icon = "empty"
 		eth_num_label = ""
-		port_name = "Eth8"
 	}
 	is_fabric = false
 	locked = false

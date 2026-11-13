@@ -87,7 +87,6 @@ resource "verity_switchpoint" "example" {
     eth_num_icon = ""
     eth_num_label = ""
     eth_num_role = ""
-    port_name = ""
   }
 
   object_properties {
@@ -218,7 +217,6 @@ resource "verity_switchpoint" "example" {
     eth_num_icon = ""
     eth_num_label = ""
     eth_num_role = ""
-    port_name = ""
   }
 
   object_properties {
@@ -288,7 +286,7 @@ resource "verity_switchpoint" "example" {
   * `eth_num_label` (String) - Label of this Eth Port.
   * `eth_num_role` (String) - Role of this Eth Port.
   * `index` (Integer) - The index identifying the object. Zero if you want to add an object to the list.
-  * `port_name` (String) - The name identifying the port. Used for reference only, it won't actually change the port name.
+  * `port_name` (String) - Name of the port, read from the device. Ports are identified by `index`; the API fills this in once the device exists.
 * `expected_breakout` (String) - Full breakout configuration for the SFP being used as the uplink.
 * `expected_breakout_uplink_port` (String) - Uplink Ethernet Port identifier in the format 1/# or 1/#/#.
 * `expected_fabric` (String) - Expected Fabric. Set together with `expected_fabric_ref_type_`.
@@ -314,10 +312,10 @@ resource "verity_switchpoint" "example" {
   * `number_of_multipoints` (Integer) - Number of Multipoints. Set it to `null` to clear it.
   * `user_notes` (String) - Notes writen by User about the fabric.
 * `out_of_band_management` (Boolean) - For Switch Endpoints. Denotes a Switch is managed out of band via the management port.
-* `passphrase` (String) - Passphrase.
-* `passphrase_encrypted` (String) - Passphrase.
-* `password` (String) - Password.
-* `password_encrypted` (String) - Password.
+* `passphrase` (String) - Passphrase. Sensitive. The API never returns this value, so it is not imported and changes made outside Terraform are not detected.
+* `passphrase_encrypted` (String) - Passphrase. Sensitive.
+* `password` (String) - Password. Sensitive. The API never returns this value, so it is not imported and changes made outside Terraform are not detected.
+* `password_encrypted` (String) - Password. Sensitive.
 * `plane` (String) - Plane. Datacenter mode only. Set together with `plane_ref_type_`.
 * `plane_ref_type_` (String) - Object type for plane field. Datacenter mode only.
 * `pod` (String) - Pod - subgrouping of spine and leaf switches. Datacenter mode only. Set together with `pod_ref_type_`.
@@ -334,8 +332,8 @@ resource "verity_switchpoint" "example" {
   * `pots_num_uri` (String) - Specific telephone extension for SIP for POTS port.
   * `pots_num_username` (String) - SIP username used for authentication for POTS port.
 * `power_state` (String) - Power state of Switch Controller.
-* `private_password` (String) - Password.
-* `private_password_encrypted` (String) - Password.
+* `private_password` (String) - Password. Sensitive. The API never returns this value, so it is not imported and changes made outside Terraform are not detected.
+* `private_password_encrypted` (String) - Password. Sensitive.
 * `private_protocol` (String) - Protocol.
 * `rack` (String) - Rack. Datacenter mode only. Set together with `rack_ref_type_`.
 * `rack_info` (String) - Physical Rack location of the Switch. Datacenter mode only.
@@ -348,8 +346,8 @@ resource "verity_switchpoint" "example" {
 * `snmpv3_username` (String) - Username.
 * `spine_plane` (String) - Spine Plane - subgrouping of super spine and spine. Datacenter mode only. Set together with `spine_plane_ref_type_`.
 * `spine_plane_ref_type_` (String) - Object type for spine_plane field. Datacenter mode only.
-* `ssh_key_or_password` (String) - SSH Key or Password.
-* `ssh_key_or_password_encrypted` (String) - SSH Key or Password. Assigned by the server while `ssh_key_or_password_encrypted_auto_assigned_` is `true`; it cannot be set then.
+* `ssh_key_or_password` (String) - SSH Key or Password. Sensitive. The API never returns this value, so it is not imported and changes made outside Terraform are not detected.
+* `ssh_key_or_password_encrypted` (String) - SSH Key or Password. Sensitive. Assigned by the server while `ssh_key_or_password_encrypted_auto_assigned_` is `true`; it cannot be set then.
 * `ssh_key_or_password_encrypted_auto_assigned_` (Boolean) - Whether or not the value in ssh_key_or_password_encrypted field has been automatically assigned or not. Set to false and change ssh_key_or_password_encrypted value to edit.
 * `ssp_group` (String) - SuperSpine Group - grouping of superspines in 3-tier config. Datacenter mode only. Set together with `ssp_group_ref_type_`.
 * `ssp_group_ref_type_` (String) - Object type for ssp_group field. Datacenter mode only.

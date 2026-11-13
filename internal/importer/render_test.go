@@ -236,3 +236,72 @@ func TestRendererReturnsTopLevelImportIdentity(t *testing.T) {
 		t.Fatalf("resource name = %v, diagnostics = %v", id, diags)
 	}
 }
+
+func TestRendererNeverWritesSecrets(t *testing.T) {
+	encrypted := spec.FieldSpec{APIName: "ssh_key_or_password_encrypted", TerraformName: "ssh_key_or_password_encrypted", Kind: spec.FieldKindString, Sensitive: true, Secret: spec.SecretMasked,
+		AutoAssignment: &spec.AutoAssignmentSpec{FlagField: "ssh_key_or_password_encrypted_auto_assigned_"}}
+	fields := []spec.FieldSpec{
+		{APIName: "enable", TerraformName: "enable", Kind: spec.FieldKindBool},
+		{APIName: "ssh_key_or_password", TerraformName: "ssh_key_or_password", Kind: spec.FieldKindString, Sensitive: true, Secret: spec.SecretWriteOnly},
+		encrypted,
+		{APIName: "ssh_key_or_password_encrypted_auto_assigned_", TerraformName: "ssh_key_or_password_encrypted_auto_assigned_", Kind: spec.FieldKindBool},
+		{APIName: "md5_password_encrypted", TerraformName: "md5_password_encrypted", Kind: spec.FieldKindString, Sensitive: true, Secret: spec.SecretMasked},
+	}
+	objects := map[string]map[string]interface{}{
+		"with-password": {"enable": true, "ssh_key_or_password": "", "ssh_key_or_password_encrypted": "this field has been set",
+			"ssh_key_or_password_encrypted_auto_assigned_": false, "md5_password_encrypted": "This field has been set"},
+		"no-password": {"enable": true, "ssh_key_or_password": "", "ssh_key_or_password_encrypted": "",
+			"ssh_key_or_password_encrypted_auto_assigned_": false, "md5_password_encrypted": ""},
+		"auto-assigned": {"enable": true, "ssh_key_or_password_encrypted": "this field has been set",
+			"ssh_key_or_password_encrypted_auto_assigned_": true},
+	}
+	got, _, err := (&Importer{}).generateResourceTF(objects, ResourceConfig{ResourceType: "switchpoint", StageName: "switchpoint_stage", Fields: fields})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(got, "ssh_key_or_password =") || strings.Contains(got, "_encrypted =") || strings.Contains(strings.ToLower(got), "= \"this field has been set\"") {
+		t.Fatalf("a secret value was written:\n%s", got)
+	}
+	blocks := map[string]string{}
+	for _, block := range strings.Split(got, "\nresource ")[1:] {
+		blocks[strings.Fields(block)[1]] = block
+	}
+	for _, note := range []string{"# md5_password_encrypted: a password is set on the system", "# ssh_key_or_password_encrypted: a password is set on the system"} {
+		if !strings.Contains(blocks[`"with-password"`], note) {
+			t.Errorf("with-password: missing note %q:\n%s", note, blocks[`"with-password"`])
+		}
+	}
+	for _, name := range []string{`"no-password"`, `"auto-assigned"`} {
+		if strings.Contains(blocks[name], "a password is set") {
+			t.Errorf("%s: unexpected password note:\n%s", name, blocks[name])
+		}
+	}
+	file, diags := hclsyntax.ParseConfig([]byte(got), "switchpoint.tf", hcl.InitialPos)
+	if diags.HasErrors() || file == nil {
+		t.Fatalf("generated HCL does not parse: %v", diags)
+	}
+}
+
+func TestRendererNeverWritesReadOnlyFields(t *testing.T) {
+	fields := []spec.FieldSpec{
+		{APIName: "eth_port_paths", TerraformName: "eth_port_paths", Kind: spec.FieldKindList, ElementKind: spec.FieldKindObject,
+			Collection: &spec.CollectionSpec{IdentityField: "index"}, Fields: []spec.FieldSpec{
+				{APIName: "index", TerraformName: "index", Kind: spec.FieldKindInt64},
+				{APIName: "port_name", TerraformName: "port_name", Kind: spec.FieldKindString, Access: spec.AccessComputed},
+				{APIName: "eth_port_num_ee_profile", TerraformName: "eth_port_num_ee_profile", Kind: spec.FieldKindString},
+			}},
+	}
+	objects := map[string]map[string]interface{}{"b1": {"eth_port_paths": []interface{}{
+		map[string]interface{}{"index": float64(1), "port_name": "Eth1/1", "eth_port_num_ee_profile": "p1"},
+	}}}
+	got, _, err := (&Importer{}).generateResourceTF(objects, ResourceConfig{ResourceType: "bundle", StageName: "bundle_stage", Fields: fields})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(got, "port_name") {
+		t.Fatalf("a read-only field was written:\n%s", got)
+	}
+	if !strings.Contains(got, `eth_port_num_ee_profile = "p1"`) || !strings.Contains(got, "index = 1") {
+		t.Fatalf("other members are missing:\n%s", got)
+	}
+}

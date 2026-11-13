@@ -73,7 +73,7 @@ func buildCreate(fields []spec.FieldSpec, plan map[string]attr.Value, nullables 
 	}
 
 	for _, field := range fields {
-		if field.Unmanaged || field.KeyOnly || autoPaired[field.TerraformName] {
+		if field.Unmanaged || serverOwned(field) || field.KeyOnly || autoPaired[field.TerraformName] {
 			continue
 		}
 
@@ -239,7 +239,7 @@ func buildUpdate(fields []spec.FieldSpec, plan, state map[string]attr.Value, nul
 	}
 
 	for _, field := range fields {
-		if field.Unmanaged || field.KeyOnly || paired[field.TerraformName] || autoPaired[field.TerraformName] {
+		if field.Unmanaged || serverOwned(field) || field.KeyOnly || paired[field.TerraformName] || autoPaired[field.TerraformName] {
 			continue
 		}
 
@@ -429,11 +429,13 @@ func stateFromAPI(fields []spec.FieldSpec, data map[string]interface{}, mode str
 			continue
 		}
 		if field.Kind == spec.FieldKindObject || field.Kind == spec.FieldKindList {
-			decode := singletonFromAPI
+			var decoded attr.Value
+			var err error
 			if field.Kind == spec.FieldKindList {
-				decode = listFromAPI
+				decoded, err = orderedListFromAPI(field, raw, mode, prior[field.TerraformName])
+			} else {
+				decoded, err = singletonFromAPI(field, raw, mode)
 			}
-			decoded, err := decode(field, raw, mode)
 			if err != nil {
 				return nil, err
 			}
@@ -459,7 +461,7 @@ func absentValue(field spec.FieldSpec, prior map[string]attr.Value) (attr.Value,
 	case spec.ResponseAbsenceTerraformNull:
 		return nullFor(field), nil
 	case spec.ResponseAbsencePreserve:
-		if previous, held := prior[field.TerraformName]; held && previous != nil {
+		if previous, held := prior[field.TerraformName]; held && previous != nil && !previous.IsUnknown() {
 			return previous, nil
 		}
 		return nullFor(field), nil
@@ -541,4 +543,8 @@ func attributeTypes(fields []spec.FieldSpec) map[string]attr.Type {
 		}
 	}
 	return types_
+}
+
+func serverOwned(field spec.FieldSpec) bool {
+	return field.Access == spec.AccessComputed
 }

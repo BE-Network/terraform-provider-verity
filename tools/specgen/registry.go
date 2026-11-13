@@ -50,19 +50,21 @@ type policyProfile struct {
 }
 
 type resourceOverride struct {
-	Path          string                           `yaml:"path"`
-	TerraformType string                           `yaml:"terraform_type"`
-	Description   string                           `yaml:"description"`
-	Modes         []string                         `yaml:"modes"`
-	Versions      versionRangeOverride             `yaml:"versions"`
-	IdentityPath  string                           `yaml:"identity_path"`
-	SchemaVersion int64                            `yaml:"schema_version"`
-	API           apiOverride                      `yaml:"api"`
-	Fields        []fieldOverride                  `yaml:"fields"`
-	Dependencies  spec.DependencySpec              `yaml:"dependencies"`
-	ImportStages  map[string]importStageOverride   `yaml:"import_stage"`
-	BulkOrder     map[spec.Mode]spec.BulkOrderSpec `yaml:"bulk_order"`
-	Hooks         []string                         `yaml:"hooks"`
+	Path           string                           `yaml:"path"`
+	TerraformType  string                           `yaml:"terraform_type"`
+	Description    string                           `yaml:"description"`
+	Modes          []string                         `yaml:"modes"`
+	Versions       versionRangeOverride             `yaml:"versions"`
+	IdentityPath   string                           `yaml:"identity_path"`
+	SchemaVersion  int64                            `yaml:"schema_version"`
+	API            apiOverride                      `yaml:"api"`
+	Fields         []fieldOverride                  `yaml:"fields"`
+	Dependencies   spec.DependencySpec              `yaml:"dependencies"`
+	ImportStages   map[string]importStageOverride   `yaml:"import_stage"`
+	BulkOrder      map[spec.Mode]spec.BulkOrderSpec `yaml:"bulk_order"`
+	Hooks          []string                         `yaml:"hooks"`
+	DeleteBehavior string                           `yaml:"delete_behavior"`
+	CreateBehavior string                           `yaml:"create_behavior"`
 }
 
 type importStageOverride struct {
@@ -91,6 +93,7 @@ type fieldOverride struct {
 	Versions        versionRangeOverride    `yaml:"versions"`
 	Access          string                  `yaml:"access"`
 	Sensitive       bool                    `yaml:"sensitive"`
+	Secret          string                  `yaml:"secret"`
 	Replace         bool                    `yaml:"replace"`
 	ResponseAbsence string                  `yaml:"response_absence"`
 	CreateNull      string                  `yaml:"create_null"`
@@ -309,12 +312,14 @@ func mergeResourceOverride(coverage coverageResource, override resourceOverride,
 			CacheKey:              override.API.CacheKey,
 			FixedHeaders:          override.API.FixedHeaders,
 		},
-		Operations:   operations,
-		Fields:       fields,
-		Dependencies: override.Dependencies,
-		ImportStages: importStagesFor(override.ImportStages),
-		BulkOrder:    override.BulkOrder,
-		Hooks:        override.Hooks,
+		Operations:     operations,
+		Fields:         fields,
+		Dependencies:   override.Dependencies,
+		ImportStages:   importStagesFor(override.ImportStages),
+		BulkOrder:      override.BulkOrder,
+		Hooks:          override.Hooks,
+		DeleteBehavior: spec.DeleteBehavior(override.DeleteBehavior),
+		CreateBehavior: spec.CreateBehavior(override.CreateBehavior),
 	}, nil
 }
 
@@ -441,6 +446,7 @@ func mergeFieldOverrides(coverage []coverageField, overrides []fieldOverride, pa
 			Description:     description,
 			Nullable:        apiNullable(source.Kind, source.APIName),
 			Sensitive:       override.Sensitive,
+			Secret:          spec.SecretKind(override.Secret),
 			Replace:         override.Replace,
 			Modes:           modes,
 			Versions:        versions,
@@ -635,8 +641,8 @@ func rejectManagedOverrideFields(override fieldOverride) error {
 	if override.Collection != nil || len(override.Fields) != 0 || override.Reference != nil || override.AutoAssignment != nil {
 		return fmt.Errorf("field %q is unmanaged and cannot declare nested structure", override.APIName)
 	}
-	if override.APIItemKind != "" || override.Sensitive || override.Replace {
-		return fmt.Errorf("field %q is unmanaged and cannot declare item kind, sensitivity, or replacement", override.APIName)
+	if override.APIItemKind != "" || override.Sensitive || override.Secret != "" || override.Replace {
+		return fmt.Errorf("field %q is unmanaged and cannot declare item kind, sensitivity, secrecy, or replacement", override.APIName)
 	}
 	return nil
 }

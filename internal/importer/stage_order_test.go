@@ -47,8 +47,7 @@ func TestGeneratedStagesMatchExecutorOrder(t *testing.T) {
 			stages: []string{
 				"sfp_breakout_stage", "community_list_stage", "as_path_access_list_stage", "ipv6_prefix_list_stage",
 				"ipv4_prefix_list_stage", "extended_community_list_stage", "acl_v6_stage", "acl_v4_stage",
-				"route_map_clause_stage", "pb_routing_acl_stage", "route_map_stage", "pb_routing_stage", "tenant_stage",
-				"service_stage", "monitoring_acl_stage", "fabric_collection_stage", "fabric_stage", "tacacs_profile_stage", "ldap_profile_stage", "port_acl_stage",
+				"route_map_tenant_stage", "service_stage", "monitoring_acl_stage", "fabric_collection_stage", "fabric_stage", "tacacs_profile_stage", "ldap_profile_stage", "port_acl_stage",
 				"ipv6_list_stage", "ipv4_list_stage", "pod_stage", "packet_queue_stage", "device_aaa_profile_stage",
 				"eth_port_profile_stage", "packet_broker_stage", "sflow_collector_stage", "gateway_stage", "su_stage",
 				"diagnostics_port_profile_stage", "device_settings_stage", "lag_stage", "diagnostics_profile_stage",
@@ -88,6 +87,33 @@ func TestGeneratedStagesMatchExecutorOrder(t *testing.T) {
 				lastPosition = position
 			}
 		})
+	}
+}
+
+func TestRouteMapAndTenantTypesShareOneStage(t *testing.T) {
+	config, _, err := (&Importer{ctx: context.Background(), Mode: "datacenter"}).generateStagesTF()
+	if err != nil {
+		t.Fatalf("generateStagesTF returned error: %v", err)
+	}
+	if count := strings.Count(config, `resource "verity_operation_stage" "route_map_tenant_stage"`); count != 1 {
+		t.Fatalf("route_map_tenant_stage declared %d times, want once:\n%s", count, config)
+	}
+	if !strings.Contains(config, "depends_on = [verity_operation_stage.acl_v4_stage]") || !strings.Contains(config, "depends_on = [verity_operation_stage.route_map_tenant_stage]") {
+		t.Fatalf("route_map_tenant_stage must follow acl_v4_stage and precede the next stage:\n%s", config)
+	}
+	for _, terraformType := range []string{"verity_route_map_clause", "verity_pb_routing_acl", "verity_route_map", "verity_pb_routing", "verity_tenant"} {
+		name, err := stageNameFor("datacenter", terraformType)
+		if err != nil || name != "route_map_tenant_stage" {
+			t.Fatalf("%s stage = %q, %v; want route_map_tenant_stage", terraformType, name, err)
+		}
+	}
+	order, err := ResourceTypeOrder("datacenter")
+	if err != nil {
+		t.Fatal(err)
+	}
+	joined := strings.Join(order, ",")
+	if !strings.Contains(joined, "verity_route_map_clause,verity_pb_routing_acl,verity_route_map,verity_pb_routing,verity_tenant") {
+		t.Fatalf("resource order inside the shared stage = %s, want the bulk PUT order", joined)
 	}
 }
 

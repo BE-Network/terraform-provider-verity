@@ -18,6 +18,7 @@ type Runtime interface {
 	NotifyOperationAdded()
 
 	FetchCollection(ctx context.Context, resource spec.ResourceSpec, resourceName string) (map[string]interface{}, error)
+	FetchCollectionStrict(ctx context.Context, resource spec.ResourceSpec) (map[string]interface{}, error)
 
 	ConfiguredAttributes(ctx context.Context, terraformType, resourceName string) *utils.ConfiguredAttributes
 }

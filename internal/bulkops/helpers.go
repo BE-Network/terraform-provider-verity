@@ -5,17 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"reflect"
 	"terraform-provider-verity/internal/utils"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
-func (m *Manager) storeOperation(resourceType, resourceName, operationType string, props interface{}) {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
-
+func (m *Manager) storeOperationLocked(resourceType, resourceName, operationType string, props interface{}) {
 	res, exists := m.resources[resourceType]
 	if !exists {
 		return
@@ -38,30 +34,6 @@ func (m *Manager) storeOperation(resourceType, resourceName, operationType strin
 
 	res.RecentOps = true
 	res.RecentOpTime = time.Now()
-}
-
-func (m *Manager) getBatchSize(resourceType, operationType string) int {
-	data := m.GetResourceOperationData(resourceType)
-	if data == nil {
-		return 0
-	}
-
-	switch operationType {
-	case "PUT":
-		if v := reflect.ValueOf(data.PutOperations); v.IsValid() && !v.IsNil() {
-			return v.Len()
-		}
-	case "PATCH":
-		if v := reflect.ValueOf(data.PatchOperations); v.IsValid() && !v.IsNil() {
-			return v.Len()
-		}
-	case "DELETE":
-		if data.DeleteOperations != nil {
-			return len(*data.DeleteOperations)
-		}
-		return 0
-	}
-	return 0
 }
 
 func (m *Manager) createExtractor(resourceType, operationType string) func() (map[string]interface{}, []string) {
@@ -155,6 +127,12 @@ func (m *Manager) createPreExistenceChecker(config ResourceConfig, operationType
 				}
 				return resources, nil
 			},
+		}
+
+		if config.ResourceType == routeMapClauseType {
+			checker.KeepOpen = func(name string, existing interface{}) bool {
+				return m.keepClauseOpen(name, existing, originalOperations[name])
+			}
 		}
 
 		filteredNames, err := m.FilterPreExistingResources(ctx, resourceNames, checker)
@@ -404,11 +382,15 @@ func (m *Manager) FilterPreExistingResources(
 
 	var notExistingResources []string
 	alreadyExistingResources := make(map[string]bool)
+	keptOpen := make(map[string]bool)
 
 	for _, name := range resourceNames {
-		if _, exists := existingResources[name]; exists {
+		if existing, exists := existingResources[name]; exists {
 
 			alreadyExistingResources[name] = true
+			if checker.KeepOpen != nil && checker.KeepOpen(name, existing) {
+				keptOpen[name] = true
+			}
 			tflog.Info(ctx, fmt.Sprintf("Skipping creation of %s '%s' as it already exists",
 				checker.ResourceType, name))
 		} else {
@@ -425,6 +407,16 @@ func (m *Manager) FilterPreExistingResources(
 			if op.ResourceType == checker.ResourceType &&
 				op.OperationType == checker.OperationType &&
 				alreadyExistingResources[op.ResourceName] {
+
+				if keptOpen[op.ResourceName] {
+					if op.Status == OperationPending || op.Status == OperationExecuting {
+						updatedOp := *op
+						updatedOp.Status = OperationExecuting
+						updatedOp.ExecutionStartTime = time.Time{}
+						m.pendingOperations[opID] = &updatedOp
+					}
+					continue
+				}
 
 				updatedOp := *op
 				updatedOp.Status = OperationSucceeded

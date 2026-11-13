@@ -148,6 +148,19 @@ const (
 	StateConfigurationOrServer StateOwnershipPolicy = "configuration_or_server"
 )
 
+type SecretKind string
+
+const (
+	SecretWriteOnly SecretKind = "write_only"
+	SecretMasked    SecretKind = "masked"
+)
+
+const MaskedSecretPlaceholder = "this field has been set"
+
+func IsMaskedSecretPlaceholder(value string) bool {
+	return strings.EqualFold(strings.TrimSpace(value), MaskedSecretPlaceholder)
+}
+
 type CollectionStrategy string
 
 const (
@@ -214,6 +227,7 @@ type FieldSpec struct {
 	Description string          `json:"description"`
 	Nullable    bool            `json:"nullable"`
 	Sensitive   bool            `json:"sensitive"`
+	Secret      SecretKind      `json:"secret,omitempty"`
 	Replace     bool            `json:"replace"`
 	Modes       []Mode          `json:"modes"`
 	Versions    VersionRange    `json:"versions"`
@@ -266,17 +280,33 @@ type DependencySpec struct {
 }
 
 type ResourceSpec struct {
-	TerraformType string                   `json:"terraform_type"`
-	Description   string                   `json:"description"`
-	Modes         []Mode                   `json:"modes"`
-	Versions      VersionRange             `json:"versions"`
-	IdentityPath  string                   `json:"identity_path"`
-	SchemaVersion int64                    `json:"schema_version"`
-	API           APIResourceSpec          `json:"api"`
-	Operations    OperationSpec            `json:"operations"`
-	Fields        []FieldSpec              `json:"fields"`
-	Dependencies  DependencySpec           `json:"dependencies,omitempty"`
-	ImportStages  map[Mode]ImportStageSpec `json:"import_stages,omitempty"`
-	BulkOrder     map[Mode]BulkOrderSpec   `json:"bulk_order,omitempty"`
-	Hooks         []string                 `json:"hooks,omitempty"`
+	TerraformType  string                   `json:"terraform_type"`
+	Description    string                   `json:"description"`
+	Modes          []Mode                   `json:"modes"`
+	Versions       VersionRange             `json:"versions"`
+	IdentityPath   string                   `json:"identity_path"`
+	SchemaVersion  int64                    `json:"schema_version"`
+	API            APIResourceSpec          `json:"api"`
+	Operations     OperationSpec            `json:"operations"`
+	Fields         []FieldSpec              `json:"fields"`
+	Dependencies   DependencySpec           `json:"dependencies,omitempty"`
+	ImportStages   map[Mode]ImportStageSpec `json:"import_stages,omitempty"`
+	BulkOrder      map[Mode]BulkOrderSpec   `json:"bulk_order,omitempty"`
+	Hooks          []string                 `json:"hooks,omitempty"`
+	DeleteBehavior DeleteBehavior           `json:"delete_behavior,omitempty"`
+	CreateBehavior CreateBehavior           `json:"create_behavior,omitempty"`
 }
+
+type CreateBehavior string
+
+const (
+	CreateBehaviorAPI           CreateBehavior = ""
+	CreateBehaviorAdoptExisting CreateBehavior = "adopt_existing"
+)
+
+type DeleteBehavior string
+
+const (
+	DeleteBehaviorAPI    DeleteBehavior = ""
+	DeleteBehaviorForget DeleteBehavior = "forget"
+)

@@ -48,6 +48,9 @@ func ExecuteResourceOperationWithOptions(
 		)
 		return false
 	}
+	if warning := bulkOpsMgr.OperationWarning(operationID); warning != "" {
+		diagnostics.AddWarning(fmt.Sprintf("%s %s %s", resourceType, resourceName, operationType), warning)
+	}
 
 	return true
 }
