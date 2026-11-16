@@ -7,7 +7,7 @@ pair does not imply support for newer API releases.
 
 | Provider release | Supported Verity API release |
 | --- | --- |
-| `6.6.100` | `6.6.0.269` |
+| `6.7.100` | `6.7.0.13` |
 
 The runtime version check compares API major/minor, not the complete build
 number. Passing that check does not establish support for an unlisted API build.
